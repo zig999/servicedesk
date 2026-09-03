@@ -4,8 +4,10 @@ import type { CreateDraftInput } from '../../../case/case-store.port.js';
 import type { Resolution } from '../../../case/case.js';
 import type { IHypothesisRevisionOverwrite } from '../../../case/hypothesis-revision-overwrite.port.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
+import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
+import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -93,6 +95,17 @@ function aCreateDraftInput(slug: string, glossary: IGlossary, overrides: Partial
     fallback: aResolution(glossary),
     ...overrides,
   };
+}
+
+const CASE_CATALOG_PAGE_MARGIN = 20;
+
+async function currentCaseCount(): Promise<number> {
+  const { rows } = await pool.query<{ count: string }>('SELECT COUNT(*) AS count FROM cases');
+  return Number(rows[0]?.count ?? '0');
+}
+
+async function generousCasesPageLimit(): Promise<number> {
+  return (await currentCaseCount()) + CASE_CATALOG_PAGE_MARGIN;
 }
 
 async function cleanupWrittenCases(): Promise<void> {
@@ -795,7 +808,7 @@ it('removes only the named manifest entry, never the hypothesis-revision it refe
   expect(rows).toEqual([{ revision }]);
 });
 
-it('records the instant of release, and a second call to release leaves that instant unchanged', async () => {
+it('records the instant of release when release is called against a draft version', async () => {
   const slug = `case-lifecycle-store-release-once-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
   const glossary = await freshGlossary();
@@ -803,38 +816,60 @@ it('records the instant of release, and a second call to release leaves that ins
   const version = await store.createDraft(aCreateDraftInput(slug, glossary));
 
   await store.release(slug, version);
-  const firstRead = await store.assembleVersion(slug, version);
-  await store.release(slug, version);
-  const secondRead = await store.assembleVersion(slug, version);
 
-  expect(firstRead?.state).toBe('released');
-  expect(firstRead?.released_at).toBeDefined();
-  expect(secondRead?.released_at).toBe(firstRead?.released_at);
+  const read = await store.assembleVersion(slug, version);
+  expect(read?.state).toBe('released');
+  expect(read?.released_at).toBeDefined();
 });
 
-it("leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it", async () => {
-  const slug = `case-lifecycle-store-manifest-immutable-${randomUUID()}`;
-  slugsWrittenByThisTest.push(slug);
-  const glossary = await freshGlossary();
-  const store = new RelationalCaseStore(pool);
-  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
-  const revision = await store.insertHypothesisRevision({
-    slug,
-    hypothesis_name: 'a-hypothesis',
-    criterion: 'a criterion',
-    collects: [],
-    resolution: aResolution(glossary),
-  });
-  await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
-  await store.release(slug, version);
+it(
+  'refuses a second release call against a version already released, through CaseVersionNotDraftAtReleaseError, leaving its recorded released_at unchanged',
+  async () => {
+    const slug = `case-lifecycle-store-release-twice-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version);
+    const firstRead = await store.assembleVersion(slug, version);
 
-  await store.removeManifestEntry(slug, version, 'a-hypothesis');
+    const rejection = store.release(slug, version);
 
-  const assembled = await store.assembleVersion(slug, version);
-  expect(assembled?.manifest).toEqual([
-    { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'a-hypothesis', revision }) },
-  ]);
-});
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftAtReleaseError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const secondRead = await store.assembleVersion(slug, version);
+    expect(secondRead?.released_at).toBe(firstRead?.released_at);
+  },
+);
+
+it(
+  "refuses removeManifestEntry, through CaseVersionNotDraftError, against a released version, leaving its own manifest entry in place",
+  async () => {
+    const slug = `case-lifecycle-store-manifest-immutable-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+    await store.release(slug, version);
+
+    const rejection = store.removeManifestEntry(slug, version, 'a-hypothesis');
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const assembled = await store.assembleVersion(slug, version);
+    expect(assembled?.manifest).toEqual([
+      { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'a-hypothesis', revision }) },
+    ]);
+  },
+);
 
 it("removes a draft version and its own manifest entries, without deleting any hypothesis-revision", async () => {
   const slug = `case-lifecycle-store-discard-draft-${randomUUID()}`;
@@ -859,8 +894,8 @@ it("removes a draft version and its own manifest entries, without deleting any h
 });
 
 it(
-  'leaves a released version untouched when discard is called against it — the flagged, ' +
-    "state-blind implementation this note excludes would have deleted it the same way it deletes a draft's",
+  'refuses discard, through CaseVersionNotDraftError, against a released version, leaving it — ' +
+    "its state, its released_at and its manifest — untouched",
   async () => {
     const slug = `case-lifecycle-store-discard-released-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
@@ -877,14 +912,110 @@ it(
     await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
     await store.release(slug, version);
 
-    await store.discard(slug, version);
+    const rejection = store.discard(slug, version);
 
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
     const assembled = await store.assembleVersion(slug, version);
     expect(assembled).toBeDefined();
     expect(assembled?.state).toBe('released');
     expect(assembled?.manifest).toHaveLength(1);
   },
 );
+
+it(
+  'refuses placeHypothesis, through CaseVersionNotDraftError, against a released version, inserting no manifest entry',
+  async () => {
+    const slug = `case-lifecycle-store-place-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.release(slug, version);
+
+    const rejection = store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const assembled = await store.assembleVersion(slug, version);
+    expect(assembled?.manifest).toEqual([]);
+  },
+);
+
+it(
+  'refuses insertHypothesisRevision, through CaseHoldsNoDraftError naming the slug, against a case that currently holds no draft version, inserting no revision',
+  async () => {
+    const slug = `case-lifecycle-store-revision-no-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version);
+
+    const rejection = store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug } });
+    const { rows } = await pool.query(
+      'SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
+      [slug, 'a-hypothesis'],
+    );
+    expect(rows).toEqual([]);
+  },
+);
+
+it('refuses placeHypothesis, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-place-absent-${randomUUID()}`;
+
+  const rejection = store.placeHypothesis({ slug, version: 1, hypothesis_name: 'a-hypothesis', revision: 1, position: 1 });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it('refuses removeManifestEntry, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-remove-absent-${randomUUID()}`;
+
+  const rejection = store.removeManifestEntry(slug, 1, 'a-hypothesis');
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it('refuses release, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-release-absent-${randomUUID()}`;
+
+  const rejection = store.release(slug, 1);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it('refuses discard, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-discard-absent-${randomUUID()}`;
+
+  const rejection = store.discard(slug, 1);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
 
 it(
   'persists the corrected title, when_to_use, subject, fallback and consolidation_register attributes against a version in draft state',
@@ -1064,6 +1195,250 @@ it(
     await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
     const { rows } = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
     expect(rows).toEqual([]);
+  },
+);
+
+it(
+  "answers an entry carrying exactly the slug and the six domain/knowledge/case-summary attributes — " +
+    'current_state, version_count, last_updated, title, when_to_use and released_version — nothing more, ' +
+    'for a case whose highest-numbered version is released',
+  async () => {
+    const slug = `case-catalog-shape-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version);
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const entry = page.data.find((item) => item.slug === slug);
+    expect(entry && Object.keys(entry).sort()).toEqual(
+      ['current_state', 'last_updated', 'released_version', 'slug', 'title', 'version_count', 'when_to_use'].sort(),
+    );
+  },
+);
+
+it(
+  "reads an entry's title, when_to_use and released_version off the highest-numbered version whose " +
+    'state is released, never off an earlier released version of the same case',
+  async () => {
+    const slug = `case-catalog-highest-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const firstReleased = await store.createDraft(
+      aCreateDraftInput(slug, glossary, { title: 'First released title', when_to_use: 'First released use' }),
+    );
+    await store.release(slug, firstReleased);
+    const secondReleased = await store.createDraft(
+      aCreateDraftInput(slug, glossary, {
+        title: 'Second released title',
+        when_to_use: 'Second released use',
+        source_version: firstReleased,
+      }),
+    );
+    await store.release(slug, secondReleased);
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const entry = page.data.find((item) => item.slug === slug);
+    expect(entry).toMatchObject({
+      title: 'Second released title',
+      when_to_use: 'Second released use',
+      released_version: secondReleased,
+    });
+  },
+);
+
+it(
+  'carries none of title, when_to_use and released_version, each absent rather than null or empty, ' +
+    'for a case currently holding no released version at all',
+  async () => {
+    const slug = `case-catalog-never-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const entry = page.data.find((item) => item.slug === slug);
+    expect(entry).toBeDefined();
+    expect(entry).not.toHaveProperty('title');
+    expect(entry).not.toHaveProperty('when_to_use');
+    expect(entry).not.toHaveProperty('released_version');
+  },
+);
+
+it(
+  "carries the released version's own title, when_to_use and released_version, never the higher-numbered " +
+    "draft's, when that case's highest-numbered version is a draft above a released one",
+  async () => {
+    const slug = `case-catalog-draft-above-released-fields-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const releasedVersion = await store.createDraft(
+      aCreateDraftInput(slug, glossary, { title: 'Released title', when_to_use: 'Released use' }),
+    );
+    await store.release(slug, releasedVersion);
+    await store.createDraft(
+      aCreateDraftInput(slug, glossary, {
+        title: 'Draft title',
+        when_to_use: 'Draft use',
+        source_version: releasedVersion,
+      }),
+    );
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const entry = page.data.find((item) => item.slug === slug);
+    expect(entry).toMatchObject({
+      title: 'Released title',
+      when_to_use: 'Released use',
+      released_version: releasedVersion,
+    });
+  },
+);
+
+it(
+  "reads an entry's current_state and last_updated off the case's highest-numbered version whatever its " +
+    "own state, even though that same case's released fields still come from the earlier released version",
+  async () => {
+    const slug = `case-catalog-draft-above-released-latest-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const releasedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, releasedVersion);
+    await store.createDraft(
+      aCreateDraftInput(slug, glossary, { authored_at: '2024-06-01T00:00:00.000Z', source_version: releasedVersion }),
+    );
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const entry = page.data.find((item) => item.slug === slug);
+    expect(entry).toMatchObject({ current_state: 'draft', last_updated: '2024-06-01T00:00:00.000Z' });
+  },
+);
+
+it("counts an entry's version_count as the number of versions that case currently holds, across every state", async () => {
+  const slug = `case-catalog-version-count-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  const version1 = await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.release(slug, version1);
+  const version2 = await store.createDraft(aCreateDraftInput(slug, glossary, { source_version: version1 }));
+  await store.release(slug, version2);
+  await store.createDraft(aCreateDraftInput(slug, glossary, { source_version: version2 }));
+
+  const limit = await generousCasesPageLimit();
+  const page = await store.listCases({ offset: 0, limit });
+
+  const entry = page.data.find((item) => item.slug === slug);
+  expect(entry?.version_count).toBe(3);
+});
+
+it('still shows a case currently holding no version as its own entry in the page', async () => {
+  const slug = `case-catalog-zero-version-present-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.discard(slug, version);
+
+  const limit = await generousCasesPageLimit();
+  const page = await store.listCases({ offset: 0, limit });
+
+  const entry = page.data.find((item) => item.slug === slug);
+  expect(entry).toBeDefined();
+});
+
+it(
+  'gives version_count 0 and carries neither current_state nor last_updated for a case currently holding no ' +
+    'version at all',
+  async () => {
+    const slug = `case-catalog-zero-version-shape-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.discard(slug, version);
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const entry = page.data.find((item) => item.slug === slug);
+    expect(entry?.version_count).toBe(0);
+    expect(entry).not.toHaveProperty('current_state');
+    expect(entry).not.toHaveProperty('last_updated');
+  },
+);
+
+it('answers a case exactly once in the page, however many versions it currently holds', async () => {
+  const slug = `case-catalog-no-duplicate-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  const version1 = await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.release(slug, version1);
+  const version2 = await store.createDraft(aCreateDraftInput(slug, glossary, { source_version: version1 }));
+  await store.release(slug, version2);
+  await store.createDraft(aCreateDraftInput(slug, glossary, { source_version: version2 }));
+
+  const limit = await generousCasesPageLimit();
+  const page = await store.listCases({ offset: 0, limit });
+
+  expect(page.data.filter((item) => item.slug === slug)).toHaveLength(1);
+});
+
+it("leaves the page's total the number of cases currently held, unaffected by how many versions any case holds", async () => {
+  const slugWithOneVersion = `case-catalog-total-one-${randomUUID()}`;
+  const slugWithSeveralVersions = `case-catalog-total-several-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slugWithOneVersion, slugWithSeveralVersions);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  const totalBefore = (await store.listCases({ offset: 0, limit: 1 })).total;
+
+  await store.createDraft(aCreateDraftInput(slugWithOneVersion, glossary));
+  const version1 = await store.createDraft(aCreateDraftInput(slugWithSeveralVersions, glossary));
+  await store.release(slugWithSeveralVersions, version1);
+  const version2 = await store.createDraft(aCreateDraftInput(slugWithSeveralVersions, glossary, { source_version: version1 }));
+  await store.release(slugWithSeveralVersions, version2);
+  await store.createDraft(aCreateDraftInput(slugWithSeveralVersions, glossary, { source_version: version2 }));
+
+  const totalAfter = (await store.listCases({ offset: 0, limit: 1 })).total;
+
+  expect(totalAfter - totalBefore).toBe(2);
+});
+
+it(
+  'answers the page in ascending slug order, the same order the offset and limit selected before the ' +
+    'summary fields were derived, regardless of the order the cases were created in',
+  async () => {
+    const base = randomUUID();
+    const slugA = `case-catalog-order-${base}-a`;
+    const slugB = `case-catalog-order-${base}-b`;
+    const slugC = `case-catalog-order-${base}-c`;
+    slugsWrittenByThisTest.push(slugA, slugB, slugC);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slugC, glossary));
+    await store.createDraft(aCreateDraftInput(slugA, glossary));
+    await store.createDraft(aCreateDraftInput(slugB, glossary));
+
+    const limit = await generousCasesPageLimit();
+    const page = await store.listCases({ offset: 0, limit });
+
+    const ours = page.data.filter((item) => item.slug === slugA || item.slug === slugB || item.slug === slugC);
+    expect(ours.map((item) => item.slug)).toEqual([slugA, slugB, slugC]);
   },
 );
 

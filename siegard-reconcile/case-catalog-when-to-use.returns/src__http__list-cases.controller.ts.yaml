@@ -1,0 +1,17 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the delegation in handleListCasesRequest, line 19"
+    evidence: "return dependencies.caseQuery.listCases(pagination);"
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: "import type { CaseCatalogEntry } from '../case/case-store.port.js';"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: nowhere
+    evidence: "return dependencies.caseQuery.listCases(pagination);"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: nowhere
+    evidence: "return dependencies.caseQuery.listCases(pagination);"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: nowhere
+    evidence: "return dependencies.caseQuery.listCases(pagination);"
+looked_past: "resolvePagination applies no lower-bound check on a caller-supplied limit/offset before clamping, but constraints/listings-are-paged's own description says a non-positive limit never reaches this stage because a separate validation constraint refuses it first, so this is a robustness/code-review matter rather than a domain-fact gap in this file."

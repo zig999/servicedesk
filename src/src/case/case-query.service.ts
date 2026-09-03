@@ -14,7 +14,7 @@ import type { Case, Hypothesis, ManifestEntry } from './case.js';
 import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
 import type {
   AssembledCaseVersion,
-  CaseIdentity,
+  CaseCatalogEntry,
   CaseVersionListItem,
   HypothesisIdentity,
   HypothesisRevisionListItem,
@@ -45,7 +45,7 @@ export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery
     return deriveCaseInputRequirements(theCase, registeredCapabilities);
   }
 
-  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
     return this.caseStore.listCases(pagination);
   }
 

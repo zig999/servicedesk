@@ -1,0 +1,14 @@
+read:
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: "data: page.map((slug) => ({ slug, version_count: this.cases.get(slug)?.versions.size ?? 0 })),"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: "FakeCaseStore.listCases, line 102 — only the version_count fragment of the rule"
+    evidence: "data: page.map((slug) => ({ slug, version_count: this.cases.get(slug)?.versions.size ?? 0 })),"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: nowhere
+    evidence: "data: page.map((slug) => ({ slug, version_count: this.cases.get(slug)?.versions.size ?? 0 })),"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: "FakeCaseStore.listCases, line 98"
+    evidence: "const slugs = [...this.cases.keys()].sort();"
+looked_past: "The file's remaining tests exercise CaseNotValidError structural/coherence violations, replay-is-pinned behavior and capability-registry integration, none of which this delegation's four nodes govern, and FakeCaseStore.listCases is never invoked by any it() in this file — its version_count/slug/sort computation is dead code from this spec's own perspective, not asserted, so its incompleteness against the full case-summary shape is a coverage matter rather than a stated-domain-fact one."

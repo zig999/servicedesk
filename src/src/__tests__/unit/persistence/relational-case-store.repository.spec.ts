@@ -7,7 +7,10 @@ import {
 } from '../../../case/case-store.port.js';
 import type { Resolution } from '../../../case/case.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
+import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
+import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
+import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
@@ -15,10 +18,6 @@ import { RelationalCaseStore } from '../../../persistence/relational-case-store.
 const UNIQUE_VIOLATION_CODE = '23505';
 
 type Row = Record<string, unknown>;
-
-function fakeBareConnection(query: DatabaseConnection['query']): DatabaseConnection {
-  return { query } as unknown as DatabaseConnection;
-}
 
 interface IFakeClient {
   readonly query: ReturnType<typeof vi.fn>;
@@ -316,10 +315,11 @@ function aHypothesisRevisionInput(overrides: Partial<HypothesisRevisionInput> = 
   };
 }
 
-it("claims the hypothesis's own identity idempotently, inserts the revision numbered off its own highest existing revision, and inserts its own collects, as one unit of work", async () => {
+it("finds the case's own draft first, claims the hypothesis's own identity idempotently, inserts the revision numbered off its own highest existing revision, and inserts its own collects, as one unit of work", async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: Row[] }> => {
     recorded.push({ text, params });
+    if (text.includes('SELECT version FROM case_versions')) return { rows: [{ version: 1 }] };
     if (text.includes('INSERT INTO hypothesis_revisions')) return { rows: [{ revision: 4 }] };
     return { rows: [] };
   };
@@ -330,13 +330,31 @@ it("claims the hypothesis's own identity idempotently, inserts the revision numb
 
   expect(revision).toBe(4);
   const texts = collapsedTexts(recorded);
-  expect(texts[1]).toContain('INSERT INTO hypotheses');
-  expect(texts[2]).toContain('INSERT INTO hypothesis_revisions');
-  expect(texts[3]).toContain('INSERT INTO hypothesis_revision_collects');
+  expect(texts[1]).toContain('SELECT version FROM case_versions');
+  expect(texts[2]).toContain('INSERT INTO hypotheses');
+  expect(texts[3]).toContain('INSERT INTO hypothesis_revisions');
   expect(texts[4]).toContain('INSERT INTO hypothesis_revision_collects');
-  expect(recorded[1]?.params).toEqual(['a-slug', 'a-hypothesis']);
-  expect(recorded[3]?.params).toEqual(['a-slug', 'a-hypothesis', 4, 'concept-a']);
+  expect(texts[5]).toContain('INSERT INTO hypothesis_revision_collects');
+  expect(recorded[2]?.params).toEqual(['a-slug', 'a-hypothesis']);
+  expect(recorded[4]?.params).toEqual(['a-slug', 'a-hypothesis', 4, 'concept-a']);
   expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it('refuses insertHypothesisRevision with CaseHoldsNoDraftError, naming the slug, and inserts no revision, when the case currently holds no draft version', async () => {
+  const recorded: { text: string }[] = [];
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    recorded.push({ text });
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.insertHypothesisRevision(aHypothesisRevisionInput());
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug' } });
+  expect(recorded.some((entry) => entry.text.includes('INSERT INTO hypotheses'))).toBe(false);
+  expect(recorded.some((entry) => entry.text.includes('INSERT INTO hypothesis_revisions'))).toBe(false);
 });
 
 it("raises this store's own typed error, carrying the driver failure as its cause, when inserting a revision is refused", async () => {
@@ -356,20 +374,52 @@ function aPlaceHypothesisInput(overrides: Partial<PlaceHypothesisInput> = {}): P
   return { slug: 'a-slug', version: 1, hypothesis_name: 'a-hypothesis', revision: 1, position: 1, ...overrides };
 }
 
-it('places one hypothesis-revision at one manifest position through a single statement against the connection, with no transaction opened', async () => {
-  const query = vi.fn().mockResolvedValue({ rows: [] });
-  const store = new RelationalCaseStore(fakeBareConnection(query));
+it('places one hypothesis-revision at one manifest position, after reading the version state as draft, as one unit of work', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: Row[] }> => {
+    recorded.push({ text, params });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };
+    return { rows: [] };
+  };
+  const { connection, client } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
 
   await store.placeHypothesis(aPlaceHypothesisInput({ position: 3 }));
 
-  expect(query).toHaveBeenCalledTimes(1);
-  expect(query.mock.calls[0]?.[0]).toContain('INSERT INTO case_version_hypotheses');
-  expect(query.mock.calls[0]?.[1]).toEqual(['a-slug', 1, 'a-hypothesis', 1, 3]);
+  const texts = collapsedTexts(recorded);
+  expect(texts[0]).toBe('BEGIN');
+  expect(texts[1]).toContain('SELECT state FROM case_versions');
+  expect(texts[2]).toContain('INSERT INTO case_version_hypotheses');
+  expect(texts.at(-1)).toBe('COMMIT');
+  expect(recorded[2]?.params).toEqual(['a-slug', 1, 'a-hypothesis', 1, 3]);
+  expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it('refuses place-hypothesis with CaseVersionNotDraftError, naming the slug, version and state, and inserts no manifest entry, when the version is not in draft state', async () => {
+  const recorded: { text: string }[] = [];
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    recorded.push({ text });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'released' }] };
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.placeHypothesis(aPlaceHypothesisInput());
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug', version: 1, state: 'released' } });
+  expect(recorded.some((entry) => entry.text.includes('INSERT INTO case_version_hypotheses'))).toBe(false);
 });
 
 it("raises this store's own ManifestPositionOccupiedError, naming the slug, version and position, when the position-unique constraint is violated", async () => {
-  const query = vi.fn().mockRejectedValue(uniqueViolation('case_version_hypotheses_position_unique'));
-  const store = new RelationalCaseStore(fakeBareConnection(query));
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };
+    if (text.includes('INSERT INTO case_version_hypotheses')) throw uniqueViolation('case_version_hypotheses_position_unique');
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
 
   const rejection = store.placeHypothesis(aPlaceHypothesisInput({ position: 2 }));
 
@@ -378,8 +428,13 @@ it("raises this store's own ManifestPositionOccupiedError, naming the slug, vers
 });
 
 it('still raises the generic CaseStoreError for a place-hypothesis failure that is not that particular constraint violation', async () => {
-  const query = vi.fn().mockRejectedValue(uniqueViolation('case_version_hypotheses_pkey'));
-  const store = new RelationalCaseStore(fakeBareConnection(query));
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };
+    if (text.includes('INSERT INTO case_version_hypotheses')) throw uniqueViolation('case_version_hypotheses_pkey');
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
 
   const rejection = store.placeHypothesis(aPlaceHypothesisInput());
 
@@ -387,35 +442,85 @@ it('still raises the generic CaseStoreError for a place-hypothesis failure that 
   await expect(rejection).rejects.not.toBeInstanceOf(ManifestPositionOccupiedError);
 });
 
-it('removes only the named manifest entry through a single statement, never touching the hypothesis-revision it referenced', async () => {
-  const query = vi.fn().mockResolvedValue({ rows: [] });
-  const store = new RelationalCaseStore(fakeBareConnection(query));
+it('removes only the named manifest entry, after reading the version state as draft, never touching the hypothesis-revision it referenced', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: Row[] }> => {
+    recorded.push({ text, params });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };
+    return { rows: [] };
+  };
+  const { connection, client } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
 
   await store.removeManifestEntry('a-slug', 1, 'a-hypothesis');
 
-  expect(query).toHaveBeenCalledTimes(1);
-  const [text, params] = query.mock.calls[0] as [string, readonly unknown[]];
-  expect(text).toContain('DELETE FROM case_version_hypotheses');
-  expect(text).not.toContain('hypothesis_revisions');
-  expect(params).toEqual(['a-slug', 1, 'a-hypothesis']);
+  const texts = collapsedTexts(recorded);
+  expect(texts[1]).toContain('SELECT state FROM case_versions');
+  expect(texts[2]).toContain('DELETE FROM case_version_hypotheses');
+  expect(texts.some((text) => text.includes('hypothesis_revisions'))).toBe(false);
+  expect(recorded[2]?.params).toEqual(['a-slug', 1, 'a-hypothesis']);
+  expect(client.release).toHaveBeenCalledTimes(1);
 });
 
-it('transitions the version to released, recording the instant of release, through a single statement', async () => {
-  const query = vi.fn().mockResolvedValue({ rows: [] });
-  const store = new RelationalCaseStore(fakeBareConnection(query));
+it('refuses removeManifestEntry with CaseVersionNotDraftError, naming the slug, version and state, and deletes no manifest entry, when the version is not in draft state', async () => {
+  const recorded: { text: string }[] = [];
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    recorded.push({ text });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'released' }] };
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.removeManifestEntry('a-slug', 1, 'a-hypothesis');
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug', version: 1, state: 'released' } });
+  expect(recorded.some((entry) => entry.text.includes('DELETE FROM case_version_hypotheses'))).toBe(false);
+});
+
+it('transitions the version to released, recording the instant of release, after reading the version state as draft', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: Row[] }> => {
+    recorded.push({ text, params });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };
+    return { rows: [] };
+  };
+  const { connection, client } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
 
   await store.release('a-slug', 1);
 
-  expect(query).toHaveBeenCalledTimes(1);
-  const [text, params] = query.mock.calls[0] as [string, readonly unknown[]];
-  expect(text).toContain('SET state = $3, released_at = NOW()');
-  expect(params).toEqual(['a-slug', 1, 'released']);
+  const texts = collapsedTexts(recorded);
+  expect(texts[1]).toContain('SELECT state FROM case_versions');
+  expect(texts[2]).toContain('SET state = $3, released_at = NOW()');
+  expect(recorded[2]?.params).toEqual(['a-slug', 1, 'released']);
+  expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it('refuses release with CaseVersionNotDraftAtReleaseError, naming the slug, version and state, changing neither its state nor its released_at, when the version is not in draft state', async () => {
+  const recorded: { text: string }[] = [];
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    recorded.push({ text });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'released' }] };
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.release('a-slug', 1);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftAtReleaseError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug', version: 1, state: 'released' } });
+  expect(recorded.some((entry) => entry.text.includes('SET state = $3, released_at = NOW()'))).toBe(false);
 });
 
 it("raises this store's own typed error, carrying the driver failure as its cause, when release is refused", async () => {
   const driverFailure = new Error('the driver refused this write');
-  const query = vi.fn().mockRejectedValue(driverFailure);
-  const store = new RelationalCaseStore(fakeBareConnection(query));
+  const { connection } = fakeTransactionConnection(async () => {
+    throw driverFailure;
+  });
+  const store = new RelationalCaseStore(connection);
 
   const rejection = store.release('a-slug', 1);
 
@@ -423,10 +528,11 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
-it("removes a draft version's own manifest entries before its own row, as one unit of work, never touching any hypothesis-revision", async () => {
+it("removes a draft version's own manifest entries before its own row, after reading the version state as draft, never touching any hypothesis-revision", async () => {
   const recorded: { text: string }[] = [];
   const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
     recorded.push({ text });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };
     return { rows: [] };
   };
   const { connection, client } = fakeTransactionConnection(handleQuery);
@@ -435,10 +541,29 @@ it("removes a draft version's own manifest entries before its own row, as one un
   await store.discard('a-slug', 1);
 
   const texts = collapsedTexts(recorded);
-  expect(texts[1]).toContain('DELETE FROM case_version_hypotheses');
-  expect(texts[2]).toContain('DELETE FROM case_versions');
+  expect(texts[1]).toContain('SELECT state FROM case_versions');
+  expect(texts[2]).toContain('DELETE FROM case_version_hypotheses');
+  expect(texts[3]).toContain('DELETE FROM case_versions');
   expect(texts.some((text) => text.includes('hypothesis_revisions'))).toBe(false);
   expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it('refuses discard with CaseVersionNotDraftError, naming the slug, version and state, deleting neither the manifest entries nor the version row, when the version is not in draft state', async () => {
+  const recorded: { text: string }[] = [];
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    recorded.push({ text });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'released' }] };
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.discard('a-slug', 1);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug', version: 1, state: 'released' } });
+  expect(recorded.some((entry) => entry.text.includes('DELETE FROM case_version_hypotheses'))).toBe(false);
+  expect(recorded.some((entry) => entry.text.includes('DELETE FROM case_versions'))).toBe(false);
 });
 
 it("raises this store's own typed error, carrying the driver failure as its cause, when discard is refused", async () => {

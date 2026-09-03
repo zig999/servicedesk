@@ -1,0 +1,32 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the ICaseQuery interface's five method declarations"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;\n  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;\n  listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;\n  listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;\n  listHypothesisRevisions(...)"
+  - node: domain/knowledge/case
+    held_at: "the `slug: string` parameter shared by readCase, listCaseVersions, listHypotheses and listHypothesisRevisions, and the `Case` import used in ReadCaseResult"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;"
+  - node: domain/knowledge/case-version
+    held_at: "the `version: number` parameter of readCase, and CaseVersionListItem as listCaseVersions' return element type"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;"
+  - node: domain/knowledge/hypothesis
+    held_at: "listHypotheses' return element type HypothesisIdentity, and the hypothesisName parameter of listHypothesisRevisions"
+    evidence: "listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "listHypothesisRevisions' return element type HypothesisRevisionListItem"
+    evidence: "listHypothesisRevisions(\n    slug: string,\n    hypothesisName: string,\n    pagination: PaginationRequest,\n  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: rules/investigation/replay-is-pinned
+    held_at: "the readCase signature, which pins a case read to slug and version"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;"
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>; — CaseCatalogEntry is only imported from case-store.port.js, not declared or shaped in this file"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: nowhere
+    evidence: "the file contains only method signatures — listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>; — with no derivation logic"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: nowhere
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>; — no logic selecting a released version is present"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: nowhere
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>; — no ordering is stated"
+looked_past: "the actual shapes of CaseCatalogEntry, CaseVersionListItem, HypothesisIdentity and HypothesisRevisionListItem, and any computation of case-summary or listing order, live in case-store.port.ts and relational-case-store.repository.ts, which are outside this file set."

@@ -1,7 +1,7 @@
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { Case } from './case.js';
 import type {
-  CaseIdentity,
+  CaseCatalogEntry,
   CaseVersionListItem,
   HypothesisIdentity,
   HypothesisRevisionListItem,
@@ -15,7 +15,7 @@ export interface ICaseQuery {
 
   readCase(slug: string, version: number): Promise<ReadCaseResult>;
 
-  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>>;
+  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
 
   listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
 

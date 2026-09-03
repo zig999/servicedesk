@@ -1,0 +1,50 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the AssembledCaseVersion type and assembleVersion signature, lines 20-33 and 104"
+    evidence: "readonly manifest: readonly ManifestEntry[];\n...\nassembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the lifecycle methods of ICaseStore, lines 120-132"
+    evidence: "createDraft(input: CreateDraftInput): Promise<number>;\n\n  insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;\n\n  placeHypothesis(input: PlaceHypothesisInput): Promise<void>;\n\n  removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void>;\n\n  release(slug: string, version: number): Promise<void>;\n\n  discard(slug: string, version: number): Promise<void>;\n\n  updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void>;"
+  - node: contracts/knowledge/case-query
+    held_at: "the assembleVersion, listCases, listCaseVersions, listHypotheses, listHypothesisRevisions methods, lines 104-118"
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;\n\n  listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;\n\n  listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;\n\n  listHypothesisRevisions(\n    slug: string,\n    hypothesisName: string,\n    pagination: PaginationRequest,\n  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: domain/knowledge/case
+    held_at: "the CaseIdentity type and createDraft method, lines 71-73 and 120"
+    evidence: "export type CaseIdentity = {\n  readonly slug: string;\n};"
+  - node: domain/knowledge/case-summary
+    held_at: "the CaseSummary type, lines 75-82"
+    evidence: "export type CaseSummary = {\n  readonly current_state?: CaseVersionState;\n  readonly version_count: number;\n  readonly last_updated?: string;\n  readonly title?: string;\n  readonly when_to_use?: string;\n  readonly released_version?: number;\n};"
+  - node: domain/knowledge/case-version
+    held_at: "the AssembledCaseVersion type, lines 20-33"
+    evidence: "export type AssembledCaseVersion = {\n  readonly slug: string;\n  readonly version: number;\n  readonly title: string;\n  readonly when_to_use: string;\n  readonly authored_at: string;\n  readonly subject: string;\n  readonly fallback: Resolution;\n  readonly consolidation_register?: ConsolidationRegister;\n  readonly state: CaseVersionState;\n\n  readonly released_at?: string;\n  readonly manifest: readonly ManifestEntry[];\n};"
+  - node: domain/knowledge/case-version-state
+    held_at: "the CaseVersionState union type, line 5"
+    evidence: "export type CaseVersionState = 'draft' | 'released';"
+  - node: domain/knowledge/hypothesis
+    held_at: "the HypothesisIdentity type, lines 91-93"
+    evidence: "export type HypothesisIdentity = {\n  readonly name: string;\n};"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the HypothesisRevisionContent and HypothesisRevisionListItem types, lines 7-13 and 95-100"
+    evidence: "export type HypothesisRevisionListItem = {\n  readonly revision: number;\n  readonly criterion: string;\n  readonly collects: readonly string[];\n  readonly resolution: Resolution;\n};"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the ManifestEntry type, lines 15-18"
+    evidence: "export type ManifestEntry = {\n  readonly position: number;\n  readonly hypothesis_revision: HypothesisRevisionContent;\n};"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "release(slug: string, version: number): Promise<void>;\n\n  discard(slug: string, version: number): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "the assembleVersion and listCaseVersions methods, lines 104 and 110"
+    evidence: "assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: "the CaseSummary type's optional fields, lines 75-82"
+    evidence: "readonly current_state?: CaseVersionState;\n  readonly version_count: number;\n  readonly last_updated?: string;\n  readonly title?: string;\n  readonly when_to_use?: string;\n  readonly released_version?: number;"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: "the CaseCatalogEntry type, line 84"
+    evidence: "export type CaseCatalogEntry = CaseIdentity & CaseSummary;"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: nowhere
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;"
+looked_past: "the interface's method names diverge from the case-lifecycle contract's own operation vocabulary (createDraft/insertHypothesisRevision/removeManifestEntry versus create-draft/revise-hypothesis/remove-hypothesis) and CreateDraftInput carries an unnamed-by-any-node optional source_version field — both are naming/architecture choices with no stated value or rule behind them, so they are not mine to raise here."

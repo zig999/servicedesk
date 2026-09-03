@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/case-catalog-store-derives-the-case-summary-suite-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/catalogo-casos-analise/src",
+  "timeout_seconds": 2400,
+  "outcome": "failed",
+  "failed_step": "test",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-03T13:22:49.200+00:00",
+      "ended_at": "2026-09-03T13:22:53.807+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-03T13:22:53.807+00:00",
+      "ended_at": "2026-09-03T13:22:59.255+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-03T13:22:59.255+00:00",
+      "ended_at": "2026-09-03T13:23:04.253+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-03T13:23:04.253+00:00",
+      "ended_at": "2026-09-03T13:23:04.754+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "failed",
+      "exit_code": 9,
+      "output": "test.log",
+      "started_at": "2026-09-03T13:23:04.754+00:00",
+      "ended_at": "2026-09-03T13:23:04.851+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

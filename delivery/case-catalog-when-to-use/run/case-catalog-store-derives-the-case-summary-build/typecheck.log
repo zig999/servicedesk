@@ -1,0 +1,183 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(97,16): error TS2416: Property 'listCases' in type 'FakeCaseStore' is not assignable to the same property in base type 'ICaseStore'.
+  Type '(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type '(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseCatalogEntry>>'.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(418,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(447,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(458,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(466,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(477,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(492,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(507,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(526,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(546,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(564,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(573,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(586,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(598,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(601,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(611,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(614,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(622,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(628,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(631,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(640,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(670,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(680,57): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(690,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(706,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(723,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(735,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(746,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/case/case-query.service.spec.ts(757,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  The types returned by 'listCases(...)' are incompatible between these types.
+    Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+      Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+        Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+          Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
+src/__tests__/unit/http/list-cases.routes.spec.ts(32,5): error TS2322: Type 'Mock<(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseIdentity>>>' is not assignable to type '(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseCatalogEntry>>'.
+  Type 'Promise<PaginatedResponse<CaseIdentity>>' is not assignable to type 'Promise<PaginatedResponse<CaseCatalogEntry>>'.
+    Type 'PaginatedResponse<CaseIdentity>' is not assignable to type 'PaginatedResponse<CaseCatalogEntry>'.
+      Type 'CaseIdentity' is not assignable to type 'CaseCatalogEntry'.
+        Property 'version_count' is missing in type 'CaseIdentity' but required in type 'CaseSummary'.
