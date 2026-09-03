@@ -1,0 +1,57 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released.md",
+      "title": "Release-conditioned refusal on hypothesis_revisions UPDATE",
+      "summary": "A new migration replaces the unconditional no-update rule on hypothesis_revisions with a per-row trigger that refuses an UPDATE, raising a distinguishable error, only when a released case version's manifest still references that exact revision.",
+      "task": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
+}

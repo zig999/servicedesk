@@ -418,6 +418,10 @@
           "digest": "sha256:2608f685356bc70060ac5d38e21cafbc013466a1f7bf2ac3f4e479da64522ff9"
         },
         {
+          "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
+          "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
+        },
+        {
           "path": "src/src/migrate.ts",
           "digest": "sha256:062eadb0e03808f4547b003ded32dca71d2d8bd2aa13fe8a26de02953a4b48b0"
         },
@@ -3472,6 +3476,10 @@
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
         {
+          "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
+          "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
+        },
+        {
           "path": "src/src/__tests__/integration/seed.spec.ts",
           "digest": "sha256:2294ab721bf04ab3285fee507acc4d8e7ddcbf1360a899992b511226495dee15"
         },
@@ -3809,7 +3817,7 @@
     },
     {
       "node": "domain/knowledge/hypothesis-revision",
-      "digest": "sha256:d1d5fd5ef12d0a26101d52edcbebb5f7b339f5f4885e549d149b90c1cccc236b",
+      "digest": "sha256:a06a2dd7b9ac02663b08f24ae7e01070fbc310f990098a70f3fef847f9485b80",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -3866,6 +3874,10 @@
         {
           "path": "src/migrations/0010-protect-released-hypothesis-revision-collects.sql",
           "digest": "sha256:9c0ed0853331ad3917669e0ecf7cffa955865dcb0474250f53fdd30f2700d93a"
+        },
+        {
+          "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
+          "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -3964,6 +3976,10 @@
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
+          "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -5740,6 +5756,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "digest": "sha256:d607c984dd307ffce51c9aa8143029b810d06d213d2606ef05162a7e797497ed",
+      "files": [
+        {
+          "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
+          "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
       "digest": "sha256:f964cd86990f9827145dfb8a9dfb93288de94e0f7774cb398aded320720c45e5",
       "files": [
@@ -5793,11 +5819,15 @@
     },
     {
       "node": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
-      "digest": "sha256:0073b04e2d9138395e4e8f89ce4c0cd83940982cc0e7d3a11b5c1b078ec07c8a",
+      "digest": "sha256:1fa7c6b3eb1013c15bef69581933d4d5a6932b19bfb7eee3228bc9461db83b84",
       "files": [
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
+          "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
         }
       ]
     },
