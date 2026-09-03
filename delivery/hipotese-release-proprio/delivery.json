@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
+      "title": "Refuse a released hypothesis-revision's alteration from its own state",
+      "summary": "A migration that moves the schema's release-conditioned refusal on hypothesis_revisions and hypothesis_revision_collects off the case-version join and onto the revision's own state column.",
+      "task": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state.md",
@@ -19,6 +27,36 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
       "to": "domain/knowledge/hypothesis-revision",

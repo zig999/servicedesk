@@ -10,6 +10,8 @@ import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
+import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
+import { statusForError } from '../../../errors/status-map.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
 
@@ -1875,5 +1877,42 @@ it(
     });
 
     await expect(rejection).rejects.not.toHaveProperty('message', 'a write against the case store failed');
+  },
+);
+
+it(
+  'refuses an overwrite attempt against a revision whose own state is released, through the same typed ' +
+    "ReleasedHypothesisRevisionNotAlterableError mapped to HTTP 409, even though no case version's manifest " +
+    'has ever referenced that revision',
+  async () => {
+    const slug = `case-lifecycle-store-overwrite-released-own-state-unreferenced-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'the original criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await pool.query(
+      "UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3",
+      [slug, 'a-hypothesis', revision],
+    );
+
+    const rejection = store.overwriteHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      revision,
+      criterion: "a criterion the revision's own released state should have refused",
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+    const caught = await rejection.catch((error: unknown) => error);
+    expect(statusForError(caught)).toBe(409);
   },
 );
