@@ -3,6 +3,8 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import {
   createFetchStub,
   jsonResponse,
+  manifestPath,
+  manifestPinning,
   mountHypothesisRevisionHistory,
   revisionsPath,
   SLUG,
@@ -51,6 +53,7 @@ async function mount(overrides: Record<string, () => Response | Promise<Response
   const fetchMock = createFetchStub({
     [revisionsPath(HYPOTHESIS_NAME)]: () => jsonResponse(THREE_REVISIONS),
     [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: 1, state: "released" }] }),
+    [manifestPath(1)]: () => jsonResponse(manifestPinning(HYPOTHESIS_NAME, 5)),
     ...overrides,
   });
   await mountHypothesisRevisionHistory(fetchMock, {
@@ -118,6 +121,7 @@ describe("HypothesisRevisionHistory (criterion 7)", () => {
             { version: 3, state: "released" },
           ],
         }),
+      [manifestPath(5)]: () => jsonResponse(manifestPinning(HYPOTHESIS_NAME, 5)),
     });
 
     const link = await screen.findByRole("link", { name: "Revise →" });
@@ -177,6 +181,7 @@ describe("HypothesisRevisionHistory -- returning to the list", () => {
     const fetchMock = createFetchStub({
       [revisionsPath(HYPOTHESIS_NAME)]: () => jsonResponse(THREE_REVISIONS),
       [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: 1, state: "released" }] }),
+      [manifestPath(1)]: () => jsonResponse(manifestPinning(HYPOTHESIS_NAME, 5)),
     });
     await mountHypothesisRevisionHistory(fetchMock, { slug: SLUG, hypothesisName: HYPOTHESIS_NAME, onBack });
 

@@ -3408,6 +3408,10 @@
       "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+        },
+        {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
           "digest": "sha256:23ea4413912d6b89337cf2bae8802bbf97123d7973e26f99d198c3f086ec7347"
         },
@@ -3828,6 +3832,10 @@
       "digest": "sha256:a06a2dd7b9ac02663b08f24ae7e01070fbc310f990098a70f3fef847f9485b80",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+        },
+        {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:d9c72a62c7ca89b6f23c55948bba6a3ec542428092b7cc9cb851f0172b1a508e"
         },
@@ -3865,7 +3873,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
-          "digest": "sha256:3a2079c728482797d4e52823069694d8c29a7531adb3372d6373d5a2a1d78c26"
+          "digest": "sha256:d52a14b6e9224d3cc60f3086fd496124412c5b3cbaaf2642e1ecc41dd07ec970"
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
@@ -3957,6 +3965,10 @@
       "node": "domain/knowledge/manifest-entry",
       "digest": "sha256:45cef39ec3b278f063a02dbaeeef62e8ba9a2a0e36e686f2ca69e1ae0e4820bf",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+        },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:aa2c5baf5556ed65db4353bd51d45f3fa0f0dba28309e143377ddc715e53d4ec"
@@ -5554,6 +5566,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "digest": "sha256:bce0e3b0dc6b2c73e3f96a1c67c22dfeac19e4314e75f9d2dc56f19cdd476f7d",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
+          "digest": "sha256:d52a14b6e9224d3cc60f3086fd496124412c5b3cbaaf2642e1ecc41dd07ec970"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-collected-concept-declares-a-ttl",
       "digest": "sha256:44ec933a59c405884955f1cc5f500fe84d7be567db638d3cdffca2e23c301172",
       "files": [
@@ -5677,6 +5703,10 @@
       "node": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
       "digest": "sha256:ceffc227c5df39d436c0de7a573daef167688fff15411f9d11ed3ff24fceb61f",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+        },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:d9c72a62c7ca89b6f23c55948bba6a3ec542428092b7cc9cb851f0172b1a508e"
@@ -5825,6 +5855,10 @@
       "node": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
       "digest": "sha256:8922dfc6a9ca18819bc4b633df07f2f431e6da685d79e0c286af10b68da50596",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+        },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:d9c72a62c7ca89b6f23c55948bba6a3ec542428092b7cc9cb851f0172b1a508e"

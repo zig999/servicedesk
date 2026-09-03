@@ -25,6 +25,21 @@ export function revisionsPath(hypothesisName: string): string {
   return `/v1/cases/${SLUG}/hypotheses/${encodeURIComponent(hypothesisName)}/revisions`;
 }
 
+export function manifestPath(version: number): string {
+  return `/v1/cases/${SLUG}/versions/${version}`;
+}
+
+export function manifestPinning(
+  hypothesisName: string,
+  revision: number,
+): { manifest: { hypothesis_revision: { hypothesis: { name: string }; revision: number } }[] } {
+  return { manifest: [{ hypothesis_revision: { hypothesis: { name: hypothesisName }, revision } }] };
+}
+
+export function emptyManifest(): { manifest: never[] } {
+  return { manifest: [] };
+}
+
 export const REVISE_ROUTE_PATTERN = "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName";
 
 export function jsonResponse(body: unknown, status = 200): Response {

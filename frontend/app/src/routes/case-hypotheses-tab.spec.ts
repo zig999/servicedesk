@@ -4,6 +4,8 @@ import {
   createFetchStub,
   HYPOTHESES_PATH,
   jsonResponse,
+  manifestPath,
+  manifestPinning,
   mountCaseHypothesesTab,
   revisionsPath,
   VERSIONS_PATH,
@@ -101,6 +103,7 @@ describe("CaseHypothesesTab (criterion 4)", () => {
       [revisionsPath("H1")]: () => jsonResponse(H1_REVISIONS),
       [revisionsPath("H2")]: () => jsonResponse(H2_REVISIONS),
       [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: 1, state: "released" }] }),
+      [manifestPath(1)]: () => jsonResponse(manifestPinning("H1", 5)),
     });
 
     await mountCaseHypothesesTab(fetchMock);
@@ -117,6 +120,7 @@ describe("CaseHypothesesTab (criterion 4)", () => {
       [revisionsPath("H1")]: () => jsonResponse(H1_REVISIONS),
       [revisionsPath("H2")]: () => jsonResponse(H2_REVISIONS),
       [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: 1, state: "released" }] }),
+      [manifestPath(1)]: () => jsonResponse(manifestPinning("H1", 5)),
     });
 
     await mountCaseHypothesesTab(fetchMock);

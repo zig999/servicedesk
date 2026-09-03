@@ -7,7 +7,7 @@ import {
   type StatusTableRow,
 } from "../shared/components/status-table";
 import { useHypothesisRevisions } from "../hooks/use-hypothesis-revisions";
-import { useCaseVersions } from "../hooks/use-case-versions";
+import { useCaseHypothesisCurrentPin } from "../hooks/use-case-hypothesis-current-pin";
 
 const REVISION_COLUMNS: StatusTableColumn[] = [
   { key: "revision", header: "Revision" },
@@ -29,26 +29,22 @@ export function HypothesisRevisionHistory({
   onBack,
 }: HypothesisRevisionHistoryProps): JSX.Element {
   const revisionsQuery = useHypothesisRevisions(slug, hypothesisName);
-  const versionsQuery = useCaseVersions(slug);
+  const currentPin = useCaseHypothesisCurrentPin(slug, hypothesisName);
 
   function retryLoad(): void {
     void revisionsQuery.refetch();
-    void versionsQuery.refetch();
+    if (currentPin.phase === "load-error") {
+      currentPin.retryLoad();
+    }
   }
 
-  if (revisionsQuery.isLoading || versionsQuery.isLoading) {
+  if (revisionsQuery.isLoading || currentPin.phase === "loading") {
     return <p>Loading revision history…</p>;
   }
 
   const revisions = revisionsQuery.data?.data ?? [];
-  const versions = versionsQuery.data?.data ?? [];
 
-  if (
-    revisionsQuery.isError ||
-    versionsQuery.isError ||
-    revisions.length === 0 ||
-    versions.length === 0
-  ) {
+  if (revisionsQuery.isError || revisions.length === 0 || currentPin.phase === "load-error") {
     return (
       <section>
         <p>Unable to load this hypothesis&apos;s revision history.</p>
@@ -59,15 +55,13 @@ export function HypothesisRevisionHistory({
     );
   }
 
-  const currentRevisionNumber = Math.max(...revisions.map((revision) => revision.revision));
-  const targetVersion = Math.max(...versions.map((version) => version.version));
   const totalRevisions = revisionsQuery.data?.total ?? revisions.length;
 
   const rows: StatusTableRow[] = revisions
     .slice()
     .sort((a, b) => b.revision - a.revision)
     .map((revision) => {
-      const isCurrent = revision.revision === currentRevisionNumber;
+      const isCurrent = revision.revision === currentPin.pinnedRevision;
       return {
         id: revision.revision,
         revision: revision.revision,
@@ -79,13 +73,15 @@ export function HypothesisRevisionHistory({
         actions: isCurrent ? (
           <Link
             to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
-            params={{ slug, version: String(targetVersion), hypothesisName }}
+            params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
           >
             Revise →
           </Link>
         ) : null,
       };
     });
+
+  const usesNoRevision = currentPin.phase === "ready" && currentPin.pinnedRevision === null;
 
   return (
     <section className="flex flex-col gap-4">
@@ -97,6 +93,9 @@ export function HypothesisRevisionHistory({
           Back to hypotheses
         </Button>
       </div>
+      {usesNoRevision ? (
+        <p>The case currently uses no revision of {hypothesisName}.</p>
+      ) : null}
       <StatusTable columns={REVISION_COLUMNS} rows={rows} />
     </section>
   );

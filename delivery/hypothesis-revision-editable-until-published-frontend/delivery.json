@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin.md",
+      "title": "Revision history table reads \"current\" from the case's highest-numbered version's manifest pin",
+      "summary": "The hypothesis revision history table marks the row the case's highest-numbered version's manifest actually pins as current, offers Revise on that row, and states explicitly when that version's manifest holds no entry for the hypothesis, replacing the previous read of the hypothesis's own highest-ever revision number.",
+      "task": "task/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin"
+    },
+    {
       "id": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save.md",
@@ -16,6 +24,14 @@
       "title": "Repin offer conditioned on whether the save moved the draft's pin",
       "summary": "The hypothesis-editing screen's success surface now offers the manifest-builder step only where the revision the save answered differs from the revision the draft's manifest entry pinned going into that save.",
       "task": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind"
+    },
+    {
+      "id": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin.md",
+      "title": "Revision history's \"current\" row proved against the highest-numbered version's manifest pin",
+      "summary": "A new spec file exercises all four criteria of this corrective task directly against the manifest pin (not the hypothesis's own highest revision), proves the explicit no-entry statement the task's own Notes disclosed as a gap and this delivery closed, covers the manifest-read failure edge case the new fetch introduces, and repairs the pre-existing suite's fixtures so it keeps passing against the corrected dependency.",
+      "task": "task/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin"
     },
     {
       "id": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
@@ -53,6 +69,48 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "task/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
       "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
@@ -111,6 +169,12 @@
       "from": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
       "to": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "to": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
+      "kind": "proves",
       "at": "the path"
     },
     {
