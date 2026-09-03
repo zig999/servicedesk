@@ -3,8 +3,10 @@ import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { CreateDraftInput } from '../../../case/case-store.port.js';
 import type { Resolution } from '../../../case/case.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
+import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
+import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -805,7 +807,7 @@ it('removes only the named manifest entry, never the hypothesis-revision it refe
   expect(rows).toEqual([{ revision }]);
 });
 
-it('records the instant of release, and a second call to release leaves that instant unchanged', async () => {
+it('records the instant of release when release is called against a draft version', async () => {
   const slug = `case-lifecycle-store-release-once-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
   const glossary = await freshGlossary();
@@ -813,38 +815,60 @@ it('records the instant of release, and a second call to release leaves that ins
   const version = await store.createDraft(aCreateDraftInput(slug, glossary));
 
   await store.release(slug, version);
-  const firstRead = await store.assembleVersion(slug, version);
-  await store.release(slug, version);
-  const secondRead = await store.assembleVersion(slug, version);
 
-  expect(firstRead?.state).toBe('released');
-  expect(firstRead?.released_at).toBeDefined();
-  expect(secondRead?.released_at).toBe(firstRead?.released_at);
+  const read = await store.assembleVersion(slug, version);
+  expect(read?.state).toBe('released');
+  expect(read?.released_at).toBeDefined();
 });
 
-it("leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it", async () => {
-  const slug = `case-lifecycle-store-manifest-immutable-${randomUUID()}`;
-  slugsWrittenByThisTest.push(slug);
-  const glossary = await freshGlossary();
-  const store = new RelationalCaseStore(pool);
-  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
-  const revision = await store.insertHypothesisRevision({
-    slug,
-    hypothesis_name: 'a-hypothesis',
-    criterion: 'a criterion',
-    collects: [],
-    resolution: aResolution(glossary),
-  });
-  await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
-  await store.release(slug, version);
+it(
+  'refuses a second release call against a version already released, through CaseVersionNotDraftAtReleaseError, leaving its recorded released_at unchanged',
+  async () => {
+    const slug = `case-lifecycle-store-release-twice-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version);
+    const firstRead = await store.assembleVersion(slug, version);
 
-  await store.removeManifestEntry(slug, version, 'a-hypothesis');
+    const rejection = store.release(slug, version);
 
-  const assembled = await store.assembleVersion(slug, version);
-  expect(assembled?.manifest).toEqual([
-    { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'a-hypothesis', revision }) },
-  ]);
-});
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftAtReleaseError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const secondRead = await store.assembleVersion(slug, version);
+    expect(secondRead?.released_at).toBe(firstRead?.released_at);
+  },
+);
+
+it(
+  "refuses removeManifestEntry, through CaseVersionNotDraftError, against a released version, leaving its own manifest entry in place",
+  async () => {
+    const slug = `case-lifecycle-store-manifest-immutable-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+    await store.release(slug, version);
+
+    const rejection = store.removeManifestEntry(slug, version, 'a-hypothesis');
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const assembled = await store.assembleVersion(slug, version);
+    expect(assembled?.manifest).toEqual([
+      { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'a-hypothesis', revision }) },
+    ]);
+  },
+);
 
 it("removes a draft version and its own manifest entries, without deleting any hypothesis-revision", async () => {
   const slug = `case-lifecycle-store-discard-draft-${randomUUID()}`;
@@ -869,8 +893,8 @@ it("removes a draft version and its own manifest entries, without deleting any h
 });
 
 it(
-  'leaves a released version untouched when discard is called against it — the flagged, ' +
-    "state-blind implementation this note excludes would have deleted it the same way it deletes a draft's",
+  'refuses discard, through CaseVersionNotDraftError, against a released version, leaving it — ' +
+    "its state, its released_at and its manifest — untouched",
   async () => {
     const slug = `case-lifecycle-store-discard-released-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
@@ -887,14 +911,110 @@ it(
     await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
     await store.release(slug, version);
 
-    await store.discard(slug, version);
+    const rejection = store.discard(slug, version);
 
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
     const assembled = await store.assembleVersion(slug, version);
     expect(assembled).toBeDefined();
     expect(assembled?.state).toBe('released');
     expect(assembled?.manifest).toHaveLength(1);
   },
 );
+
+it(
+  'refuses placeHypothesis, through CaseVersionNotDraftError, against a released version, inserting no manifest entry',
+  async () => {
+    const slug = `case-lifecycle-store-place-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.release(slug, version);
+
+    const rejection = store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const assembled = await store.assembleVersion(slug, version);
+    expect(assembled?.manifest).toEqual([]);
+  },
+);
+
+it(
+  'refuses insertHypothesisRevision, through CaseHoldsNoDraftError naming the slug, against a case that currently holds no draft version, inserting no revision',
+  async () => {
+    const slug = `case-lifecycle-store-revision-no-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version);
+
+    const rejection = store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug } });
+    const { rows } = await pool.query(
+      'SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
+      [slug, 'a-hypothesis'],
+    );
+    expect(rows).toEqual([]);
+  },
+);
+
+it('refuses placeHypothesis, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-place-absent-${randomUUID()}`;
+
+  const rejection = store.placeHypothesis({ slug, version: 1, hypothesis_name: 'a-hypothesis', revision: 1, position: 1 });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it('refuses removeManifestEntry, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-remove-absent-${randomUUID()}`;
+
+  const rejection = store.removeManifestEntry(slug, 1, 'a-hypothesis');
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it('refuses release, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-release-absent-${randomUUID()}`;
+
+  const rejection = store.release(slug, 1);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it('refuses discard, through CaseNotFoundError naming the slug and version, against a version that was never stored', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-discard-absent-${randomUUID()}`;
+
+  const rejection = store.discard(slug, 1);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
 
 it(
   'persists the corrected title, when_to_use, subject, fallback and consolidation_register attributes against a version in draft state',

@@ -5511,7 +5511,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:f237c16f9afab7fbda5e6fefeed7785f9aad16257b0f84510d25d0427363a552"
         }
       ]
     },
@@ -5689,7 +5689,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:f237c16f9afab7fbda5e6fefeed7785f9aad16257b0f84510d25d0427363a552"
         }
       ]
     },
@@ -6052,6 +6052,10 @@
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
           "digest": "sha256:d7b2b127256eb30379192629898af08415864070ceda4379a6f3eb6291d82831"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:f237c16f9afab7fbda5e6fefeed7785f9aad16257b0f84510d25d0427363a552"
         }
       ]
     },

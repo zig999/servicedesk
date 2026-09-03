@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/released-version-write-guards-refuse-writes-against-a-non-draft-version-build-3",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/catalogo-casos-analise/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-03T17:45:42.217+00:00",
+      "ended_at": "2026-09-03T17:45:46.870+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-03T17:45:46.870+00:00",
+      "ended_at": "2026-09-03T17:45:51.742+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-03T17:45:51.742+00:00",
+      "ended_at": "2026-09-03T17:45:56.633+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-03T17:45:56.633+00:00",
+      "ended_at": "2026-09-03T17:45:57.126+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

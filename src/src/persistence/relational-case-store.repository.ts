@@ -15,8 +15,10 @@ import type {
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
 import { CaseAlreadyHasDraftError } from '../errors/case-already-has-draft.error.js';
+import { CaseHoldsNoDraftError } from '../errors/case-holds-no-draft.error.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
+import { CaseVersionNotDraftAtReleaseError } from '../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../errors/manifest-position-occupied.error.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
@@ -136,15 +138,15 @@ export class RelationalCaseStore implements ICaseStore {
   }
 
   public async placeHypothesis(input: PlaceHypothesisInput): Promise<void> {
-    await runStatement(this.connection, placeHypothesisStatement(input), raisePlaceHypothesisFailure(input));
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) => insertManifestEntry(tx, input));
   }
 
   public async removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void> {
-    await runStatement(this.connection, removeManifestEntryStatement(slug, version, hypothesisName), raiseWriteFailure);
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) => deleteManifestEntry(tx, { slug, version }, hypothesisName));
   }
 
   public async release(slug: string, version: number): Promise<void> {
-    await runStatement(this.connection, releaseStatement(slug, version), raiseWriteFailure);
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) => releaseVersion(tx, { slug, version }));
   }
 
   public async discard(slug: string, version: number): Promise<void> {
@@ -571,6 +573,7 @@ function raiseCreateDraftFailure(slug: string): RaiseStoreError {
 }
 
 async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {
+  await requireCaseHoldsDraft(tx, input.slug);
   const key: IHypothesisKey = { slug: input.slug, hypothesis_name: input.hypothesis_name };
   await runStatement(tx, hypothesisIdentityStatement(key), raiseWriteFailure);
   const revision = await insertRevisionRow(tx, input);
@@ -579,6 +582,13 @@ async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): P
     await runStatement(tx, revisionCollectStatement(revisionKey, conceptName), raiseWriteFailure);
   }
   return revision;
+}
+
+async function requireCaseHoldsDraft(tx: IQueryable, slug: string): Promise<void> {
+  const row = await queryOneOrAbsent<{ version: number }>(tx, draftVersionSelect(slug), raiseReadFailure);
+  if (row === undefined) {
+    throw new CaseHoldsNoDraftError(slug);
+  }
 }
 
 function hypothesisIdentityStatement(key: IHypothesisKey): IStatement {
@@ -618,6 +628,12 @@ function revisionCollectStatement(key: IRevisionKey, conceptName: string): IStat
   };
 }
 
+async function insertManifestEntry(tx: IQueryable, input: PlaceHypothesisInput): Promise<void> {
+  const key: ICaseVersionKey = { slug: input.slug, version: input.version };
+  refuseUnlessDraft(key, await requireVersionState(tx, key));
+  await runStatement(tx, placeHypothesisStatement(input), raisePlaceHypothesisFailure(input));
+}
+
 function placeHypothesisStatement(input: PlaceHypothesisInput): IStatement {
   return {
     text: `INSERT INTO ${CASE_VERSION_HYPOTHESES_TABLE} (case_slug, case_version, hypothesis_name, revision, position)
@@ -633,11 +649,21 @@ function raisePlaceHypothesisFailure(input: PlaceHypothesisInput): RaiseStoreErr
       : raiseWriteFailure(cause);
 }
 
+async function deleteManifestEntry(tx: IQueryable, key: ICaseVersionKey, hypothesisName: string): Promise<void> {
+  refuseUnlessDraft(key, await requireVersionState(tx, key));
+  await runStatement(tx, removeManifestEntryStatement(key.slug, key.version, hypothesisName), raiseWriteFailure);
+}
+
 function removeManifestEntryStatement(slug: string, version: number, hypothesisName: string): IStatement {
   return {
     text: `DELETE FROM ${CASE_VERSION_HYPOTHESES_TABLE} WHERE case_slug = $1 AND case_version = $2 AND hypothesis_name = $3`,
     params: [slug, version, hypothesisName],
   };
+}
+
+async function releaseVersion(tx: IQueryable, key: ICaseVersionKey): Promise<void> {
+  refuseUnlessDraftAtRelease(key, await requireVersionState(tx, key));
+  await runStatement(tx, releaseStatement(key.slug, key.version), raiseWriteFailure);
 }
 
 function releaseStatement(slug: string, version: number): IStatement {
@@ -648,6 +674,7 @@ function releaseStatement(slug: string, version: number): IStatement {
 }
 
 async function discardDraft(tx: IQueryable, key: ICaseVersionKey): Promise<void> {
+  refuseUnlessDraft(key, await requireVersionState(tx, key));
   await runStatement(tx, deleteManifestEntriesStatement(key), raiseWriteFailure);
   await runStatement(tx, deleteCaseVersionStatement(key), raiseWriteFailure);
 }
@@ -664,15 +691,28 @@ function deleteCaseVersionStatement(key: ICaseVersionKey): IStatement {
 }
 
 async function updateDraftVersion(tx: IQueryable, key: ICaseVersionKey, attributes: UpdateDraftInput): Promise<void> {
+  refuseUnlessDraft(key, await requireVersionState(tx, key));
+  await runStatement(tx, updateDraftStatement(key, attributes), raiseWriteFailure);
+}
+
+async function requireVersionState(tx: IQueryable, key: ICaseVersionKey): Promise<CaseVersionState> {
   const row = await queryOneOrAbsent<{ state: string }>(tx, caseVersionStateSelect(key), raiseReadFailure);
   if (row === undefined) {
     throw new CaseNotFoundError(key.slug, key.version);
   }
-  const state = caseVersionStateOf(row.state);
+  return caseVersionStateOf(row.state);
+}
+
+function refuseUnlessDraft(key: ICaseVersionKey, state: CaseVersionState): void {
   if (state !== DRAFT_STATE) {
     throw new CaseVersionNotDraftError(key.slug, key.version, state);
   }
-  await runStatement(tx, updateDraftStatement(key, attributes), raiseWriteFailure);
+}
+
+function refuseUnlessDraftAtRelease(key: ICaseVersionKey, state: CaseVersionState): void {
+  if (state !== DRAFT_STATE) {
+    throw new CaseVersionNotDraftAtReleaseError(key.slug, key.version, state);
+  }
 }
 
 function caseVersionStateSelect(key: ICaseVersionKey): IStatement {

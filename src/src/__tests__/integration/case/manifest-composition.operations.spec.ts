@@ -198,8 +198,8 @@ it('refuses placing a hypothesis-revision against a version that is not in draft
   const concept = await freshConcept();
   const { slug, version } = await aFreshDraftCase(glossary);
   await placeFreshHypothesis({ slug, version, position: 1, glossary, concept });
-  await store.release(slug, version);
   const revision = await store.insertHypothesisRevision({ slug, hypothesis_name: 'a-late-hypothesis', criterion: 'A criterion.', collects: [concept], resolution: { outcome: glossary.outcome, referral: { action: glossary.action, recipient: glossary.recipient } } });
+  await store.release(slug, version);
 
   const attempt = placeHypothesis(store, { slug, version, hypothesis_name: 'a-late-hypothesis', revision, position: 2 });
 
