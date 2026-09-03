@@ -1,0 +1,66 @@
+findings:
+  - file: src/__tests__/unit/errors/status-map.spec.ts
+    where: "the test 'resolves CaseVersionNotReleasedError to 409', lines 91-97"
+    evidence: |
+      it('resolves CaseVersionNotReleasedError to 409', () => {
+        const error = new CaseVersionNotReleasedError('a-slug', 1, 'draft');
+
+        const status = statusForError(error);
+
+        expect(status).toBe(409);
+      });
+    cost: "The rule this refusal answers for (rules/investigation/only-a-released-case-version-is-diagnosed) names no error identity and no HTTP status at all — every sibling refusal in the specification pairs its rule with an explicit 'HTTP nnn response reporting XError' clause, and the deadline case (rules/investigation/no-stage-aborts-on-its-deadline) even has a decision-log entry doing exactly that. This one has none, so this test is the only place asserting that a diagnose against a non-released version answers with 409 and with the name CaseVersionNotReleasedError specifically; a reader who checks the specification for that pairing finds only the general refusal, not the status or the error identity."
+    kind: unstated
+    correction: "Decide and record, in the specification's decision log, which node names CaseVersionNotReleasedError and its HTTP status — most naturally rules/investigation/only-a-released-case-version-is-diagnosed, following the same pattern the deadline rule already uses — so the pairing has a home outside the test."
+    node: rules/investigation/only-a-released-case-version-is-diagnosed
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "import { statusForError } from '../../../errors/status-map.js';"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "import { statusForError } from '../../../errors/status-map.js';"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "const error = new CaseVersionNotDraftError('a-slug', 1, 'released');"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "const error = new ManifestPositionOccupiedError('a-slug', 1, 1);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "const error = new CaseHoldsNoDraftError('a-slug');"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the test 'resolves ReleasedHypothesisRevisionNotAlterableError to 409', lines 169-175"
+    evidence: |
+      const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);
+
+      const status = statusForError(error);
+
+      expect(status).toBe(409);
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the test 'resolves CaseHoldsNoDraftError to 409', lines 161-167"
+    evidence: |
+      const error = new CaseHoldsNoDraftError('a-slug');
+
+      const status = statusForError(error);
+
+      expect(status).toBe(409);
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+looked_past: "Every other error-to-status pairing this file asserts (404, 409, 422, 500 for the remaining seventeen error classes, and the two undefined-status cases) is quoted and cross-checked against the specification's own 'HTTP nnn reporting XError' clauses and matches exactly, so those are not reported; the file's role as a pure vitest unit test of statusForError, with no domain-attribute assertions of its own, is likewise not this pass's concern."

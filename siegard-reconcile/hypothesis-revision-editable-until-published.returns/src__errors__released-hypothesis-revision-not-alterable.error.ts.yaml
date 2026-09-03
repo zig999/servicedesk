@@ -1,0 +1,41 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "public readonly context: Readonly<{ slug: string; hypothesis_name: string; revision: number }>;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "public readonly context: Readonly<{ slug: string; hypothesis_name: string; revision: number }>;"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's own import list, which declares none — it extends only the native `Error`"
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "`hypothesis \"${hypothesisName}\" revision ${revision} of case \"${slug}\" is referenced by a case version in released state, and a released hypothesis revision is never altered`"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "public readonly context: Readonly<{ slug: string; hypothesis_name: string; revision: number }>;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the class name and its constructor's message, lines 1 and 5-9"
+    evidence: "`hypothesis \"${hypothesisName}\" revision ${revision} of case \"${slug}\" is referenced by a case version in released state, and a released hypothesis revision is never altered`"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export class ReleasedHypothesisRevisionNotAlterableError extends Error {"
+looked_past: "The HTTP 409 status this error maps to is not this file's to state — status-map.ts is the file the node's own status-code fact belongs to, and this file carries only the error's identity, message and context."

@@ -1,0 +1,57 @@
+findings:
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: "the `it` block at lines 208-214, \"defaults a newly created case row (no case_versions row at all) to next_version 1\""
+    evidence: "expect(rows[0]?.next_version).toBe(1);"
+    cost: "domain/knowledge/case's own next_version attribute says only that it is 'always greater than every version number this case has ever held, including one later discarded' — a condition any starting value satisfies vacuously for a case with no versions yet. The migration that sets DEFAULT 1 (0009) says outright this is 'not a claim about what any later-created case's own first draft is numbered'. This test asserts exactly that claim as an established fact, so a reader who takes the test as authoritative will treat 1 as decided when no node ever decided it."
+    kind: unstated
+    correction: "State, on domain/knowledge/case or rules/knowledge/a-case-version-number-is-never-reused, what a case holding no versions yet is first assigned, and disclose the decision in decision-log.md."
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: "the `it` block at lines 592-603, \"defaults a newly-inserted case_versions row that does not name its own state to 'released' ...\""
+    evidence: "expect(result.rows[0].state).toBe('released');"
+    cost: "No node in domain/knowledge/case-version or its state vocabulary states what a case_versions row that omits its own state resolves to. The test locks in 'released' — the terminal, immutable state — as that default, meaning any write path that forgets to name state silently produces an unchangeable version rather than an editable draft; a reader looking for this consequential default in the specification will not find it, only in this test and the migration's own DEFAULT clause."
+    kind: unstated
+    correction: "State, on domain/knowledge/case-version or its state rule, what an omitted state resolves to (or that state must always be supplied), and disclose the decision in decision-log.md."
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the `it` block at lines 287-302, \"changes an already-stored hypothesis revision's own columns on an ordinary UPDATE when no released case version references it\""
+    evidence: "UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the `it` block at lines 276-285, \"refuses a second row under an already-used (case_slug, hypothesis_name, revision) key\""
+    evidence: "await expect(\n  insertHypothesisRevision(client, glossary, { slug, hypothesisName: 'the-hypothesis', revision: 1 }),\n).rejects.toMatchObject({ code: UNIQUE_VIOLATION });"
+  - node: domain/knowledge/hypothesis
+    held_at: "the `it` block at lines 236-242, \"shapes hypotheses as exactly case_slug and name, carrying no content column\""
+    evidence: "expect(rows.map((row) => row.column_name)).toEqual(['case_slug', 'name']);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the `it` block at lines 263-274, \"stores and reads back a hypothesis revision's own criterion and resolution\""
+    evidence: "expect(rows).toEqual([{ criterion: 'A real criterion.', resolution_outcome: glossary.outcome }]);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { Client } from 'pg'; — this file is a persistence integration test that talks to Postgres directly; it exercises no domain module's import graph, so the constraint's own fact is neither held nor contradicted here."
+  - node: domain/knowledge/case-version
+    held_at: "the `it` block at lines 395-409, \"leaves a released case_versions row's own columns unchanged after an ordinary UPDATE attempts to alter them\""
+    evidence: "expect(rows[0]?.title).toBe('Original title');"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the `it` block at lines 352-364, \"stores and reads back a manifest entry's hypothesis, revision and position\""
+    evidence: "expect(rows).toEqual([{ hypothesis_name: 'the-hypothesis', revision: 1, position: 1 }]);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the `it` block at lines 304-326, \"leaves an already-stored hypothesis revision's own columns unchanged after an ordinary UPDATE attempts to alter them, where a released case version's manifest references that revision\""
+    evidence: "expect(rows[0]?.criterion).toBe('Original.');"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the same `it` block at lines 304-326"
+    evidence: "expect(rows[0]?.criterion).toBe('Original.');"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "insertHypothesisRevision (lines 90-98) inserts a revision keyed only on case_slug, hypothesis_name and revision; no test in this file reads or asserts the hosting case's own draft state before writing a revision."
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "partially, the `it` block at lines 287-302 — a single overwrite, not the scenario's three successive revises"
+    evidence: "UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "partially, the `it` block at lines 304-326 — only the immutability half; the file never exercises the scenario's 'revision 3 is created' half"
+    evidence: "expect(rows[0]?.criterion).toBe('Original.');"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "migrationFilesInOrder/applyMigrationFiles (lines 23-33) and the `it` block at lines 438-450, \"arrives as the next-numbered script after 0008 ...\""
+    evidence: "entries.filter((name) => name.endsWith('.sql')).sort();"
+looked_past: "The `it` block at lines 304-326 guards the UPDATE with an empty `catch` and never asserts that an exception was actually raised, so it would pass equally against a silent no-op mechanism the node's own text explicitly rules out ('rather than being accepted and left with no effect') — that is a coverage-adequacy question, not a stated-fact question, so I leave it to the coverage pass; likewise the migration-cleanup assertions (hypothesis_collects dropped, 0006's file left untouched) are schema-mechanics checks with no domain-fact content of their own."
+candidates_opened:
+  - rules/knowledge/a-case-version-number-is-never-reused
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle

@@ -1,0 +1,172 @@
+findings:
+  - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+    where: "the it block \"records the instant of release, and a second call to release leaves that instant unchanged\", lines 798-813"
+    evidence: |
+      await store.release(slug, version);
+          const firstRead = await store.assembleVersion(slug, version);
+          await store.release(slug, version);
+          const secondRead = await store.assembleVersion(slug, version);
+
+          expect(firstRead?.state).toBe('released');
+          expect(firstRead?.released_at).toBeDefined();
+          expect(secondRead?.released_at).toBe(firstRead?.released_at);
+    cost: The rule this test's own trigger belongs to refuses release asked of a version not in draft state with a CaseVersionNotDraftAtReleaseError, and after the first `release` the version is no longer in draft state; this test instead awaits the second `store.release` call unguarded and asserts it succeeds with the released_at instant merely unchanged. A reader trusting this test will build (or keep) a store that lets a caller retry release silently rather than being told the version has already left draft state, and the next person looking for "what happens on a second release" will find this idempotent-success behavior here rather than the refusal the lifecycle rule states.
+    kind: contradicts
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    correction: The test should call `store.release(slug, version)` a second time expecting rejection (e.g. `await expect(store.release(slug, version)).rejects.toBeInstanceOf(...)`, matching the CaseVersionNotDraftAtReleaseError the rule names for release asked of a non-draft version), rather than awaiting it unguarded and asserting `released_at` merely stayed the same.
+  - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+    where: "the it block \"resolves without raising, leaving no new row behind, when the named revision does not exist for that hypothesis\", lines 1443-1471"
+    evidence: |
+      await expect(
+          store.overwriteHypothesisRevision({
+            slug,
+            hypothesis_name: 'a-hypothesis',
+            revision: neverHeldRevision,
+            criterion: 'a criterion nothing should have stored',
+            collects: [],
+            resolution: aResolution(glossary),
+          }),
+        ).resolves.toBeUndefined();
+    cost: The overwrite policy in scope for this file decides only two outcomes for a revise — overwrite the hypothesis's own highest existing revision in place, or create its next revision — and says nothing about a revision number the hypothesis has never held. This test commits the store to a third, silent-success outcome for that case, so a caller passing a stale or mistyped revision number gets no signal at all, and the specification carries no record of that choice.
+    kind: unstated
+    node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    correction: Decide, in the specification, what an overwrite naming a revision number the hypothesis does not currently hold does — refuse it (naming an error) or explicitly sanction the silent no-op this test asserts — so the store's behavior traces to a stated fact rather than to an assumption embedded only in this test.
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the overwriteHypothesisRevision assertions, e.g. \"overwrites a revision's content while leaving its own revision number exactly as it was before\", lines 1216-1241"
+    evidence: |
+      await store.overwriteHypothesisRevision({
+        slug,
+        hypothesis_name: 'a-hypothesis',
+        revision,
+        criterion: 'the replaced criterion',
+        collects: [],
+        resolution: aResolution(glossary),
+      });
+
+      const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+      expect(page.data.map((item) => item.revision)).toEqual([revision]);
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "\"numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis\", lines 726-745"
+    evidence: |
+      const first = await store.insertHypothesisRevision(revisionInput('a-hypothesis'));
+      const second = await store.insertHypothesisRevision(revisionInput('a-hypothesis'));
+      const anothersFirst = await store.insertHypothesisRevision(revisionInput('another-hypothesis'));
+
+      expect([first, second, anothersFirst]).toEqual([1, 2, 1]);
+  - node: domain/knowledge/hypothesis
+    held_at: "\"creates a hypothesis's own identity row only the first time its name is used for a case...\", lines 711-724"
+    evidence: |
+      await store.insertHypothesisRevision(input);
+      await store.insertHypothesisRevision(input);
+
+      const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1 AND name = $2', [slug, 'a-hypothesis']);
+      expect(rows).toEqual([{ name: 'a-hypothesis' }]);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the overwriteHypothesisRevision assertions, lines 1216-1241"
+    evidence: |
+      await store.overwriteHypothesisRevision({
+        slug,
+        hypothesis_name: 'a-hypothesis',
+        revision,
+        criterion: 'the replaced criterion',
+        collects: [],
+        resolution: aResolution(glossary),
+      });
+      const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+      expect(page.data.map((item) => item.revision)).toEqual([revision]);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "\"performs the overwrite through the IHypothesisRevisionOverwrite port alone, without needing the rest of ICaseStore\", lines 1415-1441"
+    evidence: |
+      const overwriter: IHypothesisRevisionOverwrite = store;
+      ...
+      await overwriter.overwriteHypothesisRevision({
+        slug,
+        hypothesis_name: 'a-hypothesis',
+        revision,
+        criterion: 'the replaced criterion',
+        collects: [],
+        resolution: aResolution(glossary),
+      });
+  - node: domain/knowledge/case-version
+    held_at: "the assembleVersion assertion of the first it block, lines 177-185"
+    evidence: |
+      expect(assembled).toMatchObject({
+        slug,
+        version,
+        title: 'A title',
+        when_to_use: 'A use',
+        subject: glossary.subjectType,
+        fallback: aResolution(glossary),
+        state: 'draft',
+      });
+  - node: domain/knowledge/manifest-entry
+    held_at: "the manifest assertion of the first it block, lines 187-190"
+    evidence: |
+      expect(assembled?.manifest).toEqual([
+        { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'second', revision: secondRevision, collects: [conceptB] }) },
+        { position: 2, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'first', revision: firstRevision, collects: [conceptA, conceptB].sort() }) },
+      ]);
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the create-draft/place-hypothesis/release/remove-manifest-entry call sites, e.g. lines 819-829"
+    evidence: |
+      await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+      await store.release(slug, version);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "\"refuses an overwrite attempt against a revision a released case version still references...\", lines 1473-1503"
+    evidence: |
+      await store.release(slug, version);
+
+      const rejection = store.overwriteHypothesisRevision({
+        slug,
+        hypothesis_name: 'a-hypothesis',
+        revision,
+        criterion: 'a criterion the released reference should have refused',
+        collects: [],
+        resolution: aResolution(glossary),
+      });
+
+      await expect(rejection).rejects.not.toHaveProperty('message', 'a write against the case store failed');
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: |
+      import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
+      import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
+      import { CaseStoreError } from '../../../errors/case-store.error.js';
+      import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
+      import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "the overwriteHypothesisRevision assertions, lines 1216-1241 (the in-place overwrite mechanism alone, not the curator-level revise flow the scenario narrates)"
+    evidence: |
+      await store.overwriteHypothesisRevision({
+        slug,
+        hypothesis_name: 'a-hypothesis',
+        revision,
+        criterion: 'the replaced criterion',
+        collects: [],
+        resolution: aResolution(glossary),
+      });
+      const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+      expect(page.data.map((item) => item.revision)).toEqual([revision]);
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "\"says the highest revision is referenced by a released case version...\", lines 1137-1159 (the underlying release-state read alone, not the create-next branch itself)"
+    evidence: |
+      await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+      await store.release(slug, version);
+
+      const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis');
+
+      expect(state).toEqual({ revision, released_referenced: true });
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |
+      function requireDatabaseUrl(): string {
+        const url = process.env.DATABASE_URL;
+        if (!url) {
+          throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+        }
+        return url;
+      }
+looked_past: This file's tests also exercise pagination envelopes, slug/name/position uniqueness, case-version lifecycle listing, and atomicity on foreign-key failures, all consistent with rules outside my node set (confirmed against knowledge/projections/full-text.md) and none contradicted here — not reported as findings; separately, whether insertHypothesisRevision is refused when the named case holds no draft version (a-hypothesis-is-revised-only-against-its-cases-draft) is untested anywhere in this file, which is a coverage question rather than a stated-fact contradiction.
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle

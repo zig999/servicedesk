@@ -1,0 +1,41 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import statement, line 1"
+    evidence: "import type { OverwriteHypothesisRevisionInput } from './case-store.port.js';"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOverwrite {"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOverwrite {"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import type { OverwriteHypothesisRevisionInput } from './case-store.port.js';"
+looked_past: the input type's own shape and the operation's actual overwrite/refusal logic live in case-store.port.ts and revise-hypothesis.operation.ts, outside this file set, so I did not judge them here.

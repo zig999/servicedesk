@@ -1,0 +1,103 @@
+findings:
+  - file: src/errors/status-map.ts
+    where: "the map entry at line 52, and its import at line 12"
+    evidence: "[CaseVersionNotReleasedError, 409],"
+    cost: "the 409-and-CaseVersionNotReleasedError pairing for a diagnose pinned to a non-released case version lives only in this map; the specification's own rule for that refusal (rules/investigation/only-a-released-case-version-is-diagnosed) says the refusal happens but never names its status code or its error condition, so the next reader who wants to know what a draft-pinned diagnose answers with has to read this file rather than the specification, and nothing stops a future edit from renaming or re-coding this refusal without the specification ever disagreeing"
+    kind: unstated
+    correction: "decide the status code and error-condition name for the not-released refusal into rules/investigation/only-a-released-case-version-is-diagnosed (or a sibling node), the same way the sibling refusals in this same map were each decided and disclosed in the decision log"
+read:
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: "the map entry, line 43"
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "the map holds only error-class-to-status pairs; nothing in the file names an operation of this contract"
+  - node: contracts/investigation/diagnosis
+    held_at: nowhere
+    evidence: "the map holds only error-class-to-status pairs; nothing in the file names the diagnose operation itself"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: "the map entry, line 67"
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: "the map entry, line 60"
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the map entries, lines 61-62"
+    evidence: "[ConnectorConfigurationNotWellFormedError, 422],\n  [IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: "the map entry, line 62"
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: "the map entry, line 41"
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: "the map entry, line 64"
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: "the map entry, line 63"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: "the map entry, line 44"
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "the map entry, line 68"
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the map entry, line 66"
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the map entry, line 65"
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the map entry, line 53"
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the map entry, line 54"
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the map entry, line 45"
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: "the map entry, line 67"
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: "the map entry, line 63"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([ ... ]); — the file maps error classes to HTTP statuses only, holding nothing about how a revision's content is written or numbered"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([ ... ]); — nothing in the file assigns or reuses a revision number"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error; — the file's only types are error classes and statuses, not the hypothesis aggregate"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error; — the file's only types are error classes and statuses, not the hypothesis-revision aggregate"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import list, lines 1-32"
+    evidence: "import { CapabilityConnectorMismatchError } from './capability-connector-mismatch.error.js';"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error; — the file's only types are error classes and statuses, not the case-version aggregate"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error; — the file's only types are error classes and statuses, not the manifest-entry value object"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the map holds only error-class-to-status pairs; nothing in the file names an operation of this contract"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([ ... ]); — nothing in the file touches manifest pins or revision content"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([ ... ]); — nothing in the file touches revision creation"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file holds a TypeScript error-to-status map and no migration or schema concern"
+looked_past: "statusForError's first-match iteration order over the map, and the fact that two rules (a-connector-configuration-holds-a-well-formed-object and a-connector-configuration-names-its-connector) both resolve to the same IncompleteConnectorConfigurationError entry, are mechanism rather than a domain fact and not reported here."
+candidates_opened:
+  - rules/knowledge/a-case-has-at-most-one-draft
+  - rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle

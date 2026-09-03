@@ -1,0 +1,45 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "built.reviseHypothesis.mockResolvedValueOnce(revised);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const revised: RevisedHypothesis = { hypothesis_name: 'a-new-hypothesis', revision: 1 };"
+  - node: domain/knowledge/hypothesis
+    held_at: "validReviseHypothesisBody's hypothesis_name field"
+    evidence: "hypothesis_name: 'a-hypothesis',"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "validReviseHypothesisBody's criterion, collects and resolution fields"
+    evidence: "criterion: 'a-criterion',"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: domain/knowledge/case-version
+    held_at: "validReviseHypothesisBody's subject field"
+    evidence: "subject: 'a-subject',"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "return { hypothesis_name: 'a-hypothesis', criterion: 'a-criterion', collects: ['a-concept'], resolution: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' } }, subject: 'a-subject', ...overrides, };"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the POST invocation of the revise-hypothesis route, throughout the file"
+    evidence: "const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/hypotheses', payload: body });"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the ReleasedHypothesisRevisionNotAlterableError test, lines 182-192"
+    evidence: "expect(response.json()).toEqual({ error: { code: 'ReleasedHypothesisRevisionNotAlterableError', message: error.message, details: error.context } });"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the CaseHoldsNoDraftError test, lines 170-180"
+    evidence: "expect(response.json()).toEqual({ error: { code: 'CaseHoldsNoDraftError', message: error.message, details: error.context } });"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "built.reviseHypothesis.mockResolvedValueOnce(revised);"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const revised: RevisedHypothesis = { hypothesis_name: 'an-existing-hypothesis', revision: 5 };"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { createReviseHypothesisRoutesPlugin } from '../../../http/revise-hypothesis.routes.js';"
+looked_past: the 400-response assertions check only the status code, never the VALIDATION_ERROR error code or the non-empty details list constraints/a-malformed-request-is-refused-with-a-validation-error also requires, and the generic-500 envelope's exact code/message are asserted without a corresponding node — both read as coverage completeness rather than a stated-versus-specified conflict, so I left them unreported.
+candidates_opened:
+  - rules/knowledge/case-terms-exist-in-the-glossary
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  - rules/knowledge/a-concept-accepts-the-declared-subject-type

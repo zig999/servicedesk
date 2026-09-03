@@ -64,6 +64,25 @@
       "title": "Proof for the release-conditioned refusal on hypothesis_revisions UPDATE",
       "summary": "Five integration tests against a real PostgreSQL database, replaying every migration script including 0019, proving the unconditional rule is gone and the new trigger lets an UPDATE through except where a released case version's manifest still references the row's own revision — where it raises the distinguishable error instead of silently discarding the write.",
       "task": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released"
+    },
+    {
+      "id": "review/hypothesis-revision-editable-until-published",
+      "kind": "review",
+      "file": "review/hypothesis-revision-editable-until-published.md",
+      "title": "Review of hypothesis-revision-editable-until-published (backend)",
+      "summary": "Four-pass evidence over the four delivered tasks of the epic hypothesis-revision-overwrite — coverage, specification conformance (via reconciliation), standard conformance, and a captured run that passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "After such a revise, that revision's content reads as the content the revise carried.",
+        "After those three revises, the hypothesis's highest revision reads the content of the most recent of them.",
+        "An update to a hypothesis revision that a case version in released state references through its manifest leaves that revision's stored content exactly as it was.",
+        "The fact reaches its caller through the case-store port, and the module that consumes it imports no driver, framework or provider client."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -258,6 +277,30 @@
       "to": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/hypothesis-revision-editable-until-published",
+      "to": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hypothesis-revision-editable-until-published",
+      "to": "task/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/hypothesis-revision-editable-until-published",
+      "to": "task/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/hypothesis-revision-editable-until-published",
+      "to": "task/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

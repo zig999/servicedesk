@@ -11,11 +11,11 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -203,7 +203,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
@@ -515,7 +515,7 @@
         },
         {
           "path": "src/src/factories/case-store.factory.ts",
-          "digest": "sha256:90ab92d2822cfbd6d4a7a560af27686a32453f8397b92bdf0f27563af0cd0690"
+          "digest": "sha256:27b4c76993705ea12d68387e858ee47b4b138090dcac69d76c6d3ad1a7b04e1f"
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
@@ -1213,7 +1213,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/case/create-draft.operation.ts",
@@ -1321,7 +1321,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -1379,7 +1379,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
@@ -1447,7 +1447,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -3291,7 +3291,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3359,7 +3359,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -3497,7 +3497,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3521,7 +3521,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -3577,7 +3577,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -3779,7 +3779,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3819,7 +3819,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -4003,7 +4003,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/case/case.ts",
@@ -4031,7 +4031,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -4221,7 +4221,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -4385,7 +4385,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         }
       ]
     },
@@ -4453,7 +4453,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         }
       ]
     },
@@ -4501,7 +4501,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         }
       ]
     },
@@ -4515,7 +4515,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -4553,7 +4553,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
@@ -4765,7 +4765,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
@@ -4819,7 +4819,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         }
       ]
     },
@@ -5131,7 +5131,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -5391,7 +5391,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -5475,7 +5475,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         },
         {
           "path": "src/src/seed.ts",
@@ -5535,7 +5535,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -5585,7 +5585,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -5597,7 +5597,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -5631,7 +5631,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
@@ -5639,7 +5639,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -5735,7 +5735,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -5777,7 +5777,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -5845,7 +5845,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -5931,7 +5931,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -5969,7 +5969,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -5981,7 +5981,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -6019,11 +6019,11 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -6097,7 +6097,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
@@ -6213,7 +6213,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -6283,7 +6283,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",

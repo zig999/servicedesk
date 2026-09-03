@@ -1,0 +1,41 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "the whole file, as migration 0019 in the numbered sequence"
+    evidence: "DROP RULE hypothesis_revisions_no_update ON hypothesis_revisions;\n\nCREATE FUNCTION hypothesis_revisions_refuse_when_released()"
+  - node: domain/knowledge/case-version
+    held_at: "the join and state predicate inside hypothesis_revisions_refuse_when_released()"
+    evidence: "JOIN case_versions cv\n      ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version\n    WHERE ... AND cv.state = 'released'"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the trigger's target table and OLD-row reference"
+    evidence: "CREATE TRIGGER hypothesis_revisions_no_update_when_released\n  BEFORE UPDATE ON hypothesis_revisions"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the case_version_hypotheses join used to find any manifest reference to the revision"
+    evidence: "FROM case_version_hypotheses cvh\n    JOIN case_versions cv\n      ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version\n    WHERE cvh.case_slug = OLD.case_slug\n      AND cvh.hypothesis_name = OLD.hypothesis_name\n      AND cvh.revision = OLD.revision"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the drop of the unconditional rule and the exception's own conditional guard, whose false branch reaches RETURN NEW"
+    evidence: "DROP RULE hypothesis_revisions_no_update ON hypothesis_revisions;"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the RAISE EXCEPTION inside the IF EXISTS branch"
+    evidence: "RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError';"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "BEFORE UPDATE ON hypothesis_revisions"
+  - node: domain/knowledge/hypothesis
+    held_at: "the case-scoped identity match in the WHERE clause"
+    evidence: "cvh.case_slug = OLD.case_slug\n      AND cvh.hypothesis_name = OLD.hypothesis_name"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "CREATE FUNCTION hypothesis_revisions_refuse_when_released()\nRETURNS TRIGGER AS $$\n...\n$$ LANGUAGE plpgsql;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "CREATE TRIGGER hypothesis_revisions_no_update_when_released\n  BEFORE UPDATE ON hypothesis_revisions\n  FOR EACH ROW\n  EXECUTE FUNCTION hypothesis_revisions_refuse_when_released();"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "AND cv.state = 'released'"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "the RETURN NEW reached when the EXISTS check finds no released reference"
+    evidence: "RETURN NEW;\nEND;"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "the RAISE EXCEPTION reached when the EXISTS check finds a released reference"
+    evidence: "RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError';"
+looked_past: "the identifier and style choices (snake_case table/function/trigger names, DROP-then-CREATE structuring) are the project's own schema arrangement, not a domain fact, and are left to the standard-conformance pass."

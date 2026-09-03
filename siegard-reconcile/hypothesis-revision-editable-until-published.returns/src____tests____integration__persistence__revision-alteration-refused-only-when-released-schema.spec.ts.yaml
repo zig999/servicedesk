@@ -1,0 +1,43 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the three 'leaves an update through unrefused' tests, lines 170-232"
+    evidence: "UPDATE hypothesis_revisions SET criterion = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = 1"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "the file never asserts a revision number or its reuse; every insertHypothesisRevision call in this spec targets a fixed, pre-chosen revision number"
+  - node: domain/knowledge/hypothesis
+    held_at: "insertHypothesis, lines 70-72"
+    evidence: "await client.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2)', [options.slug, options.name]);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "insertHypothesisRevision and readRevisionCriterion, lines 81-97"
+    evidence: "INSERT INTO hypothesis_revisions\n       (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: domain/knowledge/case-version
+    held_at: "insertCaseVersion, lines 55-63"
+    evidence: "INSERT INTO case_versions\n       (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient, state, released_at)"
+  - node: domain/knowledge/manifest-entry
+    held_at: "insertManifestEntry, lines 107-113"
+    evidence: "INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position)"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "UPDATE hypothesis_revisions SET criterion = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = 1"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the final test, lines 259-279"
+    evidence: "code: 'P0001',\n      message: expect.stringContaining('ReleasedHypothesisRevisionNotAlterableError'),"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no test in this file inserts a case holding no draft version or asserts a CaseHoldsNoDraftError"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "the file never invokes the revise operation itself, nor repeats a save against the same unreleased revision to check its number stays fixed"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the file never creates a next revision through a revise call; it only asserts that a raw UPDATE against an already-existing revision is refused"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "migrationFilesInOrder/applyMigrationFiles and the first test, lines 18-28, 149-168"
+    evidence: "await applyMigrationFiles(client, await migrationFilesInOrder());"
+looked_past: the specific trigger name ('hypothesis_revisions_no_update_when_released') and the reliance on Postgres's default P0001 SQLSTATE are implementation/naming choices the tests pin down exactly, which is a test-design concern rather than a domain fact the specification does or does not hold.
+candidates_opened:
+  - domain/knowledge/case-version-state

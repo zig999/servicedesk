@@ -1,0 +1,71 @@
+findings:
+  - file: src/case/revise-hypothesis.operation.ts
+    where: "refuseWithoutDraft (lines 47-52) together with refuseConceptsRefusingSubject/conceptsRefusingSubjectOf (lines 102-120)"
+    evidence: |
+      const draftVersion = await this.caseStore.findDraftVersion(slug);
+      if (draftVersion === undefined) {
+        throw new CaseHoldsNoDraftError(slug);
+      }
+      ...
+      function conceptsRefusingSubjectOf(resolutions: readonly ConceptResolution[], subject: string): readonly string[] {
+        return resolutions
+          .filter(isHeld)
+          .map((resolution) => resolution.concept)
+          .filter((concept) => !concept.accepts.includes(subject))
+      }
+    cost: "The rule requires the concept-acceptance check to run against the draft version's own declared subject type, but this file never reads that attribute — findDraftVersion returns only a version number, discarded once existence is confirmed — and instead checks caller-supplied input.subject verbatim. A caller passing a subject that no longer matches the case's actual draft (stale UI state, a client bug, a second concurrent update-draft) is checked against the wrong subject type with nothing here to catch it, defeating the guarantee the rule states in exactly the aggregate meant to enforce it."
+    kind: contradicts
+    correction: "Read the draft version's own subject (e.g. via assembleVersion(slug, draftVersion)) inside refuseWithoutDraft/writeRevision and use that value in refuseConceptsRefusingSubject instead of input.subject, or verify input.subject against it before proceeding."
+    node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the ReviseHypothesisOperation class and its reviseHypothesis method, implementing the revise-hypothesis operation of the published API"
+    evidence: "export class ReviseHypothesisOperation implements IReviseHypothesis {\n  public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> {"
+  - node: domain/knowledge/case-version
+    held_at: "the draft-existence check in refuseWithoutDraft, which the concept-acceptance check should but does not draw its subject type from"
+    evidence: "const draftVersion = await this.caseStore.findDraftVersion(slug);\n    if (draftVersion === undefined) {\n      throw new CaseHoldsNoDraftError(slug);\n    }"
+  - node: domain/knowledge/hypothesis
+    held_at: "the reviseHypothesis method itself, which either overwrites or creates a revision depending on frozen state"
+    evidence: "public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> {\n    await this.refuseWithoutDraft(input.slug);\n    await this.refuseInvalidCollects(input);\n    const revision = await this.writeRevision(input);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "overwriteInputOf, which assembles a revision's content (criterion, collects, resolution) for the store"
+    evidence: "function overwriteInputOf(input: ReviseHypothesisInput, revision: number): OverwriteHypothesisRevisionInput {\n  return {\n    slug: input.slug,\n    hypothesis_name: input.hypothesis_name,\n    criterion: input.criterion,\n    collects: input.collects,\n    resolution: input.resolution,\n    revision,\n  };\n}"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "conceptsRefusingSubjectOf and refuseConceptsRefusingSubject"
+    evidence: "function conceptsRefusingSubjectOf(resolutions: readonly ConceptResolution[], subject: string): readonly string[] {\n  return resolutions\n    .filter(isHeld)\n    .map((resolution) => resolution.concept)\n    .filter((concept) => !concept.accepts.includes(subject))\n    .map((concept) => concept.name);\n}"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "refuseEmptyCollects"
+    evidence: "function refuseEmptyCollects(input: ReviseHypothesisInput): void {\n  if (input.collects.length === 0) {\n    throw new HypothesisRevisionCollectsNoConceptError(input.slug, input.hypothesis_name);\n  }\n}"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the draft-existence refusal in refuseWithoutDraft only; the concept-acceptance check does not read the draft's own declared subject type"
+    evidence: "const draftVersion = await this.caseStore.findDraftVersion(slug);\n    if (draftVersion === undefined) {\n      throw new CaseHoldsNoDraftError(slug);\n    }"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "writeRevision"
+    evidence: "const state = await this.caseStore.readHighestRevisionReleaseState(input.slug, input.hypothesis_name);\n    if (state.revision !== undefined && !state.released_referenced) {\n      await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, state.revision));\n      return state.revision;\n    }\n    return this.caseStore.insertHypothesisRevision(input);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the overwrite branch of writeRevision, which reuses state.revision unchanged rather than assigning a new number"
+    evidence: "await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, state.revision));\n      return state.revision;"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the guard condition in writeRevision that routes away from overwrite once a revision is released-referenced"
+    evidence: "if (state.revision !== undefined && !state.released_referenced) {\n      await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, state.revision));\n      return state.revision;\n    }\n    return this.caseStore.insertHypothesisRevision(input);"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "refuseUnknownConcepts / unknownConceptsOf"
+    evidence: "function refuseUnknownConcepts(input: ReviseHypothesisInput, resolutions: readonly ConceptResolution[]): void {\n  const unknown = unknownConceptsOf(resolutions);\n  if (unknown.length > 0) {\n    throw new ConceptNotInGlossaryError(input.slug, input.hypothesis_name, unknown);\n  }\n}"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "the overwrite branch of writeRevision (same code as a-hypothesis-revision-is-overwritten-while-unreleased)"
+    evidence: "if (state.revision !== undefined && !state.released_referenced) {\n      await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, state.revision));\n      return state.revision;\n    }"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "the insert branch of writeRevision, reached when state.released_referenced is true"
+    evidence: "return this.caseStore.insertHypothesisRevision(input);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's import list — only error classes and port types, no framework or driver"
+    evidence: "import type { ConceptResolution, IGlossaryQuery } from '../glossary/glossary-query.port.js';\nimport type { HypothesisRevisionInput, ICaseStore, OverwriteHypothesisRevisionInput } from './case-store.port.js';"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "export type RevisedHypothesis = {\n  readonly hypothesis_name: string;\n  readonly revision: number;\n};"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "The file contains no migration or schema-replay concern; its only persistence contact is through ReviseHypothesisStore's port methods."
+
+looked_past: "The actual numbering algorithm for a newly created revision — how insertHypothesisRevision assigns the next number — is delegated entirely to the store implementation, which is a different file's judgment against rules/knowledge/a-hypothesis-revision-number-is-never-reused."

@@ -1,0 +1,44 @@
+read:
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "createCaseStore(connection), constructing the store against one connection"
+    evidence: "export function createCaseStore(connection: DatabaseConnection): CaseStore {\n  return new RelationalCaseStore(connection);\n}"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "export function createCaseStore(connection: DatabaseConnection): CaseStore {\n  return new RelationalCaseStore(connection);\n}"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "export function createCaseStore(connection: DatabaseConnection): CaseStore {\n  return new RelationalCaseStore(connection);\n}"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export type CaseStore = ICaseStore & IHighestRevisionReleaseStateQuery & IHypothesisRevisionOverwrite;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "export type CaseStore = ICaseStore & IHighestRevisionReleaseStateQuery & IHypothesisRevisionOverwrite;"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the exported factory return type, kept as the port intersection rather than the concrete class"
+    evidence: "export type CaseStore = ICaseStore & IHighestRevisionReleaseStateQuery & IHypothesisRevisionOverwrite;"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "import type { ICaseStore } from '../case/case-store.port.js';"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "import type { ICaseStore } from '../case/case-store.port.js';"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "import type { ICaseStore } from '../case/case-store.port.js';"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "import type { IHypothesisRevisionOverwrite } from '../case/hypothesis-revision-overwrite.port.js';"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "import type { IHighestRevisionReleaseStateQuery } from '../case/hypothesis-revision-release-state.port.js';"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "export function createCaseStore(connection: DatabaseConnection): CaseStore {\n  return new RelationalCaseStore(connection);\n}"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "export function createCaseStore(connection: DatabaseConnection): CaseStore {\n  return new RelationalCaseStore(connection);\n}"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../persistence/relational-case-store.repository.js';"
+looked_past: the intersection type composing three separate port interfaces into one factory return type is a design choice about the store's shape, not a domain fact, so it is left to whichever pass judges construction rather than specification conformance.

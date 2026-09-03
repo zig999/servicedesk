@@ -1,0 +1,67 @@
+findings:
+  - file: src/case/case-store.port.ts
+    where: "the `CaseVersionState` type alias, line 5"
+    evidence: "export type CaseVersionState = 'draft' | 'released';"
+    cost: "this file declares its own independent literal union for the case-version-state enumeration instead of importing the `CaseVersionState` that `case.ts` already derives from its own `CASE_VERSION_STATES = ['draft', 'released'] as const`; the two declarations happen to agree today, but nothing ties them together, so if the specification's case-version-state enumeration ever gains, drops or renames a value, a reader who updates `case.ts`'s canonical list has no signal that this file's own copy also needs the same edit, and the day they disagree nobody can say which one is the domain's own answer"
+    kind: contradicts
+    correction: "import `CaseVersionState` from `./case.js` here instead of redeclaring the literal union"
+    node: domain/knowledge/case-version-state
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the `assembleVersion` signature, line 97, together with `AssembledCaseVersion`'s inline `manifest`, lines 20-33"
+    evidence: "assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the `ICaseStore` method declarations for createDraft, insertHypothesisRevision, placeHypothesis, removeManifestEntry, updateDraft, release and discard, lines 113-125"
+    evidence: "createDraft(input: CreateDraftInput): Promise<number>;"
+  - node: contracts/knowledge/case-query
+    held_at: "the `ICaseStore` method declarations for assembleVersion, listCases, listCaseVersions, listHypotheses and listHypothesisRevisions, lines 97-111"
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>>;"
+  - node: domain/knowledge/case
+    held_at: "the `CaseIdentity` type, lines 75-77"
+    evidence: "export type CaseIdentity = {\n  readonly slug: string;\n};"
+  - node: domain/knowledge/case-version
+    held_at: "the `AssembledCaseVersion` type, lines 20-33"
+    evidence: "readonly version: number;\n  readonly title: string;\n  readonly when_to_use: string;\n  readonly authored_at: string;\n  readonly subject: string;\n  readonly fallback: Resolution;\n  readonly consolidation_register?: ConsolidationRegister;\n  readonly state: CaseVersionState;"
+  - node: domain/knowledge/case-version-state
+    held_at: "the `CaseVersionState` type alias, line 5"
+    evidence: "export type CaseVersionState = 'draft' | 'released';"
+  - node: domain/knowledge/hypothesis
+    held_at: "the `HypothesisIdentity` type, lines 84-86, and the `hypothesis_name` field of `HypothesisRevisionContent`, line 8"
+    evidence: "export type HypothesisIdentity = {\n  readonly name: string;\n};"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the `HypothesisRevisionContent` type, lines 7-13"
+    evidence: "readonly revision: number;\n  readonly criterion: string;\n  readonly collects: readonly string[];\n  readonly resolution: Resolution;"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the `ManifestEntry` type, lines 15-18"
+    evidence: "readonly position: number;\n  readonly hypothesis_revision: HypothesisRevisionContent;"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "release(slug: string, version: number): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "findDraftVersion(slug: string): Promise<number | undefined>;"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "assembleVersion, line 97, and listCaseVersions, line 103, which read any version by number rather than only the latest"
+    evidence: "listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "readonly revision: number;"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's own import list, lines 1-3"
+    evidence: "import type { ConsolidationRegister } from '../investigation/consolidation-register.js';\nimport type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';\nimport type { Resolution } from './case.js';"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "export type OverwriteHypothesisRevisionInput = HypothesisRevisionInput & {\n  readonly revision: number;\n};"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+looked_past: "the `HypothesisIdentity` type here (lines 84-86) has the same shape as `case.ts`'s own `HypothesisIdentity`, and `OverwriteHypothesisRevisionInput` (lines 55-57) is declared but referenced by no method on `ICaseStore`; both are structural/duplication observations rather than a domain fact this file states or contradicts, so I leave them to whichever pass reviews code structure."

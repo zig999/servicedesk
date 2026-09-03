@@ -1,0 +1,41 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "it('imports no LLM provider client, so a caller depending on this port alone pulls in neither'"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "it('imports no LLM provider client, so a caller depending on this port alone pulls in neither'"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the two `it` blocks' import audits, lines 29-43"
+    evidence: "const offenders = importSpecifiersOf(source).filter((specifier) => namesOneOf(specifier, FORBIDDEN_DRIVERS_AND_FRAMEWORKS));\n\n  expect(offenders).toEqual([]);"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "it('imports no LLM provider client, so a caller depending on this port alone pulls in neither'"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "it('imports no LLM provider client, so a caller depending on this port alone pulls in neither'"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither'"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "it('imports no LLM provider client, so a caller depending on this port alone pulls in neither'"
+looked_past: The hardcoded package names in FORBIDDEN_DRIVERS_AND_FRAMEWORKS and PROVIDER_CLIENT_PACKAGE ('@anthropic-ai/sdk') are the concrete vocabulary a dependency-import audit needs to operationalize the architecture constraint's own generic fitness statement, and naming a specific vendor package is not itself a business fact any node states or withholds — a code-quality/tooling concern rather than a specification-conformance one, so it is not reported here.

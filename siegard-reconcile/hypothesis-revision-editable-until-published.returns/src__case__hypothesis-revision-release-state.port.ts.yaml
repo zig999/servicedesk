@@ -1,0 +1,41 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file as a whole — no import statement of any kind, only a type and an interface"
+    evidence: "export interface IHighestRevisionReleaseStateQuery {\n\n  readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;\n}"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the second variant of the `HighestRevisionReleaseState` union, describing one revision's number and release status"
+    evidence: "{ readonly revision: number; readonly released_referenced: boolean }"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the `released_referenced` field, which reports exactly the fact this policy's \"unless\" clause reads"
+    evidence: "readonly released_referenced: boolean"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "{ readonly revision: undefined }\n  | { readonly revision: number; readonly released_referenced: boolean };"
+  - node: domain/knowledge/hypothesis
+    held_at: "the `hypothesisName` parameter of `readHighestRevisionReleaseState`, naming which hypothesis identity the query addresses"
+    evidence: "readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "export type HighestRevisionReleaseState =\n  | { readonly revision: undefined }\n  | { readonly revision: number; readonly released_referenced: boolean };"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export interface IHighestRevisionReleaseStateQuery {\n\n  readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;\n}"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "export type HighestRevisionReleaseState =\n  | { readonly revision: undefined }\n  | { readonly revision: number; readonly released_referenced: boolean };"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "export type HighestRevisionReleaseState =\n  | { readonly revision: undefined }\n  | { readonly revision: number; readonly released_referenced: boolean };"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "export type HighestRevisionReleaseState =\n  | { readonly revision: undefined }\n  | { readonly revision: number; readonly released_referenced: boolean };"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export type HighestRevisionReleaseState =\n  | { readonly revision: undefined }\n  | { readonly revision: number; readonly released_referenced: boolean };\n\nexport interface IHighestRevisionReleaseStateQuery {\n\n  readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;\n}"
+looked_past: the branch between overwriting a revision in place and creating the next one, and the refusal an altered released revision meets, are decided and enforced elsewhere (this port only declares the read shape that decision needs), so they are not this file's judgment to carry findings about.

@@ -1,0 +1,46 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the assertions of the second and third `it` blocks (lines 225-247, 249-273) and the release-referenced case (lines 275-295)"
+    evidence: "expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 }); ... expect(rows).toEqual([{ revision: 1, criterion: 'the second revision text' }]);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the first-revision assertion (lines 210-222) and the next-revision-after-release assertion (lines 286-294)"
+    evidence: "expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 }); ... expect(revised).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });"
+  - node: domain/knowledge/hypothesis
+    held_at: "the identity-row assertion in the first `it` block, lines 213-217"
+    evidence: "const { rows: identityRows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1 AND name = $2', [fixture.slug, 'the-hypothesis']); expect(identityRows).toEqual([{ name: 'the-hypothesis' }]);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revision-row assertions throughout, e.g. lines 218-222 and 289-293"
+    evidence: "const { rows: revisionRows } = await pool.query('SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [fixture.slug, 'the-hypothesis']); expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js'; — this file is the integration suite driving a real connection, not the domain module whose imports the constraint bounds"
+  - node: domain/knowledge/case-version
+    held_at: "seedCaseVersion / seedDraftCaseVersion / seedReleasedCaseVersion and the draft-gate tests, lines 90-106, 467-537"
+    evidence: "async function seedCaseVersion(fixture: IFixture, version: number, state: 'draft' | 'released'): Promise<void> { const releasedAt = state === 'released' ? new Date().toISOString() : null; ... }"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the manifest-entry assertions, lines 330-337 and 384-390 and 449-465"
+    evidence: "const { rows } = await pool.query('SELECT revision FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = 1 AND hypothesis_name = $2', [fixture.slug, 'the-hypothesis']); expect(rows).toEqual([{ revision: 1 }]);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the 'changes no version's manifest on its own' test, lines 449-465"
+    evidence: "await operation.reviseHypothesis(reviseInput(fixture, { hypothesis_name: 'a-freshly-revised-hypothesis' })); ... expect(rows).toEqual([{ hypothesis_name: 'an-already-placed-hypothesis', revision: 1, position: 1 }]);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the 'leaves the released-referenced revision's own content reading exactly as it did before' test (lines 297-316) and the stale-read rejection test (lines 339-367)"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError); const { rows } = await pool.query('SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1', ...); expect(rows).toEqual([{ criterion: 'the released revision text' }]);"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the three CaseHoldsNoDraftError tests (lines 467-537) and the mixed-history success test (lines 565-584)"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError); await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug } });"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "the three-successive-revises test, lines 249-273"
+    evidence: "expect([first.revision, second.revision, third.revision]).toEqual([1, 1, 1]); ... expect(rows).toEqual([{ revision: 1, criterion: 'the third successive revise text' }]);"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "the three released-reference tests, lines 275-337"
+    evidence: "expect(revised).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 }); ... expect(rows).toEqual([{ revision: 1 }]);"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the suite runs against `requireDatabaseUrl()` / an already-migrated instance and never applies or replays a migration script"
+looked_past: "the `FOREIGN_KEY_VIOLATION`/`isForeignKeyViolation` cleanup-tolerance mechanism and the fixed `ttl: 60` fixture value are test-plumbing and fixture-data choices rather than asserted domain facts, so they are not reported here."
+candidates_opened:
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  - rules/knowledge/case-terms-exist-in-the-glossary
+  - rules/knowledge/a-concept-accepts-the-declared-subject-type
+  - domain/knowledge/case-version-state
