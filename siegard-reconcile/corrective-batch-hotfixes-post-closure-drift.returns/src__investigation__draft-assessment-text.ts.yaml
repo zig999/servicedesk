@@ -1,0 +1,30 @@
+read:
+  - node: constraints/consolidation-runs-behind-a-port
+    held_at: the consolidator field typed as the port interface and invoked only through it
+    evidence: |
+      readonly consolidator: IAssessmentConsolidator;
+      const outcome = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
+  - node: domain/investigation/assessment-consolidator
+    held_at: the consolidate call and the destructuring of its result into the returned assessment
+    evidence: |
+      const outcome = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
+      text: outcome.text, register: outcome.register, usage: outcome.usage, elapsed_ms: outcome.elapsed_ms, prompt: outcome.prompt,
+  - node: domain/knowledge/case-version
+    held_at: the resolved outcome's fields copied unchanged into the assessment, never recomputed here
+    evidence: |
+      outcome: resolved.outcome, referral: resolved.referral,
+      return resolved.determining === undefined ? base : { ...base, determining_hypothesis: resolved.determining };
+  - node: domain/knowledge/consolidation-register
+    held_at: the register value taken as an opaque parameter and returned as the call used, never enumerated or branched on
+    evidence: |
+      readonly consolidationRegister: ConsolidationRegister;
+      register: outcome.register,
+  - node: rules/investigation/the-outcome-comes-from-the-case
+    held_at: base's outcome/referral/determining_hypothesis assigned directly from `resolved`, with no other computation of them in this file
+    evidence: |
+      outcome: resolved.outcome, referral: resolved.referral,
+      { ...base, determining_hypothesis: resolved.determining }
+  - node: rules/investigation/the-writing-input-is-narrowed
+    held_at: the consolidate call's argument list, limited to the narrowed evaluations and evidence
+    evidence: "consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister) — no case, hypothesis, criteria or when_to_use value is passed"
+looked_past: "the naming coincidence between the local `outcome` (the consolidator's result) and the `outcome` key copied from `resolved` is a readability matter, not a domain fact, so it is not reported here."

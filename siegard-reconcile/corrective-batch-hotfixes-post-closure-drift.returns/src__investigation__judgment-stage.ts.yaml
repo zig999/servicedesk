@@ -1,0 +1,191 @@
+findings:
+  - file: src/investigation/judgment-stage.ts
+    where: "judgmentFailureEvaluation and its two call sites, in runIsolatedCall (lines 90-93) and retryOrFail (lines 108-110, 115)"
+    evidence: |
+      function judgmentFailureEvaluation(name: string): Evaluation {
+        return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [] };
+      }
+    cost: >-
+      domain/investigation/evaluation states that usage, elapsed_ms and prompt are "the call's own
+      record ... present exactly when a call happened, absent when reason `no-data` means judgment
+      was never called at all" — and the decision log that settled this attribute set is explicit
+      that the absence is tied to reason no-data, not to every inconclusive reason. A judgment-failure
+      evaluation is only ever reached after an evaluator call actually completed (the rejected `first`
+      outcome in runIsolatedCall, or the rejected `retry` outcome in retryOrFail — both are full
+      EvaluationOutcome values carrying their own usage/elapsed_ms/prompt before citation validation
+      runs), yet judgmentFailureEvaluation discards that completed outcome entirely. Anyone reading an
+      investigation's evaluations to account for provider spend or call latency will see every
+      judgment-failure hypothesis as if no call had been made for it, even though one — sometimes two —
+      actually ran; cost and duration are silently understated exactly where a call did happen.
+    correction: >-
+      judgmentFailureEvaluation would need to take the completed outcome (the rejected `first`, or
+      `retry` when a retry ran) and fold its usage/elapsed_ms/prompt into the returned evaluation the
+      way asEvaluation/callRecordOf already do for confirmed, refuted and evaluator-returned
+      inconclusive results, instead of returning a bare record with no call data.
+    node: domain/investigation/evaluation
+
+read:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: "the Promise.all over requiredNames.map(...) calling judgeOneHypothesis per name, bounded by CallPool(poolSize), lines 29-44"
+    evidence: |
+      const pool = new CallPool(poolSize);
+      const requiredNames = requiresEvaluationOf(theCase);
+      const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+      return Promise.all(
+        requiredNames.map((name) =>
+          judgeOneHypothesis({
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: "the evaluator parameter typed IHypothesisEvaluator and its .evaluate(...) calls, lines 7, 85, 111"
+    evidence: "const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);"
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "the deadline/now options turned into a remaining-time guard at entry, line 28"
+    evidence: "const deadlineGuard = createDeadlineGuard(Math.max(0, deadline - now));"
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: "the caseContext built from only title/whenToUse (line 31) and toEvidenceItems projecting only each evidence item's own snapshotted fields (lines 202-210)"
+    evidence: |
+      function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
+        return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+        }));
+      }
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case, Hypothesis } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+  - node: domain/investigation/evaluation
+    held_at: "noDataEvaluation, deadlineExceededEvaluation, judgmentFailureEvaluation and asEvaluation, lines 220-260 — see finding for judgmentFailureEvaluation's call-record gap"
+    evidence: |
+      if (outcome.verdict === 'confirmed') {
+        return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+      }
+  - node: domain/investigation/evaluation-reason
+    held_at: "the literal reason strings 'no-data', 'deadline-exceeded', 'judgment-failure'"
+    evidence: |
+      function noDataEvaluation(name: string, nonOkEvidence: readonly Evidence[]): Evaluation {
+        return {
+          hypothesis: name,
+          verdict: 'inconclusive',
+          reason: 'no-data',
+          citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+        };
+      }
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: "the evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext) calls, lines 85 and 111"
+    evidence: "const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);"
+  - node: domain/investigation/verdict
+    held_at: "the verdict branches in asEvaluation, lines 239-245"
+    evidence: |
+      if (outcome.verdict === 'confirmed') {
+        return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+      }
+      if (outcome.verdict === 'refuted') {
+        return { hypothesis: name, verdict: 'refuted', citations: outcome.citations, ...callRecord };
+      }
+  - node: domain/knowledge/case-version
+    held_at: "theCase.title, theCase.when_to_use, theCase.hypotheses reads and the requiresEvaluationOf(theCase) call, lines 30-31, 212-213"
+    evidence: "const requiredNames = requiresEvaluationOf(theCase);"
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: "noDataEvaluation synthesizing citations from the hypothesis's own evidence (no evaluator call), and citationsAreAcceptable/isStructurallyValid gating an actual evaluator response, lines 220-227, 187-200"
+    evidence: |
+      function noDataEvaluation(name: string, nonOkEvidence: readonly Evidence[]): Evaluation {
+        return {
+          hypothesis: name,
+          verdict: 'inconclusive',
+          reason: 'no-data',
+          citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+        };
+      }
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: "isStructurallyValid's zero-citation rejection gating asEvaluation, lines 194-200"
+    evidence: |
+      function isStructurallyValid(context: HypothesisCitationContext, citations: readonly Citation[]): boolean {
+        if (citations.length === 0) {
+          return false;
+        }
+        const accepted = acceptedCitations({ ...context, citations });
+        return accepted.length === citations.length;
+      }
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "every inconclusive constructor sets a reason, lines 229-235"
+    evidence: |
+      function deadlineExceededEvaluation(name: string): Evaluation {
+        return { hypothesis: name, verdict: 'inconclusive', reason: 'deadline-exceeded', citations: [] };
+      }
+
+      function judgmentFailureEvaluation(name: string): Evaluation {
+        return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [] };
+      }
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: "toEvidenceItems projecting only the evidence item's own snapshotted fields, lines 202-210"
+    evidence: |
+      function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
+        return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+        }));
+      }
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "the deadline branches returning deadlineExceededEvaluation instead of aborting, lines 85-88, 111-114, 118-121"
+    evidence: |
+      const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+      if (first === DEADLINE_ELAPSED) {
+        return deadlineExceededEvaluation(name);
+      }
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: "requiredNames.map(...) inside Promise.all, one judgeOneHypothesis call — and therefore one Evaluation — per required name, lines 32-44"
+    evidence: |
+      return Promise.all(
+        requiredNames.map((name) =>
+          judgeOneHypothesis({
+  - node: rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+    held_at: nowhere
+    evidence: "const requiredNames = requiresEvaluationOf(theCase);"
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: "the nonOkEvidence filter routing non-ok evidence to noDataEvaluation, lines 59-62"
+    evidence: |
+      const nonOkEvidence = evidence.filter((item) => item.result !== 'ok');
+      if (nonOkEvidence.length > 0) {
+        return noDataEvaluation(name, nonOkEvidence);
+      }
+  - node: scenarios/investigation/a-foreign-citation-is-refused
+    held_at: "runIsolatedCall's rejection path into retryOrFail, and retryOrFail's deadline check before retrying, lines 89-93, 108-110"
+    evidence: |
+      const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence };
+      if (citationsAreAcceptable(context, first)) {
+        return asEvaluation(name, first);
+      }
+      return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext });
+  - node: scenarios/investigation/a-queued-judgment-is-deadline-exceeded
+    held_at: "acquireSlotOrDeadline returning false into deadlineExceededEvaluation, lines 63-65"
+    evidence: |
+      if (!(await acquireSlotOrDeadline(pool, deadlineGuard))) {
+        return deadlineExceededEvaluation(name);
+      }
+  - node: scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+    held_at: "toEvidenceItems passing each evidence item's own fields/concept_description unchanged into prompt assembly, lines 202-210"
+    evidence: |
+      function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
+        return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+        }));
+      }
+
+looked_past: "the CallPool queueing (inFlight/waiting array) and the DEADLINE_ELAPSED symbol/setTimeout mechanics are concurrency implementation style rather than a domain fact, so they are not reported here."

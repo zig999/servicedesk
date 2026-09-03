@@ -1,0 +1,8 @@
+read:
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "the third branch of the EvaluationOutcome union, lines 29-36 of hypothesis-evaluator.port.ts"
+    evidence: |
+      readonly verdict: Exclude<Verdict, 'confirmed' | 'refuted'>;
+      readonly reason: EvaluationReason;
+      readonly citations: readonly Citation[];
+looked_past: "the same union's first two branches require a non-empty citations tuple for 'confirmed' and 'refuted' verdicts, which is rules/investigation/a-decided-evaluation-cites-evidence's fact — that node is bound to this batch's adapter and judgment-stage files, not to this port file, so its conformance here is not this node's to answer."

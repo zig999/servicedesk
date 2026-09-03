@@ -1,0 +1,137 @@
+findings:
+  - file: src/persistence/relational-investigation-store.repository.ts
+    where: "IEvaluationRow, the INVESTIGATION_EVALUATIONS_TABLE insert in evaluationStatement(), and its reconstruction in evaluationOf()"
+    evidence: |
+      interface IEvaluationRow {
+        readonly hypothesis: string;
+        readonly verdict: string;
+        readonly reason: string | null;
+      }
+      ...
+      text: `INSERT INTO ${INVESTIGATION_EVALUATIONS_TABLE} (investigation_id, hypothesis, verdict, reason) VALUES ($1, $2, $3, $4)`,
+      params: [investigationId, evaluation.hypothesis, evaluation.verdict, reason],
+      ...
+      return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis) };
+    cost: "An evaluation's own usage, elapsed_ms and prompt — what the provider charged for the judgment call, how long it took, and the judgment prompt as it actually materialized — are never inserted and never selected back; a stored investigation's evaluations always come back with none of these, even for a hypothesis a call was actually run for, so an audit replaying a persisted record from this store cannot recover the per-hypothesis call facts the aggregate is supposed to hold complete."
+    correction: "Add nullable usage_input_tokens/usage_output_tokens, elapsed_ms and prompt columns to investigation_evaluations, populate them in evaluationStatement's INSERT and params (present exactly when a call happened, absent for no-data), and reconstruct them onto the Evaluation in evaluationOf/IEvaluationRow."
+    node: domain/investigation/evaluation
+
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "the column list of INVESTIGATION_INSERT_TEXT and every child table's INSERT/SELECT text, each column paired to a declared attribute or relationship"
+    evidence: |
+      (id, requester, ticket_ref, narrative, subject_type, prompt_version, model,
+       pinned_case_slug, pinned_case_version, assessment_outcome, assessment_action, assessment_recipient,
+       assessment_determining_hypothesis, assessment_text, assessment_register, assessment_usage_input_tokens,
+       assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls, cost_input_tokens,
+       cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total, written_at)
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "write() and read(), both running the whole operation inside runInTransaction over the injected IConnectableQueryable — no file access anywhere in the file"
+    evidence: "await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));"
+  - node: domain/investigation/assessment
+    held_at: "assessmentParams() on write and assessmentOf() on read, carrying outcome, referral, determining_hypothesis, text, register, usage, elapsed_ms and prompt"
+    evidence: |
+      outcome: row.assessment_outcome,
+      referral: { action: row.assessment_action, recipient: row.assessment_recipient },
+      ...(row.assessment_determining_hypothesis !== null ? { determining_hypothesis: row.assessment_determining_hypothesis } : {}),
+      text: row.assessment_text,
+      register: registerOf(row.assessment_register),
+      usage: { input_tokens: row.assessment_usage_input_tokens, output_tokens: row.assessment_usage_output_tokens },
+      elapsed_ms: row.assessment_elapsed_ms,
+      prompt: row.assessment_prompt,
+  - node: domain/investigation/cost
+    held_at: "costParams() on write and the cost object in investigationOf() on read"
+    evidence: "return [cost.calls, cost.input_tokens, cost.output_tokens];"
+  - node: domain/investigation/durations
+    held_at: "durationsParams() on write and the durations object in investigationOf() on read, with writing conditional and total always present"
+    evidence: |
+      ...(row.durations_writing !== null ? { writing: row.durations_writing } : {}),
+        total: row.durations_total,
+  - node: domain/investigation/evaluation
+    held_at: "hypothesis, verdict, reason and citations in evaluationStatement()/evaluationOf(); usage, elapsed_ms and prompt nowhere — see finding"
+    evidence: "const reason = evaluation.verdict === 'inconclusive' ? evaluation.reason : null;"
+  - node: domain/investigation/evaluation-reason
+    held_at: "reasonOf(), validating against EVALUATION_REASON_VALUES built from the imported EVALUATION_REASONS vocabulary"
+    evidence: |
+      if (!isEvaluationReason(row.reason)) { throw raiseReadFailure(new Error(...)); }
+        return row.reason;
+  - node: domain/investigation/evidence
+    held_at: "evidenceStatement() on write and evidenceOf() on read"
+    evidence: |
+      concept: row.concept,
+      inputs: row.inputs,
+      observation: row.observation,
+      observed_at: row.observed_at.toISOString(),
+      ttl: row.ttl,
+      origin: row.origin,
+      result: resultOf(row.result),
+      ...(row.result_detail !== null ? { result_detail: row.result_detail } : {}),
+      capability_name: row.capability_name,
+      capability_version: row.capability_version,
+      elapsed_ms: row.elapsed_ms,
+      fields: row.fields,
+      concept_description: row.concept_description,
+  - node: domain/investigation/evidence-result
+    held_at: "resultOf(), validating against EVIDENCE_RESULT_VALUES built from the imported EVIDENCE_RESULTS vocabulary"
+    evidence: |
+      function isEvidenceResult(value: string): value is EvidenceResult {
+        return EVIDENCE_RESULT_VALUES.has(value);
+      }
+  - node: domain/investigation/field-semantics
+    held_at: "the fields column, written whole as JSON and read back whole"
+    evidence: "JSON.stringify(evidence.fields),"
+  - node: domain/investigation/investigation
+    held_at: "writeWholeInvestigation()/investigationParams() on write and investigationOf() on read"
+    evidence: |
+      return {
+        id,
+        requester: row.requester,
+        ...(row.ticket_ref !== null ? { ticket_ref: row.ticket_ref } : {}),
+        narrative: row.narrative,
+        subject: { type: row.subject_type, attributes },
+        pinned_case: { slug: row.pinned_case_slug, version: row.pinned_case_version },
+        prompt_version: row.prompt_version,
+        model: row.model,
+        evidence,
+        evaluations,
+        assessment: assessmentOf(row),
+        cost: { calls: row.cost_calls, input_tokens: row.cost_input_tokens, output_tokens: row.cost_output_tokens },
+        durations: { ... },
+        written_at: row.written_at.toISOString(),
+      };
+  - node: domain/investigation/subject
+    held_at: "the subject_type column plus the investigation_subject_attribute_values child table, assembled back in investigationOf()"
+    evidence: "subject: { type: row.subject_type, attributes },"
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueStatement() on write and readSubjectAttributeValues() on read"
+    evidence: |
+      text: `INSERT INTO ${INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE} (investigation_id, attribute, value) VALUES ($1, $2, $3)`,
+        params: [investigationId, attribute.attribute, attribute.value],
+  - node: domain/investigation/usage
+    held_at: "assessment_usage_input_tokens and assessment_usage_output_tokens, both non-nullable, in assessmentParams()/assessmentOf()"
+    evidence: "usage: { input_tokens: row.assessment_usage_input_tokens, output_tokens: row.assessment_usage_output_tokens },"
+  - node: domain/investigation/verdict
+    held_at: "verdictOf(), validating against VERDICT_VALUES built from the imported VERDICTS vocabulary"
+    evidence: |
+      function isVerdict(value: string): value is Verdict {
+        return VERDICT_VALUES.has(value);
+      }
+  - node: domain/knowledge/consolidation-register
+    held_at: "registerOf(), validating against CONSOLIDATION_REGISTER_VALUES built from the imported CONSOLIDATION_REGISTERS vocabulary"
+    evidence: |
+      function isConsolidationRegister(value: string): value is ConsolidationRegister {
+        return CONSOLIDATION_REGISTER_VALUES.has(value);
+      }
+  - node: rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+    held_at: "holdsNoTicketReference()/ticketRefForWrite() on write, and the conditional inclusion of ticket_ref in investigationOf() on read"
+    evidence: |
+      function holdsNoTicketReference(value: string | undefined): boolean {
+        return value === undefined || value === '';
+      }
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: "the id-keyed unique-violation branch in raiseRootInsertFailure(), with the whole write wrapped in one transaction"
+    evidence: |
+      function raiseRootInsertFailure(id: string): RaiseStoreError {
+        return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));
+      }
+looked_past: "nonEmptyCitations()'s read-time refusal of a decided evaluation with no citations mirrors rules/investigation/a-decided-evaluation-cites-evidence, but it reads as reconstructing the Evaluation type's own non-empty-tuple shape from an untyped row rather than a fresh assertion of business policy, the same class of defensive read-validation as resultOf/verdictOf/reasonOf; left to whichever pass judges write-time enforcement of that rule."

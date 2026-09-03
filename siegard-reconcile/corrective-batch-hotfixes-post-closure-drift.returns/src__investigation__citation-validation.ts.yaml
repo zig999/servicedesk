@@ -1,0 +1,8 @@
+read:
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: "citesACollectedConcept (lines 22-24), reached through isCitationValid (line 10) and acceptedCitations (lines 17-20)"
+    evidence: |
+      function citesACollectedConcept(collects: readonly string[], citation: Citation): boolean {
+        return collects.includes(citation.concept);
+      }
+looked_past: "citesADeclaredField and declaredFieldsOf (lines 26-43) check that a citation's field exists among an evidence item's snapshotted field names — that fact is rules/investigation/a-cited-field-exists-in-the-capability-output-schema's, not this delegation's node; the no-data synthesis path and the refusal/retry that answer a foreign citation, which the node also speaks to, live in judgment-stage.ts (noDataEvaluation, citationsAreAcceptable, retryOrFail) rather than in this file."

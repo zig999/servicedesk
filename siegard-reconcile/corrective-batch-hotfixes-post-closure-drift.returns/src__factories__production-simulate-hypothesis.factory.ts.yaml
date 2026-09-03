@@ -1,0 +1,23 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "the dependency wiring inside createProductionHypothesisSimulationRunner (lines 30-46)"
+    evidence: |
+      const capabilities = createCapabilityQuery(dependencies.connection);
+      const glossary = createGlossaryQuery(dependencies.connection);
+      const connectorConfigurations = createConnectorConfigurationRegistry(dependencies.connection);
+      const observationSource = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations });
+      const evaluator = new AnthropicHypothesisEvaluator({ model: dependencies.evaluatorModel, maxTokens: dependencies.evaluatorMaxTokens });
+      return (call: ProductionHypothesisSimulationCall): Promise<SimulateHypothesisPipelineResult> =>
+        runSimulateHypothesisPipeline({ ...call, capabilities, glossary, observationSource, evaluator, poolSize: dependencies.poolSize });
+  - node: rules/investigation/a-simulation-writes-no-investigation
+    held_at: "the same dependency set assembled and forwarded to runSimulateHypothesisPipeline (lines 30-46)"
+    evidence: |
+      return (call: ProductionHypothesisSimulationCall): Promise<SimulateHypothesisPipelineResult> =>
+        runSimulateHypothesisPipeline({ ...call, capabilities, glossary, observationSource, evaluator, poolSize: dependencies.poolSize });
+  - node: scenarios/investigation/a-simulation-never-enters-the-cache
+    held_at: "the same dependency set — no cache dependency is created or wired anywhere in this factory"
+    evidence: |
+      const capabilities = createCapabilityQuery(dependencies.connection);
+      const glossary = createGlossaryQuery(dependencies.connection);
+      const connectorConfigurations = createConnectorConfigurationRegistry(dependencies.connection);
+      const observationSource = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations });

@@ -1,0 +1,11 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's sole import statement, line 1"
+    evidence: "import type { ConnectorConfiguration } from './connector-configuration.js';"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the interface's two method signatures, lines 5 and 7"
+    evidence: |
+      readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]>;
+
+      writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void>;
+looked_past: "the contract's per-name read, paged listing and create-or-replace register semantics are not signatures on this port — they are composed elsewhere (connector-configuration-registry.service.ts, outside this file set) over this port's bulk read/write primitive, which is this pass's file and not the service's."

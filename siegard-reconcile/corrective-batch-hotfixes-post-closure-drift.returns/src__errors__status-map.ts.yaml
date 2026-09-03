@@ -1,0 +1,10 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the STATUS_BY_ERROR_CLASS entries for the registry's own read and register-connector refusals, lines 40 and 59-62"
+    evidence: |
+      [ConnectorConfigurationNotFoundError, 404], ... [ConnectorConfigurationNotWellFormedError, 422], [IncompleteConnectorConfigurationError, 422], ... [ConnectorPlaceholderOutsideInputSchemaError, 422],
+  - node: contracts/investigation/diagnosis
+    held_at: "the STATUS_BY_ERROR_CLASS entries for diagnose's own refusals, lines 61 and 66"
+    evidence: |
+      [SubjectDoesNotCoverCaseInputsError, 422], ... [InvestigationWriteDeadlineExceededError, 500],
+looked_past: "the file also maps CaseNotFoundError, ConceptNotAnsweredError/NotHeld/NotInGlossary, VocabularyTermNotHeldError, every capability-registry and case-version-lifecycle error, CapabilityNotRegisteredForTestError and CapabilityConnectorMismatchError (which belong to the test action, not to any of connector-configuration-registry's three declared operations), and HypothesisRevisionCollectsNoConceptError — none of these answer to either of the two nodes under review here."

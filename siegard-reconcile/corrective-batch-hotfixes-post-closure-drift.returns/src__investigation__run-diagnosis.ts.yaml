@@ -1,0 +1,50 @@
+findings:
+  - file: src/investigation/run-diagnosis.ts
+    where: "buildInvestigationOptions, line 72, and investigationForRetry, lines 113-115"
+    evidence: |
+      written_at: new Date(readClockMs()).toISOString(), // in buildInvestigationOptions, evaluated before writeWithinDeadline is ever called — and, on retry: return { ...investigation, written_at: new Date(readClockMs()).toISOString() };
+    cost: "written_at is read from the local clock at record-assembly time — before persistence is even attempted — and, on a retry, again from the local clock immediately before that second write is dispatched; neither reading is the store's own confirmation that a write settled. Persisted this way, an audit reading written_at to learn when the record came into being instead reads the moment the response pipeline finished assembling the investigation (or the moment the retry was issued), drifting from the true persist instant by however long that write actually took to settle — the exact confusion the rule exists to prevent, and it is silent in the code: nothing here computes or waits for a settle-time reading at all."
+    correction: "Stamp written_at from a reading taken after the store confirms the write that actually persists the record has settled, not from a clock read taken before that write is dispatched — for both the first attempt and the retry."
+    node: rules/investigation/written-at-records-when-the-write-settled
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: "the body of runDiagnosis, lines 27-42"
+    evidence: "export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> { ... return investigation.assessment; } — a single sequential await chain (pipeline, build, write) with no job, queue or poll between entry and the returned assessment"
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: "the delegation at line 29"
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options); — this file forwards options wholesale to the pipeline that performs the per-hypothesis isolated calls, and states nothing of its own about isolation or the pool bound"
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "persistenceStageBoundMs, lines 95-97"
+    evidence: "return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now - elapsedBeforePersistenceMs));"
+  - node: contracts/investigation/case-source
+    held_at: "buildInvestigationOptions, line 64"
+    evidence: "case: options.case,"
+  - node: contracts/investigation/diagnosis
+    held_at: "the runDiagnosis function signature and body, lines 27-42"
+    evidence: "export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> { ... const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options); ... } — every call re-runs the pipeline fresh, with no lookup, reuse or join of a prior investigation"
+  - node: domain/investigation/cost
+    held_at: "buildInvestigationOptions, line 70, carrying the pipeline's own cost through unchanged"
+    evidence: "cost,"
+  - node: domain/investigation/durations
+    held_at: "buildInvestigationOptions, line 71, carrying the pipeline's own durations through unchanged, fixed before persistence is attempted"
+    evidence: |
+      durations, ... written_at: new Date(readClockMs()).toISOString(), glossary: options.glossary, }; } ... const elapsedBeforePersistenceMs = readClockMs() - pipelineStartedAtMs; await writeWithinDeadline({ ... });
+  - node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+    held_at: "PERSISTENCE_STAGE_BUDGET_MS, line 13, and the deadline-propagation machinery it feeds"
+    evidence: "const PERSISTENCE_STAGE_BUDGET_MS = 2_000;"
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: "raceWriteAttempt, lines 120-123"
+    evidence: "(error: unknown): WriteAttemptOutcome => (error instanceof InvestigationAlreadyStoredError ? 'settled' : 'failed'),"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "writeWithinDeadline (lines 86-93) and persistWithinBound (lines 99-111)"
+    evidence: "const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs)); if (!settled) { throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs); }"
+  - node: rules/investigation/replay-is-pinned
+    held_at: "buildInvestigationOptions, lines 64-67"
+    evidence: "case: options.case, prompt_version: options.prompt_version, model: options.model, evidence,"
+  - node: rules/investigation/the-response-follows-the-record
+    held_at: "runDiagnosis, lines 34-41"
+    evidence: "await writeWithinDeadline({ store: options.store, investigation, now: options.now, deadline: options.deadline, elapsedBeforePersistenceMs, }); return investigation.assessment;"
+  - node: scenarios/investigation/no-response-without-a-record
+    held_at: "writeWithinDeadline, lines 90-92"
+    evidence: "if (!settled) { throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs); }"
+looked_past: "the local pipelineStartedAtMs/elapsedBeforePersistenceMs measurement (versus deriving remaining time from options.now directly) is an implementation choice this file's own text cannot confirm or contradict without visibility into where options.now is captured upstream, so not treated as a finding."

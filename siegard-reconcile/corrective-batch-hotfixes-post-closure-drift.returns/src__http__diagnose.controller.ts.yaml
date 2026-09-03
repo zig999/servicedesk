@@ -1,0 +1,55 @@
+read:
+  - node: contracts/investigation/diagnosis
+    held_at: "the handleDiagnoseRequest signature (case, subject, narrative, requester, optional ticket_ref in; DiagnoseResponseDto out) and the fresh id it stamps on every call"
+    evidence: |
+      const assessment = await dependencies.runDiagnose({
+          id: randomUUID(),
+          requester: body.requester,
+          ticket_ref: body.ticket_ref,
+          narrative: body.narrative,
+  - node: contracts/knowledge/case-input-requirements
+    held_at: "the call to caseInputRequirementsQuery.readCaseInputRequirements before the subject is checked"
+    evidence: |
+      const { requirements } = await dependencies.caseInputRequirementsQuery.readCaseInputRequirements(
+          pinnedCase.slug,
+          pinnedCase.version,
+        );
+  - node: contracts/system/guided-diagnosis
+    held_at: "the toDiagnoseResponse mapping"
+    evidence: |
+      return {
+          outcome: assessment.outcome,
+          referral: assessment.referral,
+          ...(assessment.determining_hypothesis !== undefined ? { determining_hypothesis: assessment.determining_hypothesis } : {}),
+          text: assessment.text,
+        };
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: "the refuseSubjectMissingRequiredCaseInputs call, placed before the runDiagnose call that begins collection"
+    evidence: |
+      refuseSubjectMissingRequiredCaseInputs(body.subject.attributes, requirements);
+        const assessment = await dependencies.runDiagnose({
+  - node: rules/investigation/only-a-released-case-version-is-diagnosed
+    held_at: "the state guard immediately after reading the case"
+    evidence: |
+      if (pinnedCase.state !== 'released') {
+          throw new CaseVersionNotReleasedError(pinnedCase.slug, pinnedCase.version, pinnedCase.state);
+        }
+  - node: rules/knowledge/the-contract-check-reads-the-current-registration
+    held_at: "the per-request call to readCaseInputRequirements, with no cached result kept across calls in this controller"
+    evidence: |
+      const { requirements } = await dependencies.caseInputRequirementsQuery.readCaseInputRequirements(
+          pinnedCase.slug,
+          pinnedCase.version,
+        );
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: "the same ordering — refusal call before the runDiagnose (collection) call"
+    evidence: |
+      refuseSubjectMissingRequiredCaseInputs(body.subject.attributes, requirements);
+        const assessment = await dependencies.runDiagnose({
+  - node: scenarios/investigation/a-draft-case-version-refuses-diagnosis
+    held_at: "the state guard that throws before any input-requirements read or subject check runs"
+    evidence: |
+      if (pinnedCase.state !== 'released') {
+          throw new CaseVersionNotReleasedError(pinnedCase.slug, pinnedCase.version, pinnedCase.state);
+        }
+looked_past: "the determining_hypothesis field on the response and the model/promptVersion pass-through to runDiagnose are shaped by the Assessment domain model and the judgment/prompt constraints, none of which are in this file's node set, so their conformance is another judgment's."

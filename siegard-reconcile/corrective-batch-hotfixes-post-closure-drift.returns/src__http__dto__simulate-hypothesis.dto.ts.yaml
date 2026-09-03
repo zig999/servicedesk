@@ -1,0 +1,117 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: simulateHypothesisResponseSchema, lines 87-91
+    evidence: |
+      export const simulateHypothesisResponseSchema = z.object({
+        evidence: z.array(evidenceSchema).readonly(),
+        evaluation: evaluationSchema,
+        durations: durationsSchema,
+      });
+  - node: domain/investigation/citation
+    held_at: citationSchema, lines 29-32
+    evidence: |
+      const citationSchema = z.object({
+        concept: z.string().min(1),
+        field: z.string().min(1).optional(),
+      });
+  - node: domain/investigation/durations
+    held_at: durationsSchema, lines 81-85
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        total: z.number(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: evaluationSchema discriminated union, lines 39-65
+    evidence: |
+      z.object({
+          hypothesis: z.string().min(1),
+          verdict: z.literal('inconclusive'),
+          reason: z.enum(EVALUATION_REASONS),
+          citations: z.array(citationSchema).readonly(),
+          usage: usageSchema.optional(),
+          elapsed_ms: z.number().optional(),
+          prompt: z.string().optional(),
+        })
+  - node: domain/investigation/evaluation-reason
+    held_at: evaluationSchema's inconclusive branch, line 59
+    evidence: "reason: z.enum(EVALUATION_REASONS),"
+  - node: domain/investigation/evidence
+    held_at: "evidenceSchema, lines 67-79 — concept, inputs, observation, observed_at, ttl, origin, result, elapsed_ms are present; fields and concept_description, both required by the node, are absent — see findings"
+    evidence: |
+      const evidenceSchema = z.object({
+        concept: z.string().min(1),
+        inputs: z.string(),
+        observation: z.string(),
+        observed_at: z.string().min(1),
+        ttl: z.number(),
+        origin: z.string(),
+        result: z.enum(EVIDENCE_RESULTS),
+        result_detail: z.string().optional(),
+        capability_name: z.string(),
+        capability_version: z.string(),
+        elapsed_ms: z.number(),
+      });
+  - node: domain/investigation/evidence-result
+    held_at: evidenceSchema, line 74
+    evidence: "result: z.enum(EVIDENCE_RESULTS),"
+  - node: domain/investigation/subject
+    held_at: subjectSchema, lines 10-13
+    evidence: |
+      const subjectSchema = z.object({
+        type: z.string().min(1),
+        attributes: z.array(subjectAttributeValueSchema).min(1),
+      });
+  - node: domain/investigation/subject-attribute-value
+    held_at: subjectAttributeValueSchema, lines 5-8
+    evidence: |
+      const subjectAttributeValueSchema = z.object({
+        attribute: z.string().min(1),
+        value: z.string().min(1),
+      });
+  - node: domain/investigation/usage
+    held_at: usageSchema, lines 34-37
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+  - node: domain/investigation/verdict
+    held_at: "the z.literal('confirmed')/'refuted'/'inconclusive') branch discriminators of evaluationSchema, lines 42, 50, 58 — see findings"
+    evidence: "verdict: z.literal('confirmed'),"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: subjectSchema, line 12
+    evidence: "attributes: z.array(subjectAttributeValueSchema).min(1),"
+findings:
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "evaluationSchema's discriminated union, lines 42, 50 and 58"
+    evidence: |
+      verdict: z.literal('confirmed'),
+      ...
+      verdict: z.literal('refuted'),
+      ...
+      verdict: z.literal('inconclusive'),
+    cost: "the verdict vocabulary already has one declared home in this same codebase — export const VERDICTS = ['confirmed', 'refuted', 'inconclusive'] as const; in src/investigation/verdict.ts, the identical pattern this same file already follows for EVALUATION_REASONS and EVIDENCE_RESULTS by importing them. Typing the three verdicts as inline literals here instead means a future change to VERDICTS has nothing forcing this schema to follow — the two can silently drift apart, and nobody reading this file would know its literals answer to a shared vocabulary at all."
+    correction: "import VERDICTS from src/investigation/verdict.ts and derive each branch's discriminator from it, the same way EVALUATION_REASONS and EVIDENCE_RESULTS are already imported here, instead of typing 'confirmed' / 'refuted' / 'inconclusive' directly."
+    node: domain/investigation/verdict
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "evidenceSchema, lines 67-79"
+    evidence: |
+      const evidenceSchema = z.object({
+        concept: z.string().min(1),
+        inputs: z.string(),
+        observation: z.string(),
+        observed_at: z.string().min(1),
+        ttl: z.number(),
+        origin: z.string(),
+        result: z.enum(EVIDENCE_RESULTS),
+        result_detail: z.string().optional(),
+        capability_name: z.string(),
+        capability_version: z.string(),
+        elapsed_ms: z.number(),
+      });
+    cost: "domain/investigation/evidence declares fields and concept_description as required attributes — the capability's own snapshotted field-by-field meaning and the concept's own snapshotted meaning, 'never re-read afterward'. This response shape carries neither. A curator calling simulate-hypothesis to see 'the detail' the customer-facing route withholds gets an evidence item with no snapshotted semantics at all: nothing telling them what a cited field name meant at collection time, or what the concept itself meant, which is exactly what a legacy or unresolved-capability item is supposed to show as an honest empty rather than simply not showing."
+    correction: "add fields (field-semantics, many) and concept_description (string) to evidenceSchema, matching domain/investigation/evidence's required attributes."
+    node: domain/investigation/evidence
+looked_past: "Every domain-modeled integer attribute in this file (durations.collection/judgment/total, usage.input_tokens/output_tokens, evidence.ttl/elapsed_ms) validates as z.number() rather than z.number().int() — the same file uses z.int() elsewhere (caseRefSchema.version) — and evidence.result's capability reference is projected onto capability_name/capability_version scalars rather than a single relationship object; both are validation/encoding choices applied uniformly rather than a node's stated fact being contradicted, so not reported."

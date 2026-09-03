@@ -1,0 +1,19 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the class declaration and its import list — driver access (runInTransaction, runStatement, DatabaseConnection) is confined to this persistence module, which reaches the domain type only through the port's own type"
+    evidence: |
+      import type { IConnectorConfigurationStore } from '../connector-registry/connector-configuration-store.port.js';
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the two primitive operations the store exposes, which the domain service composes into read-connector-configuration, list-connector-configurations and register-connector"
+    evidence: |
+      public async readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]> {
+      ...
+      public async writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void> {
+  - node: domain/integration/connector-configuration-registry
+    held_at: "the upsert statement's conflict clause, which is the persistence half of holding the current configuration for each connector name as currently registered — the validation half of the responsibility is not this file's and is not claimed here"
+    evidence: |
+      text: `INSERT INTO ${CONNECTOR_CONFIGURATIONS_TABLE} (connector, configuration)
+             VALUES ($1, $2)
+             ON CONFLICT (connector) DO UPDATE SET configuration = EXCLUDED.configuration`,
+looked_past: "register-connector's actual implementation rewrites every held configuration on each registration (read-all, filter, write-all) rather than upserting only the target row, and read-connector-configuration/list-connector-configurations resolve by scanning an in-memory read-all rather than a targeted query — both are the calling service's composition choice over this store's two primitives, and neither states a domain fact this file gets wrong, so they are a code-review question rather than this pass's."

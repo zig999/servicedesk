@@ -1,0 +1,11 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the module as a whole — its complete absence of import statements"
+    evidence: |
+      export type Durations = {
+        readonly collection: number;
+        readonly judgment: number;
+        readonly writing?: number;
+        readonly total: number;
+      };
+looked_past: "the field-level meaning of collection/judgment/writing/total (whether the total's own computation matches domain/investigation/durations) is another node's and another judgment's, not this constraint's."

@@ -1,0 +1,32 @@
+read:
+  - node: domain/investigation/assessment
+    held_at: "the assessment object returned by draftAssessment() is read for usage, elapsed_ms and prompt without any undefined/optional handling, lines 76, 80 and 83"
+    evidence: |
+      const cost = costOf(evaluations, assessment.usage); ... writingElapsedMs: assessment.elapsed_ms, ... prompts: { writing: assessment.prompt }
+  - node: domain/investigation/cost
+    held_at: "the object literal returned by costOf(), lines 89-93"
+    evidence: |
+      return {
+        calls: judgmentUsages.length + 1,
+        input_tokens: usages.reduce((sum, usage) => sum + usage.input_tokens, 0),
+        output_tokens: usages.reduce((sum, usage) => sum + usage.output_tokens, 0),
+      };
+  - node: domain/investigation/evaluation
+    held_at: "the optional-usage and optional-elapsed_ms filters in costOf and durationsOf, lines 87 and 106"
+    evidence: |
+      evaluations.flatMap((evaluation): Usage[] => (evaluation.usage === undefined ? [] : [evaluation.usage])) ... evaluations.flatMap((evaluation) => (evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]))
+  - node: domain/investigation/evidence
+    held_at: "the elapsed_ms and concept reads over the evidence array, lines 105 and 148"
+    evidence: |
+      const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms)); ... evidence.filter((item) => hypothesis.collects.includes(item.concept))
+  - node: domain/investigation/subject
+    held_at: "the buildSubject call assembling the Subject from the entry point's type and attribute-values, line 65"
+    evidence: "const subject = buildSubject(options.subjectType, options.subjectAttributes);"
+  - node: domain/knowledge/resolution
+    held_at: "the resolved value taken whole from resolveAndNarrow and threaded to draftAssessment and to the returned result, lines 69 and 83"
+    evidence: |
+      const { resolved, narrowedInput } = resolveAndNarrow({ case: options.case, evaluations, evidenceByHypothesis }); ... return { evidence, evaluations, resolved, assessment, cost, durations, prompts: { writing: assessment.prompt } };
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "const subject = buildSubject(options.subjectType, options.subjectAttributes); — the attribute set is forwarded to buildSubject with no cardinality check performed in this file"
+looked_past: "JUDGMENT_STAGE_BUDGET_MS = 5_000 and the deadline clamp Math.min(options.deadline, options.now + JUDGMENT_STAGE_BUDGET_MS) in this file match the 'five of judgment' figure in rules/investigation/an-answer-arrives-within-the-declared-deadline and the per-stage minimum rule in constraints/the-deadline-is-an-absolute-propagated-instant correctly, but neither node is in this delegation's set, so no finding is made over them."

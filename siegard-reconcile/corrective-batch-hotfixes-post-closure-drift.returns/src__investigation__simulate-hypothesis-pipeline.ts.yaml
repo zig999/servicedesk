@@ -1,0 +1,45 @@
+read:
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "the judgment-stage deadline computation, lines 61 and 68"
+    evidence: |
+      const judgmentBeginsAtMs = options.now + (readClockMs() - pipelineStartedAtMs);
+      ...
+      deadline: Math.min(options.deadline, judgmentBeginsAtMs + JUDGMENT_STAGE_BUDGET_MS),
+  - node: contracts/investigation/case-simulation
+    held_at: "the manifest narrowing (line 50) and the result shape (lines 38-42, 72), which carries evidence, one evaluation and durations and nothing an outcome or an assessment would need"
+    evidence: |
+      const narrowedCase: Case = { ...options.case, manifest: [entry] };
+      ...
+      return { evidence, evaluation, durations: durationsOf(evidence, evaluation, totalElapsedMs) };
+  - node: domain/investigation/durations
+    held_at: "durationsOf(), lines 83-87, and the SimulateHypothesisDurations type, lines 32-36"
+    evidence: |
+      const totalElapsedMs = readClockMs() - pipelineStartedAtMs;
+      ...
+      function durationsOf(evidence: readonly Evidence[], evaluation: Evaluation, totalElapsedMs: number): SimulateHypothesisDurations {
+        const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
+        const judgment = maxElapsedMs(evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]);
+        return { collection, judgment, total: totalElapsedMs };
+      }
+  - node: domain/investigation/evaluation
+    held_at: "the judgment figure in durationsOf(), line 85"
+    evidence: "const judgment = maxElapsedMs(evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]);"
+  - node: domain/investigation/subject
+    held_at: "line 48"
+    evidence: "const subject = buildSubject(options.subjectType, options.subjectAttributes);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "lines 49-50, narrowing the case to the one named entry"
+    evidence: |
+      const entry = manifestEntryNamed(options.case, options.hypothesis);
+      const narrowedCase: Case = { ...options.case, manifest: [entry] };
+  - node: rules/investigation/a-simulation-writes-no-investigation
+    held_at: "the options and result types (lines 15-42) and the return statement (line 72) — no store dependency is declared and nothing is persisted"
+    evidence: "return { evidence, evaluation, durations: durationsOf(evidence, evaluation, totalElapsedMs) };"
+  - node: scenarios/investigation/a-single-hypothesis-is-simulated
+    held_at: "the manifest narrowing (line 50), the single-evidence map (line 64) and onlyEvaluationOf() (lines 75-81)"
+    evidence: |
+      const [evaluation] = evaluations;
+      if (evaluation === undefined || evaluations.length !== 1) {
+        throw new Error(`expected exactly one evaluation for one named hypothesis, got ${evaluations.length}`);
+      }
+      return evaluation;

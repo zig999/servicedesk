@@ -1,0 +1,20 @@
+read:
+  - node: constraints/consolidation-runs-behind-a-port
+    held_at: "the class declaration, line 21-22"
+    evidence: "export class AnthropicAssessmentConsolidator implements IAssessmentConsolidator {"
+  - node: constraints/the-consolidation-prompt-is-closed
+    held_at: "buildDataBlock (lines 59-66) and the provider call (lines 39-44)"
+    evidence: |
+      const data = { evaluations, evidence, consolidation_register: consolidationRegister };
+      return `<${CONSOLIDATION_DATA_TAG}>\n${JSON.stringify(data)}\n</${CONSOLIDATION_DATA_TAG}>`;
+      ... this.client.messages.create({ model: this.model, max_tokens: this.maxTokens, system: buildSystemPrompt(consolidationRegister), messages: [{ role: 'user', content: prompt }] })
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the top-level import, line 1, confined to this adapter file"
+    evidence: "import Anthropic from '@anthropic-ai/sdk';"
+  - node: domain/investigation/assessment
+    held_at: "the return statement of consolidate(), line 46"
+    evidence: "return { text: textOf(response.content).trim(), register: consolidationRegister, usage: response.usage, elapsed_ms: elapsedMs, prompt };"
+  - node: domain/investigation/usage
+    held_at: "the usage field of the return statement, line 46"
+    evidence: "usage: response.usage"
+looked_past: "the defensive throw in textOf() for a missing/non-text first content block, and the process.env.ANTHROPIC_API_KEY fallback in the constructor, are error-handling and credential-wiring details with no domain fact behind them."

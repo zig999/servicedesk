@@ -1,0 +1,156 @@
+findings:
+  - file: src/http/dto/simulate-case.dto.ts
+    where: assessmentSchema, lines 91-96
+    evidence: |
+      const assessmentSchema = z.object({
+        outcome: z.string().min(1),
+        referral: referralSchema,
+        determining_hypothesis: z.string().min(1).optional(),
+        text: z.string().min(1),
+      });
+    cost: "contracts/investigation/case-simulation exists to hand the curator the detail a customer never sees, and domain/investigation/assessment requires register, usage, elapsed_ms and prompt on every assessment because a consolidation call always runs and always settles on some register. This schema declares none of the four, so a caller typed against SimulateCaseResponseDto has no way to read the consolidation call's register, token spend, duration or materialized prompt, even though src/investigation/assessment.ts and the persisted record already carry all eight required attributes -- delivery/consolidation-call-record-chain-hotfix's own implementation record names simulate-case.dto.ts by name under deferred as the widening nobody has done yet."
+    correction: "add register (the consolidation-register enum), usage (usageSchema), elapsed_ms (z.number()) and prompt (z.string()), all required, to assessmentSchema."
+    node: domain/investigation/assessment
+  - file: src/http/dto/simulate-case.dto.ts
+    where: evidenceSchema, lines 66-78
+    evidence: |
+      const evidenceSchema = z.object({
+        concept: z.string().min(1),
+        inputs: z.string(),
+        observation: z.string(),
+        observed_at: z.string().min(1),
+        ttl: z.number(),
+        origin: z.string(),
+        result: z.enum(EVIDENCE_RESULTS),
+        result_detail: z.string().optional(),
+        capability_name: z.string(),
+        capability_version: z.string(),
+        elapsed_ms: z.number(),
+      });
+    cost: "fields and concept_description are the item's own snapshotted semantics -- the capability's declared field-by-field meaning and the concept's own description at the moment of collection -- exactly the traceability a curator running simulate-case needs to judge what grounded a verdict. Neither key is declared here, so a consumer typed against SimulateCaseResponseDto has no declared way to read either for any evidence item the simulation collected."
+    correction: "add fields (a required array of the field-semantics shape) and concept_description (a required string) to evidenceSchema."
+    node: domain/investigation/evidence
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: simulateCaseRequestSchema (lines 20-24) and simulateCaseResponseSchema (lines 111-118)
+    evidence: |
+      export const simulateCaseResponseSchema = z.object({
+        evidence: z.array(evidenceSchema).readonly(),
+        evaluations: z.array(evaluationSchema).readonly(),
+        resolved: resolvedOutcomeSchema,
+        assessment: assessmentSchema,
+        cost: costSchema,
+        durations: durationsSchema,
+      });
+  - node: domain/investigation/assessment
+    held_at: "assessmentSchema, lines 91-96 -- only outcome, referral, determining_hypothesis and text; register, usage, elapsed_ms and prompt are absent (see findings)"
+    evidence: |
+      const assessmentSchema = z.object({
+        outcome: z.string().min(1),
+        referral: referralSchema,
+        determining_hypothesis: z.string().min(1).optional(),
+        text: z.string().min(1),
+      });
+  - node: domain/investigation/citation
+    held_at: citationSchema, lines 28-31
+    evidence: |
+      const citationSchema = z.object({
+        concept: z.string().min(1),
+        field: z.string().min(1).optional(),
+      });
+  - node: domain/investigation/cost
+    held_at: costSchema, lines 98-102
+    evidence: |
+      const costSchema = z.object({
+        calls: z.number(),
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+  - node: domain/investigation/durations
+    held_at: durationsSchema, lines 104-109
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        writing: z.number().optional(),
+        total: z.number(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: evaluationSchema, lines 38-64
+    evidence: |
+      z.object({
+        hypothesis: z.string().min(1),
+        verdict: z.literal('confirmed'),
+        citations: z.array(citationSchema).min(1).readonly(),
+        usage: usageSchema.optional(),
+        elapsed_ms: z.number().optional(),
+        prompt: z.string().optional(),
+      })
+  - node: domain/investigation/evaluation-reason
+    held_at: "line 58, inside the inconclusive branch"
+    evidence: "reason: z.enum(EVALUATION_REASONS),"
+  - node: domain/investigation/evidence
+    held_at: "evidenceSchema, lines 66-78 -- concept, inputs, observation, observed_at, ttl, origin, result, result_detail and elapsed_ms only; fields and concept_description are absent (see findings)"
+    evidence: |
+      const evidenceSchema = z.object({
+        concept: z.string().min(1),
+        inputs: z.string(),
+        observation: z.string(),
+        observed_at: z.string().min(1),
+        ttl: z.number(),
+        origin: z.string(),
+        result: z.enum(EVIDENCE_RESULTS),
+        result_detail: z.string().optional(),
+        capability_name: z.string(),
+        capability_version: z.string(),
+        elapsed_ms: z.number(),
+      });
+  - node: domain/investigation/evidence-result
+    held_at: "line 73"
+    evidence: "result: z.enum(EVIDENCE_RESULTS),"
+  - node: domain/investigation/subject
+    held_at: subjectSchema, lines 10-13
+    evidence: |
+      const subjectSchema = z.object({
+        type: z.string().min(1),
+        attributes: z.array(subjectAttributeValueSchema).min(1),
+      });
+  - node: domain/investigation/subject-attribute-value
+    held_at: subjectAttributeValueSchema, lines 5-8
+    evidence: |
+      const subjectAttributeValueSchema = z.object({
+        attribute: z.string().min(1),
+        value: z.string().min(1),
+      });
+  - node: domain/investigation/usage
+    held_at: usageSchema, lines 33-36
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+  - node: domain/investigation/verdict
+    held_at: the three verdict branches of evaluationSchema, lines 41, 49 and 57
+    evidence: |
+      verdict: z.literal('confirmed'),
+      verdict: z.literal('refuted'),
+      verdict: z.literal('inconclusive'),
+  - node: domain/knowledge/referral
+    held_at: referralSchema, lines 80-83
+    evidence: |
+      const referralSchema = z.object({
+        action: z.string().min(1),
+        recipient: z.string().min(1),
+      });
+  - node: domain/knowledge/resolution
+    held_at: "resolvedOutcomeSchema, lines 85-89 -- outcome and referral only; determining is a third field the schema also carries, governed by domain/knowledge/case-version's resolve-outcome operation rather than by this node"
+    evidence: |
+      const resolvedOutcomeSchema = z.object({
+        outcome: z.string().min(1),
+        referral: referralSchema,
+        determining: z.string().min(1).optional(),
+      });
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "subjectSchema, line 12"
+    evidence: "attributes: z.array(subjectAttributeValueSchema).min(1),"
+looked_past: "resolvedOutcomeSchema's extra determining field and the verdict literals hardcoded per branch both exactly match facts held elsewhere in the specification rather than departing from them, and the inconclusive branch's citations carry no minimum count distinguishing a no-data reason from judgment-failure/deadline-exceeded -- a gap the no-data-citation-field-omitted-hotfix's own delivery record already considered and left unsplit by design, not an unnoticed departure."

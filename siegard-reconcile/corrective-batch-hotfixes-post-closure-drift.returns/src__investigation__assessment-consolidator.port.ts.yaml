@@ -1,0 +1,52 @@
+read:
+  - node: constraints/consolidation-runs-behind-a-port
+    held_at: "the IAssessmentConsolidator interface declaration, whose only method is consolidate(...)"
+    evidence: |
+      export interface IAssessmentConsolidator {
+
+        consolidate(
+          evaluations: readonly Evaluation[],
+          evidence: readonly Evidence[],
+          consolidationRegister: ConsolidationRegister,
+        ): Promise<ConsolidationOutcome>;
+      }
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's import list"
+    evidence: |
+      import type { ConsolidationRegister } from './consolidation-register.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Usage } from './usage.js';
+  - node: domain/investigation/assessment
+    held_at: "the ConsolidationOutcome type, for the writing-produced fields (text, register, usage, elapsed_ms, prompt) — outcome, referral and determining_hypothesis are correctly absent here, per the node's own description that the writing produces only text and the other three come from resolve-outcome elsewhere"
+    evidence: |
+      export type ConsolidationOutcome = {
+        readonly text: string;
+        readonly register: ConsolidationRegister;
+        readonly usage: Usage;
+        readonly elapsed_ms: number;
+        readonly prompt: string;
+      };
+  - node: domain/investigation/evaluation
+    held_at: "the evaluations parameter of consolidate(), typed as the imported Evaluation"
+    evidence: "evaluations: readonly Evaluation[],"
+  - node: domain/investigation/evidence
+    held_at: "the evidence parameter of consolidate(), typed as the imported Evidence"
+    evidence: "evidence: readonly Evidence[],"
+  - node: rules/investigation/the-outcome-comes-from-the-case
+    held_at: "the ConsolidationOutcome type and the consolidate() signature, neither of which accepts or returns outcome, referral or determining_hypothesis"
+    evidence: |
+      consolidate(
+        evaluations: readonly Evaluation[],
+        evidence: readonly Evidence[],
+        consolidationRegister: ConsolidationRegister,
+      ): Promise<ConsolidationOutcome>;
+  - node: rules/investigation/the-writing-input-is-narrowed
+    held_at: "the consolidate() parameter list, which takes only evaluations, evidence and a register — no case, hypothesis-criteria or when_to_use parameter"
+    evidence: |
+      consolidate(
+        evaluations: readonly Evaluation[],
+        evidence: readonly Evidence[],
+        consolidationRegister: ConsolidationRegister,
+      ): Promise<ConsolidationOutcome>;
+looked_past: "the I-prefixed interface naming is a style convention, not a domain fact, and is not reported here."

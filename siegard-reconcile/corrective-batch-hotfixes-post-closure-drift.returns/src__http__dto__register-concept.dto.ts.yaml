@@ -1,0 +1,12 @@
+findings:
+  - file: src/http/dto/register-concept.dto.ts
+    where: "registerConceptBodySchema, the `description` field, line 12"
+    evidence: "description: z.string().optional(),"
+    cost: "RegisterConceptBodyDto types a registration body with no description as well-formed, so nothing in this file's own contract tells a caller — or a reader relying on this type alone — that the specification requires refusing such a registration; the type admits exactly the input the specification says must never be accepted."
+    correction: "description should be declared required in registerConceptBodySchema (e.g. z.string().min(1)), matching domain/glossary/concept's required:true attribute and the registry's own refusal invariant for a concept with no description."
+    node: domain/glossary/concept
+read:
+  - node: domain/glossary/concept
+    held_at: "registerConceptParamsSchema's `name` field and registerConceptBodySchema's `accepts` and `ttl` fields hold the node's required/optional shape; the body schema's `description` field does not — see findings"
+    evidence: "name: z.string().min(1); accepts: z.array(z.string().min(1)); ttl: z.number().int().positive().optional()"
+looked_past: "The non-empty (.min(1)) constraints on name and each accepts entry are form-level validation implied by requiredness rather than an independent domain fact, so they are not reported here."

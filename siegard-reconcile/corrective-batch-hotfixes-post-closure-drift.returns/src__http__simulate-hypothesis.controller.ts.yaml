@@ -1,0 +1,17 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "the handler's response, line 34"
+    evidence: "return { evidence, evaluation, durations };"
+  - node: domain/investigation/subject
+    held_at: "the subject assembled from the request body, line 22"
+    evidence: "const subject = buildSubject(body.subject.type, body.subject.attributes);"
+  - node: domain/knowledge/case-version
+    held_at: "the pinned case read by slug and version and forwarded unmodified, lines 21 and 28"
+    evidence: "const { case: pinnedCase } = await dependencies.caseQuery.readCase(body.case.slug, body.case.version); ... case: pinnedCase,"
+  - node: rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
+    held_at: "the glossary refusal call, line 23"
+    evidence: "await refuseAttributesNotInGlossary(subject, dependencies.glossary);"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "nowhere"
+    evidence: "const subject = buildSubject(body.subject.type, body.subject.attributes); — the invariant is not itself checked in this file; the call only delegates subject construction to buildSubject, defined outside this file set"
+looked_past: "The controller validates the built subject against the glossary but then reconstructs the downstream pipeline call from the raw request fields instead of reusing that validated object, and it also declares a twenty-second TOTAL_DEADLINE_BUDGET_MS that matches the total held by rules/investigation/an-answer-arrives-within-the-declared-deadline — both are, respectively, a code-structure question and a fact governed by a node outside this delegation's five-node set, not a conflict against any of them."

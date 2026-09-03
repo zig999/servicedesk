@@ -1,0 +1,5 @@
+read:
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "the stageCeilingMs computation inside collectEvidence, line 33"
+    evidence: "const stageCeilingMs = Math.max(0, Math.min(COLLECTION_STAGE_BUDGET_MS, deadline - now));"
+looked_past: "The effectiveBoundMsFor clamp against capability.timeout, and the DEFAULT_EVIDENCE_TTL_SECONDS stamped onto each evidence item, are governed by the capability-timeout and evidence-ttl rules rather than by the deadline-propagation constraint, so they were not judged here."

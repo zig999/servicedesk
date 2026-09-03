@@ -1,0 +1,23 @@
+read:
+  - node: constraints/consolidation-runs-behind-a-port
+    held_at: "the class declaration, line 19"
+    evidence: "export class FakeAssessmentConsolidator implements IAssessmentConsolidator {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import section, lines 1-5"
+    evidence: "import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';"
+  - node: domain/investigation/assessment
+    held_at: "the return statement of consolidate(), line 36"
+    evidence: "return { text, register: consolidationRegister, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };"
+  - node: domain/investigation/evaluation
+    held_at: "the ConsolidateCall type and consolidate() parameter, lines 14 and 27"
+    evidence: "readonly evaluations: readonly Evaluation[];"
+  - node: domain/investigation/evidence
+    held_at: "the ConsolidateCall type and consolidate() parameter, lines 15 and 28"
+    evidence: "readonly evidence: readonly Evidence[];"
+  - node: domain/investigation/usage
+    held_at: "the ZEROED_USAGE constant, line 7"
+    evidence: "const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };"
+  - node: rules/investigation/the-outcome-comes-from-the-case
+    held_at: "the return statement of consolidate(), line 36, which carries no outcome, referral or determining_hypothesis field"
+    evidence: "return { text, register: consolidationRegister, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };"
+looked_past: "The fixture-matching mechanics (JSON-stringifying the call as a map key, the seeded-fixture-missing error's wording) are test-double scaffolding with no domain fact in them."

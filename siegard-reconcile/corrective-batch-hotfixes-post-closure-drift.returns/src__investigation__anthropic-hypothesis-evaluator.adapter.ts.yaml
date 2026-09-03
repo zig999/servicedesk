@@ -1,0 +1,59 @@
+read:
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: the class declaration implementing the port
+    evidence: "export class AnthropicHypothesisEvaluator implements IHypothesisEvaluator {"
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: buildUserPrompt/evidenceBlock/itemBlock assembling the data block, and the provider call granting no tools
+    evidence: |
+      return await this.client.messages.create({
+              model: this.model,
+              max_tokens: this.maxTokens,
+              system: SYSTEM_PROMPT,
+              messages: [{ role: 'user', content: prompt }],
+            });
+  - node: domain/investigation/evaluation
+    held_at: outcomeFromModelText and the CallRecord spread assembling verdict, citations, usage, elapsed_ms and prompt
+    evidence: "return { verdict: 'confirmed', citations: parsed.citations, ...callRecord };"
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: the evaluate() method's signature and body
+    evidence: |
+      public async evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome> {
+  - node: domain/investigation/usage
+    held_at: the usage field passed through from the provider call
+    evidence: "return outcomeFromModelText(textOf(message), { usage: message.usage, elapsed_ms: elapsedMs, prompt });"
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: parseJudgment's non-empty-citation gate before a confirmed/refuted parse succeeds
+    evidence: |
+      if (!isCitationArray(citations) || !isNonEmpty(citations)) {
+          return undefined;
+        }
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: noDataOutcome and judgmentFailureOutcome setting reason and, for no-data, citing the non-ok evidence
+    evidence: |
+      return {
+          verdict: 'inconclusive',
+          reason: 'no-data',
+          citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+        };
+  - node: rules/investigation/judgment-does-not-infer
+    held_at: the SYSTEM_PROMPT constant sent with every call
+    evidence: "The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries."
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: itemBlock reading only the evidence item's own snapshotted fields, with no glossary or registry import anywhere in the file
+    evidence: |
+      function itemBlock(item: EvidenceItem): string {
+        return [
+          `<item concept="${escapeForXmlAttribute(item.concept)}">`,
+          ...conceptDescriptionLines(item.concept_description),
+          fieldsBlock(item.fields),
+  - node: scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+    held_at: conceptDescriptionLines omitting the element entirely for an empty snapshot
+    evidence: |
+      function conceptDescriptionLines(conceptDescription: string): readonly string[] {
+        return conceptDescription === '' ? [] : [`<concept_description>${escapeForXmlText(conceptDescription)}</concept_description>`];
+      }
+looked_past: "the SYSTEM_PROMPT clause telling the model that an item declaring no fields cannot ground a decided verdict is a derivable consequence of a-cited-field-exists-in-the-capability-output-schema and domain/investigation/citation's own 'no fields at all' case, not an independent fact this file invents; DEFAULT_MAX_TOKENS and the exact JSON-only response-format instructions are adapter-level mechanism with no domain-fact content."
