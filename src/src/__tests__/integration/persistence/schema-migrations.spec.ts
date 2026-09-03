@@ -309,6 +309,47 @@ it('applies every migration script, in the order their file names number them, t
   expect(rows.map((row) => row.table_name)).toEqual(EXPECTED_TABLES);
 });
 
+it('gives hypothesis_revisions a state column after applying every migration script, in numbered order, to an empty database', async () => {
+  const { rows } = await client.query<{ column_name: string }>(
+    `SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = 'hypothesis_revisions' AND column_name = 'state'`,
+    [schemaName],
+  );
+
+  expect(rows).toEqual([{ column_name: 'state' }]);
+});
+
+it('adds hypothesis_revisions exactly one new column, state, when migration 0020 runs on top of every migration before it', async () => {
+  const freshSchema = `fresh_state_pairing_${randomUUID().replace(/-/g, '_')}`;
+  await client.query(`CREATE SCHEMA "${freshSchema}"`);
+  await client.query(`SET search_path TO "${freshSchema}"`);
+  const files = await migrationFilesInOrder();
+  const targetIndex = files.findIndex((name) => name.startsWith('0020-'));
+  for (const file of files.slice(0, targetIndex)) {
+    const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+    await client.query(sql);
+  }
+  const { rows: before } = await client.query<{ column_name: string }>(
+    'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
+    [freshSchema, 'hypothesis_revisions'],
+  );
+
+  const target = files[targetIndex];
+  if (target === undefined) {
+    throw new Error('migration 0020 not found among the migration files');
+  }
+  const targetSql = await readFile(join(MIGRATIONS_DIR, target), 'utf8');
+  await client.query(targetSql);
+
+  const { rows: after } = await client.query<{ column_name: string }>(
+    'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
+    [freshSchema, 'hypothesis_revisions'],
+  );
+  const beforeNames = new Set(before.map((row) => row.column_name));
+  const addedColumns = after.map((row) => row.column_name).filter((name) => !beforeNames.has(name));
+
+  expect(addedColumns).toEqual(['state']);
+});
+
 it('persists and reads back a full case, hypothesis revision, resolution, referral and its collects', async () => {
   const slug = 'a-full-case';
   await insertCase(client, slug);
@@ -484,6 +525,58 @@ it('accepts exactly the two values consolidation-register declares, besides its 
   await expect(
     insertCaseVersion(client, { slug: invalidSlug, version: 1, glossary, consolidationRegister: 'draft' }),
   ).rejects.toMatchObject({ code: CHECK_VIOLATION });
+});
+
+it("accepts draft and released for a hypothesis-revision's own state and refuses a third value through a CHECK violation", async () => {
+  const slug = 'a-case-for-hypothesis-revision-state-check';
+  await insertCase(client, slug);
+  await insertHypothesis(client, { slug, name: 'the-hypothesis' });
+  await client.query(
+    `INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state)
+     VALUES ($1, $2, 1, 'a criterion', $3, $4, $5, 'draft')`,
+    [slug, 'the-hypothesis', glossary.outcome, glossary.action, glossary.recipient],
+  );
+  await client.query(
+    `INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state)
+     VALUES ($1, $2, 2, 'a criterion', $3, $4, $5, 'released')`,
+    [slug, 'the-hypothesis', glossary.outcome, glossary.action, glossary.recipient],
+  );
+
+  await expect(
+    client.query(
+      `INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state)
+       VALUES ($1, $2, 3, 'a criterion', $3, $4, $5, 'archived')`,
+      [slug, 'the-hypothesis', glossary.outcome, glossary.action, glossary.recipient],
+    ),
+  ).rejects.toMatchObject({ code: CHECK_VIOLATION });
+});
+
+it('refuses storing a hypothesis-revision whose state is explicitly null', async () => {
+  const slug = 'a-case-with-a-null-revision-state';
+  await insertCase(client, slug);
+  await insertHypothesis(client, { slug, name: 'the-hypothesis' });
+
+  await expect(
+    client.query(
+      `INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state)
+       VALUES ($1, $2, 1, 'a criterion', $3, $4, $5, NULL)`,
+      [slug, 'the-hypothesis', glossary.outcome, glossary.action, glossary.recipient],
+    ),
+  ).rejects.toMatchObject({ code: NOT_NULL_VIOLATION });
+});
+
+it("defaults a hypothesis-revision's state to draft when an insert names no state at all", async () => {
+  const slug = 'a-case-with-a-defaulted-revision-state';
+  await insertCase(client, slug);
+  await insertHypothesis(client, { slug, name: 'the-hypothesis' });
+  await insertHypothesisRevision(client, { slug, name: 'the-hypothesis', revision: 1, glossary });
+
+  const { rows } = await client.query<{ state: string }>(
+    'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
+    [slug, 'the-hypothesis'],
+  );
+
+  expect(rows).toEqual([{ state: 'draft' }]);
 });
 
 it('declares each of the five enumeration columns as plain text, not a native Postgres enum type', async () => {

@@ -430,6 +430,10 @@
           "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
         },
         {
+          "path": "src/migrations/0020-hypothesis-revision-own-state.sql",
+          "digest": "sha256:0f7a01bc5cfd52933ed9a6bb5b883268340d784429f6fc8a249624274e5707dc"
+        },
+        {
           "path": "src/src/migrate.ts",
           "digest": "sha256:062eadb0e03808f4547b003ded32dca71d2d8bd2aa13fe8a26de02953a4b48b0"
         },
@@ -478,6 +482,10 @@
         {
           "path": "src/migrations/0015-durations-writing-nullable.sql",
           "digest": "sha256:83e6d95c695bae983f6f83abdfcd6c504f3e4290080c2f429e91e525d47a920e"
+        },
+        {
+          "path": "src/migrations/0020-hypothesis-revision-own-state.sql",
+          "digest": "sha256:0f7a01bc5cfd52933ed9a6bb5b883268340d784429f6fc8a249624274e5707dc"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -3841,7 +3849,7 @@
     },
     {
       "node": "domain/knowledge/hypothesis-revision",
-      "digest": "sha256:a06a2dd7b9ac02663b08f24ae7e01070fbc310f990098a70f3fef847f9485b80",
+      "digest": "sha256:b588f7696f72c6b26c55359e903883d02cbc06e242568ffd626d45c2f36ac7fe",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
@@ -3908,6 +3916,10 @@
           "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
         },
         {
+          "path": "src/migrations/0020-hypothesis-revision-own-state.sql",
+          "digest": "sha256:0f7a01bc5cfd52933ed9a6bb5b883268340d784429f6fc8a249624274e5707dc"
+        },
+        {
           "path": "src/src/case/case-query.port.ts",
           "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
         },
@@ -3965,11 +3977,25 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+          "digest": "sha256:345710d3e1b957d92f22d43f0957fc181758fd03e341510271a09de9e90a0808"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
           "digest": "sha256:e457a1a666950915acaa06424ffb5dcc587934ef5e79fd01c05ab1934d9757ae"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/hypothesis-revision-state",
+      "digest": "sha256:4770859f8bcec53ffb6ef3821a05edf1d2d9388e0a76461af7eda28f2520d046",
+      "files": [
+        {
+          "path": "src/migrations/0020-hypothesis-revision-own-state.sql",
+          "digest": "sha256:0f7a01bc5cfd52933ed9a6bb5b883268340d784429f6fc8a249624274e5707dc"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:709891bcae5d22546448f4f4674bfee493da50c1bdfa6511f18a9f6d738f7fe2"
         }
       ]
     },

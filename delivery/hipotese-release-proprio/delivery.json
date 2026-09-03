@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state.md",
+      "title": "Store the hypothesis-revision's own state column and write draft on insert",
+      "summary": "Adds hypothesis_revisions.state (draft/released, NOT NULL, CHECK-constrained) via a new numbered migration, and makes the insert write path name it explicitly as draft, leaving the overwrite path untouched.",
+      "task": "task/hypothesis-revision-own-state/store-the-revisions-own-state"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state/store-the-revisions-own-state.md",
+      "title": "Store the hypothesis-revision's own state — proof",
+      "summary": "Integration tests over a fresh migration replay and over ReviseHypothesisOperation's own write path, proving the state column exists, is CHECK-constrained to draft/released, is not nullable, defaults draft for a row this migration did not create, and is written draft on insert while left untouched on overwrite.",
+      "task": "task/hypothesis-revision-own-state/store-the-revisions-own-state"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

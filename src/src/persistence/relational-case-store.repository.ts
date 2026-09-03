@@ -8,6 +8,7 @@ import type {
   HypothesisRevisionContent,
   HypothesisRevisionInput,
   HypothesisRevisionListItem,
+  HypothesisRevisionState,
   ICaseStore,
   ManifestEntry,
   OverwriteHypothesisRevisionInput,
@@ -94,6 +95,8 @@ const CASE_VERSION_HYPOTHESES_TABLE = 'case_version_hypotheses';
 
 const DRAFT_STATE: CaseVersionState = 'draft';
 const RELEASED_STATE: CaseVersionState = 'released';
+
+const HYPOTHESIS_REVISION_DRAFT_STATE: HypothesisRevisionState = 'draft';
 
 const UNIQUE_VIOLATION_CODE = '23505';
 
@@ -680,12 +683,12 @@ function revisionInsertStatement(input: HypothesisRevisionInput, columns: readon
   const [outcome, action, recipient] = columns;
   return {
     text: `INSERT INTO ${HYPOTHESIS_REVISIONS_TABLE}
-             (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)
-           SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6
+             (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state)
+           SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
            FROM ${HYPOTHESIS_REVISIONS_TABLE}
            WHERE case_slug = $1 AND hypothesis_name = $2
            RETURNING revision`,
-    params: [input.slug, input.hypothesis_name, input.criterion, outcome, action, recipient],
+    params: [input.slug, input.hypothesis_name, input.criterion, outcome, action, recipient, HYPOTHESIS_REVISION_DRAFT_STATE],
   };
 }
 

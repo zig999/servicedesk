@@ -4,6 +4,10 @@ import type { Resolution } from './case.js';
 
 export type CaseVersionState = 'draft' | 'released';
 
+export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;
+
+export type HypothesisRevisionState = (typeof HYPOTHESIS_REVISION_STATES)[number];
+
 export type HypothesisRevisionContent = {
   readonly hypothesis_name: string;
   readonly revision: number;

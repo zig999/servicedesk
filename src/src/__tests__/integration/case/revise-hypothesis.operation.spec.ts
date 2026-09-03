@@ -222,6 +222,24 @@ it("originates a never-named hypothesis's own identity and its first revision, n
   expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);
 });
 
+it("reads back with its own state draft, the revision revise-hypothesis originates by inserting", async () => {
+  const fixture = freshFixture();
+  await persistCase(fixture);
+  await persistGlossaryVocabulary(fixture);
+  await registerConceptAccepting(fixture, fixture.subjectType);
+  await seedDraftCaseVersion(fixture);
+  const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+
+  const answered = await operation.reviseHypothesis(reviseInput(fixture));
+
+  expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 });
+  const { rows } = await pool.query(
+    'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+    [fixture.slug, 'the-hypothesis', 1],
+  );
+  expect(rows).toEqual([{ state: 'draft' }]);
+});
+
 it(
   "overwrites an already-named hypothesis's own highest revision in place, keeping its revision number " +
     'unchanged, when that revision is referenced by no case version in released state',
@@ -243,6 +261,33 @@ it(
       [fixture.slug, 'the-hypothesis'],
     );
     expect(rows).toEqual([{ revision: 1, criterion: 'the second revision text' }]);
+  },
+);
+
+it(
+  "leaves a revision's own state exactly as it was when a revise replaces its content in place, rather " +
+    'than resetting it to draft',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+    const initial = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the original text' }));
+    expect(initial.revision).toBe(1);
+    await pool.query(
+      "UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3",
+      [fixture.slug, 'the-hypothesis', 1],
+    );
+
+    await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the overwritten text' }));
+
+    const { rows } = await pool.query(
+      'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [fixture.slug, 'the-hypothesis', 1],
+    );
+    expect(rows).toEqual([{ state: 'released' }]);
   },
 );
 
