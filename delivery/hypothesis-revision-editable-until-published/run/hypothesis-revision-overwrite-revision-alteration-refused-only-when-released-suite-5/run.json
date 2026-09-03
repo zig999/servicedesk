@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/hypothesis-revision-overwrite-revision-alteration-refused-only-when-released-suite-5",
+  "cwd": "/home/siegfriedneto/projects/wt-revision-alteration-refused-only-when-released/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-03T01:12:00.150+00:00",
+      "ended_at": "2026-09-03T01:12:19.630+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-03T01:12:19.630+00:00",
+      "ended_at": "2026-09-03T01:12:41.484+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-03T01:12:41.484+00:00",
+      "ended_at": "2026-09-03T01:12:55.801+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-03T01:12:55.801+00:00",
+      "ended_at": "2026-09-03T01:12:57.308+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-03T01:12:57.308+00:00",
+      "ended_at": "2026-09-03T01:18:15.507+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released.md",
+      "title": "Release-conditioned refusal on hypothesis_revisions UPDATE",
+      "summary": "A new migration replaces the unconditional no-update rule on hypothesis_revisions with a per-row trigger that refuses an UPDATE, raising a distinguishable error, only when a released case version's manifest still references that exact revision.",
+      "task": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released"
+    },
+    {
+      "id": "proof/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released.md",
+      "title": "Proof for the release-conditioned refusal on hypothesis_revisions UPDATE",
+      "summary": "Five integration tests against a real PostgreSQL database, replaying every migration script including 0019, proving the unconditional rule is gone and the new trigger lets an UPDATE through except where a released case version's manifest still references the row's own revision — where it raises the distinguishable error instead of silently discarding the write.",
+      "task": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "to": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
