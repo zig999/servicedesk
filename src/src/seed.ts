@@ -17,7 +17,6 @@ import { RelationalGlossaryStore } from './persistence/relational-glossary-store
 const FIXTURES_ROOT = fileURLToPath(new URL('../src/fixtures', import.meta.url));
 const CASE_SLUG = 'intermittent-connection-outage';
 const CASE_VERSION = 1;
-const RELEASED_REVISION_STATE = 'released';
 
 async function fixtureTerms(file: string): Promise<readonly GlossaryTerm[]> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', file), 'utf8');
@@ -119,15 +118,12 @@ async function placeFixtureHypotheses(
 }
 
 async function releaseManifestedRevisions(
-  connection: DatabaseConnection,
+  lifecycle: CaseLifecycleOperations,
   slug: string,
   revisions: readonly PlacedRevision[],
 ): Promise<void> {
   for (const revision of revisions) {
-    await connection.query(
-      'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
-      [RELEASED_REVISION_STATE, slug, revision.hypothesis_name, revision.revision],
-    );
+    await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
   }
 }
 
@@ -145,8 +141,8 @@ async function seedCase(connection: DatabaseConnection): Promise<void> {
     consolidation_register: fixture.consolidation_register,
   });
   const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
   await lifecycle.release(fixture.slug, draft.version);
-  await releaseManifestedRevisions(connection, fixture.slug, placed);
 }
 
 async function alreadySeeded(connection: DatabaseConnection): Promise<boolean> {
