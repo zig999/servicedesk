@@ -124,7 +124,7 @@ preserved:
 - Every existing assertion in case-fixture-reads-clean.spec.ts, seed.spec.ts, the three factory specs
   and manifest-collects-survive-release.spec.ts — none were changed, removed or relaxed.
 deferred:
-- what: A persistent Neon test database that already holds the canonical fixture case with its collects
+- what: A persistent test database that already holds the canonical fixture case with its collects
     already emptied by a prior run of the unfixed cleanup (before this delivery) is not backfilled by
     this change.
   why: insertFixtureCase / seedCase skip reconstruction once assembleVersion finds the case already stored,

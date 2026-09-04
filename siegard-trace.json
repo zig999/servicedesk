@@ -3997,7 +3997,7 @@
         },
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
-          "digest": "sha256:590b5386f700dff94bbd84920becfee7e17ea928a864e864c193149a866f43ef"
+          "digest": "sha256:8a252b5c4ca541fe25be7de646b1ffc9aba7714bc4645be659616d99f7c52beb"
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
@@ -4115,7 +4115,7 @@
         },
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
-          "digest": "sha256:590b5386f700dff94bbd84920becfee7e17ea928a864e864c193149a866f43ef"
+          "digest": "sha256:8a252b5c4ca541fe25be7de646b1ffc9aba7714bc4645be659616d99f7c52beb"
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
