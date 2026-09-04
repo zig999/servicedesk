@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "kind": "implementation",
+      "file": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal.md",
+      "title": "Case-version release dialog already names every draft hypothesis a refusal reports",
+      "summary": "The pre-existing generic release-violations extraction and dialog rendering in the case-version editor already satisfy every criterion for the backend's new draft-hypothesis release refusal, so no frontend source change was required.",
+      "task": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal"
+    },
+    {
       "id": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
       "kind": "implementation",
       "file": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state.md",
@@ -32,6 +40,14 @@
       "title": "Show each revision's own state on the hypothesis-revisions listing",
       "summary": "Widens the listing hook's item type with the revision's own draft/released state and renders it as an independent StatusTable column on the revision-history screen, beside the existing current/frozen pin badge.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "proof/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "kind": "proof",
+      "file": "proof/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal.md",
+      "title": "Draft-hypothesis release refusal renders every named hypothesis and preserves the release control",
+      "summary": "New tests over the case-version editor's release dialog prove all eight criteria for the backend's draft-hypothesis release refusal against realistic hypothesis-shaped violation strings, closing the gap the pre-existing generic-payload coverage left open.",
+      "task": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal"
     },
     {
       "id": "proof/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
@@ -67,6 +83,30 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
       "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
@@ -167,6 +207,12 @@
       "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "kind": "proves",
       "at": "the path"
     },
     {

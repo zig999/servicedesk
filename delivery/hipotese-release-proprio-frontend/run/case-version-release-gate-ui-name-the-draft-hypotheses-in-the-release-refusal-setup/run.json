@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/case-version-release-gate-ui-name-the-draft-hypotheses-in-the-release-refusal-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-04T23:00:27.382+00:00",
+      "ended_at": "2026-09-04T23:01:03.532+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
