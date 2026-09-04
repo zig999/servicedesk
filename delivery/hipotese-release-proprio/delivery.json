@@ -82,6 +82,14 @@
       "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
     },
     {
+      "id": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "implementation",
+      "file": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state.md",
+      "title": "Disclose each listed hypothesis-revision's own state",
+      "summary": "The list-hypothesis-revisions read path now selects and answers each revision's own stored state, and orders the page by revision number descending.",
+      "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
+    },
+    {
       "id": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "kind": "proof",
       "file": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
@@ -160,6 +168,14 @@
       "title": "Proof for retiring the manifest-basis persistence schema specs",
       "summary": "Confirms, by reading the two edited files in full and cross-referencing a fresh full suite run, that the two schema specs no longer attribute refusal, content-survival or collects-survival to a released case version's manifest reference, that every removed assertion has a state-only equivalent already standing in the sibling file, and that the retained/sibling tests still pass.",
       "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
+    },
+    {
+      "id": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "proof",
+      "file": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state.md",
+      "title": "Disclose each listed hypothesis-revision's own state",
+      "summary": "Proves the list-hypothesis-revisions read path answers every revision's own draft-or-released state, sourced from its own row rather than any referencing case version, ordered highest-revision-first, and reconciles every pre-existing test the state field and the descending order broke.",
+      "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
     }
   ],
   "edges": [
@@ -512,6 +528,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "to": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "kind": "proves",
@@ -568,6 +608,12 @@
     {
       "from": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "to": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
       "kind": "proves",
       "at": "the path"
     }

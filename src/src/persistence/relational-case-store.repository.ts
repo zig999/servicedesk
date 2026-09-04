@@ -455,6 +455,7 @@ interface IHypothesisRevisionRow {
   readonly resolution_outcome: string;
   readonly resolution_action: string;
   readonly resolution_recipient: string;
+  readonly state: string;
 }
 
 async function listHypothesisRevisionsPage(
@@ -500,10 +501,10 @@ function hypothesisRevisionsCountSelect(key: IHypothesisKey): IStatement {
 
 function hypothesisRevisionsPageSelect(key: IHypothesisKey, pagination: PaginationRequest): IStatement {
   return {
-    text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient
+    text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state
            FROM ${HYPOTHESIS_REVISIONS_TABLE}
            WHERE case_slug = $1 AND hypothesis_name = $2
-           ORDER BY revision
+           ORDER BY revision DESC
            LIMIT $3 OFFSET $4`,
     params: [key.slug, key.hypothesis_name, pagination.limit, pagination.offset],
   };
@@ -536,6 +537,7 @@ function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: rea
     criterion: row.criterion,
     collects,
     resolution: resolutionOf(row.resolution_outcome, row.resolution_action, row.resolution_recipient),
+    state: hypothesisRevisionStateOf(row.state),
   };
 }
 

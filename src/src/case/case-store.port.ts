@@ -105,6 +105,7 @@ export type HypothesisRevisionListItem = {
   readonly criterion: string;
   readonly collects: readonly string[];
   readonly resolution: Resolution;
+  readonly state: HypothesisRevisionState;
 };
 
 export interface ICaseStore {

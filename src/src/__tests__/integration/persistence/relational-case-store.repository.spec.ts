@@ -487,8 +487,8 @@ it(
     const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
 
     expect(page.data).toEqual([
-      { revision: firstRevision, criterion: 'first criterion', collects: [conceptA], resolution: aResolution(glossary) },
-      { revision: secondRevision, criterion: 'second criterion', collects: [conceptB], resolution: aResolution(glossary) },
+      { revision: secondRevision, criterion: 'second criterion', collects: [conceptB], resolution: aResolution(glossary), state: 'draft' },
+      { revision: firstRevision, criterion: 'first criterion', collects: [conceptA], resolution: aResolution(glossary), state: 'draft' },
     ]);
   },
 );
@@ -519,7 +519,7 @@ it(
 
     const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
 
-    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary) }]);
+    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'draft' }]);
   },
 );
 
@@ -551,7 +551,7 @@ it(
 
     const page = await store.listHypothesisRevisions(slug, 'shared-name', { offset: 0, limit: 20 });
 
-    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary) }]);
+    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'draft' }]);
   },
 );
 
@@ -584,6 +584,152 @@ it(
     expect(page.data).toHaveLength(1);
     expect(page.total).toBe(3);
     expect(page.pageCount).toBe(3);
+  },
+);
+
+it(
+  "carries every answered revision's own state, reading the field as draft for a revision left at its schema default across a multi-revision page",
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-own-state-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revisionInput = () => ({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [] as string[],
+      resolution: aResolution(glossary),
+    });
+    await store.insertHypothesisRevision(revisionInput());
+    await store.insertHypothesisRevision(revisionInput());
+    await store.insertHypothesisRevision(revisionInput());
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+    expect(page.data).toHaveLength(3);
+    expect(page.data.every((item) => item.state === 'draft')).toBe(true);
+  },
+);
+
+it('answers a revision whose own stored state is released as released', async () => {
+  const slug = `case-lifecycle-store-list-revisions-own-state-released-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'a criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+  await pool.query(
+    "UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3",
+    [slug, 'a-hypothesis', revision],
+  );
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+  expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'released' }]);
+});
+
+it('answers a revision whose own stored state is draft as draft', async () => {
+  const slug = `case-lifecycle-store-list-revisions-own-state-still-draft-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'a criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+  expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'draft' }]);
+});
+
+it(
+  "answers a revision's own stored state — draft — even though a released case version's manifest still references that revision, reading the state from the revision's own row and not from the referencing case version",
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-own-state-not-manifest-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+    await store.release(slug, version);
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'draft' }]);
+  },
+);
+
+it(
+  'answers a hypothesis holding three revisions ordered by revision number descending, the highest revision first',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-order-desc-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revisionInput = () => ({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [] as string[],
+      resolution: aResolution(glossary),
+    });
+    const first = await store.insertHypothesisRevision(revisionInput());
+    const second = await store.insertHypothesisRevision(revisionInput());
+    const third = await store.insertHypothesisRevision(revisionInput());
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+    expect(page.data.map((item) => item.revision)).toEqual([third, second, first]);
+  },
+);
+
+it(
+  'answers the page a middle offset selects under descending order — the second- and third-highest revisions, not the two most recently inserted',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-paged-desc-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revisionInput = () => ({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [] as string[],
+      resolution: aResolution(glossary),
+    });
+    await store.insertHypothesisRevision(revisionInput());
+    const second = await store.insertHypothesisRevision(revisionInput());
+    const third = await store.insertHypothesisRevision(revisionInput());
+    await store.insertHypothesisRevision(revisionInput());
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 1, limit: 2 });
+
+    expect(page.data.map((item) => item.revision)).toEqual([third, second]);
+    expect(page.total).toBe(4);
+    expect(page.limit).toBe(2);
+    expect(page.offset).toBe(1);
   },
 );
 
@@ -1669,7 +1815,7 @@ it("answers the replacement's own criterion and resolution, once that revision i
   });
 
   const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
-  expect(page.data).toEqual([{ revision, criterion: 'the replaced criterion', collects: [], resolution: aResolution(newGlossary) }]);
+  expect(page.data).toEqual([{ revision, criterion: 'the replaced criterion', collects: [], resolution: aResolution(newGlossary), state: 'draft' }]);
 });
 
 it("answers exactly the concepts the replacement carried, once that revision's collects are read back after the overwrite", async () => {
@@ -1754,7 +1900,7 @@ it('leaves the hypothesis holding exactly the revisions it held before the overw
   });
 
   const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
-  expect(page.data.map((item) => item.revision)).toEqual([first, second]);
+  expect(page.data.map((item) => item.revision)).toEqual([second, first]);
   expect(page.total).toBe(2);
 });
 
@@ -1785,8 +1931,8 @@ it("leaves a different existing revision of the same hypothesis exactly as it wa
 
   const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
   expect(page.data).toEqual([
-    { revision: first, criterion: 'first criterion replaced', collects: [], resolution: aResolution(glossary) },
-    { revision: second, criterion: 'second criterion', collects: [], resolution: aResolution(glossary) },
+    { revision: second, criterion: 'second criterion', collects: [], resolution: aResolution(glossary), state: 'draft' },
+    { revision: first, criterion: 'first criterion replaced', collects: [], resolution: aResolution(glossary), state: 'draft' },
   ]);
 });
 

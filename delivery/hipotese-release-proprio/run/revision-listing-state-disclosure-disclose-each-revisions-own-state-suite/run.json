@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/revision-listing-state-disclosure-disclose-each-revisions-own-state-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 2400,
+  "outcome": "failed",
+  "failed_step": "test",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-04T11:29:23.495+00:00",
+      "ended_at": "2026-09-04T11:30:56.899+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-04T11:30:56.899+00:00",
+      "ended_at": "2026-09-04T11:31:07.997+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-04T11:31:07.997+00:00",
+      "ended_at": "2026-09-04T11:31:17.901+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-04T11:31:17.901+00:00",
+      "ended_at": "2026-09-04T11:31:19.405+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "test.log",
+      "started_at": "2026-09-04T11:31:19.405+00:00",
+      "ended_at": "2026-09-04T11:31:20.978+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

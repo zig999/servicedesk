@@ -1451,7 +1451,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
+          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
@@ -1519,7 +1519,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
         }
       ]
     },
@@ -6098,6 +6098,30 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "digest": "sha256:1fdbbe19c9b78c82312dee340628f806e4ba7a11d47668561e80b1abb7b8ac3c",
+      "files": [
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "digest": "sha256:c1848967fc37b667a982f99d9932ccd65b65c75d771c3ee4406a07da12c75b87",
+      "files": [
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
         }
       ]
     },
