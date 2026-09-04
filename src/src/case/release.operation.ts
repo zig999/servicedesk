@@ -6,8 +6,11 @@ import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Case } from './case.js';
 import type { AssembledCaseVersion, ICaseStore } from './case-store.port.js';
+import type { IHypothesisRevisionOwnStateQuery } from './hypothesis-revision-own-state.port.js';
 import { parseCaseDocument } from './parse-case-document.js';
 import { caseCoherenceViolations } from './validate-case-coherence.js';
+
+const RELEASED_STATE = 'released';
 
 export interface IRelease {
 
@@ -16,7 +19,7 @@ export interface IRelease {
 
 export class ReleaseOperation implements IRelease {
   public constructor(
-    private readonly caseStore: ICaseStore,
+    private readonly caseStore: ICaseStore & IHypothesisRevisionOwnStateQuery,
     private readonly glossary: IGlossaryQuery,
     private readonly capabilities: ICapabilityQuery,
   ) {}
@@ -24,7 +27,11 @@ export class ReleaseOperation implements IRelease {
   public async release(slug: string, version: number): Promise<void> {
     const assembled = await heldAssembledVersion(this.caseStore, slug, version);
     refuseNonDraft(assembled);
-    const violations = await releaseViolations(assembled, this.glossary, this.capabilities);
+    const violations = await releaseViolations(assembled, {
+      glossary: this.glossary,
+      capabilities: this.capabilities,
+      hypothesisRevisions: this.caseStore,
+    });
     if (violations.length > 0) {
       throw new CaseVersionNotReleasableError(slug, version, violations);
     }
@@ -54,15 +61,43 @@ type StructuralOutcome =
   | { readonly kind: 'parsed'; readonly theCase: Case }
   | { readonly kind: 'invalid'; readonly problems: readonly string[] };
 
+type ReleaseViolationSources = {
+  readonly glossary: IGlossaryQuery;
+  readonly capabilities: ICapabilityQuery;
+  readonly hypothesisRevisions: IHypothesisRevisionOwnStateQuery;
+};
+
 async function releaseViolations(
   assembled: AssembledCaseVersion,
-  glossary: IGlossaryQuery,
-  capabilities: ICapabilityQuery,
+  sources: ReleaseViolationSources,
 ): Promise<readonly string[]> {
   const structural = structuralOutcome(assembled);
-  return structural.kind === 'invalid'
-    ? structural.problems
-    : caseCoherenceViolations(structural.theCase, glossary, capabilities);
+  if (structural.kind === 'invalid') {
+    return structural.problems;
+  }
+  return [
+    ...(await caseCoherenceViolations(structural.theCase, sources.glossary, sources.capabilities)),
+    ...(await manifestOwnStateViolations(assembled, sources.hypothesisRevisions)),
+  ];
+}
+
+async function manifestOwnStateViolations(
+  assembled: AssembledCaseVersion,
+  hypothesisRevisions: IHypothesisRevisionOwnStateQuery,
+): Promise<string[]> {
+  const violations: string[] = [];
+  for (const entry of assembled.manifest) {
+    const { hypothesis_name: hypothesisName, revision } = entry.hypothesis_revision;
+    const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(
+      assembled.slug,
+      hypothesisName,
+      revision,
+    );
+    if (ownState !== RELEASED_STATE) {
+      violations.push(`the hypothesis "${hypothesisName}" is manifested at a revision that is not released`);
+    }
+  }
+  return violations;
 }
 
 function structuralOutcome(assembled: AssembledCaseVersion): StructuralOutcome {

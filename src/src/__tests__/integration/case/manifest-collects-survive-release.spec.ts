@@ -224,9 +224,9 @@ it(
     const revisionA = await placeNewHypothesis(store, { slug, version }, { name: 'h1', collects: [vocabulary.conceptA], resolution, position: 1 });
     const revisionB = await placeNewHypothesis(store, { slug, version }, { name: 'h2', collects: [vocabulary.conceptB], resolution, position: 2 });
     const releaseOperation = wireRelease(store);
-    await releaseOperation.release(slug, version);
     await releaseRevisionDirectly(slug, 'h1', revisionA);
     await releaseRevisionDirectly(slug, 'h2', revisionB);
+    await releaseOperation.release(slug, version);
     await deleteCollectsDirectly(slug, 'h1', revisionA);
     await deleteCollectsDirectly(slug, 'h2', revisionB);
 
@@ -252,8 +252,8 @@ it(
     const version1 = await createDraftVersion(store, { slug, subjectType: vocabulary.subjectType, resolution });
     const revision = await placeNewHypothesis(store, { slug, version: version1 }, { name: 'h', collects: [vocabulary.conceptA], resolution, position: 1 });
     const releaseOperation = wireRelease(store);
-    await releaseOperation.release(slug, version1);
     await releaseRevisionDirectly(slug, 'h', revision);
+    await releaseOperation.release(slug, version1);
     await deleteCollectsDirectly(slug, 'h', revision);
     const version2 = await createDraftVersion(store, { slug, subjectType: vocabulary.subjectType, resolution });
 

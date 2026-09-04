@@ -122,6 +122,42 @@ async function seedCapability(connection: DatabaseConnection, fixture: IFixture)
   );
 }
 
+const RELEASED_REVISION_STATE = 'released';
+
+async function releaseRevisionDirectly(
+  connection: DatabaseConnection,
+  identity: { readonly slug: string; readonly hypothesisName: string; readonly revision: number },
+): Promise<void> {
+  await connection.query(
+    'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
+    [RELEASED_REVISION_STATE, identity.slug, identity.hypothesisName, identity.revision],
+  );
+}
+
+async function placeAndReleaseRevision(
+  connection: DatabaseConnection,
+  input: {
+    readonly fixture: IFixture;
+    readonly draft: { readonly version: number };
+    readonly revised: { readonly hypothesis_name: string; readonly revision: number };
+  },
+): Promise<void> {
+  const { fixture, draft, revised } = input;
+  const lifecycle = createCaseLifecycle(connection);
+  await lifecycle.placeHypothesis({
+    slug: fixture.slug,
+    version: draft.version,
+    hypothesis_name: revised.hypothesis_name,
+    revision: revised.revision,
+    position: 1,
+  });
+  await releaseRevisionDirectly(connection, {
+    slug: fixture.slug,
+    hypothesisName: revised.hypothesis_name,
+    revision: revised.revision,
+  });
+}
+
 async function seedFixture(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
   await seedVocabulary(connection, fixture);
   await seedCapability(connection, fixture);
@@ -142,13 +178,7 @@ async function seedFixture(connection: DatabaseConnection, fixture: IFixture): P
     resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
     subject: fixture.subjectType,
   });
-  await lifecycle.placeHypothesis({
-    slug: fixture.slug,
-    version: draft.version,
-    hypothesis_name: revised.hypothesis_name,
-    revision: revised.revision,
-    position: 1,
-  });
+  await placeAndReleaseRevision(connection, { fixture, draft, revised });
   await lifecycle.release(fixture.slug, draft.version);
 }
 

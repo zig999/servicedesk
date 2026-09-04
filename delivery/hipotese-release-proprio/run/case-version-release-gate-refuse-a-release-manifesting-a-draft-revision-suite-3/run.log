@@ -1,0 +1,38 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 49s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+  137:1  error  Async function 'seedFixture' has too many lines (34). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test :: npm test :: not_run =====
+

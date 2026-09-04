@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "implementation",
+      "file": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
+      "title": "Refuse a case version's release over a draft revision",
+      "summary": "ReleaseOperation's existing violation aggregation now also checks every manifest entry's referenced hypothesis-revision own state through IHypothesisRevisionOwnStateQuery, naming every draft-state one among CaseVersionNotReleasableError's violations.",
+      "task": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision"
+    },
+    {
       "id": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
       "kind": "implementation",
       "file": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions.md",
@@ -72,6 +80,14 @@
       "title": "Retire the manifest-basis assertions from the two obsolete persistence schema specs",
       "summary": "Removed the two obsolete assertions (rejection and content-survival in revision-alteration-refused-only-when-released-schema.spec.ts, and collects-survival in protect-released-hypothesis-revision-collects-schema.spec.ts) that attributed the release trigger's refusal to a released case version's manifest reference, since migration 0021 already moved the condition onto hypothesis_revisions.state alone and the equivalent state-only assertions already stand in refuse-altering-a-released-revision-schema.spec.ts.",
       "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
+    },
+    {
+      "id": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "proof",
+      "file": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
+      "title": "Proof for refuse-a-release-manifesting-a-draft-revision",
+      "summary": "Integration tests against ReleaseOperation.release() in the real database, proving each of the task's 9 criteria for the manifest-own-state gate, plus repairs to pre-existing fixtures in three files that the new gate would otherwise strand mid-scenario.",
+      "task": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision"
     },
     {
       "id": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
@@ -147,6 +163,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
@@ -457,6 +509,12 @@
       "from": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "to": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "proves",
       "at": "the path"
     },
     {

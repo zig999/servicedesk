@@ -3613,7 +3613,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:fd53e698f6bdf6a2a1f92162172529929c7de5bc50a61e4641f434cf54444675"
+          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -4210,6 +4210,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:9e3913e4944f5153e372fc0a990560cb32dac72ba94165b4755de32842a27415"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
         },
         {
           "path": "src/src/http/dto/place-hypothesis.dto.ts",
@@ -6146,6 +6150,10 @@
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
           "digest": "sha256:8f116ab7041eddf321fe6f11a6aa94313caf2c253c5abf159a5af1cff0aadb53"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
         }
       ]
     },
@@ -6156,6 +6164,10 @@
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
           "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
         },
         {
           "path": "src/src/seed.ts",
@@ -6918,6 +6930,16 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "digest": "sha256:386349f86fbe3eb1a4972141c8508eb5204739f6536fdbcf7eee90e5921339c9",
+      "files": [
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
         }
       ]
     },
