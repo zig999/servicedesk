@@ -1,0 +1,35 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);"
+  - node: domain/glossary/outcome
+    held_at: seedOutcomes
+    evidence: "const known = new Set(fixtureOutcomes.map((outcome) => outcome.name));"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: placeFixtureHypotheses and releaseManifestedRevisions
+    evidence: "const revised = await lifecycle.reviseHypothesis({\n      slug: fixture.slug,\n      hypothesis_name: entry.hypothesis_name,\n      criterion: entry.criterion,\n      collects: entry.collects,\n      resolution: entry.resolution,\n      subject: fixture.subject,\n    });"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "no literal draft/released state value appears in this file"
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: seedOutcomes and the main script's call ordering
+    evidence: "const missing = NON_CONCLUSION_OUTCOMES.filter((outcome) => !known.has(outcome.name));\n  await store.insertMissingTerms('outcome', [...fixtureOutcomes, ...missing]);"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: the main script's alreadySeeded guard
+    evidence: "if (!(await alreadySeeded(connection))) {\n    await seedCase(connection);\n  }"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: entry.collects, — passed through with no length check in this file"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: releaseManifestedRevisions
+    evidence: "await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: seedCase's call ordering
+    evidence: "const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);\n  await releaseManifestedRevisions(lifecycle, fixture.slug, placed);\n  await lifecycle.release(fixture.slug, draft.version);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no attempt in this file to alter a hypothesis-revision after releasing it"
+looked_past: "the CaseFixture and CaseFixtureManifestEntry types omit fields present in the fixture JSON (e.g. top-level \"state\"/\"released_at\", manifest entries' \"revision\"), and releaseManifestedRevisions could call release twice on a shared hypothesis-revision if a fixture manifest repeated one — both are implementation-correctness concerns rather than a domain fact stated, contradicted, or duplicated against the node pack."

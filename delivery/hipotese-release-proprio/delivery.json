@@ -255,6 +255,29 @@
         "src/case/release.operation.ts writes no hypothesis_revisions state, and the released state is reached through the fixture and seed setup alone."
       ],
       "findings": 25
+    },
+    {
+      "id": "review/hipotese-release-proprio-corrective-fixtures",
+      "kind": "review",
+      "file": "review/hipotese-release-proprio-corrective-fixtures.md",
+      "title": "hipotese-release-proprio: three corrective fixes to the shared release-ordering bug — review",
+      "summary": "Coverage, specification-conformance, and standard-conformance passes over the three corrective deliveries (seed.ts, diagnose-server.factory.spec.ts, case-fixture-reads-clean.spec.ts) that fixed the same release-ordering defect and its shared-fixture-corruption consequence; the failures pass did not run because the captured whole-change run passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every test in this file that depends on the seeded fixture runs (none is skipped by a beforeAll crash), given a database holding none of the fixture's rows beforehand.",
+        "Running case-fixture-reads-clean.spec.ts's own full test file, then reading the shared canonical fixture case's manifested hypothesis-revisions' own collects afterward, finds every one of them present and matching the fixture document.",
+        "Running this file followed by any other file that reads the same canonical fixture case (e.g. seed.spec.ts) does not raise CaseNotValidError over that case declaring no hypothesis.",
+        "Running this file's own beforeAll (ensureFixtureSeeded/insertFixtureCase) against a database holding none of the fixture's rows completes without throwing CaseVersionNotReleasableError.",
+        "Running this file's own beforeAll against a database holding none of the fixture's rows completes without throwing CaseVersionNotReleasableError.",
+        "This file's own fixture-seeding helper releases each manifested revision by calling the already-declared lifecycle release operation, never a raw SQL statement writing hypothesis_revisions.state.",
+        "insertFixtureCase releases each manifested revision by calling the already-declared lifecycle release operation, never a raw SQL statement writing hypothesis_revisions.state.",
+        "seed.ts contains no raw SQL statement writing hypothesis_revisions.state; each manifested revision's release is performed by calling lifecycle.releaseHypothesisRevision."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -869,6 +892,24 @@
       "to": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "kind": "reviews",
       "at": "tasks[9]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-corrective-fixtures",
+      "to": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-corrective-fixtures",
+      "to": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-corrective-fixtures",
+      "to": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "reviews",
+      "at": "tasks[2]"
     }
   ]
 }

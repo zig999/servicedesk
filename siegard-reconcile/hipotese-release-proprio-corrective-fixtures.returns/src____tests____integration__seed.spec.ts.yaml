@@ -1,0 +1,41 @@
+read:
+  - node: domain/glossary/action
+    held_at: "it(\"holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare\", ...)"
+    evidence: "const { rows } = await connection.query<{ name: string }>('SELECT name FROM actions WHERE name = ANY($1)', [expected]);\n\n  expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());"
+  - node: domain/glossary/concept
+    held_at: "it('holds every concept the curated case collects, each with the subject types it accepts and its ttl, matching the fixture exactly', ...)"
+    evidence: "const { rows: conceptRows } = await connection.query<{ name: string; ttl: number }>(\n    'SELECT name, ttl FROM concepts WHERE name = ANY($1)',\n    [conceptNames],\n  );\n  const { rows: acceptRows } = await connection.query<{ concept_name: string; subject_type_name: string }>(\n    'SELECT concept_name, subject_type_name FROM concept_accepts WHERE concept_name = ANY($1)',\n    [conceptNames],\n  );"
+  - node: domain/glossary/outcome
+    held_at: "it('holds both non-conclusion outcomes, having run against a database this file had itself confirmed lacked them beforehand', ...)"
+    evidence: "const nonConclusionNames = NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name);\n    const { rows } = await connection.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [nonConclusionNames]);\n\n    expect(rows.map((row) => row.name).sort()).toEqual([...nonConclusionNames].sort());"
+  - node: domain/glossary/recipient
+    held_at: "it(\"holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare\", ...)"
+    evidence: "const { rows } = await connection.query<{ name: string }>('SELECT name FROM recipients WHERE name = ANY($1)', [expected]);\n\n  expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());"
+  - node: domain/glossary/subject-type
+    held_at: "it('holds exactly the fixture''s own subject-type name, the one the curated case declares as its subject', ...)"
+    evidence: "const { rows } = await connection.query<{ name: string }>('SELECT name FROM subject_types WHERE name = ANY($1)', [expected]);\n\n  expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());"
+  - node: domain/knowledge/case-version
+    held_at: "it('the case is stored, once seed.ts has run against a database this file had confirmed lacked it beforehand', ...)"
+    evidence: "const stored = await createCaseStore(connection).assembleVersion(SLUG, VERSION);\n\n  expect(stored).toBeDefined();"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "it('holds no second case version, having run seed.ts a second time in a row against the version it already released', ...)"
+    evidence: "const secondVersion = await createCaseStore(connection).assembleVersion(SLUG, VERSION + 1);\n\n  expect(secondVersion).toBeUndefined();"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "readBackManifestedRevisions() and the it() at line 392 comparing before/after"
+    evidence: "const before = await readBackManifestedRevisions();\n\n    await runSeedScript(3);\n\n    const after = await readBackManifestedRevisions();\n    expect(after).toEqual(before);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "it(\"leaves every hypothesis-revision the released version's manifest references with its own state released, once seed.ts has run\", ...)"
+    evidence: "expect(rows.length).toBeGreaterThanOrEqual(1);\n    expect(rows.every((row) => row.state === 'released')).toBe(true);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the same 'leaves every hypothesis-revision ... with its own state released' assertion"
+    evidence: "expect(rows.every((row) => row.state === 'released')).toBe(true);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the SQL join restricting to cv.state = 'released' and asserting every joined revision's state is released"
+    evidence: "WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released'`,\n      [SLUG, VERSION],\n    );\n\n    expect(rows.length).toBeGreaterThanOrEqual(1);\n    expect(rows.every((row) => row.state === 'released')).toBe(true);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "it('leaves every manifested hypothesis-revision with exactly the revision number and state it already read, having run seed.ts yet again against the case version it already released', ...)"
+    evidence: "const before = await readBackManifestedRevisions();\n\n    await runSeedScript(3);\n\n    const after = await readBackManifestedRevisions();\n    expect(after).toEqual(before);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "assertGenuinelyEmpty and the 'the case is stored' assertion both reading through createCaseStore(connection).assembleVersion"
+    evidence: "const storedCase = await createCaseStore(connection).assembleVersion(SLUG, VERSION);\n  if (storedCase !== undefined && storedCase.state !== 'released') {\n    throw new Error(\"this file's own wipe left the fixture case stored; the transition this file proves would not be genuine\");\n  }"
+looked_past: "the tolerance in assertGenuinelyEmpty for a stored case that is already released (no throw) versus one that is not (throw) is an implementation/test-design choice about cleanup robustness, not a domain-fact statement, so it is left to a code-review pass rather than reported here."
