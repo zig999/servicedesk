@@ -2773,6 +2773,77 @@ entries:
     unstated: Whether an attempt to remove one of a released hypothesis-revision's own collects is met the same way as an attempt to alter its criterion, resolution or state — the material never distinguished the two, and the node's own statement, read literally over the collects attribute too, called for the same HTTP 409 refusal both branches would then need.
     decided: An attempt to alter a released hypothesis-revision's criterion, resolution or state is refused at the point of the attempt with an HTTP 409 response reporting a ReleasedHypothesisRevisionNotAlterableError. An attempt to remove one of its collects is not refused with an error; it is accepted and left with no effect, so the collect still reads back afterward.
     why: 'The schema already delivered and reviewed under this exact node''s own citation (migrations 0010 and 0021) implements two different mechanisms for the two relations: a trigger that raises the named error against hypothesis_revisions'' own row, and a query-rewrite rule that turns a DELETE against hypothesis_revision_collects into a no-op. A single refused-with-409 statement covering both would contradict the delivered, reviewed collects mechanism; stating the split is what the material''s own already-built answer requires, and it matches the sibling task''s own criterion that a released revision''s collects ''read back unchanged after an attempt to remove them,'' never naming a refusal for that case.'
+  - location: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so.md
+    field: then
+    unstated: >-
+      The intake scope (work/hipotese-release-proprio-frontend/intake/scope.md) states that
+      releasing a hypothesis-revision not in draft state is refused with an HTTP 409
+      HypothesisRevisionNotDraftAtReleaseError, and
+      rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle states what that
+      refusal itself reports. Nothing states what the curator who attempted the release is then
+      told at the frontend, whether that telling is distinguishable from what the frontend says
+      when a request fails for a reason it does not recognise, or what the specific message says.
+    decided: >-
+      The frontend tells the curator specifically that the named revision is already released and so
+      cannot be released again, never only the notice it shows for a failure whose reason it does
+      not recognise — and the specification holds that substance alone: the exact wording stays the
+      frontend's own.
+    why: >-
+      This specification has decided this same shape twice already and is decided the same way
+      again. scenarios/glossary/a-concept-with-no-description-is-refused's own `then` holds the
+      identical construction for the adjacent surface ("the operator console tells the operator
+      specifically that the description is missing, never only a generic failure notice — the exact
+      wording stays the console's own"), and the decision-log entry filling
+      constraints/no-route-enforces-authentication.statement decided that a frontend disclosure's
+      substance is the specification's while its copy is not, because a control's exact copy is
+      surface and freezing a sentence here would hold the frontend to a choice nobody but the
+      frontend picked. The substance chosen adds no fact: the same rule's own statement records that
+      the revision is released whenever this refusal is raised, so "already released" is read off the
+      refusal's own condition rather than off a value the refusal would have to start carrying —
+      which the entry above it expressly decided it does not. Distinguishability is what makes the
+      telling worth stating at all, since the curator's next act differs between the two readings:
+      an unrecognised failure leaves the outcome unknown and invites a retry, while this refusal
+      means the revision already stands as asked and nothing remains to be done. Holding a refusal to
+      an explicit, non-interchangeable statement rather than an undifferentiated one is the same
+      discipline a-release-refusal-with-no-named-violation-says-so and
+      a-case-holding-no-versions-is-told-explicitly already carry for other outcomes that would
+      otherwise read as a broken response. A scenario's concrete case is the home because the fact is
+      what happens at one named outcome of a rule that already exists, and the rule's own statement
+      is already spent on what the refusal reports over the wire.
+  - location: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state.md
+    field: statement
+    unstated: >-
+      Whether a curator reading a case version's manifest is told, for every entry, the
+      draft-or-released state of the hypothesis-revision that entry pins, or learns which
+      manifested hypotheses are still unreleased only from the refusal of that version's release.
+      Every node that says what a presented manifest entry discloses was written before
+      hypothesis-revision carried a state of its own — a-manifest-entrys-pinned-revision-is-always-shown
+      covers the pinned revision number, a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest
+      covers its latest-ness, a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis covers a
+      higher revision's existence — and a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+      states the state on the revisions listing alone, so no node says whether the manifest entry
+      carries it too.
+    decided: >-
+      A surface presenting a case version's manifest states, for every entry, the state — draft or
+      released — of the hypothesis-revision that entry pins, unconditionally on the case version's
+      own state and on any release having been attempted; the curator does not have to attempt a
+      release to learn which pins are still in draft.
+    why: >-
+      The state is the fact a-released-case-version-manifests-only-released-hypothesis-revisions
+      reads to decide whether the version may be released, so withholding it on the manifest makes
+      the refused release the only way to learn something already true and already addressable on
+      the entry's own referenced revision — the exact silence
+      a-manifest-entrys-pinned-revision-is-always-shown and
+      a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest were each written
+      to close over this same surface, and that
+      a-hypothesis-revisions-listing-discloses-each-revisions-own-state already closed for this
+      same fact on the adjacent listing. Deciding the other way would give the specification two
+      answers about one fact's disclosure depending on which screen reads it. It costs the refusal
+      nothing: the release still names every offending hypothesis, and placement stays
+      unrestricted, so the rule adds a disclosure and no gate. Policy with eventual consistency
+      because the state belongs to hypothesis-revision, a separate aggregate root from the case
+      version whose manifest presents the entry — identical to the two sibling disclosures over
+      this surface.
 ---
 
 === domain/glossary/_context
@@ -5243,6 +5314,42 @@ Consistency is eventual because the comparison spans two aggregates — the mani
 The rule states what a presented entry says, and nothing about what may then be done: whether the pin may be moved at all, and to which revisions, stays case-version's own — its manifest is freely composed while draft state holds and never altered once released.
 Which control carries the statement, and its wording, are form and belong to the interface, not here.
 
+=== rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+---
+type: policy
+statement: >-
+  A surface presenting a case version's manifest states, for every entry, the state — draft or
+  released — of the hypothesis-revision that entry pins, so a curator reading the manifest
+  learns which of its pinned revisions are still in draft from the manifest itself, never only
+  from a refused release of that version.
+expression: >-
+  For every entry e presented in a case version's manifest, the presentation of e states the
+  value of e's referenced hypothesis-revision.state, read from that revision itself; the
+  statement is unconditional — it does not depend on the case version's own state, on a release
+  of that version having been attempted, or on the reader opening e's revision selector.
+constrains:
+  - domain/knowledge/manifest-entry
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+A pinned revision's own state now decides whether the case version around it may be released at all: `a-released-case-version-manifests-only-released-hypothesis-revisions` refuses the release of any version whose manifest still references a revision in draft state.
+Left unstated on the entry, that fact reaches the curator only through the refusal — a manifest whose every pin is releasable reads exactly like one where none is, and the single act that tells them apart is the act that fails.
+
+This specification has already refused a silence of this shape three times around this same fact.
+`a-manifest-entrys-pinned-revision-is-always-shown` and `a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest` both exist because an entry that reads identically in two materially different situations tells the reader nothing about which one they are in, and `a-hypothesis-revisions-listing-discloses-each-revisions-own-state` states this very fact — the revision's own state — on the adjacent listing of one hypothesis's revisions.
+Disclosing the state where a curator inspects revisions and withholding it where a curator composes the version that depends on it would leave the fact addressable everywhere except the one surface whose next act it governs.
+
+Nothing here moves what the refusal owes: a release attempted over a draft pin is still refused naming every such hypothesis among its violations, and that naming stays the refusal's own.
+This rule makes the refusal predictable rather than the only source of the fact.
+Nor does it restrict composition — placing an entry that pins a draft revision is still never refused, and the state shown beside it is a disclosure, not a warning this specification words.
+
+On a released version's entry the state necessarily reads released, since that version's own release required exactly that and released is terminal; the statement stays universal rather than narrowed to drafts, because the rule says what an entry carries and not what its reader may still change — the same reading `a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis` already gives a released entry.
+The rule is a policy holding eventually because the state is a fact of `hypothesis-revision`, an aggregate root separate from the case version the entry sits inside, and a revision's release reaches into no version's manifest to change it.
+Which control carries the statement, and its wording, are form and belong to the interface, not here.
+
 === rules/knowledge/a-release-refusal-with-no-named-violation-says-so
 ---
 type: invariant
@@ -6127,6 +6234,31 @@ involves:
 ## Description
 
 Composing a draft's manifest stays exactly as free as `case-version` already promises: pointing at a hypothesis-revision never releases or freezes it, whatever state it is in, so a curator can place, remove and simulate against an unreleased hypothesis without that revision's own state ever entering the check.
+
+=== scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+---
+subject: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+given:
+  - hypothesis customer-equipment-fault holds one revision, revision 1, itself in released
+    state
+when:
+  - the curator asks to release revision 1
+then:
+  - the release is refused with an HTTP 409 response reporting a
+    HypothesisRevisionNotDraftAtReleaseError
+  - revision 1 stays released
+  - the frontend tells the curator specifically that revision 1 is already released and so
+    cannot be released again, never only the notice it shows when a request fails for a
+    reason it does not recognise — the exact wording stays the frontend's own
+involves:
+  - domain/knowledge/hypothesis-revision
+---
+
+## Description
+
+Release is the one trigger the lifecycle holds and released is terminal, so a second release asked of the same revision is refused rather than repeated — and the refusal's own condition is entirely undramatic: nothing is broken, nothing was lost, and the revision already stands in exactly the state the curator was asking for.
+That is the whole reason the telling has to be distinguishable. A curator shown the frontend's notice for a failure whose reason it does not recognise learns that the request's outcome is unknown, and acts accordingly — retrying, reloading, escalating. A curator told the revision is already released learns the opposite, that there is nothing left to do, and the two readings are not interchangeable.
+What the specification holds is that substance: the condition named, and named apart from the unrecognised-failure notice. Which control carries it, where it sits and how it is worded are form and belong to the frontend, not here — the same reading `constraints/no-route-enforces-authentication` already takes over its own disclosure.
 
 === scenarios/knowledge/revising-a-released-revision-creates-the-next
 ---

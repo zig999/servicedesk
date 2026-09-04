@@ -1,0 +1,322 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-version-release-gate-ui",
+      "kind": "epic",
+      "file": "epic/case-version-release-gate-ui.md",
+      "title": "The case-version release gate over manifested draft revisions",
+      "summary": "What a curator is told when a case version's release is refused for manifest entries pinning draft hypothesis-revisions, and the placement freedom that refusal must not narrow."
+    },
+    {
+      "id": "epic/hypothesis-revision-own-state-ui",
+      "kind": "epic",
+      "file": "epic/hypothesis-revision-own-state-ui.md",
+      "title": "The hypothesis-revision's own state, shown and moved",
+      "summary": "Everything the frontend needs so a curator can see whether a hypothesis-revision is draft or released and release one directly, answering to no case version and no manifest."
+    },
+    {
+      "id": "inventory/hypothesis-revision-listing-and-release-ui",
+      "kind": "inventory",
+      "file": "inventory/hypothesis-revision-listing-and-release-ui.md",
+      "title": "Hypothesis-revision listing, direct release control, and case-version release refusal surfacing in the frontend app",
+      "summary": "The hypothesis-revisions listing screen, its data hook, the case-version release dialog's violation surfacing, and the API-error-to-UI-state mapping already exist and are where the new own-state disclosure, release action, and refusal wiring land."
+    },
+    {
+      "id": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "kind": "task",
+      "file": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state.md",
+      "title": "Keep manifest composition free of the revision's own state",
+      "summary": "The manifest placement and repin surface, held to not restricting anything for a referenced revision's own state.",
+      "epic": "case-version-release-gate-ui"
+    },
+    {
+      "id": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "kind": "task",
+      "file": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal.md",
+      "title": "Name the still-draft hypotheses in a refused case-version release",
+      "summary": "The case-version release dialog, holding the refusal's own named violations, for the refusal condition the backend newly raises.",
+      "epic": "case-version-release-gate-ui"
+    },
+    {
+      "id": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "kind": "task",
+      "file": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state.md",
+      "title": "Show each manifest entry's pinned revision state",
+      "summary": "The manifest presentation screen states, for every entry, the draft-or-released state of the hypothesis-revision that entry pins.",
+      "epic": "case-version-release-gate-ui"
+    },
+    {
+      "id": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal.md",
+      "title": "Name the not-draft release refusal in the error vocabulary",
+      "summary": "The mapping from HypothesisRevisionNotDraftAtReleaseError to a UI error state of its own.",
+      "epic": "hypothesis-revision-own-state-ui"
+    },
+    {
+      "id": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing.md",
+      "title": "Release a hypothesis-revision directly from the listing",
+      "summary": "The per-revision release control, its request, and what the curator is left with on success and on refusal.",
+      "epic": "hypothesis-revision-own-state-ui"
+    },
+    {
+      "id": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state.md",
+      "title": "Show each listed revision's own state",
+      "summary": "The revisions listing reads and renders the state field the listing response now carries.",
+      "epic": "hypothesis-revision-own-state-ui"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-version-release-gate-ui",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-version-release-gate-ui",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-version-release-gate-ui",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-version-release-gate-ui",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-version-release-gate-ui",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-version-release-gate-ui",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state-ui",
+      "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "constraints/listings-are-paged",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
