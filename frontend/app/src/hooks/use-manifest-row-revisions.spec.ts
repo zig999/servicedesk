@@ -27,6 +27,7 @@ function revisionItem(
     criterion: "some criterion",
     collects: [],
     resolution: { outcome: "resolved", referral: { action: "notify", recipient: "customer" } },
+    state: "released",
     ...overrides,
   };
 }

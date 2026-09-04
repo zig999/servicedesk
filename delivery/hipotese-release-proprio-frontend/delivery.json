@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state.md",
+      "title": "Show each revision's own state on the hypothesis-revisions listing",
+      "summary": "Widens the listing hook's item type with the revision's own draft/released state and renders it as an independent StatusTable column on the revision-history screen, beside the existing current/frozen pin badge.",
+      "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state.md",
+      "title": "Each listed revision states its own draft/released state, independent of the current-pin indicator",
+      "summary": "Proves the widened hook exposes a per-revision state field closed to draft/released, that the revision-history screen renders it as an independent column beside the pre-existing current/frozen indicator, and that pre-existing coverage for the unchanged parts of the shape (revision/criterion/collects, the hypotheses-tab count) still holds.",
+      "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "to": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

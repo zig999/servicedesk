@@ -3933,7 +3933,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
-          "digest": "sha256:1b0926b3dc8b5dbf4298760ae1a1b93ad13e1434e899b0d0775bec77c528b0a6"
+          "digest": "sha256:a15d81e5019ea44efe938242fbcbc0a6a35906f3e7380b16de358e970e4aece4"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -4109,6 +4109,14 @@
       "node": "domain/knowledge/hypothesis-revision-state",
       "digest": "sha256:4770859f8bcec53ffb6ef3821a05edf1d2d9388e0a76461af7eda28f2520d046",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
+          "digest": "sha256:a15d81e5019ea44efe938242fbcbc0a6a35906f3e7380b16de358e970e4aece4"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
+          "digest": "sha256:04f4f77e70c421e8c78ec9dece54578a71fb633fbe6e40db463b72d7350e53eb"
+        },
         {
           "path": "src/migrations/0020-hypothesis-revision-own-state.sql",
           "digest": "sha256:0f7a01bc5cfd52933ed9a6bb5b883268340d784429f6fc8a249624274e5707dc"
@@ -6126,6 +6134,10 @@
       "digest": "sha256:1fdbbe19c9b78c82312dee340628f806e4ba7a11d47668561e80b1abb7b8ac3c",
       "files": [
         {
+          "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
+          "digest": "sha256:04f4f77e70c421e8c78ec9dece54578a71fb633fbe6e40db463b72d7350e53eb"
+        },
+        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
         }
@@ -6135,6 +6147,10 @@
       "node": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
       "digest": "sha256:c1848967fc37b667a982f99d9932ccd65b65c75d771c3ee4406a07da12c75b87",
       "files": [
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
+          "digest": "sha256:04f4f77e70c421e8c78ec9dece54578a71fb633fbe6e40db463b72d7350e53eb"
+        },
         {
           "path": "src/src/case/case-store.port.ts",
           "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"

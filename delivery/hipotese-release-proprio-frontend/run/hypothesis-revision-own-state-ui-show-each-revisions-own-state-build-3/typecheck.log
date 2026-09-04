@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-manifest-row-revisions.spec.ts(25,3): error TS2322: Type '{ revision: number; criterion: string; collects: readonly string[]; resolution: HypothesisRevisionFormValues["resolution"]; state?: HypothesisRevisionState | undefined; }' is not assignable to type 'HypothesisRevisionListItem'.
+  Types of property 'state' are incompatible.
+    Type 'HypothesisRevisionState | undefined' is not assignable to type 'HypothesisRevisionState'.
+      Type 'undefined' is not assignable to type 'HypothesisRevisionState'.

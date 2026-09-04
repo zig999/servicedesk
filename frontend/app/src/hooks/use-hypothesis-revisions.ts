@@ -2,11 +2,14 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { apiFetch } from "../services/api-client";
 import type { HypothesisRevisionFormValues } from "../services/hypothesis-revision-form-schema";
 
+export type HypothesisRevisionState = "draft" | "released";
+
 export type HypothesisRevisionListItem = {
   readonly revision: number;
   readonly criterion: string;
   readonly collects: readonly string[];
   readonly resolution: HypothesisRevisionFormValues["resolution"];
+  readonly state: HypothesisRevisionState;
 };
 
 export type HypothesisRevisionsPage = {

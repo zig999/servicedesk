@@ -6,16 +6,27 @@ import {
   type StatusTableColumn,
   type StatusTableRow,
 } from "../shared/components/status-table";
-import { useHypothesisRevisions } from "../hooks/use-hypothesis-revisions";
+import {
+  useHypothesisRevisions,
+  type HypothesisRevisionState,
+} from "../hooks/use-hypothesis-revisions";
 import { useCaseHypothesisCurrentPin } from "../hooks/use-case-hypothesis-current-pin";
 
 const REVISION_COLUMNS: StatusTableColumn[] = [
   { key: "revision", header: "Revision" },
+  { key: "state", header: "State" },
   { key: "status", header: "Status" },
   { key: "criterion", header: "Criterion" },
   { key: "collects", header: "Collects" },
   { key: "actions", header: "Actions" },
 ];
+
+const REVISION_STATE_CELL: Readonly<
+  Record<HypothesisRevisionState, { color: string; label: string }>
+> = {
+  draft: { color: "bg-warning", label: "Draft" },
+  released: { color: "bg-success", label: "Released" },
+};
 
 export type HypothesisRevisionHistoryProps = {
   readonly slug: string;
@@ -65,6 +76,7 @@ export function HypothesisRevisionHistory({
       return {
         id: revision.revision,
         revision: revision.revision,
+        state: REVISION_STATE_CELL[revision.state],
         status: isCurrent
           ? { color: "bg-success", label: "current" }
           : { color: "bg-muted-foreground", label: "frozen" },
