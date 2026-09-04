@@ -147,11 +147,17 @@ type CaseFixtureDocument = {
   readonly manifest: readonly CaseFixtureManifestEntry[];
 };
 
+type PlacedRevision = {
+  readonly hypothesis_name: string;
+  readonly revision: number;
+};
+
 async function placeFixtureHypotheses(
   lifecycle: CaseLifecycleOperations,
   fixture: CaseFixtureDocument,
   version: number,
-): Promise<void> {
+): Promise<readonly PlacedRevision[]> {
+  const placed: PlacedRevision[] = [];
   for (const entry of fixture.manifest) {
     const revised = await lifecycle.reviseHypothesis({
       slug: fixture.slug,
@@ -168,6 +174,18 @@ async function placeFixtureHypotheses(
       revision: revised.revision,
       position: entry.position,
     });
+    placed.push({ hypothesis_name: revised.hypothesis_name, revision: revised.revision });
+  }
+  return placed;
+}
+
+async function releaseManifestedRevisions(
+  lifecycle: CaseLifecycleOperations,
+  slug: string,
+  revisions: readonly PlacedRevision[],
+): Promise<void> {
+  for (const revision of revisions) {
+    await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
   }
 }
 
@@ -189,7 +207,8 @@ async function insertFixtureCase(connection: DatabaseConnection): Promise<void> 
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,
   });
-  await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
   await lifecycle.release(fixture.slug, draft.version);
 }
 
@@ -326,6 +345,29 @@ beforeEach(async () => {
 afterEach(async () => {
   await app.close();
   await cleanupInvestigationsFor(seedingConnection, requester);
+});
+
+it('seeds the fixture case version itself as released, once beforeAll has run', async () => {
+  const store = createCaseStore(seedingConnection);
+
+  const assembled = await store.assembleVersion(SLUG, VERSION);
+
+  expect(assembled?.state).toBe('released');
+});
+
+it('seeds every hypothesis-revision the fixture case version\'s manifest references as released, once beforeAll has run', async () => {
+  const store = createCaseStore(seedingConnection);
+  const assembled = await store.assembleVersion(SLUG, VERSION);
+  const manifestEntries = assembled?.manifest ?? [];
+
+  const states = await Promise.all(
+    manifestEntries.map((entry) =>
+      store.readHypothesisRevisionOwnState(SLUG, entry.hypothesis_revision.hypothesis_name, entry.hypothesis_revision.revision),
+    ),
+  );
+
+  expect(manifestEntries.length).toBeGreaterThan(0);
+  expect(states).toEqual(manifestEntries.map(() => 'released'));
 });
 
 it(
