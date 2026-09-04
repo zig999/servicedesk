@@ -4000,6 +4000,10 @@
           "digest": "sha256:8a252b5c4ca541fe25be7de646b1ffc9aba7714bc4645be659616d99f7c52beb"
         },
         {
+          "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+          "digest": "sha256:1ea02c7fcaa61c8312a3102ed20cd6f2fb9f096add34b0d3d81c4a653107e328"
+        },
+        {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
           "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
@@ -4093,7 +4097,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -4118,6 +4122,10 @@
           "digest": "sha256:8a252b5c4ca541fe25be7de646b1ffc9aba7714bc4645be659616d99f7c52beb"
         },
         {
+          "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+          "digest": "sha256:1ea02c7fcaa61c8312a3102ed20cd6f2fb9f096add34b0d3d81c4a653107e328"
+        },
+        {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
           "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
         },
@@ -4139,7 +4147,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
         }
       ]
     },
@@ -6042,6 +6050,10 @@
       "digest": "sha256:d0080a8085c60348b61d82bee6ec6e2ffcce812fc020a56f9d2db360746f6f92",
       "files": [
         {
+          "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+          "digest": "sha256:1ea02c7fcaa61c8312a3102ed20cd6f2fb9f096add34b0d3d81c4a653107e328"
+        },
+        {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
           "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
@@ -6080,6 +6092,10 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
         }
       ]
     },
@@ -6190,6 +6206,10 @@
       "digest": "sha256:92f3732f3434965c06caba8284b78f8ed8a81bd4af6a1ab7203a34ac60c79cce",
       "files": [
         {
+          "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+          "digest": "sha256:1ea02c7fcaa61c8312a3102ed20cd6f2fb9f096add34b0d3d81c4a653107e328"
+        },
+        {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
           "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
@@ -6199,7 +6219,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
         }
       ]
     },

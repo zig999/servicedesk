@@ -130,6 +130,14 @@
       "task": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision"
     },
     {
+      "id": "proof/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proof",
+      "file": "proof/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Diagnose-server fixture reads back released state after the release-ordering fix",
+      "summary": "Two new integration assertions in diagnose-server.factory.spec.ts read the seeded fixture's case version and each of its manifested hypothesis-revisions back through the declared store API and confirm both land in the released state that the reordered insertFixtureCase now produces.",
+      "task": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
+    },
+    {
       "id": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
       "kind": "proof",
       "file": "proof/fixture-revision-own-state/release-fixture-manifested-revisions.md",
@@ -208,6 +216,14 @@
       "title": "Disclose each listed hypothesis-revision's own state",
       "summary": "Proves the list-hypothesis-revisions read path answers every revision's own draft-or-released state, sourced from its own row rather than any referencing case version, ordered highest-revision-first, and reconciles every pre-existing test the state field and the descending order broke.",
       "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
+    },
+    {
+      "id": "proof/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proof",
+      "file": "proof/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Seed script releases manifested revisions before the case version",
+      "summary": "Tests over seed.ts (integration) and its source (unit) prove the corrected release order no longer throws CaseVersionNotReleasableError, that every manifested revision and the case version itself read back released, that no raw SQL writes hypothesis_revisions.state, and that a further run leaves the already-released manifest untouched.",
+      "task": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
     },
     {
       "id": "review/hipotese-release-proprio",
@@ -717,6 +733,12 @@
       "at": "the path"
     },
     {
+      "from": "proof/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
       "kind": "proves",
@@ -773,6 +795,12 @@
     {
       "from": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state",
       "to": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
       "kind": "proves",
       "at": "the path"
     },
