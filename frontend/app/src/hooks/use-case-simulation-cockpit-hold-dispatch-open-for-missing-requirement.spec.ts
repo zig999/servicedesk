@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { useCaseSimulationCockpit, type CaseSimulationCockpitState } from "./use-case-simulation-cockpit";
+import { resetVisitedSimulationRoutesForTests, useCaseSimulationCockpit, type CaseSimulationCockpitState } from "./use-case-simulation-cockpit";
 import {
   SIMULATE_CASE_PATH,
   createWrapper,
@@ -14,6 +14,10 @@ import {
 
 const SLUG = "acme-widgets";
 const VERSION = 7;
+
+beforeEach(() => {
+  resetVisitedSimulationRoutesForTests();
+});
 
 afterEach(() => {
   vi.unstubAllGlobals();

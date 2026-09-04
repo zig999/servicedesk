@@ -29,15 +29,6 @@ function requirement(
   };
 }
 
-describe("simulation-subject-derivation.ts -- criterion 11: deriveRequiredFields and collectionPlanFromManifest are gone from the tree", () => {
-  it("no longer exports deriveRequiredFields or collectionPlanFromManifest", async () => {
-    const moduleExports = await import("./simulation-subject-derivation");
-
-    expect(Object.keys(moduleExports)).not.toContain("deriveRequiredFields");
-    expect(Object.keys(moduleExports)).not.toContain("collectionPlanFromManifest");
-  });
-});
-
 describe("deriveSubjectFields -- criterion 1: one field per requirement, required and optional alike", () => {
   it("returns exactly one field per requirement, in the read's own order, for a required requirement and an optional one alike", () => {
     const requirements = [

@@ -130,29 +130,24 @@ it('lets a second integration test write an investigation under the same id the 
   await writesTheSharedInvestigationIdAndSucceeds(pool);
 });
 
-let slugWrittenByThePreviousTest: string | undefined;
-
-it("writes a case under a slug the next test below reads back — this pair proves criterion 4 and is the one place in this file where a test's own pass depends on the previous one having already run, disclosed in this file's own header", async () => {
+it('proves criterion 4 within a single test: a later isolated connection observes no row for a slug an earlier one wrote and already released, without depending on any other test having run first', async () => {
   const slug = `criterion-4-${randomUUID()}`;
-  const isolated = await checkOutIsolatedConnection(pool);
-  try {
-    await isolated.query('BEGIN');
-    await insertCase(isolated, slug);
-  } finally {
-    await isolated.release();
-  }
-  slugWrittenByThePreviousTest = slug;
-});
 
-it('observes no row for the slug the previous test wrote, once that test had already released its own connection', async () => {
-  expect(slugWrittenByThePreviousTest).toBeDefined();
-  const isolated = await checkOutIsolatedConnection(pool);
+  const writer = await checkOutIsolatedConnection(pool);
   try {
-    await isolated.query('BEGIN');
-    const { rows } = await isolated.query<ICaseRow>('SELECT slug FROM cases WHERE slug = $1', [slugWrittenByThePreviousTest]);
+    await writer.query('BEGIN');
+    await insertCase(writer, slug);
+  } finally {
+    await writer.release();
+  }
+
+  const reader = await checkOutIsolatedConnection(pool);
+  try {
+    await reader.query('BEGIN');
+    const { rows } = await reader.query<ICaseRow>('SELECT slug FROM cases WHERE slug = $1', [slug]);
     expect(rows).toEqual([]);
   } finally {
-    await isolated.release();
+    await reader.release();
   }
 });
 

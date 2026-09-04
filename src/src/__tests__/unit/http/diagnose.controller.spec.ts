@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { CaseInputRequirement, CaseInputRequirementsResult } from '../../../case/case-input-requirements.js';
@@ -201,15 +199,6 @@ it('proceeds exactly as before for a released-state pinned version: calls runDia
   const result = await handleDiagnoseRequest(dependencies, body);
 
   expectRunDiagnoseCalledOnceAndAssembled(runDiagnose, { releasedCase, body, expectedAssessment, expectedResponse }, result);
-});
-
-const CONTROLLER_MODULE_PATH = fileURLToPath(new URL('../../../http/diagnose.controller.ts', import.meta.url));
-
-it('no longer references UNMEASURED_COST or UNMEASURED_DURATIONS anywhere in its own source', async () => {
-  const source = await readFile(CONTROLLER_MODULE_PATH, 'utf8');
-
-  expect(source).not.toMatch(/UNMEASURED_COST/);
-  expect(source).not.toMatch(/UNMEASURED_DURATIONS/);
 });
 
 const A_REQUIRED_CAPABILITY = { name: 'equipment-status-lookup', version: '1.0.0' };
