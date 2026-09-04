@@ -44,6 +44,13 @@
       "summary": "The listing of one hypothesis's revisions, answering each revision's own state beside it."
     },
     {
+      "id": "epic/seed-release-ordering-corrective",
+      "kind": "epic",
+      "file": "epic/seed-release-ordering-corrective.md",
+      "title": "Seed release ordering correction",
+      "summary": "Corrects seed.ts, delivered by this initiative, to release each manifested hypothesis-revision through the declared operation before releasing the case version."
+    },
+    {
       "id": "inventory/hypothesis-revision-release-lifecycle",
       "kind": "inventory",
       "file": "inventory/hypothesis-revision-release-lifecycle.md",
@@ -144,6 +151,14 @@
       "title": "State each listed revision's own state",
       "summary": "The hypothesis-revisions listing, answering the draft-or-released state of every revision it carries.",
       "epic": "revision-listing-state-disclosure"
+    },
+    {
+      "id": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "task",
+      "file": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested revision before releasing the case version in seed.ts",
+      "summary": "seed.ts's seedCase() releases the case version before releasing the manifested hypothesis-revisions, and moves each to released via a raw SQL UPDATE instead of the declared operation.",
+      "epic": "seed-release-ordering-corrective"
     }
   ],
   "edges": [
@@ -392,6 +407,66 @@
       "to": "constraints/listings-are-paged",
       "kind": "covers",
       "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[9]"
     },
     {
       "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
@@ -834,6 +909,30 @@
     {
       "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
       "to": "constraints/listings-are-paged",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
       "kind": "implements",
       "at": "implements[3]"
     }
