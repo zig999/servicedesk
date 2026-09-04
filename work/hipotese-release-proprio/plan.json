@@ -2,11 +2,25 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "kind": "epic",
+      "file": "epic/case-fixture-reads-clean-collects-delete-corrective.md",
+      "title": "Case-fixture-reads-clean collects-DELETE corruption correction",
+      "summary": "Corrects case-fixture-reads-clean.spec.ts, a file this project already delivered, so its own collects-survive-DELETE test no longer permanently corrupts the shared canonical fixture."
+    },
+    {
       "id": "epic/case-version-release-gate",
       "kind": "epic",
       "file": "epic/case-version-release-gate.md",
       "title": "A case version releases only over released revisions",
       "summary": "The gate a case version's own release now runs, reading each manifest entry's referenced revision's own state."
+    },
+    {
+      "id": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "kind": "epic",
+      "file": "epic/diagnose-server-factory-fixture-release-ordering-corrective.md",
+      "title": "Diagnose-server factory fixture release ordering correction",
+      "summary": "Corrects diagnose-server.factory.spec.ts, a file this project already delivered, to release each manifested hypothesis-revision through the declared operation before releasing the case version."
     },
     {
       "id": "epic/fixture-revision-own-state",
@@ -65,12 +79,28 @@
       "summary": "The area the suite-corrections scope lands in — the persistence schema specs, the shared fixture/seed builder, and the tests that read through it — all still assume the pre-0020/0021 manifest-referenced protection of a hypothesis revision."
     },
     {
+      "id": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "task",
+      "file": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption.md",
+      "title": "Fix case-fixture-reads-clean.spec.ts's own release ordering and its destructive collects-survive-DELETE test",
+      "summary": "case-fixture-reads-clean.spec.ts's own insertFixtureCase releases the case version before releasing the manifested hypothesis-revisions and bypasses the declared release operation with raw SQL, and its collects-survive-DELETE test permanently removes the shared canonical fixture's own collects rows instead of leaving them intact.",
+      "epic": "case-fixture-reads-clean-collects-delete-corrective"
+    },
+    {
       "id": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "kind": "task",
       "file": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
       "title": "Refuse a case version's release over a draft revision",
       "summary": "The gate a case version's release runs over every manifest entry's referenced hypothesis-revision state, folded into the existing release refusal.",
       "epic": "case-version-release-gate"
+    },
+    {
+      "id": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "task",
+      "file": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested revision before releasing the case version in diagnose-server.factory.spec.ts",
+      "summary": "diagnose-server.factory.spec.ts's own insertFixtureCase helper releases the case version before releasing the manifested hypothesis-revisions.",
+      "epic": "diagnose-server-factory-fixture-release-ordering-corrective"
     },
     {
       "id": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
@@ -163,6 +193,54 @@
   ],
   "edges": [
     {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
       "from": "epic/case-version-release-gate",
       "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
       "kind": "covers",
@@ -195,6 +273,42 @@
     {
       "from": "epic/case-version-release-gate",
       "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
       "kind": "covers",
       "at": "covers[5]"
     },
@@ -469,6 +583,36 @@
       "at": "covers[9]"
     },
     {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
       "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
       "kind": "depends_on",
@@ -515,6 +659,30 @@
       "to": "domain/knowledge/manifest-entry",
       "kind": "implements",
       "at": "implements[5]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[3]"
     },
     {
       "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
