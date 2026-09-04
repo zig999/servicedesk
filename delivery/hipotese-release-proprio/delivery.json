@@ -10,6 +10,14 @@
       "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
     },
     {
+      "id": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-release/release-a-revision-directly.md",
+      "title": "Release a hypothesis-revision directly against its own state",
+      "summary": "A new domain operation moves a hypothesis-revision from draft to released by its own identity alone, refusing with HypothesisRevisionNotDraftAtReleaseError — an error carrying no context at all — when the revision is not currently draft.",
+      "task": "task/hypothesis-revision-own-release/release-a-revision-directly"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft.md",
@@ -64,6 +72,14 @@
       "title": "Fixture and seed setup writes each manifested hypothesis-revision's own released state",
       "summary": "New integration tests query hypothesis_revisions and hypothesis_revision_collects directly after the canonical fixture builder, the seed script and release.operation.ts run, proving the own-state write lands where the objective requires it and nowhere else.",
       "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-release/release-a-revision-directly.md",
+      "title": "Release a hypothesis-revision directly against its own state — proof",
+      "summary": "Integration tests over ReleaseHypothesisRevisionOperation and RelationalCaseStore's two new methods prove the draft-to-released transition, its refusal, the refusal's empty envelope, manifest/case-version independence, and terminality; unit tests pin the error class's shape and the two new ports' import discipline.",
+      "task": "task/hypothesis-revision-own-release/release-a-revision-directly"
     },
     {
       "id": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
@@ -154,6 +170,42 @@
     {
       "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "task/hypothesis-revision-own-release/release-a-revision-directly",
       "kind": "implements",
       "at": "the path"
     },
@@ -346,6 +398,12 @@
     {
       "from": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
       "kind": "proves",
       "at": "the path"
     },

@@ -21,6 +21,7 @@ import { ConnectorConfigurationNotWellFormedError } from './connector-configurat
 import { ConnectorPlaceholderOutsideInputSchemaError } from './connector-placeholder-outside-input-schema.error.js';
 import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from './hypothesis-revision-collects-no-concept.error.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from './hypothesis-revision-not-draft-at-release.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
 import { InvestigationWriteDeadlineExceededError } from './investigation-write-deadline-exceeded.error.js';
@@ -52,6 +53,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [CaseVersionNotReleasedError, 409],
   [CaseHoldsNoDraftError, 409],
   [ReleasedHypothesisRevisionNotAlterableError, 409],
+  [HypothesisRevisionNotDraftAtReleaseError, 409],
   [CaseVersionNotReleasableError, 422],
   [ManifestWouldHoldNoHypothesisError, 422],
   [IncompleteCapabilityContractError, 422],

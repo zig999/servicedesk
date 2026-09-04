@@ -18,6 +18,8 @@ import {
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
 import type { IHypothesisRevisionOverwrite } from '../case/hypothesis-revision-overwrite.port.js';
+import type { IHypothesisRevisionOwnStateQuery } from '../case/hypothesis-revision-own-state.port.js';
+import type { IHypothesisRevisionRelease } from '../case/hypothesis-revision-release.port.js';
 import type {
   HighestRevisionReleaseState,
   IHighestRevisionReleaseStateQuery,
@@ -99,6 +101,7 @@ const DRAFT_STATE: CaseVersionState = 'draft';
 const RELEASED_STATE: CaseVersionState = 'released';
 
 const HYPOTHESIS_REVISION_DRAFT_STATE: HypothesisRevisionState = 'draft';
+const HYPOTHESIS_REVISION_RELEASED_STATE: HypothesisRevisionState = 'released';
 
 const UNIQUE_VIOLATION_CODE = '23505';
 
@@ -107,7 +110,14 @@ const POSITION_UNIQUE_CONSTRAINT = 'case_version_hypotheses_position_unique';
 
 const NO_VERSION_NAMED = 0;
 
-export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseStateQuery, IHypothesisRevisionOverwrite {
+export class RelationalCaseStore
+  implements
+    ICaseStore,
+    IHighestRevisionReleaseStateQuery,
+    IHypothesisRevisionOverwrite,
+    IHypothesisRevisionOwnStateQuery,
+    IHypothesisRevisionRelease
+{
   public constructor(private readonly connection: DatabaseConnection) {}
 
   public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
@@ -147,6 +157,22 @@ export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseS
   ): Promise<HighestRevisionReleaseState> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) =>
       resolveHighestRevisionReleaseState(tx, { slug, hypothesis_name: hypothesisName }),
+    );
+  }
+
+  public async readHypothesisRevisionOwnState(
+    slug: string,
+    hypothesisName: string,
+    revision: number,
+  ): Promise<HypothesisRevisionState | undefined> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) =>
+      resolveHypothesisRevisionOwnState(tx, { slug, hypothesis_name: hypothesisName, revision }),
+    );
+  }
+
+  public async releaseHypothesisRevision(slug: string, hypothesisName: string, revision: number): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) =>
+      releaseHypothesisRevisionRow(tx, { slug, hypothesis_name: hypothesisName, revision }),
     );
   }
 
@@ -553,6 +579,33 @@ function highestRevisionReleaseStateSelect(key: IHypothesisKey): IStatement {
            ORDER BY revision DESC
            LIMIT 1`,
     params: [key.slug, key.hypothesis_name],
+  };
+}
+
+async function resolveHypothesisRevisionOwnState(
+  tx: IQueryable,
+  key: IRevisionKey,
+): Promise<HypothesisRevisionState | undefined> {
+  const row = await queryOneOrAbsent<{ state: string }>(tx, hypothesisRevisionOwnStateSelect(key), raiseReadFailure);
+  return row === undefined ? undefined : hypothesisRevisionStateOf(row.state);
+}
+
+function hypothesisRevisionOwnStateSelect(key: IRevisionKey): IStatement {
+  return {
+    text: `SELECT state FROM ${HYPOTHESIS_REVISIONS_TABLE} WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+    params: [key.slug, key.hypothesis_name, key.revision],
+  };
+}
+
+async function releaseHypothesisRevisionRow(tx: IQueryable, key: IRevisionKey): Promise<void> {
+  await runStatement(tx, releaseHypothesisRevisionStatement(key), raiseWriteFailure);
+}
+
+function releaseHypothesisRevisionStatement(key: IRevisionKey): IStatement {
+  return {
+    text: `UPDATE ${HYPOTHESIS_REVISIONS_TABLE} SET state = $4
+           WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+    params: [key.slug, key.hypothesis_name, key.revision, HYPOTHESIS_REVISION_RELEASED_STATE],
   };
 }
 

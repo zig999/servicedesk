@@ -1209,7 +1209,7 @@
     },
     {
       "node": "contracts/knowledge/case-lifecycle",
-      "digest": "sha256:218df1d28da770a1b48d836115bcc15b9ae221b2dc193eb30f7e6e2e5073c57f",
+      "digest": "sha256:bbd97cb9f747630c88b362a4828663441aae52d9f85b9ce35cf02caf8f6ec3ee",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
@@ -1256,12 +1256,24 @@
           "digest": "sha256:eef2bd0aa5c63f34b971b582f01a2c51a84a31e73a8eeae0a3a97726bb9abf17"
         },
         {
+          "path": "src/src/case/release-hypothesis-revision.operation.ts",
+          "digest": "sha256:941442a2b000ab446cdcd15986d1f4b9be5f7ca7cb6e0087da6eb7453c5244b6"
+        },
+        {
           "path": "src/src/case/release.operation.ts",
           "digest": "sha256:fd53e698f6bdf6a2a1f92162172529929c7de5bc50a61e4641f434cf54444675"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
           "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
+          "digest": "sha256:8bcb5386f6ef348185848339076d5257f0dc22b77d2c37368439e5381cf744f9"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
@@ -1491,7 +1503,7 @@
     },
     {
       "node": "contracts/system/case-authoring",
-      "digest": "sha256:f8fc5c0855f4c4311629e981cb63107122bf7216b5dc6b39fe0522a6b9902d6d",
+      "digest": "sha256:c129ac20779ac8078454a90c396cea0d7a5fe64be37e9af9e39268596c7260b8",
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
@@ -1500,6 +1512,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:9e3913e4944f5153e372fc0a990560cb32dac72ba94165b4755de32842a27415"
+        },
+        {
+          "path": "src/src/case/release-hypothesis-revision.operation.ts",
+          "digest": "sha256:941442a2b000ab446cdcd15986d1f4b9be5f7ca7cb6e0087da6eb7453c5244b6"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -3976,12 +3992,24 @@
           "digest": "sha256:5d71161a8f764669622f1035727028b68e96e21685e53bdc3d6a022308881296"
         },
         {
+          "path": "src/src/case/hypothesis-revision-own-state.port.ts",
+          "digest": "sha256:3648bc1ed7254c27d43e374e864623492ddd3f4e8b9ff16217ce09452ca28b94"
+        },
+        {
           "path": "src/src/case/hypothesis-revision-release-state.port.ts",
           "digest": "sha256:766401d1b6da54904b957be9d2a84c2edebe0c56089eb22229d42d653ee94e03"
         },
         {
+          "path": "src/src/case/hypothesis-revision-release.port.ts",
+          "digest": "sha256:722cfc6cc732ba28779a74ef26f50189e20d0e40bb5943eabfef17a6cd706262"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:9e3913e4944f5153e372fc0a990560cb32dac72ba94165b4755de32842a27415"
+        },
+        {
+          "path": "src/src/case/release-hypothesis-revision.operation.ts",
+          "digest": "sha256:941442a2b000ab446cdcd15986d1f4b9be5f7ca7cb6e0087da6eb7453c5244b6"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -4017,7 +4045,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
+          "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
         },
         {
           "path": "src/src/seed.ts",
@@ -5962,6 +5990,36 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "digest": "sha256:d0080a8085c60348b61d82bee6ec6e2ffcce812fc020a56f9d2db360746f6f92",
+      "files": [
+        {
+          "path": "src/src/case/hypothesis-revision-own-state.port.ts",
+          "digest": "sha256:3648bc1ed7254c27d43e374e864623492ddd3f4e8b9ff16217ce09452ca28b94"
+        },
+        {
+          "path": "src/src/case/hypothesis-revision-release.port.ts",
+          "digest": "sha256:722cfc6cc732ba28779a74ef26f50189e20d0e40bb5943eabfef17a6cd706262"
+        },
+        {
+          "path": "src/src/case/release-hypothesis-revision.operation.ts",
+          "digest": "sha256:941442a2b000ab446cdcd15986d1f4b9be5f7ca7cb6e0087da6eb7453c5244b6"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
+          "digest": "sha256:8bcb5386f6ef348185848339076d5257f0dc22b77d2c37368439e5381cf744f9"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
       "digest": "sha256:8646fd164baa8ba0bfc786e8aa42c2dad856ef52a56c54785a2bb630c3cee3a8",
       "files": [
@@ -6774,6 +6832,28 @@
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
           "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "digest": "sha256:99352f715a98d1a687e904050ad9b6ea84475c6b2a79a1cf5f302ba35d7efcb3",
+      "files": [
+        {
+          "path": "src/src/case/hypothesis-revision-own-state.port.ts",
+          "digest": "sha256:3648bc1ed7254c27d43e374e864623492ddd3f4e8b9ff16217ce09452ca28b94"
+        },
+        {
+          "path": "src/src/case/hypothesis-revision-release.port.ts",
+          "digest": "sha256:722cfc6cc732ba28779a74ef26f50189e20d0e40bb5943eabfef17a6cd706262"
+        },
+        {
+          "path": "src/src/case/release-hypothesis-revision.operation.ts",
+          "digest": "sha256:941442a2b000ab446cdcd15986d1f4b9be5f7ca7cb6e0087da6eb7453c5244b6"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
         }
       ]
     },
