@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal.md",
+      "title": "Name the not-draft release refusal in the error vocabulary",
+      "summary": "Adds HypothesisRevisionNotDraftAtReleaseError as its own entry in the API-error-to-UI-state lookup table and kind union, distinct from the generic fallback.",
+      "task": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state.md",
       "title": "Show each revision's own state on the hypothesis-revisions listing",
       "summary": "Widens the listing hook's item type with the revision's own draft/released state and renders it as an independent StatusTable column on the revision-history screen, beside the existing current/frozen pin badge.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal.md",
+      "title": "Proof for naming the not-draft release refusal in the error vocabulary",
+      "summary": "Two new tests prove HypothesisRevisionNotDraftAtReleaseError resolves to its own exclusive UI-state kind, and twenty-one pre-existing tests already in the file establish that every previously-listed code and the unrecognized-code fallback are unchanged.",
+      "task": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal"
     },
     {
       "id": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
@@ -19,6 +35,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "to": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "to": "domain/knowledge/hypothesis-revision",
@@ -47,6 +81,12 @@
       "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "to": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "proves",
       "at": "the path"
     },
     {

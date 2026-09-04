@@ -46,6 +46,46 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("case-version-not-draft-at-release");
   });
 
+  it("resolves HypothesisRevisionNotDraftAtReleaseError to the hypothesis-revision-not-draft-at-release state", () => {
+    const state = uiStateForApiError(
+      new ApiError("HypothesisRevisionNotDraftAtReleaseError", "not draft at release"),
+    );
+    expect(state.kind).toBe("hypothesis-revision-not-draft-at-release");
+  });
+
+  it("resolves HypothesisRevisionNotDraftAtReleaseError to a kind no other listed code resolves to, distinct from the generic fallback", () => {
+    const otherCodes = [
+      "CaseNotFoundError",
+      "ConceptNotAnsweredError",
+      "ConceptNotHeldError",
+      "VocabularyTermNotHeldError",
+      "CaseAlreadyHasDraftError",
+      "ManifestPositionOccupiedError",
+      "CaseVersionNotDraftError",
+      "CaseVersionNotDraftAtReleaseError",
+      "ConceptAlreadyAnsweredError",
+      "CaseVersionNotReleasableError",
+      "ManifestWouldHoldNoHypothesisError",
+      "IncompleteCapabilityContractError",
+      "CapabilityNotReadOnlyError",
+      "CapabilitySchemaNotWellFormedError",
+      "ConnectorConfigurationNotWellFormedError",
+      "ConceptDescriptionRequiredError",
+      "CaseHoldsNoDraftError",
+      "ConceptNotInGlossaryError",
+      "ConceptRefusesSubjectTypeError",
+      "CaseNotValidError",
+    ];
+
+    const targetKind = uiStateForApiError(
+      new ApiError("HypothesisRevisionNotDraftAtReleaseError", "not draft at release"),
+    ).kind;
+    const otherKinds = otherCodes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+
+    expect(otherKinds).not.toContain(targetKind);
+    expect(targetKind).not.toBe("generic-error");
+  });
+
   it("resolves CaseVersionNotReleasableError to the case-version-not-releasable state", () => {
     const state = uiStateForApiError(new ApiError("CaseVersionNotReleasableError", "not releasable"));
     expect(state.kind).toBe("case-version-not-releasable");

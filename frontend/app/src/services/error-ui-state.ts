@@ -9,6 +9,7 @@ export type UiErrorStateKind =
   | "manifest-position-occupied"
   | "case-version-not-draft"
   | "case-version-not-draft-at-release"
+  | "hypothesis-revision-not-draft-at-release"
   | "concept-already-answered"
   | "case-version-not-releasable"
   | "manifest-would-hold-no-hypothesis"
@@ -37,6 +38,7 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   ManifestPositionOccupiedError: { kind: "manifest-position-occupied" },
   CaseVersionNotDraftError: { kind: "case-version-not-draft" },
   CaseVersionNotDraftAtReleaseError: { kind: "case-version-not-draft-at-release" },
+  HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },
 
   ConceptAlreadyAnsweredError: { kind: "concept-already-answered" },
 

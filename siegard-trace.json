@@ -6058,6 +6058,10 @@
       "digest": "sha256:d0080a8085c60348b61d82bee6ec6e2ffcce812fc020a56f9d2db360746f6f92",
       "files": [
         {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+        },
+        {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
           "digest": "sha256:1ea02c7fcaa61c8312a3102ed20cd6f2fb9f096add34b0d3d81c4a653107e328"
         },
@@ -7046,6 +7050,16 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:e377ea330c5373f159d0337746dbc1502bbfcf3062bdff616d7ec7a89968d4fa"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
+      "digest": "sha256:4816c57b97249c1bf14cc437d7990f7a5343c6e3d77d221b10d414855b926677",
+      "files": [
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
         }
       ]
     },
