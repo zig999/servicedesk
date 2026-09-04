@@ -1,0 +1,95 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the query method's signature, identifying one revision by hypothesis name and revision number"
+    evidence: "readHypothesisRevisionOwnState(slug: string, hypothesisName: string, revision: number): Promise<HypothesisRevisionState | undefined>;"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the method's return type, reading the revision's own current state"
+    evidence: "Promise<HypothesisRevisionState | undefined>"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "the query signature, which takes no case-version or manifest parameter at all"
+    evidence: "readHypothesisRevisionOwnState(slug: string, hypothesisName: string, revision: number)"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { readHypothesisRevisionOwnState(...): Promise<HypothesisRevisionState | undefined>; }"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's one import, a type drawn from another port in the same layer, no framework or driver import"
+    evidence: "import type { HypothesisRevisionState } from './case-store.port.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the imported type used as the query's return value"
+    evidence: "import type { HypothesisRevisionState } from './case-store.port.js';"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "export interface IHypothesisRevisionOwnStateQuery { ... }"
+looked_past: "whether and where this port is actually implemented and wired into a factory or route is a coverage question, not this file's own conformance."

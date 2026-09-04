@@ -1,0 +1,103 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "beforeAll's replay of every migration file in filename order, and the ordering test at the end of the file"
+    evidence: "await applyMigrationFiles(client, await migrationFilesInOrder());"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the hypothesis_revisions insert/select tests for criterion and resolution, and the hypothesis_revision_collects insert/select for its collects"
+    evidence: "expect(rows).toEqual([{ criterion: 'A real criterion.', resolution_outcome: glossary.outcome }]);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "it(\"changes an already-stored hypothesis revision's own columns on an ordinary UPDATE when no released case version references it\", async () => {"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "'SELECT criterion, resolution_outcome FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1'"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "'SELECT state, released_at FROM case_versions WHERE slug = $1 AND version = 1'"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "the information_schema.columns assertion over the hypotheses table"
+    evidence: "expect(rows.map((row) => row.column_name)).toEqual(['case_slug', 'name']);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "await insertCaseVersion(client, glossary, { slug, version: 1, state: 'draft' });"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "await client.query('SELECT state, released_at FROM case_versions WHERE slug = $1 AND version = 1', [slug]);"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "await insertCase(client, slug);"
+  - node: domain/knowledge/case-version
+    held_at: "the case_versions insert/select tests for state and released_at, and the released-immutability tests"
+    evidence: "expect(rows).toEqual([{ state: 'draft', released_at: null }]);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the case_version_hypotheses insert/select and immutability/mutability tests"
+    evidence: "expect(rows).toEqual([{ hypothesis_name: 'the-hypothesis', revision: 1, position: 1 }]);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "'INSERT INTO hypothesis_revision_collects (case_slug, hypothesis_name, revision, concept_name) VALUES ($1,$2,$3,$4)'"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "\"UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1\""
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "async function insertHypothesisRevision(client: Client, glossary: IGlossary, options: IRevisionOptions): Promise<void> {"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the unique-violation test inserting a duplicate (case_slug, hypothesis_name, revision) key"
+    evidence: ").rejects.toMatchObject({ code: UNIQUE_VIOLATION });"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "'SELECT criterion, resolution_outcome FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1'"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "'SELECT criterion, resolution_outcome FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1'"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "await insertCaseVersion(client, glossary, { slug, version: 1, state: 'released', releasedAt: '2026-01-01T00:00:00Z' });"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await insertManifestEntry(client, { slug, version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "\"UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1\""
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "await client.query('SELECT state, released_at FROM case_versions WHERE slug = $1 AND version = 1', [slug]);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "\"UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1\""
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "async function insertHypothesisRevision(client: Client, glossary: IGlossary, options: IRevisionOptions): Promise<void> {"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await insertCaseVersion(client, glossary, { slug, version: 1, state: 'draft' });"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "await insertCaseVersion(client, glossary, { slug, version: 1, state: 'released', releasedAt: '2026-01-01T00:00:00Z' });"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "await insertManifestEntry(client, { slug, version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "\"UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1\""
+findings:
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: "the test titled \"changes an already-stored hypothesis revision's own columns on an ordinary UPDATE when no released case version references it\", lines 287-302"
+    evidence: "it(\"changes an already-stored hypothesis revision's own columns on an ordinary UPDATE when no released case version references it\", async () => {"
+    cost: "beforeAll applies every migration file in the directory, including 0021, which replaces the trigger's condition from a join against case_version_hypotheses/case_versions to OLD.state = 'released' on the revision's own column — the join this title still names is gone by the time this suite runs. A reader trusting this title to state what actually gates the write learns a mechanism this schema no longer implements; the row is in fact mutable here only because insertHypothesisRevision leaves state at its DEFAULT 'draft', never because any case version does or doesn't reference it."
+    kind: contradicts
+    correction: "state the condition the current trigger actually reads — e.g. \"...on an ordinary UPDATE while the revision's own state is draft\" — dropping the case-version-reference framing 0021 retired."
+    node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+looked_past: "the file's technical migration-replay mechanics (schema replay via readdir/sort, savepoint-based rollback probing for rule-based no-ops) are a persistence testing technique, not a domain fact, and are not reported here."

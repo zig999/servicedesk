@@ -1,0 +1,94 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file's only assertions are `expect(offenders).toEqual([]);` inside the two `it(...)` blocks checking the port's own import specifiers — nothing about assembling or validating a case version as a whole"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file contains no request, route or HTTP response handling — only `importSpecifiersOf(source)` read off the port file's text"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "the file has no listing operation — its two tests read `await portSource()` and filter import specifiers"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file declares no route and no authentication concern; it only reads `../../../case/hypothesis-revision-own-state.port.ts` as text"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "both `it(...)` blocks, lines 29-43"
+    evidence: "const offenders = importSpecifiersOf(source).filter((specifier) => namesOneOf(specifier, FORBIDDEN_DRIVERS_AND_FRAMEWORKS));\n\n  expect(offenders).toEqual([]);"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file contains no migration or schema replay concern — it only inspects the port file's import statements"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file declares no relation, column or attribute mapping — it only inspects import specifiers of one port file"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "no operation of create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release or discard is exercised — the file only asserts on `importSpecifiersOf(source)`"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "no read-case, list-cases or listing operation is exercised — the file only reads the port's own source text via `readFile(path, 'utf8')`"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "the file states nothing about composing, releasing or discarding a case version — it only checks the port's own imports"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no attribute, state or manifest of a case version appears in the file — it filters import specifiers against `FORBIDDEN_DRIVERS_AND_FRAMEWORKS`"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no attribute (revision, criterion, collects, resolution, state) of a hypothesis-revision is read or asserted — the file only inspects the port file's import specifiers"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "the file names no draft or released state — it only filters `importSpecifiersOf(source)` against forbidden package names"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "the file contains no manifest, position or hypothesis-revision reference — it only inspects the port's own import list"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "the file asserts nothing about a hypothesis-revision's collects — it only checks `offenders` against forbidden packages"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file exercises no revise or overwrite behavior of any hypothesis-revision — it reads the port's source text and filters imports"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no release transition or refusal is exercised — the file's two tests both assert `expect(offenders).toEqual([])`"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "no revision numbering is asserted anywhere in the file — it only names forbidden import specifiers"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file has no listing of revisions — it only reads and filters the port file's import specifiers"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no revision state is disclosed anywhere in the file — its content is the forbidden-package lists and two import assertions"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release refusal or violation is exercised — the file only checks import specifiers against `FORBIDDEN_DRIVERS_AND_FRAMEWORKS` and `PROVIDER_CLIENT_PACKAGE`"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry or case version release is exercised — the file only inspects the port file's own import list"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no alteration or refusal of a released revision is exercised — the file only asserts `expect(offenders).toEqual([])` over import specifiers"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise operation or its answer is exercised — the file only reads the port's source and filters its imports"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no case-version read or validation is exercised — the file only reads the port file's text via `readFile(path, 'utf8')`"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no revise scenario is exercised — the file's given/when/then never appear; only import-specifier filtering does"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release-hypothesis scenario is exercised — the file only checks the port's own imports"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release scenario is exercised — the file only asserts on `importSpecifiersOf(source)`"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "no case-version read-after-release scenario is exercised — the file only inspects the port file's imports"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no place-hypothesis scenario is exercised — the file only checks import specifiers against forbidden package lists"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise-of-a-released-revision scenario is exercised — the file only reads and filters the port's own import specifiers"

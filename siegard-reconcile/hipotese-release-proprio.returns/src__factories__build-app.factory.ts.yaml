@@ -1,0 +1,113 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: "registrationDependencies(), line 128"
+    evidence: "registerConcept: { registerConcept: resources.registerConcept },"
+  - node: contracts/integration/capability-registry
+    held_at: "readDependencies() lines 87-88, listDependencies() line 100, registrationDependencies() line 127"
+    evidence: "readCapability: { capabilityQuery: resources.capabilityQuery },\n    readCapabilityByIdentity: { readCapabilityByIdentity: resources.readCapabilityByIdentityOrThrow },"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "readDependencies() line 93, listDependencies() line 107, registrationDependencies() line 129"
+    evidence: "readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },"
+  - node: contracts/knowledge/case-input-requirements
+    held_at: "readDependencies(), line 90"
+    evidence: "readCaseInputRequirements: { caseInputRequirementsQuery: resources.caseInputRequirementsQuery },"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "lifecycleDependencies(), lines 113-122"
+    evidence: "createDraft: { createDraft: caseLifecycle.createDraft },\n    updateDraft: { caseStore, caseQuery },\n    release: { release: caseLifecycle.release, caseQuery },\n    releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },\n    discard: { discard: caseLifecycle.discard },\n    reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },\n    placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis },\n    removeHypothesis: { removeHypothesis: caseLifecycle.removeHypothesis },"
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: nowhere
+    evidence: "readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "caseQuery,"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {"
+  - node: constraints/listings-are-paged
+    held_at: "composeResources(), line 79, spread into listDependencies() lines 100-107"
+    evidence: "pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import type { DatabaseConnection } from '../persistence/database-connection.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {"
+  - node: contracts/knowledge/case-query
+    held_at: "readDependencies() line 89, listDependencies() lines 101-104"
+    evidence: "readCase: { caseQuery: resources.caseQuery },\n    listCases: { caseQuery: resources.caseQuery, ...pagination },\n    listCaseVersions: { caseQuery: resources.caseQuery, ...pagination },\n    listHypotheses: { caseQuery: resources.caseQuery, ...pagination },\n    listHypothesisRevisions: { caseQuery: resources.caseQuery, ...pagination },"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "caseLifecycle: createCaseLifecycle(connection),"
+  - node: domain/knowledge/case-version
+    held_at: "lifecycleDependencies(), lines 115-121"
+    evidence: "updateDraft: { caseStore, caseQuery },\n    release: { release: caseLifecycle.release, caseQuery },\n    discard: { discard: caseLifecycle.discard },\n    placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis },\n    removeHypothesis: { removeHypothesis: caseLifecycle.removeHypothesis },"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "lifecycleDependencies(), line 117"
+    evidence: "releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },"
+  - node: domain/knowledge/manifest-entry
+    held_at: "lifecycleDependencies(), lines 120-121"
+    evidence: "placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis },\n    removeHypothesis: { removeHypothesis: caseLifecycle.removeHypothesis },"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "listHypothesisRevisions: { caseQuery: resources.caseQuery, ...pagination },"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "listHypothesisRevisions: { caseQuery: resources.caseQuery, ...pagination },"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "release: { release: caseLifecycle.release, caseQuery },"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "release: { release: caseLifecycle.release, caseQuery },"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "readCase: { caseQuery: resources.caseQuery },"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "release: { release: caseLifecycle.release, caseQuery },"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis },"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },"
+looked_past: "this file is a pure composition root — it wires already-implemented operations into the objects each controller consumes, and the choice of which throwing/non-throwing read variant feeds which controller is an implementation detail of those operation modules, not a fact this file states or could contradict."

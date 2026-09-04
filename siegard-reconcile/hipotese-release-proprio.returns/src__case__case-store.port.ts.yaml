@@ -1,0 +1,116 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "assembleVersion's single AssembledCaseVersion return, with ManifestEntry embedding the full HypothesisRevisionContent rather than a bare reference"
+    evidence: "assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the createDraft, insertHypothesisRevision, placeHypothesis, removeManifestEntry, updateDraft, release and discard method signatures of ICaseStore"
+    evidence: "createDraft(input: CreateDraftInput): Promise<number>;"
+  - node: contracts/knowledge/case-query
+    held_at: "the assembleVersion, listCases, listCaseVersions, listHypotheses and listHypothesisRevisions method signatures"
+    evidence: "listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;"
+  - node: domain/knowledge/case
+    held_at: "the CaseIdentity type and the findDraftVersion method"
+    evidence: "findDraftVersion(slug: string): Promise<number | undefined>;"
+  - node: domain/knowledge/case-summary
+    held_at: "the CaseSummary type"
+    evidence: "readonly current_state?: CaseVersionState; readonly version_count: number; readonly last_updated?: string; readonly title?: string; readonly when_to_use?: string; readonly released_version?: number;"
+  - node: domain/knowledge/case-version
+    held_at: "the AssembledCaseVersion, CreateDraftInput and UpdateDraftInput types"
+    evidence: "readonly version: number; readonly title: string; readonly when_to_use: string; readonly authored_at: string; readonly subject: string; readonly fallback: Resolution;"
+  - node: domain/knowledge/case-version-state
+    held_at: "the CaseVersionState type alias"
+    evidence: "export type CaseVersionState = 'draft' | 'released';"
+  - node: domain/knowledge/hypothesis
+    held_at: "the HypothesisIdentity type"
+    evidence: "export type HypothesisIdentity = { readonly name: string; };"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the HypothesisRevisionContent, HypothesisRevisionInput and HypothesisRevisionListItem types"
+    evidence: "readonly revision: number; readonly criterion: string; readonly collects: readonly string[]; readonly resolution: Resolution;"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the HYPOTHESIS_REVISION_STATES constant and the HypothesisRevisionState type derived from it"
+    evidence: "export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the ManifestEntry type"
+    evidence: "export type ManifestEntry = { readonly position: number; readonly hypothesis_revision: HypothesisRevisionContent; };"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the release method signature and the CaseVersionState type name the subject and the trigger; the transition guard and refusal are not encoded in this file"
+    evidence: "release(slug: string, version: number): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the findDraftVersion method, which exposes the case's own draft version a caller checks against"
+    evidence: "findDraftVersion(slug: string): Promise<number | undefined>;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the HypothesisRevisionListItem type's state field"
+    evidence: "readonly state: HypothesisRevisionState;"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "the assembleVersion and listCaseVersions methods, addressed by version number rather than only the latest"
+    evidence: "listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: constraints/listings-are-paged
+    held_at: "the pagination parameter and PaginatedResponse return type on every list method"
+    evidence: "listHypothesisRevisions( slug: string, hypothesisName: string, pagination: PaginationRequest, ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's own import list — only local domain modules, no framework, driver or client"
+    evidence: "import type { ConsolidationRegister } from '../investigation/consolidation-register.js'; import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js'; import type { Resolution } from './case.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: contracts/system/case-authoring
+    held_at: "the createDraft, placeHypothesis, removeManifestEntry, updateDraft, release and discard methods together"
+    evidence: "placeHypothesis(input: PlaceHypothesisInput): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "readonly collects: readonly string[];"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "listHypothesisRevisions( slug: string, hypothesisName: string, pagination: PaginationRequest, ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "release(slug: string, version: number): Promise<void>;"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "placeHypothesis(input: PlaceHypothesisInput): Promise<void>;"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "insertHypothesisRevision's return type"
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "export interface ICaseStore {"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "release(slug: string, version: number): Promise<void>;"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "PlaceHypothesisInput, which accepts a revision number with no constraint on that revision's own state"
+    evidence: "export type PlaceHypothesisInput = { readonly slug: string; readonly version: number; readonly hypothesis_name: string; readonly revision: number; readonly position: number; };"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;"
+looked_past: "OverwriteHypothesisRevisionInput is declared but referenced by no method of ICaseStore in this file — a possible dead type, which is a code-quality question rather than a domain-fact one, so it is not reported here."

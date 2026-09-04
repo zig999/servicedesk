@@ -1,0 +1,99 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "the file's own two ALTER TABLE statements — one plain numbered script applying its whole change automatically, no hand step"
+    evidence: |
+      ALTER TABLE hypothesis_revisions
+        ADD COLUMN state TEXT NOT NULL DEFAULT 'draft';
+
+      ALTER TABLE hypothesis_revisions
+        ADD CONSTRAINT hypothesis_revisions_state_check CHECK (state IN ('draft', 'released'));
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "the ADD COLUMN statement, lines 54-55"
+    evidence: "ALTER TABLE hypothesis_revisions\n  ADD COLUMN state TEXT NOT NULL DEFAULT 'draft';"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the ADD COLUMN state statement, lines 54-55 — the one attribute (state) the table did not yet hold a column for"
+    evidence: "ALTER TABLE hypothesis_revisions\n  ADD COLUMN state TEXT NOT NULL DEFAULT 'draft';"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the CHECK constraint, lines 57-58"
+    evidence: "ALTER TABLE hypothesis_revisions\n  ADD CONSTRAINT hypothesis_revisions_state_check CHECK (state IN ('draft', 'released'));"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file's only statements are the two ALTER TABLEs on hypothesis_revisions; neither touches manifest assembly, validation-at-read, or the case-query aggregate boundary"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file has no route, no request shape and no HTTP response — its whole content is the two ALTER TABLE statements"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "the file defines no listing operation; its whole content is the two ALTER TABLE statements"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file declares no route and no authentication mechanism; its whole content is the two ALTER TABLE statements"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "the file is a migration script, not a domain-layer module — it holds no import statement at all"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file declares no operation; its whole content is the two ALTER TABLE statements"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "the file declares no operation; its whole content is the two ALTER TABLE statements"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "the file declares no operation; its whole content is the two ALTER TABLE statements"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the file's ALTER TABLEs target hypothesis_revisions only; case_versions is untouched"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "the file's ALTER TABLEs target hypothesis_revisions only; no manifest relation is touched"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "the file adds a state column and check; it adds no constraint or code touching collects"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file adds storage for state; it contains no overwrite-vs-create branching logic"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "DEFAULT 'draft' only satisfies NOT NULL for rows this migration itself did not create, as the file's own comment states; no transition trigger or refusal is added here"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "the file adds no column, constraint or logic concerning the revision number"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file defines no listing or ordering; its whole content is the two ALTER TABLE statements"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "the file makes state storable via the ADD COLUMN, but declares no listing that discloses it"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "the file adds no refusal logic; its whole content is the two ALTER TABLE statements"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file adds no release-time check over manifest entries; its whole content is the two ALTER TABLE statements"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "the file's own comment states this is deliberately left alone here: \"this task does not move that rule onto the new column ... and exposes it through no read port\""
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file adds no answer-shaping logic; its whole content is the two ALTER TABLE statements"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "the file adds no read-time validation; its whole content is the two ALTER TABLE statements"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "the file adds storage for state only; the overwrite behavior this scenario exercises lives elsewhere"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "the file adds no release operation; its whole content is the two ALTER TABLE statements"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file adds no release-time check; its whole content is the two ALTER TABLE statements"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "the file adds no versioning behavior; its whole content is the two ALTER TABLE statements"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "the file adds no placement logic; its whole content is the two ALTER TABLE statements"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the file adds storage for state only; the create-vs-overwrite branching this scenario exercises lives elsewhere"

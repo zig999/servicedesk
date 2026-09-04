@@ -1,0 +1,102 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions: vi.fn(), listHypotheses: vi.fn(), listHypothesisRevisions, };"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "the four 400-refusal tests, lines 219-286"
+    evidence: "expect(response.statusCode).toBe(400);"
+  - node: constraints/listings-are-paged
+    held_at: "the offset/limit default and clamp tests, and the envelope-shape test"
+    evidence: "expect(built.listHypothesisRevisions).toHaveBeenCalledWith('a-slug', 'a-hypothesis', { offset: 0, limit: 50 });"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "app.register(createListHypothesisRevisionsRoutesPlugin(dependencies));"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "const listHypothesisRevisions: ListHypothesisRevisionsMock = vi.fn();"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "const listHypothesisRevisions: ListHypothesisRevisionsMock = vi.fn();"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "const listHypothesisRevisions: ListHypothesisRevisionsMock = vi.fn();"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions: vi.fn(), listHypotheses: vi.fn(), listHypothesisRevisions, };"
+  - node: contracts/knowledge/case-query
+    held_at: "the whole file — every it block exercises list-hypothesis-revisions through the route"
+    evidence: "app.register(createListHypothesisRevisionsRoutesPlugin(dependencies));"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "built.listHypothesisRevisions.mockResolvedValueOnce(page);"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "const readCase = vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>();"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the item-shape assertion"
+    evidence: "expect(Object.keys(item).sort()).toEqual(['collects', 'criterion', 'resolution', 'revision', 'state']);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the state field carried on every fixture item"
+    evidence: "{ revision: 1, criterion: 'a-criterion', collects: ['a-concept'], resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } }, state: 'draft' }"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "const readCase = vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>();"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: ['a-concept']"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "{ revision: 1, criterion: 'a-criterion', ... }"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "data: [ { revision: 1, ... }, { revision: 2, ... } ],"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the item-shape assertion"
+    evidence: "expect(Object.keys(item).sort()).toEqual(['collects', 'criterion', 'resolution', 'revision', 'state']);"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const readCase = vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>();"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "listHypothesisRevisions"
+findings:
+  - file: src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts
+    where: "the CaseNotFoundError-on-unknown-slug test, line 146"
+    evidence: "expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 0 });"
+    cost: "This locks the exact payload a case-not-found 404 discloses (a details object naming slug and version) into a test as though the business had decided that shape. rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused — the node governing this exact refusal — only says refused with an HTTP 404 response reporting a CaseNotFoundError, and decision-log.md's entry for that node's statement field records that only the status and the error name were pulled from the delivered code; the details payload was left out of what was decided. A reader checking what a case-not-found refusal is allowed to disclose will find the answer only in this test, not in the node that owns the refusal."
+    kind: unstated
+    correction: "Either decide, and record against rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused, what a case-not-found refusal's response details must carry, or drop the details-shape assertion here and assert only the code, matching what the node currently states."
+looked_past: "The 400-refusal tests only assert the status code, not the VALIDATION_ERROR code/message/details constraints/a-malformed-request-is-refused-with-a-validation-error also requires — that is a coverage question, not a conformance one, so it is not reported here."

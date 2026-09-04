@@ -1,0 +1,95 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the first test (line 104), which opens one transaction and assembles the case-version row together with its manifest and each entry's collects"
+    evidence: "expect(texts[0]).toBe('BEGIN'); expect(texts).toContain('COMMIT');"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import type { DatabaseConnection } from '../../../persistence/database-connection.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "function caseVersionRow(overrides: Row = {}): Row {"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the store-method tests spread through the file — createDraft, insertHypothesisRevision, placeHypothesis, removeManifestEntry, release and discard; update-draft and release-hypothesis are not exercised anywhere in this file"
+    evidence: "const version = await store.createDraft(aCreateDraftInput({ source_version: 3 }));"
+  - node: contracts/knowledge/case-query
+    held_at: "the assembleVersion tests, which cover only read-case; list-cases, list-case-versions, list-hypotheses and list-hypothesis-revisions are not exercised"
+    evidence: "const answered = await store.assembleVersion('a-slug', 1);"
+  - node: contracts/system/case-authoring
+    held_at: "the same place/remove/release tests noted for case-lifecycle above, demonstrating free draft composition and a release that transitions state"
+    evidence: "await store.placeHypothesis(aPlaceHypothesisInput({ position: 3 }));"
+  - node: domain/knowledge/case-version
+    held_at: "caseVersionRow() and the assembleVersion tests reading its attributes back"
+    evidence: "subject: 'a-subject-type', fallback_outcome: 'a-fallback-outcome', fallback_action: 'a-fallback-action', fallback_recipient: 'a-fallback-recipient', consolidation_register: null, state: 'released', released_at: new Date('2024-01-02T00:00:00.000Z'),"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "manifestRow() and the insertHypothesisRevision test"
+    evidence: "position: 1, hypothesis_name: 'a-hypothesis', revision: 1, criterion: 'a criterion', resolution_outcome: 'an-outcome',"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the enumeration-guard test"
+    evidence: "if (text.includes('FROM hypothesis_revisions')) return { rows: [{ revision: 1, state: 'archived' }] };"
+  - node: domain/knowledge/manifest-entry
+    held_at: "manifestRow() and the placeHypothesis/removeManifestEntry tests"
+    evidence: "expect(recorded[2]?.params).toEqual(['a-slug', 1, 'a-hypothesis', 1, 3]);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: ['concept-a', 'concept-b'],"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the insertHypothesisRevision test"
+    evidence: "expect(revision).toBe(4);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "expect(texts[2]).toContain('SET state = $3, released_at = NOW()');"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "expect(texts[2]).toContain('SET state = $3, released_at = NOW()');"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the insertHypothesisRevision test's return-value assertion — only for the create branch; the overwrite branch this rule also covers is not exercised in this file"
+    evidence: "expect(revision).toBe(4);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "await expect(store.assembleVersion('a-slug', 1)).rejects.toBeInstanceOf(CaseStoreError);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "import { type AssembledCaseVersion, type CreateDraftInput, type HypothesisRevisionInput, type PlaceHypothesisInput, } from '../../../case/case-store.port.js';"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "expect(texts[2]).toContain('SET state = $3, released_at = NOW()');"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "expect(recorded[4]?.params).toEqual(['a-slug', 5, 3]);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "the placeHypothesis test — the only version-state read it records is SELECT state FROM case_versions; no query against hypothesis_revisions' own state precedes the insert"
+    evidence: "if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'draft' }] };"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "if (text.includes('INSERT INTO hypothesis_revisions')) return { rows: [{ revision: 4 }] };"
+looked_past: "Several ICaseStore methods this file's own imports and subject class expose — overwriteHypothesisRevision, releaseHypothesisRevision, updateDraft, findDraftVersion, and every listing method — carry no test at all in this file; that is a coverage question, not a conformance one, so it is not reported as a finding here."

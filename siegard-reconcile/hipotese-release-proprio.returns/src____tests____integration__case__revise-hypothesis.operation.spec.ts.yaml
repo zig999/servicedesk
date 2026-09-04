@@ -1,0 +1,110 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "import { ReviseHypothesisOperation } from '../../../case/revise-hypothesis.operation.js'; — the file exercises only revise-hypothesis; it calls no case-query read"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool)); — the operation is driven directly, never through an HTTP route"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no listing operation is called anywhere in the file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no route is invoked; the operation is exercised directly"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js'; — this is the test's own wiring, not the domain layer's own imports"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file asserts nothing about migration replay"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file asserts nothing about column-to-attribute pairing"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "every call to the operation under test, e.g. line 225"
+    evidence: "const answered = await operation.reviseHypothesis(reviseInput(fixture));"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "no read-case or listing operation is called"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "await seedReleasedReferencedHighestRevision(fixture, 'the released revision text'); — direct SQL fixture setup, not an exercise of place/release actions"
+  - node: domain/knowledge/case-version
+    held_at: "lines 90-98, seedCaseVersion, and its callers throughout the file"
+    evidence: "await pool.query(`INSERT INTO case_versions ... VALUES ($1, $2, 'A title', 'A use', now(), $3, $4, $5, $6, $7, $8)`, [fixture.slug, version, fixture.subjectType, fixture.outcome, fixture.action, fixture.recipient, state, releasedAt]);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "lines 233-237"
+    evidence: "const { rows: revisionRows } = await pool.query('SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [fixture.slug, 'the-hypothesis']); expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "lines 251-255"
+    evidence: "const { rows } = await pool.query('SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3', [fixture.slug, 'the-hypothesis', 1]); expect(rows).toEqual([{ state: 'draft' }]);"
+  - node: domain/knowledge/manifest-entry
+    held_at: "lines 417-421"
+    evidence: "const { rows } = await pool.query('SELECT revision FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = 1 AND hypothesis_name = $2', [fixture.slug, 'the-hypothesis']); expect(rows).toEqual([{ revision: 1 }]);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "lines 551-553"
+    evidence: "const rejection = operation.reviseHypothesis(reviseInput(fixture, { collects: [] })); await expect(rejection).rejects.toBeInstanceOf(HypothesisRevisionCollectsNoConceptError);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "lines 271-278 and 296-303"
+    evidence: "expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 }); ... expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "await pool.query(\"UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3\", [fixture.slug, hypothesisName, revision]); — the release trigger is never invoked through an operation; the file writes the state column directly as fixture setup"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "lines 227 and 298"
+    evidence: "expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 }); ... expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no listHypothesisRevisions call appears in the file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing is exercised"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no case-version release is exercised"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release is exercised"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "lines 447-452"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError); const { rows } = await pool.query('SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1', [fixture.slug, 'the-hypothesis']); expect(rows).toEqual([{ criterion: 'the released revision text' }]);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "lines 495-496"
+    evidence: "expect(Object.keys(overwritten).sort()).toEqual(['hypothesis_name', 'revision']); expect(Object.keys(created).sort()).toEqual(['hypothesis_name', 'revision']);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no case-query read is exercised"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "lines 351-356"
+    evidence: "expect([first.revision, second.revision, third.revision]).toEqual([1, 1, 1]); ... expect(rows).toEqual([{ revision: 1, criterion: 'the third successive revise text' }]);"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "await pool.query(\"UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3\", ...); — the file sets the state column directly rather than exercising the hypothesis's own release action"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release is exercised"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: "lines 515-519"
+    evidence: "expect(revised).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 }); const { rows } = await pool.query('SELECT revision FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = 1 AND hypothesis_name = $2', [fixture.slug, 'the-hypothesis']); expect(rows).toEqual([{ revision: 1 }]);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no place-hypothesis call appears in the file"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "lines 512-514 and 536-540"
+    evidence: "const revised = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the next revision text' })); expect(revised).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 }); ... expect(rows).toEqual([{ criterion: 'the released revision text' }]);"
+findings:
+  - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+    where: "the it() title at lines 258-260"
+    evidence: "overwrites an already-named hypothesis's own highest revision in place, keeping its revision number unchanged, when that revision is referenced by no case version in released state"
+    cost: "A reader learning the overwrite/create branch's governing condition from this title concludes it turns on whether a released case version's manifest references the revision — exactly the manifest-reference coupling the node's own description says the domain design removed. The same file states the correct condition ('own state') accurately in five other titles, so this one title is the sole place in the file where the superseded model reads as the rule's actual test subject."
+    kind: contradicts
+    correction: "reword the title to name the actual governing condition exercised — the revision's own state (draft, in this scenario) — rather than whether a case version references it."
+    node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+  - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+    where: "the it() title at lines 307-310, against its own assertion at lines 327-330"
+    evidence: "creates no revision at all — leaves the hypothesis holding only the revision it already had — when the highest existing revision's own state is released and no case version's manifest references it, other than the one draft revision the create branch itself just wrote ... expect(rows).toEqual([{ revision: 1, criterion: 'the original text', state: 'released' }, { revision: 2, criterion: 'the created text', state: 'draft' }]);"
+    cost: "The title asserts the revise 'creates no revision at all' and 'leaves the hypothesis holding only the revision it already had,' while the test's own query proves a second row — revision 2, draft — was created by that same revise. A reader relying on the title rather than the assertion would believe the create-the-next-revision branch never fires in this scenario, when the body is exactly the scenario where it does fire."
+    kind: contradicts
+    correction: "reword the title to state that a revise against a released highest revision creates the hypothesis's next revision (revision 2), matching the assertion."
+    node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+looked_past: "The file's title wording elsewhere is unconventional but logically consistent with its assertions, and general test-quality/naming-convention concerns beyond domain-fact accuracy are a different judgment's to make."

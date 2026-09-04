@@ -1,0 +1,117 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the first it(...) block, line 213-224"
+    evidence: "const query = createCaseQuery(connection); const result = await query.readCase(SLUG, VERSION); expect(result.case.slug).toBe(SLUG); expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeFixtureHypotheses(), lines 92-108, and the fourth test's collects assertions, lines 270-276"
+    evidence: "const revised = await lifecycle.reviseHypothesis({ slug: fixture.slug, hypothesis_name: entry.hypothesis_name, criterion: entry.criterion, collects: entry.collects, resolution: entry.resolution, subject: fixture.subject, });"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the RELEASED_REVISION_STATE constant, line 14, and the second test's assertion, line 241"
+    evidence: "const RELEASED_REVISION_STATE = 'released'; ... expect(rows.every((row) => row.state === RELEASED_REVISION_STATE)).toBe(true);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the third it(...) block, lines 245-255"
+    evidence: "expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the second it(...) block, lines 226-243"
+    evidence: "WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released', [SLUG, VERSION]); expect(rows.length).toBeGreaterThanOrEqual(1); expect(rows.every((row) => row.state === RELEASED_REVISION_STATE)).toBe(true);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the first it(...) block, line 214-223, via createCaseQuery's real wiring"
+    evidence: "'reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data', async () => { const query = createCaseQuery(connection); const result = await query.readCase(SLUG, VERSION);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "no HTTP request or route is exercised anywhere in this file; every call goes directly to the lifecycle/query/store factories over a database connection"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no listing operation is called; only query.readCase(SLUG, VERSION) is used"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no route handler is present or invoked in this file"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "this is a test file, not a domain module; it imports node:fs/promises, node:path, node:url and the persistence connection directly"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "no migration script is applied or referenced anywhere in this file"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "no column-to-attribute pairing is declared or checked in this file; it only reads and writes rows through existing tables"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "insertFixtureCase(), lines 126-147"
+    evidence: "const lifecycle = createCaseLifecycle(connection); const draft = await lifecycle.createDraft({...}); const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version); await lifecycle.release(fixture.slug, draft.version);"
+  - node: contracts/knowledge/case-query
+    held_at: "the first it(...) block, line 217-219"
+    evidence: "const query = createCaseQuery(connection); const result = await query.readCase(SLUG, VERSION);"
+  - node: contracts/system/case-authoring
+    held_at: "insertFixtureCase(), lines 126-147, and the reads that follow release"
+    evidence: "const draft = await lifecycle.createDraft({...}); const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version); await lifecycle.release(fixture.slug, draft.version); await releaseManifestedRevisions(connection, fixture.slug, placed);"
+  - node: domain/knowledge/case-version
+    held_at: "insertFixtureCase(), lines 126-147, and the SLUG/VERSION constants used to address it"
+    evidence: "const draft = await lifecycle.createDraft({...}); ... await lifecycle.release(fixture.slug, draft.version);"
+  - node: domain/knowledge/manifest-entry
+    held_at: "placeFixtureHypotheses(), lines 101-107"
+    evidence: "await lifecycle.placeHypothesis({ slug: fixture.slug, version, hypothesis_name: revised.hypothesis_name, revision: revised.revision, position: entry.position, });"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "each fixture hypothesis is revised exactly once, in placeFixtureHypotheses(); no repeated revise against the same hypothesis is performed"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "await connection.query('UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4', [RELEASED_REVISION_STATE, slug, revision.hypothesis_name, revision.revision]);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "no assertion in this file examines revision numbering; revised.revision is only consumed to place the manifest entry"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no list-hypothesis-revisions call is present"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no list-hypothesis-revisions call is present"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release refusal is exercised or asserted; await lifecycle.release(fixture.slug, draft.version); is not wrapped in any expectation of failure"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "for (const entry of fixture.manifest) { await connection.query('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2', [SLUG, entry.hypothesis_name]); }"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "revised.revision from lifecycle.reviseHypothesis is consumed only to place the manifest entry; no assertion checks what the curator is told"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "each hypothesis is revised exactly once in placeFixtureHypotheses(); no repeated-save sequence is exercised"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "releaseManifestedRevisions() only releases revisions already placed in the manifest, via raw SQL, not through a release-hypothesis-revision call against an unmanifested revision"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "insertFixtureCase() always releases every manifested revision before/around the case version's own release; no manifest entry is left pointing at a draft revision when release is attempted"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "only one case version (VERSION = 1) is ever created and read in this file; no second draft or second release is exercised"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "placeFixtureHypotheses(), lines 93-107"
+    evidence: "const revised = await lifecycle.reviseHypothesis({...}); await lifecycle.placeHypothesis({ slug: fixture.slug, version, hypothesis_name: revised.hypothesis_name, revision: revised.revision, position: entry.position, });"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise is attempted against an already-released revision anywhere in this file"
+findings:
+  - file: src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts
+    where: "the fourth it(...) block, lines 257-278"
+    evidence: |
+      for (const entry of fixture.manifest) {
+        await connection.query(
+          'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+          [SLUG, entry.hypothesis_name],
+        );
+      }
+
+      for (const entry of fixture.manifest) {
+        const { rows } = await connection.query<{ concept_name: string }>(
+          'SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+          [SLUG, entry.hypothesis_name],
+        );
+        expect(rows.map((row) => row.concept_name).sort()).toEqual([...entry.collects].sort());
+      }
+    cost: "By this point every revision named in the fixture's manifest has been released, so this test attempts a DELETE against a released hypothesis-revision's own stored content — its collects. The query is awaited with no try/catch and no rejection assertion, and the test then asserts the rows are unchanged: it locks in, as verified passing behavior, that this alteration attempt is silently accepted and left with no effect. The decision log for this node records exactly the opposite as decided: refused at the point of the attempt with an HTTP 409 response reporting a ReleasedHypothesisRevisionNotAlterableError, rather than accepted and left with no effect. A reader trusting this suite comes away believing the silent-no-op protection is the correct, specified behavior for altering a released revision's content, when the specification explicitly rejected that shape."
+    kind: contradicts
+    node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    correction: "The test should assert that the DELETE attempt is refused (rejects, or otherwise surfaces an explicit error) rather than asserting the rows are silently left unchanged with no error raised."
+looked_past: "The fixture setup releases hypothesis-revisions via a raw UPDATE hypothesis_revisions SET state = $1 ... statement instead of going through the domain's own release-hypothesis-revision operation — a testing-practice shortcut for fixture seeding, not a domain-fact statement, so it is left to a different pass."

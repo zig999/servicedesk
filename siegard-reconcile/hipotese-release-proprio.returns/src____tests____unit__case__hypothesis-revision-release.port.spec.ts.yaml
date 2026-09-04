@@ -1,0 +1,103 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', async () => { const source = await portSource(); expect(IMPORT_LINE_PATTERN.test(source)).toBe(false); });"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the assertion at line 15, expect(IMPORT_LINE_PATTERN.test(source)).toBe(false) — but it checks the absence of any import line at all, not specifically the absence of a framework, driver or provider-client import"
+    evidence: "const IMPORT_LINE_PATTERN = /^\\s*import\\b/m; ... expect(IMPORT_LINE_PATTERN.test(source)).toBe(false);"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', ...)"
+findings:
+  - file: src/__tests__/unit/case/hypothesis-revision-release.port.spec.ts
+    where: "the test title (line 12) and its assertion (line 15)"
+    evidence: "it('declares no import at all, so a caller depending on this port alone pulls in nothing else', async () => { ... expect(IMPORT_LINE_PATTERN.test(source)).toBe(false); });"
+    cost: "constraints/the-domain-depends-on-no-infrastructure forbids only framework, driver and provider-client imports and explicitly permits infrastructure to reach the domain layer through ports — a sibling port (hypothesis-revision-release-state.port.ts) legitimately imports a domain type (HypothesisRevisionState) without violating it. This test instead pins a stricter, unstated rule — zero imports of any kind — as if it were the specification's own boundary. If this port ever legitimately needed a domain-internal type import (as its sibling does), this test would fail it even though nothing in the specification forbids that; the next reader who wants to know why 'no import at all' is required will look in the specification and find only the narrower framework/driver/client rule."
+    kind: unstated
+    correction: "narrow the assertion (and its stated rationale) to check for the absence of framework, driver or provider-client imports specifically — matching constraints/the-domain-depends-on-no-infrastructure — rather than the absence of any import at all; or, if a stricter zero-import rule for ports is truly intended as a business/architecture decision, have it decided into the specification rather than asserted only here."
+    node: constraints/the-domain-depends-on-no-infrastructure
+looked_past: "The port file under test (hypothesis-revision-release.port.ts) happens to need no import at all given its current signature, so the test currently passes without forcing any actual violation — whether that coincidence is worth acting on is a call for whoever owns the correction, not this pass."

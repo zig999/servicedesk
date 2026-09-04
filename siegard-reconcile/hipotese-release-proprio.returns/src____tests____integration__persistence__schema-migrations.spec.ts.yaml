@@ -1,0 +1,95 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file's own joined SELECT reads storage directly and exercises no case-query assembly/validation boundary"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "'SELECT table_name FROM information_schema.tables WHERE table_schema = $1 ORDER BY table_name'"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "migrationFilesInOrder() and applyMigrations(), and the it() at line 298"
+    evidence: "async function migrationFilesInOrder(): Promise<readonly string[]> { const entries = await readdir(MIGRATIONS_DIR); return entries.filter((name) => name.endsWith('.sql')).sort(); }"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "the it() at line 423 and the it() at line 622"
+    evidence: "expect(rows).toEqual([ { table_name: 'case_versions', column_name: 'consolidation_register' }, { table_name: 'case_versions', column_name: 'released_at' }, ... ]);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "async function insertCaseVersionHypothesis(client: Client, options: ICaseVersionHypothesisOptions): Promise<void> { ... } — this raw INSERT bypasses place-hypothesis and every other declared operation"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "no read-case, list-cases or other declared operation is invoked; the file queries storage directly"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "await insertCaseVersion(client, { slug, version: 1, glossary, title: 'A full case title', consolidationRegister: 'formal' }); — the suite writes rows directly rather than exercising the curator-facing capability"
+  - node: domain/knowledge/case-version
+    held_at: "insertCaseVersion() and the it() at line 423 and line 447"
+    evidence: "INSERT INTO case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient, consolidation_register) VALUES ($1, $2, $3, 'When to use it', now(), $4, $5, $6, $7, $8)"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "insertHypothesisRevision() and the it() at line 530"
+    evidence: "INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient) VALUES ($1, $2, $3, $4, $5, $6, $7)"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the it() at line 530 and the it() at line 568"
+    evidence: "VALUES ($1, $2, 1, 'a criterion', $3, $4, $5, 'draft') ... VALUES ($1, $2, 2, 'a criterion', $3, $4, $5, 'released') ... VALUES ($1, $2, 3, 'a criterion', $3, $4, $5, 'archived') ...rejects.toMatchObject({ code: CHECK_VIOLATION });"
+  - node: domain/knowledge/manifest-entry
+    held_at: "insertCaseVersionHypothesis()"
+    evidence: "async function insertCaseVersionHypothesis(client: Client, options: ICaseVersionHypothesisOptions): Promise<void> { await client.query('INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position) VALUES ($1,$2,$3,$4,$5)', ...); }"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "async function insertHypothesisRevisionCollects(client: Client, options: IHypothesisRevisionCollectsOptions): Promise<void> { ... } — no test in this file attempts to store a revision with zero collects rows"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "await insertHypothesisRevision(client, { slug, name: 'the-hypothesis', revision: 1, glossary, criterion: 'A real criterion.' }); — revision numbers are assigned explicitly by the test's own fixtures; no revise operation is exercised"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the it() at line 568"
+    evidence: "it(\"defaults a hypothesis-revision's state to draft when an insert names no state at all\", async () => { ... expect(rows).toEqual([{ state: 'draft' }]); });"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "await insertHypothesisRevision(client, { slug, name: 'the-hypothesis', revision: 1, glossary, criterion: 'A real criterion.' }); — numbers are supplied directly by the fixture rather than derived by the file under any reuse discipline"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no listing query (no SELECT ordered by revision descending) appears anywhere in this file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing query over hypothesis_revisions appears anywhere in this file"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release operation or CaseVersionNotReleasableError is exercised anywhere in this file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no release operation is exercised; manifest entries are inserted directly via insertCaseVersionHypothesis without any release-time gate"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "CREATE RULE hypothesis_revisions_no_update AS ... (not exercised) — no test in this file attempts an UPDATE against an already-stored hypothesis_revisions row"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise operation is invoked or asserted on anywhere in this file"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no case-query read (validated read of an assembled case) is exercised; only raw SQL SELECTs over individual relations"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no revise operation is invoked; revision content is inserted once per fixture call"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release-hypothesis operation is invoked anywhere in this file"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no release operation is invoked anywhere in this file"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "no second draft/second release sequence over one hypothesis-revision is exercised anywhere in this file"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "the it() at line 353"
+    evidence: "await insertHypothesisRevision(client, { slug, name: 'the-hypothesis', revision: 1, glossary, criterion: 'A real criterion.' }); await insertHypothesisRevisionCollects(client, ...); await insertCaseVersionHypothesis(client, ...); — the revision is inserted with no explicit state (defaulting to draft), and placing it into the manifest succeeds without refusal"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise operation is invoked against a released hypothesis-revision anywhere in this file"
+looked_past: "the four CHECK-enum tests for investigation verdict, evidence-result, evaluation-reason and capability-nature values, none of which belong to this delegation's node pack — confirmed to be governed by their own investigation-domain nodes elsewhere, matching the values the source asserts, so they are another judgment's rather than a gap here."

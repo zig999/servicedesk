@@ -1,0 +1,108 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "app.get('/throw', () => Promise.reject(thrown));"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "function buildAppThatRejectsWith(thrown: unknown): FastifyInstance"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "app.get('/throw', () => Promise.reject(thrown));"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file holds no database, migration or persistence reference of any kind"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file holds no relation, column or migration reference of any kind"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "the file names no read-case, list-cases or other case-query operation"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "the file composes no case version, manifest or hypothesis-revision at all"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "new CaseVersionNotReleasableError('a-slug', 1, ['a violation'])"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "new HypothesisRevisionNotDraftAtReleaseError()"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "the file never reads or asserts a state value of any hypothesis-revision"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "the file never composes or reads a manifest entry"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "HypothesisRevisionCollectsNoConceptError is never imported or thrown in this file"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file never revises a hypothesis or asserts a revision number"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the assertion in answers a mapped domain error that carries no context property with only its code and its fixed message, holding no details key at all, lines 78-84"
+    evidence: "expect(response.json()).toEqual({ error: { code: 'HypothesisRevisionNotDraftAtReleaseError', message: 'this hypothesis-revision is not in draft state, and release is the one trigger that only ever moves a hypothesis-revision out of draft' } });"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "the file never asserts or reads a revision number"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file lists no hypothesis's revisions"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "the file lists no hypothesis's revisions and asserts no per-revision state disclosure"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "the assertion in answers a second, differently-mapped domain error with its own distinct status too, line 37"
+    evidence: "app = buildAppThatRejectsWith(new CaseVersionNotReleasableError('a-slug', 1, ['a violation'])); const response = await app.inject({ method: 'GET', url: '/throw' }); expect(response.statusCode).toBe(422);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "new CaseVersionNotReleasableError('a-slug', 1, ['a violation'])"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "ReleasedHypothesisRevisionNotAlterableError is never imported or thrown in this file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file never revises a hypothesis or asserts a revision number in an answer"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "the file never reads a case version and asserts nothing about validator rules holding at a read"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "the file contains no revise-hypothesis scenario of any kind"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "the file never releases a hypothesis-revision or asserts anything about a manifest"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "new CaseVersionNotReleasableError('a-slug', 1, ['a violation'])"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "the file never releases a case version or compares two versions' manifests"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "the file never places a manifest entry"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the file never revises a hypothesis-revision or asserts a created revision number"
+findings:
+  - file: src/__tests__/unit/http/error-handler.middleware.spec.ts
+    where: "still answers 500 with the unchanged generic envelope for a typed domain error the status map does not name, lines 88-95"
+    evidence: "expect(response.statusCode).toBe(500); expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });"
+    cost: "The exact fallback identity for a domain error the status map does not name — the code INTERNAL_ERROR and the fixed message an unexpected error occurred — is asserted here as a fact of the system's behavior, but no node states it. Every other named refusal this specification declares states its own code and shape as a node; this one lives only in the test and the middleware it exercises, so a reader auditing what an unmapped error tells a caller will not find it in the specification, and a later change to that wording would contradict nothing the specification says."
+    kind: unstated
+    correction: "state, as a system-scoped constraint alongside constraints/a-malformed-request-is-refused-with-a-validation-error, the shape a domain error the status map does not name is answered with — its code and that it carries a fixed message and no further detail."
+  - file: src/__tests__/unit/http/error-handler.middleware.spec.ts
+    where: "never lets an unmapped error's own message or context reach the client, lines 105-112"
+    evidence: "expect(response.body).not.toContain('a-secret-slug'); expect(response.body).not.toContain('a sensitive violation');"
+    cost: "Whether an unmapped domain error's own message and constructor context ever reach the caller is an information-disclosure decision that belongs to the specification rather than to code, and no node states it. The guarantee currently exists only as this test's assertion against the middleware; a later change that let such details leak would not visibly contradict anything the specification records."
+    kind: unstated
+    correction: "state, as part of the same generic-refusal constraint, that a domain error the status map does not name is answered without its own message or constructor context reaching the caller."
+looked_past: "The exact message and details-object shapes the tests assert for CaseNotFoundError and InvestigationWriteDeadlineExceededError are quality/coverage matters over an already-held status mapping, not domain facts this pass evaluates further."

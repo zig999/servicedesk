@@ -1,0 +1,103 @@
+findings:
+  - file: src/__tests__/integration/case/release.operation.spec.ts
+    where: "line 306, the assertion in \"refuses releasing a version that is not in draft state...\""
+    evidence: "expect((refusal as CaseVersionNotDraftAtReleaseError).context).toEqual({ slug, version, state: 'released' });"
+    cost: "the test binds CaseVersionNotDraftAtReleaseError's refusal to a specific context shape — slug, version and the state the version stood in — as a fact of the domain; the specification's own state-machine node for this exact refusal states only the error identity and its HTTP status, and its sibling rule for the analogous hypothesis-revision refusal explicitly decided the refusal carries no further value at all, in particular never the state. A reader who wants to know what a case-version lifecycle refusal discloses will look at the node and find nothing said either way, while this test has already made the decision for it."
+    kind: unstated
+    correction: "state, for domain/knowledge/case-version's own not-draft-at-release refusal, whether the refusal's context may carry slug, version and state, the way rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle already decided for its sibling refusal"
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "const stillStored = await store.assembleVersion(slug, version); expect(stillStored?.state).toBe('draft'); — a store-level read, not the case-query read this constraint governs"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "function wireRelease(store: RelationalCaseStore): ReleaseOperation { return new ReleaseOperation(store, createGlossaryQuery(pool), createCapabilityQuery(pool)); } — the operation is exercised directly, with no route and no request to malform"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "the file calls only createDraftVersion, placeNewHypothesis/placeReleasedHypothesis and releaseOperation.release() — no listing operation is exercised anywhere in the file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "const releaseOperation = wireRelease(store); — the operation is invoked directly against a store and two query ports, with no route and no requester identity anywhere in the file"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js'; — this is a test importing infrastructure to drive an integration suite, not the domain layer this constraint audits"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "beforeAll(() => { pool = createDatabaseConnection(requireDatabaseUrl()); }); — the file connects to an already-provisioned database and never applies or asserts anything about migration scripts"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file's own SQL, e.g. 'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3', reads existing columns; it asserts nothing about the schema's own column-to-attribute pairing"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "every it() block's call to releaseOperation.release(slug, version), e.g. line 221"
+    evidence: "const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error);"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "const stillStored = await store.assembleVersion(slug, version); — a store primitive the test calls directly, not this contract's published read-case operation"
+  - node: contracts/system/case-authoring
+    held_at: "the \"both rules violated\" test, lines 447-470"
+    evidence: "expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([...]);"
+  - node: domain/knowledge/case-version
+    held_at: "lines 279-282"
+    evidence: "expect(released?.state).toBe('released'); expect(released?.released_at).toBeDefined();"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeReleasedHypothesis, lines 152-156, and its use throughout the file"
+    evidence: "async function placeReleasedHypothesis(store: RelationalCaseStore, key: ICaseVersionKey, hypothesis: IHypothesisDescription): Promise<number> { const revision = await placeNewHypothesis(store, key, hypothesis); await store.releaseHypothesisRevision(key.slug, hypothesis.name, revision); return revision; }"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "line 337"
+    evidence: "expect(after[0]?.state).toBe(before[0]?.state);"
+  - node: domain/knowledge/manifest-entry
+    held_at: "line 148 and line 367"
+    evidence: "await store.placeHypothesis({ slug: key.slug, version: key.version, hypothesis_name: hypothesis.name, revision, position: hypothesis.position });"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "lines 217-227"
+    evidence: "await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'first', collects: [], resolution, position: 1 });"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "placeNewHypothesis calls store.insertHypothesisRevision once per hypothesis name; the file never revises an existing hypothesis a second time"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "line 154"
+    evidence: "await store.releaseHypothesisRevision(key.slug, hypothesis.name, revision);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "each hypothesis name in the file is placed once via placeNewHypothesis/placeReleasedHypothesis; no revision number reuse is exercised or asserted"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file exercises no hypothesis-revisions listing operation"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "the file exercises no hypothesis-revisions listing operation"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "lines 223-227"
+    evidence: "expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "lines 396-418"
+    evidence: "expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual(['the hypothesis \"h1\" is manifested at a revision that is not released']);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "the file never attempts to alter a released hypothesis-revision's content; it only checks that release() itself leaves the revision's own state unchanged (lines 312-339)"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "placeNewHypothesis calls store.insertHypothesisRevision directly, not the revise operation this rule governs, and asserts nothing about what a revise answers"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "lines 206-232 and 234-261"
+    evidence: "const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error); expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no hypothesis is revised more than once in the file"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "lines 152-156"
+    evidence: "await store.releaseHypothesisRevision(key.slug, hypothesis.name, revision); — released directly against the revision, never against the case version"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "lines 396-418"
+    evidence: "await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: "lines 365-369"
+    evidence: "const version1AfterVersion2Released = await store.assembleVersion(slug, version1); expect(version1AfterVersion2Released).toEqual(version1AfterItsOwnRelease);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "lines 217-218 and 408"
+    evidence: "await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 }); — a draft revision placed with no refusal at placement"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the file never revises a hypothesis that already holds a released revision"
+looked_past: "the exact wording of the violation strings the file asserts and the order violations appear in the array — the governing rules require only that the violation name the right hypothesis/rule together, never a literal phrasing or an ordering, so this is not a conformance gap."

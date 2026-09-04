@@ -1,0 +1,114 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "the whole file, as a plainly numbered script applying CREATE OR REPLACE statements"
+    evidence: "CREATE OR REPLACE FUNCTION hypothesis_revisions_refuse_when_released()"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the trigger function's condition, line 39, and the rule's condition, lines 62-68"
+    evidence: "IF OLD.state = 'released' THEN"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the same state comparisons, lines 39 and 68"
+    evidence: "hr.state = 'released'"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the trigger function, lines 36-44, which raises the named error when OLD.state is released"
+    evidence: "IF OLD.state = 'released' THEN\n    RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError';"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file's only two constructs are the trigger function (lines 36-44) and the DELETE rule (lines 60-70); neither reads or assembles a case version"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file contains no request handling — only a trigger function and a rewrite rule"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "the file contains no listing or query surface"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file declares no route"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "the file is itself the infrastructure layer (a migration script); it holds no domain-layer import"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "both constructs, reading the existing hypothesis_revisions.state column rather than declaring a new one"
+    evidence: "OLD.state = 'released'"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file declares no operation surface, only a trigger function and a rewrite rule"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "the file declares no read operation"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "the file states no capability-level promise, only a trigger and a rule"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the file's conditions no longer reference case_versions at all — the comment states the EXISTS join against case_version_hypotheses/case_versions is gone"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "the refusal below never looks at a manifest at all"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "the rule at lines 60-70 refuses a DELETE against hypothesis_revision_collects; it states nothing about a minimum count of concepts"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file contains no overwrite/create-next-revision branch, only a refusal on OLD.state = 'released'"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "the file contains no release transition or draft-to-released trigger, only a refusal against altering an already-released row"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "the file assigns no revision number"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file declares no listing or ordering"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "the file declares no listing"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "the file's only refusal is 'ReleasedHypothesisRevisionNotAlterableError', unrelated to a case-version release's aggregated violations"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file no longer reaches case_version_hypotheses/case_versions at all"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file returns nothing to a caller; it only raises an exception or no-ops a DELETE"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "the file performs no read/validation pass over a case version"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "the file contains no overwrite-in-place logic"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "the file performs no release action; it only refuses further alteration once released"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file no longer reaches case_version_hypotheses/case_versions at all"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "the file states no case-version read"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "the file contains no place-hypothesis logic and no manifest reference"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the file contains no create-next-revision branch"
+findings:
+  - file: migrations/0021-refuse-altering-a-released-revision.sql
+    where: "the CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released, lines 60-70"
+    evidence: |
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+        ON DELETE TO hypothesis_revision_collects
+        WHERE EXISTS (
+          SELECT 1
+          FROM hypothesis_revisions hr
+          WHERE hr.case_slug = OLD.case_slug
+            AND hr.hypothesis_name = OLD.hypothesis_name
+            AND hr.revision = OLD.revision
+            AND hr.state = 'released'
+        )
+        DO INSTEAD NOTHING;
+    cost: "A DELETE issued against a released revision's own collects rows completes with no exception and no error at all — the statement simply affects zero rows — so nothing translates it into ReleasedHypothesisRevisionNotAlterableError or an HTTP 409; the same alteration attempt the trigger above refuses loudly is, for the collects half of the revision's own declared content, accepted and left with no effect, which is the exact outcome the node names as what refusal must replace rather than reproduce."
+    kind: contradicts
+    node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    correction: "replace the DO INSTEAD NOTHING rewrite rule with a mechanism that raises 'ReleasedHypothesisRevisionNotAlterableError' (e.g. a BEFORE DELETE trigger mirroring hypothesis_revisions_refuse_when_released()) so a DELETE against a released revision's collects is refused rather than silently absorbed."
+looked_past: "the migration's own comments cite prior migrations (0009, 0010, 0019, 0020) and other source files (relational-case-store.repository.ts, status-map.ts) by name to explain the change's history and downstream effect — a comment-content and standard-conformance concern (source-carries-no-comments), not a domain-fact discrepancy, so it is left for that pass."

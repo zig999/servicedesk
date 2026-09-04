@@ -1,0 +1,103 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "const before = await store.assembleVersion(slug, version); — used only to compare a case version's state and manifest before and after a hypothesis-revision release; the file never exercises or asserts the whole-versus-partial assembly this constraint states."
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { ReleaseHypothesisRevisionOperation } from '../../../case/release-hypothesis-revision.operation.js'; — this suite calls the operation directly, never through a route, so no request shape is ever refused here."
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "const state = await store.readHypothesisRevisionOwnState(slug, 'h1', revision); — the file calls no listing operation at all."
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "const operation = wireOperation(store); — the file wires the operation directly against the store; no route or requester identity appears anywhere in it."
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — this is an integration test exercising the persistence adapter itself, not an audit of the domain layer's own imports."
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "pool = createDatabaseConnection(requireDatabaseUrl()); — the file connects to whatever database URL is configured; it never applies or checks migration scripts."
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "await pool.query('UPDATE case_versions SET state = $1 WHERE slug = $2 AND version = $3', [state, slug, version]); — a direct SQL write used for test setup; no column-to-attribute pairing is examined."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the operation call in every `it`, e.g. line 180"
+    evidence: "await operation.releaseHypothesisRevision(slug, 'h1', revision);"
+  - node: contracts/knowledge/case-query
+    held_at: "the before/after reads in the fourth `it` (lines 239, 243)"
+    evidence: "const before = await store.assembleVersion(slug, version);"
+  - node: contracts/system/case-authoring
+    held_at: "the third `it` (lines 209-224) and the fifth `it` (lines 249-269)"
+    evidence: "'releases a hypothesis-revision that no case version manifest ever references, without refusing for that absence'"
+  - node: domain/knowledge/case-version
+    held_at: "the fourth `it` (lines 226-247)"
+    evidence: "expect(after?.state).toBe(before?.state);\n    expect(after?.manifest).toEqual(before?.manifest);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "throughout, e.g. lines 180-183"
+    evidence: "const state = await store.readHypothesisRevisionOwnState(slug, 'h1', revision);\n  expect(state).toBe('released');"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "lines 182-183 and elsewhere"
+    evidence: "expect(state).toBe('released');"
+  - node: domain/knowledge/manifest-entry
+    held_at: "placeNewHypothesis / the fourth `it` (lines 236-245)"
+    evidence: "const revision = await placeNewHypothesis(store, { slug, version }, { name: 'h1', resolution, position: 1 });"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: [],\n    resolution: hypothesis.resolution, — insertUnplacedRevision calls the raw store method with an empty collects array, bypassing the operation this rule constrains; the file never asserts the refusal."
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "store\n      .overwriteHypothesisRevision({ slug, hypothesis_name: 'h1', revision, criterion: 'a rewritten criterion', collects: [], resolution }) — this exercises only the terminal refusal against an already-released revision, never the in-place-overwrite/next-revision branching this policy states."
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "refuseNonDraft in src/case/release-hypothesis-revision.operation.ts, exercised by the second `it` (lines 186-207) and the sixth `it` (lines 271-283)"
+    evidence: "expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const revision = await insertUnplacedRevision(store, slug, { name: 'h1', resolution }); — a single revision is inserted per test; no renumbering or reuse is exercised."
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "const state = await store.readHypothesisRevisionOwnState(slug, 'h1', revision); — no listing of revisions is ever read."
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "const state = await store.readHypothesisRevisionOwnState(slug, 'h1', revision); — a single-revision state read, not a listing."
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "await operation.releaseHypothesisRevision(slug, 'h1', revision); — this is a hypothesis-revision release, never a case-version release, so this rule's own refusal is never exercised."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "const after = await store.assembleVersion(slug, version); — the file never releases a case version, so this policy's own release-time check is never reached."
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the sixth `it` (lines 285-308)"
+    evidence: "await expect(attemptedOverwrite).resolves.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "const revision = await insertUnplacedRevision(store, slug, { name: 'h1', resolution }); — a raw insert helper, never a revise call, so no revise answer is ever read."
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const before = await store.assembleVersion(slug, version); — used only to compare state/manifest, not to assert or exercise validation-on-read."
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "const revision = await insertUnplacedRevision(store, slug, { name: 'h1', resolution }); — the file never revises a hypothesis more than once."
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "the third `it` (lines 209-224)"
+    evidence: "await expect(operation.releaseHypothesisRevision(slug, 'h1', revision)).resolves.toBeUndefined();\n\n  const state = await store.readHypothesisRevisionOwnState(slug, 'h1', revision);\n  expect(state).toBe('released');"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await operation.releaseHypothesisRevision(slug, 'h1', revision); — a hypothesis-revision release, never a case-version release, so this scenario's own refusal path is never exercised."
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "const version = await createDraftVersion(store, { slug, subjectType: vocabulary.subjectType, resolution }); — only one draft version is ever created per test; no second draft or its release is exercised."
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "await store.placeHypothesis({ slug: key.slug, version: key.version, hypothesis_name: hypothesis.name, revision, position: hypothesis.position }); — used only as setup for release tests; the file asserts nothing about place-hypothesis succeeding regardless of revision state."
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const revision = await insertUnplacedRevision(store, slug, { name: 'h1', resolution }); — the file never revises a hypothesis at all, so no next-revision creation is exercised."
+findings:
+  - file: src/__tests__/integration/case/release-hypothesis-revision.operation.spec.ts
+    where: "the sixth `it` (lines 271-283), 'refuses releasing a hypothesis-revision identity no row was ever stored for, with the same HypothesisRevisionNotDraftAtReleaseError as one that exists but is already released'"
+    evidence: "const refusal = await operation.releaseHypothesisRevision(slug, 'a-never-stored-hypothesis', 1).catch((error: unknown) => error);\n\n    expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+    cost: "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle states, as a decided part of its own statement, that the state the revision stood in 'is released whenever this refusal is raised' — a claim its decision-log entry grounds in the state machine holding only draft and released. This test locks in a second trigger the rule never named — an identity no row was ever stored for — so a reader trusting the rule's own text to know what the refusal implies would wrongly conclude the revision was released, when the source's own test proves it may never have existed at all."
+    kind: contradicts
+    node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    correction: "Either the rule is amended to also name a hypothesis-revision identity nothing was ever stored for as a trigger of this same refusal (dropping or qualifying 'released whenever this refusal is raised'), or the operation is changed to answer a never-stored identity differently from an already-released one."
+looked_past: "The `overwriteHypothesisRevision`/`insertHypothesisRevision` raw store calls bypass the revise-hypothesis operation's own concept and collects validation (e.g. `collects: []`); this is ordinary test-fixture scaffolding common to the other files this batch binds to those nodes, not a claim this file itself makes about the domain, so it is not reported here."

@@ -176,6 +176,37 @@
       "title": "Disclose each listed hypothesis-revision's own state",
       "summary": "Proves the list-hypothesis-revisions read path answers every revision's own draft-or-released state, sourced from its own row rather than any referencing case version, ordered highest-revision-first, and reconciles every pre-existing test the state field and the descending order broke.",
       "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
+    },
+    {
+      "id": "review/hipotese-release-proprio",
+      "kind": "review",
+      "file": "review/hipotese-release-proprio.md",
+      "title": "hipotese-release-proprio: release-gate and per-revision release backend delivery — review",
+      "summary": "Coverage, specification-conformance, and standard-conformance passes over the 11 delivered tasks of the hipotese-release-proprio initiative and the 44 files they touched; the failures pass did not run because the captured whole-change run passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A well-formed release-hypothesis request naming a hypothesis-revision whose own state is draft is not refused, and that revision's own state is released afterward.",
+        "Any test either file retains asserts the refusal from the hypothesis-revision row's own state and names no case_versions and no case_version_hypotheses relation.",
+        "Any test the file retains that asserts this immutability asserts it from the hypothesis-revision row's own released state.",
+        "Every assertion removed from either file has an equivalent assertion, stated against the hypothesis-revision row's own state, standing somewhere in the persistence schema suite.",
+        "Replaying every migration file in filename order onto an empty schema and running these files' tests passes with no test skipped.",
+        "The file's own tests pass in full, with no test skipped and no assertion relaxed.",
+        "The integration specs reading the canonical fixture — seed.spec.ts, fixtures/case-fixture-reads-clean.spec.ts, the three factory specs and case/manifest-collects-survive-release.spec.ts — pass with no assertion of theirs removed or relaxed.",
+        "The relational case store repository spec passes in full with no test skipped and no assertion relaxed.",
+        "The revise's answer holds no field whose value differs between the replace branch and the create branch.",
+        "The spec holds exactly one test asserting the refusal of an overwrite against a revision whose own state is released.",
+        "case-version-lifecycle-schema.spec.ts holds no assertion that an update against a hypothesis-revision's stored columns is refused, or left without effect, because a released case version's manifest references it.",
+        "src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts holds no assertion that a revision's collects survive removal because a released case version's manifest references it.",
+        "src/__tests__/integration/persistence/relational-case-store.repository.spec.ts holds no test asserting an overwrite is refused because a released case version still references the revision.",
+        "src/__tests__/integration/persistence/revision-alteration-refused-only-when-released-schema.spec.ts holds no assertion that a revision's stored content is left unchanged because a released case version's manifest references it.",
+        "src/__tests__/integration/persistence/revision-alteration-refused-only-when-released-schema.spec.ts holds no assertion that an update is rejected because a released case version's manifest references the revision.",
+        "src/case/release.operation.ts writes no hypothesis_revisions state, and the released state is reached through the fixture and seed setup alone."
+      ],
+      "findings": 25
     }
   ],
   "edges": [
@@ -616,6 +647,72 @@
       "to": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }
