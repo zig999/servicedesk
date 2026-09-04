@@ -6,6 +6,10 @@
       "digest": "sha256:61c4ee6500987751597f8af4459bd99939652f671412405418b17a15444007ff",
       "files": [
         {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
         },
@@ -16,6 +20,10 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
         }
       ]
     },
@@ -436,6 +444,10 @@
         {
           "path": "src/migrations/0021-refuse-altering-a-released-revision.sql",
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
+          "digest": "sha256:e1ca741cfd8ca2604087788d0c4271d0a03debbaa275abb788bd41ca24f7fa1b"
         },
         {
           "path": "src/src/migrate.ts",
@@ -3928,6 +3940,22 @@
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
         },
         {
+          "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
+          "digest": "sha256:590b5386f700dff94bbd84920becfee7e17ea928a864e864c193149a866f43ef"
+        },
+        {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
+          "digest": "sha256:e1ca741cfd8ca2604087788d0c4271d0a03debbaa275abb788bd41ca24f7fa1b"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
+          "digest": "sha256:f01b91c95a71a4e01a5426e72664bb5dd52b53b0346510e979390af3c532f44e"
+        },
+        {
           "path": "src/src/case/case-query.port.ts",
           "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
         },
@@ -3988,6 +4016,10 @@
           "digest": "sha256:345710d3e1b957d92f22d43f0957fc181758fd03e341510271a09de9e90a0808"
         },
         {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+        },
+        {
           "path": "src/src/vitest-global-setup.ts",
           "digest": "sha256:e457a1a666950915acaa06424ffb5dcc587934ef5e79fd01c05ab1934d9757ae"
         }
@@ -4006,8 +4038,24 @@
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
         },
         {
+          "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
+          "digest": "sha256:590b5386f700dff94bbd84920becfee7e17ea928a864e864c193149a866f43ef"
+        },
+        {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
+          "digest": "sha256:f01b91c95a71a4e01a5426e72664bb5dd52b53b0346510e979390af3c532f44e"
+        },
+        {
           "path": "src/src/case/case-store.port.ts",
           "digest": "sha256:709891bcae5d22546448f4f4674bfee493da50c1bdfa6511f18a9f6d738f7fe2"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
         }
       ]
     },
@@ -5712,6 +5760,10 @@
           "digest": "sha256:9c0ed0853331ad3917669e0ecf7cffa955865dcb0474250f53fdd30f2700d93a"
         },
         {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:5d71161a8f764669622f1035727028b68e96e21685e53bdc3d6a022308881296"
         },
@@ -5734,6 +5786,10 @@
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:d498f772273ed722b9fff9089f6c1f6eb16918e93d6c76637c103e11f69e3514"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -5968,6 +6024,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "digest": "sha256:92f3732f3434965c06caba8284b78f8ed8a81bd4af6a1ab7203a34ac60c79cce",
+      "files": [
+        {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
       "digest": "sha256:78de07ca840d509d9ad654b28fb97a3e9789fb53b271ad8ada45207f273209e1",
       "files": [
@@ -5982,6 +6052,22 @@
         {
           "path": "src/migrations/0021-refuse-altering-a-released-revision.sql",
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
+          "digest": "sha256:e1ca741cfd8ca2604087788d0c4271d0a03debbaa275abb788bd41ca24f7fa1b"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts",
+          "digest": "sha256:bc79d0f7d887f05550ed7fdb5cb69c7a09fdbd7cf078def059be466eaca33044"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
+          "digest": "sha256:f01b91c95a71a4e01a5426e72664bb5dd52b53b0346510e979390af3c532f44e"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/revision-alteration-refused-only-when-released-schema.spec.ts",
+          "digest": "sha256:35ed81aa454e44b285d637c01cd4020e6a2aa80428d22481087c4333566ac9e9"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -6294,6 +6380,10 @@
       "digest": "sha256:d23c3ea3ac2b08f3c477641ff601f37f513c678160e0078cee69d95633eda8b7",
       "files": [
         {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
         },
@@ -6304,6 +6394,10 @@
         {
           "path": "src/src/case/release.operation.ts",
           "digest": "sha256:fd53e698f6bdf6a2a1f92162172529929c7de5bc50a61e4641f434cf54444675"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
         }
       ]
     },

@@ -354,3 +354,22 @@ it('holds no second case version, having run seed.ts a second time in a row agai
 
   expect(secondVersion).toBeUndefined();
 });
+
+it(
+  "leaves every hypothesis-revision the released version's manifest references with its own state released, once seed.ts has run",
+  async () => {
+    const { rows } = await connection.query<{ state: string }>(
+      `SELECT hr.state
+         FROM hypothesis_revisions hr
+         JOIN case_version_hypotheses cvh
+           ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
+         JOIN case_versions cv
+           ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
+        WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released'`,
+      [SLUG, VERSION],
+    );
+
+    expect(rows.length).toBeGreaterThanOrEqual(1);
+    expect(rows.every((row) => row.state === 'released')).toBe(true);
+  },
+);

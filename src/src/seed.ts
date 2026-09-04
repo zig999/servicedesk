@@ -17,6 +17,7 @@ import { RelationalGlossaryStore } from './persistence/relational-glossary-store
 const FIXTURES_ROOT = fileURLToPath(new URL('../src/fixtures', import.meta.url));
 const CASE_SLUG = 'intermittent-connection-outage';
 const CASE_VERSION = 1;
+const RELEASED_REVISION_STATE = 'released';
 
 async function fixtureTerms(file: string): Promise<readonly GlossaryTerm[]> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', file), 'utf8');
@@ -85,11 +86,17 @@ async function seedCapabilities(connection: DatabaseConnection): Promise<void> {
   }
 }
 
+type PlacedRevision = {
+  readonly hypothesis_name: string;
+  readonly revision: number;
+};
+
 async function placeFixtureHypotheses(
   lifecycle: CaseLifecycleOperations,
   fixture: CaseFixture,
   version: number,
-): Promise<void> {
+): Promise<readonly PlacedRevision[]> {
+  const placed: PlacedRevision[] = [];
   for (const entry of fixture.manifest) {
     const revised = await lifecycle.reviseHypothesis({
       slug: fixture.slug,
@@ -106,6 +113,21 @@ async function placeFixtureHypotheses(
       revision: revised.revision,
       position: entry.position,
     });
+    placed.push({ hypothesis_name: revised.hypothesis_name, revision: revised.revision });
+  }
+  return placed;
+}
+
+async function releaseManifestedRevisions(
+  connection: DatabaseConnection,
+  slug: string,
+  revisions: readonly PlacedRevision[],
+): Promise<void> {
+  for (const revision of revisions) {
+    await connection.query(
+      'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
+      [RELEASED_REVISION_STATE, slug, revision.hypothesis_name, revision.revision],
+    );
   }
 }
 
@@ -122,8 +144,9 @@ async function seedCase(connection: DatabaseConnection): Promise<void> {
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,
   });
-  await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
   await lifecycle.release(fixture.slug, draft.version);
+  await releaseManifestedRevisions(connection, fixture.slug, placed);
 }
 
 async function alreadySeeded(connection: DatabaseConnection): Promise<boolean> {

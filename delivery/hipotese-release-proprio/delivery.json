@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implementation",
+      "file": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions.md",
+      "title": "Give the canonical fixture and seed setup's manifested revisions their own released state",
+      "summary": "The shared fixture builder, the production seed script, and the ad-hoc case built by manifest-collects-survive-release.spec.ts now directly write each manifest-referenced hypothesis-revision's own state to released right after the case version that manifests it is released, restoring the protection migration 0021 moved onto that column.",
+      "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
@@ -18,6 +26,30 @@
       "task": "task/hypothesis-revision-own-state/store-the-revisions-own-state"
     },
     {
+      "id": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "implementation",
+      "file": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test.md",
+      "title": "Repoint the repository's overwrite-refusal test onto the revision's own state",
+      "summary": "Replaced the obsolete manifest-referenced-basis overwrite test in the relational case store repository spec with a test asserting the opposite direction of the state-only rule — that a released case version's manifest reference alone, over a draft-state revision, does not refuse an overwrite — leaving the already-correct sibling as the file's one assertion of the refusal itself.",
+      "task": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test"
+    },
+    {
+      "id": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "implementation",
+      "file": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion.md",
+      "title": "Retire the case-version-lifecycle spec's manifest-basis immutability assertion",
+      "summary": "Removed the one test in case-version-lifecycle-schema.spec.ts that asserted a hypothesis-revision's immutability on the basis of a released case version's manifest reference, leaving the file's tests keyed only to constructions the current state-only trigger actually enforces.",
+      "task": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion"
+    },
+    {
+      "id": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "implementation",
+      "file": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
+      "title": "Retire the manifest-basis assertions from the two obsolete persistence schema specs",
+      "summary": "Removed the two obsolete assertions (rejection and content-survival in revision-alteration-refused-only-when-released-schema.spec.ts, and collects-survival in protect-released-hypothesis-revision-collects-schema.spec.ts) that attributed the release trigger's refusal to a released case version's manifest reference, since migration 0021 already moved the condition onto hypothesis_revisions.state alone and the equivalent state-only assertions already stand in refuse-altering-a-released-revision-schema.spec.ts.",
+      "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
+    },
+    {
       "id": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
       "kind": "proof",
       "file": "proof/hypothesis-revision-own-state/store-the-revisions-own-state.md",
@@ -27,6 +59,48 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
       "to": "domain/knowledge/hypothesis-revision",
@@ -84,6 +158,66 @@
     {
       "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
       "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "kind": "implements",
       "at": "the path"
     },

@@ -11,6 +11,7 @@ import { createDatabaseConnection, type DatabaseConnection } from '../../../pers
 const FIXTURES_ROOT = fileURLToPath(new URL('../../../fixtures/', import.meta.url));
 const SLUG = 'intermittent-connection-outage';
 const VERSION = 1;
+const RELEASED_REVISION_STATE = 'released';
 
 function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
@@ -77,11 +78,17 @@ type CaseFixtureDocument = {
   readonly manifest: readonly CaseFixtureManifestEntry[];
 };
 
+type PlacedRevision = {
+  readonly hypothesis_name: string;
+  readonly revision: number;
+};
+
 async function placeFixtureHypotheses(
   lifecycle: CaseLifecycleOperations,
   fixture: CaseFixtureDocument,
   version: number,
-): Promise<void> {
+): Promise<readonly PlacedRevision[]> {
+  const placed: PlacedRevision[] = [];
   for (const entry of fixture.manifest) {
     const revised = await lifecycle.reviseHypothesis({
       slug: fixture.slug,
@@ -98,6 +105,21 @@ async function placeFixtureHypotheses(
       revision: revised.revision,
       position: entry.position,
     });
+    placed.push({ hypothesis_name: revised.hypothesis_name, revision: revised.revision });
+  }
+  return placed;
+}
+
+async function releaseManifestedRevisions(
+  connection: DatabaseConnection,
+  slug: string,
+  revisions: readonly PlacedRevision[],
+): Promise<void> {
+  for (const revision of revisions) {
+    await connection.query(
+      'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
+      [RELEASED_REVISION_STATE, slug, revision.hypothesis_name, revision.revision],
+    );
   }
 }
 
@@ -119,8 +141,9 @@ async function insertFixtureCase(connection: DatabaseConnection): Promise<void> 
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,
   });
-  await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
   await lifecycle.release(fixture.slug, draft.version);
+  await releaseManifestedRevisions(connection, fixture.slug, placed);
 }
 
 async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
@@ -197,5 +220,59 @@ it(
 
     expect(result.case.slug).toBe(SLUG);
     expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+  },
+);
+
+it(
+  "reads back every hypothesis-revision the released case version's manifest references with its own state released",
+  async () => {
+    const { rows } = await connection.query<{ state: string }>(
+      `SELECT hr.state
+         FROM hypothesis_revisions hr
+         JOIN case_version_hypotheses cvh
+           ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
+         JOIN case_versions cv
+           ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
+        WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released'`,
+      [SLUG, VERSION],
+    );
+
+    expect(rows.length).toBeGreaterThanOrEqual(1);
+    expect(rows.every((row) => row.state === RELEASED_REVISION_STATE)).toBe(true);
+  },
+);
+
+it(
+  "reads every manifest entry's revision back collecting at least one concept",
+  async () => {
+    const query = createCaseQuery(connection);
+
+    const result = await query.readCase(SLUG, VERSION);
+
+    expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+    expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);
+  },
+);
+
+it(
+  "leaves every manifested hypothesis-revision's own collects in place after an ordinary DELETE against those exact rows is attempted",
+  async () => {
+    const raw = await readFile(join(FIXTURES_ROOT, 'case', SLUG, `${VERSION}.json`), 'utf8');
+    const fixture = JSON.parse(raw) as CaseFixtureDocument;
+
+    for (const entry of fixture.manifest) {
+      await connection.query(
+        'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+        [SLUG, entry.hypothesis_name],
+      );
+    }
+
+    for (const entry of fixture.manifest) {
+      const { rows } = await connection.query<{ concept_name: string }>(
+        'SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+        [SLUG, entry.hypothesis_name],
+      );
+      expect(rows.map((row) => row.concept_name).sort()).toEqual([...entry.collects].sort());
+    }
   },
 );

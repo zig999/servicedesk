@@ -28,6 +28,7 @@ interface IVocabulary {
 }
 
 const FOREIGN_KEY_VIOLATION = '23503';
+const RELEASED_REVISION_STATE = 'released';
 
 let pool: DatabaseConnection;
 let slugsWrittenByThisTest: string[] = [];
@@ -149,6 +150,13 @@ function wireRelease(store: RelationalCaseStore): ReleaseOperation {
   return new ReleaseOperation(store, createGlossaryQuery(pool), createCapabilityQuery(pool));
 }
 
+async function releaseRevisionDirectly(slug: string, hypothesisName: string, revision: number): Promise<void> {
+  await pool.query(
+    'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
+    [RELEASED_REVISION_STATE, slug, hypothesisName, revision],
+  );
+}
+
 async function deleteCollectsDirectly(slug: string, hypothesisName: string, revision: number): Promise<void> {
   await pool.query(
     'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
@@ -217,6 +225,8 @@ it(
     const revisionB = await placeNewHypothesis(store, { slug, version }, { name: 'h2', collects: [vocabulary.conceptB], resolution, position: 2 });
     const releaseOperation = wireRelease(store);
     await releaseOperation.release(slug, version);
+    await releaseRevisionDirectly(slug, 'h1', revisionA);
+    await releaseRevisionDirectly(slug, 'h2', revisionB);
     await deleteCollectsDirectly(slug, 'h1', revisionA);
     await deleteCollectsDirectly(slug, 'h2', revisionB);
 
@@ -243,6 +253,7 @@ it(
     const revision = await placeNewHypothesis(store, { slug, version: version1 }, { name: 'h', collects: [vocabulary.conceptA], resolution, position: 1 });
     const releaseOperation = wireRelease(store);
     await releaseOperation.release(slug, version1);
+    await releaseRevisionDirectly(slug, 'h', revision);
     await deleteCollectsDirectly(slug, 'h', revision);
     const version2 = await createDraftVersion(store, { slug, subjectType: vocabulary.subjectType, resolution });
 

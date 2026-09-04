@@ -1849,10 +1849,10 @@ it('resolves without raising, leaving no new row behind, when the named revision
 });
 
 it(
-  'refuses an overwrite attempt against a revision a released case version still references through a ' +
-    'distinguishable error, rather than surfacing it as an undifferentiated write failure',
+  "does not refuse an overwrite attempt against a hypothesis-revision whose own state is draft, even " +
+    "though a released case version's manifest still references that revision",
   async () => {
-    const slug = `case-lifecycle-store-overwrite-released-referenced-${randomUUID()}`;
+    const slug = `case-lifecycle-store-overwrite-draft-referenced-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
     const glossary = await freshGlossary();
     const store = new RelationalCaseStore(pool);
@@ -1867,16 +1867,17 @@ it(
     await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
     await store.release(slug, version);
 
-    const rejection = store.overwriteHypothesisRevision({
+    await store.overwriteHypothesisRevision({
       slug,
       hypothesis_name: 'a-hypothesis',
       revision,
-      criterion: 'a criterion the released reference should have refused',
+      criterion: 'a criterion the manifest reference alone should not have refused',
       collects: [],
       resolution: aResolution(glossary),
     });
 
-    await expect(rejection).rejects.not.toHaveProperty('message', 'a write against the case store failed');
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+    expect(page.data[0]?.criterion).toBe('a criterion the manifest reference alone should not have refused');
   },
 );
 

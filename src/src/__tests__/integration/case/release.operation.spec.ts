@@ -304,6 +304,35 @@ it(
 );
 
 it(
+  "leaves a manifested hypothesis-revision's own state exactly as it read before release, once release() succeeds",
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-state-untouched-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    const revision = await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const releaseOperation = wireRelease(store);
+    const { rows: before } = await pool.query<{ state: string }>(
+      'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [slug, 'h1', revision],
+    );
+
+    await releaseOperation.release(slug, version);
+
+    const { rows: after } = await pool.query<{ state: string }>(
+      'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [slug, 'h1', revision],
+    );
+    expect(after[0]?.state).toBe(before[0]?.state);
+  },
+);
+
+it(
   "releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted " +
     'revision reading exactly as they read before version 2 ever existed',
   async () => {
