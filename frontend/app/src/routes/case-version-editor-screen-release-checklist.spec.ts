@@ -101,6 +101,29 @@ describe("CaseVersionEditorScreen — the checklist's own concept item (criterio
   });
 });
 
+describe("CaseVersionEditorScreen — the checklist's own concept item for an entry with no collects field (this task's own inference)", () => {
+  it("marks the concept item unsatisfied, not crashing and not vacuously satisfied, for a manifest entry whose hypothesis_revision carries no collects array at all", async () => {
+    const fetchMock = createFetchStub(
+      releaseHandlers({
+        [`GET ${VERSION_PATH}`]: () =>
+          jsonResponse({ ...DRAFT_RECORD, manifest: [{ hypothesis_revision: {} }] }),
+      }),
+    );
+    await mountCaseVersionEditor(fetchMock);
+
+    await openReleaseDialog();
+    const dialog = screen.getByRole("dialog");
+
+    expect(within(dialog).getAllByRole("listitem")).toHaveLength(3);
+    expect(
+      within(dialog).getByText(/!\s*Every collected concept accepts the case subject/),
+    ).toBeTruthy();
+    expect(
+      within(dialog).queryByText(/✓\s*Every collected concept accepts the case subject/),
+    ).toBeNull();
+  });
+});
+
 describe("CaseVersionEditorScreen — a checklist dependency that never successfully reads", () => {
   it("treats a checklist dependency that fails every read as unsatisfied rather than crashing the Dialog", async () => {
     const fetchMock = createFetchStub(

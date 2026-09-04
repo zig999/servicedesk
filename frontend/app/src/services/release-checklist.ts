@@ -40,12 +40,16 @@ export function buildReleaseChecklist(params: {
       (option) => option.value === record.fallback.referral.recipient,
     );
 
-  const conceptsAcceptSubject = manifestEntries.every((entry) =>
-    entry.hypothesis_revision.collects.every((conceptName) => {
+  const conceptsAcceptSubject = manifestEntries.every((entry) => {
+    const collects = entry.hypothesis_revision.collects;
+    if (!Array.isArray(collects)) {
+      return false;
+    }
+    return collects.every((conceptName) => {
       const concept = concepts.find((candidate) => candidate.name === conceptName);
       return concept !== undefined && concept.accepts.includes(record.subject);
-    }),
-  );
+    });
+  });
 
   return [
     {

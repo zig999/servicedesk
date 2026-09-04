@@ -6224,6 +6224,28 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "digest": "sha256:013ef43f8419a0cc4c0c4ef1922e41cc8eb76e6e2e7e019bd65f5043adf7e426",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
+          "digest": "sha256:c2ea43bb139bdbc85c39b2f1366ae39a44f7e1f0f52da7b4884bafde9d047b4b"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-manifest-pinned-revision-states.ts",
+          "digest": "sha256:ccd74a249210783d06b1346726ae9e6c01130f01e876bf6242092c78827aa249"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:600125ac93976d6a3b9470ff817fd813f22932c5dc107c518ba30a694ed688b8"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:a062a60cb0fb4d304fccfd1b73bcc22b8b5dbb020295a4e2fdf4ac3d5e56c3ab"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
       "digest": "sha256:e46f78f06d4865b1db442958b80c0a8ff3383cddc27784d20f63c536140c11b7",
       "files": [

@@ -4,6 +4,7 @@ import { Button } from "@tui/ui/button";
 import { Tooltip, TooltipProvider } from "@tui/ui/tooltip";
 import { Label } from "@tui/ui/label";
 import { Select, type SelectOption } from "@tui/ui/select";
+import { cn } from "@tui/lib/cn";
 import {
   Dialog,
   DialogClose,
@@ -22,6 +23,7 @@ import {
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
 import { useManifestRowRevisions } from "../hooks/use-manifest-row-revisions";
+import { HYPOTHESIS_REVISION_STATE_CELL } from "../hooks/use-hypothesis-revisions";
 
 const REMOVE_DISABLED_TOOLTIP = "A case must keep at least one hypothesis";
 
@@ -164,6 +166,7 @@ function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Eleme
 
   const options = optionsWithPinnedRevision(revisions, row.revision);
   const hasNewerRevision = highestRevision !== undefined && row.revision < highestRevision;
+  const pinnedRevisionState = revisions.find((item) => item.revision === row.revision)?.state;
 
   function repinIfChanged(value: string): void {
     const chosenRevision = Number(value);
@@ -186,6 +189,18 @@ function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Eleme
             placeholder="Select a revision"
           />
         </Label>
+        {pinnedRevisionState !== undefined && (
+          <span className="inline-flex shrink-0 items-center gap-1 text-sm">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "inline-block h-2 w-2 rounded-full",
+                HYPOTHESIS_REVISION_STATE_CELL[pinnedRevisionState].color,
+              )}
+            />
+            {HYPOTHESIS_REVISION_STATE_CELL[pinnedRevisionState].label}
+          </span>
+        )}
         {hasNewerRevision && (
           <span className="shrink-0 text-sm text-warning">Newer revision available</span>
         )}

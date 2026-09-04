@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "kind": "implementation",
+      "file": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state.md",
+      "title": "Show each manifest entry's pinned revision state on both manifest-presentation surfaces",
+      "summary": "The version-manifest screen and the case-version editor's ready-view manifest table both now state, per entry, the draft-or-released state of the hypothesis-revision that entry pins, read from the hypothesis-revisions listing endpoint rather than from the case version's own state; the release checklist's collects check was also hardened against a manifest entry missing that field, a pre-existing defect this task's own test surfaced.",
+      "task": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal.md",
@@ -24,6 +32,14 @@
       "title": "Show each revision's own state on the hypothesis-revisions listing",
       "summary": "Widens the listing hook's item type with the revision's own draft/released state and renders it as an independent StatusTable column on the revision-history screen, beside the existing current/frozen pin badge.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "proof/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "kind": "proof",
+      "file": "proof/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state.md",
+      "title": "Manifest entries state their pinned revision's own state, on both presentation surfaces",
+      "summary": "Tests over version-manifest-screen.tsx and case-version-editor-ready-view.tsx prove that every manifest entry on both surfaces states its pinned hypothesis-revision's draft-or-released state, unconditioned on the case version's own state or the selector being open, with all pre-existing fields intact and no badge shown when the pin cannot be resolved from the revisions listing; a third test proves the release-checklist crash this task's own fixture surfaced now answers \"not satisfied\" instead of throwing.",
+      "task": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state"
     },
     {
       "id": "proof/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
@@ -51,6 +67,18 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "to": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
       "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
@@ -139,6 +167,12 @@
       "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "to": "implementation/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "kind": "proves",
       "at": "the path"
     },
     {

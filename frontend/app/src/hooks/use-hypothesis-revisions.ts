@@ -4,6 +4,13 @@ import type { HypothesisRevisionFormValues } from "../services/hypothesis-revisi
 
 export type HypothesisRevisionState = "draft" | "released";
 
+export const HYPOTHESIS_REVISION_STATE_CELL: Readonly<
+  Record<HypothesisRevisionState, { readonly color: string; readonly label: string }>
+> = {
+  draft: { color: "bg-warning", label: "Draft" },
+  released: { color: "bg-success", label: "Released" },
+};
+
 export type HypothesisRevisionListItem = {
   readonly revision: number;
   readonly criterion: string;
