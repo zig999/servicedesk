@@ -10,6 +10,14 @@
       "task": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal"
     },
     {
+      "id": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing.md",
+      "title": "Direct release control for a hypothesis-revision on the revisions listing",
+      "summary": "Adds a per-row release confirmation control to the hypothesis-revisions listing, backed by a new mutation hook that releases a revision directly, updates the listing's own cache on success, and re-reads it from the server on the one named refusal.",
+      "task": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state.md",
@@ -24,6 +32,14 @@
       "title": "Proof for naming the not-draft release refusal in the error vocabulary",
       "summary": "Two new tests prove HypothesisRevisionNotDraftAtReleaseError resolves to its own exclusive UI-state kind, and twenty-one pre-existing tests already in the file establish that every previously-listed code and the unrecognized-code fallback are unchanged.",
       "task": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing.md",
+      "title": "Direct release control on the hypothesis-revisions listing",
+      "summary": "Exercises the per-row release control, its request shape, cache update on success, and the not-draft-at-release refusal, all through the rendered HypothesisRevisionHistory screen with a stubbed fetch.",
+      "task": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing"
     },
     {
       "id": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
@@ -50,6 +66,48 @@
     {
       "from": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
       "to": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
       "kind": "implements",
       "at": "the path"
     },
@@ -86,6 +144,12 @@
     {
       "from": "proof/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
       "to": "implementation/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "to": "implementation/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
       "kind": "proves",
       "at": "the path"
     },

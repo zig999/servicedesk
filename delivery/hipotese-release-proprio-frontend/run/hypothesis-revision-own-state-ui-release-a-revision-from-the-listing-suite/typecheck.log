@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/hypothesis-revision-history-release-action.spec.ts(77,3): error TS2322: Type '[input: string | URL | Request, init?: RequestInit | undefined][]' is not assignable to type 'readonly [string | URL | Request, RequestInit | undefined][]'.
+  Type '[input: string | URL | Request, init?: RequestInit | undefined]' is not assignable to type '[string | URL | Request, RequestInit | undefined]'.
+    Source provides no match for required element at position 1 in target.
+src/routes/hypothesis-revision-history-release-action.spec.ts(214,11): error TS6133: 'fetchMock' is declared but its value is never read.

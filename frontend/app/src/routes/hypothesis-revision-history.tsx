@@ -2,6 +2,16 @@ import type { JSX } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@tui/ui/dialog";
+import {
   StatusTable,
   type StatusTableColumn,
   type StatusTableRow,
@@ -11,6 +21,10 @@ import {
   type HypothesisRevisionState,
 } from "../hooks/use-hypothesis-revisions";
 import { useCaseHypothesisCurrentPin } from "../hooks/use-case-hypothesis-current-pin";
+import { useHypothesisRevisionRelease } from "../hooks/use-hypothesis-revision-release";
+
+const RELEASE_DIALOG_DESCRIPTION =
+  "Once released, this revision's own content can never change again.";
 
 const REVISION_COLUMNS: StatusTableColumn[] = [
   { key: "revision", header: "Revision" },
@@ -27,6 +41,45 @@ const REVISION_STATE_CELL: Readonly<
   draft: { color: "bg-warning", label: "Draft" },
   released: { color: "bg-success", label: "Released" },
 };
+
+export type HypothesisRevisionReleaseActionProps = {
+  readonly slug: string;
+  readonly hypothesisName: string;
+  readonly revision: number;
+};
+
+function HypothesisRevisionReleaseAction({
+  slug,
+  hypothesisName,
+  revision,
+}: HypothesisRevisionReleaseActionProps): JSX.Element {
+  const release = useHypothesisRevisionRelease(slug, hypothesisName, revision);
+  return (
+    <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
+      <DialogTrigger asChild>
+        <Button type="button" variant="secondary">
+          Release…
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Release revision {revision}?</DialogTitle>
+        </DialogHeader>
+        <DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" disabled={release.isConfirming}>
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button type="button" loading={release.isConfirming} onClick={release.onConfirm}>
+            Release
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export type HypothesisRevisionHistoryProps = {
   readonly slug: string;
@@ -82,14 +135,25 @@ export function HypothesisRevisionHistory({
           : { color: "bg-muted-foreground", label: "frozen" },
         criterion: revision.criterion,
         collects: revision.collects.join(", "),
-        actions: isCurrent ? (
-          <Link
-            to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
-            params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
-          >
-            Revise →
-          </Link>
-        ) : null,
+        actions: (
+          <div className="flex items-center gap-2">
+            {isCurrent && (
+              <Link
+                to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
+                params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
+              >
+                Revise →
+              </Link>
+            )}
+            {revision.state === "draft" && (
+              <HypothesisRevisionReleaseAction
+                slug={slug}
+                hypothesisName={hypothesisName}
+                revision={revision.revision}
+              />
+            )}
+          </div>
+        ),
       };
     });
 
