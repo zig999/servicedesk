@@ -10,6 +10,14 @@
       "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
     },
     {
+      "id": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint.md",
+      "title": "Expose release-hypothesis on the published case-lifecycle HTTP surface",
+      "summary": "A new POST route, wired end to end through build-app.ts and its own factory, dispatches ReleaseHypothesisRevisionOperation against a hypothesis-revision named by slug, hypothesis name and revision alone, with no case-version or body payload involved.",
+      "task": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-release/release-a-revision-directly.md",
@@ -72,6 +80,14 @@
       "title": "Fixture and seed setup writes each manifested hypothesis-revision's own released state",
       "summary": "New integration tests query hypothesis_revisions and hypothesis_revision_collects directly after the canonical fixture builder, the seed script and release.operation.ts run, proving the own-state write lands where the objective requires it and nowhere else.",
       "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint.md",
+      "title": "Release-hypothesis HTTP surface proof",
+      "summary": "Integration tests dispatching real HTTP requests through the release-hypothesis route (standalone and via the built app) proving all six task criteria, its stated inferences, and the pre-existing build-app fixture repaired to compile again.",
+      "task": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint"
     },
     {
       "id": "proof/hypothesis-revision-own-release/release-a-revision-directly",
@@ -170,6 +186,54 @@
     {
       "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
       "kind": "implements",
       "at": "the path"
     },
@@ -398,6 +462,12 @@
     {
       "from": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
       "kind": "proves",
       "at": "the path"
     },

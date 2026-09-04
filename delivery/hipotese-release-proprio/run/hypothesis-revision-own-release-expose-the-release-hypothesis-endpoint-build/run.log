@@ -1,0 +1,27 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 3m
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(261,3): error TS2741: Property 'releaseHypothesisRevision' is missing in type '{ readCapability: { capabilityQuery: ICapabilityQuery; }; readCapabilityByIdentity: ReadCapabilityByIdentityControllerDependencies; ... 26 more ...; simulateHypothesis: SimulateHypothesisControllerDependencies; }' but required in type 'BuildAppDependencies'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
