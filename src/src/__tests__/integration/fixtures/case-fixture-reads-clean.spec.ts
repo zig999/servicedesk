@@ -1,7 +1,9 @@
+import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, expect, it } from 'vitest';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
@@ -111,15 +113,12 @@ async function placeFixtureHypotheses(
 }
 
 async function releaseManifestedRevisions(
-  connection: DatabaseConnection,
+  lifecycle: CaseLifecycleOperations,
   slug: string,
   revisions: readonly PlacedRevision[],
 ): Promise<void> {
   for (const revision of revisions) {
-    await connection.query(
-      'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
-      [RELEASED_REVISION_STATE, slug, revision.hypothesis_name, revision.revision],
-    );
+    await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
   }
 }
 
@@ -142,8 +141,8 @@ async function insertFixtureCase(connection: DatabaseConnection): Promise<void> 
     consolidation_register: fixture.consolidation_register,
   });
   const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
   await lifecycle.release(fixture.slug, draft.version);
-  await releaseManifestedRevisions(connection, fixture.slug, placed);
 }
 
 async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
@@ -254,25 +253,157 @@ it(
   },
 );
 
-it(
-  "leaves every manifested hypothesis-revision's own collects in place after an ordinary DELETE against those exact rows is attempted",
-  async () => {
-    const raw = await readFile(join(FIXTURES_ROOT, 'case', SLUG, `${VERSION}.json`), 'utf8');
-    const fixture = JSON.parse(raw) as CaseFixtureDocument;
+type OwnedRevisionOptions = {
+  readonly slug: string;
+  readonly hypothesisName: string;
+  readonly concept: string;
+};
 
-    for (const entry of fixture.manifest) {
+type OwnedReleasedRevision = {
+  readonly version: number;
+  readonly hypothesisName: string;
+  readonly revision: number;
+};
+
+async function releaseOwnedHypothesisRevision(
+  lifecycle: CaseLifecycleOperations,
+  options: OwnedRevisionOptions,
+): Promise<OwnedReleasedRevision> {
+  const draft = await lifecycle.createDraft({
+    slug: options.slug,
+    title: "A case owned exclusively by one of this file's own dedicated proof tests",
+    when_to_use: "Exercised only by a dedicated instance this file's own proof tests build.",
+    authored_at: '2024-01-01T00:00:00.000Z',
+    subject: 'contract',
+    fallback: {
+      outcome: 'inconclusive-hypotheses-exhausted',
+      referral: { action: 'escalate-to-specialist', recipient: 'tier-two-support-queue' },
+    },
+  });
+  const revised = await lifecycle.reviseHypothesis({
+    slug: options.slug,
+    hypothesis_name: options.hypothesisName,
+    criterion: 'A representative criterion exercised only by this proof.',
+    collects: [options.concept],
+    resolution: {
+      outcome: 'issue-equipment-fault',
+      referral: { action: 'schedule-technician-visit', recipient: 'field-service-queue' },
+    },
+    subject: 'contract',
+  });
+  await lifecycle.releaseHypothesisRevision(options.slug, revised.hypothesis_name, revised.revision);
+  return { version: draft.version, hypothesisName: revised.hypothesis_name, revision: revised.revision };
+}
+
+async function releaseOwnedCaseVersionAfterItsRevision(
+  lifecycle: CaseLifecycleOperations,
+  options: OwnedRevisionOptions,
+): Promise<void> {
+  const released = await releaseOwnedHypothesisRevision(lifecycle, options);
+  await lifecycle.placeHypothesis({
+    slug: options.slug,
+    version: released.version,
+    hypothesis_name: released.hypothesisName,
+    revision: released.revision,
+    position: 1,
+  });
+  await lifecycle.release(options.slug, released.version);
+}
+
+async function cleanupOwnedInstance(connection: DatabaseConnection, slug: string): Promise<void> {
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [slug]);
+  await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [slug]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [slug]);
+  await deleteTolerantly(connection, 'DELETE FROM hypotheses WHERE case_slug = $1', [slug]);
+  await deleteTolerantly(connection, 'DELETE FROM case_versions WHERE slug = $1', [slug]);
+  await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [slug]);
+}
+
+it(
+  "leaves a released hypothesis-revision's own collects in place after an ordinary DELETE against those exact rows is attempted, exercised against a case this test owns exclusively rather than the shared canonical fixture every other file also reads",
+  async () => {
+    const lifecycle = createCaseLifecycle(connection);
+    const ownedSlug = `${SLUG}-collects-delete-proof-${randomUUID()}`;
+    const hypothesisName = 'a-hypothesis-owned-by-this-test-alone';
+    const collectedConcept = 'equipment-status';
+
+    try {
+      await releaseOwnedHypothesisRevision(lifecycle, { slug: ownedSlug, hypothesisName, concept: collectedConcept });
+
       await connection.query(
         'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
-        [SLUG, entry.hypothesis_name],
+        [ownedSlug, hypothesisName],
       );
-    }
 
-    for (const entry of fixture.manifest) {
       const { rows } = await connection.query<{ concept_name: string }>(
         'SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
-        [SLUG, entry.hypothesis_name],
+        [ownedSlug, hypothesisName],
       );
-      expect(rows.map((row) => row.concept_name).sort()).toEqual([...entry.collects].sort());
+      expect(rows.map((row) => row.concept_name)).toEqual([collectedConcept]);
+    } finally {
+      await cleanupOwnedInstance(connection, ownedSlug);
     }
+  },
+);
+
+it(
+  "releases a freshly drafted case version without throwing CaseVersionNotReleasableError, once its own " +
+    'manifested hypothesis-revision has already been released through the lifecycle operation',
+  async () => {
+    const lifecycle = createCaseLifecycle(connection);
+    const ownedSlug = `${SLUG}-release-ordering-proof-${randomUUID()}`;
+    const hypothesisName = 'a-hypothesis-owned-by-the-release-ordering-proof';
+
+    try {
+      await expect(
+        releaseOwnedCaseVersionAfterItsRevision(lifecycle, {
+          slug: ownedSlug,
+          hypothesisName,
+          concept: 'equipment-status',
+        }),
+      ).resolves.toBeUndefined();
+    } finally {
+      await cleanupOwnedInstance(connection, ownedSlug);
+    }
+  },
+);
+
+it(
+  "refuses releasing an already-released manifested hypothesis-revision a second time with " +
+    "HypothesisRevisionNotDraftAtReleaseError, the exact refusal an unconditional release over every " +
+    "manifested revision on a second seeding run would meet without this file's own idempotency guard",
+  async () => {
+    const lifecycle = createCaseLifecycle(connection);
+    const ownedSlug = `${SLUG}-second-invocation-proof-${randomUUID()}`;
+    const hypothesisName = 'a-hypothesis-owned-by-the-second-invocation-proof';
+
+    try {
+      const released = await releaseOwnedHypothesisRevision(lifecycle, {
+        slug: ownedSlug,
+        hypothesisName,
+        concept: 'equipment-status',
+      });
+
+      const refusal = await lifecycle
+        .releaseHypothesisRevision(ownedSlug, released.hypothesisName, released.revision)
+        .catch((error: unknown) => error);
+
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    } finally {
+      await cleanupOwnedInstance(connection, ownedSlug);
+    }
+  },
+);
+
+it(
+  "reads the shared canonical fixture case whole with no CaseNotValidError, and with every hypothesis still " +
+    "collecting at least one concept, once this file's own collects-survive-DELETE test has already run",
+  async () => {
+    const query = createCaseQuery(connection);
+
+    const result = await query.readCase(SLUG, VERSION);
+
+    expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+    expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);
   },
 );

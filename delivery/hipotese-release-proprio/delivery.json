@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "implementation",
+      "file": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption.md",
+      "title": "Fix case-fixture-reads-clean.spec.ts's own release ordering and its destructive collects-survive-DELETE test",
+      "summary": "insertFixtureCase now releases every manifested hypothesis-revision through the declared lifecycle operation before releasing the case version, and the collects-survive-DELETE test now exercises the DELETE against a case this test owns exclusively so the shared canonical fixture is never touched.",
+      "task": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption"
+    },
+    {
       "id": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "kind": "implementation",
       "file": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
       "title": "Refuse a case version's release over a draft revision",
       "summary": "ReleaseOperation's existing violation aggregation now also checks every manifest entry's referenced hypothesis-revision own state through IHypothesisRevisionOwnStateQuery, naming every draft-state one among CaseVersionNotReleasableError's violations.",
       "task": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision"
+    },
+    {
+      "id": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implementation",
+      "file": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested hypothesis-revision before the case version in diagnose-server.factory.spec.ts's own fixture seeding",
+      "summary": "insertFixtureCase now releases every manifested hypothesis-revision through the lifecycle's own releaseHypothesisRevision before releasing the case version, so beforeAll no longer throws CaseVersionNotReleasableError against an empty database.",
+      "task": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
     },
     {
       "id": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
@@ -88,6 +104,22 @@
       "title": "Disclose each listed hypothesis-revision's own state",
       "summary": "The list-hypothesis-revisions read path now selects and answers each revision's own stored state, and orders the page by revision number descending.",
       "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
+    },
+    {
+      "id": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implementation",
+      "file": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested revision before releasing the case version in seed.ts",
+      "summary": "Reorders seed.ts's seedCase() to release every manifested hypothesis-revision through the declared lifecycle operation before releasing the case version, and removes the raw SQL UPDATE that used to move revisions to released.",
+      "task": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
+    },
+    {
+      "id": "proof/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "proof",
+      "file": "proof/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption.md",
+      "title": "Additional release-ordering and cross-file-corruption proof for case-fixture-reads-clean.spec.ts",
+      "summary": "New tests in case-fixture-reads-clean.spec.ts independently exercise the release-ordering fix (criteria 1, 2, 5) and the underdetermined second-invocation guard, distinct from the task-implementer's own rewritten collects-survive-DELETE test.",
+      "task": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption"
     },
     {
       "id": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
@@ -211,6 +243,36 @@
   ],
   "edges": [
     {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
       "kind": "encodes",
@@ -243,6 +305,36 @@
     {
       "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "to": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
       "kind": "implements",
       "at": "the path"
     },
@@ -580,6 +672,42 @@
       "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
       "to": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "proves",
       "at": "the path"
     },
     {

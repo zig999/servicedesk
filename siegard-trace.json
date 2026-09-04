@@ -4001,7 +4001,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
         {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
@@ -6042,6 +6042,10 @@
       "digest": "sha256:d0080a8085c60348b61d82bee6ec6e2ffcce812fc020a56f9d2db360746f6f92",
       "files": [
         {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
+        },
+        {
           "path": "src/src/case/hypothesis-revision-own-state.port.ts",
           "digest": "sha256:3648bc1ed7254c27d43e374e864623492ddd3f4e8b9ff16217ce09452ca28b94"
         },
@@ -6187,7 +6191,7 @@
       "files": [
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -6201,7 +6205,7 @@
     },
     {
       "node": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
-      "digest": "sha256:78de07ca840d509d9ad654b28fb97a3e9789fb53b271ad8ada45207f273209e1",
+      "digest": "sha256:491d5c37def42fa9ecb4600af7adb5d44a4155a9603d7be06176ce2165268fed",
       "files": [
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -6214,6 +6218,10 @@
         {
           "path": "src/migrations/0021-refuse-altering-a-released-revision.sql",
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
+        },
+        {
+          "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
         {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
