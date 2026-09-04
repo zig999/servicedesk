@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "kind": "implementation",
+      "file": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state.md",
+      "title": "Confirm manifest placement stays free of a revision's own state",
+      "summary": "Verified that the manifest composition surface never reads a hypothesis-revision's own draft/released state as a gate on offering, choosing, removing or repinning a manifest entry, and made no source edit because none was needed.",
+      "task": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state"
+    },
+    {
       "id": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
       "kind": "implementation",
       "file": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal.md",
@@ -40,6 +48,14 @@
       "title": "Show each revision's own state on the hypothesis-revisions listing",
       "summary": "Widens the listing hook's item type with the revision's own draft/released state and renders it as an independent StatusTable column on the revision-history screen, beside the existing current/frozen pin badge.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "proof/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "kind": "proof",
+      "file": "proof/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state.md",
+      "title": "Manifest placement, repin and removal stay unaffected by a revision's own draft/released state",
+      "summary": "Adds the missing fixtures -- a hypothesis-revisions listing that actually carries a state field -- needed to prove this task's five criteria, since every existing suite covering the manifest composition surface (revision-select, reorder, remove, use-manifest-builder-repin) exercises revisions with no state concept at all.",
+      "task": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state"
     },
     {
       "id": "proof/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
@@ -83,6 +99,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
       "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
@@ -207,6 +241,12 @@
       "from": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "to": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "kind": "proves",
       "at": "the path"
     },
     {
