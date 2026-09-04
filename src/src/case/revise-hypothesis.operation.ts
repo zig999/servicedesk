@@ -36,10 +36,10 @@ export class ReviseHypothesisOperation implements IReviseHypothesis {
   }
 
   private async writeRevision(input: ReviseHypothesisInput): Promise<number> {
-    const state = await this.caseStore.readHighestRevisionReleaseState(input.slug, input.hypothesis_name);
-    if (state.revision !== undefined && !state.released_referenced) {
-      await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, state.revision));
-      return state.revision;
+    const highest = await this.caseStore.readHighestRevisionReleaseState(input.slug, input.hypothesis_name);
+    if (highest.revision !== undefined && highest.state === 'draft') {
+      await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));
+      return highest.revision;
     }
     return this.caseStore.insertHypothesisRevision(input);
   }

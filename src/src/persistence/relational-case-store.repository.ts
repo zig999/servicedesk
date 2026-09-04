@@ -1,19 +1,20 @@
-import type {
-  AssembledCaseVersion,
-  CaseCatalogEntry,
-  CaseVersionListItem,
-  CaseVersionState,
-  CreateDraftInput,
-  HypothesisIdentity,
-  HypothesisRevisionContent,
-  HypothesisRevisionInput,
-  HypothesisRevisionListItem,
-  HypothesisRevisionState,
-  ICaseStore,
-  ManifestEntry,
-  OverwriteHypothesisRevisionInput,
-  PlaceHypothesisInput,
-  UpdateDraftInput,
+import {
+  HYPOTHESIS_REVISION_STATES,
+  type AssembledCaseVersion,
+  type CaseCatalogEntry,
+  type CaseVersionListItem,
+  type CaseVersionState,
+  type CreateDraftInput,
+  type HypothesisIdentity,
+  type HypothesisRevisionContent,
+  type HypothesisRevisionInput,
+  type HypothesisRevisionListItem,
+  type HypothesisRevisionState,
+  type ICaseStore,
+  type ManifestEntry,
+  type OverwriteHypothesisRevisionInput,
+  type PlaceHypothesisInput,
+  type UpdateDraftInput,
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
 import type { IHypothesisRevisionOverwrite } from '../case/hypothesis-revision-overwrite.port.js';
@@ -85,6 +86,7 @@ interface ICollectRow {
 }
 
 const CONSOLIDATION_REGISTER_VALUES: ReadonlySet<string> = new Set<string>(CONSOLIDATION_REGISTERS);
+const HYPOTHESIS_REVISION_STATE_VALUES: ReadonlySet<string> = new Set<string>(HYPOTHESIS_REVISION_STATES);
 
 const CASES_TABLE = 'cases';
 const CASE_VERSIONS_TABLE = 'case_versions';
@@ -512,8 +514,8 @@ function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: rea
 }
 
 interface IHighestRevisionReleaseStateRow {
-  readonly revision: number | null;
-  readonly released_referenced: boolean;
+  readonly revision: number;
+  readonly state: string;
 }
 
 async function resolveHighestRevisionReleaseState(
@@ -525,38 +527,32 @@ async function resolveHighestRevisionReleaseState(
     highestRevisionReleaseStateSelect(key),
     raiseReadFailure,
   );
-  if (row === undefined) {
-    throw raiseReadFailure(new Error('reading a hypothesis\'s highest revision returned no row'));
-  }
-  return highestRevisionReleaseStateOf(row);
+  return row === undefined ? { revision: undefined } : highestRevisionReleaseStateOf(row);
 }
 
 function highestRevisionReleaseStateOf(row: IHighestRevisionReleaseStateRow): HighestRevisionReleaseState {
-  if (row.revision === null) {
-    return { revision: undefined };
+  return { revision: row.revision, state: hypothesisRevisionStateOf(row.state) };
+}
+
+function hypothesisRevisionStateOf(value: string): HypothesisRevisionState {
+  if (!isHypothesisRevisionState(value)) {
+    throw raiseReadFailure(new Error(`hypothesis_revisions holds an unrecognized state "${value}"`));
   }
-  return { revision: row.revision, released_referenced: row.released_referenced };
+  return value;
+}
+
+function isHypothesisRevisionState(value: string): value is HypothesisRevisionState {
+  return HYPOTHESIS_REVISION_STATE_VALUES.has(value);
 }
 
 function highestRevisionReleaseStateSelect(key: IHypothesisKey): IStatement {
   return {
-    text: `WITH highest AS (
-             SELECT MAX(revision) AS revision
-             FROM ${HYPOTHESIS_REVISIONS_TABLE}
-             WHERE case_slug = $1 AND hypothesis_name = $2
-           )
-           SELECT highest.revision,
-                  EXISTS (
-                    SELECT 1
-                    FROM ${CASE_VERSION_HYPOTHESES_TABLE} cvh
-                    JOIN ${CASE_VERSIONS_TABLE} cv ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
-                    WHERE cvh.case_slug = $1
-                      AND cvh.hypothesis_name = $2
-                      AND cvh.revision = highest.revision
-                      AND cv.state = $3
-                  ) AS released_referenced
-           FROM highest`,
-    params: [key.slug, key.hypothesis_name, RELEASED_STATE],
+    text: `SELECT revision, state
+           FROM ${HYPOTHESIS_REVISIONS_TABLE}
+           WHERE case_slug = $1 AND hypothesis_name = $2
+           ORDER BY revision DESC
+           LIMIT 1`,
+    params: [key.slug, key.hypothesis_name],
   };
 }
 

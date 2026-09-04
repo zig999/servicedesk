@@ -10,6 +10,14 @@
       "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
     },
     {
+      "id": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft.md",
+      "title": "Revise decides overwrite-vs-create from a hypothesis-revision's own state column",
+      "summary": "ReviseHypothesisOperation's overwrite/insert branch and the port/repository seam it reads now decide from hypothesis_revisions.state directly, replacing the manifest-join reading.",
+      "task": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft"
+    },
+    {
       "id": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
@@ -50,12 +58,60 @@
       "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
     },
     {
+      "id": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "proof",
+      "file": "proof/fixture-revision-own-state/release-fixture-manifested-revisions.md",
+      "title": "Fixture and seed setup writes each manifested hypothesis-revision's own released state",
+      "summary": "New integration tests query hypothesis_revisions and hypothesis_revision_collects directly after the canonical fixture builder, the seed script and release.operation.ts run, proving the own-state write lands where the objective requires it and nowhere else.",
+      "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft.md",
+      "title": "Revise decides overwrite-vs-create from a hypothesis-revision's own state — reconciled proof",
+      "summary": "Proves, via reconciled and new tests over ReviseHypothesisOperation and RelationalCaseStore, that the revise branch now decides overwrite-vs-create strictly from a hypothesis-revision's own state column, and reconciles the pre-existing tests the manifest-join shape's removal turned red.",
+      "task": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
+      "title": "Refuse altering a released hypothesis-revision's own state — proof",
+      "summary": "Six schema-level integration tests exercise every criterion of the task directly against the trigger and rule 0021 replaces, and two repository-level integration tests exercise the same refusal through the TypeScript write path, one of them proving the domain-error/HTTP-409 translation the schema alone cannot establish.",
+      "task": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision"
+    },
+    {
       "id": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
       "kind": "proof",
       "file": "proof/hypothesis-revision-own-state/store-the-revisions-own-state.md",
       "title": "Store the hypothesis-revision's own state — proof",
       "summary": "Integration tests over a fresh migration replay and over ReviseHypothesisOperation's own write path, proving the state column exists, is CHECK-constrained to draft/released, is not nullable, defaults draft for a row this migration did not create, and is written draft on insert while left untouched on overwrite.",
       "task": "task/hypothesis-revision-own-state/store-the-revisions-own-state"
+    },
+    {
+      "id": "proof/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "proof",
+      "file": "proof/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test.md",
+      "title": "Repointed overwrite-refusal test proof",
+      "summary": "The relational case store repository spec's two overwrite tests — the pre-existing sibling asserting refusal from the revision's own released state, and the repointed test asserting no refusal from a manifest reference alone — together satisfy every stated criterion, and a full suite run against the file passed.",
+      "task": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test"
+    },
+    {
+      "id": "proof/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "proof",
+      "file": "proof/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion.md",
+      "title": "Retirement of the manifest-basis immutability assertion in case-version-lifecycle-schema.spec.ts",
+      "summary": "Confirms the obsolete manifest-basis assertion is gone from the file, that no replacement of any basis was added or needed to remain because the row's-own-state version of the same claim already stands elsewhere in the suite, and that the file's remaining tests — none of them altered by this task — still pass.",
+      "task": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion"
+    },
+    {
+      "id": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "proof",
+      "file": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
+      "title": "Proof for retiring the manifest-basis persistence schema specs",
+      "summary": "Confirms, by reading the two edited files in full and cross-referencing a fresh full suite run, that the two schema specs no longer attribute refusal, content-survival or collects-survival to a released case version's manifest reference, that every removed assertion has a state-only equivalent already standing in the sibling file, and that the retained/sibling tests still pass.",
+      "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
     }
   ],
   "edges": [
@@ -98,6 +154,72 @@
     {
       "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
       "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
       "kind": "implements",
       "at": "the path"
     },
@@ -222,8 +344,44 @@
       "at": "the path"
     },
     {
+      "from": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
       "to": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "kind": "proves",
       "at": "the path"
     }

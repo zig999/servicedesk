@@ -295,7 +295,11 @@
         },
         {
           "path": "src/src/case/hypothesis-revision-release-state.port.ts",
-          "digest": "sha256:22e00b6b12f9aeeea3f8fa362125aca2829e449f486c6a6372c7ff161e7d5182"
+          "digest": "sha256:766401d1b6da54904b957be9d2a84c2edebe0c56089eb22229d42d653ee94e03"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
@@ -3973,7 +3977,7 @@
         },
         {
           "path": "src/src/case/hypothesis-revision-release-state.port.ts",
-          "digest": "sha256:22e00b6b12f9aeeea3f8fa362125aca2829e449f486c6a6372c7ff161e7d5182"
+          "digest": "sha256:766401d1b6da54904b957be9d2a84c2edebe0c56089eb22229d42d653ee94e03"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -3981,7 +3985,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -4013,7 +4017,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:345710d3e1b957d92f22d43f0957fc181758fd03e341510271a09de9e90a0808"
+          "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
         },
         {
           "path": "src/src/seed.ts",
@@ -4052,6 +4056,14 @@
         {
           "path": "src/src/case/case-store.port.ts",
           "digest": "sha256:709891bcae5d22546448f4f4674bfee493da50c1bdfa6511f18a9f6d738f7fe2"
+        },
+        {
+          "path": "src/src/case/hypothesis-revision-release-state.port.ts",
+          "digest": "sha256:766401d1b6da54904b957be9d2a84c2edebe0c56089eb22229d42d653ee94e03"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
         },
         {
           "path": "src/src/seed.ts",
@@ -5933,7 +5945,7 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
-      "digest": "sha256:d607c984dd307ffce51c9aa8143029b810d06d213d2606ef05162a7e797497ed",
+      "digest": "sha256:7fc46c10985aaa48cbc8934576a4620da4c8a6c97bc915598babf4ea76452cc9",
       "files": [
         {
           "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
@@ -5941,7 +5953,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -5967,7 +5979,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+          "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
         }
       ]
     },
@@ -6071,7 +6083,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -6086,6 +6098,10 @@
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
           "digest": "sha256:dfa34ecac8a90968a1afe8da50157b50a8763d183367b428b6cb811f591c4325"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         }
       ]
     },
@@ -6753,11 +6769,11 @@
     },
     {
       "node": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
-      "digest": "sha256:f894aea63a2c8c0dcc3bf747e68322a560cf877720d9bddab9106fc9745982e3",
+      "digest": "sha256:bb4abfcea038167a76fd3e19229d6eb69e8f7b26d385ad29124d105489b1ab73",
       "files": [
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         }
       ]
     },
@@ -6768,6 +6784,10 @@
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
         }
       ]
     },
@@ -6797,11 +6817,15 @@
     },
     {
       "node": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
-      "digest": "sha256:63d3309bf28154bafc786bf1a4a3c5904e5ea8ac5bf9defc43c24606131e1be0",
+      "digest": "sha256:70741d30130426eab5ae1546c5b90d12a77f5b41e39f125bca3789d6c8a95c4e",
       "files": [
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
         }
       ]
     },

@@ -1485,9 +1485,9 @@ it(
 );
 
 it(
-  'carries no released_referenced field at all for a hypothesis holding no revision — never defaulting it to a boolean that would route the write side onto the frozen branch for a hypothesis that must instead create revision 1',
+  'carries no state field at all for a hypothesis holding no revision — never defaulting it to a state that would route the write side onto the overwrite branch for a hypothesis that must instead create revision 1',
   async () => {
-    const slug = `case-lifecycle-store-highest-revision-no-released-field-${randomUUID()}`;
+    const slug = `case-lifecycle-store-highest-revision-no-state-field-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
     const glossary = await freshGlossary();
     const store = new RelationalCaseStore(pool);
@@ -1495,7 +1495,7 @@ it(
 
     const state = await store.readHighestRevisionReleaseState(slug, 'never-originated');
 
-    expect(state).not.toHaveProperty('released_referenced');
+    expect(state).not.toHaveProperty('state');
   },
 );
 
@@ -1512,9 +1512,9 @@ it(
 );
 
 it(
-  'says the highest revision is referenced by a released case version, when a case version in released state pins exactly that revision',
+  "carries the highest revision's own state as draft still, even once the case version that pins it moves to released state — releasing a case version never alters the hypothesis-revision's own state column",
   async () => {
-    const slug = `case-lifecycle-store-highest-revision-released-${randomUUID()}`;
+    const slug = `case-lifecycle-store-highest-revision-released-version-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
     const glossary = await freshGlossary();
     const store = new RelationalCaseStore(pool);
@@ -1531,12 +1531,12 @@ it(
 
     const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis');
 
-    expect(state).toEqual({ revision, released_referenced: true });
+    expect(state).toEqual({ revision, state: 'draft' });
   },
 );
 
 it(
-  'says the highest revision is referenced by no released case version, when only a case version in draft state pins it',
+  "carries the highest revision's own state as draft when only a case version in draft state pins it",
   async () => {
     const slug = `case-lifecycle-store-highest-revision-draft-only-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
@@ -1554,12 +1554,12 @@ it(
 
     const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis');
 
-    expect(state).toEqual({ revision, released_referenced: false });
+    expect(state).toEqual({ revision, state: 'draft' });
   },
 );
 
 it(
-  'says the highest revision is referenced by no released case version, when a released case version pins a lower revision of that same hypothesis and not the highest',
+  "carries the highest revision's own state, ignoring which revision a released case version's manifest pins — a released case version referencing only a lower revision of the same hypothesis leaves the freshly inserted highest revision reading its own default draft state",
   async () => {
     const slug = `case-lifecycle-store-highest-revision-lower-released-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
@@ -1587,7 +1587,33 @@ it(
     const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis');
 
     expect(highestRevision).toBeGreaterThan(lowerRevision);
-    expect(state).toEqual({ revision: highestRevision, released_referenced: false });
+    expect(state).toEqual({ revision: highestRevision, state: 'draft' });
+  },
+);
+
+it(
+  "carries the highest revision's own state as released once that row is updated directly, with no case version anywhere referencing it — this read never joins to case_version_hypotheses or case_versions at all",
+  async () => {
+    const slug = `case-lifecycle-store-highest-revision-own-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await pool.query(
+      "UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3",
+      [slug, 'a-hypothesis', revision],
+    );
+
+    const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis');
+
+    expect(state).toEqual({ revision, state: 'released' });
   },
 );
 
