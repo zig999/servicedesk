@@ -2205,5 +2205,9 @@ entries:
       directions. It also keeps this lifecycle reading identical to
       a-case-version-moves-through-its-declared-lifecycle's, whose sibling refusals the earlier
       entry already took as this machine's precedent for status and naming.
-
+  - location: rules/knowledge/a-released-hypothesis-revision-is-never-altered.md
+    field: statement
+    unstated: Whether an attempt to remove one of a released hypothesis-revision's own collects is met the same way as an attempt to alter its criterion, resolution or state — the material never distinguished the two, and the node's own statement, read literally over the collects attribute too, called for the same HTTP 409 refusal both branches would then need.
+    decided: An attempt to alter a released hypothesis-revision's criterion, resolution or state is refused at the point of the attempt with an HTTP 409 response reporting a ReleasedHypothesisRevisionNotAlterableError. An attempt to remove one of its collects is not refused with an error; it is accepted and left with no effect, so the collect still reads back afterward.
+    why: 'The schema already delivered and reviewed under this exact node''s own citation (migrations 0010 and 0021) implements two different mechanisms for the two relations: a trigger that raises the named error against hypothesis_revisions'' own row, and a query-rewrite rule that turns a DELETE against hypothesis_revision_collects into a no-op. A single refused-with-409 statement covering both would contradict the delivered, reviewed collects mechanism; stating the split is what the material''s own already-built answer requires, and it matches the sibling task''s own criterion that a released revision''s collects ''read back unchanged after an attempt to remove them,'' never naming a refusal for that case.'
 ---

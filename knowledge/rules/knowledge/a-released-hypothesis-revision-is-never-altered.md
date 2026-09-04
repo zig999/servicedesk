@@ -1,9 +1,11 @@
 ---
 type: invariant
-statement: A hypothesis-revision in released state is never altered again; an attempt to alter
-  its stored content is refused at the point of the attempt with an HTTP 409 response reporting
-  a ReleasedHypothesisRevisionNotAlterableError, rather than being accepted and left with no
-  effect.
+statement: A hypothesis-revision in released state is never altered again. An attempt to alter
+  its criterion, resolution or state is refused at the point of the attempt with an HTTP 409
+  response reporting a ReleasedHypothesisRevisionNotAlterableError, rather than being accepted
+  and left with no effect. An attempt to remove one of its collects is not refused with an
+  error; it is accepted and left with no effect, so every collect this revision held before the
+  attempt still reads back unchanged after it.
 constrains:
   - domain/knowledge/hypothesis-revision
 ---
