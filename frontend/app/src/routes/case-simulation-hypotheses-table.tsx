@@ -33,6 +33,7 @@ export type CaseSimulationHypothesesTableProps = {
 const COLUMNS: StatusTableColumn[] = [
   { key: "position", header: "#" },
   { key: "hypothesis", header: "Hypothesis" },
+  { key: "revision", header: "Version" },
   { key: "collects", header: "Collects" },
   { key: "verdict", header: "Verdict" },
   { key: "cost", header: "Cost (tok)" },
@@ -65,14 +66,16 @@ function RowActions({
       >
         Simulate
       </Button>
-      <Link
-        to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
-        params={{ slug, version: String(version), hypothesisName: row.hypothesisName }}
-        search={EDIT_LINK_SEARCH}
-        aria-label={`Edit hypothesis at position ${row.position}`}
-      >
-        Edit
-      </Link>
+      <Button type="button" variant="secondary" asChild>
+        <Link
+          to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
+          params={{ slug, version: String(version), hypothesisName: row.hypothesisName }}
+          search={EDIT_LINK_SEARCH}
+          aria-label={`Edit hypothesis at position ${row.position}`}
+        >
+          Edit
+        </Link>
+      </Button>
     </span>
   );
 }
@@ -94,6 +97,7 @@ function toTableRow(
     id: row.position,
     position: row.position,
     hypothesis: hypothesisLabel(row),
+    revision: row.revision,
     collects: row.collects.length,
     verdict: verdictCell(row.evaluation),
     stale: staleCell(row),

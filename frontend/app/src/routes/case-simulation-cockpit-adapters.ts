@@ -95,6 +95,7 @@ export function toManifestRows(
     return {
       position: entry.position,
       hypothesisName,
+      revision: entry.hypothesis_revision.revision,
       collects: entry.hypothesis_revision.collects,
       evaluation: evaluation ? toRowEvaluation(evaluation) : undefined,
     };

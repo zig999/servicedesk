@@ -58,23 +58,29 @@ function CurrentVersionAction({
 }): JSX.Element {
   if (versionState === "draft") {
     return (
-      <Link to="/cases/$slug/versions/$version" params={{ slug, version: String(version) }}>
-        Continue editing
-      </Link>
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version" params={{ slug, version: String(version) }}>
+          Continue editing
+        </Link>
+      </Button>
     );
   }
   return (
     <div className="flex gap-4">
-      <Link to="/cases/$slug/versions/$version" params={{ slug, version: String(version) }}>
-        View released v{version}
-      </Link>
-      <Link
-        to="/cases/$slug/versions/new"
-        params={{ slug }}
-        search={{ sourceVersion: version }}
-      >
-        New draft from v{version}
-      </Link>
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version" params={{ slug, version: String(version) }}>
+          View released v{version}
+        </Link>
+      </Button>
+      <Button type="button" variant="secondary" asChild>
+        <Link
+          to="/cases/$slug/versions/new"
+          params={{ slug }}
+          search={{ sourceVersion: version }}
+        >
+          New draft from v{version}
+        </Link>
+      </Button>
     </div>
   );
 }
@@ -106,12 +112,14 @@ function renderState(
             This draft&apos;s currently declared content does not yet read back as a complete
             case.
           </p>
-          <Link
-            to="/cases/$slug/versions/$version"
-            params={{ slug, version: String(state.version) }}
-          >
-            Continue editing
-          </Link>
+          <Button type="button" variant="secondary" asChild>
+            <Link
+              to="/cases/$slug/versions/$version"
+              params={{ slug, version: String(state.version) }}
+            >
+              Continue editing
+            </Link>
+          </Button>
         </section>
       );
     case "ready":

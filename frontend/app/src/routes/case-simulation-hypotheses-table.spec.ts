@@ -47,12 +47,14 @@ function findRowByPosition(rows: readonly HTMLElement[], position: number): HTML
 const NOT_RUN_ROW: SimulationManifestRow = {
   position: 2,
   hypothesisName: "H2",
+  revision: 1,
   collects: ["ConceptX"],
 };
 
 const CONFIRMED_ROW: SimulationManifestRow = {
   position: 1,
   hypothesisName: "H1",
+  revision: 1,
   collects: ["ConceptA", "ConceptB"],
   evaluation: {
     hypothesis: "The customer overpaid",
@@ -64,6 +66,7 @@ const CONFIRMED_ROW: SimulationManifestRow = {
 const INCONCLUSIVE_ROW: SimulationManifestRow = {
   position: 3,
   hypothesisName: "H3",
+  revision: 1,
   collects: [],
   evaluation: {
     hypothesis: "The refund was already issued",
@@ -104,9 +107,9 @@ describe("CaseSimulationHypothesesTable -- concepts collected (criterion 2)", ()
     await mount(baseProps());
     const rows = (await screen.findAllByRole("row")).slice(1);
 
-    expect(within(findRowByPosition(rows, 1)).getAllByRole("cell")[2].textContent).toBe("2");
-    expect(within(findRowByPosition(rows, 2)).getAllByRole("cell")[2].textContent).toBe("1");
-    expect(within(findRowByPosition(rows, 3)).getAllByRole("cell")[2].textContent).toBe("0");
+    expect(within(findRowByPosition(rows, 1)).getAllByRole("cell")[3].textContent).toBe("2");
+    expect(within(findRowByPosition(rows, 2)).getAllByRole("cell")[3].textContent).toBe("1");
+    expect(within(findRowByPosition(rows, 3)).getAllByRole("cell")[3].textContent).toBe("0");
   });
 });
 
@@ -123,7 +126,7 @@ describe("CaseSimulationHypothesesTable -- verdict and reason (criterion 3)", ()
     const rows = (await screen.findAllByRole("row")).slice(1);
     const notRunRow = findRowByPosition(rows, 2);
 
-    expect(within(notRunRow).getAllByRole("cell")[3].textContent).toBe("—");
+    expect(within(notRunRow).getAllByRole("cell")[4].textContent).toBe("—");
     expect(within(notRunRow).queryByText(/Confirmed|Refuted|Inconclusive/)).toBeNull();
   });
 
@@ -131,6 +134,7 @@ describe("CaseSimulationHypothesesTable -- verdict and reason (criterion 3)", ()
     const inconclusiveNoReason: SimulationManifestRow = {
       position: 1,
       hypothesisName: "H1",
+      revision: 1,
       collects: [],
       evaluation: { hypothesis: "x", verdict: "inconclusive" },
     };
@@ -143,6 +147,7 @@ describe("CaseSimulationHypothesesTable -- verdict and reason (criterion 3)", ()
     const confirmedWithReason: SimulationManifestRow = {
       position: 1,
       hypothesisName: "H1",
+      revision: 1,
       collects: [],
       evaluation: { hypothesis: "x", verdict: "confirmed", reason: "no-data" },
     };
@@ -158,14 +163,14 @@ describe("CaseSimulationHypothesesTable -- token cost column", () => {
     await mount(baseProps());
     const rows = (await screen.findAllByRole("row")).slice(1);
 
-    expect(within(findRowByPosition(rows, 1)).getAllByRole("cell")[4].textContent).toBe("160");
+    expect(within(findRowByPosition(rows, 1)).getAllByRole("cell")[5].textContent).toBe("160");
   });
 
   it("shows the plain placeholder in the cost column for a row that has not run this session", async () => {
     await mount(baseProps());
     const rows = (await screen.findAllByRole("row")).slice(1);
 
-    expect(within(findRowByPosition(rows, 2)).getAllByRole("cell")[4].textContent).toBe("—");
+    expect(within(findRowByPosition(rows, 2)).getAllByRole("cell")[5].textContent).toBe("—");
   });
 });
 
@@ -174,6 +179,7 @@ describe("CaseSimulationHypothesesTable -- the Stale indicator (rules/investigat
     const staleRow: SimulationManifestRow = {
       position: 1,
       hypothesisName: "H1",
+      revision: 1,
       collects: [],
       evaluation: { hypothesis: "The customer overpaid", verdict: "confirmed", stale: true },
     };

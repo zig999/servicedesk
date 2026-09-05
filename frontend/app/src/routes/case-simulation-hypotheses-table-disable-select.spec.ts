@@ -37,12 +37,14 @@ async function mount(props: CaseSimulationHypothesesTableProps): Promise<void> {
 const ROW_1: SimulationManifestRow = {
   position: 1,
   hypothesisName: "H1",
+  revision: 1,
   collects: ["ConceptA"],
 };
 
 const ROW_2: SimulationManifestRow = {
   position: 2,
   hypothesisName: "H2",
+  revision: 1,
   collects: ["ConceptB"],
 };
 

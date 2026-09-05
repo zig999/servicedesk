@@ -70,6 +70,27 @@ describe("CaseSimulationReadyView -- the disabled-until-ready gate spans the hea
   });
 });
 
+describe("CaseSimulationReadyView -- the Debug section's own view subject JSON control", () => {
+  it("shows the currently assembled subject's type and its full set of attribute-values, exactly as domain/investigation/subject structures it, inside a collapsible details/summary block", async () => {
+    stubFetch();
+    await mountReadyView({ slug: SLUG, version: VERSION, state: readyState() });
+
+    await fillSubjectReadyInView();
+
+    const summary = await screen.findByText("View subject JSON");
+    expect(summary.tagName).toBe("SUMMARY");
+    // eslint-disable-next-line testing-library/no-node-access -- confirming the native disclosure element itself, mirroring case-simulation-detail-evidence-tab.spec.ts's own established convention.
+    const disclosure = summary.closest("details");
+    expect(disclosure).not.toBeNull();
+    // eslint-disable-next-line testing-library/no-node-access -- reading the raw JSON text out of the collapsible block is the only way to confirm this criterion; parsed and compared structurally so this test does not pin the implementation's own chosen indentation.
+    const rendered = disclosure?.querySelector("pre")?.textContent ?? "";
+    expect(JSON.parse(rendered)).toEqual({
+      type: "billing-dispute",
+      attributes: [{ attribute: "account-id", value: "acct-1" }],
+    });
+  });
+});
+
 describe("CaseSimulationReadyView -- regions absent until this session has something to show them (criteria 4-5)", () => {
   it("renders the Detail region's own placeholder message before any hypothesis is selected", async () => {
     stubFetch();

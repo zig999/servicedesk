@@ -10,11 +10,12 @@ import {
 const ROW_WITHOUT_EVALUATION: SimulationManifestRow = {
   position: 1,
   hypothesisName: "H1",
+  revision: 1,
   collects: [],
 };
 
 function rowWithEvaluation(evaluation: SimulationHypothesisEvaluation): SimulationManifestRow {
-  return { position: 1, hypothesisName: "H1", collects: [], evaluation };
+  return { position: 1, hypothesisName: "H1", revision: 1, collects: [], evaluation };
 }
 
 function verdictLabel(evaluation: SimulationHypothesisEvaluation): string {
@@ -28,16 +29,14 @@ function verdictLabel(evaluation: SimulationHypothesisEvaluation): string {
 }
 
 describe("hypothesisLabel", () => {
-  it("returns the evaluation's own hypothesis text when this session produced one", () => {
-    expect(
-      hypothesisLabel(
-        rowWithEvaluation({ hypothesis: "The refund was already issued", verdict: "confirmed" }),
-      ),
-    ).toBe("The refund was already issued");
+  it("returns the row's own hypothesisName from the manifest, before any evaluation ran", () => {
+    expect(hypothesisLabel(ROW_WITHOUT_EVALUATION)).toBe("H1");
   });
 
-  it("returns the blank placeholder, never the row's own routing-only hypothesisName, when no evaluation is present", () => {
-    expect(hypothesisLabel(ROW_WITHOUT_EVALUATION)).toBe("—");
+  it("still returns the row's own hypothesisName once this session produced an evaluation", () => {
+    expect(
+      hypothesisLabel(rowWithEvaluation({ hypothesis: "H1", verdict: "confirmed" })),
+    ).toBe("H1");
   });
 });
 

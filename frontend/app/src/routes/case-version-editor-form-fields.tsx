@@ -4,15 +4,14 @@ import { Input } from "@tui/ui/input";
 import { Textarea } from "@tui/ui/textarea";
 import { Label } from "@tui/ui/label";
 import { Select, type SelectOption } from "@tui/ui/select";
-import { Button } from "@tui/ui/button";
 import type { CaseVersionFormValues } from "../services/case-version-form-schema";
 import { CONSOLIDATION_REGISTERS } from "../services/case-version-form-schema";
 import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
-import type { SaveStatus } from "../hooks/use-edit-draft-version-form";
+
+export const CASE_VERSION_EDITOR_FORM_ID = "case-version-editor-form";
 
 export type CaseVersionEditorFormFieldsProps = {
   readonly form: UseFormReturn<CaseVersionFormValues>;
-  readonly status: SaveStatus;
   readonly savedAt: string | null;
   readonly isBlocked: boolean;
   readonly outcomeOptions: GlossaryVocabularyOptions;
@@ -56,7 +55,6 @@ function FormField({
 
 export function CaseVersionEditorFormFields({
   form,
-  status,
   savedAt,
   isBlocked,
   outcomeOptions,
@@ -74,6 +72,7 @@ export function CaseVersionEditorFormFields({
 
   return (
     <form
+      id={CASE_VERSION_EDITOR_FORM_ID}
       onSubmit={isReadOnly ? undefined : onSubmit}
       onBlur={isReadOnly ? undefined : onFieldBlur}
       noValidate
@@ -206,19 +205,9 @@ export function CaseVersionEditorFormFields({
       </div>
 
       {!isReadOnly && (
-        <div className="flex items-center justify-between">
-          {/*
-            ACC-07: this text changes with no page navigation when a save
-            completes, so its own change is announced through aria-live
-            rather than left to a sighted user's own glance at the footer.
-          */}
-          <span aria-live="polite" className="text-sm text-muted-foreground">
-            {savedAt != null ? `Last saved ${savedAt}` : null}
-          </span>
-          <Button type="submit" disabled={isBlocked || status === "clean"}>
-            Save changes
-          </Button>
-        </div>
+        <span aria-live="polite" className="text-sm text-muted-foreground">
+          {savedAt != null ? `Last saved ${savedAt}` : null}
+        </span>
       )}
     </form>
   );

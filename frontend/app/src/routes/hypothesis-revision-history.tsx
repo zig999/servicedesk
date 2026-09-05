@@ -104,12 +104,14 @@ function toHistoryRow(
     actions: (
       <div className="flex items-center gap-2">
         {isCurrent && (
-          <Link
-            to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
-            params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
-          >
-            Revise →
-          </Link>
+          <Button type="button" variant="secondary" asChild>
+            <Link
+              to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
+              params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
+            >
+              Revise →
+            </Link>
+          </Button>
         )}
         {revision.state === "draft" && (
           <HypothesisRevisionReleaseAction

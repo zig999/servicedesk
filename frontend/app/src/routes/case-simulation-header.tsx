@@ -46,21 +46,27 @@ export function CaseSimulationHeader({
         </div>
         <div className="flex items-center gap-4">
           {versionState === "draft" ? (
-            <Link to="/cases/$slug/versions/$version" params={versionParams}>
-              Edit version
-            </Link>
+            <Button type="button" variant="secondary" asChild>
+              <Link to="/cases/$slug/versions/$version" params={versionParams}>
+                Edit version
+              </Link>
+            </Button>
           ) : (
-            <Link
-              to="/cases/$slug/versions/new"
-              params={{ slug }}
-              search={{ sourceVersion: version }}
-            >
-              Edit version
-            </Link>
+            <Button type="button" variant="secondary" asChild>
+              <Link
+                to="/cases/$slug/versions/new"
+                params={{ slug }}
+                search={{ sourceVersion: version }}
+              >
+                Edit version
+              </Link>
+            </Button>
           )}
-          <Link to="/cases/$slug/versions/$version/manifest" params={versionParams}>
-            Manifest
-          </Link>
+          <Button type="button" variant="secondary" asChild>
+            <Link to="/cases/$slug/versions/$version/manifest" params={versionParams}>
+              Manifest
+            </Link>
+          </Button>
           <Button type="button" disabled={!canSimulate} onClick={onSimulateCase}>
             ▶ Simulate case
           </Button>

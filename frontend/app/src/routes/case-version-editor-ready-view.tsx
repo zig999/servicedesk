@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
@@ -13,7 +14,10 @@ import {
   DialogTrigger,
 } from "@tui/ui/dialog";
 import { ConflictBanner } from "../shared/components/conflict-banner";
-import { CaseVersionEditorFormFields } from "./case-version-editor-form-fields";
+import {
+  CASE_VERSION_EDITOR_FORM_ID,
+  CaseVersionEditorFormFields,
+} from "./case-version-editor-form-fields";
 import type { EditDraftVersionFormState } from "../hooks/use-edit-draft-version-form";
 import {
   StatusTable,
@@ -105,7 +109,6 @@ export function CaseVersionEditorReadyView({
       )}
       <CaseVersionEditorFormFields
         form={state.form}
-        status={state.status}
         savedAt={state.savedAt}
         isBlocked={state.isBlocked}
         outcomeOptions={state.outcomeOptions}
@@ -122,108 +125,124 @@ export function CaseVersionEditorReadyView({
           <ManifestTable slug={slug} manifest={state.manifest ?? []} />
         </section>
       )}
-      {release !== undefined && release.canRelease && (
-        <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
-          <DialogTrigger asChild>
-            <Button type="button" disabled={state.isBlocked}>
-              Release…
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Release v{release.version}?</DialogTitle>
-            </DialogHeader>
-            <DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>
-            {release.dialog.kind === "checklist" ? (
-              <ul className="flex flex-col gap-1 text-sm">
-                {release.dialog.items.map((item) => (
-                  <li
-                    key={item.label}
-                    className={item.satisfied ? "text-foreground" : "text-destructive"}
-                  >
-                    {item.satisfied ? "✓" : "!"} {item.label}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-
-              <div role="alert">
-                {release.dialog.violations.length === 0 ? (
-
-                  <p className="text-sm text-destructive">
-                    No specific violation was returned.
-                  </p>
-                ) : (
-                  <ul className="flex flex-col gap-1 text-sm text-destructive">
-                    {release.dialog.violations.map((violation) => (
-                      <li key={violation}>! {violation}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" disabled={release.isConfirming}>
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button type="button" loading={release.isConfirming} onClick={release.onConfirm}>
-                Release
+      <div className="flex items-center justify-end gap-4">
+        {release !== undefined && release.canRelease && (
+          <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
+            <DialogTrigger asChild>
+              <Button type="button" disabled={state.isBlocked}>
+                Release…
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
-      {discard !== undefined && discard.canDiscard && (
-        <Dialog open={discard.isOpen} onOpenChange={discard.onOpenChange}>
-          <DialogTrigger asChild>
-            <Button type="button" variant="destructive" disabled={state.isBlocked}>
-              Discard draft
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Discard this draft?</DialogTitle>
-            </DialogHeader>
-            <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
-            {/* Label's own default styling (uppercase, wide tracking, accent color, all CSS-inherited) is reset in this wrapping div, matching case-version-editor-form-fields.tsx's own FormField convention for the same reason -- otherwise it would cascade into the typed slug itself. */}
-            <Label className="flex flex-col gap-1">
-              <span>Type {slug} to confirm</span>
-              <div className="normal-case tracking-normal font-normal text-foreground">
-                <Input
-                  value={discard.slugConfirmation}
-                  onChange={(event) => discard.onSlugConfirmationChange(event.target.value)}
-                  aria-invalid={discard.errorMessage !== null}
-                  aria-describedby={discard.errorMessage !== null ? "discard-error" : undefined}
-                />
-              </div>
-            </Label>
-            {discard.errorMessage !== null && (
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Release v{release.version}?</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>
+              {release.dialog.kind === "checklist" ? (
+                <ul className="flex flex-col gap-1 text-sm">
+                  {release.dialog.items.map((item) => (
+                    <li
+                      key={item.label}
+                      className={item.satisfied ? "text-foreground" : "text-destructive"}
+                    >
+                      {item.satisfied ? "✓" : "!"} {item.label}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
 
-              <p id="discard-error" role="alert" className="text-sm text-destructive">
-                {discard.errorMessage}
-              </p>
-            )}
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" disabled={discard.isConfirming}>
-                  Keep draft
+                <div role="alert">
+                  {release.dialog.violations.length === 0 ? (
+
+                    <p className="text-sm text-destructive">
+                      No specific violation was returned.
+                    </p>
+                  ) : (
+                    <ul className="flex flex-col gap-1 text-sm text-destructive">
+                      {release.dialog.violations.map((violation) => (
+                        <li key={violation}>! {violation}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary" disabled={release.isConfirming}>
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button type="button" loading={release.isConfirming} onClick={release.onConfirm}>
+                  Release
                 </Button>
-              </DialogClose>
-              <Button
-                type="button"
-                variant="destructive"
-                loading={discard.isConfirming}
-                disabled={!discard.isConfirmEnabled || discard.isConfirming}
-                onClick={discard.onConfirm}
-              >
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+        {discard !== undefined && discard.canDiscard && (
+          <Dialog open={discard.isOpen} onOpenChange={discard.onOpenChange}>
+            <DialogTrigger asChild>
+              <Button type="button" variant="destructive" disabled={state.isBlocked}>
                 Discard draft
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Discard this draft?</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
+              {/* Label's own default styling (uppercase, wide tracking, accent color, all CSS-inherited) is reset in this wrapping div, matching case-version-editor-form-fields.tsx's own FormField convention for the same reason -- otherwise it would cascade into the typed slug itself. */}
+              <Label className="flex flex-col gap-1">
+                <span>Type {slug} to confirm</span>
+                <div className="normal-case tracking-normal font-normal text-foreground">
+                  <Input
+                    value={discard.slugConfirmation}
+                    onChange={(event) => discard.onSlugConfirmationChange(event.target.value)}
+                    aria-invalid={discard.errorMessage !== null}
+                    aria-describedby={discard.errorMessage !== null ? "discard-error" : undefined}
+                  />
+                </div>
+              </Label>
+              {discard.errorMessage !== null && (
+
+                <p id="discard-error" role="alert" className="text-sm text-destructive">
+                  {discard.errorMessage}
+                </p>
+              )}
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary" disabled={discard.isConfirming}>
+                    Keep draft
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  loading={discard.isConfirming}
+                  disabled={!discard.isConfirmEnabled || discard.isConfirming}
+                  onClick={discard.onConfirm}
+                >
+                  Discard draft
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+        {!isReadOnly && (
+          <Button
+            type="submit"
+            form={CASE_VERSION_EDITOR_FORM_ID}
+            disabled={state.isBlocked || state.status === "clean"}
+          >
+            Save changes
+          </Button>
+        )}
+        <Button type="button" variant="secondary" asChild>
+          <Link to="/cases/$slug" params={{ slug }}>
+            Cancel
+          </Link>
+        </Button>
+      </div>
     </>
   );
 }

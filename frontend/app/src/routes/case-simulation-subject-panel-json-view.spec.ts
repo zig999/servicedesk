@@ -12,28 +12,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("CaseSimulationSubjectPanel -- the view subject JSON control (criterion 6)", () => {
-  it("shows the currently assembled subject's type and its full set of attribute-values, exactly as domain/investigation/subject structures it, inside a collapsible details/summary block", async () => {
-    const subject = {
-      type: "billing-dispute",
-      attributes: [
-        { attribute: "account-id", value: "12345" },
-        { attribute: "recipient-email", value: "ops@example.com" },
-      ],
-    };
-    await renderPanel(baseState({ subject }));
-
-    const summary = screen.getByText("View subject JSON");
-    expect(summary.tagName).toBe("SUMMARY");
-    // eslint-disable-next-line testing-library/no-node-access -- confirming the native disclosure element itself, mirroring case-simulation-detail-evidence-tab.spec.ts's own established convention.
-    const disclosure = summary.closest("details");
-    expect(disclosure).not.toBeNull();
-    // eslint-disable-next-line testing-library/no-node-access -- reading the raw JSON text out of the collapsible block is the only way to confirm this criterion; parsed and compared structurally so this test does not pin the implementation's own chosen indentation.
-    const rendered = disclosure?.querySelector("pre")?.textContent ?? "";
-    expect(JSON.parse(rendered)).toEqual(subject);
-  });
-});
-
 describe("CaseSimulationSubjectPanel -- a pinned version whose read names no requirement at all renders an explicit empty state rather than a bare empty list (criterion 5, UNDERDETERMINED, from the specification -- the disclosure must state that the pinned case version's own case-input-requirements name no attribute, never a generic contentless placeholder)", () => {
   it("states, in the rule's own terms, that the pinned case version's own case-input-requirements name no attribute", async () => {
     await renderPanel(baseState({ requiredFields: [] }));

@@ -21,6 +21,7 @@ export type SimulationHypothesisEvaluation = {
 export type SimulationManifestRow = {
   readonly position: number;
   readonly hypothesisName: string;
+  readonly revision: number;
   readonly collects: readonly string[];
   readonly evaluation?: SimulationHypothesisEvaluation;
 };
@@ -56,7 +57,7 @@ export const REASON_LABEL: Record<SimulationEvaluationReason, string> = {
 };
 
 export function hypothesisLabel(row: SimulationManifestRow): string {
-  return row.evaluation ? row.evaluation.hypothesis : "—";
+  return row.hypothesisName;
 }
 
 export function verdictCell(

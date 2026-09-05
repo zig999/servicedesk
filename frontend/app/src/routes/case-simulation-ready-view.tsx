@@ -50,18 +50,29 @@ export function CaseSimulationReadyView({
         </p>
       )}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <CaseSimulationSubjectPanel state={subject} />
-        <CaseSimulationHypothesesTable
-          slug={slug}
-          version={version}
-          rows={hypothesesRows}
-          summary={hypothesesSummary}
-          lastRunDurations={lastRunDurations}
-          disableSimulate={disableSimulateHypothesis}
-          onSimulateHypothesis={onSimulateHypothesis}
-          onSelectHypothesis={onSelectHypothesis}
-        />
+      <CaseSimulationSubjectPanel state={subject} />
+
+      <CaseSimulationHypothesesTable
+        slug={slug}
+        version={version}
+        rows={hypothesesRows}
+        summary={hypothesesSummary}
+        lastRunDurations={lastRunDurations}
+        disableSimulate={disableSimulateHypothesis}
+        onSimulateHypothesis={onSimulateHypothesis}
+        onSelectHypothesis={onSelectHypothesis}
+      />
+
+      <div className="flex flex-col gap-3 border-t border-border pt-4">
+        <h2 className="text-lg font-semibold text-foreground">Debug</h2>
+        <details>
+          <summary className="cursor-pointer text-sm text-muted-foreground">
+            View subject JSON
+          </summary>
+          <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">
+            {JSON.stringify(subject.subject, null, 2)}
+          </pre>
+        </details>
       </div>
 
       {detail ? (

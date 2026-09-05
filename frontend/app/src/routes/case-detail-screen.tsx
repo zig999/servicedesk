@@ -31,20 +31,28 @@ function actionsForRow(slug: string, version: CaseVersionListItem): ReactNode {
   return (
     <div className="flex items-center gap-4">
       {version.state === "draft" ? (
-        <Link to="/cases/$slug/versions/$version" params={params}>
-          Continue editing
-        </Link>
+        <Button type="button" variant="secondary" asChild>
+          <Link to="/cases/$slug/versions/$version" params={params}>
+            Continue editing
+          </Link>
+        </Button>
       ) : (
-        <Link to="/cases/$slug/versions/$version" params={params}>
-          View
-        </Link>
+        <Button type="button" variant="secondary" asChild>
+          <Link to="/cases/$slug/versions/$version" params={params}>
+            View
+          </Link>
+        </Button>
       )}
-      <Link to="/cases/$slug/versions/$version/simulate" params={params}>
-        Simulate
-      </Link>
-      <Link to="/cases/$slug/versions/$version/manifest" params={params}>
-        Manifest
-      </Link>
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version/simulate" params={params}>
+          Simulate
+        </Link>
+      </Button>
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version/manifest" params={params}>
+          Manifest
+        </Link>
+      </Button>
     </div>
   );
 }
@@ -82,9 +90,11 @@ function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
   return (
     <>
       {!hasDraft && (
-        <Link to="/cases/$slug/versions/new" params={{ slug }}>
-          New draft
-        </Link>
+        <Button type="button" variant="secondary" asChild>
+          <Link to="/cases/$slug/versions/new" params={{ slug }}>
+            New draft
+          </Link>
+        </Button>
       )}
       {rows.length === 0 ? (
 
