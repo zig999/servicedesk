@@ -93,8 +93,8 @@
       "id": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "proof",
       "file": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state.md",
-      "title": "Each listed revision states its own draft/released state, independent of the current-pin indicator",
-      "summary": "Proves the widened hook exposes a per-revision state field closed to draft/released, that the revision-history screen renders it as an independent column beside the pre-existing current/frozen indicator, and that pre-existing coverage for the unchanged parts of the shape (revision/criterion/collects, the hypotheses-tab count) still holds.",
+      "title": "Show each listed revision's own state -- proof",
+      "summary": "Tests the widened HypothesisRevisionListItem shape, the revision-history screen's new per-row state rendering and its independence from the current-pin indicator, the preserved ordering, and (by citing pre-existing, untouched tests) the preserved revision/criterion/collects fields and the hypotheses tab's total-reading.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
     }
   ],
