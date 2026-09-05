@@ -15,6 +15,18 @@ fitness: The case-query read returns a complete, validated case version or nothi
 The aggregate boundary that answers a diagnosis still outlives the one document that used to be it: a manifest entry's own hypothesis-revision sits in a relation of its own, reused rather than copied across versions, so what once kept every hypothesis arriving together was the document rather than a decision, and the decision now states exactly where wholeness still binds.
 A partially assembled case version is a case whose collection plan is short and whose precedence order has holes, and neither announces itself — resolve-outcome would answer from whichever manifest entries happened to arrive — so case-query's own read never stops short of the whole manifest, even though authoring it, hypothesis by hypothesis, may.
 
+=== constraints/a-domain-error-unmapped-by-status-is-refused-generically
+---
+statement: A domain error the status map does not name is answered with an HTTP 500 response whose error code is INTERNAL_ERROR and whose message is the fixed text "an unexpected error occurred"; neither the error's own message nor any context it carries reaches the caller.
+scope: system
+fitness: An automated test raises an error the status map does not name from a route handler and asserts the answer is HTTP 500 with code INTERNAL_ERROR, the fixed message, and no other field.
+---
+
+## Description
+
+Stated once for the whole surface so no route decides the shape of this fallback on its own, mirroring constraints/a-malformed-request-is-refused-with-a-validation-error's own system-wide placement for the sibling case of a request the route's own shape already refuses.
+A domain error nothing named is exactly the case this system did not anticipate, so the refusal discloses nothing about it: not the error's own message, which may describe internal state, and not any context object a domain error happens to carry — both stay server-side, and the caller learns only that something failed.
+
 === constraints/a-malformed-request-is-refused-with-a-validation-error
 ---
 statement: Every route refuses a request whose path, query or body fails the route's declared shape with an HTTP 400 response whose error code is VALIDATION_ERROR, whose message names which of the three failed validation, and whose details list the issues found.
@@ -2885,6 +2897,22 @@ entries:
       answers — what a presented entry states about its pin's state — and it adds no field, moves
       no pin, refuses no call and leaves the read's source (the revision itself) untouched.
 ---
+  - location: constraints/a-domain-error-unmapped-by-status-is-refused-generically.md
+    field: statement
+    unstated: >-
+      What a caller is told when a domain error the status map does not name reaches the HTTP surface.
+    decided: >-
+      HTTP 500 with error code INTERNAL_ERROR and the fixed message "an unexpected error occurred"; neither the error's own message nor any context it carries is disclosed.
+    why: >-
+      The material is the reviewed, delivered error-handler middleware and its own unit tests
+      (src/__tests__/unit/http/error-handler.middleware.spec.ts and
+      src/__tests__/unit/http/release-hypothesis-revision.routes.spec.ts), whose findings from
+      /review-change over hipotese-release-proprio report the delivered backend stating this
+      fact — code, message, and the absence of any leaked detail — while no node held it. Stated
+      once for the whole system, mirroring constraints/a-malformed-request-is-refused-with-a-validation-error's
+      own placement for the sibling case of a request the route's own shape already refuses:
+      every route answers an unmapped error identically, through the one shared middleware, so
+      the fact belongs to the system rather than to any one route.
 
 === domain/glossary/_context
 ---

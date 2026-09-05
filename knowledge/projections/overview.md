@@ -20,6 +20,7 @@ Derived by spec.py from the specification files; never edited.
 ## Constraints
 
 - a-case-is-read-whole (knowledge)
+- a-domain-error-unmapped-by-status-is-refused-generically (system)
 - a-malformed-request-is-refused-with-a-validation-error (system)
 - consolidation-runs-behind-a-port (investigation)
 - diagnosis-answers-synchronously (system)
