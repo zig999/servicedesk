@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: A read or a lifecycle operation naming a case slug, or a slug and version, that no case version currently answers is refused with an HTTP 404 response reporting a CaseNotFoundError.
+statement: A read or a lifecycle operation naming a case slug, or a slug and version, that no case version currently answers is refused with an HTTP 404 response reporting a CaseNotFoundError, whose details carry the named slug and version.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version

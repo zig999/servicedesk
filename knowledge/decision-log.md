@@ -2338,3 +2338,61 @@ entries:
       own placement for the sibling case of a request the route's own shape already refuses:
       every route answers an unmapped error identically, through the one shared middleware, so
       the fact belongs to the system rather than to any one route.
+  - location: rules/knowledge/a-case-has-at-least-one-hypothesis.md
+    field: statement
+    unstated: >-
+      What remove-hypothesis answers when asked to remove a hypothesis name the manifest does not currently hold.
+    decided: >-
+      Succeeds with no effect, never refused for the name's absence.
+    why: >-
+      The material is the reviewed, delivered manifest-composition.operations.ts and its own
+      test (src/__tests__/integration/case/manifest-composition.operations.spec.ts, reported by
+      /review-change over hipotese-release-proprio), which calls store.removeManifestEntry
+      unconditionally with no existence check first — a DELETE affecting zero rows completes
+      the same as one affecting one. The delivered, reviewed behavior is the fact stated, rather
+      than inventing a not-found refusal nothing built raises.
+  - location: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle.md
+    field: statement
+    unstated: >-
+      Whether CaseVersionNotDraftAtReleaseError's refusal carries any further value beyond its own identity.
+    decided: >-
+      It carries the version's own slug, version number and the state it stood in.
+    why: >-
+      The material is the reviewed, delivered CaseVersionNotDraftAtReleaseError class and its
+      own test (src/__tests__/integration/case/release.operation.spec.ts, reported by
+      /review-change over hipotese-release-proprio), which already constructs and asserts
+      exactly this context. Unlike the sibling hypothesis-revision refusal, which the material
+      never built a context for, this refusal's context already exists and is exercised; stating
+      the delivered fact rather than forcing an unbuilt symmetry with the sibling rule.
+  - location: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle.md
+    field: statement
+    unstated: >-
+      What HypothesisRevisionNotDraftAtReleaseError's own prior statement — that the revision
+      stood in released state "whenever this refusal is raised" — implies about a release asked
+      of a hypothesis-revision identity nothing was ever stored for, given
+      ReleaseHypothesisRevisionOperation reads an undefined state for such an identity and
+      raises the identical refusal.
+    decided: >-
+      The refusal is raised for a revision not currently in draft state, including an identity
+      nothing was ever stored for, and it never discloses which of those triggered it.
+    why: >-
+      The material is the reviewed, delivered ReleaseHypothesisRevisionOperation and its own
+      test (src/__tests__/integration/case/release-hypothesis-revision.operation.spec.ts,
+      reported by /review-change over hipotese-release-proprio), which asserts the identical
+      refusal for a never-stored identity as for an already-released one — the prior wording
+      ("released whenever this refusal is raised") overclaimed a fact the delivered code
+      contradicts; correcting the statement to what was actually built and reviewed, rather than
+      changing the operation to draw a distinction nothing asked for and the refusal's own
+      no-further-value design deliberately withholds.
+  - location: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused.md
+    field: statement
+    unstated: >-
+      What CaseNotFoundError's HTTP 404 response's details payload carries.
+    decided: >-
+      The named slug and version.
+    why: >-
+      The material is the reviewed, delivered CaseNotFoundError class and its own test
+      (src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts, reported by
+      /review-change over hipotese-release-proprio), which already constructs and asserts
+      exactly this details shape, matching the same disclosure the sibling 404s already state
+      for their own misses.
