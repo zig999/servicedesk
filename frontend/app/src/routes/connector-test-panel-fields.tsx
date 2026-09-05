@@ -49,7 +49,7 @@ export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProp
       {state.selectedCapability !== undefined && (
         <div className="flex flex-col gap-1">
           <p className="text-sm text-muted-foreground">Input schema (reference)</p>
-          <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">{formatSchemaForDisplay(state.selectedCapability.input_schema)}</pre>
+          <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">{formatSchemaForDisplay(state.selectedCapability.input_schema)}</pre>
         </div>
       )}
 
