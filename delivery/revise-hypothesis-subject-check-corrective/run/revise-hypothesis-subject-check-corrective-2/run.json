@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/revise-hypothesis-subject-check-corrective-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-05T18:55:00.995+00:00",
+      "ended_at": "2026-09-05T18:55:05.740+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-05T18:55:05.740+00:00",
+      "ended_at": "2026-09-05T18:55:11.490+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-05T18:55:11.490+00:00",
+      "ended_at": "2026-09-05T18:55:18.692+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-05T18:55:18.692+00:00",
+      "ended_at": "2026-09-05T18:55:19.520+00:00"
+    },
+    {
+      "name": "test",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests --pool=forks --poolOptions.forks.singleFork=true",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-05T18:55:19.520+00:00",
+      "ended_at": "2026-09-05T18:58:02.371+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
