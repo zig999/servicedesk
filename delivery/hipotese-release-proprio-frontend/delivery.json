@@ -50,6 +50,14 @@
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
     },
     {
+      "id": "implementation/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "kind": "implementation",
+      "file": "implementation/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page.md",
+      "title": "Resolve a manifest entry's pinned-revision state even when it is off the default page",
+      "summary": "Both the version-manifest builder screen's RevisionSelect badge and the case-version editor's released-view manifest table now resolve a pinned hypothesis-revision's own state across every page of its hypothesis's revisions listing, and explicitly present the still-pending and could-not-be-read windows on the same terms whether the pin sits on the default page or is resolved by this task's own off-page path.",
+      "task": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page"
+    },
+    {
       "id": "proof/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
       "kind": "proof",
       "file": "proof/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state.md",
@@ -96,6 +104,14 @@
       "title": "Show each listed revision's own state -- proof",
       "summary": "Tests the widened HypothesisRevisionListItem shape, the revision-history screen's new per-row state rendering and its independence from the current-pin indicator, the preserved ordering, and (by citing pre-existing, untouched tests) the preserved revision/criterion/collects fields and the hypotheses tab's total-reading.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "proof/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "kind": "proof",
+      "file": "proof/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page.md",
+      "title": "Off-page pinned-revision-state resolution, proven at both presentation surfaces and in the shared hooks beneath them",
+      "summary": "Proves that a manifest entry's pinned-revision-state badge and table cell resolve the pin's own state across every page of its hypothesis's revisions listing on both the version-manifest builder screen and the case-version editor's released-view table, and that the pending/failed/resolved windows stay distinct and correctly attributed to their own entry whichever read (default or off-page) is still outstanding or has failed.",
+      "task": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page"
     },
     {
       "id": "review/hipotese-release-proprio-frontend",
@@ -263,6 +279,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "to": "constraints/listings-are-paged",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "to": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
       "to": "implementation/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
       "kind": "proves",
@@ -295,6 +329,12 @@
     {
       "from": "proof/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "to": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "to": "implementation/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
       "kind": "proves",
       "at": "the path"
     },

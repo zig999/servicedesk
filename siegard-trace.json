@@ -136,6 +136,14 @@
       "digest": "sha256:b5ab6babf9211bf2a00f9807a1d81267f2d4222c2823ab929b6320770f58b7df",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
+          "digest": "sha256:a6887e45a67cd7954529f54630e105e30a3704c53304d00ed28a4e828d449bc6"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-pinned-revision-state.ts",
+          "digest": "sha256:7b60b828d285740f4416b194773508da0d6a9c2538ebc45803f13de1699d03a0"
+        },
+        {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a"
         },
@@ -6225,7 +6233,7 @@
     },
     {
       "node": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
-      "digest": "sha256:013ef43f8419a0cc4c0c4ef1922e41cc8eb76e6e2e7e019bd65f5043adf7e426",
+      "digest": "sha256:c6963d907b7fb63a2dba42b8ff160d60a602c4a1a029ce69d9204d05b3cc4f97",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
@@ -6233,15 +6241,19 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-pinned-revision-states.ts",
-          "digest": "sha256:ccd74a249210783d06b1346726ae9e6c01130f01e876bf6242092c78827aa249"
+          "digest": "sha256:05729887f54ad2aa973826ff3fc15a2ffe03fd9c4897cb02410146606c6a35f7"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-pinned-revision-state.ts",
+          "digest": "sha256:7b60b828d285740f4416b194773508da0d6a9c2538ebc45803f13de1699d03a0"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:600125ac93976d6a3b9470ff817fd813f22932c5dc107c518ba30a694ed688b8"
+          "digest": "sha256:c8aa7a3fb4f52b7c96435b8cc5db6ec363583a1d9bc987688f7eb8c06f3b770a"
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:a062a60cb0fb4d304fccfd1b73bcc22b8b5dbb020295a4e2fdf4ac3d5e56c3ab"
+          "digest": "sha256:916d45ed3c4b6f9a0c8f9ca1ef52fa4e06a0116dc6087904452c7ab84257a3ca"
         }
       ]
     },

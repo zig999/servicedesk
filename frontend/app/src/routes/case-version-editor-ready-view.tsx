@@ -21,11 +21,14 @@ import {
   type StatusTableRow,
 } from "../shared/components/status-table";
 import type { CaseVersionManifestEntry } from "../services/case-version-record";
-import { HYPOTHESIS_REVISION_STATE_CELL } from "../hooks/use-hypothesis-revisions";
 import {
   useManifestPinnedRevisionStates,
   type ManifestPinnedRevisionStates,
 } from "../hooks/use-manifest-pinned-revision-states";
+import {
+  pinnedRevisionStateCell,
+  type PinnedRevisionStateResult,
+} from "../hooks/use-pinned-revision-state";
 
 const CONFLICT_BANNER_TITLE = "This version was released by someone else";
 const CONFLICT_BANNER_MESSAGE =
@@ -45,17 +48,19 @@ const MANIFEST_COLUMNS: StatusTableColumn[] = [
   { key: "criterion", header: "Criterion" },
 ];
 
+const STILL_UNRESOLVED_PIN_STATE: PinnedRevisionStateResult = { status: "pending" };
+
 function toManifestRow(
   entry: CaseVersionManifestEntry,
   pinnedStates: ManifestPinnedRevisionStates,
 ): StatusTableRow {
-  const pinnedState = pinnedStates.get(entry.position);
+  const pinnedState = pinnedStates.get(entry.position) ?? STILL_UNRESOLVED_PIN_STATE;
   return {
     id: entry.position,
     position: entry.position,
     hypothesis: entry.hypothesis_revision.hypothesis.name,
     revision: entry.hypothesis_revision.revision,
-    state: pinnedState !== undefined ? HYPOTHESIS_REVISION_STATE_CELL[pinnedState] : undefined,
+    state: pinnedRevisionStateCell(pinnedState),
     criterion: entry.hypothesis_revision.criterion,
   };
 }

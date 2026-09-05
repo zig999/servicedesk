@@ -1,0 +1,45 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+> case-authoring-console@0.1.0 postinstall
+> node scripts/dedupe-tui-react.mjs
+
+dedupe-tui-react: react already deduped
+dedupe-tui-react: react-dom already deduped
+
+added 577 packages, and audited 578 packages in 7s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+1 high severity vulnerability
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-pinned-revision-state.spec.ts(215,23): error TS2352: Conversion of type '{ status: "resolved"; state: "archived"; }' to type 'PinnedRevisionStateResult' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ status: "resolved"; state: "archived"; }' is not comparable to type '{ readonly status: "resolved"; readonly state: HypothesisRevisionState; }'.
+    Types of property 'state' are incompatible.
+      Type '"archived"' is not comparable to type 'HypothesisRevisionState'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test :: npm test :: not_run =====
+

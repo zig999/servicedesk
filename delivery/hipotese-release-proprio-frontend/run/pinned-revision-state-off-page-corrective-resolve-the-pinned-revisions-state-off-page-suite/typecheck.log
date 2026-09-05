@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-pinned-revision-state.spec.ts(215,23): error TS2352: Conversion of type '{ status: "resolved"; state: "archived"; }' to type 'PinnedRevisionStateResult' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ status: "resolved"; state: "archived"; }' is not comparable to type '{ readonly status: "resolved"; readonly state: HypothesisRevisionState; }'.
+    Types of property 'state' are incompatible.
+      Type '"archived"' is not comparable to type 'HypothesisRevisionState'.

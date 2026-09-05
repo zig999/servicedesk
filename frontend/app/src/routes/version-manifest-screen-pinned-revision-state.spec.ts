@@ -114,30 +114,39 @@ describe("VersionManifestScreen — the pinned revision number stays exactly as 
   });
 });
 
-describe("VersionManifestScreen — the state statement when the pin is absent from the answered page (this task's own inference)", () => {
-  it("shows no state statement for a row whose own pinned revision is absent from the page its revisions listing answered", async () => {
+describe("VersionManifestScreen — the pinned-revision state resolved off the default page (criterion 1)", () => {
+  it("states the pinned revision's own state once found on a later page of a hypothesis holding more revisions than the listing's own configured maximum page size", async () => {
     const fetchMock = createFetchStub({
-      [`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 2)] }),
+      [`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 3)] }),
       [`GET ${revisionsPath("H1")}`]: () =>
-        jsonResponse(
-          revisionsPage([
+        jsonResponse({
+          data: [
             { revision: 1, state: "draft" },
-            { revision: 3, state: "released" },
-          ]),
-        ),
+            { revision: 2, state: "draft" },
+          ],
+          total: 3,
+          offset: 0,
+          limit: 2,
+        }),
+      [`GET ${revisionsPath("H1")}?offset=2`]: () =>
+        jsonResponse({
+          data: [{ revision: 3, state: "released" }],
+          total: 3,
+          offset: 2,
+          limit: 2,
+        }),
     });
     await mountManifestScreen(fetchMock);
 
     const trigger = await screen.findByLabelText("H1");
-    expect(trigger.textContent).toBe("2");
+    expect(trigger.textContent).toBe("3");
 
-    expect(within(findRow("H1")).queryByText("Draft")).toBeNull();
-    expect(within(findRow("H1")).queryByText("Released")).toBeNull();
+    expect(await within(findRow("H1")).findByText("Released")).toBeTruthy();
   });
 });
 
-describe("VersionManifestScreen — the state statement before the revisions listing has answered (edge case)", () => {
-  it("shows no state statement on a row whose revisions listing has not yet answered", async () => {
+describe("VersionManifestScreen — the pinned-revision-state statement while the read is outstanding (criterion 5)", () => {
+  it("states explicitly that the pin's state is still being read on a row whose revisions listing has not yet answered", async () => {
     const fetchMock = createFetchStub({
       [`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 1)] }),
       [`GET ${revisionsPath("H1")}`]: () => new Promise<Response>(() => {}),
@@ -146,13 +155,14 @@ describe("VersionManifestScreen — the state statement before the revisions lis
 
     await screen.findByText("H1");
 
+    expect(screen.getByText("Still being read")).toBeTruthy();
     expect(screen.queryByText("Draft")).toBeNull();
     expect(screen.queryByText("Released")).toBeNull();
   });
 });
 
-describe("VersionManifestScreen — the state statement when the revisions listing fails (edge case)", () => {
-  it("shows no state statement, and no crash, on a row whose revisions listing answered with an error", async () => {
+describe("VersionManifestScreen — the pinned-revision-state statement when the read fails (criterion 6)", () => {
+  it("states explicitly that the pin's state could not be read, without crashing, on a row whose revisions listing answered with an error", async () => {
     const fetchMock = createFetchStub({
       [`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 1)] }),
       [`GET ${revisionsPath("H1")}`]: () =>
@@ -162,6 +172,7 @@ describe("VersionManifestScreen — the state statement when the revisions listi
 
     await screen.findByLabelText("H1");
 
+    expect(within(findRow("H1")).getByText("Could not be read")).toBeTruthy();
     expect(within(findRow("H1")).queryByText("Draft")).toBeNull();
     expect(within(findRow("H1")).queryByText("Released")).toBeNull();
   });

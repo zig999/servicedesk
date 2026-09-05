@@ -1,31 +1,45 @@
 import { useQueries } from "@tanstack/react-query";
+import { hypothesisRevisionsQueryOptions } from "./use-hypothesis-revisions";
 import {
-  hypothesisRevisionsQueryOptions,
-  type HypothesisRevisionState,
-} from "./use-hypothesis-revisions";
+  offPageRevisionStateQueryOptions,
+  pinnedRevisionStateOf,
+  type PinnedRevisionStateResult,
+} from "./use-pinned-revision-state";
 import type { CaseVersionManifestEntry } from "../services/case-version-record";
 
-export type ManifestPinnedRevisionStates = ReadonlyMap<number, HypothesisRevisionState>;
+export type ManifestPinnedRevisionStates = ReadonlyMap<number, PinnedRevisionStateResult>;
 
 export function useManifestPinnedRevisionStates(
   slug: string,
   manifest: readonly CaseVersionManifestEntry[],
 ): ManifestPinnedRevisionStates {
-  const results = useQueries({
+  const defaultResults = useQueries({
     queries: manifest.map((entry) =>
       hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name),
     ),
   });
 
-  const states = new Map<number, HypothesisRevisionState>();
+  const offPageResults = useQueries({
+    queries: manifest.map((entry, index) =>
+      offPageRevisionStateQueryOptions(
+        slug,
+        entry.hypothesis_revision.hypothesis.name,
+        entry.hypothesis_revision.revision,
+        defaultResults[index],
+      ),
+    ),
+  });
+
+  const states = new Map<number, PinnedRevisionStateResult>();
   manifest.forEach((entry, index) => {
-    const result = results[index];
-    const pinned = result.data?.data.find(
-      (item) => item.revision === entry.hypothesis_revision.revision,
+    states.set(
+      entry.position,
+      pinnedRevisionStateOf(
+        defaultResults[index],
+        offPageResults[index],
+        entry.hypothesis_revision.revision,
+      ),
     );
-    if (pinned !== undefined) {
-      states.set(entry.position, pinned.state);
-    }
   });
   return states;
 }

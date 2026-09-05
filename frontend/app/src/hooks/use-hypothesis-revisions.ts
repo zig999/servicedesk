@@ -22,6 +22,8 @@ export type HypothesisRevisionListItem = {
 export type HypothesisRevisionsPage = {
   readonly data: readonly HypothesisRevisionListItem[];
   readonly total: number;
+  readonly offset: number;
+  readonly limit: number;
 };
 
 export function hypothesisRevisionsQueryOptions(

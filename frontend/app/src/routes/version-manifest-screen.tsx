@@ -23,7 +23,10 @@ import {
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
 import { useManifestRowRevisions } from "../hooks/use-manifest-row-revisions";
-import { HYPOTHESIS_REVISION_STATE_CELL } from "../hooks/use-hypothesis-revisions";
+import {
+  pinnedRevisionStateCell,
+  usePinnedRevisionState,
+} from "../hooks/use-pinned-revision-state";
 
 const REMOVE_DISABLED_TOOLTIP = "A case must keep at least one hypothesis";
 
@@ -150,23 +153,42 @@ function useTriggerAriaLinkage(
   }, [containerRef, isInvalid, describedById]);
 }
 
+type PinnedRevisionStateBadgeProps = {
+  readonly cell: { readonly color: string; readonly label: string };
+};
+
+function PinnedRevisionStateBadge({ cell }: PinnedRevisionStateBadgeProps): JSX.Element {
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1 text-sm">
+      <span aria-hidden="true" className={cn("inline-block h-2 w-2 rounded-full", cell.color)} />
+      {cell.label}
+    </span>
+  );
+}
+
 function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Element {
   const { revisions, highestRevision, isLoading } = useManifestRowRevisions(
     slug,
     row.hypothesisName,
   );
+  const pinnedState = usePinnedRevisionState(slug, row.hypothesisName, row.revision);
+  const pinnedStateCell = pinnedRevisionStateCell(pinnedState);
   const containerRef = useRef<HTMLDivElement>(null);
   const errorId = `revision-error-${row.hypothesisName}`;
   const isInvalid = row.revisionErrorMessage !== null;
   useTriggerAriaLinkage(containerRef, isInvalid, isInvalid ? errorId : undefined);
 
   if (isLoading) {
-    return <span>{row.hypothesisName}</span>;
+    return (
+      <span className="inline-flex items-center gap-2">
+        {row.hypothesisName}
+        <PinnedRevisionStateBadge cell={pinnedStateCell} />
+      </span>
+    );
   }
 
   const options = optionsWithPinnedRevision(revisions, row.revision);
   const hasNewerRevision = highestRevision !== undefined && row.revision < highestRevision;
-  const pinnedRevisionState = revisions.find((item) => item.revision === row.revision)?.state;
 
   function repinIfChanged(value: string): void {
     const chosenRevision = Number(value);
@@ -189,18 +211,7 @@ function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Eleme
             placeholder="Select a revision"
           />
         </Label>
-        {pinnedRevisionState !== undefined && (
-          <span className="inline-flex shrink-0 items-center gap-1 text-sm">
-            <span
-              aria-hidden="true"
-              className={cn(
-                "inline-block h-2 w-2 rounded-full",
-                HYPOTHESIS_REVISION_STATE_CELL[pinnedRevisionState].color,
-              )}
-            />
-            {HYPOTHESIS_REVISION_STATE_CELL[pinnedRevisionState].label}
-          </span>
-        )}
+        <PinnedRevisionStateBadge cell={pinnedStateCell} />
         {hasNewerRevision && (
           <span className="shrink-0 text-sm text-warning">Newer revision available</span>
         )}
