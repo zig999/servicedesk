@@ -5894,6 +5894,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "digest": "sha256:432dc3c3f910a4a2e281a0e5db7a7082bcfa24b7b2ec5702215aec412d858d92",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:ffa27f60095e3c035d55b437c8bcfe014ed4ca4d71fb57dc06962cbeef87c593"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:40574df314ce09048987fae8fa1623cb988f1904c21ea87d617bbc186a4b8a96"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
       "digest": "sha256:b125a070b9f193f253c1b4c35db05f0ae225879ec1ade59cfefd968bacd96cf7",
       "files": [

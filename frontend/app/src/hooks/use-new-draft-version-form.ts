@@ -40,10 +40,7 @@ export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState 
   const navigate = useNavigate();
   const telemetry = useTelemetry();
   const isSubmittingRef = useRef(false);
-  const [created, setCreated] = useState<{
-    readonly version: number;
-    readonly record: CaseVersionRecord;
-  } | null>(null);
+  const [created, setCreated] = useState<{ readonly version: number } | null>(null);
 
   const subjectOptions = useGlossaryVocabularyOptions("subject-type");
   const outcomeOptions = useGlossaryVocabularyOptions("outcome");
@@ -136,20 +133,11 @@ export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState 
         body: JSON.stringify(body),
       });
     },
-    onSuccess: (data, values) => {
+    onSuccess: (data) => {
 
       isSubmittingRef.current = false;
       telemetry.caseDraftCreated({ slug, version: data.version });
-      setCreated({
-        version: data.version,
-        record: {
-          title: values.title,
-          when_to_use: values.when_to_use,
-          subject: values.subject,
-          fallback: values.fallback,
-          consolidation_register: values.consolidation_register,
-        },
-      });
+      setCreated({ version: data.version });
     },
     onError: (error) => {
       isSubmittingRef.current = false;
@@ -164,7 +152,7 @@ export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState 
     },
   });
 
-  const editState = useEditDraftVersionForm(slug, created?.version ?? null, created?.record);
+  const editState = useEditDraftVersionForm(slug, created?.version ?? null);
 
   if (created) {
     return editState;

@@ -82,7 +82,6 @@ export function errorStateKind(error: unknown): UiErrorStateKind | null {
 export function useEditDraftVersionForm(
   slug: string,
   version: number | null,
-  seedRecord?: CaseVersionRecord,
 ): EditDraftVersionFormState {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -102,8 +101,7 @@ export function useEditDraftVersionForm(
       apiFetch<CaseVersionRecord>(
         `/v1/cases/${encodeURIComponent(slug)}/versions/${version}`,
       ),
-    enabled: version !== null && seedRecord === undefined,
-    initialData: seedRecord,
+    enabled: version !== null,
   });
   const outcomeOptions = useGlossaryVocabularyOptions("outcome"); const actionOptions = useGlossaryVocabularyOptions("action"); const recipientOptions = useGlossaryVocabularyOptions("recipient");
 
