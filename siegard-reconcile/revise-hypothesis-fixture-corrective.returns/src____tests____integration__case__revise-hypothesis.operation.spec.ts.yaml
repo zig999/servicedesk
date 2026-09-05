@@ -1,0 +1,16 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the it block at lines 336–356, asserting releaseHypothesisRevisionOwnState's second call against an already-released revision"
+    evidence: "expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the it block at lines 220–241, asserting the originated identity and its first revision's stored criterion"
+    evidence: "expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the it blocks at lines 261–283 (overwrite in place while draft) and 285–308 (next revision created once released)"
+    evidence: "expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 }); ... expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });"
+looked_past: "The refusal test at lines 336–356 checks only the error's type and not the HTTP 409 status or the 'carries no further value' clause the lifecycle rule states, and the generic Error assertion at lines 811–827 duplicates a scenario already covered precisely by CaseHoldsNoDraftError at lines 642–664 — both are coverage-completeness observations for a different pass, not a stated-versus-specified conflict."
+candidates_opened:
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - rules/knowledge/a-revise-answers-the-revision-number-it-saved
+  - rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  - domain/knowledge/hypothesis
