@@ -156,6 +156,26 @@ it("answers exactly one evaluation per required hypothesis, in the case's declar
   expect(result.map((evaluation) => evaluation.verdict)).toEqual(['inconclusive', 'confirmed', 'inconclusive']);
 });
 
+it("judges a hypothesis inconclusive no-data, citing the evidence, when its own evidence carries the connector-unreachable cause — while a sibling hypothesis whose own evidence is ok is judged normally, unaffected — mirroring the mechanism a-collection-timeout-degrades-to-no-data already exercises for a timeout", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('hyp-healthy criterion', immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'field-b' }] }));
+  const theCase = aCase([
+    { name: 'hyp-degraded', collects: ['concept-a'] },
+    { name: 'hyp-healthy', collects: ['concept-b'] },
+  ]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['hyp-degraded', [anEvidence({ concept: 'concept-a', result: 'unavailable', result_detail: 'ConnectorUnreachableError: a-connector' })]],
+    ['hyp-healthy', [anEvidence({ concept: 'concept-b', fields: fieldsDeclaring('field-b') })]],
+  ]);
+
+  const result = await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 2, now: 0, deadline: 10_000 });
+
+  expect(result).toEqual([
+    { hypothesis: 'hyp-degraded', verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'concept-a' }] },
+    { hypothesis: 'hyp-healthy', verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'field-b' }] },
+  ]);
+});
+
 it("calls evaluate() with only the judged hypothesis's own criterion and its own matched evidence, never another hypothesis's", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));

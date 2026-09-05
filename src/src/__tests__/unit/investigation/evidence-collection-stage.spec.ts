@@ -4,6 +4,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import type { Case } from '../../../case/case.js';
+import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
 import type { ConceptResolution, IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { COLLECTION_STAGE_BUDGET_MS, collectEvidence } from '../../../investigation/evidence-collection-stage.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS } from '../../../investigation/evidence.js';
@@ -249,6 +250,19 @@ class UnreachableConnectorConfigurationQuery implements IConnectorConfigurationQ
   }
 }
 
+class HoldingConnectorConfigurationQuery implements IConnectorConfigurationQuery {
+  public constructor(
+    private readonly connector: string,
+    private readonly configuration: Readonly<Record<string, unknown>>,
+  ) {}
+
+  public async readConnectorConfiguration(connector: string): Promise<ConnectorConfigurationResolution> {
+    return connector === this.connector
+      ? { held: true, configuration: { connector, configuration: JSON.stringify(this.configuration) } }
+      : { held: false, connector };
+  }
+}
+
 type EvidenceContext = {
   readonly concept: string;
   readonly subject: Subject;
@@ -458,6 +472,23 @@ it.each([
     expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable', { resultDetail: cause })]);
   },
 );
+
+it("records evidence naming ConnectorUnreachableError and the connector, the same shape as an existing unavailable cause, when the real adapter's own connector call rejects before any response", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const capability = aCapability({ concept: 'a-concept', connector: 'a-marker-connector' });
+  capabilities.hold(capability);
+  const connectorConfigurations = new HoldingConnectorConfigurationQuery('a-marker-connector', {
+    address: 'https://api.example.com/records', method: 'GET', responseMap: { status: 'status' }, statusMap: { '200': 'ok' },
+  });
+  const httpClient = vi.fn().mockRejectedValueOnce(new Error('a genuine network failure'));
+  const observationSource = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations, httpClient: httpClient as unknown as typeof fetch });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+  const result = await collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
+  });
+  const context = { concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(0).toISOString() };
+  expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable', { resultDetail: 'ConnectorUnreachableError: a-marker-connector' })]);
+});
 
 it('carries no result_detail for an unavailable ending the observation reported without one, rather than requiring one to be present or inventing one', async () => {
   const capabilities = new FakeCapabilityQuery();

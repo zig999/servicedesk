@@ -4858,6 +4858,20 @@
       ]
     },
     {
+      "node": "rules/integration/an-unreachable-connector-ends-unavailable",
+      "digest": "sha256:3b4812ab5d2f1a7c15b656656d6a259cf982e7f822db7821401c4d174ec430d5",
+      "files": [
+        {
+          "path": "src/src/errors/connector-unreachable.error.ts",
+          "digest": "sha256:e450fa46d9c3547e776cfaf8bd7fb3897500cc93013fb6336d0284eb3e3727bb"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/an-unresolvable-observation-ends-unavailable",
       "digest": "sha256:cc491fb37f0b66617197eab6f122c3e6c70db2e13e3119c03f3f69c32504ef2b",
       "files": [

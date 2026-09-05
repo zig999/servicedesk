@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "kind": "implementation",
+      "file": "implementation/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable.md",
+      "title": "Classify a connector network failure as unavailable",
+      "summary": "HttpDeclarativeObservationSource now catches a transport-layer connector rejection and resolves it to an unavailable observation naming ConnectorUnreachableError and the connector, instead of letting it propagate uncaught out of observeConcept.",
+      "task": "task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable"
+    },
+    {
+      "id": "proof/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "kind": "proof",
+      "file": "proof/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable.md",
+      "title": "Connector transport-rejection classified as unavailable",
+      "summary": "Proves that HttpDeclarativeObservationSource now resolves a connector call's transport-layer rejection to an unavailable ObservationOutcome naming ConnectorUnreachableError and the connector — end to end through evidence collection and hypothesis judgment — instead of letting it propagate uncaught, while leaving every other resolution-step cause, the timeout path and ConnectorUnreachableError's own cause-preservation untouched.",
+      "task": "task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "to": "rules/integration/an-unreachable-connector-ends-unavailable",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "to": "task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "to": "implementation/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
