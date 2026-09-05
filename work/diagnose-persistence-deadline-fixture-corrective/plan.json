@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/diagnose-persistence-deadline-fixture-corrective",
+      "kind": "epic",
+      "file": "epic/diagnose-persistence-deadline-fixture-corrective.md",
+      "title": "Diagnose-persistence-deadline-e2e fixture release-write duplication correction",
+      "summary": "Corrects diagnose-persistence-deadline-e2e.spec.ts, a file this project already delivered, so its own release-transition fixture calls the declared lifecycle operation instead of duplicating its write as raw SQL."
+    },
+    {
+      "id": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "task",
+      "file": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation.md",
+      "title": "Route diagnose-persistence-deadline-e2e.spec.ts's own release-transition fixture through the declared lifecycle operation",
+      "summary": "The fixture's own releaseRevisionDirectly helper writes the hypothesis-revision release transition as raw SQL instead of calling the declared, guarded lifecycle operation this same initiative already delivered — and already uses elsewhere in this exact file.",
+      "epic": "diagnose-persistence-deadline-fixture-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/diagnose-persistence-deadline-fixture-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/diagnose-persistence-deadline-fixture-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

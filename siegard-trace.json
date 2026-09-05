@@ -4028,6 +4028,10 @@
           "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
         },
         {
+          "path": "src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts",
+          "digest": "sha256:934fa78818e54b595a768448b9889d94dbc0ba273742821906238d7483ec2daf"
+        },
+        {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
           "digest": "sha256:199e1c5cd56b7c0e0aef854abaeaf251dd6ab5b321203f2cd3e941bd60b94094"
         },
@@ -6108,6 +6112,10 @@
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
           "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
+        },
+        {
+          "path": "src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts",
+          "digest": "sha256:934fa78818e54b595a768448b9889d94dbc0ba273742821906238d7483ec2daf"
         },
         {
           "path": "src/src/case/hypothesis-revision-own-state.port.ts",

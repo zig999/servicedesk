@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "implementation",
+      "file": "implementation/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation.md",
+      "title": "Route diagnose-persistence-deadline-e2e.spec.ts's release fixture through the declared lifecycle operation",
+      "summary": "releaseRevisionDirectly in diagnose-persistence-deadline-e2e.spec.ts now calls createCaseLifecycle(connection).releaseHypothesisRevision instead of issuing a raw SQL UPDATE against hypothesis_revisions.",
+      "task": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation"
+    },
+    {
+      "id": "proof/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "proof",
+      "file": "proof/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation.md",
+      "title": "Guard proof for diagnose-persistence-deadline-e2e.spec.ts's routed release fixture",
+      "summary": "Confirms the existing deadline test still passes unchanged and adds a self-contained test proving releaseRevisionDirectly routes through the guarded lifecycle operation rather than an unguarded write, by exercising the refusal a raw SQL UPDATE could never produce.",
+      "task": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "implementation/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
