@@ -471,7 +471,7 @@
         },
         {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
-          "digest": "sha256:e1ca741cfd8ca2604087788d0c4271d0a03debbaa275abb788bd41ca24f7fa1b"
+          "digest": "sha256:199e1c5cd56b7c0e0aef854abaeaf251dd6ab5b321203f2cd3e941bd60b94094"
         },
         {
           "path": "src/src/migrate.ts",

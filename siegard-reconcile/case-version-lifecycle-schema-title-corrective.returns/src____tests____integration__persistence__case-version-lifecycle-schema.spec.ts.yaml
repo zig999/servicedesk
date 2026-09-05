@@ -1,0 +1,14 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "beforeAll's migration replay (line 140), and the ordering-and-immutable-history test (lines 414-426); also exercised a second way by the backfill test's own partial-then-full replay (lines 546-556)"
+    evidence: "await applyMigrationFiles(client, await migrationFilesInOrder());"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the hypothesis_revisions table's CRUD — insertHypothesisRevision (lines 90-98) and the read-back of criterion/resolution (lines 263-274); collects via hypothesis_revision_collects (lines 304-316). The state attribute and the release operation are not exercised anywhere in this file — IRevisionOptions carries no state field, and insertHypothesisRevision never names one on insert."
+    evidence: "expect(rows).toEqual([{ criterion: 'A real criterion.', resolution_outcome: glossary.outcome }]);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the UPDATE-while-draft test, lines 287-302 — only the 'not yet released, writes in place' branch is exercised here; the 'unless released, creates the next revision' and 'no revision yet, creates revision 1' branches are not tested in this file"
+    evidence: "UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "interface IRevisionOptions { slug: string; hypothesisName: string; revision: number; criterion?: string; } — no test in this file ever creates a hypothesis_revisions row in released state, attempts to alter one, or removes a hypothesis_revision_collects row belonging to one"
+looked_past: this file also tests case_versions.state/released_at, cases.next_version, the one-draft-per-case and one-position-per-manifest constraints, hypotheses' own shape, and migration-file numbering — all governed by domain and rule nodes outside this delegation's four-node set, so not reported here.
