@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "kind": "implementation",
+      "file": "implementation/case-detail-attributes-tab/remove-attributes-tab-modules.md",
+      "title": "Removal of the Attributes tab's modules and their dedicated tests",
+      "summary": "The tab component, its data hook and the three test files written solely for them are deleted from the tree, with every shared module they imported left standing and the type-check clean.",
+      "task": "task/case-detail-attributes-tab/remove-attributes-tab-modules"
+    },
+    {
       "id": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
       "kind": "implementation",
       "file": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail.md",
@@ -16,6 +24,14 @@
       "title": "Versions panel discloses a current version that does not read back as a case",
       "summary": "The Versions panel on Case Detail now reads the case's highest-numbered version and states, distinctly from a load failure and from a case holding no version, when that version does not read back as a case.",
       "task": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back"
+    },
+    {
+      "id": "proof/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "kind": "proof",
+      "file": "proof/case-detail-attributes-tab/remove-attributes-tab-modules.md",
+      "title": "Proof that the Attributes tab's dead modules and their dedicated tests are gone, tree-wide",
+      "summary": "Confirms the five deleted files are absent and that no file anywhere under frontend/app/src still names either the tab component's identifier or the hook's own identifier.",
+      "task": "task/case-detail-attributes-tab/remove-attributes-tab-modules"
     },
     {
       "id": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
@@ -36,6 +52,12 @@
   ],
   "edges": [
     {
+      "from": "implementation/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "to": "task/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
       "to": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
       "kind": "implements",
@@ -51,6 +73,12 @@
       "from": "implementation/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
       "to": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "to": "implementation/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "kind": "proves",
       "at": "the path"
     },
     {
