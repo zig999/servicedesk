@@ -23,11 +23,11 @@ export function ConnectorTestPanelResult({
   const { result } = testOutcome;
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <section className="flex flex-col gap-2 min-w-0">
         <h4 className="font-semibold text-foreground">Request sent</h4>
         <p>Method: {result.request.method}</p>
-        <p>Address: {result.request.address}</p>
+        <p className="break-all">Address: {result.request.address}</p>
         <p className="text-sm text-muted-foreground">Headers</p>
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">{JSON.stringify(result.request.headers, null, 2)}</pre>
         <p className="text-sm text-muted-foreground">Body</p>

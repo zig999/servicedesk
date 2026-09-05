@@ -12,7 +12,7 @@ export type ConnectorTestPanelFieldsProps = {
 export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProps): JSX.Element {
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Label className="flex flex-col gap-1">
           Capability
           <Select
@@ -55,7 +55,10 @@ export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProp
 
       <div className="flex flex-col gap-3 min-w-0">
         {state.attributes.map((row) => (
-          <div key={row.id} className="grid grid-cols-[1fr_1fr_auto] items-end gap-4">
+          <div
+            key={row.id}
+            className="grid grid-cols-1 items-end gap-4 sm:grid-cols-[1fr_1fr_auto]"
+          >
             <div className="flex flex-col gap-1">
               <Label htmlFor={`${row.id}-attribute`}>Attribute</Label>
               <Input id={`${row.id}-attribute`} value={row.attribute} disabled readOnly />

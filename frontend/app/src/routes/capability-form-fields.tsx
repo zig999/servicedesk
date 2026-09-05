@@ -101,7 +101,7 @@ export function CapabilityFormFields({
         />
       </FormField>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <FormField label="Name" errorId="name-error" error={errors.name?.message}>
           <Input
             {...register("name")}
@@ -160,7 +160,7 @@ export function CapabilityFormFields({
         />
       </FormField>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <JsonTextareaField
           id="input_schema"
           label="Input schema"
