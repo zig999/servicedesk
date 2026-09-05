@@ -1,0 +1,51 @@
+findings:
+  - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+    where: "the it() block at lines 136–146, 'imports no HTTP client package, reaching the network only through the platform global fetch'"
+    evidence: "const forbidden = ['axios', 'node-fetch', 'got', 'undici', 'superagent', 'request'];"
+    cost: "the rule that this adapter must reach the network only through the platform's global fetch, and never through any of a named list of HTTP client packages, lives only in this test; a reader looking for the specification's own statement of which transport the HTTP connector kind is bound to finds nothing under the specification root, and a future connector or a swapped HTTP library could depart from a rule nobody wrote down"
+    kind: unstated
+    correction: "state, as an architecture constraint or as part of the HTTP connector's own rule, that the connector reaches the network only through the platform's global fetch"
+  - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+    where: "the it() title at line 424, the timeout/remaining-budget boundary-equality test"
+    evidence: "\"remains bounded by the capability's own declared timeout when the caller's given remaining-budget bound equals it exactly, the shared boundary 'at or above' names\""
+    cost: "the title asserts that the specification names a boundary 'at or above' for which bound governs when the capability's own timeout and the caller's remaining-budget bound are exactly equal; no node under the specification root uses that phrase or names such a boundary at all, so a reader chasing this citation into the specification finds nothing, and the tie-break rule at exact equality lives only in this test and in whichever comparison operator the adapter happens to use"
+    kind: unstated
+    correction: "state, in the budget rule that governs a capability's timeout against the collection stage's remaining time, which bound governs at exact equality"
+  - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+    where: "the it() block at lines 802–813, 'treats a response body that is not valid JSON as nothing extracted, rather than throwing, on the ok path'"
+    evidence: "expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({}) });"
+    cost: "domain/investigation/evidence-result holds that only ok carries a usable observation and only ok may enter the evidence cache; whether a response body that fails to parse at all should still register as ok (with an empty extracted observation cached as if it were a successful read) or should instead be recorded as unavailable is a business choice the specification never states, and it currently lives only in this test and the adapter it proves"
+    kind: unstated
+    correction: "state, alongside the responseMap/statusMap rule or the evidence-result enumeration, whether an unparseable response body ends ok-with-nothing-extracted or unavailable"
+read:
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: "the four transport-rejection tests (lines 276–334) comparing observeConcept's resolved outcome to unavailable with a ConnectorUnreachableError result_detail naming the connector, and the marker test excluding assembled address/query/headers/body from it"
+    evidence: "expect(outcome).toEqual({ result: 'unavailable', result_detail: 'ConnectorUnreachableError: a-marker-connector' });"
+  - node: domain/investigation/evidence-result
+    held_at: "the outcome assertions throughout the file, comparing observeConcept's resolution to exactly one of ok/unavailable/denied/timeout, with an observation field present only on ok"
+    evidence: "expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ status: 'operational' }) }); ... expect(outcome).toEqual({ result: 'denied' });"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: nowhere
+    evidence: "the file's outcome assertions never go past observeConcept's own result/result_detail/observation shape — e.g. `expect(outcomePromise).resolves.toEqual({ result: 'timeout' });` — and no evaluation or its declared reason is constructed or asserted over anywhere in the file"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: nowhere
+    evidence: "the file imports only Capability, capability-query and connector-configuration-registry ports, the adapter itself, and its errors — `import type { Subject } from '../../../investigation/observation-source.port.js';` is the only investigation-domain import — never an investigation or its evaluations"
+looked_past: "the HTTP-mechanics tests over body serialization, string-body passthrough, and the default-fetch-injection wiring (lines 148–159, 776–800) assert plumbing with no independent domain-fact claim beyond what the connector-configuration rule already covers, and the domain-module-import audit (line 527) tracks constraints/the-domain-depends-on-no-infrastructure's own fitness function closely enough that it is not reported here."
+candidates_opened:
+  - constraints/evidence-normalization-is-an-anticorruption-layer
+  - constraints/the-domain-depends-on-no-infrastructure
+  - contracts/integration/concept-observation
+  - contracts/integration/corporate-records-source
+  - contracts/investigation/observation-source
+  - contracts/system/corporate-records
+  - domain/integration/capability
+  - rules/integration/an-http-connector-configuration-declares-its-call
+  - rules/integration/an-unclassified-status-ends-unavailable
+  - rules/integration/an-unresolvable-observation-ends-unavailable
+  - rules/integration/evidence-arrives-in-the-glossary-vocabulary
+  - rules/investigation/collection-has-its-own-budget-within-the-total
+  - rules/investigation/collection-runs-in-the-requester-scope
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+  - scenarios/investigation/a-collection-timeout-degrades-to-no-data
+  - scenarios/investigation/a-slow-capability-yields-to-the-collection-budget

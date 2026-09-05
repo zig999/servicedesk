@@ -1,0 +1,17 @@
+read:
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: the constructor of ConnectorUnreachableError, lines 4-7
+    evidence: |-
+      super(`connector "${connector}"'s own call could not be issued: no HTTP response was ever received`, options);
+      this.name = 'ConnectorUnreachableError';
+      this.context = { connector };
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "export class ConnectorUnreachableError extends Error { public readonly context: Readonly<{ connector: string }>; ... }"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: nowhere
+    evidence: "export class ConnectorUnreachableError extends Error { public readonly context: Readonly<{ connector: string }>; ... }"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: nowhere
+    evidence: "export class ConnectorUnreachableError extends Error { public readonly context: Readonly<{ connector: string }>; ... }"
+looked_past: the four evidence results and the inconclusive-evaluation/one-evaluation-per-hypothesis rules are not implicated by this file at all — it is a single error class carrying only the connector name and a generic message, so those three nodes have nothing here to hold or contradict; that absence is not itself a finding.

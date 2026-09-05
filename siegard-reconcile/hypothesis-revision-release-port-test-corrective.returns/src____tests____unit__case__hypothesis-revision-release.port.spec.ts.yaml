@@ -1,0 +1,5 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "both `it` blocks — the import audit over hypothesis-revision-release.port.ts's own source"
+    evidence: "const offenders = importSpecifiersOf(source).filter((specifier) => namesOneOf(specifier, FORBIDDEN_DRIVERS_AND_FRAMEWORKS));\n\n  expect(offenders).toEqual([]);"
+looked_past: "the second test's provider-client check tests against exactly one literal package name rather than a broader/extensible set, which is a test-coverage completeness question for another pass, not a fact the specification does or doesn't hold."

@@ -31,6 +31,16 @@ import {
 
 const visitedSimulationRoutes = new Set<string>();
 
+/**
+ * Test-only escape hatch: clears the module-level set of visited
+ * slug:version routes this hook uses to detect a return visit, so a test can
+ * reuse a slug/version pair without inheriting "is a return visit" state left
+ * behind by another test in the same run.
+ */
+export function resetVisitedSimulationRoutesForTests(): void {
+  visitedSimulationRoutes.clear();
+}
+
 export type CaseSimulationCockpitState = {
   readonly subject: SimulationSubjectState;
   readonly canSimulateCase: boolean;

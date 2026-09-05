@@ -1,0 +1,20 @@
+read:
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: nowhere — the file does not exercise the connector's own classification of a call as unreachable; it only builds a fixture already shaped that way as input to the judgment stage
+    evidence: "anEvidence({ concept: 'concept-a', result: 'unavailable', result_detail: 'ConnectorUnreachableError: a-connector' })"
+  - node: domain/investigation/evidence-result
+    held_at: the `result` field of every `Evidence` fixture the suite builds, typed through the imported `Evidence` type and populated with exactly the enumeration's four values across the file
+    evidence: "result: 'ok', ... capability_name: `capability-for-${overrides.concept}`, ... ...overrides,"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "the assertion in \"records inconclusive no-data citing every non-ok evidence item, and never enters the pool for that hypothesis\""
+    evidence: "{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'concept-denied' }, { concept: 'concept-timeout' }] }"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: "the assertion in \"answers exactly one evaluation per required hypothesis, in the case's declared order, none omitted or duplicated\""
+    evidence: "expect(result.map((evaluation) => evaluation.hypothesis)).toEqual(['hyp-no-data', 'hyp-decided', 'hyp-inconclusive']);"
+looked_past: The great majority of this file's specs — retry-on-invalid-citation, the citation collects/field-snapshot checks, pool-size concurrency and slot retention, usage/elapsed_ms/prompt propagation, the field-key presence rule for confirmed/refuted vs. no-data citations, and the hypothesisNamed/evidenceFor guard-removal specs — exercise facts unrelated to this delegation's four nodes and are another judgment's to hold; I checked candidates rules/investigation/no-stage-aborts-on-its-deadline, rules/investigation/collection-has-its-own-budget-within-the-total and rules/investigation/collection-runs-in-the-requester-scope against the deadline/pool-size specs and found the deadline-exceeded fact already settled by this file's own an-inconclusive-evaluation-declares-its-reason node, and the budget/scope candidates addressed only to the collection stage, not the judgment stage this file tests.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - rules/investigation/collection-has-its-own-budget-within-the-total
+  - rules/investigation/collection-runs-in-the-requester-scope
+  - scenarios/investigation/a-collection-timeout-degrades-to-no-data
+  - scenarios/investigation/a-slow-capability-yields-to-the-collection-budget

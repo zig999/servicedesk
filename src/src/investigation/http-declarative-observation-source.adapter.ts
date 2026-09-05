@@ -17,6 +17,7 @@ import { extractResponseFields, type ResponseFieldPaths } from '../http-connecto
 import { CapabilityNotResolvedForObservationError } from '../errors/capability-not-resolved-for-observation.error.js';
 import { ConnectorConfigurationNotRegisteredError } from '../errors/connector-configuration-not-registered.error.js';
 import { ConnectorPlaceholderNotResolvedError } from '../errors/connector-placeholder-not-resolved.error.js';
+import { ConnectorUnreachableError } from '../errors/connector-unreachable.error.js';
 import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.error.js';
 import { IncompleteConnectorCallDescriptorError } from '../errors/incomplete-connector-call-descriptor.error.js';
 import { MalformedHttpConnectorConfigurationError } from '../errors/malformed-http-connector-configuration.error.js';
@@ -52,6 +53,11 @@ function unavailableFor(error: Error): ObservationOutcome {
   return { result: 'unavailable', result_detail: error.name };
 }
 
+function unavailableForUnreachableConnector(connector: string, cause: unknown): ObservationOutcome {
+  const error = new ConnectorUnreachableError(connector, { cause });
+  return { result: 'unavailable', result_detail: `${error.name}: ${connector}` };
+}
+
 function effectiveTimeoutMsFor(capability: Capability, remainingBudgetMs: number | undefined): number {
   return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
 }
@@ -74,11 +80,14 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
     }
     const { capability, httpFields, request } = prepared.value;
     const timeoutMs = effectiveTimeoutMsFor(capability, remainingBudgetMs);
-    const call = await this.issueRequest(httpFields.method, request, timeoutMs);
-    if (call.kind === 'timed-out') {
+    const call = await this.issueRequestOrUnreachable({ connector: capability.connector, method: httpFields.method, request, timeoutMs });
+    if (!call.ok) {
+      return call.outcome;
+    }
+    if (call.value.kind === 'timed-out') {
       return { result: 'timeout' };
     }
-    return await outcomeFromResponse(capability, httpFields, call.response);
+    return await outcomeFromResponse(capability, httpFields, call.value.response);
   }
 
   private async resolvePreparedCall(
@@ -173,6 +182,21 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
   ): Promise<CallResult> {
     const issued = await issueConnectorHttpCall({ method, request, timeoutMs, httpClient: this.httpClient });
     return issued.kind === 'timed-out' ? { kind: 'timed-out' } : { kind: 'response', response: issued.response };
+  }
+
+  private async issueRequestOrUnreachable(options: {
+    readonly connector: string;
+    readonly method: HttpMethod;
+    readonly request: AssembledConnectorRequest;
+    readonly timeoutMs: number;
+  }): Promise<Resolution<CallResult>> {
+    const { connector, method, request, timeoutMs } = options;
+    try {
+      const call = await this.issueRequest(method, request, timeoutMs);
+      return { ok: true, value: call };
+    } catch (error) {
+      return { ok: false, outcome: unavailableForUnreachableConnector(connector, error) };
+    }
   }
 }
 

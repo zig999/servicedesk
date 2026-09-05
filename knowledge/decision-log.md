@@ -2115,6 +2115,45 @@ entries:
       because the sort key is that element's own declared attribute and the condition is
       decidable from the answer itself; it adds no field, changes no listing's paging, refuses no
       call, and decides nothing about the other listings listings-are-paged governs.
+
+  - location: rules/integration/an-unreachable-connector-ends-unavailable.md
+    field: statement
+    unstated: 'What an observation records when its HTTP connector call is issued and then fails before
+      any HTTP response is received — a refused connection, a DNS resolution failure, a socket error, or
+      any rejection other than the capability timeout''s own deliberate abort. Every other collection-failure
+      cause is placed in one of the four evidence-result endings by a node of its own — a call never issued
+      (an-unresolvable-observation-ends-unavailable), a configuration whose call cannot be assembled and
+      a status nobody classified (an-http-connector-configuration-declares-its-call, an-unclassified-status-ends-unavailable),
+      a deadline overrun (no-stage-aborts-on-its-deadline) — while the one cause between a well-assembled
+      call and a received response is placed by none: the ending, the result detail''s name, and whether
+      the connector''s identity is carried in it were all unstated.'
+    decided: The observation ends unavailable and never propagates out of observe-concept as a fault, with
+      a result detail reporting a ConnectorUnreachableError together with the name of the connector whose
+      registered configuration issued the call, and carrying no part of that call's own assembled address,
+      query, headers or body. Stated as a new policy, rules/integration/an-unreachable-connector-ends-unavailable.
+    why: 'Unavailable, because it is the ending this specification already gives every collection failure
+      that asserts neither denial nor timeout and never enters the cache, and because the alternatives each
+      say something untrue: timeout is the capability''s own deadline abandoning a call still in flight,
+      which a connection refused, unresolved or broken never reached, and denied asserts an authorization
+      outcome nothing observed. An ending rather than a fault, because domain/investigation/evidence states
+      the absence of data arrives as a result and never as an exception and no-stage-aborts-on-its-deadline
+      holds the collection stage to recording rather than raising — the same reading already applied to
+      the four other causes, of which a fault here would be the sole exception, and one that aborts concepts
+      and hypotheses that never touched the failing connector. ConnectorUnreachableError rather than a name
+      built on "unavailable", because every sibling detail names the cause and not the ending — the ending
+      is already on the same evidence item, so a detail repeating it distinguishes nothing — and "unreachable"
+      is what separates a far end that refused, could not be resolved or broke the socket from one that
+      answered late. The connector name is carried because the cause lies outside this system and the far
+      end is the only thing anyone can act on; it is content in the existing free-text result_detail rather
+      than a new field, so no fact is duplicated into a declared attribute. The assembled call''s own text
+      is excluded because address, query, headers and body may each hold what a credential placeholder resolved
+      to, which rules/integration/a-diagnostic-response-masks-a-resolved-credential keeps out of what a
+      reader is shown. A new node rather than an extension of a neighbour, because each existing node''s
+      condition is exclusive of this one — an-unresolvable-observation-ends-unavailable governs observations
+      that issue no call, an-unclassified-status-ends-unavailable governs a response that did arrive, and
+      an-http-connector-configuration-declares-its-call states what a configuration declares and how its
+      call is assembled, never what happens once the assembled call is in flight — and this specification
+      already gives each collection-failure cause its own rule beside the others.'
   - location: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle.md
     field: statement
     unstated: >-
@@ -2321,7 +2360,6 @@ entries:
       statement rather than a new node because it answers the same one question this rule already
       answers — what a presented entry states about its pin's state — and it adds no field, moves
       no pin, refuses no call and leaves the read's source (the revision itself) untouched.
----
   - location: constraints/a-domain-error-unmapped-by-status-is-refused-generically.md
     field: statement
     unstated: >-
@@ -2439,3 +2477,4 @@ entries:
       branch are already in this context: a-case-has-at-least-one-hypothesis (remove-hypothesis for
       a name the manifest does not hold succeeds with no effect) and the collects branch of
       a-released-hypothesis-revision-is-never-altered.
+---

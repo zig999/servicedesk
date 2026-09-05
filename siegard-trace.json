@@ -91,7 +91,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -319,7 +319,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
@@ -383,7 +383,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -471,7 +471,7 @@
         },
         {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
-          "digest": "sha256:e1ca741cfd8ca2604087788d0c4271d0a03debbaa275abb788bd41ca24f7fa1b"
+          "digest": "sha256:199e1c5cd56b7c0e0aef854abaeaf251dd6ab5b321203f2cd3e941bd60b94094"
         },
         {
           "path": "src/src/migrate.ts",
@@ -839,7 +839,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -977,7 +977,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -1159,7 +1159,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -1289,7 +1289,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
@@ -2177,7 +2177,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -3633,7 +3633,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -3903,7 +3903,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -4077,7 +4077,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -4155,7 +4155,7 @@
         },
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
-          "digest": "sha256:8a252b5c4ca541fe25be7de646b1ffc9aba7714bc4645be659616d99f7c52beb"
+          "digest": "sha256:8e20fa861d67c682e806fd5493a51bd444fe5356a44d72001ad4959a75b3496f"
         },
         {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
@@ -4853,7 +4853,21 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-unreachable-connector-ends-unavailable",
+      "digest": "sha256:3b4812ab5d2f1a7c15b656656d6a259cf982e7f822db7821401c4d174ec430d5",
+      "files": [
+        {
+          "path": "src/src/errors/connector-unreachable.error.ts",
+          "digest": "sha256:e450fa46d9c3547e776cfaf8bd7fb3897500cc93013fb6336d0284eb3e3727bb"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -4867,7 +4881,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -4885,7 +4899,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -5305,7 +5319,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5327,7 +5341,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5381,7 +5395,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -5905,7 +5919,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
@@ -6077,7 +6091,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -6173,7 +6187,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -6379,7 +6393,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -6397,7 +6411,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         }
       ]
     },
@@ -6479,7 +6493,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -6773,7 +6787,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -6787,7 +6801,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -7025,7 +7039,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -7069,7 +7083,7 @@
       "files": [
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         }
       ]
     },
@@ -7197,7 +7211,7 @@
       "files": [
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",

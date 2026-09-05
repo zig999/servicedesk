@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/diagnose-persistence-deadline-fixture-corrective-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-05T18:41:55.431+00:00",
+      "ended_at": "2026-09-05T18:41:59.250+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-05T18:41:59.250+00:00",
+      "ended_at": "2026-09-05T18:42:03.730+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-05T18:42:03.730+00:00",
+      "ended_at": "2026-09-05T18:42:07.785+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-05T18:42:07.785+00:00",
+      "ended_at": "2026-09-05T18:42:08.261+00:00"
+    },
+    {
+      "name": "test",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests --pool=forks --poolOptions.forks.singleFork=true",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-05T18:42:08.261+00:00",
+      "ended_at": "2026-09-05T18:44:46.660+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -1,0 +1,12 @@
+src/.env
+src/.env.test
+src/package.json
+src/tsconfig.json
+src/eslint.config.js
+frontend/app/package.json
+frontend/app/tsconfig.json
+frontend/app/eslint.config.js
+frontend/app/vite.config.ts
+frontend/app/playwright.config.ts
+frontend/app/stylelint.config.js
+frontend/app/src/design-system/tokens.css

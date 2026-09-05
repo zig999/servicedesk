@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { useCaseSimulationCockpit } from "./use-case-simulation-cockpit";
+import { resetVisitedSimulationRoutesForTests, useCaseSimulationCockpit } from "./use-case-simulation-cockpit";
 import {
   SIMULATE_CASE_PATH,
   createWrapper,
@@ -10,6 +10,10 @@ import {
   simulateCaseResult,
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
+
+beforeEach(() => {
+  resetVisitedSimulationRoutesForTests();
+});
 
 afterEach(() => {
   vi.unstubAllGlobals();

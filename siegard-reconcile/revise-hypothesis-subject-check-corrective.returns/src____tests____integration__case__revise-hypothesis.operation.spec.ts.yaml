@@ -1,0 +1,34 @@
+findings:
+  - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+    where: "the three CaseHoldsNoDraftError refusal tests, e.g. lines 654-655"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);\n    await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug } });"
+    cost: "What a CaseHoldsNoDraftError refusal discloses to the curator is decided here, in a test, rather than in the rule that mandates the refusal. The specification does state this level of detail for sibling refusals of the same shape — CaseNotFoundError's details 'carry the named slug and version', CaseVersionNotDraftAtReleaseError's 'carry the version's own slug, version number and the state it stood in' — so a reader who wants to know what this refusal tells the curator will look in a-hypothesis-is-revised-only-against-its-cases-draft and find nothing, and will not think to look in this test instead."
+    kind: unstated
+    node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    correction: "State, in a-hypothesis-is-revised-only-against-its-cases-draft, what details a CaseHoldsNoDraftError refusal carries (the slug alone, or more), the way its sibling rules already state theirs."
+  - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+    where: "the ConceptRefusesSubjectTypeError refusal tests, lines 611-619 and 797-805"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(ConceptRefusesSubjectTypeError);\n    await expect(rejection).rejects.toMatchObject({\n      context: {\n        slug: fixture.slug,\n        hypothesis_name: 'the-hypothesis',\n        subject: fixture.subjectType,\n        concepts: [fixture.concept],\n      },\n    });"
+    cost: "The exact set of fields a ConceptRefusesSubjectTypeError discloses — which concept refused, which subject type, which hypothesis, which case — is fixed here in a test rather than in the rule that mandates the refusal. As with CaseHoldsNoDraftError, the specification states this class of detail for analogous refusals elsewhere (CaseNotFoundError, CaseVersionNotDraftAtReleaseError) but is silent for this one, so the next reader of a-concept-accepts-the-declared-subject-type learns only that the refusal happens, not what it tells the curator."
+    kind: unstated
+    node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    correction: "State, in a-concept-accepts-the-declared-subject-type, what details a ConceptRefusesSubjectTypeError refusal carries."
+read:
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the second-release test, lines 336-356"
+    evidence: "expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+  - node: domain/knowledge/case-version
+    held_at: "the seedCaseVersion helper, lines 92-100, and its seedDraftCaseVersion/seedReleasedCaseVersion wrappers"
+    evidence: "INSERT INTO case_versions\n       (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient, state, released_at)\n     VALUES ($1, $2, 'A title', 'A use', now(), $3, $4, $5, $6, $7, $8)"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the CaseHoldsNoDraftError tests (lines 642-738, 811-827) and the subject-from-draft tests (lines 761-809)"
+    evidence: "const answered = await operation.reviseHypothesis(reviseInput(fixture, { subject: fixture.otherSubjectType }));\n\n    expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 });"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the ConceptRefusesSubjectTypeError tests, lines 601-622 and 783-809"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(ConceptRefusesSubjectTypeError);"
+looked_past: "The overwrite-in-place-vs-next-revision numbering, the revise answer's fixed two-field shape, released-immutability, and the glossary/collects refusals (ConceptNotInGlossaryError, HypothesisRevisionCollectsNoConceptError) are exercised at length in this file but are governed by nodes outside this delegation's set (several explicitly the sibling review's), and I found no disagreement between the source and those nodes where I opened them as candidates."
+candidates_opened:
+  - rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+  - domain/knowledge/hypothesis-revision
+  - rules/knowledge/a-revise-answers-the-revision-number-it-saved
+  - contracts/knowledge/case-lifecycle

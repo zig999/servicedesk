@@ -8,6 +8,7 @@ import type { ConnectorConfigurationResolution } from '../../../connector-regist
 import { CapabilityNotResolvedForObservationError } from '../../../errors/capability-not-resolved-for-observation.error.js';
 import { ConnectorConfigurationNotRegisteredError } from '../../../errors/connector-configuration-not-registered.error.js';
 import { ConnectorPlaceholderNotResolvedError } from '../../../errors/connector-placeholder-not-resolved.error.js';
+import { ConnectorUnreachableError } from '../../../errors/connector-unreachable.error.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncompleteConnectorCallDescriptorError } from '../../../errors/incomplete-connector-call-descriptor.error.js';
 import { MalformedHttpConnectorConfigurationError } from '../../../errors/malformed-http-connector-configuration.error.js';
@@ -272,15 +273,64 @@ it('resolves to timeout immediately when the capability declares a zero-length t
   await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
 });
 
-it('propagates a genuine network failure unmodified, rather than degrading it to one of the four endings', async () => {
+it('resolves to unavailable naming ConnectorUnreachableError and the connector, rather than throwing, when the issuing call rejects before any HTTP response is received', async () => {
   const httpClient = newHttpClient().mockRejectedValueOnce(new Error('a genuine network failure'));
+  const capability = aCapability({ concept: 'a-concept' });
+  const adapter = anAdapter({ capability, connectorConfiguration: anHttpConfiguration(), httpClient });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: `${ConnectorUnreachableError.name}: ${capability.connector}` });
+});
+
+it('classifies a DNS-resolution-style TypeError the same way as any other transport rejection, resolving to unavailable rather than throwing', async () => {
+  const httpClient = newHttpClient().mockRejectedValueOnce(new TypeError('fetch failed'));
+  const capability = aCapability({ concept: 'a-concept' });
+  const adapter = anAdapter({ capability, connectorConfiguration: anHttpConfiguration(), httpClient });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: `${ConnectorUnreachableError.name}: ${capability.connector}` });
+});
+
+it('classifies a rejection that is not an Error instance at all as unavailable too, rather than crashing while building the cause', async () => {
+  const httpClient = newHttpClient().mockRejectedValueOnce('a non-error rejection reason');
+  const capability = aCapability({ concept: 'a-concept' });
+  const adapter = anAdapter({ capability, connectorConfiguration: anHttpConfiguration(), httpClient });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: `${ConnectorUnreachableError.name}: ${capability.connector}` });
+});
+
+it("classifies an abort-shaped rejection as unavailable rather than timeout when the capability's own timeout controller never actually fired", async () => {
+  const httpClient = newHttpClient().mockRejectedValueOnce(new DOMException('The operation was aborted.', 'AbortError'));
+  const capability = aCapability({ concept: 'a-concept', timeout: 5_000 });
+  const adapter = anAdapter({ capability, connectorConfiguration: anHttpConfiguration(), httpClient });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: `${ConnectorUnreachableError.name}: ${capability.connector}` });
+});
+
+it("keeps result_detail free of the call's own assembled address, query, headers and body, naming only the cause and the connector", async () => {
+  const httpClient = newHttpClient().mockRejectedValueOnce(new Error('a genuine network failure'));
+  const capability = aCapability({ concept: 'a-concept', connector: 'a-marker-connector' });
   const adapter = anAdapter({
-    capability: aCapability({ concept: 'a-concept' }),
-    connectorConfiguration: anHttpConfiguration(),
+    capability,
+    connectorConfiguration: anHttpConfiguration({
+      address: 'https://api.example.com/address-marker-value',
+      method: 'POST',
+      query: { q: 'query-marker-value' },
+      headers: { 'x-secret': 'header-marker-value' },
+      body: { payload: 'body-marker-value' },
+    }),
     httpClient,
   });
 
-  await expect(adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER })).rejects.toThrow('a genuine network failure');
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: 'ConnectorUnreachableError: a-marker-connector' });
 });
 
 it("does not resolve before a capability's own longer declared timeout elapses, refuting a small fixed timeout unrelated to it", async () => {

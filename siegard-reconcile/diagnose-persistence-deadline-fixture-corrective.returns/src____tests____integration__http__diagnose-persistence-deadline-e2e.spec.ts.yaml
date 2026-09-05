@@ -1,0 +1,8 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the second it() block, lines 439-460 — releaseRevisionDirectly's guarded second call against the already-released revision"
+    evidence: "expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the same it() block's title and its refusal assertion"
+    evidence: "\"refuses releaseRevisionDirectly's own second call against a hypothesis-revision it already released, \" + 'with HypothesisRevisionNotDraftAtReleaseError, rather than silently rewriting its already-released state'"
+looked_past: The first it() block's assertions about WRITE_DELAY_MS/TOTAL_DEADLINE_BUDGET_MS, InvestigationWriteDeadlineExceededError, and the remainingMs bounds concern the persistence-deadline behavior governed by nodes outside this delegation's set, not the hypothesis-revision lifecycle nodes reviewed here; likewise, whether a release-guard test belongs inside a file named for persistence-deadline e2e is a file-organization matter, not a domain-fact conformance question.

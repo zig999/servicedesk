@@ -1,0 +1,50 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import block, lines 1-13"
+    evidence: "import type { ConceptResolution, IGlossaryQuery } from '../glossary/glossary-query.port.js';\nimport type {\n  DraftVersion,\n  HypothesisRevisionInput,\n  ICaseStore,\n  OverwriteHypothesisRevisionInput,\n} from './case-store.port.js';"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "writeRevision(), lines 43-50"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {\n  await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));\n  return highest.revision;\n}\nreturn this.caseStore.insertHypothesisRevision(input);"
+  - node: domain/knowledge/case-version
+    held_at: "reviseHypothesis(), line 38"
+    evidence: "await this.refuseInvalidCollects(input, draftVersion.subject);"
+  - node: domain/knowledge/hypothesis
+    held_at: "reviseHypothesis(), lines 36-41"
+    evidence: "public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> {\n    const draftVersion = await this.requireDraftVersion(input.slug);\n    await this.refuseInvalidCollects(input, draftVersion.subject);\n    const revision = await this.writeRevision(input);\n    return { hypothesis_name: input.hypothesis_name, revision };\n  }"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "overwriteInputOf(), lines 72-81"
+    evidence: "return {\n    slug: input.slug,\n    hypothesis_name: input.hypothesis_name,\n    criterion: input.criterion,\n    collects: input.collects,\n    resolution: input.resolution,\n    revision,\n  };"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "refuseConceptsRefusingSubject(), lines 116-130"
+    evidence: "const refusing = conceptsRefusingSubjectOf(resolutions, subject);\n  if (refusing.length > 0) {\n    throw new ConceptRefusesSubjectTypeError({\n      slug: input.slug,\n      hypothesis_name: input.hypothesis_name,\n      subject,\n      concepts: refusing,\n    });\n  }"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "refuseEmptyCollects(), lines 83-87"
+    evidence: "if (input.collects.length === 0) {\n    throw new HypothesisRevisionCollectsNoConceptError(input.slug, input.hypothesis_name);\n  }"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "requireDraftVersion(), lines 52-58, feeding reviseHypothesis lines 36-38"
+    evidence: "const draftVersion = await this.caseStore.findDraftVersion(slug);\n    if (draftVersion === undefined) {\n      throw new CaseHoldsNoDraftError(slug);\n    }\n    return draftVersion;"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "writeRevision(), lines 43-50"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {\n  await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));\n  return highest.revision;\n}\nreturn this.caseStore.insertHypothesisRevision(input);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the overwrite branch preserving the existing number, line 46-47; assignment of a genuinely new number is delegated to caseStore.insertHypothesisRevision, line 49"
+    evidence: "await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));\n      return highest.revision;\n    }\n    return this.caseStore.insertHypothesisRevision(input);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the branch condition in writeRevision(), line 45"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "RevisedHypothesis type (lines 19-22) and reviseHypothesis's return (line 40)"
+    evidence: "export type RevisedHypothesis = {\n  readonly hypothesis_name: string;\n  readonly revision: number;\n};"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "refuseUnknownConcepts(), lines 97-102"
+    evidence: "const unknown = unknownConceptsOf(resolutions);\n  if (unknown.length > 0) {\n    throw new ConceptNotInGlossaryError(input.slug, input.hypothesis_name, unknown);\n  }"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "writeRevision(), lines 43-48"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {\n  await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));\n  return highest.revision;\n}"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> {\n    const draftVersion = await this.requireDraftVersion(input.slug);\n    await this.refuseInvalidCollects(input, draftVersion.subject);\n    const revision = await this.writeRevision(input);\n    return { hypothesis_name: input.hypothesis_name, revision };\n  }"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "writeRevision(), lines 43-50"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {\n  await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));\n  return highest.revision;\n}\nreturn this.caseStore.insertHypothesisRevision(input);"
+looked_past: "this file's own port and error types (case-store.port.ts, hypothesis-revision-overwrite.port.ts, hypothesis-revision-release-state.port.ts, glossary-query.port.ts, and the error classes it throws) are outside the file set, so their contents were not opened or judged."
