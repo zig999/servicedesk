@@ -16,6 +16,25 @@
       "title": "Connector transport-rejection classified as unavailable",
       "summary": "Proves that HttpDeclarativeObservationSource now resolves a connector call's transport-layer rejection to an unavailable ObservationOutcome naming ConnectorUnreachableError and the connector — end to end through evidence collection and hypothesis judgment — instead of letting it propagate uncaught, while leaving every other resolution-step cause, the timeout path and ConnectorUnreachableError's own cause-preservation untouched.",
       "task": "task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable"
+    },
+    {
+      "id": "review/connector-unavailable-refuses-simulation",
+      "kind": "review",
+      "file": "review/connector-unavailable-refuses-simulation.md",
+      "title": "Review of connector-unavailable-refuses-simulation",
+      "summary": "Four passes over the six files task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable delivered: coverage of its six criteria, per-file specification conformance folded into siegard-reconcile/connector-unavailable-refuses-simulation.md, the backend standard's reading rules, and the diagnosis of the one failure the captured run reported.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "A connector call that HttpDeclarativeObservationSource actually issues (i.e. capability resolution, connector configuration resolution, HTTP configuration validation and request assembly all already succeeded) and whose issuing step rejects before any HTTP response is received, for a reason other than the timeout AbortController firing, resolves observeConcept to { result: 'unavailable', result_detail: 'ConnectorUnreachableError' } naming the connector, and does not throw, and that result_detail carries no part of the call's own assembled address, query, headers or body — while every rejection during capability resolution, connector configuration resolution, HTTP configuration validation or request assembly keeps ending unavailable with its own existing cause name (CapabilityNotResolvedForObservationError, DuplicateConceptAnswerError, ConnectorConfigurationNotRegisteredError, ConnectorPlaceholderNotResolvedError, MalformedHttpConnectorConfigurationError or IncompleteConnectorCallDescriptorError), unrelabeled, and a failure that happens after an HTTP response was already received (parsing its body, extracting its fields, or normalizing them into the glossary vocabulary) is untouched by this task.",
+        "A simulate-case or simulate-hypothesis call whose subject is missing the attribute this concept would have needed is not refused for that reason, consistent with a-simulated-subject-missing-a-requirement-degrades-not-refuses; the connector's own timeout-abort path (already handled) is unchanged.",
+        "The unavailable observation this failure produces is never written into the evidence cache, consistent with only an ok result ever entering it."
+      ],
+      "findings": 9
     }
   ],
   "edges": [
@@ -36,6 +55,12 @@
       "to": "implementation/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-unavailable-refuses-simulation",
+      "to": "task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

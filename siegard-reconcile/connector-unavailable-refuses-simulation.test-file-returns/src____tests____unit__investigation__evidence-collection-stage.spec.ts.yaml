@@ -1,0 +1,43 @@
+findings:
+  - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+    where: "expectedOkEvidence and expectedNonOkEvidence (lines 277-319), and expectedUnavailableEvidence (lines 321-337), used by every it(...) in the file"
+    evidence: |
+      capability_name: context.capability.name,
+      capability_version: context.capability.version,
+      (expectedNonOkEvidence, lines 313-314; the same pair appears in expectedOkEvidence, lines 290-291)
+      and, for a concept whose capability never resolved:
+      origin: '',
+      ...
+      capability_name: '',
+      capability_version: '',
+      (expectedUnavailableEvidence, lines 328, 331-332)
+    cost: "domain/investigation/evidence.md declares only a `reference` relationship to domain/integration/capability (cardinality \"1\") and no capability_name or capability_version attribute at all; a reader who opens that node to learn what an evidence item discloses about the capability that produced it — and what it discloses when none resolved — finds no such fields and no honest-empty rule for them, while every test in this file, and by implication the source it exercises, already treats capability_name, capability_version and origin's empty-string default as settled facts. The next person to touch Evidence's shape has no specification record of two of its fields or of what they read when a capability never resolved."
+    kind: unstated
+    correction: "domain/investigation/evidence.md would need capability_name and capability_version declared as attributes (or the capability reference's own materialization stated), with the honest-empty degradation for an unresolved capability recorded the same way elapsed_ms, fields and concept_description already are."
+    node: domain/investigation/evidence
+
+read:
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: "the assertion in the test 'records evidence naming ConnectorUnreachableError and the connector...' (lines 476-491)"
+    evidence: "expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable', { resultDetail: 'ConnectorUnreachableError: a-marker-connector' })]);"
+  - node: domain/investigation/evidence-result
+    held_at: "the result literal type shared by expectedOkEvidence/expectedNonOkEvidence/expectedUnavailableEvidence and every it(...) assertion built on them"
+    evidence: "result: 'ok' as const, (line 289) and result: 'denied' | 'timeout' | 'unavailable', (line 300)"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: nowhere
+    evidence: "import { COLLECTION_STAGE_BUDGET_MS, collectEvidence } from '../../../investigation/evidence-collection-stage.js'; (line 9) — the file's whole import surface is the collection stage and the observation-source port; no evaluation module is imported and no test asserts an inconclusive reason"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: nowhere
+    evidence: "function aCase(hypotheses...) { ... manifest: declared.map((hypothesis, index) => ({ position: index + 1, hypothesis_revision: {...} })), hypotheses: declared, } (lines 43-71) — this helper only assembles a Case fixture for collectEvidence's input; nothing in the file reads or asserts evaluation coverage over a case's required hypotheses"
+
+looked_past: "The file's extensive parallelism, elapsed_ms, budget-propagation and glossary/capability-race coverage is consistent with the nodes it names in its own test titles; whether that coverage is complete over every candidate cause (e.g. ConnectorPlaceholderNotResolvedError, IncompleteConnectorCallDescriptorError) is a coverage-auditor question, not this pass's."
+
+candidates_opened:
+  - rules/integration/an-unresolvable-observation-ends-unavailable
+  - rules/integration/an-unclassified-status-ends-unavailable
+  - rules/integration/an-http-connector-configuration-declares-its-call
+  - rules/investigation/collection-has-its-own-budget-within-the-total
+  - rules/investigation/collection-runs-in-the-requester-scope
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+  - scenarios/investigation/a-collection-timeout-degrades-to-no-data

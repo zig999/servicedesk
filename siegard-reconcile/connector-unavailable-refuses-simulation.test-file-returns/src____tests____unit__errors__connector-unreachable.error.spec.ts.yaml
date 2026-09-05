@@ -1,0 +1,19 @@
+read:
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: "the assertions in the first and fourth `it` blocks"
+    evidence: |
+      expect(error.name).toBe('ConnectorUnreachableError');
+      expect(error.context).toEqual({ connector: 'a-connector' });
+      ...
+      expect(error.message).toContain('a-marker-connector');
+      expect(error.message).not.toMatch(/https?:\/\//);
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "import { ConnectorUnreachableError } from '../../../errors/connector-unreachable.error.js';"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: nowhere
+    evidence: "import { ConnectorUnreachableError } from '../../../errors/connector-unreachable.error.js';"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: nowhere
+    evidence: "import { ConnectorUnreachableError } from '../../../errors/connector-unreachable.error.js';"
+looked_past: "the second and third `it` blocks assert that the JS `cause` option is forwarded and readable, which exercises the base `Error` chaining mechanism rather than any caller-visible fact the governing rule constrains — a technical plumbing detail, not a domain fact, so it is not reported here."

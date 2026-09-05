@@ -1,0 +1,86 @@
+findings:
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: "httpConfigurationProblems(), line 259"
+    evidence: "problems.push('method is not one of GET, POST, PUT, PATCH, DELETE');"
+    cost: "The five accepted methods are hand-copied into this diagnostic string rather than read from HTTP_METHODS, the same list isHttpMethod actually validates configuration.method against; if the rule ever admits a sixth method, isHttpMethod (reading the canonical list) would accept it while this message kept telling an operator only these five are valid — the message and the acceptance rule can silently drift apart because nobody has to touch this line to make the rule change take effect elsewhere."
+    kind: contradicts
+    correction: "Build the message from HTTP_METHODS (e.g. a joined list) instead of a literal enumeration."
+    node: rules/integration/an-http-connector-configuration-declares-its-call
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: "httpConfigurationProblems(), line 265"
+    evidence: "problems.push('statusMap is not a plain object mapping a status to one of ok, unavailable, denied, timeout');"
+    cost: "The four evidence-result endings are hand-copied here rather than read from EVIDENCE_RESULTS, the array isEvidenceResult (and therefore isStatusEndingMap) actually validates statusMap's values against; a fifth ending added to the enumeration would be accepted by the real validation while this message kept naming only the original four, so the message stops describing what the code accepts."
+    kind: contradicts
+    correction: "Build the message from EVIDENCE_RESULTS instead of a literal enumeration."
+    node: domain/investigation/evidence-result
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: "parsedBodyOrUndefined() and outcomeFromResponse(), lines 203-215 and 222-228"
+    evidence: "async function parsedBodyOrUndefined(response: Response): Promise<unknown> {\n  try {\n    return await response.json();\n  } catch {\n    return undefined;\n  }\n}\n... const body = await parsedBodyOrUndefined(response);\n  const observation = observationOf(capability, configuration.responseMap, body);\n  return { result: 'ok', observation: JSON.stringify(observation) };"
+    cost: "When the connector's statusMap classifies the HTTP status as ok but the response body does not parse as JSON, the collection still records result 'ok' — the one ending domain/investigation/evidence-result's own description reserves for a usable observation — built from a body the adapter itself just failed to parse. No node says what should happen to a source system's unparseable response on an otherwise-ok status; a reader checking the specification for that case finds nothing, because the choice to still call it ok, silently, from an empty/undefined body, was made only here."
+    kind: unstated
+    correction: "The specification would need to state the ending an unparseable body produces on an ok-classified status (e.g. the same unavailable ending an unclassified status gets); the adapter would then check the parse outcome instead of defaulting silently to undefined."
+read:
+  - node: constraints/evidence-normalization-is-an-anticorruption-layer
+    held_at: "observationOf(), lines 230-234"
+    evidence: "function observationOf(capability: Capability, responseMap: ResponseFieldPaths, body: unknown): Record<string, unknown> {\n  const extracted = extractResponseFields(responseMap, body);\n  const declaredFields = declaredFieldsOf(capability.output_schema);\n  return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));\n}"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the adapter's own boundary — it alone imports the fetch driver and implements IObservationSource, lines 37 and 65"
+    evidence: "readonly httpClient?: typeof fetch;\n...\nexport class HttpDeclarativeObservationSource implements IObservationSource {"
+  - node: contracts/integration/concept-observation
+    held_at: "observeConcept(), lines 76-91"
+    evidence: "public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {"
+  - node: contracts/integration/corporate-records-source
+    held_at: "resolveConnectorConfiguration(), lines 104 and 139-147, resolved generically by capability.connector"
+    evidence: "const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);"
+  - node: contracts/investigation/observation-source
+    held_at: "observeConcept(), line 76 — one call per concept"
+    evidence: "public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {"
+  - node: contracts/system/corporate-records
+    held_at: nowhere
+    evidence: "const configurationResolution = await this.resolveConnectorConfiguration(capability.connector); — no source system is ever named, only the capability's own connector"
+  - node: domain/integration/capability
+    held_at: "effectiveTimeoutMsFor(), lines 61-63, and capability.connector/output_schema uses at lines 83, 104, 232"
+    evidence: "function effectiveTimeoutMsFor(capability: Capability, remainingBudgetMs: number | undefined): number {\n  return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);\n}"
+  - node: domain/investigation/evidence-result
+    held_at: "isEvidenceResult()/EVIDENCE_RESULTS and DEFAULT_STATUS_ENDING/endingForStatus(), lines 32 and 217-220, 270-272"
+    evidence: "function isEvidenceResult(value: unknown): value is EvidenceResult {\n  return typeof value === 'string' && (EVIDENCE_RESULTS as readonly string[]).includes(value);\n}"
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: "httpConfigurationProblems()/refuseHttpConfigurationDepartures()/resolveHttpConnectorCallConfiguration(), lines 149-268"
+    evidence: "if (problems.length > 0) {\n    throw new MalformedHttpConnectorConfigurationError(connector, problems);\n  }"
+  - node: rules/integration/an-unclassified-status-ends-unavailable
+    held_at: "endingForStatus()/DEFAULT_STATUS_ENDING, lines 32 and 217-220"
+    evidence: "function endingForStatus(statusMap: StatusEndingMap, status: number): EvidenceResult {\n  const mapped = statusMap[String(status)];\n  return isEvidenceResult(mapped) ? mapped : DEFAULT_STATUS_ENDING;\n}"
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: "unavailableForUnreachableConnector()/issueRequestOrUnreachable(), lines 56-59 and 187-200"
+    evidence: "function unavailableForUnreachableConnector(connector: string, cause: unknown): ObservationOutcome {\n  const error = new ConnectorUnreachableError(connector, { cause });\n  return { result: 'unavailable', result_detail: `${error.name}: ${connector}` };\n}"
+  - node: rules/integration/an-unresolvable-observation-ends-unavailable
+    held_at: "resolveCapability()/resolveConnectorConfiguration()/resolveAssembledRequest(), lines 123-176"
+    evidence: "if (!resolution.held) {\n      return { ok: false, outcome: unavailableFor(new CapabilityNotResolvedForObservationError(concept)) };\n    }"
+  - node: rules/integration/evidence-arrives-in-the-glossary-vocabulary
+    held_at: "outcomeFromResponse()/observationOf(), lines 203-215 and 230-234"
+    evidence: "const observation = observationOf(capability, configuration.responseMap, body);\n  return { result: 'ok', observation: JSON.stringify(observation) };"
+  - node: rules/investigation/collection-has-its-own-budget-within-the-total
+    held_at: "effectiveTimeoutMsFor(), lines 61-63"
+    evidence: "return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);"
+  - node: rules/investigation/collection-runs-in-the-requester-scope
+    held_at: "resolveAssembledRequest(), lines 163-176, requester threaded through"
+    evidence: "return { ok: true, value: resolveConnectorRequest({ configuration, subject, requester }) };"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "observeConcept(), lines 87-89"
+    evidence: "if (call.value.kind === 'timed-out') {\n      return { result: 'timeout' };\n    }"
+  - node: scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+    held_at: "resolveAssembledRequest(), lines 163-176"
+    evidence: "if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) {\n        return { ok: false, outcome: unavailableFor(error) };\n      }"
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: "observeConcept(), lines 87-89"
+    evidence: "if (call.value.kind === 'timed-out') {\n      return { result: 'timeout' };\n    }"
+  - node: scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+    held_at: "effectiveTimeoutMsFor(), lines 61-63"
+    evidence: "return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: nowhere
+    evidence: "public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> — the class's whole public surface is concept collection, no evaluation is declared here"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: nowhere
+    evidence: "public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> — the class's whole public surface is concept collection, no evaluation is declared here"
+looked_past: "isPlainObject()'s choice to exclude arrays and null from what counts as an object, and the absence of any comments in the file, are implementation/style matters that say nothing about a domain fact, so I did not report them."
