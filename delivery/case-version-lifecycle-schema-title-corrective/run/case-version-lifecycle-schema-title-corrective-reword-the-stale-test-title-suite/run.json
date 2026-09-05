@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/case-version-lifecycle-schema-title-corrective-reword-the-stale-test-title-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-05T11:33:04.827+00:00",
+      "ended_at": "2026-09-05T11:33:08.315+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-05T11:33:08.315+00:00",
+      "ended_at": "2026-09-05T11:33:12.734+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-05T11:33:12.734+00:00",
+      "ended_at": "2026-09-05T11:33:16.258+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-05T11:33:16.258+00:00",
+      "ended_at": "2026-09-05T11:33:16.615+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-05T11:33:16.615+00:00",
+      "ended_at": "2026-09-05T11:36:02.721+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

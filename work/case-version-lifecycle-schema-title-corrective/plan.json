@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-version-lifecycle-schema-title-corrective",
+      "kind": "epic",
+      "file": "epic/case-version-lifecycle-schema-title-corrective.md",
+      "title": "Case-version-lifecycle-schema title correction",
+      "summary": "Corrects one test title in case-version-lifecycle-schema.spec.ts, a file this project already delivered, so it names the actual governing condition rather than a retired one."
+    },
+    {
+      "id": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "kind": "task",
+      "file": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title.md",
+      "title": "Reword case-version-lifecycle-schema.spec.ts's stale test title",
+      "summary": "One test's own title names a case-version-reference condition migration 0021 retired; the fix renames the title to state the actual governing condition (the revision's own state), with no change to the test's arrange, act or assert.",
+      "epic": "case-version-lifecycle-schema-title-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-version-lifecycle-schema-title-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-version-lifecycle-schema-title-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

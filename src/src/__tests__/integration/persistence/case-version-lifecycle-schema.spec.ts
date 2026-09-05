@@ -284,7 +284,7 @@ it('refuses a second row under an already-used (case_slug, hypothesis_name, revi
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
 
-it("changes an already-stored hypothesis revision's own columns on an ordinary UPDATE when no released case version references it", async () => {
+it("changes an already-stored hypothesis revision's own columns on an ordinary UPDATE while the revision's own state is still draft", async () => {
   const slug = 'a-mutable-unreleased-hypothesis-revision';
   await insertCase(client, slug);
   await insertHypothesis(client, { slug, name: 'the-hypothesis' });
