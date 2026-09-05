@@ -735,6 +735,56 @@ it(
 );
 
 it(
+  "accepts a revise whose input.subject disagrees with the case's own draft version's declared " +
+    "subject type, deciding the concept-acceptance check by the draft's own subject alone",
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+
+    const answered = await operation.reviseHypothesis(reviseInput(fixture, { subject: fixture.otherSubjectType }));
+
+    expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 });
+    const { rows } = await pool.query(
+      'SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 1 }]);
+  },
+);
+
+it(
+  "refuses with ConceptRefusesSubjectTypeError naming the case's own draft version's declared " +
+    "subject type — never the caller-supplied input.subject that disagrees with it — when the " +
+    "collected concept refuses that draft's own subject even though it would accept input.subject",
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.otherSubjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+
+    const rejection = operation.reviseHypothesis(reviseInput(fixture, { subject: fixture.otherSubjectType }));
+
+    await expect(rejection).rejects.toBeInstanceOf(ConceptRefusesSubjectTypeError);
+    await expect(rejection).rejects.toMatchObject({
+      context: {
+        slug: fixture.slug,
+        hypothesis_name: 'the-hypothesis',
+        subject: fixture.subjectType,
+        concepts: [fixture.concept],
+      },
+    });
+    const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
+    expect(rows).toEqual([]);
+  },
+);
+
+it(
   'excludes an implementation that originates a hypothesis identity and revision for a case ' +
     'holding no draft version at all, without refusing',
   async () => {

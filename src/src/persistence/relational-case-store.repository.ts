@@ -5,6 +5,7 @@ import {
   type CaseVersionListItem,
   type CaseVersionState,
   type CreateDraftInput,
+  type DraftVersion,
   type HypothesisIdentity,
   type HypothesisRevisionContent,
   type HypothesisRevisionInput,
@@ -124,9 +125,13 @@ export class RelationalCaseStore
     return runInTransaction(this.connection, raiseReadFailure, (tx) => assembleWholeVersion(tx, { slug, version }));
   }
 
-  public async findDraftVersion(slug: string): Promise<number | undefined> {
-    const row = await queryOneOrAbsent<{ version: number }>(this.connection, draftVersionSelect(slug), raiseReadFailure);
-    return row?.version;
+  public async findDraftVersion(slug: string): Promise<DraftVersion | undefined> {
+    const row = await queryOneOrAbsent<{ version: number; subject: string }>(
+      this.connection,
+      draftVersionWithSubjectSelect(slug),
+      raiseReadFailure,
+    );
+    return row === undefined ? undefined : { version: row.version, subject: row.subject };
   }
 
   public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
@@ -277,6 +282,13 @@ function caseVersionSelect(key: ICaseVersionKey): IStatement {
 function draftVersionSelect(slug: string): IStatement {
   return {
     text: `SELECT version FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
+    params: [slug, DRAFT_STATE],
+  };
+}
+
+function draftVersionWithSubjectSelect(slug: string): IStatement {
+  return {
+    text: `SELECT version, subject FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
     params: [slug, DRAFT_STATE],
   };
 }

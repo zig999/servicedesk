@@ -3605,7 +3605,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3685,7 +3685,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -5847,7 +5847,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -5959,7 +5959,7 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
-      "digest": "sha256:a74c143df28cbdc0a1809ef611db13ea8b93655a8ecaf91a21ce276aa7e412eb",
+      "digest": "sha256:5ced579ed9f8871359e9d8ebc54585ae22f7fbaa2d53d57cf7f9e0367548d5d3",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -5967,11 +5967,11 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
           "path": "src/src/errors/case-holds-no-draft.error.ts",
@@ -5983,7 +5983,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },

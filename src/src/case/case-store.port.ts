@@ -48,6 +48,11 @@ export type CreateDraftInput = {
   readonly source_version?: number;
 };
 
+export type DraftVersion = {
+  readonly version: number;
+  readonly subject: string;
+};
+
 export type HypothesisRevisionInput = {
   readonly slug: string;
   readonly hypothesis_name: string;
@@ -112,7 +117,7 @@ export interface ICaseStore {
 
   assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
 
-  findDraftVersion(slug: string): Promise<number | undefined>;
+  findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
 
   listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
 

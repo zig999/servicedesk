@@ -12,6 +12,7 @@ import type {
   CaseVersionListItem,
   CaseVersionState,
   CreateDraftInput,
+  DraftVersion,
   HypothesisIdentity,
   HypothesisRevisionContent,
   HypothesisRevisionInput,
@@ -90,8 +91,13 @@ class FakeCaseStore implements ICaseStore {
     };
   }
 
-  public async findDraftVersion(slug: string): Promise<number | undefined> {
-    return this.cases.get(slug)?.draftVersion;
+  public async findDraftVersion(slug: string): Promise<DraftVersion | undefined> {
+    const record = this.cases.get(slug);
+    const version = record?.draftVersion;
+    if (version === undefined) {
+      return undefined;
+    }
+    return { version, subject: record?.versions.get(version)?.subject ?? SUBJECT };
   }
 
   public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {

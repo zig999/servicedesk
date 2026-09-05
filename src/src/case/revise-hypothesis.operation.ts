@@ -3,7 +3,12 @@ import { ConceptNotInGlossaryError } from '../errors/concept-not-in-glossary.err
 import { ConceptRefusesSubjectTypeError } from '../errors/concept-refuses-subject-type.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from '../errors/hypothesis-revision-collects-no-concept.error.js';
 import type { ConceptResolution, IGlossaryQuery } from '../glossary/glossary-query.port.js';
-import type { HypothesisRevisionInput, ICaseStore, OverwriteHypothesisRevisionInput } from './case-store.port.js';
+import type {
+  DraftVersion,
+  HypothesisRevisionInput,
+  ICaseStore,
+  OverwriteHypothesisRevisionInput,
+} from './case-store.port.js';
 import type { IHypothesisRevisionOverwrite } from './hypothesis-revision-overwrite.port.js';
 import type { IHighestRevisionReleaseStateQuery } from './hypothesis-revision-release-state.port.js';
 
@@ -29,8 +34,8 @@ export class ReviseHypothesisOperation implements IReviseHypothesis {
   ) {}
 
   public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> {
-    await this.refuseWithoutDraft(input.slug);
-    await this.refuseInvalidCollects(input);
+    const draftVersion = await this.requireDraftVersion(input.slug);
+    await this.refuseInvalidCollects(input, draftVersion.subject);
     const revision = await this.writeRevision(input);
     return { hypothesis_name: input.hypothesis_name, revision };
   }
@@ -44,18 +49,19 @@ export class ReviseHypothesisOperation implements IReviseHypothesis {
     return this.caseStore.insertHypothesisRevision(input);
   }
 
-  private async refuseWithoutDraft(slug: string): Promise<void> {
+  private async requireDraftVersion(slug: string): Promise<DraftVersion> {
     const draftVersion = await this.caseStore.findDraftVersion(slug);
     if (draftVersion === undefined) {
       throw new CaseHoldsNoDraftError(slug);
     }
+    return draftVersion;
   }
 
-  private async refuseInvalidCollects(input: ReviseHypothesisInput): Promise<void> {
+  private async refuseInvalidCollects(input: ReviseHypothesisInput, subject: string): Promise<void> {
     refuseEmptyCollects(input);
     const resolutions = await this.resolveConcepts(input.collects);
     refuseUnknownConcepts(input, resolutions);
-    refuseConceptsRefusingSubject(input, resolutions);
+    refuseConceptsRefusingSubject(input, resolutions, subject);
   }
 
   private async resolveConcepts(collects: readonly string[]): Promise<readonly ConceptResolution[]> {
@@ -107,13 +113,17 @@ function conceptsRefusingSubjectOf(resolutions: readonly ConceptResolution[], su
     .map((concept) => concept.name);
 }
 
-function refuseConceptsRefusingSubject(input: ReviseHypothesisInput, resolutions: readonly ConceptResolution[]): void {
-  const refusing = conceptsRefusingSubjectOf(resolutions, input.subject);
+function refuseConceptsRefusingSubject(
+  input: ReviseHypothesisInput,
+  resolutions: readonly ConceptResolution[],
+  subject: string,
+): void {
+  const refusing = conceptsRefusingSubjectOf(resolutions, subject);
   if (refusing.length > 0) {
     throw new ConceptRefusesSubjectTypeError({
       slug: input.slug,
       hypothesis_name: input.hypothesis_name,
-      subject: input.subject,
+      subject,
       concepts: refusing,
     });
   }
