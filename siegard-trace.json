@@ -302,6 +302,10 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
+          "path": "src/src/__tests__/unit/case/hypothesis-revision-release.port.spec.ts",
+          "digest": "sha256:f0369fd73158c5cc9cad774b403f595126877af1c5e7409c142832319866ccfe"
+        },
+        {
           "path": "src/src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts",
           "digest": "sha256:c8c2beffdd10f6c61791fcede266359ada776369bbe59df16703819aa4cbac8b"
         },

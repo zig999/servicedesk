@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion.md",
+      "title": "Narrow hypothesis-revision-release.port.spec.ts's import assertion to the denylist pattern",
+      "summary": "Replaced the port test's overly strict \"no import at all\" assertion with the sibling port test's two denylist-based assertions (no driver/framework, no LLM provider client), mirrored verbatim except for the source path.",
+      "task": "task/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion"
+    },
+    {
+      "id": "proof/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion.md",
+      "title": "Narrowed import assertion in hypothesis-revision-release.port.spec.ts",
+      "summary": "The two rewritten tests mirror the sibling port test's denylist pattern verbatim (except source path), replacing the prior bare \"no import at all\" check and passing because the port itself imports nothing.",
+      "task": "task/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "to": "task/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "to": "implementation/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
