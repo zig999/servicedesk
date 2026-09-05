@@ -7,7 +7,9 @@ import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error
 import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
+import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -161,11 +163,12 @@ async function seedReleasedReferencedHighestRevision(fixture: IFixture, criterio
   await seedCaseVersion(fixture, 2, 'draft');
 }
 
+function wireLifecycle(): CaseLifecycleOperations {
+  return createCaseLifecycle(pool);
+}
+
 async function releaseHypothesisRevisionOwnState(fixture: IFixture, hypothesisName: string, revision: number): Promise<void> {
-  await pool.query(
-    "UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3",
-    [fixture.slug, hypothesisName, revision],
-  );
+  await wireLifecycle().releaseHypothesisRevision(fixture.slug, hypothesisName, revision);
 }
 
 async function seedReleasedOwnStateReferencedHighestRevision(fixture: IFixture, criterion: string): Promise<void> {
@@ -257,7 +260,7 @@ it("reads back with its own state draft, the revision revise-hypothesis originat
 
 it(
   "overwrites an already-named hypothesis's own highest revision in place, keeping its revision number " +
-    'unchanged, when that revision is referenced by no case version in released state',
+    "unchanged, when that revision's own state is draft",
   async () => {
     const fixture = freshFixture();
     await persistCase(fixture);
@@ -305,9 +308,8 @@ it(
 );
 
 it(
-  'creates no revision at all — leaves the hypothesis holding only the revision it already had — when the ' +
-    "highest existing revision's own state is released and no case version's manifest references it, other " +
-    'than the one draft revision the create branch itself just wrote',
+  "creates the hypothesis's own next revision, one past its existing highest revision, when that highest " +
+    "existing revision's own state is released",
   async () => {
     const fixture = freshFixture();
     await persistCase(fixture);
@@ -328,6 +330,28 @@ it(
       { revision: 1, criterion: 'the original text', state: 'released' },
       { revision: 2, criterion: 'the created text', state: 'draft' },
     ]);
+  },
+);
+
+it(
+  "refuses releaseHypothesisRevisionOwnState's own second call against a hypothesis-revision it already " +
+    'released, with HypothesisRevisionNotDraftAtReleaseError, rather than silently rewriting its ' +
+    'already-released state',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+    const initial = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the original text' }));
+    await releaseHypothesisRevisionOwnState(fixture, 'the-hypothesis', initial.revision);
+
+    const refusal = await releaseHypothesisRevisionOwnState(fixture, 'the-hypothesis', initial.revision).catch(
+      (error: unknown) => error,
+    );
+
+    expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
   },
 );
 

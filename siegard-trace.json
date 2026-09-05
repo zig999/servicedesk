@@ -6083,7 +6083,7 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
-      "digest": "sha256:d0080a8085c60348b61d82bee6ec6e2ffcce812fc020a56f9d2db360746f6f92",
+      "digest": "sha256:bfc71e72d05993b2505b482ab59f3f82552e90844f70f38d4111a2eb70855d8a",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-release.ts",
@@ -6096,6 +6096,10 @@
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
           "digest": "sha256:8e20fa861d67c682e806fd5493a51bd444fe5356a44d72001ad4959a75b3496f"
+        },
+        {
+          "path": "src/src/__tests__/integration/case/revise-hypothesis.operation.spec.ts",
+          "digest": "sha256:2d892f009ab502ca7738b5add3232b60546f3a568f66ebe13659df18927640f8"
         },
         {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
