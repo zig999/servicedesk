@@ -4013,7 +4013,7 @@
         },
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
-          "digest": "sha256:8a252b5c4ca541fe25be7de646b1ffc9aba7714bc4645be659616d99f7c52beb"
+          "digest": "sha256:8e20fa861d67c682e806fd5493a51bd444fe5356a44d72001ad4959a75b3496f"
         },
         {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
@@ -6084,6 +6084,10 @@
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+        },
+        {
+          "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
+          "digest": "sha256:8e20fa861d67c682e806fd5493a51bd444fe5356a44d72001ad4959a75b3496f"
         },
         {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",

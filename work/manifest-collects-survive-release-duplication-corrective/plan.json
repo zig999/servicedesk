@@ -1,0 +1,52 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/manifest-collects-survive-release-duplication-corrective",
+      "kind": "epic",
+      "file": "epic/manifest-collects-survive-release-duplication-corrective.md",
+      "title": "Manifest-collects-survive-release fixture release-write duplication correction",
+      "summary": "Corrects manifest-collects-survive-release.spec.ts, a file this project already delivered, so its own release-transition fixture calls the declared lifecycle operation instead of duplicating its write as raw SQL."
+    },
+    {
+      "id": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "task",
+      "file": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation.md",
+      "title": "Route manifest-collects-survive-release.spec.ts's own release-transition fixture through the declared lifecycle operation",
+      "summary": "The fixture's own releaseRevisionDirectly helper writes the hypothesis-revision release transition as raw SQL instead of calling the declared, guarded lifecycle operation this same initiative already delivered.",
+      "epic": "manifest-collects-survive-release-duplication-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/manifest-collects-survive-release-duplication-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/manifest-collects-survive-release-duplication-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/manifest-collects-survive-release-duplication-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

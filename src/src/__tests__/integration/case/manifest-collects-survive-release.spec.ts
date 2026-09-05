@@ -2,7 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { Resolution } from '../../../case/case.js';
 import { ReleaseOperation } from '../../../case/release.operation.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { createCapabilityQuery, createCapabilityRegistry } from '../../../factories/capability-registry.factory.js';
+import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -28,7 +30,6 @@ interface IVocabulary {
 }
 
 const FOREIGN_KEY_VIOLATION = '23503';
-const RELEASED_REVISION_STATE = 'released';
 
 let pool: DatabaseConnection;
 let slugsWrittenByThisTest: string[] = [];
@@ -150,11 +151,12 @@ function wireRelease(store: RelationalCaseStore): ReleaseOperation {
   return new ReleaseOperation(store, createGlossaryQuery(pool), createCapabilityQuery(pool));
 }
 
+function wireLifecycle(): CaseLifecycleOperations {
+  return createCaseLifecycle(pool);
+}
+
 async function releaseRevisionDirectly(slug: string, hypothesisName: string, revision: number): Promise<void> {
-  await pool.query(
-    'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4',
-    [RELEASED_REVISION_STATE, slug, hypothesisName, revision],
-  );
+  await wireLifecycle().releaseHypothesisRevision(slug, hypothesisName, revision);
 }
 
 async function deleteCollectsDirectly(slug: string, hypothesisName: string, revision: number): Promise<void> {
@@ -261,5 +263,26 @@ it(
 
     const releasedVersion2 = await store.assembleVersion(slug, version2);
     expect(releasedVersion2?.manifest[0]?.hypothesis_revision.collects).toEqual([vocabulary.conceptA]);
+  },
+);
+
+it(
+  "refuses releaseRevisionDirectly's own second call against a hypothesis-revision it already released, " +
+    'with HypothesisRevisionNotDraftAtReleaseError, rather than silently rewriting its already-released state',
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `manifest-collects-guarded-release-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerCoherentConcept(vocabulary, vocabulary.conceptA, vocabulary.capabilityNameA);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, subjectType: vocabulary.subjectType, resolution });
+    const revision = await placeNewHypothesis(store, { slug, version }, { name: 'h', collects: [vocabulary.conceptA], resolution, position: 1 });
+    await releaseRevisionDirectly(slug, 'h', revision);
+
+    const refusal = await releaseRevisionDirectly(slug, 'h', revision).catch((error: unknown) => error);
+
+    expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
   },
 );

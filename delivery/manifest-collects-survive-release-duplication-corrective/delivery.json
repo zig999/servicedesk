@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "implementation",
+      "file": "implementation/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation.md",
+      "title": "Route manifest-collects-survive-release.spec.ts's release fixture through releaseHypothesisRevision",
+      "summary": "releaseRevisionDirectly now calls the case lifecycle's guarded releaseHypothesisRevision operation instead of writing hypothesis_revisions.state with a raw SQL UPDATE.",
+      "task": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation"
+    },
+    {
+      "id": "proof/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "proof",
+      "file": "proof/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation.md",
+      "title": "releaseRevisionDirectly routes through the guarded lifecycle operation",
+      "summary": "Adds one new test to manifest-collects-survive-release.spec.ts proving releaseRevisionDirectly now enforces the case lifecycle's draft-only release guard, and cites the file's two pre-existing, unmodified tests as the proof that its own suite still passes unchanged.",
+      "task": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "to": "implementation/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
