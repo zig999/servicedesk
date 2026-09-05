@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createFetchStub,
   jsonResponse,
+  manifestPath as versionDetailPath,
   mountCaseDetailScreen,
   SLUG,
   VERSIONS_PATH,
@@ -29,6 +30,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Manifest on a draft r
     const versions = [{ version: 3, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(3)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -44,6 +46,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Manifest on a release
     const versions = [{ version: 5, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(5)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -62,6 +65,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Manifest is per-row (
     ];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(2)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -79,6 +83,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Manifest is a plain L
     const versions = [{ version: 6, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(6)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -93,6 +98,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Manifest alongside th
     const versions = [{ version: 2, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(2)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -114,6 +120,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Manifest sits last am
     ];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(2)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -138,17 +145,18 @@ describe("CaseDetailScreen's Versions tab actions cell — clicking Manifest", (
   it("navigates to that version's own manifest route, issuing no request beyond the versions-list load already made", async () => {
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: 4, state: "draft" }] }),
+      [versionDetailPath(4)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
 
     const link = await screen.findByRole("link", { name: "Manifest" });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
 
     fireEvent.click(link);
 
     expect(await screen.findByText("Version Manifest Placeholder")).toBeTruthy();
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
 

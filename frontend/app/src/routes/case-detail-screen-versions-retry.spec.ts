@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import {
   createFetchStub,
+  manifestPath as versionDetailPath,
   mountCaseDetailScreen,
   VERSIONS_PATH,
 } from "./case-hypotheses-tab.test-support";
@@ -25,6 +26,7 @@ describe("CaseDetailScreen's Versions tab retry control (criterion 2)", () => {
         }
         return jsonResponse({ data: [{ version: 1, state: "draft" }] });
       },
+      [versionDetailPath(1)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);

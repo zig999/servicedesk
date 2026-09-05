@@ -3,6 +3,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import {
   createFetchStub,
   jsonResponse,
+  manifestPath as versionDetailPath,
   mountCaseDetailScreen,
   SLUG,
   VERSIONS_PATH,
@@ -17,6 +18,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Simulate on a draft r
     const versions = [{ version: 3, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(3)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -32,6 +34,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Simulate on a release
     const versions = [{ version: 5, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(5)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -50,6 +53,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Simulate is per-row (
     ];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(2)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -67,6 +71,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Simulate is a plain L
     const versions = [{ version: 6, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(6)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -82,12 +87,13 @@ describe("CaseDetailScreen's Versions tab actions cell — clicking Simulate (cr
     const versions = [{ version: 4, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(4)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
 
     const link = await screen.findByRole("link", { name: "Simulate" });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
 
     fireEvent.click(link);
 
@@ -95,6 +101,6 @@ describe("CaseDetailScreen's Versions tab actions cell — clicking Simulate (cr
       await screen.findByText("Simulation Cockpit Placeholder"),
     ).toBeTruthy();
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

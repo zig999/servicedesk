@@ -3,6 +3,7 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
   createFetchStub,
   jsonResponse,
+  manifestPath as versionDetailPath,
   mountCaseDetailScreen,
   SLUG,
   VERSIONS_PATH,
@@ -17,6 +18,7 @@ describe("CaseDetailScreen's Versions tab actions cell — a released row's own 
     const versions = [{ version: 1, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(1)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -32,6 +34,7 @@ describe("CaseDetailScreen's Versions tab actions cell — a draft row's own act
     const versions = [{ version: 2, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(2)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -51,18 +54,19 @@ describe("CaseDetailScreen's Versions tab actions cell — clicking View (criter
     const versions = [{ version: 5, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(5)]: () => jsonResponse({}),
     });
 
     await mountCaseDetailScreen(fetchMock);
 
     const link = await screen.findByRole("link", { name: "View" });
     expect(link.getAttribute("href")).toBe(`/cases/${SLUG}/versions/5`);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
 
     fireEvent.click(link);
 
     await waitFor(() => expect(screen.queryByRole("table")).toBeNull());
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

@@ -10,12 +10,28 @@
       "task": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail"
     },
     {
+      "id": "implementation/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back.md",
+      "title": "Versions panel discloses a current version that does not read back as a case",
+      "summary": "The Versions panel on Case Detail now reads the case's highest-numbered version and states, distinctly from a load failure and from a case holding no version, when that version does not read back as a case.",
+      "task": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back"
+    },
+    {
       "id": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
       "kind": "proof",
       "file": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail.md",
       "title": "Proof for unwiring the Attributes tab from Case Detail's tab strip",
       "summary": "Tests establishing that Case Detail's tab strip now offers exactly Versions and Hypotheses, that case-detail-screen.tsx imports nothing from routes/case-attributes-tab, and that no spec anywhere in the tree still asserts an Attributes tab on Case Detail.",
       "task": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail"
+    },
+    {
+      "id": "proof/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back.md",
+      "title": "Versions panel discloses a current version that does not read back as a case",
+      "summary": "Tests the new useCaseCurrentVersionValidity hook and its wiring into CaseDetailScreen's Versions panel against all nine criteria, and extends four pre-existing case-detail-screen specs' fetch stubs so the new per-version GET this task introduces succeeds instead of going unhandled.",
+      "task": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back"
     }
   ],
   "edges": [
@@ -26,8 +42,26 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "to": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
       "to": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "to": "implementation/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
       "kind": "proves",
       "at": "the path"
     }

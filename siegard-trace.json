@@ -5652,6 +5652,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "digest": "sha256:a90d5fd88e07015842951a2bc84b359f49ba1152cc71b7f1778ae6304281a052",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-current-version-validity.ts",
+          "digest": "sha256:4d29e5d1a79f585c3b3962fad24880b885e4697b86f3fe911d5b885073e13ed7"
+        },
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-listing-answers-cases-in-slug-order",
       "digest": "sha256:3517c4a3a97743e6d19076f4c55d246612dba1448d88dc22c16a2dac774c230a",
       "files": [

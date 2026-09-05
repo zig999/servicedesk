@@ -12,6 +12,7 @@ import {
   type CaseVersionListItem,
   type CaseVersionState,
 } from "../hooks/use-case-versions";
+import { useCaseCurrentVersionValidity } from "../hooks/use-case-current-version-validity";
 import { CaseHypothesesTab } from "./case-hypotheses-tab";
 
 const CASE_VERSIONS_COLUMNS: StatusTableColumn[] = [
@@ -67,6 +68,7 @@ function toRow(slug: string, version: CaseVersionListItem): StatusTableRow {
 
 function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
   const { data, isLoading, isError, refetch } = useCaseVersions(slug);
+  const currentVersion = useCaseCurrentVersionValidity(slug);
 
   if (isLoading) {
     return <p>Loading version timeline…</p>;
@@ -99,7 +101,15 @@ function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
 
         <p>This case currently holds no version.</p>
       ) : (
-        <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
+        <>
+          {currentVersion.phase === "not-valid" && (
+            <p>This case&apos;s current version does not read back as a case.</p>
+          )}
+          {currentVersion.phase === "read-failed" && (
+            <p>Unable to load this case&apos;s version timeline.</p>
+          )}
+          <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
+        </>
       )}
     </>
   );
