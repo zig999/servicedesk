@@ -18,9 +18,13 @@ import {
 } from "../shared/components/status-table";
 import {
   useHypothesisRevisions,
+  type HypothesisRevisionListItem,
   type HypothesisRevisionState,
 } from "../hooks/use-hypothesis-revisions";
-import { useCaseHypothesisCurrentPin } from "../hooks/use-case-hypothesis-current-pin";
+import {
+  useCaseHypothesisCurrentPin,
+  type CaseHypothesisCurrentPin,
+} from "../hooks/use-case-hypothesis-current-pin";
 import { useHypothesisRevisionRelease } from "../hooks/use-hypothesis-revision-release";
 
 const RELEASE_DIALOG_DESCRIPTION =
@@ -81,6 +85,44 @@ function HypothesisRevisionReleaseAction({
   );
 }
 
+function toHistoryRow(
+  revision: HypothesisRevisionListItem,
+  currentPin: Extract<CaseHypothesisCurrentPin, { phase: "ready" }>,
+  slug: string,
+  hypothesisName: string,
+): StatusTableRow {
+  const isCurrent = revision.revision === currentPin.pinnedRevision;
+  return {
+    id: revision.revision,
+    revision: revision.revision,
+    state: REVISION_STATE_CELL[revision.state],
+    status: isCurrent
+      ? { color: "bg-success", label: "current" }
+      : { color: "bg-muted-foreground", label: "frozen" },
+    criterion: revision.criterion,
+    collects: revision.collects.join(", "),
+    actions: (
+      <div className="flex items-center gap-2">
+        {isCurrent && (
+          <Link
+            to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
+            params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
+          >
+            Revise →
+          </Link>
+        )}
+        {revision.state === "draft" && (
+          <HypothesisRevisionReleaseAction
+            slug={slug}
+            hypothesisName={hypothesisName}
+            revision={revision.revision}
+          />
+        )}
+      </div>
+    ),
+  };
+}
+
 export type HypothesisRevisionHistoryProps = {
   readonly slug: string;
   readonly hypothesisName: string;
@@ -106,9 +148,7 @@ export function HypothesisRevisionHistory({
     return <p>Loading revision history…</p>;
   }
 
-  const revisions = revisionsQuery.data?.data ?? [];
-
-  if (revisionsQuery.isError || revisions.length === 0 || currentPin.phase === "load-error") {
+  if (revisionsQuery.isError || currentPin.phase === "load-error") {
     return (
       <section>
         <p>Unable to load this hypothesis&apos;s revision history.</p>
@@ -119,43 +159,28 @@ export function HypothesisRevisionHistory({
     );
   }
 
+  const revisions = revisionsQuery.data?.data ?? [];
+
+  if (revisions.length === 0) {
+    return (
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h2>{hypothesisName} — no revisions yet</h2>
+          <Button type="button" onClick={onBack}>
+            Back to hypotheses
+          </Button>
+        </div>
+        <p>This hypothesis has no revisions yet.</p>
+      </section>
+    );
+  }
+
   const totalRevisions = revisionsQuery.data?.total ?? revisions.length;
 
   const rows: StatusTableRow[] = revisions
     .slice()
     .sort((a, b) => b.revision - a.revision)
-    .map((revision) => {
-      const isCurrent = revision.revision === currentPin.pinnedRevision;
-      return {
-        id: revision.revision,
-        revision: revision.revision,
-        state: REVISION_STATE_CELL[revision.state],
-        status: isCurrent
-          ? { color: "bg-success", label: "current" }
-          : { color: "bg-muted-foreground", label: "frozen" },
-        criterion: revision.criterion,
-        collects: revision.collects.join(", "),
-        actions: (
-          <div className="flex items-center gap-2">
-            {isCurrent && (
-              <Link
-                to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
-                params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
-              >
-                Revise →
-              </Link>
-            )}
-            {revision.state === "draft" && (
-              <HypothesisRevisionReleaseAction
-                slug={slug}
-                hypothesisName={hypothesisName}
-                revision={revision.revision}
-              />
-            )}
-          </div>
-        ),
-      };
-    });
+    .map((revision) => toHistoryRow(revision, currentPin, slug, hypothesisName));
 
   const usesNoRevision = currentPin.phase === "ready" && currentPin.pinnedRevision === null;
 
