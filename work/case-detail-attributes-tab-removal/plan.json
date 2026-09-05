@@ -1,0 +1,147 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-detail-attributes-tab",
+      "kind": "epic",
+      "file": "epic/case-detail-attributes-tab.md",
+      "title": "Case Detail's Attributes tab withdrawal",
+      "summary": "The withdrawal of the Attributes tab from Case Detail, the relocation of the one disclosure only that tab produced, and the removal of everything in the frontend tree that existed only for the tab."
+    },
+    {
+      "id": "inventory/case-detail-attributes-tab-removal",
+      "kind": "inventory",
+      "file": "inventory/case-detail-attributes-tab-removal.md",
+      "title": "Case Detail's Attributes tab and its supporting hook",
+      "summary": "The third tab on Case Detail (routes/case-attributes-tab.tsx), its data hook (hooks/use-case-attributes-at-a-glance.ts), the Tabs wiring that mounts it in routes/case-detail-screen.tsx, and their dedicated test files, all isolated from the shared modules they depend on."
+    },
+    {
+      "id": "task/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "kind": "task",
+      "file": "task/case-detail-attributes-tab/remove-attributes-tab-modules.md",
+      "title": "Remove the Attributes tab's modules and their dedicated tests",
+      "summary": "The tab component, its data hook and the three test files written solely for them taken out of the tree, with every shared module they imported left standing.",
+      "epic": "case-detail-attributes-tab"
+    },
+    {
+      "id": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "task",
+      "file": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail.md",
+      "title": "Take the Attributes tab off Case Detail's tab strip",
+      "summary": "The Case Detail screen's Tabs wiring reduced to Versions and Hypotheses, with the screen-level spec that asserted the third tab removed with it.",
+      "epic": "case-detail-attributes-tab"
+    },
+    {
+      "id": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "kind": "task",
+      "file": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back.md",
+      "title": "Versions panel states a current version that does not read back as a case",
+      "summary": "The Versions panel on Case Detail carries the statement that the case's current version does not read back as a case, held apart from a read that did not complete and from a case holding no version.",
+      "epic": "case-detail-attributes-tab"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "rules/knowledge/a-presented-case-version-states-its-own-declared-attributes",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-detail-attributes-tab",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "to": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-detail-attributes-tab/remove-attributes-tab-modules",
+      "to": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "to": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-detail-attributes-tab/versions-panel-states-a-current-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}

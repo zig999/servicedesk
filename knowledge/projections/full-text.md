@@ -3052,6 +3052,100 @@ entries:
       branch are already in this context: a-case-has-at-least-one-hypothesis (remove-hypothesis for
       a name the manifest does not hold succeeds with no effect) and the collects branch of
       a-released-hypothesis-revision-is-never-altered.
+  - location: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case.md
+    field: statement
+    unstated: 'Whether a surface presenting one case named by its slug alone tells a reader that the version
+      the case currently uses does not read back as a case at that reading, and how that is told apart
+      from a read that did not complete and from a case currently holding no version. validation-runs-at-every-read
+      makes a stored version a case only while every validator rule holds, with no field marking one that
+      fails, but no node says what a case-keyed surface presents when it meets that state: a-case-read-by-an-unknown-slug-or-version-is-refused
+      answers only a slug or version no case version was ever written for, and a-case-holding-no-versions-is-told-explicitly
+      answers only a case whose versions are all gone — leaving the case that exists, holds a version,
+      and whose current version does not validate, unaddressed by either.'
+    decided: The surface states explicitly that the case's current version does not read back as a case
+      right now, presents no attribute of that version as the case's current content, and states it in
+      terms distinct from both a read that did not complete and a case that currently holds no version;
+      where the current version does validate, it states none of this. Recorded as a new policy over domain/knowledge/case
+      and domain/knowledge/case-version, eventual.
+    why: This specification has answered the identical shape twice in the same direction — a-case-holding-no-versions-is-told-explicitly
+      refuses a silence because an absence, a failed read and a pending read all read alike, and a-cases-current-pins-come-from-its-highest-numbered-version
+      states explicitly that no revision is in use rather than blanking or substituting one. The three
+      states demand different acts of the curator who meets them (author a version, retry the read, correct
+      the draft), so presenting any of them alike sends the reader to the wrong act; and a failed read
+      already has its own distinct answer in constraints/a-domain-error-unmapped-by-status-is-refused-generically,
+      whose deliberately uninformative text must not absorb a state validation-runs-at-every-read fully
+      anticipates. No attribute of the version accompanies the statement because a-case-is-read-whole
+      answers a complete validated version or nothing, so there is no partial content that could honestly
+      be shown. It is a new node rather than an addition to a-cases-current-pins-come-from-its-highest-numbered-version
+      because that rule's own Description bounds itself to which version's manifest is read and what is
+      said for a hypothesis with no entry; the condition here is the whole version failing validation,
+      a different question over the same surface. Which version is "currently in use" is borrowed from
+      that rule rather than decided again, and the wording, control and placement are left to the interface,
+      as this specification's other surface rules leave them.
+  - location: rules/knowledge/a-presented-case-version-states-its-own-declared-attributes.md
+    field: statement
+    unstated: Whether a curator is shown a case version's own declared attributes — title, when-to-use,
+      subject, fallback and consolidation register — on any surface, and what such a surface states where
+      the optional one (consolidation register) is absent. Every stated presentation obligation reaches
+      a case version's manifest entries (a-manifest-entrys-pinned-revision-is-always-shown, a-presented-manifest-entry-states-its-pinned-revisions-state,
+      a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest, a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis),
+      a case's hypotheses (a-cases-current-pins-come-from-its-highest-numbered-version) or the route from
+      a versions listing to a manifest (a-listed-case-version-offers-a-route-to-its-own-manifest); a-case-is-read-whole
+      and contracts/knowledge/case-query say the version's own attributes are assembled and answered,
+      and no node says whether a reader is shown them or what stands where the register is absent.
+    decided: A curator reading one of a case's versions is shown that version's own declared attributes
+      — title, when-to-use, subject, the fallback's outcome and referral, and the consolidation register
+      — each read from that version itself and never from another version of the case, for a version in
+      either state, draft or released; where that version declares no consolidation register the reading
+      states explicitly that this version declares none, never a blank in place of the statement and never
+      the register another version declares or the consolidation adapter's own default presented as this
+      version's.
+    why: 'The attributes are recoverable nowhere else — a-case-summary-is-derived-from-its-existing-versions
+      carries title and when_to_use only for a case''s highest released version and never its subject,
+      fallback or register — so withholding them leaves a curator correcting a draft through update-draft
+      (contracts/knowledge/case-lifecycle, promised by contracts/system/case-authoring) overwriting values
+      nobody read, and an auditor of a released version unable to reach the subject a-subject-mismatch-refuses-the-case
+      refuses on and the fallback no-confirmation-falls-back answers from, which a-case-version-is-written-once
+      and every-case-version-remains-readable preserve for exactly that reading. It adds no read: a-case-is-read-whole
+      already assembles a version''s own attributes in the same transaction as its manifest. Both states
+      are covered because a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis already settled
+      that a version''s state never narrows how much of what is true about it a reader is shown, and a-cases-current-pins-come-from-its-highest-numbered-version
+      took that same answer. Sourcing any attribute from another version is the substitution a-manifest-entrys-pinned-revision-is-always-shown
+      refuses for a pin. The absent register is stated rather than blank on the identical discipline a-case-holding-no-versions-is-told-explicitly
+      and a-cases-current-pins-come-from-its-highest-numbered-version already carry — an emptiness a reader
+      cannot tell from a silence — and the adapter''s default is a fact of the consolidation step, not
+      a value the version declares, so showing it would misstate a record a-case-version-is-written-once
+      fixes. Policy over one aggregate with immediate consistency because every attribute is the case
+      version''s own; the surface, the controls and the wording are left to the interface, as every sibling
+      presentation rule leaves them.'
+  - location: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name.md
+    field: statement
+    unstated: What a read answers when the case version it names is stored and present but some validator
+      rule does not hold at that reading. validation-runs-at-every-read makes such a version not a case,
+      with no field marking it; a-case-read-by-an-unknown-slug-or-version-is-refused answers only a slug
+      or version no case version was ever written for; a-case-holding-no-versions-is-told-explicitly answers
+      only a case whose versions are all gone; contracts/knowledge/case-query publishes read-case but,
+      as an api, cannot declare a refusal (that field is command-only per the contract schema); and a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+      obliges a surface to tell this state apart from a read that did not complete while stating nothing
+      about the read's own answer. No node anywhere pairs this condition with a status or an error name.
+    decided: Refused with an HTTP 409 response reporting a CaseVersionNotValidError — never the unmapped
+      domain error's generic INTERNAL_ERROR fallback, and never CaseNotFoundError. Recorded as a new invariant
+      over domain/knowledge/case-version.
+    why: 'The generic fallback is scoped by its own node to what the system did not anticipate, and this
+      condition is fully anticipated by validation-runs-at-every-read, so absorbing it there would make
+      a state the specification names unreadable to the caller and would leave a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+      unsatisfiable, since a surface can only distinguish what its read distinguished. Reusing CaseNotFoundError
+      was the other alternative and is rejected for the same reason: that refusal''s own Description already
+      bounds it to a version never written, and collapsing the two would erase the very distinction the
+      surface rule demands. 409 follows this specification''s established reading of an operation the
+      target''s own current state forbids (CaseVersionNotReleasedError at diagnose, CaseAlreadyHasDraftError
+      at create-draft, ConceptAlreadyAnsweredError at registration), while its 422 is reserved for a well-formed
+      write whose result would violate an invariant (a-release-refusal-with-no-named-violation-says-so)
+      and no write happens on a read. The error name follows the CaseVersionNot...Error family already
+      in this context and names the condition directly. It is a new node rather than an addition to validation-runs-at-every-read,
+      whose statement decides whether a stored version is a case at all and deliberately introduces no
+      surface answer, nor to a-case-read-by-an-unknown-slug-or-version-is-refused, whose condition is
+      a different one over the same read.'
 ---
 
 === domain/glossary/_context
@@ -5044,6 +5138,53 @@ consistency: eventual
 A case's next version number is assigned the moment its draft is created, not at release; two drafts open at once would have nothing to decide which claims that number.
 Revising a case is therefore always one working copy at a time, resolved to released or discarded before another draft may begin.
 
+=== rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+---
+type: policy
+statement: >-
+  A surface presenting one case a reader named by its slug alone states explicitly,
+  whenever the version that case currently uses does not read back as a case at that
+  reading, that the case's current version does not read back as a case right now; it
+  presents no attribute of that version as the case's current content, and what it
+  states there is distinct from what it states for a read that did not complete and
+  from what it states for a case that currently holds no version, so that a reader
+  tells the three apart.
+expression: >-
+  For a case c and a surface presenting c to a reader who named c by its slug and named
+  no version of it: let v be the version, among the versions c currently holds, whose
+  version number is highest. Where v exists and some validator rule of
+  validation-runs-at-every-read does not hold for v at the moment of that reading, the
+  surface states of c that the version c currently uses does not read back as a case,
+  and states no attribute of v — its title, when_to_use, subject, fallback,
+  consolidation_register, state or manifest, nor any fact derived from them — as the
+  content c currently stands at. What it states there differs from what the same surface
+  states where the read of c did not complete, and from what it states where c currently
+  holds no version at all: no two of those three are presented alike. Where v exists and
+  every validator rule holds for it at that reading, the surface states none of this.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+`validation-runs-at-every-read` makes this a standing state of the store rather than an edge of it: a stored version, draft or released, is read as a case only while every validator rule holds at that reading, and no field marks one that currently fails a rule. So a reader who reached a surface by naming a case's slug can meet a case that exists, holding a version that exists, where the read yields no case at all.
+
+The neighbouring answers do not reach that state. `a-case-read-by-an-unknown-slug-or-version-is-refused` answers a slug, or a slug and version, that no case version currently answers — a version never written — and its own Description already sets aside the case that exists and holds no version as a different case, answered by `a-case-holding-no-versions-is-told-explicitly`. This is the third member of that family, and neither node states it: the case is there, the version is there, and validation says it is not a case at this reading.
+
+That it is stated at all, and stated apart from the other two, is the reading this specification has already given the same shape twice. `a-case-holding-no-versions-is-told-explicitly` refuses an unexplained empty answer precisely because an absence, a failed read and a pending read then read alike, and `a-cases-current-pins-come-from-its-highest-numbered-version` took that same answer for a hypothesis the current version's manifest holds no entry for. The three states ask different things of the curator who meets them — a case holding no version is one to author a version for, a read that did not complete is one to attempt again, and a current version that does not validate is one to correct — so a surface that renders any of them like another sends the reader to the wrong act.
+
+A read that failed is already answered elsewhere and answered differently: `a-domain-error-unmapped-by-status-is-refused-generically` gives what the system did not anticipate a fixed text that discloses nothing about it. A version that does not validate is anticipated by `validation-runs-at-every-read` itself, so it is never presented as that.
+
+No attribute of the version is presented alongside the statement, because `a-case-is-read-whole` leaves nothing partial to present: the read answers a complete, validated version or nothing. Showing a title, a fallback or a manifest recovered beside that would state as the case's current content exactly what validation has just declined to read back as a case.
+
+Which version "the version the case currently uses" names is decided nowhere new here: `a-cases-current-pins-come-from-its-highest-numbered-version` already fixed it as the highest-numbered version among those the case currently holds, on `a-case-summary-is-derived-from-its-existing-versions`'s own reasoning, and this reads that same version so that one reading of "the case as it currently stands" keeps serving every case-keyed surface.
+
+The rule adds no attribute, moves no pin and refuses no call. It states only that this condition is disclosed and held apart from its two neighbours; the wording that carries it, the control it sits in and where on the surface it appears are the interface's, as they are wherever else this specification states what a surface tells a reader.
+
+Consistency is eventual: the fact spans the case a reader named and the version whose validation is judged, each read separately.
+
 === rules/knowledge/a-case-listing-answers-cases-in-slug-order
 ---
 type: invariant
@@ -5101,6 +5242,26 @@ A case's next_version counter assigns each version's number once, always higher 
 A case whose one and only version was discarded before release holds none currently — only-a-draft-case-version-may-be-discarded's own discard leaves nothing behind to read, the same absence a-case-holding-no-versions-is-told-explicitly already tells a curator listing that case's versions. There being no version, there is no state and no authored_at to derive current_state or last_updated from; the summary states that absence rather than answering with either field invented.
 current_state's own highest-numbered version is not always the version title, when_to_use and released_version answer from: a-case-has-at-most-one-draft lets a curator open a new draft over a case that already holds a released version, and only-a-released-case-version-is-diagnosed refuses to pin any investigation to that draft while it stays one — so the version a diagnosis may actually run against is the highest-numbered one whose own state is released, which a draft still being revised on top of it does not change. title, when_to_use and released_version follow that version instead, so a reader choosing a case by what it names is never pointed at a version diagnosis itself would refuse.
 A case that has never once released a version — its one and only version still in draft — holds no released version to derive title, when_to_use or released_version from, whatever version_count and current_state themselves answer; the summary states that absence rather than reading any of the three off the draft.
+
+=== rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+---
+type: invariant
+statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+`validation-runs-at-every-read` makes this a standing state of the store rather than an edge of it: a stored version, draft or released, is read as a case only while every validator rule holds at that reading, and no field marks one that currently fails a rule. A caller may therefore name a slug and a version that a stored case version answers and still get no case back, and this states what that read answers.
+
+It is named rather than left to the fallback. `constraints/a-domain-error-unmapped-by-status-is-refused-generically` exists for what the system did not anticipate and deliberately discloses nothing about it; this condition is anticipated by `validation-runs-at-every-read` itself, so answering it with that fixed, uninformative text would leave the caller unable to tell a version somebody must correct from a failure somebody must retry. `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` already owes its reader exactly that distinction, and a surface can only state what the read it made told it.
+
+It is also held apart from its two neighbours in the same family. `a-case-read-by-an-unknown-slug-or-version-is-refused` answers a slug, or a slug and version, that no case version currently answers — a version never written — and `a-case-holding-no-versions-is-told-explicitly` answers a case that exists and holds no version at all. Here the case is there and the version is there; validation is what declines to read it back as a case.
+
+The status is the one this specification already gives an operation the target's own current state forbids, as `only-a-released-case-version-is-diagnosed` and `a-case-has-at-most-one-draft` give it: the request is well formed and the resource it names exists, and what refuses it is the state of the stored version at that moment. The 422 of `a-release-refusal-with-no-named-violation-says-so` answers a well-formed write whose result would violate an invariant, and no write is attempted here.
+
+Nothing partial accompanies the refusal, because `a-case-is-read-whole` answers a complete, validated version or nothing at all. A replay is untouched: it reads its pinned version without revalidation, so no reading of that kind reaches this refusal.
 
 === rules/knowledge/a-case-version-is-written-once
 ---
@@ -5518,6 +5679,56 @@ consistency: eventual
 Creating a draft is never a second decision about what the draft starts holding: its one starting move, before any place-hypothesis or remove-hypothesis ever touches the new manifest, is copying the manifest of whichever existing version of the case it is asked to continue from. `a-case-version-number-is-never-reused` already says that reverting to an earlier version composes the new, higher-numbered draft "with that earlier version's manifest," never reactivating the old number; and `a-released-version-keeps-its-original-revision` narrates the ordinary path the same way — its new draft's revision 2 "replaces revision 1" in version 2's own manifest, which only reads true if version 2's manifest already held revision 1 the moment the draft began.
 A case with no version yet has no existing manifest to copy — its first-ever draft starts with none, which is the one case this rule names no source for, not an exception to it.
 Naming a source version is the exception, not the default: ordinary draft creation names none, and its copy source is then the case's own latest released version, empty only where the case holds none yet. Naming one explicitly is what a rollback does, to continue from an earlier version instead of the latest released one.
+
+=== rules/knowledge/a-presented-case-version-states-its-own-declared-attributes
+---
+type: policy
+statement: >-
+  A curator reading one of a case's versions is shown that version's own declared
+  attributes — its title, its when-to-use, its subject, its fallback's outcome and
+  referral, and its consolidation register — each read from that version itself and never
+  from another version of the case, for a version in either state, draft or released;
+  where that version declares no consolidation register, the reading states explicitly
+  that this version declares none, never leaving a blank in place of the statement and
+  never presenting as the version's own the register another version declares or the
+  consolidation step's own adapter would default to.
+expression: >-
+  For a case c, a version v of c, and a reading of v presented to a curator: the reading
+  states v's title, v's when_to_use, v's subject, v's fallback's outcome and v's
+  fallback's referral — its action and its recipient — and v's consolidation_register,
+  each read from v itself; no other version of c, and no consolidation adapter's own
+  default, ever supplies any of them. The statement turns on nothing further — not on v's
+  own state, whichever of draft or released it holds. Where v declares no
+  consolidation_register, the reading states that v declares no consolidation register; it
+  states no register value for v and leaves nothing unsaid in its place.
+constrains:
+  - domain/knowledge/case-version
+consistency: immediate
+---
+
+## Description
+
+A case version's own declared attributes are the whole of what it says about itself apart from its manifest: the title and when-to-use a curator chooses it by, the subject type it accepts, the fallback that answers when no hypothesis confirms, and the register the consolidation step writes in.
+Every node that says what a curator is shown about a case version was written over something else — `a-manifest-entrys-pinned-revision-is-always-shown`, `a-presented-manifest-entry-states-its-pinned-revisions-state`, `a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest` and `a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis` each state what one manifest entry carries, `a-cases-current-pins-come-from-its-highest-numbered-version` states what a case-keyed surface says about the case's hypotheses, and `a-listed-case-version-offers-a-route-to-its-own-manifest` carries a version's presentation no further than that route.
+The version's own attributes were addressable nowhere, so what a reader learns of them fell to whatever a surface happened to render.
+
+They are not recoverable from anywhere else. `a-case-summary-is-derived-from-its-existing-versions` carries a case's title and when_to_use only for its highest released version, never its subject, its fallback or its register, and never a draft's — so the catalog answers about the case, not about the version being read.
+Taking one of them from another version is exactly the substitution `a-manifest-entrys-pinned-revision-is-always-shown` and `a-cases-current-pins-come-from-its-highest-numbered-version` each already refused for a pin: a draft's title shown from the last release, or a released version's fallback shown from the draft that follows it, states as this version's precisely what this version does not say.
+
+The reading costs no new read. `a-case-is-read-whole` already assembles a case version's own attributes together with its manifest in one transaction, and `contracts/knowledge/case-query`'s read-case answers exactly that, so wherever a version is read at all these facts are already in hand.
+
+Both states are covered because both readers need them. `contracts/system/case-authoring` promises the curator composes a draft's own declared attributes as freely as its manifest and `contracts/knowledge/case-lifecycle`'s update-draft is that correction — a correction made against values the curator cannot see is made blind, and overwrites what nobody read.
+On a released version, `a-case-version-is-written-once` makes those attributes the record of the procedure that ran and `every-case-version-remains-readable` keeps them for exactly the audit that needs them: the subject `a-subject-mismatch-refuses-the-case` refuses on and the fallback `no-confirmation-falls-back` answers from are facts only that version carries.
+`a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis` already holds that a version's state answers whether it may still be composed and whether it may be diagnosed against, never how much of what is true about it a reader is shown, and this takes the same answer.
+
+The absent register is stated rather than left blank. The consolidation register is the one of these attributes `case-version` declares optional, and a version declaring none reads exactly like one whose register nobody showed — the emptiness `a-case-holding-no-versions-is-told-explicitly` and `a-cases-current-pins-come-from-its-highest-numbered-version` both already refuse, because a reader cannot tell it from a silence.
+Putting the adapter's default there instead would be worse than a blank: `case-version` states that an absent register leaves the consolidation step with whatever its own adapter defaults to, which is a fact of that step and not a value this version declares, and a released version shown declaring a register it never declared misstates the record.
+
+Nothing here is refused or moved: no call is refused, no attribute gains a value, no version's state changes for it, and what may be done with what is read stays where `a-case-version-is-written-once` and update-draft already put it — corrected while draft state holds, read only once released.
+`validation-runs-at-every-read` still decides whether a stored version reads back as a case at all; this says what a reading states, never that a version failing that validation is presented anyway.
+
+Which surface carries the reading, which control holds each attribute, where it sits and its wording are form and belong to the interface, not here.
+Consistency is immediate because every attribute this states is the case version's own, read from the one aggregate root the reading already assembles whole, so no fact here spans two reads.
 
 === rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest
 ---
