@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "implementation",
+      "file": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail.md",
+      "title": "Unwire the Attributes tab from Case Detail's tab strip",
+      "summary": "case-detail-screen.tsx's Tabs block now wires only Versions and Hypotheses, and the screen-level spec that proved the Attributes tab's presence is removed along with it.",
+      "task": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail"
+    },
+    {
+      "id": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "proof",
+      "file": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail.md",
+      "title": "Proof for unwiring the Attributes tab from Case Detail's tab strip",
+      "summary": "Tests establishing that Case Detail's tab strip now offers exactly Versions and Hypotheses, that case-detail-screen.tsx imports nothing from routes/case-attributes-tab, and that no spec anywhere in the tree still asserts an Attributes tab on Case Detail.",
+      "task": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "to": "task/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "to": "implementation/case-detail-attributes-tab/unwire-attributes-tab-from-case-detail",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -13,7 +13,6 @@ import {
   type CaseVersionState,
 } from "../hooks/use-case-versions";
 import { CaseHypothesesTab } from "./case-hypotheses-tab";
-import { CaseAttributesTab } from "./case-attributes-tab";
 
 const CASE_VERSIONS_COLUMNS: StatusTableColumn[] = [
   { key: "version", header: "Version" },
@@ -116,16 +115,12 @@ export function CaseDetailScreen(): JSX.Element {
         <TabsList>
           <TabsTrigger value="versions">Versions</TabsTrigger>
           <TabsTrigger value="hypotheses">Hypotheses</TabsTrigger>
-          <TabsTrigger value="attributes">Attributes</TabsTrigger>
         </TabsList>
         <TabsContent value="versions">
           <VersionsPanel slug={slug} />
         </TabsContent>
         <TabsContent value="hypotheses">
           <CaseHypothesesTab slug={slug} />
-        </TabsContent>
-        <TabsContent value="attributes">
-          <CaseAttributesTab slug={slug} />
         </TabsContent>
       </Tabs>
     </section>
