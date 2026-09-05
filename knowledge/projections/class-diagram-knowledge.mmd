@@ -44,6 +44,8 @@ classDiagram
             +string criterion
             +Concept[] collects
             +Resolution resolution
+            +HypothesisRevisionState state
+            +release()
         }
     }
     class CaseInputRequirement {
@@ -69,6 +71,11 @@ classDiagram
         <<Enumeration>>
         FORMAL
         PLAIN
+    }
+    class HypothesisRevisionState {
+        <<Enumeration>>
+        DRAFT
+        RELEASED
     }
     class ManifestEntry {
         <<ValueObject>>

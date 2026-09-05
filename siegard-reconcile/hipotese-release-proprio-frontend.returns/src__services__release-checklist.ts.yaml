@@ -1,0 +1,129 @@
+read:
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: extractReleaseViolations
+    evidence: |
+      const { violations } = details;
+      return Array.isArray(violations)
+        ? violations.filter((item): item is string => typeof item === "string")
+        : [];
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: no listing operation appears in this file
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: no request, route or disclosure copy appears in this file
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      ReleaseControlState only shapes local UI state (isOpen, isConfirming, onConfirm); the
+      file declares no call against the release operation itself
+  - node: domain/knowledge/hypothesis-revision
+    held_at: buildReleaseChecklist, conceptsAcceptSubject
+    evidence: "const collects = entry.hypothesis_revision.collects;"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: no field named state or its two values appears in this file
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: no release-of-a-revision transition appears in this file
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: no revision listing or ordering appears in this file
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: no revision listing appears in this file
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: no per-entry state disclosure appears in this file
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: >-
+      extractReleaseViolations returns an empty array both when there is no ApiError and when
+      the payload names no violations, without distinguishing the two
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: no hypothesis-revision release appears in this file
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: >-
+      the scenario's own naming of a violating hypothesis is passed through generically by
+      extractReleaseViolations, but nothing in this file names the rule or the draft-state
+      condition itself
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: no place-hypothesis behavior appears in this file
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: no revision-release refusal handling appears in this file
+
+findings:
+  - file: src/services/release-checklist.ts
+    where: "buildReleaseChecklist, the returned checklist item 'Manifest holds at least one hypothesis'"
+    evidence: |
+      {
+            label: `Manifest holds at least one hypothesis (${manifestEntries.length})`,
+            satisfied: manifestEntries.length > 0,
+          },
+    cost: >-
+      The invariant that a case version's manifest must hold at least one entry is expressed a
+      second time here, independently of the node that states it. A curator reads this
+      checklist rather than the specification to learn the condition, and if the invariant is
+      ever restated differently at rules/knowledge/a-case-has-at-least-one-hypothesis, nothing
+      ties this literal re-derivation back to it for either side to notice the drift.
+    kind: contradicts
+    correction: >-
+      Read this condition from what the server already validates (e.g. surface it from a
+      release attempt or a shared check) rather than re-deriving the manifest's minimum-entry
+      count in the frontend.
+    node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  - file: src/services/release-checklist.ts
+    where: "buildReleaseChecklist, the fallbackTermsExist computation and the 'Fallback resolution is set' checklist item"
+    evidence: |
+      const fallbackTermsExist =
+          outcomeOptions.options.some((option) => option.value === record.fallback.outcome) &&
+          actionOptions.options.some((option) => option.value === record.fallback.referral.action) &&
+          recipientOptions.options.some(
+            (option) => option.value === record.fallback.referral.recipient,
+          );
+    cost: >-
+      "Every hypothesis-revision and every case version's fallback declare an outcome and a
+      referral" is a fact rules/knowledge/every-position-declares-a-resolution already states.
+      This file re-derives it as a client-side membership check against currently loaded
+      vocabulary options; a reader who wants to know what the fallback is required to declare
+      finds it stated twice, one of them not the node.
+    kind: contradicts
+    correction: >-
+      Drive this item from the same rule the server enforces (or from data the server already
+      validated) rather than recomputing the requirement against locally-loaded vocabulary
+      option lists.
+    node: rules/knowledge/every-position-declares-a-resolution
+  - file: src/services/release-checklist.ts
+    where: "buildReleaseChecklist, the conceptsAcceptSubject computation and the 'Every collected concept accepts the case subject' checklist item"
+    evidence: |
+      return collects.every((conceptName) => {
+            const concept = concepts.find((candidate) => candidate.name === conceptName);
+            return concept !== undefined && concept.accepts.includes(record.subject);
+          });
+    cost: >-
+      rules/knowledge/a-concept-accepts-the-declared-subject-type already states that every
+      concept a case version's manifested hypothesis-revisions collect must accept the case
+      version's declared subject type, refused server-side with ConceptRefusesSubjectTypeError.
+      This file re-derives the same predicate (concept.accepts includes the subject) as a
+      client-side preview; if the rule's condition ever changes, this second expression of it
+      has no link back to the node to keep it aligned.
+    kind: contradicts
+    correction: >-
+      Source this checklist item from the same validation the server runs (or a shared
+      predicate) instead of independently re-testing concept.accepts against the subject here.
+    node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+
+looked_past: >-
+  The node this file is bound to, a-released-case-version-manifests-only-released-hypothesis-
+  revisions, has no corresponding checklist item in buildReleaseChecklist even though the other
+  three release preconditions are previewed client-side; whether that omission is a completeness
+  gap is a coverage question, not a stated-fact question, so I did not report it as a finding
+  here.
+candidates_opened:
+  - rules/knowledge/a-case-has-at-least-one-hypothesis
+  - rules/knowledge/a-concept-accepts-the-declared-subject-type
+  - rules/knowledge/every-position-declares-a-resolution

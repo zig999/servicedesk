@@ -1,0 +1,95 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the assertions that a released revision's collects still read back exactly as given after a direct DELETE is attempted against them"
+    evidence: "expect(result.case.hypotheses.find((hypothesis) => hypothesis.name === 'h1')?.collects).toEqual([vocabulary.conceptA]);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the constant used to drive the direct SQL state transition"
+    evidence: "const RELEASED_REVISION_STATE = 'released';"
+  - node: constraints/a-case-is-read-whole
+    held_at: "the case-query read used to observe the assembled case after release"
+    evidence: "const result = await createCaseQuery(pool).readCase(slug, version);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file never issues an HTTP request; every call goes through RelationalCaseStore, ReleaseOperation and createCaseQuery directly against the database"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "const result = await createCaseQuery(pool).readCase(slug, version); — a single-case read, no listing operation appears anywhere in the file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the imports name only case, factory and persistence modules; no route or middleware is imported or exercised"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — this is an integration test file, not the domain layer the constraint governs"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file assumes a database already migrated and only issues ordinary DML — no migration replay is exercised"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4' — the file uses the schema, it does not declare or audit its column-to-attribute pairing"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "createDraft, insertHypothesisRevision/placeHypothesis, and release are each invoked through the store and the release operation"
+    evidence: "await store.placeHypothesis({ slug: key.slug, version: key.version, hypothesis_name: hypothesis.name, revision, position: hypothesis.position });"
+  - node: contracts/knowledge/case-query
+    held_at: "the read-case call used to assert on the released version"
+    evidence: "const result = await createCaseQuery(pool).readCase(slug, version);"
+  - node: contracts/system/case-authoring
+    held_at: "the assertion that release succeeds once its revisions were released beforehand"
+    evidence: "await expect(releaseOperation.release(slug, version2)).resolves.toBeUndefined();"
+  - node: domain/knowledge/case-version
+    held_at: "createDraftVersion, building the version's own declared attributes"
+    evidence: "title: 'A case', when_to_use: 'when a curator asks whether a collects row survives an attempted deletion', ..."
+  - node: domain/knowledge/manifest-entry
+    held_at: "placeHypothesis pinning a position to a hypothesis-revision"
+    evidence: "await store.placeHypothesis({ slug: key.slug, version: key.version, hypothesis_name: hypothesis.name, revision, position: hypothesis.position });"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the second test's title and its assertion that release still resolves despite the attempted deletion of the only collects row"
+    evidence: "'releases a new draft that inherits an earlier released version\\'s own manifest without refusing through the structural \"collects no concept\" problem, ...'"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file only ever inserts a hypothesis-revision once per hypothesis, via store.insertHypothesisRevision — no revise call is made"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "await pool.query('UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4', [RELEASED_REVISION_STATE, slug, hypothesisName, revision]); — the transition is written directly to the row, not driven through a release-hypothesis operation"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "no revision number reuse is exercised; each hypothesis is inserted exactly once"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no listing of a hypothesis's revisions is read anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing of a hypothesis's revisions is read anywhere in the file"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "both release calls are expected to succeed; no refusal path is exercised"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "both hypothesis-revisions are released directly before release() is called"
+    evidence: "await releaseRevisionDirectly(slug, 'h1', revisionA); await releaseRevisionDirectly(slug, 'h2', revisionB); await releaseOperation.release(slug, version);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the delete-then-read pattern that proves a released revision's collects survive an attempted deletion"
+    evidence: "await deleteCollectsDirectly(slug, 'h1', revisionA); ... expect(result.case.hypotheses.find((hypothesis) => hypothesis.name === 'h1')?.collects).toEqual([vocabulary.conceptA]);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise call is made anywhere in the file"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the readCase and assembleVersion calls, whose success after the mutation attempts implicitly depends on the assembled version still validating"
+    evidence: "const releasedVersion2 = await store.assembleVersion(slug, version2); expect(releasedVersion2?.manifest[0]?.hypothesis_revision.collects).toEqual([vocabulary.conceptA]);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no repeated-save/revise sequence appears in the file"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "every revision released here is already placed in a manifest before releaseRevisionDirectly runs; the scenario's own precondition of no manifest entry is never set up"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "both tests release every revision before calling release(); no draft-revision refusal path is exercised"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "version1 is never re-read after version2 is created and released; only version2's own manifest is asserted on"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "placeNewHypothesis places each hypothesis-revision while it is still in draft state, before releaseRevisionDirectly runs"
+    evidence: "const revisionA = await placeNewHypothesis(store, { slug, version }, { name: 'h1', collects: [vocabulary.conceptA], resolution, position: 1 });"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise call is made anywhere in the file"
+looked_past: "migration 0021's own hypothesis_revision_collects_no_delete_when_released rule silently no-ops a DELETE against a released revision's collects rather than raising the 409 the sibling node describes, and this test's deleteCollectsDirectly calls depend on exactly that silent no-op — but the claim of that behavior sits in the migration file, not in anything this spec file itself states."

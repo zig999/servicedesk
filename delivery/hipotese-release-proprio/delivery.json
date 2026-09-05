@@ -1,0 +1,915 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "implementation",
+      "file": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption.md",
+      "title": "Fix case-fixture-reads-clean.spec.ts's own release ordering and its destructive collects-survive-DELETE test",
+      "summary": "insertFixtureCase now releases every manifested hypothesis-revision through the declared lifecycle operation before releasing the case version, and the collects-survive-DELETE test now exercises the DELETE against a case this test owns exclusively so the shared canonical fixture is never touched.",
+      "task": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption"
+    },
+    {
+      "id": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "implementation",
+      "file": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
+      "title": "Refuse a case version's release over a draft revision",
+      "summary": "ReleaseOperation's existing violation aggregation now also checks every manifest entry's referenced hypothesis-revision own state through IHypothesisRevisionOwnStateQuery, naming every draft-state one among CaseVersionNotReleasableError's violations.",
+      "task": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision"
+    },
+    {
+      "id": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implementation",
+      "file": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested hypothesis-revision before the case version in diagnose-server.factory.spec.ts's own fixture seeding",
+      "summary": "insertFixtureCase now releases every manifested hypothesis-revision through the lifecycle's own releaseHypothesisRevision before releasing the case version, so beforeAll no longer throws CaseVersionNotReleasableError against an empty database.",
+      "task": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
+    },
+    {
+      "id": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implementation",
+      "file": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions.md",
+      "title": "Give the canonical fixture and seed setup's manifested revisions their own released state",
+      "summary": "The shared fixture builder, the production seed script, and the ad-hoc case built by manifest-collects-survive-release.spec.ts now directly write each manifest-referenced hypothesis-revision's own state to released right after the case version that manifests it is released, restoring the protection migration 0021 moved onto that column.",
+      "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
+    },
+    {
+      "id": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint.md",
+      "title": "Expose release-hypothesis on the published case-lifecycle HTTP surface",
+      "summary": "A new POST route, wired end to end through build-app.ts and its own factory, dispatches ReleaseHypothesisRevisionOperation against a hypothesis-revision named by slug, hypothesis name and revision alone, with no case-version or body payload involved.",
+      "task": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint"
+    },
+    {
+      "id": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-release/release-a-revision-directly.md",
+      "title": "Release a hypothesis-revision directly against its own state",
+      "summary": "A new domain operation moves a hypothesis-revision from draft to released by its own identity alone, refusing with HypothesisRevisionNotDraftAtReleaseError — an error carrying no context at all — when the revision is not currently draft.",
+      "task": "task/hypothesis-revision-own-release/release-a-revision-directly"
+    },
+    {
+      "id": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft.md",
+      "title": "Revise decides overwrite-vs-create from a hypothesis-revision's own state column",
+      "summary": "ReviseHypothesisOperation's overwrite/insert branch and the port/repository seam it reads now decide from hypothesis_revisions.state directly, replacing the manifest-join reading.",
+      "task": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft"
+    },
+    {
+      "id": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
+      "title": "Refuse a released hypothesis-revision's alteration from its own state",
+      "summary": "A migration that moves the schema's release-conditioned refusal on hypothesis_revisions and hypothesis_revision_collects off the case-version join and onto the revision's own state column.",
+      "task": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision"
+    },
+    {
+      "id": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state.md",
+      "title": "Store the hypothesis-revision's own state column and write draft on insert",
+      "summary": "Adds hypothesis_revisions.state (draft/released, NOT NULL, CHECK-constrained) via a new numbered migration, and makes the insert write path name it explicitly as draft, leaving the overwrite path untouched.",
+      "task": "task/hypothesis-revision-own-state/store-the-revisions-own-state"
+    },
+    {
+      "id": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "implementation",
+      "file": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test.md",
+      "title": "Repoint the repository's overwrite-refusal test onto the revision's own state",
+      "summary": "Replaced the obsolete manifest-referenced-basis overwrite test in the relational case store repository spec with a test asserting the opposite direction of the state-only rule — that a released case version's manifest reference alone, over a draft-state revision, does not refuse an overwrite — leaving the already-correct sibling as the file's one assertion of the refusal itself.",
+      "task": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test"
+    },
+    {
+      "id": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "implementation",
+      "file": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion.md",
+      "title": "Retire the case-version-lifecycle spec's manifest-basis immutability assertion",
+      "summary": "Removed the one test in case-version-lifecycle-schema.spec.ts that asserted a hypothesis-revision's immutability on the basis of a released case version's manifest reference, leaving the file's tests keyed only to constructions the current state-only trigger actually enforces.",
+      "task": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion"
+    },
+    {
+      "id": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "implementation",
+      "file": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
+      "title": "Retire the manifest-basis assertions from the two obsolete persistence schema specs",
+      "summary": "Removed the two obsolete assertions (rejection and content-survival in revision-alteration-refused-only-when-released-schema.spec.ts, and collects-survival in protect-released-hypothesis-revision-collects-schema.spec.ts) that attributed the release trigger's refusal to a released case version's manifest reference, since migration 0021 already moved the condition onto hypothesis_revisions.state alone and the equivalent state-only assertions already stand in refuse-altering-a-released-revision-schema.spec.ts.",
+      "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
+    },
+    {
+      "id": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "implementation",
+      "file": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state.md",
+      "title": "Disclose each listed hypothesis-revision's own state",
+      "summary": "The list-hypothesis-revisions read path now selects and answers each revision's own stored state, and orders the page by revision number descending.",
+      "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
+    },
+    {
+      "id": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implementation",
+      "file": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested revision before releasing the case version in seed.ts",
+      "summary": "Reorders seed.ts's seedCase() to release every manifested hypothesis-revision through the declared lifecycle operation before releasing the case version, and removes the raw SQL UPDATE that used to move revisions to released.",
+      "task": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
+    },
+    {
+      "id": "proof/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "proof",
+      "file": "proof/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption.md",
+      "title": "Additional release-ordering and cross-file-corruption proof for case-fixture-reads-clean.spec.ts",
+      "summary": "New tests in case-fixture-reads-clean.spec.ts independently exercise the release-ordering fix (criteria 1, 2, 5) and the underdetermined second-invocation guard, distinct from the task-implementer's own rewritten collects-survive-DELETE test.",
+      "task": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption"
+    },
+    {
+      "id": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "proof",
+      "file": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
+      "title": "Proof for refuse-a-release-manifesting-a-draft-revision",
+      "summary": "Integration tests against ReleaseOperation.release() in the real database, proving each of the task's 9 criteria for the manifest-own-state gate, plus repairs to pre-existing fixtures in three files that the new gate would otherwise strand mid-scenario.",
+      "task": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision"
+    },
+    {
+      "id": "proof/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proof",
+      "file": "proof/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Diagnose-server fixture reads back released state after the release-ordering fix",
+      "summary": "Two new integration assertions in diagnose-server.factory.spec.ts read the seeded fixture's case version and each of its manifested hypothesis-revisions back through the declared store API and confirm both land in the released state that the reordered insertFixtureCase now produces.",
+      "task": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
+    },
+    {
+      "id": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "proof",
+      "file": "proof/fixture-revision-own-state/release-fixture-manifested-revisions.md",
+      "title": "Fixture and seed setup writes each manifested hypothesis-revision's own released state",
+      "summary": "New integration tests query hypothesis_revisions and hypothesis_revision_collects directly after the canonical fixture builder, the seed script and release.operation.ts run, proving the own-state write lands where the objective requires it and nowhere else.",
+      "task": "task/fixture-revision-own-state/release-fixture-manifested-revisions"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint.md",
+      "title": "Release-hypothesis HTTP surface proof",
+      "summary": "Integration tests dispatching real HTTP requests through the release-hypothesis route (standalone and via the built app) proving all six task criteria, its stated inferences, and the pre-existing build-app fixture repaired to compile again.",
+      "task": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-release/release-a-revision-directly.md",
+      "title": "Release a hypothesis-revision directly against its own state — proof",
+      "summary": "Integration tests over ReleaseHypothesisRevisionOperation and RelationalCaseStore's two new methods prove the draft-to-released transition, its refusal, the refusal's empty envelope, manifest/case-version independence, and terminality; unit tests pin the error class's shape and the two new ports' import discipline.",
+      "task": "task/hypothesis-revision-own-release/release-a-revision-directly"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft.md",
+      "title": "Revise decides overwrite-vs-create from a hypothesis-revision's own state — reconciled proof",
+      "summary": "Proves, via reconciled and new tests over ReviseHypothesisOperation and RelationalCaseStore, that the revise branch now decides overwrite-vs-create strictly from a hypothesis-revision's own state column, and reconciles the pre-existing tests the manifest-join shape's removal turned red.",
+      "task": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
+      "title": "Refuse altering a released hypothesis-revision's own state — proof",
+      "summary": "Six schema-level integration tests exercise every criterion of the task directly against the trigger and rule 0021 replaces, and two repository-level integration tests exercise the same refusal through the TypeScript write path, one of them proving the domain-error/HTTP-409 translation the schema alone cannot establish.",
+      "task": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision"
+    },
+    {
+      "id": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-own-state/store-the-revisions-own-state.md",
+      "title": "Store the hypothesis-revision's own state — proof",
+      "summary": "Integration tests over a fresh migration replay and over ReviseHypothesisOperation's own write path, proving the state column exists, is CHECK-constrained to draft/released, is not nullable, defaults draft for a row this migration did not create, and is written draft on insert while left untouched on overwrite.",
+      "task": "task/hypothesis-revision-own-state/store-the-revisions-own-state"
+    },
+    {
+      "id": "proof/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "proof",
+      "file": "proof/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test.md",
+      "title": "Repointed overwrite-refusal test proof",
+      "summary": "The relational case store repository spec's two overwrite tests — the pre-existing sibling asserting refusal from the revision's own released state, and the repointed test asserting no refusal from a manifest reference alone — together satisfy every stated criterion, and a full suite run against the file passed.",
+      "task": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test"
+    },
+    {
+      "id": "proof/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "proof",
+      "file": "proof/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion.md",
+      "title": "Retirement of the manifest-basis immutability assertion in case-version-lifecycle-schema.spec.ts",
+      "summary": "Confirms the obsolete manifest-basis assertion is gone from the file, that no replacement of any basis was added or needed to remain because the row's-own-state version of the same claim already stands elsewhere in the suite, and that the file's remaining tests — none of them altered by this task — still pass.",
+      "task": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion"
+    },
+    {
+      "id": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "proof",
+      "file": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
+      "title": "Proof for retiring the manifest-basis persistence schema specs",
+      "summary": "Confirms, by reading the two edited files in full and cross-referencing a fresh full suite run, that the two schema specs no longer attribute refusal, content-survival or collects-survival to a released case version's manifest reference, that every removed assertion has a state-only equivalent already standing in the sibling file, and that the retained/sibling tests still pass.",
+      "task": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs"
+    },
+    {
+      "id": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "proof",
+      "file": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state.md",
+      "title": "Disclose each listed hypothesis-revision's own state",
+      "summary": "Proves the list-hypothesis-revisions read path answers every revision's own draft-or-released state, sourced from its own row rather than any referencing case version, ordered highest-revision-first, and reconciles every pre-existing test the state field and the descending order broke.",
+      "task": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state"
+    },
+    {
+      "id": "proof/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proof",
+      "file": "proof/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Seed script releases manifested revisions before the case version",
+      "summary": "Tests over seed.ts (integration) and its source (unit) prove the corrected release order no longer throws CaseVersionNotReleasableError, that every manifested revision and the case version itself read back released, that no raw SQL writes hypothesis_revisions.state, and that a further run leaves the already-released manifest untouched.",
+      "task": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version"
+    },
+    {
+      "id": "review/hipotese-release-proprio",
+      "kind": "review",
+      "file": "review/hipotese-release-proprio.md",
+      "title": "hipotese-release-proprio: release-gate and per-revision release backend delivery — review",
+      "summary": "Coverage, specification-conformance, and standard-conformance passes over the 11 delivered tasks of the hipotese-release-proprio initiative and the 44 files they touched; the failures pass did not run because the captured whole-change run passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A well-formed release-hypothesis request naming a hypothesis-revision whose own state is draft is not refused, and that revision's own state is released afterward.",
+        "Any test either file retains asserts the refusal from the hypothesis-revision row's own state and names no case_versions and no case_version_hypotheses relation.",
+        "Any test the file retains that asserts this immutability asserts it from the hypothesis-revision row's own released state.",
+        "Every assertion removed from either file has an equivalent assertion, stated against the hypothesis-revision row's own state, standing somewhere in the persistence schema suite.",
+        "Replaying every migration file in filename order onto an empty schema and running these files' tests passes with no test skipped.",
+        "The file's own tests pass in full, with no test skipped and no assertion relaxed.",
+        "The integration specs reading the canonical fixture — seed.spec.ts, fixtures/case-fixture-reads-clean.spec.ts, the three factory specs and case/manifest-collects-survive-release.spec.ts — pass with no assertion of theirs removed or relaxed.",
+        "The relational case store repository spec passes in full with no test skipped and no assertion relaxed.",
+        "The revise's answer holds no field whose value differs between the replace branch and the create branch.",
+        "The spec holds exactly one test asserting the refusal of an overwrite against a revision whose own state is released.",
+        "case-version-lifecycle-schema.spec.ts holds no assertion that an update against a hypothesis-revision's stored columns is refused, or left without effect, because a released case version's manifest references it.",
+        "src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts holds no assertion that a revision's collects survive removal because a released case version's manifest references it.",
+        "src/__tests__/integration/persistence/relational-case-store.repository.spec.ts holds no test asserting an overwrite is refused because a released case version still references the revision.",
+        "src/__tests__/integration/persistence/revision-alteration-refused-only-when-released-schema.spec.ts holds no assertion that a revision's stored content is left unchanged because a released case version's manifest references it.",
+        "src/__tests__/integration/persistence/revision-alteration-refused-only-when-released-schema.spec.ts holds no assertion that an update is rejected because a released case version's manifest references the revision.",
+        "src/case/release.operation.ts writes no hypothesis_revisions state, and the released state is reached through the fixture and seed setup alone."
+      ],
+      "findings": 25
+    },
+    {
+      "id": "review/hipotese-release-proprio-corrective-fixtures",
+      "kind": "review",
+      "file": "review/hipotese-release-proprio-corrective-fixtures.md",
+      "title": "hipotese-release-proprio: three corrective fixes to the shared release-ordering bug — review",
+      "summary": "Coverage, specification-conformance, and standard-conformance passes over the three corrective deliveries (seed.ts, diagnose-server.factory.spec.ts, case-fixture-reads-clean.spec.ts) that fixed the same release-ordering defect and its shared-fixture-corruption consequence; the failures pass did not run because the captured whole-change run passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every test in this file that depends on the seeded fixture runs (none is skipped by a beforeAll crash), given a database holding none of the fixture's rows beforehand.",
+        "Running case-fixture-reads-clean.spec.ts's own full test file, then reading the shared canonical fixture case's manifested hypothesis-revisions' own collects afterward, finds every one of them present and matching the fixture document.",
+        "Running this file followed by any other file that reads the same canonical fixture case (e.g. seed.spec.ts) does not raise CaseNotValidError over that case declaring no hypothesis.",
+        "Running this file's own beforeAll (ensureFixtureSeeded/insertFixtureCase) against a database holding none of the fixture's rows completes without throwing CaseVersionNotReleasableError.",
+        "Running this file's own beforeAll against a database holding none of the fixture's rows completes without throwing CaseVersionNotReleasableError.",
+        "This file's own fixture-seeding helper releases each manifested revision by calling the already-declared lifecycle release operation, never a raw SQL statement writing hypothesis_revisions.state.",
+        "insertFixtureCase releases each manifested revision by calling the already-declared lifecycle release operation, never a raw SQL statement writing hypothesis_revisions.state.",
+        "seed.ts contains no raw SQL statement writing hypothesis_revisions.state; each manifested revision's release is performed by calling lifecycle.releaseHypothesisRevision."
+      ],
+      "findings": 8
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "implementation/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "implementation/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "implementation/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "implementation/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "implementation/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "implementation/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "implementation/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "implementation/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "implementation/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "implementation/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "implementation/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "implementation/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "implementation/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "implementation/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/hipotese-release-proprio",
+      "to": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "reviews",
+      "at": "tasks[9]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-corrective-fixtures",
+      "to": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-corrective-fixtures",
+      "to": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-corrective-fixtures",
+      "to": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file's whole content is import-specifier checking: \"const offenders = importSpecifiersOf(source).filter((specifier) => namesOneOf(specifier, FORBIDDEN_DRIVERS_AND_FRAMEWORKS));\" — nothing here concerns case-version assembly or manifest-entry resolution"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file contains no request, route or HTTP-response assertion — only `expect(offenders).toEqual([]);` over import specifiers"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no offset, limit or page is read or asserted anywhere in the file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no route, request or requester identity is referenced; the file only inspects `import.meta.url`-relative source text"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "both it() blocks, lines 29-43"
+    evidence: "it('imports no database driver, HTTP server or web framework, so a caller depending on this port alone pulls in neither' ... expect(offenders).toEqual([]));\nit('imports no LLM provider client, so a caller depending on this port alone pulls in neither' ... expect(offenders).toEqual([]));"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file reads only `../../../case/hypothesis-revision-release-state.port.ts`; no migration script is opened or run"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "no relation, column or migration is read; the file's only source read is the port module's text"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "no lifecycle operation (create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release, discard) is invoked or referenced"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "no read-case, list-cases or listing operation appears; the file only asserts on `importSpecifiersOf(source)`"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "the file states nothing about composing, releasing or discarding a case version or a hypothesis-revision"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no case-version attribute (version, title, when_to_use, manifest, state, ...) is read or asserted"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no hypothesis-revision attribute (revision, criterion, collects, resolution, state) is read or asserted; the file only filters import specifiers"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "the enumeration draft/released is never read from or asserted against by this file — it only checks `namesOneOf(specifier, ...)` over import strings"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "no manifest entry, position or reference is read or asserted"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "no concept or collects list is read or asserted"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "no revise or overwrite behavior is exercised; the file only inspects import specifiers of the port module's source text"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no release transition, HTTP 409 or HypothesisRevisionNotDraftAtReleaseError is asserted"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "no revision number is read or asserted anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no listing or ordering of revisions is exercised"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing entry or state disclosure is asserted"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release refusal, CaseVersionNotReleasableError or violation list appears"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry state gating is read or asserted"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no alteration attempt, HTTP 409 or ReleasedHypothesisRevisionNotAlterableError is exercised"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise call or answer shape is read or asserted"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no read-time validation is exercised; the file's only reads are `readFile(path, 'utf8')` of the port module and regex matching over its text"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no repeated-save scenario is set up or asserted"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release-hypothesis action or manifest independence is exercised"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release or refusal is exercised"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "no version read-back or immutability comparison is exercised"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no place-hypothesis action is exercised"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise-of-a-released-revision scenario is set up or asserted"

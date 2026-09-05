@@ -1,0 +1,51 @@
+findings:
+  - file: src/__tests__/integration/factories/diagnose-server.factory.spec.ts
+    where: "line 414, inside the 'persists real, non-zero cost and durations...' test"
+    evidence: "expect(written?.durations_collection).toBeGreaterThan(0);"
+    cost: "If the observation/collection stage ever genuinely completes within one millisecond of wall-clock time — a span the specification explicitly says is honestly reported as 0 rather than floored to 1 — this assertion fails and misreports a correct, spec-conforming measurement as a defect, encoding a stricter floor on durations.collection than the domain ever imposes."
+    kind: contradicts
+    correction: "Assert toBeGreaterThanOrEqual(0) (or drop the lower-bound assertion on collection) rather than requiring a strictly positive value."
+    node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+read:
+  - node: domain/investigation/durations
+    held_at: "the IInvestigationRow type and the assertions reading durations_collection/durations_judgment/durations_writing/durations_total"
+    evidence: |
+      expect(written?.durations_total).toBeGreaterThanOrEqual(
+        (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
+      );
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeFixtureHypotheses, calling lifecycle.reviseHypothesis with criterion, collects and resolution, then lifecycle.placeHypothesis with the returned revision"
+    evidence: |
+      const revised = await lifecycle.reviseHypothesis({
+        slug: fixture.slug,
+        hypothesis_name: entry.hypothesis_name,
+        criterion: entry.criterion,
+        collects: entry.collects,
+        resolution: entry.resolution,
+        subject: fixture.subject,
+      });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the 'seeds every hypothesis-revision...as released' test, comparing readHypothesisRevisionOwnState's result to 'released'"
+    evidence: |
+      expect(states).toEqual(manifestEntries.map(() => 'released'));
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: "the durations assertions in the 'persists real, non-zero cost and durations...' test"
+    evidence: |
+      expect(written?.durations_collection).toBeGreaterThan(0);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "releaseManifestedRevisions, calling lifecycle.releaseHypothesisRevision directly against each placed revision"
+    evidence: |
+      await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "insertFixtureCase, which places every manifest entry, releases every referenced hypothesis-revision, and only then releases the case version"
+    evidence: |
+      const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+      await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
+      await lifecycle.release(fixture.slug, draft.version);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no attempt in this file to alter a hypothesis-revision after releasing it"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no read of a case version through the validating case-query wiring occurs in this file"
+looked_past: "The test title claims durations_total \"exceeding the sum of the three stage figures\" while the actual assertion uses toBeGreaterThanOrEqual (permits equality), and TOTAL_PROVIDER_CALLS/per-call token mocks are fixture-cardinality-derived test-double values rather than domain facts — both are test-strength/design concerns for another pass, not domain facts misstated here."

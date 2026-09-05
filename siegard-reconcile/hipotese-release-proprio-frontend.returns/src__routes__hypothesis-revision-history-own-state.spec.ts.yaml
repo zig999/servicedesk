@@ -1,0 +1,62 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "the mount() helper stubs revisions with a flat { data: revisions, total: revisions.length } payload, and no test in this file exercises an offset or limit parameter."
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no request stub, assertion or rendered text in this file concerns an authentication posture or its disclosure."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "this file exercises only a revisions listing and a manifest fixture; no test calls or asserts on create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release or discard."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revisionItem fixture function"
+    evidence: |
+      return {
+        revision,
+        criterion: `Criterion ${revision}`,
+        collects: ["ConceptA"],
+        resolution: { outcome: "resolved", referral: { action: "escalate", recipient: "supervisor" } },
+        state,
+      };
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the revisionItem signature and the Draft/Released assertions"
+    evidence: |
+      function revisionItem(
+        revision: number,
+        state: "draft" | "released",
+      )
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no test in this file asks for a release or asserts a 409/HypothesisRevisionNotDraftAtReleaseError outcome."
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: "the \"row ordering with the State column present\" test"
+    evidence: 'expect(revisionCellTexts).toEqual(["9", "5", "2"]);'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the \"each row states its own revision's draft or released state\" test"
+    evidence: |
+      expect(within(row3).getByText("Draft")).toBeTruthy();
+      expect(within(row3).queryByText("Released")).toBeNull();
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "the manifest fixtures (emptyManifest(), manifestPinning(...)) are consumed only to resolve the current-pin, and no assertion in this file reads a manifest entry's own presented state."
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release is attempted and no CaseVersionNotReleasableError is asserted anywhere in this file."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release is attempted or asserted in this file."
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release action is invoked in this file."
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release is invoked in this file."
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no place-hypothesis action is invoked in this file."
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "no release attempt or refusal-specific message assertion appears in this file."
+looked_past: "the \"own-state indicator coloring\" test (bg-warning/bg-success) and the \"current\"/\"frozen\" status-column tests fix specific CSS classes and copy the pre-existing current-pin behavior (governed, where it is governed at all, by a node bound to hypothesis-revision-history.tsx rather than this spec file) — both are presentation choices the specification itself leaves to the frontend, so they are a code-review or attribution question for that other pairing rather than a finding against this file."
+candidates_opened:
+  - rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version

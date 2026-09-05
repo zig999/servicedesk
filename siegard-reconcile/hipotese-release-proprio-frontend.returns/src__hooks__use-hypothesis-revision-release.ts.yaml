@@ -1,0 +1,83 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the mutation's POST call against the release-hypothesis operation
+    evidence: |
+      apiFetch<void>(
+        `/v1/cases/${encodeURIComponent(slug)}/hypotheses/${encodeURIComponent(hypothesisName)}/revisions/${revision}/release`,
+        { method: "POST" },
+      )
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the mutation is addressed by slug, hypothesisName and revision only — no case-version or manifest identifier
+    evidence: |
+      function useHypothesisRevisionRelease(
+        slug: string,
+        hypothesisName: string,
+        revision: number,
+      )
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: withRevisionReleased, on success, writing the released literal onto the matched revision
+    evidence: 'item.revision === revision ? { ...item, state: "released" } : item'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the onError branch distinguishing the not-draft-at-release refusal
+    evidence: 'if (errorStateKind(error) === "hypothesis-revision-not-draft-at-release") {'
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: the hook's own parameters and endpoint, which reference only the hypothesis and its revision, never a case version or a manifest position
+    evidence: |
+      function useHypothesisRevisionRelease(
+        slug: string,
+        hypothesisName: string,
+        revision: number,
+      )
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: |
+      mutationFn: () =>
+        apiFetch<void>(
+          `/v1/cases/${encodeURIComponent(slug)}/hypotheses/${encodeURIComponent(hypothesisName)}/revisions/${revision}/release`,
+          { method: "POST" },
+        ),
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: '{ method: "POST" }'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: |
+      data: page.data.map(
+        (item): HypothesisRevisionListItem =>
+          item.revision === revision ? { ...item, state: "released" } : item,
+      ),
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: the same onSuccess cache patch, which keeps the cached revision's own state field accurate after release
+    evidence: 'item.revision === revision ? { ...item, state: "released" } : item'
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: |
+      export type HypothesisRevisionReleaseControl = {
+        readonly isOpen: boolean;
+        readonly onOpenChange: (open: boolean) => void;
+        readonly isConfirming: boolean;
+        readonly onConfirm: () => void;
+      };
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: 'if (errorStateKind(error) === "hypothesis-revision-not-draft-at-release") {'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: '`/v1/cases/${encodeURIComponent(slug)}/hypotheses/${encodeURIComponent(hypothesisName)}/revisions/${revision}/release`'
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'if (errorStateKind(error) === "hypothesis-revision-not-draft-at-release") {'
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: 'onConfirm: () => releaseMutation.mutate(),'
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: the onError branch, which surfaces the server's specific refusal message instead of the generic fallback used for every other failure
+    evidence: |
+      if (errorStateKind(error) === "hypothesis-revision-not-draft-at-release") {
+        setIsOpen(false);
+        toast.error(error instanceof ApiError ? error.message : GENERIC_RELEASE_FAILURE_MESSAGE);
+        void queryClient.invalidateQueries({ queryKey });
+        return;
+      }
+      toast.error(GENERIC_RELEASE_FAILURE_MESSAGE);
+looked_past: the exact route path shape, the dialog's close-on-success/close-on-already-released behavior and the generic fallback wording are wiring and UI form rather than a domain fact, so they are not reported as findings.

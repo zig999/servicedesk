@@ -4,6 +4,10 @@ import type { Resolution } from './case.js';
 
 export type CaseVersionState = 'draft' | 'released';
 
+export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;
+
+export type HypothesisRevisionState = (typeof HYPOTHESIS_REVISION_STATES)[number];
+
 export type HypothesisRevisionContent = {
   readonly hypothesis_name: string;
   readonly revision: number;
@@ -42,6 +46,11 @@ export type CreateDraftInput = {
   readonly consolidation_register?: ConsolidationRegister;
 
   readonly source_version?: number;
+};
+
+export type DraftVersion = {
+  readonly version: number;
+  readonly subject: string;
 };
 
 export type HypothesisRevisionInput = {
@@ -101,13 +110,14 @@ export type HypothesisRevisionListItem = {
   readonly criterion: string;
   readonly collects: readonly string[];
   readonly resolution: Resolution;
+  readonly state: HypothesisRevisionState;
 };
 
 export interface ICaseStore {
 
   assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
 
-  findDraftVersion(slug: string): Promise<number | undefined>;
+  findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
 
   listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
 

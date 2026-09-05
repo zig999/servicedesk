@@ -1,0 +1,64 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the query built in hypothesisRevisionsQueryOptions, lines 34-40"
+    evidence: 'apiFetch<HypothesisRevisionsPage>(`/v1/cases/${encodeURIComponent(slug)}/hypotheses/${encodeURIComponent(hypothesisName)}/revisions`)'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the HypothesisRevisionListItem type, lines 14-20"
+    evidence: |-
+      export type HypothesisRevisionListItem = {
+        readonly revision: number;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: HypothesisRevisionFormValues["resolution"];
+        readonly state: HypothesisRevisionState;
+      };
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the HypothesisRevisionState type alias, line 5"
+    evidence: 'export type HypothesisRevisionState = "draft" | "released";'
+  - node: domain/knowledge/resolution
+    held_at: "the resolution field of HypothesisRevisionListItem, line 18"
+    evidence: 'readonly resolution: HypothesisRevisionFormValues["resolution"];'
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "export function hypothesisRevisionsQueryOptions( slug: string, hypothesisName: string, ) — the hook is scoped only by a hypothesis, never by a manifest entry, so the entry-level statement this rule requires is not this file's construct"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: |-
+      export type HypothesisRevisionsPage = {
+        readonly data: readonly HypothesisRevisionListItem[];
+        readonly total: number;
+      };
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "apiFetch<HypothesisRevisionsPage>( — the call carries no credential or identity claim of its own; whatever the constraint requires is apiFetch's concern, not this file's"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisions( — the file exposes only a read query, none of the lifecycle's write operations"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "return useQuery(hypothesisRevisionsQueryOptions(slug, hypothesisName)); — no release trigger or transition is invoked here"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "queryFn: () => apiFetch<HypothesisRevisionsPage>( — the answer is returned as fetched, with no client-side ordering applied"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the state field of HypothesisRevisionListItem, line 19"
+    evidence: 'readonly state: HypothesisRevisionState;'
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "return useQuery(hypothesisRevisionsQueryOptions(slug, hypothesisName)); — no refusal handling of any kind appears in this file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "return useQuery(hypothesisRevisionsQueryOptions(slug, hypothesisName)); — no case-version or manifest concept is read or written here"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisions( — the hook only lists revisions, it never releases one"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisions( — no release or refusal path exists in this file"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "export function hypothesisRevisionsQueryOptions( — no placement of a manifest entry occurs here"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisions( — no release attempt or refusal message is produced by this file"
+looked_past: "The HypothesisRevisionsPage type carries only data and total, and the query is built with no offset or limit parameter, so the offset/limit/page-count fields constraints/listings-are-paged describes are never surfaced by this hook; whether the screens built on it need to page past the first answer is a completeness question for another judgment, not a stated or contradicted fact here."

@@ -1,0 +1,107 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: "the routePluginFactories entry for register-concept, line 128"
+    evidence: "(dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),"
+  - node: contracts/integration/capability-registry
+    held_at: "the four routePluginFactories entries for read-capability, read-capability-by-identity, list-capabilities and register-capability, lines 104-109"
+    evidence: "(dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability), ..."
+  - node: contracts/knowledge/case-input-requirements
+    held_at: "the routePluginFactories entry for read-case-input-requirements, line 119"
+    evidence: "(dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the eight routePluginFactories entries for create-draft, update-draft, release, release-hypothesis, discard, revise-hypothesis, place-hypothesis and remove-hypothesis, lines 110-117"
+    evidence: "(dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),"
+  - node: domain/integration/connector-configuration-registry
+    held_at: "the routePluginFactories entry for register-connector, line 129"
+    evidence: "(dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "(dependencies) => createReadCaseRoutesPlugin(dependencies.readCase),"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "(dependencies) => createListCasesRoutesPlugin(dependencies.listCases),"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "const app = Fastify(); app.setErrorHandler(handleUnexpectedError); for (const plugin of routePlugins(dependencies)) { app.register(plugin); }"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance, type FastifyPluginAsync } from 'fastify';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export function buildApp(dependencies: BuildAppDependencies): FastifyInstance {"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "export type BuildAppDependencies = {"
+  - node: contracts/knowledge/case-query
+    held_at: "the five routePluginFactories entries for read-case, list-cases, list-case-versions, list-hypotheses and list-hypothesis-revisions, lines 118, 120-123"
+    evidence: "(dependencies) => createListHypothesisRevisionsRoutesPlugin(dependencies.listHypothesisRevisions),"
+  - node: contracts/system/case-authoring
+    held_at: "the same case-lifecycle routePluginFactories entries, lines 110-117"
+    evidence: "(dependencies) => createReleaseRoutesPlugin(dependencies.release), (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "readonly release: ReleaseControllerDependencies;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "readonly releaseHypothesisRevision: ReleaseHypothesisRevisionControllerDependencies;"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "readonly releaseHypothesisRevision: ReleaseHypothesisRevisionControllerDependencies;"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "readonly placeHypothesis: PlaceHypothesisControllerDependencies;"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "readonly releaseHypothesisRevision: ReleaseHypothesisRevisionControllerDependencies;"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "readonly listHypothesisRevisions: ListHypothesisRevisionsControllerDependencies;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "readonly listHypothesisRevisions: ListHypothesisRevisionsControllerDependencies;"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "readonly release: ReleaseControllerDependencies;"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "readonly release: ReleaseControllerDependencies;"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "readonly readCase: ReadCaseControllerDependencies;"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "readonly releaseHypothesisRevision: ReleaseHypothesisRevisionControllerDependencies;"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "readonly release: ReleaseControllerDependencies;"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "readonly placeHypothesis: PlaceHypothesisControllerDependencies;"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "readonly reviseHypothesis: ReviseHypothesisControllerDependencies;"
+looked_past: "the generic factory-array wiring pattern is a code-shape choice, not a domain fact, and is left for a code-quality pass; the same is true of the error handler wired at app.setErrorHandler, whose own status-code/error-code mapping lives in error-handler.middleware.ts, outside this file set."

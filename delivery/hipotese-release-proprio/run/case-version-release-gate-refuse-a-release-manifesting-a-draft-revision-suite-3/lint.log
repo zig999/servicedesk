@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+  137:1  error  Async function 'seedFixture' has too many lines (34). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+

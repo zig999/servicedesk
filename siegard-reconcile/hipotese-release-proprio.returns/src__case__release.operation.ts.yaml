@@ -1,0 +1,107 @@
+read:
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "the constructor's dependency on the ICaseStore port and the final delegation to it, never a direct store or file write"
+    evidence: "private readonly caseStore: ICaseStore & IHypothesisRevisionOwnStateQuery, ... await this.caseStore.release(slug, version);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the class's release() method, matching the contract's release operation"
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: contracts/system/case-authoring
+    held_at: "releaseViolations aggregating structural, coherence and manifest-own-state violations into one refusal"
+    evidence: "if (violations.length > 0) { throw new CaseVersionNotReleasableError(slug, version, violations); }"
+  - node: domain/knowledge/case-version
+    held_at: "assembledAsDocument's mapping of the version's own attributes, including the conditional released_at"
+    evidence: "...(assembled.released_at !== undefined ? { released_at: assembled.released_at } : {}),"
+  - node: domain/knowledge/manifest-entry
+    held_at: "assembledAsDocument's manifest mapping, position paired with one referenced hypothesis-revision"
+    evidence: "manifest: assembled.manifest.map((entry) => ({ position: entry.position, hypothesis_name: entry.hypothesis_revision.hypothesis_name, revision: entry.hypothesis_revision.revision,"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "refuseNonDraft"
+    evidence: "if (assembled.state !== 'draft') { throw new CaseVersionNotDraftAtReleaseError(assembled.slug, assembled.version, assembled.state); }"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "the violations.length guard, which only ever refuses when at least one violation was named"
+    evidence: "if (violations.length > 0) { throw new CaseVersionNotReleasableError(slug, version, violations); }"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "manifestOwnStateViolations"
+    evidence: "if (ownState !== RELEASED_STATE) { violations.push(`the hypothesis \"${hypothesisName}\" is manifested at a revision that is not released`); }"
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: rules/knowledge/the-contract-check-reads-the-current-registration
+    held_at: "releaseViolations passing the live capabilities port into caseCoherenceViolations on every call"
+    evidence: "...(await caseCoherenceViolations(structural.theCase, sources.glossary, sources.capabilities)),"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "release() recomputing releaseViolations fresh on every invocation, with nothing cached"
+    evidence: "const violations = await releaseViolations(assembled, { glossary: this.glossary, capabilities: this.capabilities, hypothesisRevisions: this.caseStore, });"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "manifestOwnStateViolations iterating every manifest entry rather than stopping at the first violation"
+    evidence: "for (const entry of assembled.manifest) {"
+  - node: constraints/a-case-is-read-whole
+    held_at: "heldAssembledVersion returning the whole assembled version used for the release-gate validation"
+    evidence: "const assembled = await caseStore.assembleVersion(slug, version);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's own import list, which names only ports, error types and domain helpers"
+    evidence: "import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js'; import { CaseNotFoundError } from '../errors/case-not-found.error.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "public async release(slug: string, version: number): Promise<void> {"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "assembledAsDocument's per-entry mapping of a hypothesis-revision's own content"
+    evidence: "criterion: entry.hypothesis_revision.criterion, collects: entry.hypothesis_revision.collects, resolution: entry.hypothesis_revision.resolution,"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the RELEASED_STATE constant and its use as the comparison target for a manifested revision's own state"
+    evidence: "const RELEASED_STATE = 'released'; ... if (ownState !== RELEASED_STATE) {"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "const theCase = parseCaseDocument(assembledAsDocument(assembled), assembled.slug);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(assembled.slug, hypothesisName, revision,);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(assembled.slug, hypothesisName, revision,);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const { hypothesis_name: hypothesisName, revision } = entry.hypothesis_revision;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "const { hypothesis_name: hypothesisName, revision } = entry.hypothesis_revision;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(assembled.slug, hypothesisName, revision,);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(assembled.slug, hypothesisName, revision,);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "const { hypothesis_name: hypothesisName, revision } = entry.hypothesis_revision;"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "const { hypothesis_name: hypothesisName, revision } = entry.hypothesis_revision;"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(assembled.slug, hypothesisName, revision,);"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "await this.caseStore.release(slug, version);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "for (const entry of assembled.manifest) {"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const { hypothesis_name: hypothesisName, revision } = entry.hypothesis_revision;"
+looked_past: "whether readHypothesisRevisionOwnState's undefined case is folded into the same violation message as a draft revision is a behavioral nuance of manifestOwnStateViolations, not a domain-fact departure this pass can quote against."

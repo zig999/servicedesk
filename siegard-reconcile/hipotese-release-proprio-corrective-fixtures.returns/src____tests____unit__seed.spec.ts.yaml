@@ -1,0 +1,20 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the regex assertion in the third test, line 48"
+    evidence: "expect(source).toMatch(/lifecycle\\.releaseHypothesisRevision\\(/);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "expect(source).not.toMatch(/UPDATE\\s+hypothesis_revisions\\s+SET\\s+state/i);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the regex assertion in the third test, line 48 — only that the release trigger's call is present, not the refusal path"
+    evidence: "expect(source).toMatch(/lifecycle\\.releaseHypothesisRevision\\(/);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "expect(source).toMatch(/lifecycle\\.releaseHypothesisRevision\\(/);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "expect(source).not.toMatch(/UPDATE\\s+hypothesis_revisions\\s+SET\\s+state/i);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const resolved = await resolveFixturesRootFromBuiltLocation();"
+looked_past: "the assertions that seed.ts avoids a raw `UPDATE hypothesis_revisions SET state` statement and instead calls a method literally named `lifecycle.releaseHypothesisRevision` are implementation-style checks (which code path is used, what a method is named) rather than domain facts, so they are not reported as findings here."

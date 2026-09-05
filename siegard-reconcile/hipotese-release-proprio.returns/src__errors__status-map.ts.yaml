@@ -1,0 +1,154 @@
+findings:
+  - file: src/errors/status-map.ts
+    where: "the STATUS_BY_ERROR_CLASS entry for CaseVersionNotReleasedError, line 53"
+    evidence: "[CaseVersionNotReleasedError, 409],"
+    cost: "the refusal rules/investigation/only-a-released-case-version-is-diagnosed states (a draft version may be read but never diagnosed against) never names a status or an error identity for it; this map is the only place that says the refusal is HTTP 409 and specifically CaseVersionNotReleasedError, so the next reader who wants to know what diagnose answers for a draft-pinned version has to read this file rather than the specification, and the next change to the mapping has no node text to be held to."
+    kind: unstated
+    correction: "state the HTTP status and the error identity in rules/investigation/only-a-released-case-version-is-diagnosed, the way rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle already names HypothesisRevisionNotDraftAtReleaseError at 409 for its own refusal"
+    node: rules/investigation/only-a-released-case-version-is-diagnosed
+read:
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 44"
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: contracts/investigation/diagnosis
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 69"
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 62"
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the STATUS_BY_ERROR_CLASS entries, lines 63-64"
+    evidence: "[ConnectorConfigurationNotWellFormedError, 422], [IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 64"
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 42"
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 66"
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 65"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 45"
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 70"
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 68"
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 67"
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 54"
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 56"
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 55"
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 46"
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 69"
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 65"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { CapabilityConnectorMismatchError } from './capability-connector-mismatch.error.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "the STATUS_BY_ERROR_CLASS entry, line 57"
+    evidence: "[CaseVersionNotReleasableError, 422],"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "[CaseVersionNotReleasableError, 422],"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "[CaseVersionNotReleasableError, 422],"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+looked_past: "Every other error class in STATUS_BY_ERROR_CLASS besides CaseVersionNotReleasedError names a status the specification states outside this node pack; searched knowledge/projections/full-text.md and knowledge/decision-log.md for each and found every one already decided into its own node's statement, matching the status this file uses, so none of them is reported as a finding here."

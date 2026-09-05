@@ -1,0 +1,95 @@
+read:
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the first test's DELETE call and assertion, lines 170-179"
+    evidence: "await client.query('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1', [slug, 'the-hypothesis']); ... expect(rows).toHaveLength(0); (revision left in default/draft state, never released, so this only exercises the rule's non-refusal branch)"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file issues no case-query read at all — every call is a raw INSERT, UPDATE or DELETE against case_versions, hypotheses, hypothesis_revisions, hypothesis_revision_collects and case_version_hypotheses"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file makes no HTTP request of any kind; it holds only a pg Client talking directly to a Postgres schema"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no listing operation (offset/limit) appears anywhere in the file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no route or requester identity is involved; the file never touches the HTTP layer"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { Client } from 'pg'; (this is an integration test file, not the domain layer the constraint governs)"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: "the beforeAll hook, lines 127-133"
+    evidence: "await applyMigrationFiles(client, await migrationFilesInOrder());"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file exercises columns already declared by migrations; it adds or asserts no column of its own"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "no create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, update-draft, release or discard operation is invoked; every write is a raw SQL statement against the tables directly"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "no read-case, list-cases, list-case-versions, list-hypotheses or list-hypothesis-revisions call appears"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "the file never drives the curator-facing capability described by this node; it manipulates rows directly"
+  - node: domain/knowledge/case-version
+    held_at: "insertCaseVersion, lines 59-67"
+    evidence: "INSERT INTO case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient, state, released_at) VALUES ($1, $2, 'A stored case title', 'When to use it', now(), $3, $4, $5, $6, $7, $8)"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "insertHypothesisRevision, lines 84-91"
+    evidence: "INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient) VALUES ($1, $2, $3, 'A representative criterion.', $4, $5, $6)"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "insertHypothesisRevision never names a state column, relying entirely on the migration's own DEFAULT; neither 'draft' nor 'released' is written or asserted anywhere in this file"
+  - node: domain/knowledge/manifest-entry
+    held_at: "insertManifestEntry, lines 115-121, used by the first test"
+    evidence: "INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position) VALUES ($1, $2, $3, $4, $5)"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "each fixture inserts exactly one collects row per revision and no test asserts a refusal for a revision with zero"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "no revise operation is ever called; the file inserts fixture rows directly and never issues a second write to the same hypothesis"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no release-hypothesis action is invoked anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "each test creates at most one revision per hypothesis; no second revision is ever created to check numbering"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no listing of revisions is read"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing of revisions is read"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no case-version release is attempted"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the first test's manifest entry points at a revision whose state is never set to released, and no release of the case version is attempted"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise operation, and no answer to one, appears anywhere"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no case read is performed"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no revise is issued, let alone three in sequence"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release-hypothesis action is invoked"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release is attempted"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "no second draft version or second release is created"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "the first test's insertManifestEntry succeeds unconditionally as a fixture write, not as an assertion of place-hypothesis's own success"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise of a released revision is attempted"
+looked_past: "two things belong to other passes rather than this one — first, neither test in the file actually creates a released hypothesis-revision and asserts the DELETE refusal itself, so the file never exercises the refused branch of rules/knowledge/a-released-hypothesis-revision-is-never-altered, which is a coverage question; second, the second test's unconditional UPDATE-is-blocked assertion exercises hypothesis_revision_collects_no_update, a rule migration 0021's own comment identifies as pre-existing and untouched by this task, and reads as a persistence-mechanism safeguard rather than a business-visible fact."

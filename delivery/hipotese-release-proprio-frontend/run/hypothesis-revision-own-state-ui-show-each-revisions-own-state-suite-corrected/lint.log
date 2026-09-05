@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/frontend/app/src/routes/hypothesis-revision-history-own-state.spec.ts
+  120:24  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  121:24  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+✖ 2 problems (2 errors, 0 warnings)
+

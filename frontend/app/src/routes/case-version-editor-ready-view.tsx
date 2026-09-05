@@ -21,6 +21,14 @@ import {
   type StatusTableRow,
 } from "../shared/components/status-table";
 import type { CaseVersionManifestEntry } from "../services/case-version-record";
+import {
+  useManifestPinnedRevisionStates,
+  type ManifestPinnedRevisionStates,
+} from "../hooks/use-manifest-pinned-revision-states";
+import {
+  pinnedRevisionStateCell,
+  type PinnedRevisionStateResult,
+} from "../hooks/use-pinned-revision-state";
 
 const CONFLICT_BANNER_TITLE = "This version was released by someone else";
 const CONFLICT_BANNER_MESSAGE =
@@ -36,17 +44,45 @@ const MANIFEST_COLUMNS: StatusTableColumn[] = [
   { key: "position", header: "Position" },
   { key: "hypothesis", header: "Hypothesis" },
   { key: "revision", header: "Revision" },
+  { key: "state", header: "State" },
   { key: "criterion", header: "Criterion" },
 ];
 
-function toManifestRow(entry: CaseVersionManifestEntry): StatusTableRow {
+const STILL_UNRESOLVED_PIN_STATE: PinnedRevisionStateResult = { status: "pending" };
+
+function toManifestRow(
+  entry: CaseVersionManifestEntry,
+  pinnedStates: ManifestPinnedRevisionStates,
+): StatusTableRow {
+  const pinnedState = pinnedStates.get(entry.position) ?? STILL_UNRESOLVED_PIN_STATE;
   return {
     id: entry.position,
     position: entry.position,
     hypothesis: entry.hypothesis_revision.hypothesis.name,
     revision: entry.hypothesis_revision.revision,
+    state: pinnedRevisionStateCell(pinnedState),
     criterion: entry.hypothesis_revision.criterion,
   };
+}
+
+export type ManifestTableProps = {
+  readonly slug: string;
+  readonly manifest: readonly CaseVersionManifestEntry[];
+};
+
+function ManifestTable({ slug, manifest }: ManifestTableProps): JSX.Element {
+  const pinnedStates = useManifestPinnedRevisionStates(slug, manifest);
+
+  if (manifest.length === 0) {
+    return <p>This version&apos;s manifest holds no entry.</p>;
+  }
+
+  return (
+    <StatusTable
+      columns={MANIFEST_COLUMNS}
+      rows={manifest.map((entry) => toManifestRow(entry, pinnedStates))}
+    />
+  );
 }
 
 export type CaseVersionEditorReadyViewProps = {
@@ -83,14 +119,7 @@ export function CaseVersionEditorReadyView({
 
         <section className="flex flex-col gap-2">
           <h2>Manifest</h2>
-          {(state.manifest ?? []).length === 0 ? (
-            <p>This version&apos;s manifest holds no entry.</p>
-          ) : (
-            <StatusTable
-              columns={MANIFEST_COLUMNS}
-              rows={(state.manifest ?? []).map(toManifestRow)}
-            />
-          )}
+          <ManifestTable slug={slug} manifest={state.manifest ?? []} />
         </section>
       )}
       {release !== undefined && release.canRelease && (

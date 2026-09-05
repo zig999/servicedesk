@@ -1,0 +1,47 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "releaseHandlers({ [`GET ${VERSION_PATH}`]: () => jsonResponse({ ...DRAFT_RECORD, manifest: [] }) })"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'within(dialog).getByText(/!\s*Manifest holds at least one hypothesis \(0\)/)'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: 'releaseHandlers({ "GET /v1/glossary/outcome": sequentialHandler([OUTCOME_TERMS, outcomeWithoutResolved]) })'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "jsonResponse({ ...DRAFT_RECORD, manifest: [{ hypothesis_revision: {} }] })"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "jsonResponse({ ...DRAFT_RECORD, manifest: [{ hypothesis_revision: {} }] })"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getAllByRole("listitem")).toHaveLength(3);'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getByText(/✓\s*Every collected concept accepts the case subject/)).toBeTruthy();'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getByText(/✓\s*Every collected concept accepts the case subject/)).toBeTruthy();'
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getAllByRole("listitem")).toHaveLength(3);'
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: '[`GET ${CONCEPTS_PATH}`]: () => { throw new Error("network down"); }'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getAllByRole("listitem")).toHaveLength(3);'
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "await mountCaseVersionEditor(fetchMock); await openReleaseDialog();"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getAllByRole("listitem")).toHaveLength(3);'
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "jsonResponse({ ...DRAFT_RECORD, manifest: [{ hypothesis_revision: {} }] })"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: 'expect(within(dialog).getByText(/!\s*Fallback resolution is set/)).toBeTruthy();'
+looked_past: "The \"(this task's own inference)\" test over a hypothesis_revision with no collects field exercises client-side robustness against a malformed payload rather than a stated business rule, and whether that inference belongs anywhere in the specification is a question for the fact-decision route, not this pass."

@@ -31,3 +31,19 @@ it(
     expect(resolved).toBe(REAL_FIXTURES_ROOT);
   },
 );
+
+async function readSeedSource(): Promise<string> {
+  return readFile(SEED_SOURCE_PATH, 'utf8');
+}
+
+it('writes no raw SQL statement that sets hypothesis_revisions.state', async () => {
+  const source = await readSeedSource();
+
+  expect(source).not.toMatch(/UPDATE\s+hypothesis_revisions\s+SET\s+state/i);
+});
+
+it("releases each manifested revision by calling lifecycle's own releaseHypothesisRevision operation", async () => {
+  const source = await readSeedSource();
+
+  expect(source).toMatch(/lifecycle\.releaseHypothesisRevision\(/);
+});

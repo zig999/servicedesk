@@ -354,3 +354,49 @@ it('holds no second case version, having run seed.ts a second time in a row agai
 
   expect(secondVersion).toBeUndefined();
 });
+
+it(
+  "leaves every hypothesis-revision the released version's manifest references with its own state released, once seed.ts has run",
+  async () => {
+    const { rows } = await connection.query<{ state: string }>(
+      `SELECT hr.state
+         FROM hypothesis_revisions hr
+         JOIN case_version_hypotheses cvh
+           ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
+         JOIN case_versions cv
+           ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
+        WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released'`,
+      [SLUG, VERSION],
+    );
+
+    expect(rows.length).toBeGreaterThanOrEqual(1);
+    expect(rows.every((row) => row.state === 'released')).toBe(true);
+  },
+);
+
+async function readBackManifestedRevisions(): Promise<
+  ReadonlyArray<{ hypothesis_name: string; revision: number; state: string }>
+> {
+  const { rows } = await connection.query<{ hypothesis_name: string; revision: number; state: string }>(
+    `SELECT hr.hypothesis_name, hr.revision, hr.state
+       FROM hypothesis_revisions hr
+       JOIN case_version_hypotheses cvh
+         ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
+      WHERE hr.case_slug = $1
+      ORDER BY hr.hypothesis_name`,
+    [SLUG],
+  );
+  return rows;
+}
+
+it(
+  'leaves every manifested hypothesis-revision with exactly the revision number and state it already read, having run seed.ts yet again against the case version it already released',
+  async () => {
+    const before = await readBackManifestedRevisions();
+
+    await runSeedScript(3);
+
+    const after = await readBackManifestedRevisions();
+    expect(after).toEqual(before);
+  },
+);

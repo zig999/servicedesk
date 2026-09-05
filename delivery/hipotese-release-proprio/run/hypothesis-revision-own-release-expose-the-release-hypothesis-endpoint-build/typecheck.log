@@ -1,0 +1,5 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(261,3): error TS2741: Property 'releaseHypothesisRevision' is missing in type '{ readCapability: { capabilityQuery: ICapabilityQuery; }; readCapabilityByIdentity: ReadCapabilityByIdentityControllerDependencies; ... 26 more ...; simulateHypothesis: SimulateHypothesisControllerDependencies; }' but required in type 'BuildAppDependencies'.

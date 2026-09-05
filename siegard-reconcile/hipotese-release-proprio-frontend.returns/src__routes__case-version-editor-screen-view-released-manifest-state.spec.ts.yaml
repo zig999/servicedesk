@@ -1,0 +1,125 @@
+findings:
+  - file: src/routes/case-version-editor-screen-view-released-manifest-state.spec.ts
+    where: "describe block \"the released manifest table's state cell when the pin is absent from the answered page (this task's own inference)\", lines 102-125"
+    evidence: |
+      expect(within(row).getByText("Delayed payment history")).toBeTruthy();
+      expect(within(row).getByText("4")).toBeTruthy();
+      expect(within(row).queryByText("Draft")).toBeNull();
+      expect(within(row).queryByText("Released")).toBeNull();
+    cost: >-
+      For a manifest entry whose hypothesis's revisions listing answered but did not carry the
+      pinned revision on the page fetched (here revision 9 answered where the entry pins revision
+      4), the screen renders the entry's other facts but shows neither "Draft" nor "Released" at
+      all. The pinned-revision-state rule states the disclosure is unconditional — it names only
+      three things it does not depend on (the case version's own state, a release having been
+      attempted, or the reader opening the revision selector) — and does not except a page that
+      failed to carry the pinned revision from that guarantee. A curator looking at this entry
+      loses exactly the fact — is this pin still in draft? — the specification says must never be
+      recoverable only from a failed release; here it is recoverable from nowhere at all, silently.
+      The test's own title names this "this task's own inference," which is the source deciding
+      a business behavior the specification does not state and, on this point, actively
+      contradicts.
+    kind: contradicts
+    correction: >-
+      Either fetch (or otherwise resolve) the pinned revision's own state regardless of which page
+      the hypothesis's default revisions listing answered, so the state cell states the value
+      unconditionally as the rule requires, or have the specification itself carve out this
+      exception if it is meant to exist.
+    node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: |
+      function revisionsPage(
+        revisions: readonly { revision: number; state: "draft" | "released" }[],
+      ): { data: { revision: number; state: "draft" | "released" }[]; total: number } {
+        return { data: revisions.map((item) => ({ ...item })), total: revisions.length };
+      }
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      [`GET ${VERSION_PATH}`]: () => jsonResponse(RELEASED_RECORD_WITH_MANIFEST),
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |
+      describe("CaseVersionEditorScreen — the released manifest table's own State column (criteria 1 and 4)", () => {
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "RELEASED_MANIFEST fixture, lines 28-47"
+    evidence: |
+      hypothesis_revision: {
+        hypothesis: { name: "Delayed payment history" },
+        revision: 4,
+        criterion: "At least two late payments in the last 90 days",
+        collects: ["late-payment"],
+      },
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the revisions-listing mocks and their rendered text, lines 60-63, 72-75"
+    evidence: |
+      [`GET ${revisionsPath("Delayed payment history")}`]: () =>
+        jsonResponse(revisionsPage([{ revision: 4, state: "released" }])),
+      [`GET ${revisionsPath("Disputed invoice pattern")}`]: () =>
+        jsonResponse(revisionsPage([{ revision: 2, state: "draft" }])),
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: |
+      jsonResponse(revisionsPage([{ revision: 4, state: "released" }]))
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: |
+      jsonResponse(revisionsPage([{ revision: 4, state: "released" }]))
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the two-revisions test, lines 68-75"
+    evidence: |
+      expect(within(rows[1]).getByText("Released")).toBeTruthy();
+      expect(within(rows[1]).queryByText("Draft")).toBeNull();
+      expect(within(rows[2]).getByText("Draft")).toBeTruthy();
+      expect(within(rows[2]).queryByText("Released")).toBeNull();
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: "the two-revisions test, lines 68-75 (contradicted elsewhere in this file — see findings)"
+    evidence: |
+      expect(within(rows[1]).getByText("Released")).toBeTruthy();
+      expect(within(rows[2]).getByText("Draft")).toBeTruthy();
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: |
+      describe("CaseVersionEditorScreen — the released manifest table's own State column (criteria 1 and 4)", () => {
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: |
+      const RELEASED_RECORD_WITH_MANIFEST = {
+        ...LOADED_RECORD,
+        state: "released" as const,
+        manifest: RELEASED_MANIFEST,
+      };
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: |
+      const RELEASED_RECORD_WITH_MANIFEST = {
+        ...LOADED_RECORD,
+        state: "released" as const,
+        manifest: RELEASED_MANIFEST,
+      };
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: |
+      [`GET ${revisionsPath("Disputed invoice pattern")}`]: () =>
+        jsonResponse(revisionsPage([{ revision: 2, state: "draft" }])),
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: |
+      [`GET ${VERSION_PATH}`]: () => jsonResponse(RELEASED_RECORD_WITH_MANIFEST),
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: |
+      apiErrorResponse("SomeUnexpectedError", 500, "internal error"),
+looked_past: >-
+  The "before any revisions listing has answered" and "revisions listing fails" cases also hide
+  the state cell, but these are transient/error states the pinned-revision-state rule's own
+  "consistency: eventual" already contemplates rather than a settled business decision, and the
+  "draft-version load with a malformed manifest fixture" describe block tests defensive rendering
+  against a manifest shape the domain model (manifest-entry's required hypothesis-revision
+  reference) already makes impossible in practice — both are engineering robustness, not a domain
+  fact for this pass to weigh.
+candidates_opened:
+  - rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+  - domain/knowledge/manifest-entry

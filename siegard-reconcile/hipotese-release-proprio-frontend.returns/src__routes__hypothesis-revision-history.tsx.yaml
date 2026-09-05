@@ -1,0 +1,74 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the row built per revision, lines 130-137"
+    evidence: |
+      criterion: revision.criterion,
+          collects: revision.collects.join(", "),
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the REVISION_STATE_CELL lookup, lines 38-43"
+    evidence: |
+      draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+  - node: rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version
+    held_at: "the usesNoRevision flag and its message, lines 160 and 172-174"
+    evidence: 'const usesNoRevision = currentPin.phase === "ready" && currentPin.pinnedRevision === null;'
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the row identity, line 130"
+    evidence: "id: revision.revision,"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: "the local sort, line 126"
+    evidence: ".sort((a, b) => b.revision - a.revision)"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the state cell, line 132"
+    evidence: "state: REVISION_STATE_CELL[revision.state],"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "the release-action gate, line 148"
+    evidence: '{revision.state === "draft" && ('
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "const revisions = revisionsQuery.data?.data ?? [];"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      <h2>
+            {hypothesisName} — {totalRevisions} revision{totalRevisions === 1 ? "" : "s"}
+          </h2>
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "const release = useHypothesisRevisionRelease(slug, hypothesisName, revision);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the release-action gate, line 148"
+    evidence: '{revision.state === "draft" && ('
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: |
+      revisions
+        .slice()
+        .sort((a, b) => b.revision - a.revision)
+        .map((revision) => {
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "<DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "<DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "<DialogTitle>Release revision {revision}?</DialogTitle>"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: 'import { useHypothesisRevisionRelease } from "../hooks/use-hypothesis-revision-release";'
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "<DialogTitle>Release revision {revision}?</DialogTitle>"
+findings:
+  - file: src/routes/hypothesis-revision-history.tsx
+    where: "the rows construction, lines 124-126"
+    evidence: |
+      .slice()
+        .sort((a, b) => b.revision - a.revision)
+    cost: "The descending-by-revision-number order that rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first assigns to the listing itself is re-derived here as a second, independent sort over whatever page the hook returns. A reader auditing how the order is guaranteed finds it enforced twice — once as the API's own invariant, once as this local .sort — and the two can diverge silently: a change to (or a bug in) the listing's own ordering would be masked here rather than surfaced, since this component fixes the order itself regardless of what it received."
+    kind: contradicts
+    correction: "Render revisions in the order the hook returns it and drop the local sort, trusting the listing's own descending-by-revision guarantee instead of re-implementing it."
+    node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+looked_past: "Whether every revision beyond the fetched page is ever reachable from this screen (no offset/limit or paging control appears here) is a completeness question for the listing's own paging, not a domain-fact misstatement, and is left to another pass."

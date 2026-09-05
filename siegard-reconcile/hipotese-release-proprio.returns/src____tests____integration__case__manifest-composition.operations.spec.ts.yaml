@@ -1,0 +1,103 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the manifestOf helper, lines 116-119, reading through store.assembleVersion"
+    evidence: "const assembled = await store.assembleVersion(slug, version); return assembled?.manifest ?? [];"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "every call in this file is to placeHypothesis, removeHypothesis or store.* directly; no HTTP route or request body is exercised"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no list-cases, list-case-versions, list-hypotheses or list-hypothesis-revisions call appears anywhere in this file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file never invokes an HTTP route; every call is to a domain operation or the store"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "no migration script is run or referenced by this file"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the only raw SQL here is cleanup and row assertions, never a schema-to-model pairing check"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "every it(...) body calling placeHypothesis/removeHypothesis, e.g. lines 112 and 217"
+    evidence: "await placeHypothesis(store, { slug: options.slug, version: options.version, hypothesis_name: hypothesisName, revision, position: options.position });"
+  - node: contracts/knowledge/case-query
+    held_at: "the manifestOf helper, lines 116-119"
+    evidence: "const assembled = await store.assembleVersion(slug, version); return assembled?.manifest ?? [];"
+  - node: contracts/system/case-authoring
+    held_at: "the suite as a whole, e.g. the first test, lines 158-167"
+    evidence: "it('places a hypothesis-revision at a position not yet occupied in a draft manifest', async () => { ... })"
+  - node: domain/knowledge/case-version
+    held_at: "the slug/version pair threaded through every placeHypothesis/removeHypothesis call, e.g. line 112"
+    evidence: "await placeHypothesis(store, { slug: options.slug, version: options.version, hypothesis_name: hypothesisName, revision, position: options.position });"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeFreshHypothesis, lines 103-114"
+    evidence: "const revision = await store.insertHypothesisRevision({ slug: options.slug, hypothesis_name: hypothesisName, criterion: 'A representative criterion.', collects: [options.concept], resolution: { outcome: options.glossary.outcome, referral: { action: options.glossary.action, recipient: options.glossary.recipient } } });"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "no assertion in this file reads or checks a hypothesis-revision's own state"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the manifest assertions, e.g. line 166"
+    evidence: "expect(manifest).toEqual([{ position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: hypothesisName, revision }) }]);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "every insertHypothesisRevision call supplies collects: [options.concept] or collects: [concept]; the refusal on an empty collects is never exercised"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file never calls a revise operation; insertHypothesisRevision is used only as direct test-data setup"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no release-hypothesis call appears anywhere in this file"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "line 193"
+    evidence: "expect(secondRevision).not.toBe(firstRevision);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no list-hypothesis-revisions call appears anywhere in this file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing of hypothesis-revisions appears anywhere in this file"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "store.release(slug, version) is called only as setup (lines 202, 215) and its outcome is never asserted"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the first test, lines 158-167, placing a freshly-inserted revision successfully"
+    evidence: "const { hypothesisName, revision } = await placeFreshHypothesis({ slug, version, position: 1, glossary, concept }); const manifest = await manifestOf(slug, version); expect(manifest).toEqual([{ position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: hypothesisName, revision }) }]);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no hypothesis-revision is ever released or altered in this file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file never calls a revise operation"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the manifestOf helper, lines 116-119"
+    evidence: "const assembled = await store.assembleVersion(slug, version);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no revise operation is called; insertHypothesisRevision is used only for direct test-data setup"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release-hypothesis call appears anywhere in this file"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "store.release is called as setup only, and no refusal from it is ever asserted"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "no second draft, and no re-read of a released version, appears anywhere in this file"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "the first test, lines 158-167"
+    evidence: "const { hypothesisName, revision } = await placeFreshHypothesis({ slug, version, position: 1, glossary, concept }); const manifest = await manifestOf(slug, version); expect(manifest).toEqual([{ position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: hypothesisName, revision }) }]);"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no released hypothesis-revision is ever revised in this file"
+findings:
+  - file: src/__tests__/integration/case/manifest-composition.operations.spec.ts
+    where: "the test 'does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry', lines 278-287"
+    evidence: "await expect(removeHypothesis(store, { slug, version, hypothesis_name: 'never-placed' })).resolves.toBeUndefined();"
+    cost: "the decision that remove-hypothesis silently succeeds (rather than refusing, e.g. with a not-found error) for a hypothesis name never placed in the manifest lives only in this test and in the operation's own implementation; a reader consulting the specification for what remove-hypothesis answers on an absent hypothesis name finds nothing, and a later change making that call refuse instead would break no documented contract"
+    kind: unstated
+    correction: "state, in the node governing remove-hypothesis, whether removing a hypothesis name absent from the manifest succeeds as a no-op or is refused"
+    node: domain/knowledge/case-version
+looked_past: "the domain-error context payloads this file asserts follow one consistent convention across every error class in the file rather than stating a fact particular to any one rule, and reviewing that convention is another judgment's."

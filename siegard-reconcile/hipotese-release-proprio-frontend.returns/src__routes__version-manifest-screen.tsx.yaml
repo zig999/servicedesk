@@ -1,0 +1,78 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: "the rowsDisabled computation gating every manifest control once the version is released"
+    evidence: "const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;"
+  - node: domain/knowledge/hypothesis
+    held_at: "toStatusRow, keying each row by the hypothesis's own stable name"
+    evidence: "id: row.hypothesisName,"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "RevisionSelect, reading row.revision and each option's own revision/state"
+    evidence: "const options = optionsWithPinnedRevision(revisions, row.revision);"
+  - node: domain/knowledge/manifest-entry
+    held_at: "toStatusRow, pairing a position with a pinned-revision selector per row"
+    evidence: "position: row.position,\n    hypothesis: <RevisionSelect slug={slug} row={row} disabled={disabled} />,"
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: "RowActions, disabling Remove and explaining why when the row is the manifest's only entry"
+    evidence: "const removeDisabled = row.isOnlyEntry || disabled;"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "the same rowsDisabled gate applied to move/remove/repin once state.isReleased"
+    evidence: "const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;"
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: "optionsWithPinnedRevision, appending the pinned revision to the option list when the fetched page omits it"
+    evidence: "if (options.some((option) => option.value === pinnedValue)) {\n    return options;\n  }\n\n  return [...options, { value: pinnedValue, label: pinnedValue }];"
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "const pinnedRevisionState = revisions.find((item) => item.revision === row.revision)?.state;"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "repinIfChanged, which repins to any chosen revision without reading that revision's own state"
+    evidence: "function repinIfChanged(value: string): void {\n    const chosenRevision = Number(value);\n    if (chosenRevision !== row.revision) {\n      row.onRepin(chosenRevision);\n    }\n  }"
+  - node: rules/knowledge/hypotheses-are-ordered-by-precedence
+    held_at: "MANIFEST_COLUMNS' position column and toStatusRow's position mapping, both taken from the row's own declared position"
+    evidence: '{ key: "position", header: "#" },'
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "repinIfChanged, which never inspects the chosen revision's state before repinning"
+    evidence: "if (chosenRevision !== row.revision) {\n      row.onRepin(chosenRevision);\n    }"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "const { revisions, highestRevision, isLoading } = useManifestRowRevisions(\n    slug,\n    row.hypothesisName,\n  );"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "return (\n    <TooltipProvider>\n      <section>"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the Add-hypothesis link, RowActions' Remove control and RevisionSelect's repin, exercising place-hypothesis, remove-hypothesis and update-draft"
+    evidence: "<Link\n            to=\"/cases/$slug/versions/$version/manifest/hypotheses/new\"\n            params={{ slug, version }}\n          >\n            + Add hypothesis\n          </Link>"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the pinned-revision badge, looking the state up in HYPOTHESIS_REVISION_STATE_CELL"
+    evidence: "HYPOTHESIS_REVISION_STATE_CELL[pinnedRevisionState].color,"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "const state = useManifestBuilder(slug, Number(version));"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "const options = revisions.map((item) => ({\n    value: String(item.revision),\n    label: String(item.revision),\n  }));"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "const options = revisions.map((item) => ({\n    value: String(item.revision),\n    label: String(item.revision),\n  }));"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "<p>Unable to load this manifest right now.</p>"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "const state = useManifestBuilder(slug, Number(version));"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "if (state.phase === \"load-error\") {\n    return (\n      <section>\n        <p>Unable to load this manifest right now.</p>"
+
+findings:
+  - file: src/routes/version-manifest-screen.tsx
+    where: "RevisionSelect, lines 169 and 192-203"
+    evidence: "const pinnedRevisionState = revisions.find((item) => item.revision === row.revision)?.state;\n...\n{pinnedRevisionState !== undefined && (\n          <span className=\"inline-flex shrink-0 items-center gap-1 text-sm\">"
+    cost: "revisions is the raw, possibly-paged answer for that hypothesis (fetched with no offset/limit, so a default page a curator has not paged past); optionsWithPinnedRevision already compensates for this same truncation when showing the revision number, but pinnedRevisionState does not — when the pinned revision falls off that page, pinnedRevisionState is undefined and the whole draft/released badge is skipped. A curator composing the manifest then sees an entry with no state indicator at all, and only discovers the pin is still draft when a later release is refused — exactly the silence the rule states the disclosure exists to prevent."
+    kind: contradicts
+    correction: "resolve the pinned revision's own state the same way its number is resolved — e.g. fold the pinned revision into (or alongside) the fetched list before reading .state, rather than searching only the unmodified page — so the badge renders unconditionally, whatever page answered revisions."
+    node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+
+looked_past: "The hasNewerRevision / \"Newer revision available\" disclosure in RevisionSelect compares a pin against the hypothesis's highest revision, which is a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest's fact, a node outside this file's set, so it is not judged here."

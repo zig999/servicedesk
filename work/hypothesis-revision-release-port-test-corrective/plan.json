@@ -1,0 +1,34 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/hypothesis-revision-release-port-test-corrective",
+      "kind": "epic",
+      "file": "epic/hypothesis-revision-release-port-test-corrective.md",
+      "title": "Hypothesis-revision-release port test correction",
+      "summary": "Corrects hypothesis-revision-release.port.spec.ts, a file this project already delivered, so its assertion matches the domain-depends-on-no-infrastructure constraint's actual scope rather than a stricter, unstated rule."
+    },
+    {
+      "id": "task/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "kind": "task",
+      "file": "task/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion.md",
+      "title": "Narrow hypothesis-revision-release.port.spec.ts's overly strict import assertion",
+      "summary": "The test asserts the port declares no import at all, stricter than the constraint actually requires (no framework, driver or provider-client import); its sibling port test already asserts the correct, narrower rule.",
+      "epic": "hypothesis-revision-release-port-test-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/hypothesis-revision-release-port-test-corrective",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-release-port-test-corrective/narrow-the-overly-strict-import-assertion",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}

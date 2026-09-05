@@ -1,0 +1,120 @@
+findings:
+  - file: src/case/release-hypothesis-revision.operation.ts
+    where: "the refuseNonDraft function, lines 25-29, applied to a state read that may be undefined"
+    evidence: |-
+      function refuseNonDraft(state: HypothesisRevisionState | undefined): void {
+        if (state !== DRAFT_STATE) {
+          throw new HypothesisRevisionNotDraftAtReleaseError();
+        }
+      }
+    cost: "The rule's own statement grounds HypothesisRevisionNotDraftAtReleaseError's silence about which state the revision stood in on a specific claim: the state the revision stood in is released whenever this refusal is raised — and the decision log ties that to the enumeration holding exactly draft and released, so a caller reading the error by the rule's own reasoning learns the identity named a revision that exists and is already released. Here state is typed HypothesisRevisionState | undefined, so the identical refusal also fires when readHypothesisRevisionOwnState finds no row at all — a revision that was never released, or ever stored, at that identity. The refusal's documented meaning stops matching what actually triggers it: a curator who mistyped a hypothesis name or revision number reads the same signal as a curator who is one release too late."
+    kind: contradicts
+    correction: "Either give the not-found case its own refusal distinct from HypothesisRevisionNotDraftAtReleaseError, or amend the rule's stated invariant so it no longer asserts the revision's state is released whenever this refusal is raised."
+    node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the releaseHypothesisRevision method, lines 18-22"
+    evidence: |-
+      public async releaseHypothesisRevision(slug: string, hypothesisName: string, revision: number): Promise<void> {
+          const state = await this.caseStore.readHypothesisRevisionOwnState(slug, hypothesisName, revision);
+          refuseNonDraft(state);
+          await this.caseStore.releaseHypothesisRevision(slug, hypothesisName, revision);
+        }
+  - node: contracts/system/case-authoring
+    held_at: "the same method — no case or manifest is read or written"
+    evidence: "await this.caseStore.releaseHypothesisRevision(slug, hypothesisName, revision);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the whole ReleaseHypothesisRevisionOperation class, which encodes the revision's own release operation"
+    evidence: "public async releaseHypothesisRevision(slug: string, hypothesisName: string, revision: number): Promise<void> {"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the refuseNonDraft function, lines 25-29"
+    evidence: |-
+      if (state !== DRAFT_STATE) {
+          throw new HypothesisRevisionNotDraftAtReleaseError();
+        }
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "the method signature and body, which takes (slug, hypothesisName, revision) and never reads or touches a manifest"
+    evidence: "releaseHypothesisRevision(slug: string, hypothesisName: string, revision: number): Promise<void>"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file contains no case read; it only reads and writes a hypothesis-revision's own state"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file declares no request shape or HTTP handling — its two operations take plain slug/hypothesisName/revision arguments"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "the file declares no listing operation"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file declares no route"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import list, lines 1-4"
+    evidence: |-
+      import { HypothesisRevisionNotDraftAtReleaseError } from '../errors/hypothesis-revision-not-draft-at-release.error.js';
+      import type { HypothesisRevisionState } from './case-store.port.js';
+      import type { IHypothesisRevisionOwnStateQuery } from './hypothesis-revision-own-state.port.js';
+      import type { IHypothesisRevisionRelease } from './hypothesis-revision-release.port.js';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "the file contains no migration or schema concern"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file contains no schema or column declaration"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "the file offers no read/listing operation; it is a case-lifecycle write operation"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the operation never references a case version; ReleaseHypothesisRevisionStore composes only IHypothesisRevisionOwnStateQuery and IHypothesisRevisionRelease"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "line 13"
+    evidence: "const DRAFT_STATE: HypothesisRevisionState = 'draft';"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "the operation never reads or writes a manifest entry"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "the file has no criterion, collects or revision-content concern; it only moves a revision's own state"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "the file writes no revision content; it calls caseStore.releaseHypothesisRevision, never an overwrite path"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "the file assigns no revision number; revision is an argument it only reads and forwards"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file declares no listing operation"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "the file declares no listing operation"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "the refusal here carries a single, unconditional error with no aggregation of named violations: throw new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the operation never reads a case version's manifest or any entry within it"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "the operation only calls releaseHypothesisRevision, never an overwrite or alteration path over an already-released revision"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the method returns Promise<void>; it answers with no revision number at all"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "the file performs no case read or case validation"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "the file contains no repeated-save or overwrite behavior; it only releases"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file never inspects a manifest, so it cannot name a manifested hypothesis in a refusal"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "the file has no case-version read or comparison across versions"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "the file declares no place-hypothesis operation"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the file declares no revise operation; it only reads and releases a revision's own state"
+looked_past: "The operation.spec.ts and the port files confirm and further evidence the not-found/not-draft conflation, but they are outside this file set and not this pass's subject."

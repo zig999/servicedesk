@@ -1,0 +1,95 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the listHypothesisRevisions assertions, e.g. line 490"
+    evidence: "expect(page.data).toEqual([{ revision: secondRevision, criterion: 'second criterion', collects: [conceptB], resolution: aResolution(glossary), state: 'draft' },"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the state-column assertions, e.g. line 636"
+    evidence: "expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'released' }]);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the overwrite-refusal test, lines 2078-2089"
+    evidence: "await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError); const caught = await rejection.catch((error: unknown) => error); expect(statusForError(caught)).toBe(409);"
+  - node: constraints/a-case-is-read-whole
+    held_at: "the assembleVersion test, lines 178-207"
+    evidence: "'assembles one version whole — its own attributes together with its manifest, ordered by ' + 'position regardless of the order entries were placed in, each entry joined to its own adopted ' + 'hypothesis-revision and its collects',"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the whole file exercises RelationalCaseStore methods directly against a database connection; no request path is ever built or validated here"
+  - node: constraints/listings-are-paged
+    held_at: "the PaginatedResponse-envelope tests, e.g. lines 250-256"
+    evidence: "expect(page.limit).toBe(1); expect(page.offset).toBe(0); expect(page.data).toHaveLength(1); expect(page.total).toBeGreaterThanOrEqual(2); expect(page.pageCount).toBe(Math.ceil(page.total / 1));"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no route, middleware or identity claim appears anywhere in this file"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "the file itself imports createDatabaseConnection and RelationalCaseStore, i.e. it is a persistence-layer test"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "no migration script is applied or referenced anywhere in this file"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "the file issues SQL only through RelationalCaseStore's own methods and ad hoc UPDATE/SELECT statements for test setup; it never audits column-to-attribute pairing"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "createDraft/placeHypothesis/removeManifestEntry/updateDraft/release/discard calls throughout, e.g. lines 941-957"
+    evidence: "await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 }); await store.removeManifestEntry(slug, version, 'a-hypothesis');"
+  - node: contracts/knowledge/case-query
+    held_at: "listCases/listCaseVersions/listHypotheses/listHypothesisRevisions/assembleVersion calls throughout, e.g. line 231"
+    evidence: "const page = await store.listCases({ offset: 0, limit: wideEnoughLimit });"
+  - node: contracts/system/case-authoring
+    held_at: "the draft-composition and post-release immutability tests together, e.g. lines 994-1020"
+    evidence: "'refuses removeManifestEntry, through CaseVersionNotDraftError, against a released version, leaving its own manifest entry in place',"
+  - node: domain/knowledge/case-version
+    held_at: "the assembled-version attribute assertions, lines 192-200"
+    evidence: "expect(assembled).toMatchObject({ slug, version, title: 'A title', when_to_use: 'A use', subject: glossary.subjectType, fallback: aResolution(glossary), state: 'draft', });"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the manifest assertions, lines 202-205"
+    evidence: "{ position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'second', revision: secondRevision, collects: [conceptB] }) },"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "await store.insertHypothesisRevision({ slug, hypothesis_name: 'a-hypothesis', criterion: 'a criterion', collects: [], resolution: aResolution(glossary) });"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "the overwriteHypothesisRevision tests, lines 1766-1791"
+    evidence: "it(\"overwrites a revision's content while leaving its own revision number exactly as it was before\", async () => {"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "the import list, lines 1-16, imports ReleasedHypothesisRevisionNotAlterableError but no HypothesisRevisionNotDraftAtReleaseError, and no method named releaseHypothesisRevision is ever called"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "the revision-numbering test, lines 887-906"
+    evidence: "expect([first, second, anothersFirst]).toEqual([1, 2, 1]);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: "the descending-order tests, lines 682-705"
+    evidence: "expect(page.data.map((item) => item.revision)).toEqual([third, second, first]);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the own-state tests, lines 616-680"
+    evidence: "expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'released' }]);"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "the two release tests present, lines 959-991, only exercise a first release succeeding and a second release being refused through CaseVersionNotDraftAtReleaseError — no CaseVersionNotReleasableError or named-violation aggregation appears"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 }); await store.release(slug, version); const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis'); expect(state).toEqual({ revision, state: 'draft' });"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the overwrite tests assert the repository primitive itself resolves undefined, e.g. line 1962: expect(result).toBeUndefined(); — the composed revise-hypothesis answer this rule governs is not exercised here"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "assembleVersion is asserted to return the stored version's own fields directly, e.g. lines 190-205, with no re-validation of validator rules exercised"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no test in this file revises the same hypothesis three times and checks the draft manifest's pin stays put; the closest is the single-overwrite test at lines 1766-1791"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no method named releaseHypothesisRevision is ever called in this file"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no CaseVersionNotReleasableError or named-violation aggregation is imported or asserted anywhere in this file"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "no test reads an already-released version again after a later draft revises the same hypothesis and asserts the earlier version's own reference is unchanged"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "the ordinary placeHypothesis calls against freshly-inserted (draft-state) revisions, e.g. lines 173-174"
+    evidence: "await store.placeHypothesis({ slug, version, hypothesis_name: 'second', revision: secondRevision, position: 1 }); await store.placeHypothesis({ slug, version, hypothesis_name: 'first', revision: firstRevision, position: 2 });"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no test composes readHighestRevisionReleaseState with insertHypothesisRevision to demonstrate a released highest revision producing the next number; the repository primitives are tested independently"
+looked_past: "A large share of this file's other tests — case-catalog shape and derivation, ascending slug order, hypothesis and manifest-position uniqueness, version-number reuse, draft-copy-on-create, case-not-found refusals — are governed by rules and a domain/knowledge/case-summary node the candidate index binds to relational-case-store.repository.ts rather than to this spec file or to any node in this pack, and I left their conformance to whichever judgment holds those nodes."

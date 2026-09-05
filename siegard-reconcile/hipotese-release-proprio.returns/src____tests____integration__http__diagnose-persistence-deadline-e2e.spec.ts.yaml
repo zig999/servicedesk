@@ -1,0 +1,95 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "the file exercises the diagnose endpoint only to force a persistence-write timeout and asserts nothing about the wholeness of the case-version read"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the one request sent is well-formed; no malformed-request path is exercised"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no listing route is called anywhere in this file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: "the injected request, app.inject(...) call"
+    evidence: "requester: 'a-persistence-deadline-requester' is supplied directly in the payload with no authentication header or middleware anywhere in buildDelayedTestApp"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "this is a test file, not one of the domain modules the constraint's fitness audits"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "no migration script is applied or referenced by this file"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "no schema/column definition is stated by this file; it only issues DML against existing tables"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "seedFixture, lines 164-182"
+    evidence: "const lifecycle = createCaseLifecycle(connection); const draft = await lifecycle.createDraft({...}); const revised = await lifecycle.reviseHypothesis({...}); await placeAndReleaseRevision(...); await lifecycle.release(fixture.slug, draft.version);"
+  - node: contracts/knowledge/case-query
+    held_at: "buildDelayedTestApp, line 301"
+    evidence: "caseQuery: createCaseQuery(delayingConnection),"
+  - node: contracts/system/case-authoring
+    held_at: "seedFixture, lines 181-182"
+    evidence: "await placeAndReleaseRevision(connection, { fixture, draft, revised }); await lifecycle.release(fixture.slug, draft.version);"
+  - node: domain/knowledge/case-version
+    held_at: "seedFixture, lines 165-172"
+    evidence: "const draft = await lifecycle.createDraft({ slug: fixture.slug, title: 'A case for the persistence-deadline proof', ...});"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "seedFixture, lines 173-180"
+    evidence: "const revised = await lifecycle.reviseHypothesis({ slug: fixture.slug, hypothesis_name: 'h1', criterion: fixture.hypothesisCriterion, collects: [fixture.concept], ...});"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "releaseRevisionDirectly, lines 125-135"
+    evidence: "const RELEASED_REVISION_STATE = 'released'; ... 'UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4'"
+  - node: domain/knowledge/manifest-entry
+    held_at: "placeAndReleaseRevision, lines 147-153"
+    evidence: "await lifecycle.placeHypothesis({ slug: fixture.slug, version: draft.version, hypothesis_name: revised.hypothesis_name, revision: revised.revision, position: 1 });"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "seedFixture, line 177"
+    evidence: "collects: [fixture.concept],"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "reviseHypothesis is called exactly once for hypothesis h1, so no repeated revise is exercised"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "release is performed by a direct SQL write in releaseRevisionDirectly rather than by invoking the release-hypothesis operation this rule governs"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "only revision 1 of h1 is ever created; no second revise is exercised"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no revisions-listing route is called"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no revisions-listing route is called"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "lifecycle.release(fixture.slug, draft.version) is awaited with no refusal branch exercised"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "seedFixture, lines 181-182, via placeAndReleaseRevision"
+    evidence: "await placeAndReleaseRevision(connection, { fixture, draft, revised }); await lifecycle.release(fixture.slug, draft.version); — placeAndReleaseRevision releases the manifested revision before release is called"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no attempt to alter a released revision's content is made anywhere in this file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "revised.revision is only consumed by later calls; the file asserts nothing about the number reviseHypothesis returned"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no assertion in this file concerns whether a stored case version reads back as a case"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "reviseHypothesis is called only once for h1"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "the revision released by releaseRevisionDirectly has already been placed into the draft's manifest by the preceding placeHypothesis call, so the scenario's own given does not hold here"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "lifecycle.release(fixture.slug, draft.version) succeeds; no refusal is exercised or asserted"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "only one case version is ever created in this file"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "placeAndReleaseRevision, lines 147-158"
+    evidence: "await lifecycle.placeHypothesis({ ... }); await releaseRevisionDirectly(connection, { ... }); — placement happens while the revision is still in draft state, and succeeds"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "the one revise performed in this file targets a hypothesis holding no prior revision at all, and no released revision is ever revised"
+looked_past: "the seeding helper releaseRevisionDirectly moves a hypothesis-revision to released state with a raw SQL UPDATE instead of invoking the release-hypothesis operation the lifecycle contract and its state-machine rule govern — a test-construction choice about how fixture setup reaches its state, not a domain fact this file asserts, so it is left to whichever pass reviews test construction rather than specification conformance."

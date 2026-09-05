@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/obsolete-protection-basis-tests-retire-case-version-lifecycle-manifest-basis-assertion-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-03T23:23:22.360+00:00",
+      "ended_at": "2026-09-03T23:23:26.224+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

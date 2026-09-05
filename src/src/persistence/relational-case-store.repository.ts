@@ -1,21 +1,26 @@
-import type {
-  AssembledCaseVersion,
-  CaseCatalogEntry,
-  CaseVersionListItem,
-  CaseVersionState,
-  CreateDraftInput,
-  HypothesisIdentity,
-  HypothesisRevisionContent,
-  HypothesisRevisionInput,
-  HypothesisRevisionListItem,
-  ICaseStore,
-  ManifestEntry,
-  OverwriteHypothesisRevisionInput,
-  PlaceHypothesisInput,
-  UpdateDraftInput,
+import {
+  HYPOTHESIS_REVISION_STATES,
+  type AssembledCaseVersion,
+  type CaseCatalogEntry,
+  type CaseVersionListItem,
+  type CaseVersionState,
+  type CreateDraftInput,
+  type DraftVersion,
+  type HypothesisIdentity,
+  type HypothesisRevisionContent,
+  type HypothesisRevisionInput,
+  type HypothesisRevisionListItem,
+  type HypothesisRevisionState,
+  type ICaseStore,
+  type ManifestEntry,
+  type OverwriteHypothesisRevisionInput,
+  type PlaceHypothesisInput,
+  type UpdateDraftInput,
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
 import type { IHypothesisRevisionOverwrite } from '../case/hypothesis-revision-overwrite.port.js';
+import type { IHypothesisRevisionOwnStateQuery } from '../case/hypothesis-revision-own-state.port.js';
+import type { IHypothesisRevisionRelease } from '../case/hypothesis-revision-release.port.js';
 import type {
   HighestRevisionReleaseState,
   IHighestRevisionReleaseStateQuery,
@@ -84,6 +89,7 @@ interface ICollectRow {
 }
 
 const CONSOLIDATION_REGISTER_VALUES: ReadonlySet<string> = new Set<string>(CONSOLIDATION_REGISTERS);
+const HYPOTHESIS_REVISION_STATE_VALUES: ReadonlySet<string> = new Set<string>(HYPOTHESIS_REVISION_STATES);
 
 const CASES_TABLE = 'cases';
 const CASE_VERSIONS_TABLE = 'case_versions';
@@ -95,6 +101,9 @@ const CASE_VERSION_HYPOTHESES_TABLE = 'case_version_hypotheses';
 const DRAFT_STATE: CaseVersionState = 'draft';
 const RELEASED_STATE: CaseVersionState = 'released';
 
+const HYPOTHESIS_REVISION_DRAFT_STATE: HypothesisRevisionState = 'draft';
+const HYPOTHESIS_REVISION_RELEASED_STATE: HypothesisRevisionState = 'released';
+
 const UNIQUE_VIOLATION_CODE = '23505';
 
 const ONE_DRAFT_PER_CASE_CONSTRAINT = 'case_versions_one_draft_per_case';
@@ -102,16 +111,27 @@ const POSITION_UNIQUE_CONSTRAINT = 'case_version_hypotheses_position_unique';
 
 const NO_VERSION_NAMED = 0;
 
-export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseStateQuery, IHypothesisRevisionOverwrite {
+export class RelationalCaseStore
+  implements
+    ICaseStore,
+    IHighestRevisionReleaseStateQuery,
+    IHypothesisRevisionOverwrite,
+    IHypothesisRevisionOwnStateQuery,
+    IHypothesisRevisionRelease
+{
   public constructor(private readonly connection: DatabaseConnection) {}
 
   public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => assembleWholeVersion(tx, { slug, version }));
   }
 
-  public async findDraftVersion(slug: string): Promise<number | undefined> {
-    const row = await queryOneOrAbsent<{ version: number }>(this.connection, draftVersionSelect(slug), raiseReadFailure);
-    return row?.version;
+  public async findDraftVersion(slug: string): Promise<DraftVersion | undefined> {
+    const row = await queryOneOrAbsent<{ version: number; subject: string }>(
+      this.connection,
+      draftVersionWithSubjectSelect(slug),
+      raiseReadFailure,
+    );
+    return row === undefined ? undefined : { version: row.version, subject: row.subject };
   }
 
   public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
@@ -142,6 +162,22 @@ export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseS
   ): Promise<HighestRevisionReleaseState> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) =>
       resolveHighestRevisionReleaseState(tx, { slug, hypothesis_name: hypothesisName }),
+    );
+  }
+
+  public async readHypothesisRevisionOwnState(
+    slug: string,
+    hypothesisName: string,
+    revision: number,
+  ): Promise<HypothesisRevisionState | undefined> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) =>
+      resolveHypothesisRevisionOwnState(tx, { slug, hypothesis_name: hypothesisName, revision }),
+    );
+  }
+
+  public async releaseHypothesisRevision(slug: string, hypothesisName: string, revision: number): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) =>
+      releaseHypothesisRevisionRow(tx, { slug, hypothesis_name: hypothesisName, revision }),
     );
   }
 
@@ -246,6 +282,13 @@ function caseVersionSelect(key: ICaseVersionKey): IStatement {
 function draftVersionSelect(slug: string): IStatement {
   return {
     text: `SELECT version FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
+    params: [slug, DRAFT_STATE],
+  };
+}
+
+function draftVersionWithSubjectSelect(slug: string): IStatement {
+  return {
+    text: `SELECT version, subject FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
     params: [slug, DRAFT_STATE],
   };
 }
@@ -424,6 +467,7 @@ interface IHypothesisRevisionRow {
   readonly resolution_outcome: string;
   readonly resolution_action: string;
   readonly resolution_recipient: string;
+  readonly state: string;
 }
 
 async function listHypothesisRevisionsPage(
@@ -469,10 +513,10 @@ function hypothesisRevisionsCountSelect(key: IHypothesisKey): IStatement {
 
 function hypothesisRevisionsPageSelect(key: IHypothesisKey, pagination: PaginationRequest): IStatement {
   return {
-    text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient
+    text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state
            FROM ${HYPOTHESIS_REVISIONS_TABLE}
            WHERE case_slug = $1 AND hypothesis_name = $2
-           ORDER BY revision
+           ORDER BY revision DESC
            LIMIT $3 OFFSET $4`,
     params: [key.slug, key.hypothesis_name, pagination.limit, pagination.offset],
   };
@@ -505,12 +549,13 @@ function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: rea
     criterion: row.criterion,
     collects,
     resolution: resolutionOf(row.resolution_outcome, row.resolution_action, row.resolution_recipient),
+    state: hypothesisRevisionStateOf(row.state),
   };
 }
 
 interface IHighestRevisionReleaseStateRow {
-  readonly revision: number | null;
-  readonly released_referenced: boolean;
+  readonly revision: number;
+  readonly state: string;
 }
 
 async function resolveHighestRevisionReleaseState(
@@ -522,38 +567,59 @@ async function resolveHighestRevisionReleaseState(
     highestRevisionReleaseStateSelect(key),
     raiseReadFailure,
   );
-  if (row === undefined) {
-    throw raiseReadFailure(new Error('reading a hypothesis\'s highest revision returned no row'));
-  }
-  return highestRevisionReleaseStateOf(row);
+  return row === undefined ? { revision: undefined } : highestRevisionReleaseStateOf(row);
 }
 
 function highestRevisionReleaseStateOf(row: IHighestRevisionReleaseStateRow): HighestRevisionReleaseState {
-  if (row.revision === null) {
-    return { revision: undefined };
+  return { revision: row.revision, state: hypothesisRevisionStateOf(row.state) };
+}
+
+function hypothesisRevisionStateOf(value: string): HypothesisRevisionState {
+  if (!isHypothesisRevisionState(value)) {
+    throw raiseReadFailure(new Error(`hypothesis_revisions holds an unrecognized state "${value}"`));
   }
-  return { revision: row.revision, released_referenced: row.released_referenced };
+  return value;
+}
+
+function isHypothesisRevisionState(value: string): value is HypothesisRevisionState {
+  return HYPOTHESIS_REVISION_STATE_VALUES.has(value);
 }
 
 function highestRevisionReleaseStateSelect(key: IHypothesisKey): IStatement {
   return {
-    text: `WITH highest AS (
-             SELECT MAX(revision) AS revision
-             FROM ${HYPOTHESIS_REVISIONS_TABLE}
-             WHERE case_slug = $1 AND hypothesis_name = $2
-           )
-           SELECT highest.revision,
-                  EXISTS (
-                    SELECT 1
-                    FROM ${CASE_VERSION_HYPOTHESES_TABLE} cvh
-                    JOIN ${CASE_VERSIONS_TABLE} cv ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
-                    WHERE cvh.case_slug = $1
-                      AND cvh.hypothesis_name = $2
-                      AND cvh.revision = highest.revision
-                      AND cv.state = $3
-                  ) AS released_referenced
-           FROM highest`,
-    params: [key.slug, key.hypothesis_name, RELEASED_STATE],
+    text: `SELECT revision, state
+           FROM ${HYPOTHESIS_REVISIONS_TABLE}
+           WHERE case_slug = $1 AND hypothesis_name = $2
+           ORDER BY revision DESC
+           LIMIT 1`,
+    params: [key.slug, key.hypothesis_name],
+  };
+}
+
+async function resolveHypothesisRevisionOwnState(
+  tx: IQueryable,
+  key: IRevisionKey,
+): Promise<HypothesisRevisionState | undefined> {
+  const row = await queryOneOrAbsent<{ state: string }>(tx, hypothesisRevisionOwnStateSelect(key), raiseReadFailure);
+  return row === undefined ? undefined : hypothesisRevisionStateOf(row.state);
+}
+
+function hypothesisRevisionOwnStateSelect(key: IRevisionKey): IStatement {
+  return {
+    text: `SELECT state FROM ${HYPOTHESIS_REVISIONS_TABLE} WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+    params: [key.slug, key.hypothesis_name, key.revision],
+  };
+}
+
+async function releaseHypothesisRevisionRow(tx: IQueryable, key: IRevisionKey): Promise<void> {
+  await runStatement(tx, releaseHypothesisRevisionStatement(key), raiseWriteFailure);
+}
+
+function releaseHypothesisRevisionStatement(key: IRevisionKey): IStatement {
+  return {
+    text: `UPDATE ${HYPOTHESIS_REVISIONS_TABLE} SET state = $4
+           WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+    params: [key.slug, key.hypothesis_name, key.revision, HYPOTHESIS_REVISION_RELEASED_STATE],
   };
 }
 
@@ -680,12 +746,12 @@ function revisionInsertStatement(input: HypothesisRevisionInput, columns: readon
   const [outcome, action, recipient] = columns;
   return {
     text: `INSERT INTO ${HYPOTHESIS_REVISIONS_TABLE}
-             (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)
-           SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6
+             (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state)
+           SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
            FROM ${HYPOTHESIS_REVISIONS_TABLE}
            WHERE case_slug = $1 AND hypothesis_name = $2
            RETURNING revision`,
-    params: [input.slug, input.hypothesis_name, input.criterion, outcome, action, recipient],
+    params: [input.slug, input.hypothesis_name, input.criterion, outcome, action, recipient, HYPOTHESIS_REVISION_DRAFT_STATE],
   };
 }
 

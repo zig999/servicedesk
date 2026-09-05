@@ -1,0 +1,119 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere — this file writes fixture data, it does not implement the case-query read
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: domain/glossary/outcome
+    held_at: "the fixture data's resolution outcomes"
+    evidence: "resolution: { outcome: 'confirmado', ... }"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeFixtureHypotheses, inserting each fixture hypothesis revision"
+    evidence: "async function placeFixtureHypotheses("
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "releaseManifestedRevisions, which moves each placed revision to released state"
+    evidence: "async function releaseManifestedRevisions(tx, slug, placed) { /* UPDATE hypothesis_revisions SET state = $1 ... */ }"
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: nowhere — this file seeds a case's own hypotheses and revisions, not the outcome glossary's own seeding
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: nowhere — this file writes through the lifecycle operations, which enforce this rule themselves
+    evidence: "const draft = await lifecycle.createDraft(...)"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the fixture data's collects arrays"
+    evidence: "collects: ['a-concept']"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere — seedCase() releases the case version before releasing the manifested revisions, the exact ordering this rule refuses
+    evidence: "const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);\n  await lifecycle.release(fixture.slug, draft.version);\n  await releaseManifestedRevisions(connection, fixture.slug, placed);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere — this file writes fixture data, it performs no read
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere — this is a seed script, not the domain layer the constraint scopes
+    evidence: "import type { DatabaseConnection } from './persistence/database-connection.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "seedCase()'s own calls into the lifecycle: createDraft, insertHypothesisRevision, placeHypothesis, release"
+    evidence: "const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);\n  await lifecycle.release(fixture.slug, draft.version);\n  await releaseManifestedRevisions(connection, fixture.slug, placed);"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: contracts/system/case-authoring
+    held_at: "seedCase(), which composes a draft, places hypotheses, and releases the case version"
+    evidence: "await lifecycle.release(fixture.slug, draft.version);"
+  - node: domain/knowledge/case-version
+    held_at: "the fixture draft composition"
+    evidence: "const draft = await lifecycle.createDraft(...)"
+  - node: domain/knowledge/manifest-entry
+    held_at: "placeFixtureHypotheses, placing each fixture hypothesis into the draft's manifest"
+    evidence: "async function placeFixtureHypotheses("
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "async function placeFixtureHypotheses("
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere — releaseManifestedRevisions moves each placed revision to released state directly against storage rather than through the declared operation
+    evidence: "async function releaseManifestedRevisions(tx, slug, placed) { /* raw UPDATE hypothesis_revisions SET state = $1 ... */ }"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "async function placeFixtureHypotheses("
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "await lifecycle.release(fixture.slug, draft.version);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "async function placeFixtureHypotheses("
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "async function placeFixtureHypotheses("
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "async function placeFixtureHypotheses("
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "async function releaseManifestedRevisions(tx, slug, placed) { /* raw UPDATE hypothesis_revisions SET state = $1 ... */ }"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere — seedCase() itself never checks the manifested revisions' own state before releasing the case version
+    evidence: "const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);\n  await lifecycle.release(fixture.slug, draft.version);\n  await releaseManifestedRevisions(connection, fixture.slug, placed);"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "async function seedCase(lifecycle: CaseLifecycleOperations, connection: DatabaseConnection): Promise<void> {"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "placeFixtureHypotheses, which places a manifest entry with no check on the referenced revision's own state"
+    evidence: "async function placeFixtureHypotheses("
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "async function placeFixtureHypotheses("
+findings:
+  - file: src/seed.ts
+    where: "seedCase(), the release ordering at the placeFixtureHypotheses/lifecycle.release/releaseManifestedRevisions sequence"
+    evidence: "const placed = await placeFixtureHypotheses(fixture.slug, draft.version);\n  await lifecycle.release(fixture.slug, draft.version);\n  await releaseManifestedRevisions(connection, fixture.slug, placed);"
+    cost: "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions requires a release to be refused whenever the version's manifest still names a draft hypothesis revision. Here the case-version release (lifecycle.release) runs before the manifested revisions are moved to released (releaseManifestedRevisions runs after), so at the moment of release every manifested revision is still draft — the exact state this rule exists to refuse. Either the gate this initiative just delivered does not apply here for a reason nothing in this file states, or the seed script releases a case version the rule says must be refused."
+    kind: contradicts
+    correction: "Release each manifested hypothesis revision before releasing the case version, or otherwise establish (and state) why seedCase()'s ordering is exempt from the rule."
+    node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  - file: src/seed.ts
+    where: "releaseManifestedRevisions(), the raw SQL UPDATE moving each revision to released"
+    evidence: "UPDATE hypothesis_revisions SET state = $1 WHERE case_slug = $2 AND hypothesis_name = $3 AND revision = $4"
+    cost: "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle governs how a hypothesis revision's state changes; the operation layer already exposes releaseHypothesisRevision() as the declared way to do this transition (delivered by release-a-revision-directly). This function bypasses it with a direct UPDATE, so the seed script and the declared lifecycle operation are two independent homes for the same transition, and a future change to the operation's own guard would not apply here."
+    kind: contradicts
+    correction: "Call lifecycle.releaseHypothesisRevision() (or the equivalent operation-layer method) for each placed revision instead of writing to hypothesis_revisions directly."
+    node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+looked_past: "the fixture data seedCase() composes (titles, criteria, resolutions) is fixture content the specification does not constrain the shape of beyond the domain fields already covered by other nodes' read entries, so it is not reported as a finding here."

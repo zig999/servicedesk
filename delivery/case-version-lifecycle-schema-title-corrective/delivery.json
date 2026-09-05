@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "kind": "implementation",
+      "file": "implementation/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title.md",
+      "title": "Reword case-version-lifecycle-schema.spec.ts's stale test title",
+      "summary": "Renamed the mutability test's own title to name the revision's own draft state as the governing condition, dropping the retired case-version-reference framing, with arrange/act/assert byte-for-byte unchanged.",
+      "task": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title"
+    },
+    {
+      "id": "proof/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "kind": "proof",
+      "file": "proof/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title.md",
+      "title": "Proof for reword-the-stale-test-title",
+      "summary": "Cites the renamed test's own title and its unchanged arrange/act/assert, plus the file's own unaffected suite, as the evidence for this corrective rename's three criteria.",
+      "task": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "to": "task/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "to": "implementation/case-version-lifecycle-schema-title-corrective/reword-the-stale-test-title",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

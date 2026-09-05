@@ -1,0 +1,102 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "import { createReleaseHypothesisRevisionRoutesPlugin } from '../../../http/release-hypothesis-revision.routes.js';"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "the four 400-response tests, lines 86-148"
+    evidence: "expect(body.error.code).toBe('VALIDATION_ERROR'); expect(body.error.message).toContain('path'); expect(body.error.details.length).toBeGreaterThan(0);"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: constraints/no-route-enforces-authentication
+    held_at: "the it block at lines 150-163"
+    evidence: "headers: {}, together with expect(response.statusCode).toBe(204); and expect(built.releaseHypothesisRevision).toHaveBeenCalledTimes(1);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "const app = Fastify();"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "const releaseHypothesisRevision: ReleaseHypothesisRevisionMock = vi.fn();"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the whole file, exercising the release-hypothesis operation via the plugin under test"
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies)); expect(built.releaseHypothesisRevision).toHaveBeenCalledWith('a-slug', 'a-hypothesis', 3);"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: contracts/system/case-authoring
+    held_at: "the it block at lines 57-69"
+    evidence: "calls releaseHypothesisRevision with only slug, name and revision — no case-version or manifest identifier — and succeeds even when naming a hypothesis no manifest has ever referenced, expect(built.releaseHypothesisRevision.mock.calls[0]).toEqual(['a-slug', 'an-unreferenced-hypothesis', 7]);"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/3/release',"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "throughout the file"
+    evidence: "expect(built.releaseHypothesisRevision).toHaveBeenCalledWith('a-slug', 'a-hypothesis', 3); import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the it block at lines 42-55"
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError(); expect(response.statusCode).toBe(409);"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "calls releaseHypothesisRevision with only slug, name and revision — no case-version or manifest identifier — and succeeds even when naming a hypothesis no manifest has ever referenced"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "built.releaseHypothesisRevision.mockResolvedValueOnce(undefined);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "expect(built.releaseHypothesisRevision).toHaveBeenCalledWith('a-slug', 'a-hypothesis', 3);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the it block at lines 42-55"
+    evidence: "expect(response.statusCode).toBe(409); expect(response.json()).toEqual({ error: { code: 'HypothesisRevisionNotDraftAtReleaseError', message: error.message } });"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "answers 400 for a revision of zero, which fails releaseHypothesisRevisionParamsSchema's positive-integer requirement, without ever reaching releaseHypothesisRevision"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "expect(response.json()).toEqual({ error: { code: 'HypothesisRevisionNotDraftAtReleaseError', message: error.message } });"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/3/release',"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "built.releaseHypothesisRevision.mockRejectedValueOnce(error);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "expect(built.releaseHypothesisRevision).toHaveBeenCalledWith('a-slug', 'a-hypothesis', 3);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "built.releaseHypothesisRevision.mockResolvedValueOnce(undefined);"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "the it block at lines 57-69"
+    evidence: "calls releaseHypothesisRevision with only slug, name and revision — no case-version or manifest identifier — and succeeds even when naming a hypothesis no manifest has ever referenced, expect(response.statusCode).toBe(204);"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/3/release',"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "app.register(createReleaseHypothesisRevisionRoutesPlugin(dependencies));"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "built.releaseHypothesisRevision.mockRejectedValueOnce(error);"
+findings:
+  - file: src/__tests__/unit/http/release-hypothesis-revision.routes.spec.ts
+    where: "the it block at lines 165-178, answers the unchanged generic envelope, never a partial body or leaked detail, when releaseHypothesisRevision rejects with a generic, non-domain error"
+    evidence: "expect(response.statusCode).toBe(500); expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });"
+    cost: "the exact refusal a caller receives for any failure the domain does not name — status 500, code INTERNAL_ERROR, the fixed message an unexpected error occurred, and that no further detail ever leaks — is pinned only here (and in the shared middleware this test exercises); a reader who goes to the specification to learn what any route promises when nothing domain-specific goes wrong finds nothing, even though the sibling case, a malformed request, is written up as its own constraint for exactly this reason."
+    kind: unstated
+    correction: "state, alongside constraints/a-malformed-request-is-refused-with-a-validation-error, a system-wide constraint for the refusal a route gives when it fails for a reason no domain rule names — the status, the code, the fixed message and the no-leak guarantee."
+looked_past: "The internal call-signature checks and the exact zod validation mechanics cited in test titles are implementation form the tests describe for their own documentation value, not domain facts distinct from what the constraints and rules in the pack already state."

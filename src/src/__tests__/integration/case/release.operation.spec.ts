@@ -149,6 +149,12 @@ async function placeNewHypothesis(store: RelationalCaseStore, key: ICaseVersionK
   return revision;
 }
 
+async function placeReleasedHypothesis(store: RelationalCaseStore, key: ICaseVersionKey, hypothesis: IHypothesisDescription): Promise<number> {
+  const revision = await placeNewHypothesis(store, key, hypothesis);
+  await store.releaseHypothesisRevision(key.slug, hypothesis.name, revision);
+  return revision;
+}
+
 function wireRelease(store: RelationalCaseStore): ReleaseOperation {
   return new ReleaseOperation(store, createGlossaryQuery(pool), createCapabilityQuery(pool));
 }
@@ -238,7 +244,7 @@ it(
     const store = new RelationalCaseStore(pool);
     const resolution = resolutionOf(vocabulary);
     const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
-    await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
     const releaseOperation = wireRelease(store);
 
     const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error);
@@ -264,7 +270,7 @@ it('marks a draft that holds against every rule released, recording the instant 
   const store = new RelationalCaseStore(pool);
   const resolution = resolutionOf(vocabulary);
   const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
-  await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+  await placeReleasedHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
   const releaseOperation = wireRelease(store);
   const beforeRelease = new Date();
 
@@ -289,7 +295,7 @@ it(
     const store = new RelationalCaseStore(pool);
     const resolution = resolutionOf(vocabulary);
     const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
-    await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
     const releaseOperation = wireRelease(store);
     await releaseOperation.release(slug, version);
     const releasedOnce = await store.assembleVersion(slug, version);
@@ -300,6 +306,35 @@ it(
     expect((refusal as CaseVersionNotDraftAtReleaseError).context).toEqual({ slug, version, state: 'released' });
     const stillReleased = await store.assembleVersion(slug, version);
     expect(stillReleased?.released_at).toBe(releasedOnce?.released_at);
+  },
+);
+
+it(
+  "leaves a manifested hypothesis-revision's own state exactly as it read before release, once release() succeeds",
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-state-untouched-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    const revision = await placeReleasedHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const releaseOperation = wireRelease(store);
+    const { rows: before } = await pool.query<{ state: string }>(
+      'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [slug, 'h1', revision],
+    );
+
+    await releaseOperation.release(slug, version);
+
+    const { rows: after } = await pool.query<{ state: string }>(
+      'SELECT state FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [slug, 'h1', revision],
+    );
+    expect(after[0]?.state).toBe(before[0]?.state);
   },
 );
 
@@ -318,13 +353,13 @@ it(
     const releaseOperation = wireRelease(store);
 
     const version1 = await createDraftVersion(store, { slug, title: 'Version one', subjectType: vocabulary.subjectType, resolution });
-    const revision1 = await placeNewHypothesis(store, { slug, version: version1 }, { name: 'h', criterion: 'the first criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const revision1 = await placeReleasedHypothesis(store, { slug, version: version1 }, { name: 'h', criterion: 'the first criterion', collects: [vocabulary.concept], resolution, position: 1 });
     await releaseOperation.release(slug, version1);
     const version1AfterItsOwnRelease = await store.assembleVersion(slug, version1);
 
     const version2 = await createDraftVersion(store, { slug, title: 'Version two', subjectType: vocabulary.subjectType, resolution });
     await store.removeManifestEntry(slug, version2, 'h');
-    const revision2 = await placeNewHypothesis(store, { slug, version: version2 }, { name: 'h', criterion: 'the second criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const revision2 = await placeReleasedHypothesis(store, { slug, version: version2 }, { name: 'h', criterion: 'the second criterion', collects: [vocabulary.concept], resolution, position: 1 });
     await releaseOperation.release(slug, version2);
 
     const version1AfterVersion2Released = await store.assembleVersion(slug, version1);
@@ -332,5 +367,157 @@ it(
     expect(version1AfterVersion2Released?.manifest[0]?.hypothesis_revision).toMatchObject({ revision: revision1, criterion: 'the first criterion' });
     const version2AfterItsOwnRelease = await store.assembleVersion(slug, version2);
     expect(version2AfterItsOwnRelease?.manifest[0]?.hypothesis_revision).toMatchObject({ revision: revision2, criterion: 'the second criterion' });
+  },
+);
+
+it(
+  'releases a draft case version whose manifest holds two hypothesis-revisions, each pinned at a revision whose own state is already released, not refused by this rule',
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-manifest-all-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'h1', criterion: 'first', collects: [vocabulary.concept], resolution, position: 1 });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'h2', criterion: 'second', collects: [vocabulary.concept], resolution, position: 2 });
+    const releaseOperation = wireRelease(store);
+
+    await expect(releaseOperation.release(slug, version)).resolves.toBeUndefined();
+
+    const released = await store.assembleVersion(slug, version);
+    expect(released?.state).toBe('released');
+  },
+);
+
+it(
+  'refuses releasing a draft case version whose one manifest entry references a hypothesis-revision whose own state is draft, through CaseVersionNotReleasableError naming that hypothesis',
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-manifest-one-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const releaseOperation = wireRelease(store);
+
+    const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error);
+
+    expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
+    expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
+      'the hypothesis "h1" is manifested at a revision that is not released',
+    ]);
+  },
+);
+
+it(
+  "names every manifest entry's hypothesis whose referenced revision's own state is draft, leaving out the entry already referencing a released revision",
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-manifest-many-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'alpha', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    await placeNewHypothesis(store, { slug, version }, { name: 'beta', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 2 });
+    await placeNewHypothesis(store, { slug, version }, { name: 'gamma', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 3 });
+    const releaseOperation = wireRelease(store);
+
+    const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error);
+
+    expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
+    expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
+      'the hypothesis "beta" is manifested at a revision that is not released',
+      'the hypothesis "gamma" is manifested at a revision that is not released',
+    ]);
+  },
+);
+
+it(
+  'refuses a release violating both this rule and the coherence rule together, naming the coherence violations and the own-state violation in the one CaseVersionNotReleasableError',
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-both-rules-violated-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.otherSubjectType);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const releaseOperation = wireRelease(store);
+
+    const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error);
+
+    expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
+    expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
+      `the concept "${vocabulary.concept}" does not accept the subject type "${vocabulary.subjectType}" the case declares`,
+      `no read-only capability currently answers the concept "${vocabulary.concept}"`,
+      'the hypothesis "h1" is manifested at a revision that is not released',
+    ]);
+  },
+);
+
+it(
+  'leaves a case version in draft state, recording no release, when this rule alone refuses the release',
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-gate-leaves-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const releaseOperation = wireRelease(store);
+
+    await releaseOperation.release(slug, version).catch(() => undefined);
+
+    const stillStored = await store.assembleVersion(slug, version);
+    expect(stillStored?.state).toBe('draft');
+    expect(stillStored?.released_at).toBeUndefined();
+  },
+);
+
+it(
+  'leaves the draft hypothesis-revision a refused release referenced exactly as it read before the attempt, its own state and content unchanged',
+  async () => {
+    const vocabulary = freshVocabulary();
+    const slug = `release-operation-gate-leaves-revision-untouched-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    await persistGlossary(vocabulary);
+    await registerConceptAccepting(vocabulary, vocabulary.subjectType);
+    await registerCoherentCapability(vocabulary);
+    const store = new RelationalCaseStore(pool);
+    const resolution = resolutionOf(vocabulary);
+    const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
+    const revision = await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'a criterion', collects: [vocabulary.concept], resolution, position: 1 });
+    const releaseOperation = wireRelease(store);
+    const { rows: before } = await pool.query<{ state: string; criterion: string }>(
+      'SELECT state, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [slug, 'h1', revision],
+    );
+
+    await releaseOperation.release(slug, version).catch(() => undefined);
+
+    const { rows: after } = await pool.query<{ state: string; criterion: string }>(
+      'SELECT state, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+      [slug, 'h1', revision],
+    );
+    expect(after[0]).toEqual(before[0]);
+    expect(after[0]?.state).toBe('draft');
   },
 );

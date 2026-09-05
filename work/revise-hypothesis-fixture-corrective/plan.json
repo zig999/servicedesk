@@ -1,0 +1,58 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/revise-hypothesis-fixture-corrective",
+      "kind": "epic",
+      "file": "epic/revise-hypothesis-fixture-corrective.md",
+      "title": "Revise-hypothesis.operation.spec.ts fixture correction",
+      "summary": "Corrects revise-hypothesis.operation.spec.ts, a file this project already delivered: two stale test titles and one raw-SQL release-write duplication."
+    },
+    {
+      "id": "task/revise-hypothesis-fixture-corrective/correct-titles-and-release-write-duplication",
+      "kind": "task",
+      "file": "task/revise-hypothesis-fixture-corrective/correct-titles-and-release-write-duplication.md",
+      "title": "Correct revise-hypothesis.operation.spec.ts's two stale titles and its release-write duplication",
+      "summary": "Two test titles name a superseded manifest-reference condition and contradict their own assertions; a local helper reimplements the hypothesis-revision release write as raw SQL instead of calling the declared lifecycle operation.",
+      "epic": "revise-hypothesis-fixture-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/revise-hypothesis-fixture-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/revise-hypothesis-fixture-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/revise-hypothesis-fixture-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/revise-hypothesis-fixture-corrective/correct-titles-and-release-write-duplication",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/revise-hypothesis-fixture-corrective/correct-titles-and-release-write-duplication",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/revise-hypothesis-fixture-corrective/correct-titles-and-release-write-duplication",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+findings:
+  - file: src/routes/version-manifest-screen-pinned-revision-state.spec.ts
+    where: "lines 117-136, describe/it block \"the state statement when the pin is absent from the answered page (this task's own inference)\""
+    evidence: |
+      expect(within(findRow("H1")).queryByText("Draft")).toBeNull();
+      expect(within(findRow("H1")).queryByText("Released")).toBeNull();
+    cost: "The test fixes, as the correct behavior a suite will keep green, that a manifest entry shows no draft-or-released statement at all whenever the pinned hypothesis-revision is not on the page the revisions listing happened to answer — even though the entry's own pinned revision number (2) is still shown (line 132). The test's own title admits this is \"this task's own inference,\" so a future reader who checks the specification for what an entry says when its pin falls outside the fetched page finds nothing there, while the source and its suite already answer it — the same silence rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown closed for the pinned revision's own reference is left open here for the revision's state."
+    kind: unstated
+    correction: "Decide, into the specification (e.g. by extending rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state or a sibling node) what a presented entry states about its pinned revision's state when the revisions-listing page fetched does not carry that revision, then bring this test in line with what is decided."
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "return { data: revisions.map((item) => ({ ...item })), total: revisions.length };"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'import { afterEach, describe, expect, it, vi } from "vitest";'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: '[`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 1)] }),'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revisionsPage mock objects passed to every stub"
+    evidence: 'revisionsPage([{ revision: 1, state: "released" }, { revision: 2, state: "draft" }])'
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the revisionsPage type signature"
+    evidence: 'revisions: readonly { revision: number; state: "draft" | "released" }[]'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: '[`GET ${revisionsPath("H1")}`]: () => jsonResponse(revisionsPage([{ revision: 1, state: "draft" }])),'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: 'revisionsPage([{ revision: 1, state: "released" }, { revision: 2, state: "draft" }])'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: 'revisionsPage([{ revision: 1, state: "draft" }])'
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: "the assertions of the first two it blocks (lines 29-67) and the criterion-2/criterion-3 blocks (lines 70-100)"
+    evidence: |
+      expect(within(row).getByText("Released")).toBeTruthy();
+      expect(within(row).queryByText("Draft")).toBeNull();
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: '[`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 1)] }),'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: '[`GET ${VERSION_PATH}`]: () => jsonResponse({ state: "released", manifest: [entry(1, "H1", 1)] }),'
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "await mountManifestScreen(fetchMock);"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await mountManifestScreen(fetchMock);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: '[`GET ${VERSION_PATH}`]: () => jsonResponse({ manifest: [entry(1, "H1", 1)] }),'
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "await mountManifestScreen(fetchMock);"
+looked_past: "The two remaining edge-case tests (lines 139-152 and 154-168, covering a pending revisions-listing fetch and an errored one) also show no state statement, but there the state is genuinely unavailable rather than merely off the fetched page, so I treat that as ordinary loading/error handling rather than a domain fact for this pass to weigh."
+candidates_opened:
+  - rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown

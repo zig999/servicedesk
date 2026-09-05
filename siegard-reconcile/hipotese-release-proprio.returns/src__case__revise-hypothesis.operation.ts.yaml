@@ -1,0 +1,115 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the whole file's import list, lines 1-8"
+    evidence: "import { CaseHoldsNoDraftError } from '../errors/case-holds-no-draft.error.js';\nimport type { ConceptResolution, IGlossaryQuery } from '../glossary/glossary-query.port.js';\nimport type { HypothesisRevisionInput, ICaseStore, OverwriteHypothesisRevisionInput } from './case-store.port.js';"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the reviseHypothesis method (lines 31-36) and writeRevision (lines 38-45), which overwrite the highest existing revision in place while draft and create the next revision once released"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {\n      await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));\n      return highest.revision;\n    }\n    return this.caseStore.insertHypothesisRevision(input);"
+  - node: domain/knowledge/case-version
+    held_at: "refuseWithoutDraft, lines 47-52, which requires a draft version of the case to exist before a revision is written"
+    evidence: "const draftVersion = await this.caseStore.findDraftVersion(slug);\n    if (draftVersion === undefined) {\n      throw new CaseHoldsNoDraftError(slug);\n    }"
+  - node: domain/knowledge/hypothesis
+    held_at: "input.hypothesis_name, threaded through writeRevision, refuseEmptyCollects, refuseUnknownConcepts and refuseConceptsRefusingSubject"
+    evidence: "return { hypothesis_name: input.hypothesis_name, revision };"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "overwriteInputOf, lines 66-75, which carries criterion, collects, resolution and revision into the write"
+    evidence: "return { slug: input.slug, hypothesis_name: input.hypothesis_name, criterion: input.criterion, collects: input.collects, resolution: input.resolution, revision, };"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "refuseConceptsRefusingSubject / conceptsRefusingSubjectOf, lines 102-119, raising ConceptRefusesSubjectTypeError"
+    evidence: "const refusing = conceptsRefusingSubjectOf(resolutions, input.subject); if (refusing.length > 0) { throw new ConceptRefusesSubjectTypeError({"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "refuseEmptyCollects, lines 77-81"
+    evidence: "if (input.collects.length === 0) { throw new HypothesisRevisionCollectsNoConceptError(input.slug, input.hypothesis_name); }"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "refuseWithoutDraft (existence half only), lines 47-52; the subject-type half is not held here — see finding below"
+    evidence: "const draftVersion = await this.caseStore.findDraftVersion(slug); if (draftVersion === undefined) { throw new CaseHoldsNoDraftError(slug); }"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: "writeRevision, lines 38-45"
+    evidence: "const highest = await this.caseStore.readHighestRevisionReleaseState(input.slug, input.hypothesis_name); if (highest.revision !== undefined && highest.state === 'draft') {"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "return this.caseStore.insertHypothesisRevision(input); — number assignment is delegated whole to the store; this file names no number and reads none back"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "writeRevision's guard, line 40, which only overwrites when highest.state === 'draft'"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') { await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the return statement of reviseHypothesis, line 35"
+    evidence: "return { hypothesis_name: input.hypothesis_name, revision };"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "refuseUnknownConcepts / unknownConceptsOf, lines 87-96, raising ConceptNotInGlossaryError"
+    evidence: "const unknown = unknownConceptsOf(resolutions); if (unknown.length > 0) { throw new ConceptNotInGlossaryError(input.slug, input.hypothesis_name, unknown);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: "writeRevision, lines 38-45, the same overwrite branch"
+    evidence: "await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision)); return highest.revision;"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "this file never reads or freezes a case version's own manifest at release; it only writes hypothesis-revision content"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: "writeRevision's fall-through, line 44"
+    evidence: "return this.caseStore.insertHypothesisRevision(input);"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "this file performs no case-query assembly; it only checks draft existence and writes a hypothesis revision"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "no request-shape validation appears in this file; it operates on an already-typed ReviseHypothesisInput"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "this file contains no listing operation"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "this file contains no route and no authentication check of any kind"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "this file contains no schema or migration concern"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "this file declares no persisted column or relation"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "this file exposes only reviseHypothesis; none of read-case, list-cases, list-case-versions, list-hypotheses or list-hypothesis-revisions appears"
+  - node: contracts/system/case-authoring
+    held_at: "the overall shape of reviseHypothesis (lines 31-36) composing a draft's hypothesis content freely, whatever state the existing revision is in"
+    evidence: "public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> { await this.refuseWithoutDraft(input.slug); await this.refuseInvalidCollects(input); const revision = await this.writeRevision(input);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the state comparison in writeRevision, line 40"
+    evidence: "if (highest.revision !== undefined && highest.state === 'draft') {"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "this file never reads or writes a manifest entry; it only reaches a hypothesis's own revision"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "this file reads highest.state but never triggers a release transition; no release action appears here"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "this file contains no listing operation"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "this file contains no listing operation"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "this file's refusals are each a distinct, individually thrown error; no CaseVersionNotReleasableError aggregation appears here"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "this file never checks a manifest entry's referenced revision state at release; it has no release operation at all"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "this file is a write path; it performs no case-version validation read"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "this file has no release action; it only revises a hypothesis's content"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "this file has no case-version release path"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "this file never places a manifest entry"
+findings:
+  - file: src/case/revise-hypothesis.operation.ts
+    where: "refuseWithoutDraft, lines 47-52, together with refuseConceptsRefusingSubject / conceptsRefusingSubjectOf, lines 102-119"
+    evidence: "const draftVersion = await this.caseStore.findDraftVersion(slug); if (draftVersion === undefined) { throw new CaseHoldsNoDraftError(slug); } ... const refusing = conceptsRefusingSubjectOf(resolutions, input.subject);"
+    cost: "the draft version this operation itself fetches is discarded after the undefined check, and the concept-acceptance check is run against input.subject — a value the caller supplies independently on the input DTO — rather than against any attribute read off that draft version; a caller that supplies a subject other than the one the case's own draft actually declares gets a check validated against a fabricated subject type, and nothing in this file would catch the mismatch."
+    kind: contradicts
+    correction: "read the subject type off the draft version returned by findDraftVersion (or otherwise verify input.subject against it) before using it in conceptsRefusingSubjectOf, so the check uses that draft version's own declared subject type rather than an unverified caller-supplied field."
+    node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+looked_past: "the delegation of revision-number assignment entirely to caseStore.insertHypothesisRevision is a fact this file states nothing about either way, and belongs to whichever store implementation carries it rather than to this operation."

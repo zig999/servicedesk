@@ -1,0 +1,28 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "it(\"reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data\", ...) calling query.readCase(SLUG, VERSION)"
+    evidence: "const result = await query.readCase(SLUG, VERSION);\n\n    expect(result.case.slug).toBe(SLUG);\n    expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeFixtureHypotheses/releaseOwnedHypothesisRevision calling lifecycle.reviseHypothesis and lifecycle.releaseHypothesisRevision"
+    evidence: "const revised = await lifecycle.reviseHypothesis({\n      slug: fixture.slug,\n      hypothesis_name: entry.hypothesis_name,\n      criterion: entry.criterion,\n      collects: entry.collects,\n      resolution: entry.resolution,\n      subject: fixture.subject,\n    });"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the RELEASED_REVISION_STATE constant and the row.state equality check"
+    evidence: "const RELEASED_REVISION_STATE = 'released';\n...\nexpect(rows.every((row) => row.state === RELEASED_REVISION_STATE)).toBe(true);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "it(\"reads every manifest entry's revision back collecting at least one concept\", ...)"
+    evidence: "expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "it(\"refuses releasing an already-released manifested hypothesis-revision a second time with HypothesisRevisionNotDraftAtReleaseError\", ...)"
+    evidence: "const refusal = await lifecycle\n        .releaseHypothesisRevision(ownedSlug, released.hypothesisName, released.revision)\n        .catch((error: unknown) => error);\n\n      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "it(\"releases a freshly drafted case version without throwing CaseVersionNotReleasableError, once its own manifested hypothesis-revision has already been released through the lifecycle operation\", ...)"
+    evidence: "await expect(\n        releaseOwnedCaseVersionAfterItsRevision(lifecycle, {\n          slug: ownedSlug,\n          hypothesisName,\n          concept: 'equipment-status',\n        }),\n      ).resolves.toBeUndefined();"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "it(\"leaves a released hypothesis-revision's own collects in place after an ordinary DELETE against those exact rows is attempted, ...\", ...)"
+    evidence: "await connection.query(\n        'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',\n        [ownedSlug, hypothesisName],\n      );\n\n      const { rows } = await connection.query<{ concept_name: string }>(\n        'SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',\n        [ownedSlug, hypothesisName],\n      );\n      expect(rows.map((row) => row.concept_name)).toEqual([collectedConcept]);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "it(\"reads the shared canonical fixture case whole with no CaseNotValidError, and with every hypothesis still collecting at least one concept, once this file's own collects-survive-DELETE test has already run\", ...)"
+    evidence: "const result = await query.readCase(SLUG, VERSION);\n\n    expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);\n    expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);"
+looked_past: "The raw-SQL DELETE test bypasses the domain/lifecycle layer to exercise the DB-level rule directly rather than through an application-level revise/remove path — a testing-approach observation, not a domain-fact conformance issue, since migration 0010-protect-released-hypothesis-revision-collects.sql confirms the DB rule the test is exercising actually implements the same invariant."
+candidates_opened:
+  - domain/knowledge/case-version

@@ -1,0 +1,95 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "the parsedParams guard in releaseHypothesisRevisionHandler"
+    evidence: "if (!parsedParams.success) { const issues = parsedParams.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`); return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request path failed validation', details: issues } }); }"
+  - node: constraints/no-route-enforces-authentication
+    held_at: "the app.post registration"
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) => releaseHypothesisRevisionHandler(dependencies, request, reply), );"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the route registration and the delegation to the operation"
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data); return reply.code(204).send();"
+  - node: contracts/system/case-authoring
+    held_at: "the route registration exposing release independently of any case-version endpoint"
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) =>"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data); return reply.code(204).send();"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data); return reply.code(204).send();"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "const parsedParams = releaseHypothesisRevisionParamsSchema.safeParse(request.params);"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) =>"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "export function createReleaseHypothesisRevisionRoutesPlugin("
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "export function createReleaseHypothesisRevisionRoutesPlugin("
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) =>"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) =>"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "const parsedParams = releaseHypothesisRevisionParamsSchema.safeParse(request.params);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "const parsedParams = releaseHypothesisRevisionParamsSchema.safeParse(request.params);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const parsedParams = releaseHypothesisRevisionParamsSchema.safeParse(request.params);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) =>"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "app.post(`${API_PREFIX}/cases/:slug/hypotheses/:name/revisions/:revision/release`, (request, reply) =>"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "return reply.code(204).send();"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "await handleReleaseHypothesisRevisionRequest(dependencies, parsedParams.data);"
+looked_past: "the success response's HTTP status (204, empty body) and the URL's path shape are form the interface chooses, not a domain fact any node in the pack states — the file was read for what it claims about the domain, not for its transport conventions."

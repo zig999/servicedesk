@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/case-version-release-gate-refuse-a-release-manifesting-a-draft-revision-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-04T02:03:49.018+00:00",
+      "ended_at": "2026-09-04T02:07:38.235+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

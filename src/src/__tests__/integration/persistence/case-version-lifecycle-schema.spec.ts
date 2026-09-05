@@ -284,7 +284,7 @@ it('refuses a second row under an already-used (case_slug, hypothesis_name, revi
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
 
-it("changes an already-stored hypothesis revision's own columns on an ordinary UPDATE when no released case version references it", async () => {
+it("changes an already-stored hypothesis revision's own columns on an ordinary UPDATE while the revision's own state is still draft", async () => {
   const slug = 'a-mutable-unreleased-hypothesis-revision';
   await insertCase(client, slug);
   await insertHypothesis(client, { slug, name: 'the-hypothesis' });
@@ -299,30 +299,6 @@ it("changes an already-stored hypothesis revision's own columns on an ordinary U
     'SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1', [slug, 'the-hypothesis'],
   );
   expect(rows[0]?.criterion).toBe('A revised criterion.');
-});
-
-it("leaves an already-stored hypothesis revision's own columns unchanged after an ordinary UPDATE attempts to alter them, where a released case version's manifest references that revision", async () => {
-  const slug = 'an-immutable-released-hypothesis-revision';
-  await insertCase(client, slug);
-  await insertCaseVersion(client, glossary, { slug, version: 1, state: 'released', releasedAt: '2026-01-01T00:00:00Z' });
-  await insertHypothesis(client, { slug, name: 'the-hypothesis' });
-  await insertHypothesisRevision(client, glossary, { slug, hypothesisName: 'the-hypothesis', revision: 1, criterion: 'Original.' });
-  await insertManifestEntry(client, { slug, version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });
-
-  await client.query('SAVEPOINT before_update');
-  try {
-    await client.query(
-      "UPDATE hypothesis_revisions SET criterion = 'Nothing should have written this.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1",
-      [slug, 'the-hypothesis'],
-    );
-  } catch {
-    await client.query('ROLLBACK TO SAVEPOINT before_update');
-  }
-
-  const { rows } = await client.query<{ criterion: string }>(
-    'SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1', [slug, 'the-hypothesis'],
-  );
-  expect(rows[0]?.criterion).toBe('Original.');
 });
 
 it('stores and reads back the concepts one hypothesis revision collects, referencing that exact revision', async () => {

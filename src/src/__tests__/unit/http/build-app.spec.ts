@@ -268,6 +268,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },
     registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
+    releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined },
     discard: { discard: async () => undefined },
     reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
     placeHypothesis: { placeHypothesis: async () => undefined },
@@ -526,6 +527,7 @@ const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
     payload: { title: 'a title', when_to_use: 'a when-to-use', subject: 'a-subject-type', fallback: A_RESOLUTION },
   },
   { description: 'release', method: 'POST', url: '/v1/cases/a-slug/versions/1/release' },
+  { description: 'release-hypothesis-revision', method: 'POST', url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/1/release' },
   { description: 'discard', method: 'DELETE', url: '/v1/cases/a-slug/versions/1' },
   {
     description: 'revise-hypothesis',

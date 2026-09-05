@@ -1,0 +1,95 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "readCase: async () => ({ case: theCase, hash: 'a-hash' }) checked only through expect(response.statusCode).not.toBe(404); — no assertion of whole-manifest assembly or validation"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "refuses with 400 a request whose body names no narrative, and refuses with 400 a request whose subject carries no attribute at all — status code only"
+    evidence: "expect(response.statusCode).toBe(400); expect(built.runDiagnose).not.toHaveBeenCalled();"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "function emptyPage<T>(): PaginatedResponse<T> { return { data: [], total: 0, limit: 10, offset: 0, pageCount: 0 }; }"
+  - node: constraints/no-route-enforces-authentication
+    held_at: "answers 200 for a request carrying no headers at all, and runs the diagnose call under exactly the body's own requester even with an authorization header naming a different identity"
+    evidence: "headers: {} and headers: { authorization: 'Bearer token-for-someone-else' } with expect(built.runDiagnose.mock.calls[0]?.[0].requester).toBe('requester-in-body');"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "const HTTP_LAYER_RELATIVE_PATHS = [ '../../../http/build-app.ts', ... ]; — only the HTTP layer's own imports are checked, never a domain module"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { readFile } from 'node:fs/promises';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import { readFile } from 'node:fs/promises';"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the REGISTERED_ROUTE_REQUESTS entries for create-draft, update-draft, release, release-hypothesis-revision, discard, revise-hypothesis, place-hypothesis and remove-hypothesis, proven through the shared it.each"
+    evidence: "{ description: 'create-draft', method: 'POST', url: '/v1/cases' } ... { description: 'release-hypothesis-revision', method: 'POST', url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/1/release' } checked via expect(response.statusCode).not.toBe(404);"
+  - node: contracts/knowledge/case-query
+    held_at: "the REGISTERED_ROUTE_REQUESTS entries for read-case, list-cases, list-case-versions, list-hypotheses and list-hypothesis-revisions"
+    evidence: "{ description: 'read-case', method: 'GET', url: '/v1/cases/a-slug/versions/1' } ... { description: 'list-hypothesis-revisions', method: 'GET', url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions' }"
+  - node: contracts/system/case-authoring
+    held_at: "nowhere as a distinct capability narrative"
+    evidence: "{ description: 'release-hypothesis-revision', method: 'POST', url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/1/release' } — wiring only, no assertion of the release-then-immutable promise"
+  - node: domain/knowledge/case-version
+    held_at: "minimalCase()"
+    evidence: "slug: 'a-case', title: 'a title', when_to_use: 'a when-to-use', version: 1, ..., state: 'released', manifest: []"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revise-hypothesis and place-hypothesis route payloads"
+    evidence: "payload: { hypothesis_name: 'a-hypothesis', criterion: 'a criterion', collects: ['a-concept'], resolution: A_RESOLUTION, subject: 'a-subject-type' } and payload: { revision: 1, position: 1 }"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "no draft/released state asserted anywhere in this file"
+  - node: domain/knowledge/manifest-entry
+    held_at: "{ description: 'place-hypothesis', method: 'PUT', url: '/v1/cases/a-slug/versions/1/manifest/a-hypothesis', payload: { revision: 1, position: 1 } }"
+    evidence: "payload: { revision: 1, position: 1 }"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: ['a-concept'] — a fixed one-element array, no refusal-for-zero-collects assertion"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "route wiring only, not the refusal itself"
+    evidence: "expect(response.statusCode).not.toBe(404);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "checked only via not-404"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "listHypothesisRevisions: vi.fn(),"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "checked only via not-404"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "release: { release: async () => undefined, caseQuery },"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined },"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },"
+    evidence: "reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 })"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "readCase: async () => ({ case: theCase, hash: 'a-hash' }),"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "route naming no manifest or case-version position"
+    evidence: "url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/1/release'"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "checked only via not-404"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "release: { release: async () => undefined, caseQuery },"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "checked only via not-404"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },"
+looked_past: "The diagnose response-DTO field tests and the generic-500-message and fastify-only/single-register-call-site checks state facts none of this file's pack nodes address, or read as standard-conformance territory, so they are not reported here."

@@ -1,0 +1,1108 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "kind": "epic",
+      "file": "epic/case-fixture-reads-clean-collects-delete-corrective.md",
+      "title": "Case-fixture-reads-clean collects-DELETE corruption correction",
+      "summary": "Corrects case-fixture-reads-clean.spec.ts, a file this project already delivered, so its own collects-survive-DELETE test no longer permanently corrupts the shared canonical fixture."
+    },
+    {
+      "id": "epic/case-version-release-gate",
+      "kind": "epic",
+      "file": "epic/case-version-release-gate.md",
+      "title": "A case version releases only over released revisions",
+      "summary": "The gate a case version's own release now runs, reading each manifest entry's referenced revision's own state."
+    },
+    {
+      "id": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "kind": "epic",
+      "file": "epic/diagnose-server-factory-fixture-release-ordering-corrective.md",
+      "title": "Diagnose-server factory fixture release ordering correction",
+      "summary": "Corrects diagnose-server.factory.spec.ts, a file this project already delivered, to release each manifested hypothesis-revision through the declared operation before releasing the case version."
+    },
+    {
+      "id": "epic/fixture-revision-own-state",
+      "kind": "epic",
+      "file": "epic/fixture-revision-own-state.md",
+      "title": "The canonical fixture's manifested revisions carry their own released state",
+      "summary": "The shared fixture and seed data whose hypothesis revisions sit in released case versions while their own state was never moved past draft."
+    },
+    {
+      "id": "epic/hypothesis-revision-own-release",
+      "kind": "epic",
+      "file": "epic/hypothesis-revision-own-release.md",
+      "title": "A hypothesis-revision's own release",
+      "summary": "The curator's release taken directly against a hypothesis-revision, and the published operation that carries it."
+    },
+    {
+      "id": "epic/hypothesis-revision-own-state",
+      "kind": "epic",
+      "file": "epic/hypothesis-revision-own-state.md",
+      "title": "A hypothesis-revision's own state",
+      "summary": "The stored state a hypothesis-revision carries for itself, and the two write paths that now read it instead of reading a case version."
+    },
+    {
+      "id": "epic/obsolete-protection-basis-tests",
+      "kind": "epic",
+      "file": "epic/obsolete-protection-basis-tests.md",
+      "title": "Tests still certifying the revoked protection basis",
+      "summary": "The persistence tests that prove a hypothesis-revision's immutability from a released case version's reference to it, rather than from the revision's own state."
+    },
+    {
+      "id": "epic/revision-listing-state-disclosure",
+      "kind": "epic",
+      "file": "epic/revision-listing-state-disclosure.md",
+      "title": "The revisions listing discloses each revision's state",
+      "summary": "The listing of one hypothesis's revisions, answering each revision's own state beside it."
+    },
+    {
+      "id": "epic/seed-release-ordering-corrective",
+      "kind": "epic",
+      "file": "epic/seed-release-ordering-corrective.md",
+      "title": "Seed release ordering correction",
+      "summary": "Corrects seed.ts, delivered by this initiative, to release each manifested hypothesis-revision through the declared operation before releasing the case version."
+    },
+    {
+      "id": "inventory/hypothesis-revision-release-lifecycle",
+      "kind": "inventory",
+      "file": "inventory/hypothesis-revision-release-lifecycle.md",
+      "title": "Case lifecycle: hypothesis-revision aggregate, its store port, HTTP surface and persistence",
+      "summary": "The layered src/src/case, src/src/http, src/src/persistence and src/migrations slice where hypothesis-revision currently borrows its release state from any case-version that manifests it, and where the scope's own-state lifecycle, its release-hypothesis endpoint and the manifest-only-released-revisions gate must land."
+    },
+    {
+      "id": "inventory/persistence-and-fixture-own-state-fallout",
+      "kind": "inventory",
+      "file": "inventory/persistence-and-fixture-own-state-fallout.md",
+      "title": "Persistence schema tests and fixture/seed setup still keyed to the manifest-referenced basis",
+      "summary": "The area the suite-corrections scope lands in — the persistence schema specs, the shared fixture/seed builder, and the tests that read through it — all still assume the pre-0020/0021 manifest-referenced protection of a hypothesis revision."
+    },
+    {
+      "id": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "kind": "task",
+      "file": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption.md",
+      "title": "Fix case-fixture-reads-clean.spec.ts's own release ordering and its destructive collects-survive-DELETE test",
+      "summary": "case-fixture-reads-clean.spec.ts's own insertFixtureCase releases the case version before releasing the manifested hypothesis-revisions and bypasses the declared release operation with raw SQL, and its collects-survive-DELETE test permanently removes the shared canonical fixture's own collects rows instead of leaving them intact.",
+      "epic": "case-fixture-reads-clean-collects-delete-corrective"
+    },
+    {
+      "id": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "kind": "task",
+      "file": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
+      "title": "Refuse a case version's release over a draft revision",
+      "summary": "The gate a case version's release runs over every manifest entry's referenced hypothesis-revision state, folded into the existing release refusal.",
+      "epic": "case-version-release-gate"
+    },
+    {
+      "id": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "task",
+      "file": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested revision before releasing the case version in diagnose-server.factory.spec.ts",
+      "summary": "diagnose-server.factory.spec.ts's own insertFixtureCase helper releases the case version before releasing the manifested hypothesis-revisions.",
+      "epic": "diagnose-server-factory-fixture-release-ordering-corrective"
+    },
+    {
+      "id": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "task",
+      "file": "task/fixture-revision-own-state/release-fixture-manifested-revisions.md",
+      "title": "Give the fixture's manifested revisions their own released state",
+      "summary": "The fixture and seed setup that leaves a released case version's manifested hypothesis revisions in draft in their own column, corrected so the canonical case reads back whole.",
+      "epic": "fixture-revision-own-state"
+    },
+    {
+      "id": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint.md",
+      "title": "Publish release-hypothesis on the case-lifecycle surface",
+      "summary": "The request surface through which a curator releases a hypothesis-revision, outside the context of any case version.",
+      "epic": "hypothesis-revision-own-release"
+    },
+    {
+      "id": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-release/release-a-revision-directly.md",
+      "title": "Release a hypothesis-revision on its own terms",
+      "summary": "The operation that moves a hypothesis-revision from draft to released and the refusal a further release attempt meets.",
+      "epic": "hypothesis-revision-own-release"
+    },
+    {
+      "id": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft.md",
+      "title": "Decide the revise branch from the revision's own state",
+      "summary": "The revise-hypothesis branch that chooses replace-in-place or create-next from the highest existing revision's own state.",
+      "epic": "hypothesis-revision-own-state"
+    },
+    {
+      "id": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision.md",
+      "title": "Refuse altering a revision from its own state",
+      "summary": "The schema condition that refuses an alteration of a hypothesis-revision's stored content exactly when that revision's own state is released.",
+      "epic": "hypothesis-revision-own-state"
+    },
+    {
+      "id": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "task",
+      "file": "task/hypothesis-revision-own-state/store-the-revisions-own-state.md",
+      "title": "Store each hypothesis-revision's own state",
+      "summary": "The schema and the write path that record a hypothesis-revision's own draft-or-released state on its own row.",
+      "epic": "hypothesis-revision-own-state"
+    },
+    {
+      "id": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "task",
+      "file": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test.md",
+      "title": "Repoint the repository's overwrite-refusal test onto the revision's own state",
+      "summary": "The relational case store repository spec's test for a distinguishable refusal of an overwrite, keyed on the revision's own released state instead of on a released case version referencing it.",
+      "epic": "obsolete-protection-basis-tests"
+    },
+    {
+      "id": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "task",
+      "file": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion.md",
+      "title": "Retire the case-version-lifecycle spec's manifest-basis immutability assertion",
+      "summary": "The one test in case-version-lifecycle-schema.spec.ts asserting a hypothesis-revision's immutability from a released case version's manifest reference, restated against the revision's own state.",
+      "epic": "obsolete-protection-basis-tests"
+    },
+    {
+      "id": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "task",
+      "file": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
+      "title": "Retire the manifest-basis persistence schema specs",
+      "summary": "The two persistence schema specs whose assertions rest on a released case version's reference, restated against the revision's own state or retired into the sibling that already holds them.",
+      "epic": "obsolete-protection-basis-tests"
+    },
+    {
+      "id": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "kind": "task",
+      "file": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state.md",
+      "title": "State each listed revision's own state",
+      "summary": "The hypothesis-revisions listing, answering the draft-or-released state of every revision it carries.",
+      "epic": "revision-listing-state-disclosure"
+    },
+    {
+      "id": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "kind": "task",
+      "file": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version.md",
+      "title": "Release each manifested revision before releasing the case version in seed.ts",
+      "summary": "seed.ts's seedCase() releases the case version before releasing the manifested hypothesis-revisions, and moves each to released via a raw SQL UPDATE instead of the declared operation.",
+      "epic": "seed-release-ordering-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-fixture-reads-clean-collects-delete-corrective",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-version-release-gate",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-version-release-gate",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-version-release-gate",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-version-release-gate",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-version-release-gate",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-version-release-gate",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/diagnose-server-factory-fixture-release-ordering-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-release",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/hypothesis-revision-own-state",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/revision-listing-state-disclosure",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/revision-listing-state-disclosure",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/revision-listing-state-disclosure",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/revision-listing-state-disclosure",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/seed-release-ordering-corrective",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-fixture-reads-clean-collects-delete-corrective/fix-release-ordering-and-collects-delete-corruption",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/diagnose-server-factory-fixture-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "contracts/system/case-authoring",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "contracts/system/case-authoring",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-release/release-a-revision-directly",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/overwrite-only-while-the-revision-is-draft",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "task/hypothesis-revision-own-state/store-the-revisions-own-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
+      "to": "constraints/listings-are-paged",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/seed-release-ordering-corrective/release-each-manifested-revision-before-the-case-version",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}

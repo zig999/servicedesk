@@ -1,8 +1,7 @@
 ---
 subject: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
 given:
-  - hypothesis customer-equipment-fault holds one revision, revision 2, referenced by no case
-    version in released state
+  - hypothesis customer-equipment-fault holds one revision, revision 2, itself in draft state
   - the case's draft manifest pins revision 2 of customer-equipment-fault
 when:
   - the curator revises customer-equipment-fault three times, each time changing its criterion

@@ -181,30 +181,6 @@ it(
 );
 
 it(
-  "leaves a hypothesis-revision's own collects row present after an ordinary DELETE attempts to remove it, where its revision belongs to a released case version's manifest",
-  async () => {
-    const slug = 'a-released-case-with-a-collecting-revision';
-    await insertCase(client, slug);
-    await insertCaseVersion(client, glossary, { slug, version: 1, state: 'released', releasedAt: '2026-01-01T00:00:00Z' });
-    await insertHypothesis(client, { slug, name: 'the-hypothesis' });
-    await insertHypothesisRevision(client, glossary, { slug, hypothesisName: 'the-hypothesis', revision: 1 });
-    await insertRevisionCollect(client, { slug, hypothesisName: 'the-hypothesis', revision: 1, conceptName: glossary.conceptA });
-    await insertManifestEntry(client, { slug, version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });
-
-    await client.query(
-      'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
-      [slug, 'the-hypothesis'],
-    );
-
-    const { rows } = await client.query<{ concept_name: string }>(
-      'SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
-      [slug, 'the-hypothesis'],
-    );
-    expect(rows).toEqual([{ concept_name: glossary.conceptA }]);
-  },
-);
-
-it(
   "leaves a hypothesis-revision's own collects row naming its original concept after an ordinary UPDATE attempts to change which concept it names",
   async () => {
     const slug = 'a-case-with-an-immutable-collects-row';

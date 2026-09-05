@@ -17,8 +17,8 @@ type ListHypothesisRevisionsMock = ReturnType<
 function heldPage(overrides: Partial<PaginatedResponse<HypothesisRevisionListItem>> = {}): PaginatedResponse<HypothesisRevisionListItem> {
   return {
     data: [
-      { revision: 1, criterion: 'a-criterion', collects: ['a-concept'], resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
-      { revision: 2, criterion: 'a-revised-criterion', collects: ['a-concept', 'another-concept'], resolution: { outcome: 'a-revised-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
+      { revision: 1, criterion: 'a-criterion', collects: ['a-concept'], resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } }, state: 'draft' },
+      { revision: 2, criterion: 'a-revised-criterion', collects: ['a-concept', 'another-concept'], resolution: { outcome: 'a-revised-outcome', referral: { action: 'refer', recipient: 'a-queue' } }, state: 'draft' },
     ],
     total: 2,
     limit: 20,
@@ -84,7 +84,7 @@ it("passes the path's own slug and hypothesis name and the query's own offset an
 
 it(
   'answers a body carrying exactly the five fields src/types/pagination.ts\'s PaginatedResponse declares — data, limit, offset, ' +
-    'pageCount and total — and each revision item carrying exactly revision, criterion, collects and resolution, never hypothesis_name',
+    'pageCount and total — and each revision item carrying exactly revision, criterion, collects, resolution and state, never hypothesis_name',
   async () => {
     const built = buildTestApp();
     app = built.app;
@@ -95,7 +95,7 @@ it(
     const body = response.json() as PaginatedResponse<HypothesisRevisionListItem>;
     expect(Object.keys(body).sort()).toEqual(['data', 'limit', 'offset', 'pageCount', 'total']);
     for (const item of body.data) {
-      expect(Object.keys(item).sort()).toEqual(['collects', 'criterion', 'resolution', 'revision']);
+      expect(Object.keys(item).sort()).toEqual(['collects', 'criterion', 'resolution', 'revision', 'state']);
     }
   },
 );
@@ -106,14 +106,14 @@ it("answers each of two requests naming different (slug, hypothesis name) pairs 
   built.listHypothesisRevisions
     .mockResolvedValueOnce(
       heldPage({
-        data: [{ revision: 1, criterion: 'criterion-a', collects: ['concept-a'], resolution: { outcome: 'outcome-a', referral: { action: 'refer', recipient: 'queue-a' } } }],
+        data: [{ revision: 1, criterion: 'criterion-a', collects: ['concept-a'], resolution: { outcome: 'outcome-a', referral: { action: 'refer', recipient: 'queue-a' } }, state: 'draft' }],
         total: 1,
         pageCount: 1,
       }),
     )
     .mockResolvedValueOnce(
       heldPage({
-        data: [{ revision: 1, criterion: 'criterion-b', collects: ['concept-b'], resolution: { outcome: 'outcome-b', referral: { action: 'refer', recipient: 'queue-b' } } }],
+        data: [{ revision: 1, criterion: 'criterion-b', collects: ['concept-b'], resolution: { outcome: 'outcome-b', referral: { action: 'refer', recipient: 'queue-b' } }, state: 'draft' }],
         total: 1,
         pageCount: 1,
       }),
@@ -123,10 +123,10 @@ it("answers each of two requests naming different (slug, hypothesis name) pairs 
   const second = await app.inject({ method: 'GET', url: '/v1/cases/slug-b/hypotheses/hypothesis-b/revisions' });
 
   expect((first.json() as PaginatedResponse<HypothesisRevisionListItem>).data).toEqual([
-    { revision: 1, criterion: 'criterion-a', collects: ['concept-a'], resolution: { outcome: 'outcome-a', referral: { action: 'refer', recipient: 'queue-a' } } },
+    { revision: 1, criterion: 'criterion-a', collects: ['concept-a'], resolution: { outcome: 'outcome-a', referral: { action: 'refer', recipient: 'queue-a' } }, state: 'draft' },
   ]);
   expect((second.json() as PaginatedResponse<HypothesisRevisionListItem>).data).toEqual([
-    { revision: 1, criterion: 'criterion-b', collects: ['concept-b'], resolution: { outcome: 'outcome-b', referral: { action: 'refer', recipient: 'queue-b' } } },
+    { revision: 1, criterion: 'criterion-b', collects: ['concept-b'], resolution: { outcome: 'outcome-b', referral: { action: 'refer', recipient: 'queue-b' } }, state: 'draft' },
   ]);
   expect(built.listHypothesisRevisions).toHaveBeenNthCalledWith(1, 'slug-a', 'hypothesis-a', { offset: 0, limit: 20 });
   expect(built.listHypothesisRevisions).toHaveBeenNthCalledWith(2, 'slug-b', 'hypothesis-b', { offset: 0, limit: 20 });

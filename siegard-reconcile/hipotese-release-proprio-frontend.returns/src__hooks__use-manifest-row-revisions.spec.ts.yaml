@@ -1,0 +1,47 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "jsonResponse({ data: listed, total: 3 })\" carries only data and total; no offset, limit or page-count field is asserted anywhere in this file, so the paging shape the constraint requires is not exercised here."
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no request, response or UI assertion in this file mentions authentication or its disclosure."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file only exercises a GET-style revisions listing through useManifestRowRevisions; none of the operations create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release, discard is invoked."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revisionItem fixture factory"
+    evidence: "revision: 1, criterion: \"some criterion\", collects: [], resolution: { outcome: \"resolved\", referral: { action: \"notify\", recipient: \"customer\" } }, state: \"released\""
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the revisionItem fixture's default state field"
+    evidence: "state: \"released\","
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no release call, transition or refusal is exercised; the file only reads a listing."
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "const listed = [revisionItem({ revision: 1 }), revisionItem({ revision: 3 }), revisionItem({ revision: 2 })]; — the fixture is deliberately unordered and the test title says the hook answers \"regardless of the listing's own order\", so the descending-first fact is not asserted here."
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the revisionItem fixture's state field, carried through every listed item"
+    evidence: "state: \"released\", ...overrides,"
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "this file exercises a row's own revisions listing, never a presented manifest entry or its pinned-revision state."
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release call or refusal is exercised anywhere in the file."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release or manifest-entry composition is exercised."
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release action against a hypothesis-revision appears in the file."
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release attempt appears in the file."
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no manifest-entry placement is exercised in the file."
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "no release attempt or refusal notice is exercised in the file."
+looked_past: "the fixture's resolution: { outcome: \"resolved\", referral: { action: \"notify\", recipient: \"customer\" } } and the react-query cache key [\"hypothesis-revisions\", slug, hypothesisName] are structural/wiring choices this file never asserts meaning over — resolution's own shape is domain/knowledge/resolution's and the query-key mechanics belong to use-hypothesis-revisions.ts's own review, not a domain-fact judgment over this test."

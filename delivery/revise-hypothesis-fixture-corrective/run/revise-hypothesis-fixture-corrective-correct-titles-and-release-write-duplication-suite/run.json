@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/revise-hypothesis-fixture-corrective-correct-titles-and-release-write-duplication-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-05T12:34:57.726+00:00",
+      "ended_at": "2026-09-05T12:35:01.481+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-05T12:35:01.481+00:00",
+      "ended_at": "2026-09-05T12:35:06.168+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-05T12:35:06.168+00:00",
+      "ended_at": "2026-09-05T12:35:09.900+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-05T12:35:09.900+00:00",
+      "ended_at": "2026-09-05T12:35:10.352+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-05T12:35:10.352+00:00",
+      "ended_at": "2026-09-05T12:37:52.959+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/obsolete-protection-basis-tests-retire-manifest-basis-schema-specs-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-03T23:02:17.051+00:00",
+      "ended_at": "2026-09-03T23:02:20.788+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-03T23:02:20.788+00:00",
+      "ended_at": "2026-09-03T23:02:25.368+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-03T23:02:25.368+00:00",
+      "ended_at": "2026-09-03T23:02:29.435+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-03T23:02:29.435+00:00",
+      "ended_at": "2026-09-03T23:02:29.832+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

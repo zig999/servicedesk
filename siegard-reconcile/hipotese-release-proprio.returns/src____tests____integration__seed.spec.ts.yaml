@@ -1,0 +1,113 @@
+read:
+  - node: domain/glossary/action
+    held_at: "the action-names assertion, ~line 256-261"
+    evidence: "const { rows } = await connection.query<{ name: string }>('SELECT name FROM actions WHERE name = ANY($1)', [expected]);"
+  - node: domain/glossary/concept
+    held_at: "the concept-fixture assertion, ~line 270-294"
+    evidence: "'SELECT name, ttl FROM concepts WHERE name = ANY($1)'"
+  - node: domain/glossary/outcome
+    held_at: "the two non-conclusion-outcome assertions, ~line 224-239"
+    evidence: "const nonConclusionNames = NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name);"
+  - node: domain/glossary/recipient
+    held_at: "the recipient-names assertion, ~line 263-268"
+    evidence: "'SELECT name FROM recipients WHERE name = ANY($1)'"
+  - node: domain/glossary/subject-type
+    held_at: "the subject-type assertion, ~line 241-246"
+    evidence: "'SELECT name FROM subject_types WHERE name = ANY($1)'"
+  - node: domain/knowledge/case-version
+    held_at: "the case-stored assertion, line 315-318"
+    evidence: "const stored = await createCaseStore(connection).assembleVersion(SLUG, VERSION);"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "the no-second-version assertion, line 352-356"
+    evidence: "const secondVersion = await createCaseStore(connection).assembleVersion(SLUG, VERSION + 1); expect(secondVersion).toBeUndefined();"
+  - node: constraints/a-case-is-read-whole
+    held_at: "the whole-read assertion, line 320-346"
+    evidence: "const result = await query.readCase(SLUG, VERSION);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file drives no HTTP route at all — every call in it is a direct DatabaseConnection query or a case-store/case-query factory call"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "PAGINATION_DEFAULT_LIMIT: '20', PAGINATION_MAX_LIMIT: '100',"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "function requireDatabaseUrl(): string { ... }"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1'"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "indirectly, via runSeedScript(1) in beforeAll and the assertions afterward that the case now exists"
+    evidence: "await import(/* @vite-ignore */ `${SEED_MODULE_URL}?run=${runId}`);"
+  - node: contracts/knowledge/case-query
+    held_at: "the readCase call, line 324-326"
+    evidence: "const query = createCaseQuery(connection); const result = await query.readCase(SLUG, VERSION);"
+  - node: contracts/system/case-authoring
+    held_at: "indirectly, via runSeedScript(1) in beforeAll and the closing assertion that the seeded revisions are released"
+    evidence: "await runSeedScript(1);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the hypotheses-field comparison, line 337-344"
+    evidence: "expect(result.case.hypotheses).toEqual(fixture.manifest.map((entry) => ({ name: entry.hypothesis_name, criterion: entry.criterion, collects: entry.collects, resolution: entry.resolution, })));"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the closing state assertion, line 372-373"
+    evidence: "expect(rows.every((row) => row.state === 'released')).toBe(true);"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the manifest-to-hypotheses mapping in the whole-read assertion, line 337-344"
+    evidence: "fixture.manifest.map((entry) => ({ name: entry.hypothesis_name,"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "const expected = await readConceptFixture();"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "await expect(runSeedScript(2)).resolves.toBeUndefined();"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the closing state assertion, line 372-373"
+    evidence: "expect(rows.every((row) => row.state === 'released')).toBe(true);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "readonly manifest: ReadonlyArray<{ readonly position: number; readonly hypothesis_name: string; readonly criterion: string; ... }>"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no listing operation is called anywhere in this file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no listing operation is called anywhere in this file"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no refusal path is exercised anywhere in this file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the closing state assertion, line 358-375"
+    evidence: "expect(rows.every((row) => row.state === 'released')).toBe(true);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "no alteration of a released revision is attempted anywhere in this file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise operation is called anywhere in this file"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the readCase call, line 326"
+    evidence: "const result = await query.readCase(SLUG, VERSION);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "no repeated-revise sequence is exercised anywhere in this file"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no standalone hypothesis-revision release is exercised anywhere in this file"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no release refusal is exercised anywhere in this file"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "only version 1 is ever created and read; no second draft/release cycle is exercised"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no direct place-hypothesis call is made anywhere in this file"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "no revise-after-release sequence is exercised anywhere in this file"
+looked_past: "wipeFixtureOwnedRows and cleanupSeededRows repeat the same eleven DELETE statements almost verbatim, which is a duplication concern for a standard-conformance pass rather than a domain-fact one."

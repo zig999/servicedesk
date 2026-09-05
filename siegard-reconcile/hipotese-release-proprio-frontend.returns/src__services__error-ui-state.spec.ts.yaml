@@ -1,0 +1,63 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: 'describe("uiStateForApiError", () => { ... }); — the file exercises only uiStateForApiError, never a listing, an offset or a limit'
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'import { ApiError } from "./api-client"; import { uiStateForApiError } from "./error-ui-state"; — the file''s whole subject is error-code-to-UI-state mapping, nothing about an authentication posture or its disclosure'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the tests exercise error codes by name only (e.g. new ApiError(\"CaseAlreadyHasDraftError\", ...)) and never call or assert against any of create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release or discard"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "the file never references a revision, a criterion, collects or a resolution — only the string \"HypothesisRevisionNotDraftAtReleaseError\" as an opaque error code"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "the file never asserts a value of \"draft\" or \"released\"; HypothesisRevisionNotDraftAtReleaseError is treated purely as an opaque code"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the test at lines 49-54, mapping the exact refusal name the rule states to a dedicated UI kind"
+    evidence: |
+      const state = uiStateForApiError(
+            new ApiError("HypothesisRevisionNotDraftAtReleaseError", "not draft at release"),
+          );
+          expect(state.kind).toBe("hypothesis-revision-not-draft-at-release");
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the file contains no assertion about ordering, revision numbers or which page carries which revision"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "the file contains no listing and no assertion that a revision's own draft/released state is disclosed anywhere"
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "the file never references a manifest entry or a pinned revision"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: |
+      it("resolves CaseVersionNotReleasableError to the case-version-not-releasable state", () => {
+          const state = uiStateForApiError(new ApiError("CaseVersionNotReleasableError", "not releasable"));
+          expect(state.kind).toBe("case-version-not-releasable");
+        });
+      — the test asserts only the generic kind mapping, nothing about the case where no rule is specifically violated
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file never references a manifest entry, a case version's release gating, or which hypothesis a refusal names"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "the file never touches a case version or a manifest in connection with releasing a revision"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file makes no assertion naming a hypothesis among a CaseVersionNotReleasableError's violations"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "the file never exercises place-hypothesis or a manifest entry at all"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: "the test at lines 56-87, asserting the HypothesisRevisionNotDraftAtReleaseError kind is distinct from every other listed code and from the generic fallback"
+    evidence: |
+      const targetKind = uiStateForApiError(
+            new ApiError("HypothesisRevisionNotDraftAtReleaseError", "not draft at release"),
+          ).kind;
+          const otherKinds = otherCodes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+
+          expect(otherKinds).not.toContain(targetKind);
+          expect(targetKind).not.toBe("generic-error");
+looked_past: "The test at lines 202-207 asserting that a ConceptDescriptionRequiredError state carries only kind and no message of its own is a type-shape assertion about UiErrorState generally, not a domain fact tied to any node in this set, and the many other error-code-to-kind mappings in the file (CaseNotFoundError, ConceptNotAnsweredError, CapabilityNotReadOnlyError, and the rest) belong to nodes outside this delegation's set and were left unexamined against the wider specification."

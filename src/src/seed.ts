@@ -85,11 +85,17 @@ async function seedCapabilities(connection: DatabaseConnection): Promise<void> {
   }
 }
 
+type PlacedRevision = {
+  readonly hypothesis_name: string;
+  readonly revision: number;
+};
+
 async function placeFixtureHypotheses(
   lifecycle: CaseLifecycleOperations,
   fixture: CaseFixture,
   version: number,
-): Promise<void> {
+): Promise<readonly PlacedRevision[]> {
+  const placed: PlacedRevision[] = [];
   for (const entry of fixture.manifest) {
     const revised = await lifecycle.reviseHypothesis({
       slug: fixture.slug,
@@ -106,6 +112,18 @@ async function placeFixtureHypotheses(
       revision: revised.revision,
       position: entry.position,
     });
+    placed.push({ hypothesis_name: revised.hypothesis_name, revision: revised.revision });
+  }
+  return placed;
+}
+
+async function releaseManifestedRevisions(
+  lifecycle: CaseLifecycleOperations,
+  slug: string,
+  revisions: readonly PlacedRevision[],
+): Promise<void> {
+  for (const revision of revisions) {
+    await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
   }
 }
 
@@ -122,7 +140,8 @@ async function seedCase(connection: DatabaseConnection): Promise<void> {
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,
   });
-  await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
   await lifecycle.release(fixture.slug, draft.version);
 }
 

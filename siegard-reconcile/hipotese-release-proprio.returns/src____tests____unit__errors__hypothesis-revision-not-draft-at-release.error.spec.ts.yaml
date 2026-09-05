@@ -1,0 +1,95 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "it('answers its own condition through a fixed name and message, unshaped by any argument', () => {"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the two it blocks, lines 7-18"
+    evidence: "expect('context' in error).toBe(false); ... expect(error.name).toBe('HypothesisRevisionNotDraftAtReleaseError'); expect(error.message).toBe(FIXED_MESSAGE);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "const error = new HypothesisRevisionNotDraftAtReleaseError();"
+looked_past: "The FIXED_MESSAGE constant's prose paraphrases the lifecycle rule's own description, but the specification leaves a refusal's exact wording to implementation elsewhere and the sibling CaseVersionNotDraftAtReleaseError already establishes this same idiom, so it is not reported as a domain-fact duplication."

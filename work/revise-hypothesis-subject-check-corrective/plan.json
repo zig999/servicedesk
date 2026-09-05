@@ -1,0 +1,58 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/revise-hypothesis-subject-check-corrective",
+      "kind": "epic",
+      "file": "epic/revise-hypothesis-subject-check-corrective.md",
+      "title": "Revise-hypothesis subject-check correction",
+      "summary": "Corrects revise-hypothesis.operation.ts, a file this project already delivered, so its concept-acceptance check reads the draft version's own declared subject instead of a caller-supplied value."
+    },
+    {
+      "id": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "kind": "task",
+      "file": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject.md",
+      "title": "Read the draft version's own declared subject for revise-hypothesis's concept-acceptance check",
+      "summary": "revise-hypothesis.operation.ts's refuseWithoutDraft fetches the draft version only to discard it, and the concept-acceptance check runs against a caller-supplied subject instead of the draft version's own declared one.",
+      "epic": "revise-hypothesis-subject-check-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/revise-hypothesis-subject-check-corrective",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/revise-hypothesis-subject-check-corrective",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/revise-hypothesis-subject-check-corrective",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

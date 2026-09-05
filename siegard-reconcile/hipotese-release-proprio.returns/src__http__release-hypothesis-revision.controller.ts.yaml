@@ -1,0 +1,95 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the body of handleReleaseHypothesisRevisionRequest, dispatching the release-hypothesis operation"
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the dependency call, which triggers release directly against the revision"
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "the handler's own parameter list, which carries only slug, name and revision"
+    evidence: "params: ReleaseHypothesisRevisionParamsDto,"
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import type { CaseLifecycleOperations } from '../factories/case-lifecycle.factory.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: nowhere
+    evidence: "await dependencies.releaseHypothesisRevision(params.slug, params.name, params.revision);"
+looked_past: "The controller performs no error handling, status-code selection or response shaping of its own — it awaits the dependency and returns void, leaving the refusal codes and the 204/400 handling to release-hypothesis-revision.routes.ts and the operation layer, which is a construct question for another pass rather than a domain fact stated or missing here."

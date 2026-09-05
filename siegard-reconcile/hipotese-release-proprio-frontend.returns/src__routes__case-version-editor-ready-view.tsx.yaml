@@ -1,0 +1,74 @@
+read:
+  - node: domain/knowledge/case
+    held_at: "the slug prop threaded into the manifest lookup and the discard confirmation heading"
+    evidence: "<span>Type {slug} to confirm</span>"
+  - node: domain/knowledge/case-version
+    held_at: "state.manifest and release.version"
+    evidence: "<DialogTitle>Release v{release.version}?</DialogTitle>"
+  - node: domain/knowledge/manifest-entry
+    held_at: "toManifestRow"
+    evidence: |
+      position: entry.position,
+          hypothesis: entry.hypothesis_revision.hypothesis.name,
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "RELEASE_DIALOG_DESCRIPTION, rendered inside the release dialog"
+    evidence: '"Once released, this version and every manifest entry it holds are frozen — permanently."'
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: "toManifestRow's state field, read from useManifestPinnedRevisionStates"
+    evidence: "state: pinnedState !== undefined ? HYPOTHESIS_REVISION_STATE_CELL[pinnedState] : undefined,"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "the release dialog's violations branch"
+    evidence: |
+      <p className="text-sm text-destructive">
+                        No specific violation was returned.
+                      </p>
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the release dialog's violations list"
+    evidence: |
+      {release.dialog.violations.map((violation) => (
+                          <li key={violation}>! {violation}</li>
+                        ))}
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "the same violations list, wrapped in role=\"alert\""
+    evidence: '<div role="alert">'
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "rows={manifest.map((entry) => toManifestRow(entry, pinnedStates))}"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      export function CaseVersionEditorReadyView({
+        state,
+        slug,
+      }: CaseVersionEditorReadyViewProps): JSX.Element {
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the release and discard confirm buttons"
+    evidence: '<Button type="button" loading={release.isConfirming} onClick={release.onConfirm}>'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "toManifestRow's revision and criterion fields"
+    evidence: |
+      revision: entry.hypothesis_revision.revision,
+          ...
+          criterion: entry.hypothesis_revision.criterion,
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the manifest table's state column mapping"
+    evidence: "HYPOTHESIS_REVISION_STATE_CELL[pinnedState]"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "onClick={release.onConfirm}"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "<ManifestTable slug={slug} manifest={state.manifest ?? []} />"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "<ManifestTable slug={slug} manifest={state.manifest ?? []} />"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "onClick={release.onConfirm}"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "<ManifestTable slug={slug} manifest={state.manifest ?? []} />"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "{discard.errorMessage !== null && ("
+looked_past: "The JSX comment on the discard dialog's Label wrapper (\"Label's own default styling ... is reset in this wrapping div, matching case-version-editor-form-fields.tsx's own FormField convention ...\") states a styling rationale rather than a domain fact, so a possible comment-rule departure there is the standard-conformance pass's to weigh, not this one's."

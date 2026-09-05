@@ -154,14 +154,14 @@ describe("HypothesisRevisionHistory -- loading and failure states", () => {
     expect(screen.getByRole("button", { name: "Retry" })).toBeTruthy();
   });
 
-  it("treats a hypothesis with zero revisions as a load failure rather than an empty state", async () => {
+  it("shows an explicit empty state, never the load-failure banner, for a hypothesis with zero revisions", async () => {
     await mount({
       [revisionsPath(HYPOTHESIS_NAME)]: () => jsonResponse({ data: [], total: 0 }),
     });
 
-    expect(
-      await screen.findByText("Unable to load this hypothesis's revision history."),
-    ).toBeTruthy();
+    expect(await screen.findByText("This hypothesis has no revisions yet.")).toBeTruthy();
+    expect(screen.queryByText("Unable to load this hypothesis's revision history.")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
   });
 
   it("treats a case with zero versions as a load failure rather than an empty state", async () => {

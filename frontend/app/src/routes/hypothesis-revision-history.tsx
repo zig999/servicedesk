@@ -2,20 +2,126 @@ import type { JSX } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@tui/ui/dialog";
+import {
   StatusTable,
   type StatusTableColumn,
   type StatusTableRow,
 } from "../shared/components/status-table";
-import { useHypothesisRevisions } from "../hooks/use-hypothesis-revisions";
-import { useCaseHypothesisCurrentPin } from "../hooks/use-case-hypothesis-current-pin";
+import {
+  useHypothesisRevisions,
+  type HypothesisRevisionListItem,
+  type HypothesisRevisionState,
+} from "../hooks/use-hypothesis-revisions";
+import {
+  useCaseHypothesisCurrentPin,
+  type CaseHypothesisCurrentPin,
+} from "../hooks/use-case-hypothesis-current-pin";
+import { useHypothesisRevisionRelease } from "../hooks/use-hypothesis-revision-release";
+
+const RELEASE_DIALOG_DESCRIPTION =
+  "Once released, this revision's own content can never change again.";
 
 const REVISION_COLUMNS: StatusTableColumn[] = [
   { key: "revision", header: "Revision" },
+  { key: "state", header: "State" },
   { key: "status", header: "Status" },
   { key: "criterion", header: "Criterion" },
   { key: "collects", header: "Collects" },
   { key: "actions", header: "Actions" },
 ];
+
+const REVISION_STATE_CELL: Readonly<
+  Record<HypothesisRevisionState, { color: string; label: string }>
+> = {
+  draft: { color: "bg-warning", label: "Draft" },
+  released: { color: "bg-success", label: "Released" },
+};
+
+export type HypothesisRevisionReleaseActionProps = {
+  readonly slug: string;
+  readonly hypothesisName: string;
+  readonly revision: number;
+};
+
+function HypothesisRevisionReleaseAction({
+  slug,
+  hypothesisName,
+  revision,
+}: HypothesisRevisionReleaseActionProps): JSX.Element {
+  const release = useHypothesisRevisionRelease(slug, hypothesisName, revision);
+  return (
+    <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
+      <DialogTrigger asChild>
+        <Button type="button" variant="secondary">
+          Release…
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Release revision {revision}?</DialogTitle>
+        </DialogHeader>
+        <DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" disabled={release.isConfirming}>
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button type="button" loading={release.isConfirming} onClick={release.onConfirm}>
+            Release
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function toHistoryRow(
+  revision: HypothesisRevisionListItem,
+  currentPin: Extract<CaseHypothesisCurrentPin, { phase: "ready" }>,
+  slug: string,
+  hypothesisName: string,
+): StatusTableRow {
+  const isCurrent = revision.revision === currentPin.pinnedRevision;
+  return {
+    id: revision.revision,
+    revision: revision.revision,
+    state: REVISION_STATE_CELL[revision.state],
+    status: isCurrent
+      ? { color: "bg-success", label: "current" }
+      : { color: "bg-muted-foreground", label: "frozen" },
+    criterion: revision.criterion,
+    collects: revision.collects.join(", "),
+    actions: (
+      <div className="flex items-center gap-2">
+        {isCurrent && (
+          <Link
+            to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
+            params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
+          >
+            Revise →
+          </Link>
+        )}
+        {revision.state === "draft" && (
+          <HypothesisRevisionReleaseAction
+            slug={slug}
+            hypothesisName={hypothesisName}
+            revision={revision.revision}
+          />
+        )}
+      </div>
+    ),
+  };
+}
 
 export type HypothesisRevisionHistoryProps = {
   readonly slug: string;
@@ -42,9 +148,7 @@ export function HypothesisRevisionHistory({
     return <p>Loading revision history…</p>;
   }
 
-  const revisions = revisionsQuery.data?.data ?? [];
-
-  if (revisionsQuery.isError || revisions.length === 0 || currentPin.phase === "load-error") {
+  if (revisionsQuery.isError || currentPin.phase === "load-error") {
     return (
       <section>
         <p>Unable to load this hypothesis&apos;s revision history.</p>
@@ -55,31 +159,28 @@ export function HypothesisRevisionHistory({
     );
   }
 
+  const revisions = revisionsQuery.data?.data ?? [];
+
+  if (revisions.length === 0) {
+    return (
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h2>{hypothesisName} — no revisions yet</h2>
+          <Button type="button" onClick={onBack}>
+            Back to hypotheses
+          </Button>
+        </div>
+        <p>This hypothesis has no revisions yet.</p>
+      </section>
+    );
+  }
+
   const totalRevisions = revisionsQuery.data?.total ?? revisions.length;
 
   const rows: StatusTableRow[] = revisions
     .slice()
     .sort((a, b) => b.revision - a.revision)
-    .map((revision) => {
-      const isCurrent = revision.revision === currentPin.pinnedRevision;
-      return {
-        id: revision.revision,
-        revision: revision.revision,
-        status: isCurrent
-          ? { color: "bg-success", label: "current" }
-          : { color: "bg-muted-foreground", label: "frozen" },
-        criterion: revision.criterion,
-        collects: revision.collects.join(", "),
-        actions: isCurrent ? (
-          <Link
-            to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"
-            params={{ slug, version: String(currentPin.targetVersion), hypothesisName }}
-          >
-            Revise →
-          </Link>
-        ) : null,
-      };
-    });
+    .map((revision) => toHistoryRow(revision, currentPin, slug, hypothesisName));
 
   const usesNoRevision = currentPin.phase === "ready" && currentPin.pinnedRevision === null;
 

@@ -1,0 +1,71 @@
+read:
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: "the manifest.forEach block, but only for entries whose pinned revision happens to appear in the single unpaged query answer — see finding"
+    evidence: |-
+      const pinned = result.data?.data.find(
+        (item) => item.revision === entry.hypothesis_revision.revision,
+      );
+      if (pinned !== undefined) {
+        states.set(entry.position, pinned.state);
+      }
+  - node: constraints/listings-are-paged
+    held_at: the revisions query call
+    evidence: hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name)
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'import { useQueries } from "@tanstack/react-query";'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name)
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the pinned-revision lookup inside manifest.forEach
+    evidence: (item) => item.revision === entry.hypothesis_revision.revision
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the exported map's value type
+    evidence: 'export type ManifestPinnedRevisionStates = ReadonlyMap<number, HypothesisRevisionState>;'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: states.set(entry.position, pinned.state)
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: result.data?.data.find((item) => item.revision === entry.hypothesis_revision.revision)
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: pinned.state
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name)
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: states.set(entry.position, pinned.state)
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name)
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: states.set(entry.position, pinned.state)
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: manifest.map((entry) => hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name))
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name)
+
+findings:
+  - file: src/hooks/use-manifest-pinned-revision-states.ts
+    where: "the manifest.forEach block that computes each entry's state, lines 21-29"
+    evidence: |-
+      const pinned = result.data?.data.find(
+        (item) => item.revision === entry.hypothesis_revision.revision,
+      );
+      if (pinned !== undefined) {
+        states.set(entry.position, pinned.state);
+      }
+    cost: "hypothesisRevisionsQueryOptions is called with no offset or limit, so result.data.data is only the default first page of that hypothesis's revisions (constraints/listings-are-paged). When an entry's pinned revision is an older one that does not fall on that default page, .find returns undefined, states.set is never called for that entry's position, and the map this hook returns carries no state for it at all — exactly the silent, page-dependent gap the rule calls out as never permitted (\"the statement is unconditional ... it does not depend on ... the reader opening e's revision selector\"). Whatever surface consumes this map is left unable to distinguish \"still draft\" from \"not yet known,\" for a pin the curator has already placed."
+    kind: contradicts
+    correction: "resolve each entry's own pinned revision directly (e.g. request it by its own revision number, or keep paging the listing until it is found) instead of searching only the first, unpaged answer of hypothesisRevisionsQueryOptions, so the state is set for every entry regardless of which page the default query happened to return."
+    node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+
+looked_past: "the hook issues one parallel query per manifest entry via useQueries with no batching or dedup across repeated hypotheses — a performance/design shape, not a domain fact, and left for a code-quality pass rather than this one."
+candidates_opened:
+  - rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown

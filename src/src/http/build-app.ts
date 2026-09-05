@@ -49,6 +49,8 @@ import type { RegisterConnectorControllerDependencies } from './register-connect
 import { createRegisterConnectorRoutesPlugin } from './register-connector.routes.js';
 import type { ReleaseControllerDependencies } from './release.controller.js';
 import { createReleaseRoutesPlugin } from './release.routes.js';
+import type { ReleaseHypothesisRevisionControllerDependencies } from './release-hypothesis-revision.controller.js';
+import { createReleaseHypothesisRevisionRoutesPlugin } from './release-hypothesis-revision.routes.js';
 import type { RemoveHypothesisControllerDependencies } from './remove-hypothesis.controller.js';
 import { createRemoveHypothesisRoutesPlugin } from './remove-hypothesis.routes.js';
 import type { ReviseHypothesisControllerDependencies } from './revise-hypothesis.controller.js';
@@ -73,6 +75,7 @@ export type BuildAppDependencies = {
   readonly createDraft: CreateDraftControllerDependencies;
   readonly updateDraft: UpdateDraftControllerDependencies;
   readonly release: ReleaseControllerDependencies;
+  readonly releaseHypothesisRevision: ReleaseHypothesisRevisionControllerDependencies;
   readonly discard: DiscardControllerDependencies;
   readonly reviseHypothesis: ReviseHypothesisControllerDependencies;
   readonly placeHypothesis: PlaceHypothesisControllerDependencies;
@@ -107,6 +110,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
   (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
   (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+  (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
   (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
   (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
   (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),

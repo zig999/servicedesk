@@ -1,0 +1,109 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: |
+      [revisionsPath(HYPOTHESIS_NAME)]: () =>
+        jsonResponse({ data: revisions, total: revisions.length }),
+      — the fixture always answers every given revision in one page; no test in this file exercises an offset, a limit, or a limit above a configured maximum.
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      return vi.fn(async (input: string | URL | Request, _init?: RequestInit): Promise<Response> => {
+      — the mocked fetch takes no identity claim and no test in this file asserts anything about an authentication disclosure.
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "criterion 3/4 tests, lines 130-160 — the POST to the release endpoint"
+    evidence: |
+      const [, init] = callsTo(fetchMock, releasePath(HYPOTHESIS_NAME, 4))[0];
+      expect(init?.method).toBe("POST");
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "revisionItem(), lines 50-61, and the release-control tests, e.g. lines 115-119"
+    evidence: |
+      function revisionItem(
+        revision: number,
+        state: "draft" | "released",
+      ): Record<string, unknown> {
+        return {
+          revision,
+          criterion: `Criterion ${revision}`,
+          collects: ["ConceptA"],
+          resolution: { outcome: "resolved", referral: { action: "escalate", recipient: "supervisor" } },
+          state,
+        };
+      }
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "criterion 1/2/8 assertions, e.g. line 118, 126, 229"
+    evidence: |
+      expect(within(findRow(rows, 4)).getByText("Draft")).toBeTruthy();
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "criteria 8-9, lines 211-258"
+    evidence: |
+      function apiErrorResponse(code: string, message: string, status = 409): Response {
+        return jsonResponse({ error: { code, message } }, status);
+      }
+      ...
+      [releasePath(HYPOTHESIS_NAME, 4)]: () =>
+        apiErrorResponse("HypothesisRevisionNotDraftAtReleaseError", MESSAGE),
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: |
+      jsonResponse({ data: revisions, total: revisions.length }),
+      — the fixture answers the revisions array exactly as given; nothing in this file asserts an order over the answered rows.
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "e.g. line 229, 174-175, 235-236, 320, 324"
+    evidence: |
+      expect(within(findRow(rows, 4)).getByText("Draft")).toBeTruthy();
+      ...
+      within(findRow(screen.getAllByRole("row"), 4)).getByText("Released"),
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: |
+      [manifestPath(TARGET_VERSION)]: () =>
+        jsonResponse(
+          pinnedRevision === null
+            ? emptyManifest()
+            : manifestPinning(HYPOTHESIS_NAME, pinnedRevision),
+        ),
+      — the manifest response is only a fixture for the current-pin lookup; no assertion in this file reads a presented manifest entry's own stated state.
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: |
+      function apiErrorResponse(code: string, message: string, status = 409): Response {
+        return jsonResponse({ error: { code, message } }, status);
+      }
+      — the only refusal shape this file exercises is a single named code and message; no CaseVersionNotReleasableError aggregation or "no rule specifically violated" case is tested here.
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: |
+      [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: TARGET_VERSION, state: "released" }] }),
+      — the case version's own state is a fixed fixture never varied or asserted against a release refusal in this file.
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: "criteria 6-7, lines 181-209"
+    evidence: |
+      expect(callsTo(fetchMock, VERSIONS_PATH)).toHaveLength(1);
+      expect(callsTo(fetchMock, manifestPath(TARGET_VERSION))).toHaveLength(1);
+      ...
+      expect(callsTo(fetchMock, VERSIONS_PATH)).toHaveLength(1);
+      expect(callsTo(fetchMock, manifestPath(TARGET_VERSION))).toHaveLength(1);
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: |
+      [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: TARGET_VERSION, state: "released" }] }),
+      — no test in this file drives a case-version release attempt or a CaseVersionNotReleasableError naming a manifested draft hypothesis.
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: |
+      [manifestPath(TARGET_VERSION)]: () =>
+        jsonResponse(
+          pinnedRevision === null
+            ? emptyManifest()
+            : manifestPinning(HYPOTHESIS_NAME, pinnedRevision),
+        ),
+      — this file never issues or asserts a place-hypothesis call.
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: "criterion 9, lines 242-258"
+    evidence: |
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith(MESSAGE);
+      });
+      expect(toast.error).toHaveBeenCalledTimes(1);
+looked_past: "The asymmetric refetch strategy this file asserts — no re-read of the listing after a successful release (criteria 5, 7) but a re-read after a refusal specifically for the revision no longer being draft (criterion 8) — is a caching/UI-efficiency choice the specification is silent on and that changes nothing a curator can learn or do, so it is a code-review matter rather than a domain-fact one."

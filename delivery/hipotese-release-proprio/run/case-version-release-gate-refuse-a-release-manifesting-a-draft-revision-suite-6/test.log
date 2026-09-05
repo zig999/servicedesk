@@ -1,0 +1,37 @@
+
+> servicedeskn1@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src
+
+No test files found, exiting with code 0
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: connect ETIMEDOUT 10.252.4.205:30671
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ process.processTicksAndRejections node:internal/process/task_queues:103:5
+ ❯ resolvedSchema src/persistence/migration-runner.ts:14:20
+     14| }
+     15| 
+     16| export async function resolvedSchema(connection: DatabaseConnection): …
+       |                 ^
+     17|   const { rows } = await connection.query<ICurrentSchemaRow>('SELECT c…
+     18|   return rows[0]?.current_schema ?? DEFAULT_BOOKKEEPING_SCHEMA;
+ ❯ Object.setup src/vitest-global-setup.ts:70:94
+ ❯ TestProject._initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:7084:21
+ ❯ Vitest.initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9734:35
+ ❯ node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9646:5
+ ❯ Vitest.runFiles node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+ ❯ startVitest node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:10520:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -110, code: 'ETIMEDOUT', syscall: 'connect', address: '10.252.4.205', port: 30671 }
+
+
+

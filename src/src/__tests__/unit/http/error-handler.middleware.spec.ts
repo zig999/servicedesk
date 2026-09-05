@@ -2,6 +2,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it } from 'vitest';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
@@ -65,6 +66,24 @@ it('answers InvestigationWriteDeadlineExceededError with a named 500 envelope, n
     },
   });
 });
+
+it(
+  "answers a mapped domain error that carries no context property with only its code and its fixed " +
+    'message, holding no details key at all',
+  async () => {
+    app = buildAppThatRejectsWith(new HypothesisRevisionNotDraftAtReleaseError());
+
+    const response = await app.inject({ method: 'GET', url: '/throw' });
+
+    expect(response.json()).toEqual({
+      error: {
+        code: 'HypothesisRevisionNotDraftAtReleaseError',
+        message:
+          'this hypothesis-revision is not in draft state, and release is the one trigger that only ever moves a hypothesis-revision out of draft',
+      },
+    });
+  },
+);
 
 it('still answers 500 with the unchanged generic envelope for a typed domain error the status map does not name', async () => {
   app = buildAppThatRejectsWith(new IncoherentCaseError('a-slug', ['a violation']));

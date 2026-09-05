@@ -593,3 +593,21 @@ it('answers an AssembledCaseVersion carrying exactly the manifest entries it was
   expect(answered.manifest).toHaveLength(1);
   expect(answered.manifest[0]?.hypothesis_revision.collects).toEqual([]);
 });
+
+it(
+  "raises this store's own typed error rather than answering a highest-revision read whose own state is " +
+    'outside the declared enumeration — a row this driver-level double can answer even though the real ' +
+    "schema's own CHECK constraint on hypothesis_revisions.state never lets it occur",
+  async () => {
+    const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+      if (text.includes('FROM hypothesis_revisions')) return { rows: [{ revision: 1, state: 'archived' }] };
+      return { rows: [] };
+    };
+    const { connection } = fakeTransactionConnection(handleQuery);
+    const store = new RelationalCaseStore(connection);
+
+    const rejection = store.readHighestRevisionReleaseState('a-slug', 'a-hypothesis');
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
+  },
+);

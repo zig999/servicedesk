@@ -9,7 +9,7 @@ Derived by spec.py from the specification files; never edited.
 | glossary | supporting | 6 | 10 | 2 | 1 |
 | integration | generic | 5 | 16 | 6 | 3 |
 | investigation | supporting | 16 | 37 | 7 | 17 |
-| knowledge | core | 11 | 41 | 5 | 8 |
+| knowledge | core | 12 | 45 | 5 | 12 |
 
 ## Capabilities
 
@@ -20,6 +20,7 @@ Derived by spec.py from the specification files; never edited.
 ## Constraints
 
 - a-case-is-read-whole (knowledge)
+- a-domain-error-unmapped-by-status-is-refused-generically (system)
 - a-malformed-request-is-refused-with-a-validation-error (system)
 - consolidation-runs-behind-a-port (investigation)
 - diagnosis-answers-synchronously (system)
@@ -41,4 +42,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-179 decision(s) disclosed in the decision log.
+194 decision(s) disclosed in the decision log.

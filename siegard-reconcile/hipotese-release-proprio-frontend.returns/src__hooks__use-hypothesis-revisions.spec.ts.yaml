@@ -1,0 +1,47 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no offset/limit parameter or page-count assertion appears; the fixtures pass total: 1 / total: 3 straight through with no paging behavior exercised"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file contains no assertion about authentication disclosure; it is a hook test unrelated to that posture"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "no operation of create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release or discard is exercised; the file only calls useHypothesisRevisions"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "revisionItem() fixture, lines 22-33"
+    evidence: "{ revision: 1, criterion: \"some criterion\", collects: [], resolution: { outcome: \"resolved\", referral: { action: \"notify\", recipient: \"customer\" } }, state: \"released\", ...overrides }"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "lines 87-93, the closed-union compile check"
+    evidence: "// @ts-expect-error -- \"archived\" is not draft or released, and HypothesisRevisionState admits only those two\n    const invalidState: HypothesisRevisionState = \"archived\";"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no release trigger or refusal is exercised in this file; it only reads a listing"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "the third test feeds revisions numbered 1, 2, 3 in ascending order and asserts only that their states survive in that order — it does not assert the listing is descending by revision number"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "lines 40-84, the three `it` blocks under the first describe"
+    evidence: "await waitFor(() => expect(result.current.data?.data[0]?.state).toBe(\"draft\"));"
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "the file exercises useHypothesisRevisions, not a manifest presentation; no manifest entry is constructed or asserted on"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release call or refusal is present in this file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case version, manifest or release attempt appears in this file"
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "no release action is exercised here"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version release scenario appears in this file"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no place-hypothesis action appears in this file"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "no release-refusal wording or error-state assertion appears in this file"
+looked_past: "the resolution fixture's outcome field is passed as a bare string (\"resolved\") rather than the domain node's value-object shape ({ name: string }), but that shape is fixed by hypothesis-revision-form-schema.ts and used identically wherever this type flows, so it is that schema's fact to answer for, not this test file's, and it is never itself asserted on here."

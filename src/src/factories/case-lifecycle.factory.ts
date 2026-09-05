@@ -8,6 +8,8 @@ import {
 } from '../case/manifest-composition.operations.js';
 import { ReleaseOperation } from '../case/release.operation.js';
 import type { IRelease } from '../case/release.operation.js';
+import { ReleaseHypothesisRevisionOperation } from '../case/release-hypothesis-revision.operation.js';
+import type { IReleaseHypothesisRevision } from '../case/release-hypothesis-revision.operation.js';
 import type { RevisedHypothesis, ReviseHypothesisInput } from '../case/revise-hypothesis.operation.js';
 import { ReviseHypothesisOperation } from '../case/revise-hypothesis.operation.js';
 import type { CreateDraftInput, PlaceHypothesisInput } from '../case/case-store.port.js';
@@ -22,6 +24,7 @@ export type CaseLifecycleOperations = {
   readonly placeHypothesis: (input: PlaceHypothesisInput) => Promise<void>;
   readonly removeHypothesis: (input: RemoveHypothesisInput) => Promise<void>;
   readonly release: (slug: string, version: number) => Promise<void>;
+  readonly releaseHypothesisRevision: (slug: string, hypothesisName: string, revision: number) => Promise<void>;
   readonly discard: (slug: string, version: number) => Promise<void>;
 };
 
@@ -32,12 +35,15 @@ export function createCaseLifecycle(connection: DatabaseConnection): CaseLifecyc
   const createDraftOperation: ICreateDraft = new CreateDraftOperation(caseStore);
   const reviseHypothesisOperation = new ReviseHypothesisOperation(caseStore, glossary);
   const releaseOperation: IRelease = new ReleaseOperation(caseStore, glossary, capabilities);
+  const releaseHypothesisRevisionOperation: IReleaseHypothesisRevision = new ReleaseHypothesisRevisionOperation(caseStore);
   return {
     createDraft: (input) => createDraftOperation.createDraft(input),
     reviseHypothesis: (input) => reviseHypothesisOperation.reviseHypothesis(input),
     placeHypothesis: (input) => placeHypothesis(caseStore, input),
     removeHypothesis: (input) => removeHypothesis(caseStore, input),
     release: (slug, version) => releaseOperation.release(slug, version),
+    releaseHypothesisRevision: (slug, hypothesisName, revision) =>
+      releaseHypothesisRevisionOperation.releaseHypothesisRevision(slug, hypothesisName, revision),
     discard: (slug, version) => discardCaseVersion(caseStore, slug, version),
   };
 }

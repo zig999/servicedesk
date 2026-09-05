@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/hypothesis-revision-release-port-test-corrective-narrow-the-overly-strict-import-assertion-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/hipotese-release-proprio/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-05T12:18:54.269+00:00",
+      "ended_at": "2026-09-05T12:18:58.035+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-05T12:18:58.035+00:00",
+      "ended_at": "2026-09-05T12:19:02.578+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-05T12:19:02.578+00:00",
+      "ended_at": "2026-09-05T12:19:08.320+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-05T12:19:08.320+00:00",
+      "ended_at": "2026-09-05T12:19:08.845+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-05T12:19:08.845+00:00",
+      "ended_at": "2026-09-05T12:21:57.691+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "kind": "implementation",
+      "file": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject.md",
+      "title": "Revise-hypothesis reads the draft version's own declared subject for its concept-acceptance check",
+      "summary": "revise-hypothesis.operation.ts now anchors its concept-acceptance check on the case's draft version's own declared subject type, fetched through an enhanced findDraftVersion, and never reads or reacts to the caller-supplied input.subject; the widened ICaseStore.findDraftVersion signature is now honored by every fake implementing that port in the unit suite.",
+      "task": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject"
+    },
+    {
+      "id": "proof/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "kind": "proof",
+      "file": "proof/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject.md",
+      "title": "Revise-hypothesis's concept-acceptance check reads the draft's own declared subject, never input.subject",
+      "summary": "Two new integration tests against ReviseHypothesisOperation prove that a caller-supplied input.subject disagreeing with the case's draft version's own declared subject plays no part in the concept-acceptance outcome, in either direction.",
+      "task": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "to": "implementation/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

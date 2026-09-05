@@ -3,9 +3,10 @@ import type { PoolClient } from 'pg';
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import type { Env } from '../../../config/env.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { buildAppDependencies } from '../../../factories/build-app.factory.js';
 import { createCaseInputRequirementsQuery } from '../../../factories/case-input-requirements.factory.js';
-import { createCaseLifecycle } from '../../../factories/case-lifecycle.factory.js';
+import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
 import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
@@ -122,6 +123,37 @@ async function seedCapability(connection: DatabaseConnection, fixture: IFixture)
   );
 }
 
+async function releaseRevisionDirectly(
+  connection: DatabaseConnection,
+  identity: { readonly slug: string; readonly hypothesisName: string; readonly revision: number },
+): Promise<void> {
+  await createCaseLifecycle(connection).releaseHypothesisRevision(identity.slug, identity.hypothesisName, identity.revision);
+}
+
+async function placeAndReleaseRevision(
+  connection: DatabaseConnection,
+  input: {
+    readonly fixture: IFixture;
+    readonly draft: { readonly version: number };
+    readonly revised: { readonly hypothesis_name: string; readonly revision: number };
+  },
+): Promise<void> {
+  const { fixture, draft, revised } = input;
+  const lifecycle = createCaseLifecycle(connection);
+  await lifecycle.placeHypothesis({
+    slug: fixture.slug,
+    version: draft.version,
+    hypothesis_name: revised.hypothesis_name,
+    revision: revised.revision,
+    position: 1,
+  });
+  await releaseRevisionDirectly(connection, {
+    slug: fixture.slug,
+    hypothesisName: revised.hypothesis_name,
+    revision: revised.revision,
+  });
+}
+
 async function seedFixture(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
   await seedVocabulary(connection, fixture);
   await seedCapability(connection, fixture);
@@ -142,13 +174,7 @@ async function seedFixture(connection: DatabaseConnection, fixture: IFixture): P
     resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
     subject: fixture.subjectType,
   });
-  await lifecycle.placeHypothesis({
-    slug: fixture.slug,
-    version: draft.version,
-    hypothesis_name: revised.hypothesis_name,
-    revision: revised.revision,
-    position: 1,
-  });
+  await placeAndReleaseRevision(connection, { fixture, draft, revised });
   await lifecycle.release(fixture.slug, draft.version);
 }
 
@@ -380,6 +406,55 @@ it(
     } finally {
       await app.close();
       await settleAndCleanup(connection, capturedId(), CLEANUP_WAIT_MS);
+    }
+  },
+);
+
+async function createDraftAndRevision(
+  lifecycle: CaseLifecycleOperations,
+  guardFixture: IFixture,
+): Promise<{
+  readonly draft: { readonly version: number };
+  readonly revised: { readonly hypothesis_name: string; readonly revision: number };
+}> {
+  const draft = await lifecycle.createDraft({
+    slug: guardFixture.slug,
+    title: 'A case for the release-guard proof',
+    when_to_use: 'when proving releaseRevisionDirectly still routes through the guarded lifecycle operation',
+    authored_at: '2024-01-01T00:00:00.000Z',
+    subject: guardFixture.subjectType,
+    fallback: { outcome: guardFixture.outcome, referral: { action: guardFixture.action, recipient: guardFixture.recipient } },
+  });
+  const revised = await lifecycle.reviseHypothesis({
+    slug: guardFixture.slug,
+    hypothesis_name: 'h1',
+    criterion: guardFixture.hypothesisCriterion,
+    collects: [guardFixture.concept],
+    resolution: { outcome: guardFixture.outcome, referral: { action: guardFixture.action, recipient: guardFixture.recipient } },
+    subject: guardFixture.subjectType,
+  });
+  return { draft, revised };
+}
+
+it(
+  "refuses releaseRevisionDirectly's own second call against a hypothesis-revision it already released, " +
+    'with HypothesisRevisionNotDraftAtReleaseError, rather than silently rewriting its already-released state',
+  async () => {
+    const guardFixture = freshFixture();
+    await seedVocabulary(connection, guardFixture);
+    await seedCapability(connection, guardFixture);
+    const lifecycle = createCaseLifecycle(connection);
+
+    try {
+      const { draft, revised } = await createDraftAndRevision(lifecycle, guardFixture);
+      await placeAndReleaseRevision(connection, { fixture: guardFixture, draft, revised });
+      const identity = { slug: guardFixture.slug, hypothesisName: revised.hypothesis_name, revision: revised.revision };
+
+      const refusal = await releaseRevisionDirectly(connection, identity).catch((error: unknown) => error);
+
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    } finally {
+      await cleanupFixture(connection, guardFixture);
     }
   },
 );
