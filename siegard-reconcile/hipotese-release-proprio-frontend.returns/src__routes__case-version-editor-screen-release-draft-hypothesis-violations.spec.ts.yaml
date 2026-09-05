@@ -1,0 +1,47 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: "no pagination endpoint, offset, or limit appears in this file"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "no authentication-disclosure assertion appears in this file"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "fireEvent.click(releaseConfirmButton())"
+    evidence: "fireEvent.click(releaseConfirmButton());"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "the file passes only opaque violation strings naming a hypothesis, never the revision's own attributes"
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: "the enum's two states are never encoded or asserted directly in this file"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no HypothesisRevisionNotDraftAtReleaseError or hypothesis-own release path appears in this file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no revision listing is exercised in this file"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: "no revision listing is exercised in this file"
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "no manifest-entry presentation is exercised in this file"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "the notReleasableResponse helper and the alert assertions in all three refusal tests"
+    evidence: "violations.forEach((violation) => { expect(within(alert).getByText((content) => content.includes(violation))).toBeTruthy(); });"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "draftHypothesisViolation and the first test's assertions"
+    evidence: 'return `the hypothesis "${hypothesisName}" is manifested at a revision that is not released`;'
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "this file exercises only case-version release, never a hypothesis-revision's own release"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "the whole describe block and its fourth test"
+    evidence: '"leaves the case version reading as a draft with Release still offered after the refusal, so a second attempt succeeds with no reload in between"'
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: "no place-hypothesis action is exercised in this file"
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "no HypothesisRevisionNotDraftAtReleaseError path is exercised in this file"
+looked_past: "The fourth test's assertions about disabled attributes, GET call counts and no-reload-in-between are UI-mechanics checks with no domain fact behind them in this node set, so I left them to whichever pass judges test/code quality rather than specification conformance."

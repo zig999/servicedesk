@@ -96,6 +96,25 @@
       "title": "Show each listed revision's own state -- proof",
       "summary": "Tests the widened HypothesisRevisionListItem shape, the revision-history screen's new per-row state rendering and its independence from the current-pin indicator, the preserved ordering, and (by citing pre-existing, untouched tests) the preserved revision/criterion/collects fields and the hypotheses tab's total-reading.",
       "task": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state"
+    },
+    {
+      "id": "review/hipotese-release-proprio-frontend",
+      "kind": "review",
+      "file": "review/hipotese-release-proprio-frontend.md",
+      "title": "hipotese-release-proprio-frontend, whole-change review",
+      "summary": "What four passes found over the 18 files the initiative's 6 tasks wrote or modified, exposing the hypothesis-revision's own release lifecycle in the frontend.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "After a release succeeds, every case version's own state reads exactly what it read before the release.",
+        "No pre-attempt checklist item states anything about a manifested revision's own state.",
+        "That kind is declared as a member of the module's UI error-state kind union.",
+        "That statement is shown whatever the case version's own state is, draft or released."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -278,6 +297,42 @@
       "to": "implementation/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/hipotese-release-proprio-frontend",
+      "to": "task/hypothesis-revision-own-state-ui/show-each-revisions-own-state",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-frontend",
+      "to": "task/hypothesis-revision-own-state-ui/name-the-not-draft-release-refusal",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-frontend",
+      "to": "task/hypothesis-revision-own-state-ui/release-a-revision-from-the-listing",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-frontend",
+      "to": "task/case-version-release-gate-ui/show-each-manifest-entrys-pinned-revision-state",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-frontend",
+      "to": "task/case-version-release-gate-ui/name-the-draft-hypotheses-in-the-release-refusal",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/hipotese-release-proprio-frontend",
+      "to": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }

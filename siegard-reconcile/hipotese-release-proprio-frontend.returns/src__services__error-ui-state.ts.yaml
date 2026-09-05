@@ -1,0 +1,65 @@
+read:
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: "the UI_STATE_BY_ERROR_CODE entry for ConceptDescriptionRequiredError, line 54"
+    evidence: 'ConceptDescriptionRequiredError: { kind: "concept-description-required" },'
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the UI_STATE_BY_ERROR_CODE entry for CapabilitySchemaNotWellFormedError, line 50"
+    evidence: 'CapabilitySchemaNotWellFormedError: { kind: "capability-schema-not-well-formed" },'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: "the UI_STATE_BY_ERROR_CODE entry for CapabilityNotReadOnlyError, line 49"
+    evidence: 'CapabilityNotReadOnlyError: { kind: "capability-not-read-only" },'
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the UI_STATE_BY_ERROR_CODE entry for ConnectorConfigurationNotWellFormedError, line 52 (the entry covers only the not-well-formed code the node names; IncompleteConnectorConfigurationError has no entry and falls to GENERIC_ERROR_STATE by the ?? fallback)"
+    evidence: 'ConnectorConfigurationNotWellFormedError: { kind: "connector-configuration-not-well-formed" },'
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: "the UI_STATE_BY_ERROR_CODE entry for ConceptAlreadyAnsweredError, line 43"
+    evidence: 'ConceptAlreadyAnsweredError: { kind: "concept-already-answered" },'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the UI_STATE_BY_ERROR_CODE entry for HypothesisRevisionNotDraftAtReleaseError, line 41, and the UiErrorState shape itself, which carries no field beyond kind"
+    evidence: 'HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },'
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: "the distinct kind assigned to ConceptDescriptionRequiredError, line 54, rather than folding it into GENERIC_ERROR_STATE"
+    evidence: 'ConceptDescriptionRequiredError: { kind: "concept-description-required" },'
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: "the distinct kind assigned to HypothesisRevisionNotDraftAtReleaseError, line 41, rather than folding it into GENERIC_ERROR_STATE"
+    evidence: 'HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },'
+  - node: constraints/listings-are-paged
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: 'CaseVersionNotReleasableError: { kind: "case-version-not-releasable" },'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'CaseVersionNotReleasableError: { kind: "case-version-not-releasable" },'
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'CaseVersionNotReleasableError: { kind: "case-version-not-releasable" },'
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: nowhere
+    evidence: 'export function uiStateForApiError(error: ApiError): UiErrorState {'
+looked_past: "The file also maps CaseNotFoundError, ConceptNotAnsweredError, ConceptNotHeldError, VocabularyTermNotHeldError, CaseAlreadyHasDraftError, ManifestPositionOccupiedError, CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError, ManifestWouldHoldNoHypothesisError, IncompleteCapabilityContractError, CaseHoldsNoDraftError, ConceptNotInGlossaryError, ConceptRefusesSubjectTypeError and CaseNotValidError, and leaves IncompleteConnectorConfigurationError and DuplicateConceptAnswerError to fall through to GENERIC_ERROR_STATE — none of these codes is spoken to by any node of this file's set, and no node here requires a distinguishable kind for them, so their coverage is left to whichever judgment owns those nodes."

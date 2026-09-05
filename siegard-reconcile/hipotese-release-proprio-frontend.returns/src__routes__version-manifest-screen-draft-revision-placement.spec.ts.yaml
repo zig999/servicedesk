@@ -1,0 +1,58 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: "src/routes/version-manifest-screen-draft-revision-placement.spec.ts:29-33"
+    evidence: 'function revisionsPage(...): { data: { revision: number; state: "draft" | "released" }[]; total: number } { return { data: revisions.map((item) => ({ ...item })), total: revisions.length }; }'
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "this file makes no request or assertion touching authentication or its disclosure"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "PUT and DELETE calls against the manifest path (place-hypothesis, remove-hypothesis)"
+    evidence: |
+      fireEvent.mouseDown(within(screen.getByRole("listbox")).getByRole("option", { name: "4" }));
+
+      await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+      expect(parsedPutBody(fetchMock)).toEqual({ revision: 4, position: 1 });
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revisionsPage entries constructed per test"
+    evidence: 'revisionsPage([{ revision: 2, state: "released" }, { revision: 4, state: "draft" }])'
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the \"draft\"/\"released\" literals used throughout the revisionsPage fixtures"
+    evidence: '{ revision: 4, state: "draft" }'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "this file never exercises a release trigger against a hypothesis-revision"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: nowhere
+    evidence: "no assertion in this file concerns the order of a revisions listing"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the revisionsPage fixture used to build the selector's options"
+    evidence: |
+      const draftOption = within(screen.getByRole("listbox")).getByRole("option", { name: "4" });
+      expect(draftOption.getAttribute("aria-disabled")).not.toBe("true");
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: nowhere
+    evidence: "this file asserts control enablement, not a stated pinned-revision-state display on a manifest row"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "no release attempt or refusal is exercised in this file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the successful PUT/placement and enabled controls over a draft-pinned entry"
+    evidence: |
+      expect(screen.queryByText("This version was released by someone else")).toBeNull();
+      expect(within(findRow("H1")).queryByRole("alert")).toBeNull();
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: nowhere
+    evidence: "this file never releases a hypothesis-revision"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: nowhere
+    evidence: "this file never releases a case version"
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: "the whole of the second describe block"
+    evidence: |
+      await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+      expect(parsedPutBody(fetchMock)).toEqual({ revision: 4, position: 1 });
+      expect(screen.queryByText("This version was released by someone else")).toBeNull();
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: nowhere
+    evidence: "this file never asks for a release or checks that refusal's wording"
+looked_past: "the revisionsPage fixture in the first test lists revision 2 before revision 4 (ascending), an ordering choice made only for this mock's convenience and never asserted on — whether the component itself honours listing order is a different file's concern, not a claim this file makes."
