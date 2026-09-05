@@ -2971,6 +2971,17 @@ entries:
       /review-change over hipotese-release-proprio), which already constructs and asserts
       exactly this details shape, matching the same disclosure the sibling 404s already state
       for their own misses.
+  - location: rules/investigation/only-a-released-case-version-is-diagnosed.md
+    field: statement
+    unstated: >-
+      What answers an attempt to diagnose a case version not in released state.
+    decided: >-
+      HTTP 409 reporting a CaseVersionNotReleasedError.
+    why: >-
+      The material is the reviewed, delivered status-map.ts (reported by /review-change over
+      hipotese-release-proprio), the only place that already maps CaseVersionNotReleasedError to
+      409; stating the delivered, reviewed fact rather than leaving the refusal's shape provable
+      only by reading the map.
 
 === domain/glossary/_context
 ---
@@ -4793,7 +4804,7 @@ The collection plan is a set, so the concept already identifies the evidence and
 === rules/investigation/only-a-released-case-version-is-diagnosed
 ---
 type: policy
-statement: An investigation may only be pinned to a case version in released state; a draft version may be read but never diagnosed against.
+statement: An investigation may only be pinned to a case version in released state; a draft version may be read but never diagnosed against, and an attempt to diagnose one is refused with an HTTP 409 response reporting a CaseVersionNotReleasedError.
 constrains:
   - domain/investigation/investigation
   - domain/knowledge/case-version
