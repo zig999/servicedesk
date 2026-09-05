@@ -2982,6 +2982,38 @@ entries:
       hipotese-release-proprio), the only place that already maps CaseVersionNotReleasedError to
       409; stating the delivered, reviewed fact rather than leaving the refusal's shape provable
       only by reading the map.
+  - location: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft.md
+    field: statement
+    unstated: >-
+      Whether a request to revise a hypothesis may carry a subject type of its own, and how a
+      supplied value that disagrees with the subject type the case's draft version declares is
+      treated — accepted and left without effect, or refused — is not stated. The rule already
+      names the draft version's declared subject type as what the concept-acceptance check reads,
+      and domain/knowledge/hypothesis-revision declares no subject attribute, but no node says
+      whether the revise request itself carries one, so a caller-supplied subject type had no
+      stated standing either way.
+    decided: >-
+      A revise-hypothesis request declares no subject type of its own: the check reads the subject
+      type from the case's draft version and from nowhere else, and a subject type carried on such
+      a request is accepted and left without effect — never read, never compared against the draft
+      version's declared subject type, and never a ground for refusal.
+    why: >-
+      The subject type is domain/knowledge/case-version's own declared attribute, correctable only
+      through update-draft while that version is draft; domain/knowledge/hypothesis-revision
+      declares none. Giving the revise request a subject type of its own would make the curator a
+      second home for a fact the case version already owns — exactly what lets
+      a-concept-accepts-the-declared-subject-type's check run against a subject type no case
+      version declared. Refusing a disagreeing value was the alternative and is rejected: it would
+      give the value the standing this decision denies it, making the curator responsible for
+      restating a fact the request never asks for and refusing an otherwise correct revision over a
+      value that changes neither what is written nor what is checked. The refusal reasoning in
+      a-released-hypothesis-revision-is-never-altered does not carry over — that refusal exists
+      because a silently dropped alteration would read to the curator exactly like one that landed,
+      whereas a supplied subject type asks for no alteration at all and its being dropped changes
+      nothing the curator asked to change. The sibling precedents for the accepted-with-no-effect
+      branch are already in this context: a-case-has-at-least-one-hypothesis (remove-hypothesis for
+      a name the manifest does not hold succeeds with no effect) and the collects branch of
+      a-released-hypothesis-revision-is-never-altered.
 
 === domain/glossary/_context
 ---
@@ -5203,18 +5235,18 @@ This rule states what a manifest may hold, and nothing about what `place-hypothe
 === rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
 ---
 type: policy
-statement: A hypothesis is revised only while its case holds a draft version, and the concept-acceptance check the new revision undergoes uses that draft version's declared subject type; a revision requested while the case holds no draft version is refused with an HTTP 409 response reporting a CaseHoldsNoDraftError.
+statement: A hypothesis is revised only while its case holds a draft version, and the concept-acceptance check the new revision undergoes uses that draft version's declared subject type; a revision requested while the case holds no draft version is refused with an HTTP 409 response reporting a CaseHoldsNoDraftError. A revise-hypothesis request declares no subject type of its own — the check reads the subject type from the case's draft version and from nowhere else, and a subject type carried on such a request is accepted and left without effect, never read, never compared against the draft version's declared subject type, and never a ground for refusal.
 constrains:
-  - domain/knowledge/case
-  - domain/knowledge/case-version
-  - domain/knowledge/hypothesis
-  - domain/knowledge/hypothesis-revision
+- domain/knowledge/case
+- domain/knowledge/case-version
+- domain/knowledge/hypothesis
+- domain/knowledge/hypothesis-revision
 consistency: eventual
 ---
-
 ## Description
 
 A hypothesis-revision names no case version of its own — it belongs only to the hypothesis identity, which belongs only to the case — so a concept-acceptance check at the moment of revision has no subject type to read unless one is anchored: the case's own draft, the one version a-case-has-at-most-one-draft guarantees is unambiguous. Revising while no draft exists would leave the check with nothing to hold against; the same discipline that keeps a released version's manifest closed to editing (a-case-version-is-written-once) already routes every content change through a draft, and this extends that routing to name which draft and which subject type.
+The subject type is the case version's own declared attribute, corrected only through update-draft while that version is draft; a hypothesis-revision declares none. A revise request that carried an authoritative subject type would make the curator a second source of a fact the case version already owns, and would let the acceptance check run against a subject type no case version ever declared. Leaving a supplied value without effect rather than refusing it keeps the check's one source intact without making the request's acceptance depend on a value that changes nothing about what is written or what is checked.
 
 === rules/knowledge/a-hypothesis-name-is-unique-within-its-case
 ---
