@@ -125,7 +125,7 @@ export function CaseVersionEditorReadyView({
           <ManifestTable slug={slug} manifest={state.manifest ?? []} />
         </section>
       )}
-      <div className="flex items-center justify-end gap-4">
+      <div className="flex flex-wrap items-center justify-end gap-4">
         {release !== undefined && release.canRelease && (
           <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
             <DialogTrigger asChild>

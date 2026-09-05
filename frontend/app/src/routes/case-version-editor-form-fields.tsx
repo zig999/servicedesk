@@ -100,7 +100,7 @@ export function CaseVersionEditorFormFields({
         />
       </FormField>
 
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <FormField label="Subject type" errorId="subject-error">
           <Input {...register("subject")} disabled={isBlocked} />
         </FormField>
@@ -123,7 +123,7 @@ export function CaseVersionEditorFormFields({
         </FormField>
       </div>
 
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <FormField
           label="Fallback outcome"
           errorId="fallback.outcome-error"
