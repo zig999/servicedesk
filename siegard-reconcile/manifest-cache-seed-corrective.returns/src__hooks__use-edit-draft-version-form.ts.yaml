@@ -1,0 +1,79 @@
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: "the vocabulary/concept option hooks consumed for release-checklist building and gating"
+    evidence: "const outcomeOptions = useGlossaryVocabularyOptions(\"outcome\"); const actionOptions = useGlossaryVocabularyOptions(\"action\"); const recipientOptions = useGlossaryVocabularyOptions(\"recipient\");"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the patch, release and discard mutations"
+    evidence: "return apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`, { method: \"PATCH\", headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify(values) })"
+  - node: contracts/knowledge/case-query
+    held_at: "the versionQuery fetch"
+    evidence: "apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`)"
+  - node: domain/glossary/action
+    held_at: "actionOptions passed through to the release checklist and returned in ready state"
+    evidence: "actionOptions,"
+  - node: domain/glossary/concept
+    held_at: "conceptOptions.concepts passed to buildReleaseChecklist"
+    evidence: "concepts: conceptOptions.concepts,"
+  - node: domain/glossary/outcome
+    held_at: "outcomeOptions passed through to the release checklist and returned in ready state"
+    evidence: "outcomeOptions,"
+  - node: domain/glossary/recipient
+    held_at: "recipientOptions passed through to the release checklist and returned in ready state"
+    evidence: "recipientOptions,"
+  - node: domain/glossary/subject-type
+    held_at: "the form reset from the record's subject attribute"
+    evidence: "subject: record.subject,"
+  - node: domain/knowledge/case
+    held_at: "the case slug used to address every query and mutation URL"
+    evidence: "`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`"
+  - node: domain/knowledge/case-version
+    held_at: "resetFormFrom, the state-derived flags, and the manifest passthrough"
+    evidence: "form.reset({ title: record.title, when_to_use: record.when_to_use, subject: record.subject, fallback: record.fallback, consolidation_register: record.consolidation_register })"
+  - node: domain/knowledge/case-version-state
+    held_at: "canRelease, isBlocked and isReadOnly gates"
+    evidence: "const canRelease = record.state === \"draft\" && !isReleased;"
+  - node: domain/knowledge/manifest-entry
+    held_at: "the manifest exposed to callers unmodified"
+    evidence: "manifest: record.manifest,"
+  - node: domain/knowledge/referral
+    held_at: "nowhere — carried opaquely inside fallback, never read or decomposed"
+    evidence: "fallback: record.fallback,"
+  - node: domain/knowledge/resolution
+    held_at: "nowhere — carried opaquely inside fallback, never read or decomposed"
+    evidence: "fallback: record.fallback,"
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: nowhere
+    evidence: "manifest: record.manifest, — exposed read-only; this file has no remove-hypothesis path to refuse"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "isReadOnly and isBlocked derived from the released state"
+    evidence: "isReadOnly: record.state === \"released\","
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the patch and release onError branches for the two named errors"
+    evidence: "if (kind === \"case-version-not-draft\") { setStatus(\"conflict\"); ... } ... if (kind === \"case-version-not-draft-at-release\") { setIsReleaseDialogOpen(false); ... }"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: nowhere
+    evidence: "no concept/subject-type acceptance check appears in this file; conceptOptions is only forwarded to buildReleaseChecklist"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "the loading gate and the reset-from-response pattern on both queries and mutations"
+    evidence: "if (versionQuery.isLoading || isLoadingGlossary || !versionQuery.data) { return { phase: \"loading\" }; }"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the release onError branch capturing violations"
+    evidence: "if (kind === \"case-version-not-releasable\") { setReleaseViolations(extractReleaseViolations(error)); return; }"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: nowhere
+    evidence: "no glossary-membership check appears in this file; glossary options are only forwarded for display/checklist purposes"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: "the discard control's canDiscard flag"
+    evidence: "canDiscard: record.state === \"draft\" && !isReleased,"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "the same release onError branch as the rule it exercises"
+    evidence: "setReleaseViolations(extractReleaseViolations(error));"
+  - node: constraints/a-case-is-read-whole
+    held_at: "the single versionQuery fetch of the whole CaseVersionRecord"
+    evidence: "apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`)"
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: nowhere
+    evidence: "this file has no create-draft path; it only reads and mutates an already-existing version"
+looked_past: "Two guard clauses (`throw new Error(\"cannot save/release a draft version that has not been created yet\")`) are unreachable given the earlier null-version return at phase \"loading\"/\"ready\", and the conflict branch never invalidates the version query — both are code-quality observations, not domain-fact departures, so they are left to the other pass."
+candidates_opened:
+  - rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused

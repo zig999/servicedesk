@@ -1,0 +1,94 @@
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: the four vocabulary-option hooks used to populate subject, outcome, action and recipient choices
+    evidence: |
+      const subjectOptions = useGlossaryVocabularyOptions("subject-type");
+      const outcomeOptions = useGlossaryVocabularyOptions("outcome");
+      const actionOptions = useGlossaryVocabularyOptions("action");
+      const recipientOptions = useGlossaryVocabularyOptions("recipient");
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the createMutation's mutationFn, which posts the create-draft request
+    evidence: |
+      return apiFetch<CreatedDraft>("/v1/cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+  - node: contracts/knowledge/case-query
+    held_at: sourceVersionQuery's fetch of one version, and redirectToExistingDraft's fetch of the versions list
+    evidence: |
+      apiFetch<CaseVersionRecord>(
+        `/v1/cases/${encodeURIComponent(slug)}/versions/${latestReleasedVersionNumber}`,
+      )
+  - node: domain/glossary/subject-type
+    held_at: the default-subject effect, seeded from the subject vocabulary's own first option
+    evidence: "const subjectValue = subjectOptions.options[0]?.value;"
+  - node: domain/knowledge/case
+    held_at: slug, threaded through the hook as the case's identity for every request
+    evidence: "export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {"
+  - node: domain/knowledge/case-version
+    held_at: the createForm's defaultValues and the CreateDraftRequestBody fields built from them
+    evidence: |
+      defaultValues: {
+        title: "",
+        when_to_use: "",
+        subject: "",
+        fallback: { outcome: "", referral: { action: "", recipient: "" } },
+      },
+  - node: domain/knowledge/case-version-state
+    held_at: the released/draft filters over the versions list
+    evidence: '.filter((item) => item.state === "released")'
+  - node: domain/knowledge/consolidation-register
+    held_at: the conditional inclusion of consolidation_register in the create-draft body
+    evidence: "consolidation_register: values.consolidation_register,"
+  - node: domain/knowledge/referral
+    held_at: the fallback default's referral shape
+    evidence: 'fallback: { outcome: "", referral: { action: "", recipient: "" } },'
+  - node: domain/knowledge/resolution
+    held_at: the same fallback default, pairing outcome with referral
+    evidence: 'fallback: { outcome: "", referral: { action: "", recipient: "" } },'
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: the onError branch that redirects to the case's one existing draft
+    evidence: |
+      if (kind === "case-already-has-draft") {
+        toast.error(`A draft already exists for the case "${slug}".`);
+        void redirectToExistingDraft();
+        return;
+      }
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: the delegation to useEditDraftVersionForm once created is set, rather than building content from the submitted values
+    evidence: |
+      const editState = useEditDraftVersionForm(slug, created?.version ?? null);
+
+      if (created) {
+        return editState;
+      }
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: the conditional source_version in the create-draft request body
+    evidence: |
+      ...(latestReleasedVersionNumber !== undefined
+            ? {
+                consolidation_register: values.consolidation_register,
+                source_version: latestReleasedVersionNumber,
+              }
+            : {}),
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere — this file never assembles a case version piecewise; it only requests whole records from the case-query endpoints
+    evidence: |
+      apiFetch<CaseVersionRecord>(
+        `/v1/cases/${encodeURIComponent(slug)}/versions/${latestReleasedVersionNumber}`,
+      )
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere — no manifest position or hypothesis-revision reference appears in this file; manifest composition is left to the server via source_version
+    evidence: |
+      type CreateDraftRequestBody = {
+        readonly slug: string;
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly authored_at: string;
+        readonly subject: string;
+        readonly fallback: CaseVersionFormValues["fallback"];
+        readonly consolidation_register?: CaseVersionFormValues["consolidation_register"];
+        readonly source_version?: number;
+      };
+looked_past: two source comments — the catch-block comment in redirectToExistingDraft referencing "this function's own header comment" and the onFieldBlur no-op comment referencing "this property's own comment above" — read as prose about the code rather than a domain fact, which is the standard-conformance pass's comment rule to weigh, not this one's.

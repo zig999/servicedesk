@@ -1,0 +1,30 @@
+findings:
+  - file: src/routes/new-case-draft-screen-save.spec.ts
+    where: "the first test, lines 27-60 (\"issues POST /v1/cases with slug, the curator's entered content and a client-side authored_at timestamp when Save is clicked\")"
+    evidence: "const before = Date.now(); ... const authoredAtMillis = new Date(postedAuthoredAt(fetchMock)).getTime(); expect(authoredAtMillis).toBeGreaterThanOrEqual(before); expect(authoredAtMillis).toBeLessThanOrEqual(after);"
+    cost: "The test fixes, as a fact of the system, that authored_at — the datetime the specification introduced specifically so a case version's curation history survives an audit of which procedure was current when an old investigation ran — is stamped by the curator's own browser clock at the moment Save is clicked, sent to the server as a value the server then trusts, rather than assigned by the server at the moment it persists the version. domain/knowledge/case-version says only that authored_at is a required datetime; a reader who goes there to learn whether the audited timestamp is trustworthy against a skewed or backdated client clock finds nothing, and the next person changing create-draft's payload has no node to check this choice against."
+    kind: unstated
+    node: domain/knowledge/case-version
+    correction: "domain/knowledge/case-version (or the create-draft contract) would need to state whether authored_at is supplied by the curator's own client at submission or assigned by the server at persistence."
+
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: "const CREATED_VERSION_RECORD = { title: ..., when_to_use: ..., subject: ..., fallback: { outcome: ..., referral: { action: ..., recipient: ... } }, state: \"draft\" }; — the record this file's GET resolves to carries no manifest, so the wholeness this constraint binds (the manifest and every manifest entry's own hypothesis-revision resolved together) is never exercised here"
+  - node: contracts/knowledge/case-query
+    held_at: "the follow-up GET after create, lines 150, 158, 174, 189"
+    evidence: "expect(wasCalledWith(fetchMock, \"GET\", versionPath(9))).toBe(true);"
+  - node: domain/knowledge/case-version
+    held_at: "the POST body assertion in the first test, lines 43-56"
+    evidence: "expect(parsedPostBody(fetchMock)).toEqual({ slug: SLUG, title: VALID_FORM_INPUT.title, when_to_use: VALID_FORM_INPUT.when_to_use, authored_at: expect.any(String), subject: SUBJECT_TYPE_TERMS.data[0].name, fallback: { outcome: VALID_FORM_INPUT.outcome, referral: { action: VALID_FORM_INPUT.action, recipient: VALID_FORM_INPUT.recipient } } });"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "the same parsedPostBody expectation (lines 43-56) carries no manifest field at all — this file never places, positions or removes a manifest entry"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "the \"states the draft is still being read...\" test, lines 142-167"
+    evidence: "expect(screen.getByText(\"Loading…\")).toBeTruthy(); expect(screen.queryByDisplayValue(VALID_FORM_INPUT.title)).toBeNull(); expect(screen.queryByLabelText(\"Title\")).toBeNull(); ... expect(await screen.findByDisplayValue(VALID_FORM_INPUT.title)).toBeTruthy();"
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: nowhere
+    evidence: "the POST body this file asserts (lines 43-56) names no source version and carries no manifest — consistent with the case-with-no-version-yet branch this rule names no source for, but the copy behavior itself is never exercised in this file"
+
+looked_past: "Client-side dedup of a double-click into exactly one POST, the generic-error re-enable/stay-in-create-mode behavior, and the New-Draft route staying addressable rather than navigating to the created version's URL are all UI mechanics with no domain fact behind them, so they are not reported here."
