@@ -1,0 +1,21 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the insertHypothesisRevision call inside placeNewHypothesis (lines 138-148), which supplies criterion, collects and resolution per revision, and the releaseRevisionDirectly calls that trigger the revision's own release operation independently of any case-version release"
+    evidence: |-
+      const revision = await store.insertHypothesisRevision({
+          slug: key.slug,
+          hypothesis_name: hypothesis.name,
+          criterion: `a criterion for ${hypothesis.name}`,
+          collects: hypothesis.collects,
+          resolution: hypothesis.resolution,
+        });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the sequence of releaseRevisionDirectly calls in the third test (lines 281-286), which exercises the draft-to-released transition and the refusal of a second release against an already-released revision, without ever asserting a state value directly"
+    evidence: |-
+      await releaseRevisionDirectly(slug, 'h', revision);
+
+          const refusal = await releaseRevisionDirectly(slug, 'h', revision).catch((error: unknown) => error);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the assertion closing the third test, line 286"
+    evidence: "expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);"
+looked_past: "The first two tests' central claim — that an ordinary DELETE against a released revision's own collects row leaves the read-back unchanged — is not settled by this file's own node set but is held by rules/knowledge/a-released-hypothesis-revision-is-never-altered (found by searching the specification root and confirmed in decision-log.md, which cites this exact test criterion as its own deciding material), so it is not reported here as unstated."
