@@ -16,6 +16,13 @@
       "summary": "Everything the frontend needs so a curator can see whether a hypothesis-revision is draft or released and release one directly, answering to no case version and no manifest."
     },
     {
+      "id": "epic/pinned-revision-state-off-page-corrective",
+      "kind": "epic",
+      "file": "epic/pinned-revision-state-off-page-corrective.md",
+      "title": "Fix the pinned-revision-state disclosure's off-page silence",
+      "summary": "The manifest presentation surfaces state a pinned revision's own draft/released state unconditionally, even when that revision falls off the default page its hypothesis's revisions listing answers."
+    },
+    {
       "id": "inventory/hypothesis-revision-listing-and-release-ui",
       "kind": "inventory",
       "file": "inventory/hypothesis-revision-listing-and-release-ui.md",
@@ -69,6 +76,14 @@
       "title": "Show each listed revision's own state",
       "summary": "The revisions listing reads and renders the state field the listing response now carries.",
       "epic": "hypothesis-revision-own-state-ui"
+    },
+    {
+      "id": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "kind": "task",
+      "file": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page.md",
+      "title": "Resolve a manifest entry's pinned-revision state even when it is off the default page",
+      "summary": "Both manifest-presentation surfaces must state a pinned revision's own state whether or not that revision is on the default page its hypothesis's revisions listing answers.",
+      "epic": "pinned-revision-state-off-page-corrective"
     }
   ],
   "edges": [
@@ -167,6 +182,18 @@
       "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "epic/pinned-revision-state-off-page-corrective",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/pinned-revision-state-off-page-corrective",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[1]"
     },
     {
       "from": "task/case-version-release-gate-ui/keep-placement-free-of-a-revisions-own-state",
@@ -317,6 +344,18 @@
       "to": "constraints/listings-are-paged",
       "kind": "implements",
       "at": "implements[4]"
+    },
+    {
+      "from": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/pinned-revision-state-off-page-corrective/resolve-the-pinned-revisions-state-off-page",
+      "to": "constraints/listings-are-paged",
+      "kind": "implements",
+      "at": "implements[1]"
     }
   ]
 }

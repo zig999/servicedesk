@@ -2281,4 +2281,44 @@ entries:
       because the state belongs to hypothesis-revision, a separate aggregate root from the case
       version whose manifest presents the entry — identical to the two sibling disclosures over
       this surface.
+  - location: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state.md
+    field: statement
+    unstated: >-
+      What a manifest entry's presentation states for its pinned hypothesis-revision's own
+      draft-or-released state while the read of that revision's state has not yet completed, and
+      what it states when that read fails. The rule's statement was written as an unconditional
+      disclosure of a state already in hand, naming only three things it does not depend on (the
+      case version's own state, a release having been attempted, the reader opening the revision
+      selector), and its expression reads the state "from that revision itself" — a separate
+      aggregate root, read separately — without saying what stands in the entry before that read
+      returns or after it fails, so both windows would fall to whatever the interface happened to
+      render.
+    decided: >-
+      Each window is stated explicitly on the entry and never left blank: while the read has not
+      yet completed the entry states that this pin's state is still being read, and where the read
+      fails the entry states that this pin's state could not be read. The three presentations — a
+      state read, a read still outstanding, a read that failed — are distinguishable from one
+      another, and none of them is the presentation of an entry carrying no state; neither window
+      is ever presented as a draft or released state.
+    why: >-
+      This specification refuses, repeatedly and for one reason, a presentation that reads
+      identically in materially different situations: a-manifest-entrys-pinned-revision-is-always-shown,
+      a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest and
+      a-hypothesis-revisions-listing-discloses-each-revisions-own-state each exist for that reason,
+      and the entry filling a-cases-current-pins-come-from-its-highest-numbered-version.statement
+      rejected a bare blank in this same neighbourhood in exactly these words — "absence, a failed
+      read and a pending read then read alike". A blank here is worse than uninformative: it reads
+      like an entry whose pin is releasable, which is precisely the reading this rule was written
+      to stop a curator taking without evidence. Defaulting to either state instead would state a
+      fact nobody read. The two windows are told apart rather than merged into one notice because
+      the curator's next act differs — an outstanding read resolves itself, a failed one is worth
+      retrying — the same distinguishability
+      releasing-an-already-released-revision-tells-the-curator-so was decided on, and
+      a-release-refusal-with-no-named-violation-says-so before it. The substance alone is stated
+      and the wording is left to the interface, following the entry filling
+      constraints/no-route-enforces-authentication.statement, and the rule's own closing line that
+      already leaves the control and its wording to the interface. It lands in this rule's own
+      statement rather than a new node because it answers the same one question this rule already
+      answers — what a presented entry states about its pin's state — and it adds no field, moves
+      no pin, refuses no call and leaves the read's source (the revision itself) untouched.
 ---
