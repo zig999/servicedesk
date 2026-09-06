@@ -3019,4 +3019,90 @@ entries:
       the specification agreeing with what was already built rather than deciding independently of it;
       the reasoning above rests on the specification''s own standing rules, and a reviewer who rejects
       it rejects that reasoning.'
+  - location: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act.md
+    field: statement
+    unstated: Whether releasing a draft case version, and whether discarding one, each require the curator
+      to state in a further explicit act — after choosing the act and before it happens — that it is
+      to be performed; whether either may be performed other than through that further act; and, for
+      the discard, whether that further act requires the curator to reproduce the case's own slug. contracts/knowledge/case-lifecycle
+      publishes both acts and a-case-version-moves-through-its-declared-lifecycle, only-a-draft-case-version-may-be-discarded
+      and a-case-version-is-written-once state when each is refused and what each leaves behind, but
+      no node states how the curator's own act reaches them; a-surface-offering-release-states-which-release-conditions-the-draft-meets
+      states only what a surface discloses before a release is attempted and expressly says nothing
+      about whether the release may then be attempted.
+    decided: 'Both acts take a further explicit act and neither is performed on the asking alone: a
+      release and a discard of a draft case version each take effect only where the curator, having
+      asked for that act, states in a further act that it is to be performed, and where the curator
+      does not so state the version stands in draft exactly as it stood. The two further acts are not
+      identical: the discard''s is performed only where the curator reproduces the case''s own slug
+      in it, and an act reproducing no slug or a slug that is not the case''s issues no discard; the
+      release''s carries the statement alone.'
+    why: 'The further act is owed for both because this specification already reads an act it cannot
+      answer back as one the curator states rather than one a surface infers — a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface,
+      on the ground that the act destroys content nothing published can restore and, unlike an abandonment,
+      leaves the actor where they were and continuing. Both acts here meet that ground more squarely,
+      since what they freeze or destroy is the stored version rather than an edit the surface held:
+      released is terminal and never altered again (a-case-version-moves-through-its-declared-lifecycle,
+      a-case-version-is-written-once), a discard removes the version and its manifest entries and spends
+      its number (only-a-draft-case-version-may-be-discarded, a-case-version-number-is-never-reused),
+      and contracts/knowledge/case-lifecycle publishes nothing that undoes either. The slug is required
+      of the discard and not of the release because the two do not destroy the same kind of thing: a
+      release ends a draft by making it answer for investigations forever and everything it produced
+      remains readable, while a discard ends a draft by removing it, taking its manifest entries and
+      spending its number, so what the curator composed is gone rather than frozen and no reading recovers
+      it; reproducing the slug is what makes the destroying act one no curator completes without naming
+      what is being destroyed. That a case holds at most one draft (a-case-has-at-most-one-draft) settles
+      which version a discard would take and settles nothing about whether the curator meant to take
+      it — the slug answers intent, not ambiguity. Disclosure of a rejected reading, as this log exists
+      to carry: the blind judge that decided this fact decided the further act for both acts in the
+      same shape and expressly refused the slug, on the grounds that no act this specification states
+      asks anyone to retype an identity, that a-case-has-at-most-one-draft closes the wrong-draft hazard,
+      and that requiring the slug for the discard alone protects the removal of a draft nothing ever
+      pinned more heavily than the release nothing may undo. The human running this planning rejected
+      that half of the reading and stated the value recorded here, on the ground that the discard destroys
+      where the release preserves; the judge''s reasoning is recorded here rather than discarded so
+      a later reviewer can weigh both and reopen it. The material for this fact also included a survey
+      of the delivered frontend, which reports both acts already confirmed there and the discard''s
+      confirmation already demanding the typed slug, so this entry agrees with what stands built and
+      a reviewer should read it knowing that.'
+  - location: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives.md
+    field: statement
+    unstated: Whether a surface presenting a newly created draft case version offers the acts over that
+      version — its release, its discard, and the correction of its own declared attributes — while
+      no answer for that version's own record has arrived, or offers none of them until that record
+      has been read. a-draft-versions-content-is-presented-only-from-its-own-record decides only what
+      content that surface states in that interval and closes by saying it decides the source of the
+      content and what is said while none has arrived, nothing more; contracts/knowledge/case-lifecycle
+      publishes release, discard and update-draft without stating when a surface offers them; a-surface-offering-release-states-which-release-conditions-the-draft-meets
+      expressly leaves whether the release offer is made at all to other nodes; and no rule, scenario
+      or constraint in the knowledge context states what any surface offers while a read it stands on
+      has not answered.
+    decided: 'None of the three acts is offered while no answer for that version''s own record has arrived:
+      the surface offers no act whose performance issues a release, a discard or an update-draft over
+      that version. The withholding lasts exactly that interval, turns on nothing else — not on the
+      values the creating request carried, not on the version the manifest was copied from, not on the
+      surface the creation was reached from — and touches neither the leaving an-abandoned-case-version-edit-writes-nothing
+      states nor any route the specification owes. Recorded as a new invariant over domain/knowledge/case-version,
+      matching the type and constrains of its sibling a-draft-versions-content-is-presented-only-from-its-own-record.'
+    why: 'Each of the three acts is performed against content the specification has already forbidden
+      this surface to show in this interval, so offering them offers acts over a record nobody has read.
+      For the correction, a-presented-case-version-states-its-own-declared-attributes has already written
+      down the harm in this exact pairing — a correction made against values the curator cannot see
+      is made blind and overwrites what nobody read — and in this interval, by the sibling rule''s own
+      decision, no attribute of the version is stated at all. For release and discard, both endings
+      are irreversible in their own direction, and what would be ended is content the curator never
+      composed — a-new-drafts-manifest-is-copied-from-an-existing-version makes the draft''s starting
+      manifest the case''s own existing version''s — and has not yet read; additionally, the only disclosure
+      a release-offering surface owes is empty here, since a-surface-offering-release-states-which-release-conditions-the-draft-meets
+      would have every condition it names stated as not yet decided. The withholding is also the answer
+      this specification has already given twice for the same question in the integration context: a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+      offers its act on no surface whose read has not answered, and a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+      stands its one control in the failed window and in neither of the other two, so deciding it the
+      other way here would give one specification two answers. Nothing is lost by waiting: the interval
+      ends with an answer the surface is already awaiting, the leaving that writes nothing stays available,
+      and no call is refused by this rule. Disclosed as this route requires: the material included a
+      survey of the delivered frontend reporting that the new-draft screen already withholds its action
+      row while that read is outstanding, so this decision was taken over material derived from source
+      already written and may be the specification agreeing with what was built rather than deciding
+      independently of it.'
 ---
