@@ -28,6 +28,16 @@
       ]
     },
     {
+      "node": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b",
+      "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+        }
+      ]
+    },
+    {
       "node": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a",
       "files": [
@@ -5686,6 +5696,24 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "digest": "sha256:3250bfc5b06bb263626adbbfb21e76fdd28e59ae4b3948e657f412a1af40d986",
+      "files": [
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
+        },
+        {
+          "path": "src/src/errors/case-version-not-valid.error.ts",
+          "digest": "sha256:a51cd3fa4f3147c6a3f090ecf3e208b0cf6b49ce4c0b4439f8d523301cecbace"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         }
       ]
     },

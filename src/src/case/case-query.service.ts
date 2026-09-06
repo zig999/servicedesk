@@ -1,6 +1,6 @@
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
-import { CaseNotValidError } from '../errors/case-not-valid.error.js';
+import { CaseVersionNotValidError } from '../errors/case-version-not-valid.error.js';
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
@@ -74,7 +74,7 @@ export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery
   private async refuseIncoherence(theCase: Case, version: number): Promise<void> {
     const violations = await caseCoherenceViolations(theCase, this.glossary, this.capabilities);
     if (violations.length > 0) {
-      throw new CaseNotValidError(theCase.slug, version, violations);
+      throw new CaseVersionNotValidError(theCase.slug, version, violations);
     }
   }
 }
@@ -141,7 +141,7 @@ function structuralCase(assembled: AssembledCaseVersion, slug: string, version: 
     return parseCaseDocument(assembledAsRawDocument(assembled), slug);
   } catch (error) {
     if (error instanceof InvalidCaseDocumentError) {
-      throw new CaseNotValidError(slug, version, error.context.problems);
+      throw new CaseVersionNotValidError(slug, version, error.context.problems);
     }
     throw error;
   }

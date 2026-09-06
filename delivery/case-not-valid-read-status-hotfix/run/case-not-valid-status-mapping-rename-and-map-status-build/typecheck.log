@@ -1,0 +1,9 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/case-query.factory.spec.ts(6,10): error TS2305: Module '"../../../errors/case-not-valid.error.js"' has no exported member 'CaseNotValidError'.
+src/__tests__/unit/case/case-query.service.spec.ts(27,10): error TS2305: Module '"../../../errors/case-not-valid.error.js"' has no exported member 'CaseNotValidError'.
+src/__tests__/unit/http/case-input-requirements.routes.spec.ts(6,10): error TS2305: Module '"../../../errors/case-not-valid.error.js"' has no exported member 'CaseNotValidError'.
+src/__tests__/unit/http/read-case.routes.spec.ts(6,10): error TS2305: Module '"../../../errors/case-not-valid.error.js"' has no exported member 'CaseNotValidError'.
+src/__tests__/unit/http/simulate-case.controller.spec.ts(5,10): error TS2305: Module '"../../../errors/case-not-valid.error.js"' has no exported member 'CaseNotValidError'.

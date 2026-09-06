@@ -3,7 +3,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import type { CaseInputRequirementsResult } from '../../../case/case-input-requirements.js';
 import type { ICaseInputRequirementsQuery } from '../../../case/case-input-requirements.port.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
-import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
+import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
 import type { CaseInputRequirementsControllerDependencies } from '../../../http/case-input-requirements.controller.js';
 import { createCaseInputRequirementsRoutesPlugin } from '../../../http/case-input-requirements.routes.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
@@ -70,15 +70,16 @@ it('refuses with the status the status map assigns CaseNotFoundError, when no ve
   expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
 });
 
-it('answers the unchanged generic envelope, never a partial body, when the named version fails a structural rule', async () => {
+it('refuses with 409 reporting CaseVersionNotValidError, never the generic 500 envelope, when the named version fails a structural rule', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.read.mockRejectedValueOnce(new CaseNotValidError('a-slug', 1, ['a violated rule']));
+  built.read.mockRejectedValueOnce(new CaseVersionNotValidError('a-slug', 1, ['a violated rule']));
 
   const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions/1/input-requirements' });
 
-  expect(response.statusCode).toBe(500);
-  expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
+  expect(response.statusCode).toBe(409);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('CaseVersionNotValidError');
 });
 
 it('answers 400 for a non-numeric version segment, without ever reaching the query', async () => {

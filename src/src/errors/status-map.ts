@@ -10,6 +10,7 @@ import { CaseVersionNotDraftAtReleaseError } from './case-version-not-draft-at-r
 import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from './case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from './case-version-not-released.error.js';
+import { CaseVersionNotValidError } from './case-version-not-valid.error.js';
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptDescriptionRequiredError } from './concept-description-required.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
@@ -48,6 +49,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],
   [CaseVersionNotDraftAtReleaseError, 409],
+  [CaseVersionNotValidError, 409],
   [ConceptAlreadyAnsweredError, 409],
   [CapabilityConnectorMismatchError, 409],
   [CaseVersionNotReleasedError, 409],

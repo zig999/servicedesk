@@ -3,7 +3,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
-import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
+import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
 import { readCaseResponseSchema } from '../../../http/dto/read-case.dto.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { ReadCaseControllerDependencies } from '../../../http/read-case.controller.js';
@@ -173,15 +173,16 @@ it('refuses with the status the status map assigns CaseNotFoundError, when no ve
   expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
 });
 
-it('answers the unchanged generic envelope, never a partial body, when the named version cannot be assembled whole', async () => {
+it('refuses with 409 reporting CaseVersionNotValidError, never the generic 500 envelope, when the named version cannot be assembled whole', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readCase.mockRejectedValueOnce(new CaseNotValidError('a-slug', 1, ['a violated rule']));
+  built.readCase.mockRejectedValueOnce(new CaseVersionNotValidError('a-slug', 1, ['a violated rule']));
 
   const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions/1' });
 
-  expect(response.statusCode).toBe(500);
-  expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
+  expect(response.statusCode).toBe(409);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('CaseVersionNotValidError');
 });
 
 it('answers 400 for a non-numeric version segment, without ever reaching the case query', async () => {

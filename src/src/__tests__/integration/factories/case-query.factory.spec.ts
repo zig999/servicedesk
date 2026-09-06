@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { replayCase } from '../../../case/case-query.service.js';
 import type { Resolution } from '../../../case/case.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
-import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
+import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { createCapabilityRegistry } from '../../../factories/capability-registry.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
@@ -180,12 +180,12 @@ it('refuses through the real wiring a case document declaring no hypothesis, nam
 
   const refusal = await query.readCase(vocabulary.slug, version).catch((error: unknown) => error);
 
-  expect(refusal).toBeInstanceOf(CaseNotValidError);
-  expect((refusal as CaseNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
+  expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+  expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
 });
 
 it(
-  'refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, ' +
+  'refuses through the real wiring, before the coherence module or CaseVersionNotValidError ever runs, ' +
     "a hypothesis-revision whose collected concept the glossary does not hold — the real store's " +
     'own foreign key from hypothesis_revision_collects into concepts, never reachable through the ' +
     'fake store the unit-level proof stands in with',
@@ -199,8 +199,8 @@ it(
     await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
 
     const refusal = await createCaseQuery(pool).readCase(vocabulary.slug, 1).catch((error: unknown) => error);
-    expect(refusal).toBeInstanceOf(CaseNotValidError);
-    expect((refusal as CaseNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
+    expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+    expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
   },
 );
 
@@ -218,7 +218,7 @@ it(
     await pool.query('DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
 
     const refusal = await query.readCase(vocabulary.slug, version).catch((error: unknown) => error);
-    expect(refusal).toBeInstanceOf(CaseNotValidError);
+    expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
   },
 );
 
@@ -234,7 +234,7 @@ it(
     const read = await query.readCase(vocabulary.slug, version);
 
     await pool.query('DELETE FROM capabilities WHERE name = $1', [vocabulary.capabilityName]);
-    await expect(query.readCase(vocabulary.slug, version)).rejects.toBeInstanceOf(CaseNotValidError);
+    await expect(query.readCase(vocabulary.slug, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
 
     const replayed = await replayCase(vocabulary.slug, version, createCaseStore(pool));
 

@@ -7,6 +7,7 @@ import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
+import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
 import { ConceptDescriptionRequiredError } from '../../../errors/concept-description-required.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
 import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
@@ -90,6 +91,14 @@ it('resolves CaseVersionNotDraftAtReleaseError to 409', () => {
 
 it('resolves CaseVersionNotReleasedError to 409', () => {
   const error = new CaseVersionNotReleasedError('a-slug', 1, 'draft');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(409);
+});
+
+it('resolves CaseVersionNotValidError to 409, never the generic unmapped-error fallback', () => {
+  const error = new CaseVersionNotValidError('a-slug', 1, ['a violation']);
 
   const status = statusForError(error);
 

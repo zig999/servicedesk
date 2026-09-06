@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-not-valid-status-mapping/rename-and-map-status",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-status-mapping/rename-and-map-status.md",
+      "title": "Rename CaseNotValidError to CaseVersionNotValidError and map it to HTTP 409",
+      "summary": "Renames the domain error class throughout backend production source and adds it to the status map at 409, so a revalidating read that finds a stored version failing validation is refused by its specification-decided name instead of the generic 500 fallback.",
+      "task": "task/case-not-valid-status-mapping/rename-and-map-status"
+    },
+    {
+      "id": "proof/case-not-valid-status-mapping/rename-and-map-status",
+      "kind": "proof",
+      "file": "proof/case-not-valid-status-mapping/rename-and-map-status.md",
+      "title": "CaseVersionNotValidError renamed and mapped to 409, six stale test files corrected, status-map coverage added, and the specification gap documented without asserting it",
+      "summary": "Proves the renamed CaseVersionNotValidError maps to HTTP 409 with the right error code across every non-replay read while CaseNotFoundError's 404 and replay's unrevalidated read stay untouched, corrects six test files still naming the retired identifier CaseNotValidError, adds the missing status-map unit test, and converts the one test that would have asserted the task's own UNDERDETERMINED note into a non-asserting it.todo so the suite stays green while the gap stays visible.",
+      "task": "task/case-not-valid-status-mapping/rename-and-map-status"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-not-valid-status-mapping/rename-and-map-status",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-status-mapping/rename-and-map-status",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-status-mapping/rename-and-map-status",
+      "to": "task/case-not-valid-status-mapping/rename-and-map-status",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-status-mapping/rename-and-map-status",
+      "to": "implementation/case-not-valid-status-mapping/rename-and-map-status",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

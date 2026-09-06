@@ -396,7 +396,7 @@ it(
 );
 
 it(
-  "reads the shared canonical fixture case whole with no CaseNotValidError, and with every hypothesis still " +
+  "reads the shared canonical fixture case whole with no CaseVersionNotValidError, and with every hypothesis still " +
     "collecting at least one concept, once this file's own collects-survive-DELETE test has already run",
   async () => {
     const query = createCaseQuery(connection);

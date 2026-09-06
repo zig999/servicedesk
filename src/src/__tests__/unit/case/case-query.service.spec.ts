@@ -24,7 +24,7 @@ import type {
 } from '../../../case/case-store.port.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
-import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
+import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
@@ -477,35 +477,35 @@ it('refuses with CaseNotFoundError, naming the slug and version, when no version
   expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
 });
 
-it('refuses a case failing one structural rule, naming the violation in a CaseNotValidError', async () => {
+it('refuses a case failing one structural rule, naming the violation in a CaseVersionNotValidError', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store, { hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
   const refusal = await readAsError(service.readCase(SLUG, version));
 
-  expect(refusal).toBeInstanceOf(CaseNotValidError);
-  expect((refusal as CaseNotValidError).context).toEqual({
+  expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+  expect((refusal as CaseVersionNotValidError).context).toEqual({
     slug: SLUG,
     version,
     violations: ['the case declares no hypothesis'],
   });
 });
 
-it('joins several structural violations into the one CaseNotValidError', async () => {
+it('joins several structural violations into the one CaseVersionNotValidError', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store, { title: '', hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
   const refusal = await readAsError(service.readCase(SLUG, version));
 
-  expect((refusal as CaseNotValidError).context.violations).toEqual([
+  expect((refusal as CaseVersionNotValidError).context.violations).toEqual([
     'title is empty',
     'the case declares no hypothesis',
   ]);
 });
 
-it("refuses a structurally valid case failing one coherence rule, as the composed CaseNotValidError rather than the coherence module's own IncoherentCaseError", async () => {
+it("refuses a structurally valid case failing one coherence rule, as the composed CaseVersionNotValidError rather than the coherence module's own IncoherentCaseError", async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store);
   const glossary = coherentGlossary();
@@ -514,16 +514,16 @@ it("refuses a structurally valid case failing one coherence rule, as the compose
 
   const refusal = await readAsError(service.readCase(SLUG, version));
 
-  expect(refusal).toBeInstanceOf(CaseNotValidError);
+  expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
   expect(refusal).not.toBeInstanceOf(IncoherentCaseError);
-  expect((refusal as CaseNotValidError).context).toEqual({
+  expect((refusal as CaseVersionNotValidError).context).toEqual({
     slug: SLUG,
     version,
     violations: [`the concept "${CONCEPT}" does not exist in the glossary`],
   });
 });
 
-it('joins several coherence violations into the one CaseNotValidError', async () => {
+it('joins several coherence violations into the one CaseVersionNotValidError', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store);
   const glossary = coherentGlossary();
@@ -533,7 +533,7 @@ it('joins several coherence violations into the one CaseNotValidError', async ()
 
   const refusal = await readAsError(service.readCase(SLUG, version));
 
-  expect((refusal as CaseNotValidError).context.violations).toEqual([
+  expect((refusal as CaseVersionNotValidError).context.violations).toEqual([
     `the action "${ACTION}" does not exist in the glossary`,
     `the concept "${CONCEPT}" does not exist in the glossary`,
   ]);
@@ -553,8 +553,8 @@ it(
 
     const refusal = await readAsError(service.readCase(SLUG, version));
 
-    expect(refusal).toBeInstanceOf(CaseNotValidError);
-    expect((refusal as CaseNotValidError).context.violations).toEqual(['title is empty']);
+    expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+    expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['title is empty']);
   },
 );
 
@@ -582,7 +582,7 @@ it('refuses at a later read a case that validated earlier, once the glossary no 
   glossary.forgetConcept(CONCEPT);
 
   const refusal = await readAsError(service.readCase(SLUG, version));
-  expect(refusal).toBeInstanceOf(CaseNotValidError);
+  expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
 });
 
 it('refuses at a later read a case that validated earlier, once the capability registry no longer answers a concept it depends on', async () => {
@@ -595,7 +595,7 @@ it('refuses at a later read a case that validated earlier, once the capability r
   capabilities.forget(CONCEPT);
 
   const refusal = await readAsError(service.readCase(SLUG, version));
-  expect(refusal).toBeInstanceOf(CaseNotValidError);
+  expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
 });
 
 it('answers replayCase with exactly the case readCase answers for the same pinned version, minus the content-identity pin read-case alone carries', async () => {
@@ -615,7 +615,7 @@ it('replays a pinned version without running the coherence checks at all, answer
   const glossary = new FakeGlossaryQuery();
   const capabilities = new FakeCapabilityQuery();
   const service = new CaseQueryService(store, glossary, capabilities);
-  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
+  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
 
   const replayed = await replayCase(SLUG, version, store);
 
@@ -632,7 +632,7 @@ it('answers a document that would fail read-case structurally, rather than refus
   const store = new FakeCaseStore();
   const version = await seedCase(store, { hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
-  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
+  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
 
   const replayed = await replayCase(SLUG, version, store);
 
@@ -727,12 +727,19 @@ it("answers a draft version's input requirements even though the same content cu
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(inputSchemaCapability());
   const service = new CaseQueryService(store, glossary, capabilities);
-  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
+  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
 
   const result = await service.readCaseInputRequirements(SLUG, version);
 
   expect(result.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
 });
+
+it.todo(
+  'revalidates a coherence violation before answering readCaseInputRequirements, refusing with ' +
+    "CaseVersionNotValidError just as read-case does for the same content — this task's own Notes " +
+    'record this as UNDERDETERMINED: readCaseInputRequirements today calls only structuralCase and ' +
+    'never refuseIncoherence, so this stays a documented gap rather than a criterion this task owes',
+);
 
 it('derives from the currently registered capabilities read fresh at every call, answering differently once a capability is registered between two calls for the same version', async () => {
   const store = new FakeCaseStore();
@@ -757,15 +764,15 @@ it('refuses with CaseNotFoundError, naming the slug and version, when no version
   expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
 });
 
-it('refuses a structurally invalid case version the same way read-case does, naming the violation in a CaseNotValidError', async () => {
+it('refuses a structurally invalid case version the same way read-case does, naming the violation in a CaseVersionNotValidError', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store, { hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
   const refusal = await readAsError(service.readCaseInputRequirements(SLUG, version));
 
-  expect(refusal).toBeInstanceOf(CaseNotValidError);
-  expect((refusal as CaseNotValidError).context).toEqual({
+  expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+  expect((refusal as CaseVersionNotValidError).context).toEqual({
     slug: SLUG,
     version,
     violations: ['the case declares no hypothesis'],

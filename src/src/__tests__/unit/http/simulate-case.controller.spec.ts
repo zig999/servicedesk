@@ -2,7 +2,7 @@ import { expect, expectTypeOf, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
-import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
+import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
 import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
 import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
 import type { ProductionSimulationCall } from '../../../factories/production-simulate.factory.js';
@@ -221,9 +221,9 @@ it('reuses case-query\'s own CaseNotFoundError unchanged for an unknown case slu
   expect(runSimulate).not.toHaveBeenCalled();
 });
 
-it("reuses case-query's own CaseNotValidError unchanged for an incoherent case version, before runSimulate is ever called", async () => {
+it("reuses case-query's own CaseVersionNotValidError unchanged for an incoherent case version, before runSimulate is ever called", async () => {
   const { dependencies, readCase, runSimulate } = buildDependencies({ case: heldCase() });
-  const notValid = new CaseNotValidError('a-slug', 1, ['a violated rule']);
+  const notValid = new CaseVersionNotValidError('a-slug', 1, ['a violated rule']);
   readCase.mockRejectedValueOnce(notValid);
 
   const rejection = handleSimulateCaseRequest(dependencies, REQUEST_BODY);
