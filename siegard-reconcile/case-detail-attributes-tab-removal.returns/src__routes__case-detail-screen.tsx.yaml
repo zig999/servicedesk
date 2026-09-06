@@ -1,0 +1,70 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "actionsForRow — the unconditional Simulate link, present for every row regardless of version.state"
+    evidence: |-
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version/simulate" params={params}>
+          Simulate
+        </Link>
+      </Button>
+  - node: contracts/knowledge/case-query
+    held_at: "VersionsPanel — the useCaseVersions(slug) call implementing list-case-versions"
+    evidence: "const { data, isLoading, isError, refetch } = useCaseVersions(slug);"
+  - node: domain/knowledge/case
+    held_at: "the slug param threading the case identity through the screen, and the New draft link implementing create-draft"
+    evidence: |-
+      const { slug } = useParams({ from: "/cases/$slug" }); ... <Link to="/cases/$slug/versions/new" params={{ slug }}>
+                New draft
+              </Link>
+  - node: domain/knowledge/case-version
+    held_at: "toRow — mapping a version's version and state into the row shown"
+    evidence: |-
+      return {
+        id: version.version,
+        version: version.version,
+        state: STATE_CELL[version.state],
+        actions: actionsForRow(slug, version),
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: "STATE_CELL, keyed exactly by the enumeration's two values"
+    evidence: |-
+      const STATE_CELL: Record<CaseVersionState, { color: string; label: string }> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: "the hasDraft check gating the New draft link"
+    evidence: |-
+      const hasDraft = data.data.some((version) => version.state === "draft");
+
+        return (
+          <>
+            {!hasDraft && (
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: "the not-valid and read-failed branches, checked only once at least one version exists, each with its own distinct text"
+    evidence: |-
+      {currentVersion.phase === "not-valid" && (
+                  <p>This case&apos;s current version does not read back as a case.</p>
+                )}
+                {currentVersion.phase === "read-failed" && (
+                  <p>Unable to load this case&apos;s version timeline.</p>
+                )}
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: "actionsForRow — the unconditional Manifest link, present for every row regardless of version.state"
+    evidence: |-
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version/manifest" params={params}>
+          Manifest
+        </Link>
+      </Button>
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "rows built from the whole listing and rendered without narrowing"
+    evidence: "const rows = data.data.map((version) => toRow(slug, version)); ... <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />"
+  - node: scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly
+    held_at: "the rows.length === 0 branch"
+    evidence: |-
+      rows.length === 0 ? (
+
+              <p>This case currently holds no version.</p>
+            ) : (
+looked_past: the STATE_CELL colour classes ("bg-warning"/"bg-success") and the "Continue editing" versus "View" label choice are presentational form built on facts the nodes already state, and belong to the standard-conformance pass rather than this one.

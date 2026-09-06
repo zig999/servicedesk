@@ -1,0 +1,15 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      const fetchMock = createFetchStub({
+        [VERSIONS_PATH]: () => jsonResponse({ data: [] }),
+      });
+
+      await mountCaseDetailScreen(fetchMock);
+      await screen.findByText("This case currently holds no version.");
+looked_past: The literal empty-hypotheses copy ("This case has originated no hypotheses yet.") asserted mid-file has no governing node anywhere in the specification, but it reads as interface wording for an empty list rather than a business rule, threshold or refusal, matching how this file's one assigned node explicitly leaves wording to the interface — so it is not reported as a finding.
+candidates_opened:
+  - scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly
+  - rules/knowledge/a-case-has-at-least-one-hypothesis
+  - contracts/knowledge/case-query

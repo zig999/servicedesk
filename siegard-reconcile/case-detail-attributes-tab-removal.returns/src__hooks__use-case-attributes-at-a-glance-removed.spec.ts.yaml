@@ -1,0 +1,21 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      describe("the useCaseAttributesAtAGlance hook and its own spec after their removal", () => {
+        it("no longer holds the hook's own implementation file", () => {
+          expect(existsSync(join(HOOKS_ROOT, "use-case-attributes-at-a-glance.ts"))).toBe(false);
+        });
+        it("no longer holds the hook's own spec file", () => {
+          expect(existsSync(join(HOOKS_ROOT, "use-case-attributes-at-a-glance.spec.ts"))).toBe(false);
+        });
+      });
+      describe("no file under src still names the hook's own identifier", () => {
+        it("contains no reference to useCaseAttributesAtAGlance anywhere in the tree", () => {
+          const offending = filesUnder(SRC_ROOT)
+            .filter((path) => path !== THIS_FILE)
+            .filter((file) => readFileSync(file, "utf-8").includes("useCaseAttributesAtAGlance"));
+          expect(offending).toEqual([]);
+        });
+      });
+looked_past: The file is a pure removal/hygiene check (asserting two paths are gone and one identifier string appears nowhere in src) and asserts nothing about which version a case-keyed surface treats as current or how a failed validator read is disclosed, so it neither restates nor departs from the rule's content — where that behavior now lives is a fact about the other files the candidate index names, not this one.

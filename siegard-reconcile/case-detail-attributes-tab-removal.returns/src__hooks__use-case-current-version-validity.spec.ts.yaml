@@ -1,0 +1,17 @@
+findings:
+  - file: src/hooks/use-case-current-version-validity.spec.ts
+    where: "the errorResponse helper (lines 18-20) and its use to simulate the current version failing validation, lines 52 and 74"
+    evidence: |-
+      function errorResponse(code: string, status = 422): Response { ... }
+      [versionPath(4)]: () => errorResponse("CaseNotValidError"),
+    cost: "A reader trusting this test as documentation of the read-refusal's shape learns HTTP 422 with error code CaseNotValidError for a case version that fails validation at read; the specification's own decided answer is HTTP 409 reporting CaseVersionNotValidError, so the two disagree on both the status and the name a caller would branch on."
+    kind: contradicts
+    node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    correction: "Simulate the refusal as errorResponse(\"CaseVersionNotValidError\", 409), matching the node's decided HTTP 409 / CaseVersionNotValidError shape for a read naming a stored, currently-invalid case version."
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: "the describe/it blocks distinguishing phase \"not-valid\" (lines 48-61, 64-84) from phase \"pending\" (lines 132-144), phase \"checking\" (lines 146-160) and phase \"no-version\" (lines 118-130), each asserting no version attribute beyond the version number itself"
+    evidence: |-
+      await waitFor(() => expect(result.current.phase).toBe("not-valid"));
+      expect(result.current).toMatchObject({ phase: "not-valid", version: 4 });
+looked_past: "the arbitrary error code \"SomeOtherError\" used to drive the generic \"read-failed\" branch (lines 90, 98) is a stand-in for any unmapped error rather than an assertion of the real API shape, and the hook's own branch/state-naming choices beyond the rule's three required distinctions are a code-structure matter, not this pass's."

@@ -1,0 +1,9 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: "const versions = [{ version: 5, state: \"released\" }]; ... const versions = [{ version: 3, state: \"draft\" }]; — every version used across this file's tests is a plain \"draft\" or \"released\" state; no test constructs or asserts a current-version-fails-validation scenario"
+looked_past: the manifest-route-availability, per-row targeting, released-row read-only-buttons and action-ordering facts the file states are already governed by rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest and domain/knowledge/case-version, and the ordering/link-vs-button choices are form the manifest-route rule itself assigns to the interface rather than the specification
+candidates_opened:
+  - rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+  - rules/knowledge/every-case-version-remains-readable
+  - domain/knowledge/case-version

@@ -1,0 +1,15 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      describe("CaseDetailScreen's Versions tab actions cell — a released row's own View action (criterion 1)", () => {
+      describe("CaseDetailScreen's Versions tab actions cell — a draft row's own action (criterion 2)", () => {
+      describe("CaseDetailScreen's Versions tab actions cell — clicking View (criterion 3)", () => {
+looked_past: The exact wording of "View"/"Continue editing", the third link on a draft row left unidentified, and the /cases/${SLUG}/versions/5 route shape are all form the interface owns per a-listed-case-version-offers-a-route-to-its-own-manifest's own closing line, not a domain fact for this pass to hold anyone to.
+candidates_opened:
+  - contracts/investigation/case-simulation
+  - contracts/knowledge/case-query
+  - domain/knowledge/case-version-state
+  - rules/knowledge/a-case-has-at-most-one-draft
+  - rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+  - rules/knowledge/every-case-version-remains-readable

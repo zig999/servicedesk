@@ -1,0 +1,21 @@
+findings:
+  - file: src/routes/case-detail-screen-current-version-validity.spec.ts
+    where: "the errorResponse helper (lines 15-17) and its uses simulating a failing-validation read, e.g. lines 28, 47, 63 and 151"
+    evidence: |-
+      function errorResponse(code: string, status = 422, details?: unknown): Response {
+        return new Response(JSON.stringify({ error: { code, message: code, details } }), { status });
+      }
+      ...
+      [versionDetailPath(2)]: () => errorResponse("CaseNotValidError"),
+    cost: "A reader trusting this test to encode the API's own wire contract learns that a current version failing validation is signaled by HTTP 422 and error code CaseNotValidError; the node governing that read fixes it as HTTP 409 reporting CaseVersionNotValidError, so the fixture teaches the wrong contract to whoever next writes against it, and the mismatch is caught only if a real backend response is ever compared against it."
+    kind: contradicts
+    node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    correction: "The errorResponse calls simulating a not-valid current version should use code \"CaseVersionNotValidError\" with status 409, not \"CaseNotValidError\" with the default 422."
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: "the assertions in each it block distinguishing NOT_VALID_TEXT from READ_FAILED_TEXT and NO_VERSION_TEXT, e.g. lines 33-35"
+    evidence: |-
+      expect(await screen.findByText(NOT_VALID_TEXT)).toBeTruthy();
+      expect(screen.queryByText(READ_FAILED_TEXT)).toBeNull();
+      expect(screen.queryByText(NO_VERSION_TEXT)).toBeNull();
+looked_past: "The literal wording of NOT_VALID_TEXT, READ_FAILED_TEXT and NO_VERSION_TEXT, and the shared test-support scaffolding the file imports, are surface and code-structure choices the node itself leaves to the interface, not domain facts, so they are not reported as findings."

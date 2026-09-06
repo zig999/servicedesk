@@ -1,0 +1,5 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: "expect(await screen.findByText(\"Unable to load this case's version timeline.\")).toBeTruthy(); fireEvent.click(screen.getByRole(\"button\", { name: \"Retry\" }));"
+looked_past: "the file's retry-button wording, click count and message-text assertions are interaction mechanics of the versions-list fetch, not a claim this pass judges — no domain fact turns on them."

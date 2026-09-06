@@ -1,0 +1,9 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: "the five describe/it blocks in the file — \"renders a Simulate link on a draft version's row...\", \"...on a released version's row...\", \"targets each row's own version number...\", \"exposes Simulate only as a link...\", \"navigates to that version's own simulation cockpit route...\" — assert only Simulate-link routing and click behavior; none names a version failing validation-runs-at-every-read or a case's current version not reading back as a case"
+looked_past: "the Simulate route's URL shape (/cases/${SLUG}/versions/${n}/simulate), the \"Simulate\" wording and its link-not-button form, and the zero-extra-fetch click assertion are UI form the specification leaves to the interface (per sibling nodes such as a-listed-case-version-offers-a-route-to-its-own-manifest), not a domain fact this pass judges."
+candidates_opened:
+  - contracts/investigation/case-simulation
+  - rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+  - domain/knowledge/case-version-state

@@ -1,0 +1,5 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: "the whole file only asserts expect(existsSync(join(ROUTES_ROOT, \"case-attributes-tab.tsx\"))).toBe(false) and expect(offending).toEqual([]) for the literal identifier CaseAttributesTab — it contains no assertion about the three-way distinction, no reference to not-valid/read-failed/no-version phases, and no check of what the surface states when a current version fails validation; the rule's fact is held instead in case-detail-screen.tsx and use-case-current-version-validity.ts"
+looked_past: this file is a negative/regression test confirming a prior component's file, test-support helper and identifier are fully removed from the tree — a cleanup-completeness check with no domain content of its own, which is a code-review matter rather than a conformance one.

@@ -1003,7 +1003,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
@@ -1451,7 +1451,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -3351,7 +3351,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
@@ -3549,7 +3549,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -3707,7 +3707,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -5631,7 +5631,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -6247,7 +6247,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         }
       ]
     },
@@ -6549,7 +6549,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -7077,7 +7077,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         }
       ]
     },

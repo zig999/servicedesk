@@ -1,0 +1,12 @@
+read:
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: "the versionQuery.isError branch, lines 48-51, together with the distinct pending/no-version/checking phases returned above it"
+    evidence: |-
+      if (versionQuery.isError) {
+            return errorStateKind(versionQuery.error) === "case-not-valid"
+              ? { phase: "not-valid", version: current.version }
+              : { phase: "read-failed", version: current.version };
+          }
+looked_past: The valid phase carries only the version number and never the version's own content (title, manifest, etc.), which is a completeness question for whoever consumes this hook rather than a conformance question over this rule.
+candidates_opened:
+  - contracts/knowledge/case-query
