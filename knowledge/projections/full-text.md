@@ -3395,6 +3395,205 @@ entries:
       it here would reopen the gate that rule closed. Policy and eventual for the same reason its sibling
       is: the manifest-pin condition reads hypothesis-revision, an aggregate root separate from the
       case version whose release is offered.'
+  - location: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface.md
+    field: statement
+    unstated: No node states where an operator who submitted a capability registration is taken once
+      that registration succeeds. contracts/integration/capability-registry publishes register-capability
+      alongside read-capability-by-identity and list-capabilities; an-abandoned-capability-registration-entry-registers-nothing
+      decides the destination for the entry abandoned before submission, and a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+      decides that a route to the listing is owed from the surface — but the submission that succeeds
+      is placed by neither, so whether the operator lands at the capability's own identity, at the listing,
+      or stays on the authoring surface fell to whatever an interface happened to render.
+    decided: The surface addressed by that capability's own name and version — the one read-capability-by-identity
+      answers — in both branches of register-capability's create-or-replace; not the listing of registered
+      capabilities, and not the authoring surface the registration was submitted from.
+    why: A successful submission leaves a capability standing at the name and version the entry named,
+      so the destination keyed on that identity answers — the exact hazard an-abandoned-capability-registration-entry-registers-nothing
+      refuses that destination for (constraints/the-capability-identity-read-refuses-an-unregistered-identity
+      refusing an identity nothing is registered at) is what a success removes, which is why abandonment
+      and success land differently without answering one question two ways, the two acts leaving different
+      things standing. Staying on the authoring surface makes a submission that succeeded indistinguishable
+      from one not yet made — the undifferentiated presentation this specification refuses in a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+      and a-case-holding-no-versions-is-told-explicitly — and worse, the act that surface still offers
+      is a second register-capability at the same identity, which is now a replacement of what was just
+      registered rather than a creation. The listing is refused because constraints/listings-are-paged
+      answers it one page at a time and which page the new registration falls on is that constraint's
+      answer, so the operator would land where their own registration is not reliably in view; nothing
+      is lost by it, since a-single-capability-surface-offers-a-route-to-the-capabilities-listing owes
+      a route to that listing on every reading of the surface this lands on. Recorded as an invariant
+      over domain/integration/capability rather than on the api contract, which cannot declare a presentation,
+      or on the domain element, which declares what a capability is and not what a surface does with
+      one — the same home and shape an-abandoned-capability-registration-entry-registers-nothing took
+      for the other end of the same act.
+  - location: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator.md
+    field: statement
+    unstated: No node states what an operator-facing surface tells the operator after it submits a registration
+      to either integration registry. contracts/integration/capability-registry publishes register-capability
+      and contracts/integration/connector-configuration-registry publishes register-connector, and rules
+      exist for what those writes refuse, for what a surface says while reading a registration back,
+      and for what an abandonment leaves untouched — but nothing states whether a submitted registration's
+      outcome reaches the operator at all, whether they are told the registration was made, whether
+      a refusal is reported to them, and whether the condition the registry named is told apart from
+      a failure whose reason the surface does not recognise. All of it would fall to whatever the interface
+      happened to render.
+    decided: 'Stated as a new policy holding for both registries at once. The submitting surface states
+      that the registration was made, naming what now stands registered (a capability at the name and
+      version submitted, a connector configuration under the connector name submitted); where the registry
+      refused, it states that nothing was registered and which refusal answered — the condition the
+      registry''s answer named, distinguishable from every other condition that route can name and from
+      a refusal carrying no named condition, and where the answer named no condition, that the submission
+      failed for a reason the surface does not recognise. Neither outcome is stated of a submission
+      the registry has not answered, and the two are never presented alike. Not decided here: what the
+      surface presents while the submission is in flight, where it goes after a registration is made,
+      and which control carries either statement, its wording and its placement.'
+    why: This specification has already answered the refusal half of this question twice and both times
+      toward telling the operator the specific condition — scenarios/glossary/a-concept-with-no-description-is-refused
+      requires the operator console to say specifically what was missing rather than only a generic
+      failure notice, and scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+      holds a named condition apart from the notice for an unrecognised failure because the two teach
+      opposite next acts — so deciding it differently for these two registries would give one specification
+      two answers. a-release-refusal-with-no-named-violation-says-so supplies the third branch, a refusal
+      naming no condition saying so explicitly rather than standing as an unexplained blank, which is
+      what constraints/a-domain-error-unmapped-by-status-is-refused-generically leaves the surface holding.
+      The registered half is owed because both writes are create-or-replace and total — domain/integration/connector-configuration
+      is replaced whole on every edit, and a capability registration replaces the whole contract at
+      its identity — so a surface unchanged after a submission cannot be told from one whose submission
+      never left, which is exactly the distinction an-abandoned-capability-registration-entry-registers-nothing
+      and a-connector-configuration-authoring-may-be-abandoned-without-registering presuppose is real.
+      It lands in one new rule rather than in either api contract, which cannot declare a presentation,
+      and rather than in the domain elements, which state what a capability and a configuration are
+      and not what a surface says about writing one, the placement every sibling presentation fact took.
+      It is a policy over both elements with eventual consistency, following a-connector-placeholder-is-declared-by-its-capability,
+      the standing rule that already binds these same two elements together; eventual because the surface
+      never performs the write it reports, so what it states settles only when a separately issued call
+      settles. Wording, control and placement are left to the interface, the boundary this specification
+      holds on every surface rule it has written.
+  - location: rules/knowledge/an-abandoned-case-version-edit-writes-nothing.md
+    field: statement
+    unstated: No node states what happens when a curator editing a case version leaves that editing
+      without submitting it. contracts/knowledge/case-lifecycle publishes update-draft, place-hypothesis
+      and remove-hypothesis as the writes over a draft, and every rule over them is written about what
+      a submitted call carries; only-a-draft-case-version-may-be-discarded states the removal of a draft
+      that exists, which a leaving is not; and no rule, scenario or constraint in the knowledge context
+      mentions leaving a case version's editing at all — so neither the effect on the version nor where
+      the curator is left was decided.
+    decided: A curator editing a case version may leave that editing before submitting it; the leaving
+      writes no change to the version, leaves the version's own declared attributes and every entry
+      of its manifest exactly as they were, and returns the curator to the surface the editing was reached
+      from. Recorded as an invariant over domain/knowledge/case-version and domain/knowledge/manifest-entry.
+    why: Writes nothing, because update-draft, place-hypothesis and remove-hypothesis are the only operations
+      contracts/knowledge/case-lifecycle publishes over a draft's own attributes and its manifest, so
+      an edit that issues none of them can only leave every declared attribute at the value it held
+      and every manifest entry at the position and referenced revision it held; any other reading would
+      require a write the contract's closed operations list does not hold. Leaves the version standing
+      rather than removing it, because removal is only-a-draft-case-version-may-be-discarded's own act
+      over a draft that exists, and reading a leaving as a discard would destroy a version the curator
+      did not ask to lose. The destination is the surface the editing was reached from rather than the
+      case's own detail view, because this specification has already decided this same gesture — leaving
+      an authoring surface without submitting — three times, and all three land on the surface the authoring
+      was reached from (an-abandoned-revision-composition-writes-nothing, an-abandoned-capability-registration-entry-registers-nothing
+      and a-connector-configuration-authoring-may-be-abandoned-without-registering), and this log's
+      own entry for the second of those records an earlier fixed-destination value being replaced for
+      precisely this reason, that one gesture answering two ways is one specification giving two answers.
+      A fixed case-detail destination is also wrong on the readings that matter, since a curator who
+      reached the editing from a listing of the case's versions or from that version's own manifest
+      would be moved somewhere they never came from. Nothing is lost by the reached-from reading, because
+      a-listed-case-version-offers-a-route-to-its-own-manifest owes its route on every reading of the
+      listing regardless. Home is a new rule rather than an extension of an-abandoned-revision-composition-writes-nothing,
+      because that rule is written over composing a revision of a hypothesis while this is the distinct
+      act over the version's own attributes and manifest, the same separation the integration context
+      already keeps between its two abandonment rules. An invariant rather than a policy, immediate,
+      because case-version is the aggregate root and manifest-entry is the value object it composes,
+      the same pairing a-case-version-is-written-once already constrains as one invariant.
+  - location: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface.md
+    field: statement
+    unstated: No node states where an operator who submitted a connector configuration registration
+      is taken once that registration succeeds. contracts/integration/connector-configuration-registry
+      publishes register-connector alongside read-connector-configuration and list-connector-configurations;
+      a-connector-configuration-authoring-may-be-abandoned-without-registering decides the destination
+      for an authoring left without registering, a-connector-configuration-surface-offers-a-route-to-the-listing
+      decides that a route to the listing is owed from the surface, and a-submitted-registration-states-its-outcome-to-the-operator
+      states what the operator is told about the outcome while expressly leaving where the surface then
+      goes undecided — so whether the operator lands at the configuration's own connector name, at the
+      listing, or stays on the authoring surface fell to whatever an interface happened to render.
+    decided: The surface addressed by that configuration's own connector name — the one read-connector-configuration
+      answers — in both branches of register-connector's create-or-replace; not the listing of registered
+      connector configurations, and not the authoring surface the registration was submitted from. Recorded
+      as a new invariant over domain/integration/connector-configuration.
+    why: A successful submission leaves a configuration standing under the connector name the registration
+      carried, so the destination keyed on that name answers — the exact hazard a-connector-configuration-authoring-may-be-abandoned-without-registering
+      takes the reached-from surface to avoid (a-connector-configuration-read-by-an-unregistered-name-is-refused
+      refusing a name nothing has registered) is what a success removes, which is why abandonment and
+      success land differently without answering one question two ways, the two acts leaving different
+      things standing. The sibling registry's own landing was decided this same way in a-successful-capability-registration-lands-on-the-capabilitys-own-surface,
+      and the one difference between the two — that this registry states its unregistered-name refusal
+      in a rule of its own while the capability registry states its own in constraints/the-capability-identity-read-refuses-an-unregistered-identity
+      — bears on where each refusal is recorded and what it tells a caller, never on whether the identity-keyed
+      read answers once a registration stands, which is the only thing this destination turns on; deciding
+      it the other way here would repeat the correction this log already records against an-abandoned-capability-registration-entry-registers-nothing,
+      where one gesture answered two ways across the two registries was replaced for exactly that reason.
+      Staying on the authoring surface makes a submission that succeeded indistinguishable from one
+      not yet made, and worse, domain/integration/connector-configuration is replaced whole on every
+      edit, so the act that surface still offers is a second register-connector under the same name,
+      now a total replacement of what was just registered. The listing is refused because constraints/listings-are-paged
+      answers list-connector-configurations one page at a time and which page the new registration falls
+      on is that constraint's answer, so the operator would land where their own registration is not
+      reliably in view; nothing is lost by it, since a-connector-configuration-surface-offers-a-route-to-the-listing
+      owes a route to that listing on every reading of the surface this lands on. Home is a new rule
+      rather than the api contract, which cannot declare a presentation, and rather than the domain
+      element, which declares what a configuration is and not what a surface does with one. An invariant,
+      immediate, because both facts it rests on are that one element's own.
+  - location: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface.md
+    field: statement
+    unstated: No node states whether an operator who has edited a capability registration or a connector
+      configuration on the surface that read it may put the unsubmitted edit down and take the read
+      content back without leaving that surface, nor whether such an act takes a further act from the
+      operator before it happens. The two registries' contracts publish one write and their reads and
+      say nothing about an edit never submitted; every registration rule in the integration context
+      is written over what a submission carries; the four abandonment rules of this specification all
+      state a leaving, writing nothing and returning the operator to the surface the authoring was reached
+      from, and none of them states an act in which the operator stays; and both route rules explicitly
+      leave open what becomes of content an authoring surface holds unwritten. So neither the availability
+      of a discard in place, the content it would restore, the surfaces it is offered on, nor whether
+      it is confirmed was decided.
+    decided: An operator editing, on the surface that read it, the capability registered at a name and
+      version or the connector configuration registered under a connector name is offered an act returning
+      every field of that surface to the content of the registration the surface last read, registering
+      nothing and leaving the operator on that same surface; the act takes effect only where the operator
+      states in a further, explicit act that it is to be performed, and otherwise the edit stands untouched.
+      A surface holding no read registration — one authoring at an identity nothing is registered at,
+      one whose read has not answered, one whose read failed — is offered no such act. Recorded as a
+      new policy over domain/integration/capability and domain/integration/connector-configuration,
+      eventual.
+    why: 'Offered, because the way out this specification already states is a leaving and not a putting-down:
+      the four abandonment rules each end the operator''s work at the surface and land them on the surface
+      the authoring was reached from, so an operator who wants the read content back and wants to go
+      on editing has only leave-and-return, and returning directly is not owed — a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+      and a-connector-configuration-surface-offers-a-route-to-the-listing owe a route to the listing,
+      so the return runs through the set to arrive at content the surface was already holding. What
+      is recovered cannot be retyped, a connector configuration being opaque text and a capability''s
+      contract carrying both schemas. Restricted to surfaces that read a registration, because a surface
+      authoring at an unregistered identity read nothing to go back to, emptying its fields recovering
+      nothing and being indistinguishable from the operator clearing them, while a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+      and a-presented-connector-configuration-states-an-outstanding-or-failed-read already hold that
+      no registration content is presented in the outstanding and failed windows. Confirmed, because
+      the discard destroys content held nowhere else and no operation of either contract can answer
+      it back, and because it differs from the abandonment in the one respect that bears on protection:
+      an abandonment ends the operator''s engagement and shows itself by landing them elsewhere, while
+      a discard leaves them on the same surface and continuing, so a mis-triggered one is built upon
+      — the next edit is made over content silently reverted, and may be submitted over a write both
+      registries make total. A second operator act is the least that separates the discard asked for
+      from the discard mis-triggered, and this specification already reads a costly act as the operator''s
+      own to state rather than a surface''s to infer. One rule for both registries, on a-submitted-registration-states-its-outcome-to-the-operator''s
+      own reasoning that the two are the same shape in every particular that bears on this. A policy
+      at eventual consistency, matching that sibling, because the content restored is what a read issued
+      separately to a registry answered and the surface never holds it. Disclosed here, as this route
+      requires: the material for this decision included a survey of the delivered frontend, which reports
+      that the two detail surfaces already offer a confirmed discard control and the two create surfaces
+      do not, so this decision was taken over material derived from source already written and may be
+      the specification agreeing with what was already built rather than deciding independently of it;
+      the reasoning above rests on the specification''s own standing rules, and a reviewer who rejects
+      it rejects that reasoning.'
 ---
 
 === domain/glossary/_context
@@ -4835,6 +5034,59 @@ constrains:
 
 A connector configuration's call may name a credential the executing connector reads from environment configuration rather than from the configuration text itself, so nobody has to author a secret directly into an operator-editable field. The diagnostic operation exists to let an operator see the request a connector configuration would actually issue (contracts/integration/connector-diagnostics), and that same visibility would otherwise hand back the one thing the indirection was meant to keep out of an editable field and a response body alike. Masking is what keeps the diagnostic honest about shape without being honest about the secret.
 
+=== rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+---
+type: policy
+statement: >-
+  An operator editing, on the surface that read it, the capability registered at a name and
+  version or the connector configuration registered under a connector name is offered an act
+  that returns every field of that surface to the content of the registration the surface
+  last read, registering nothing and leaving the operator on that same surface; that act
+  takes effect only where the operator states in a further, explicit act that it is to be
+  performed, and where the operator does not so state the edit stands untouched. A surface
+  holding no read registration — one authoring at an identity nothing is registered at, one
+  whose read has not answered, one whose read failed — is offered no such act, having no
+  content to return its fields to.
+expression: >-
+  For an operator on a surface s presenting the capability registered at a name and version
+  that read-capability-by-identity of contracts/integration/capability-registry answered, or
+  the connector configuration registered under a connector name that
+  read-connector-configuration of contracts/integration/connector-configuration-registry
+  answered, where that read has answered and the operator has changed one or more of s's
+  fields away from what it answered: s offers an act d whose whole effect is to set every
+  field of s to the content of the registration that read answered. Performing d carries no
+  register-capability call and no register-connector call, so every capability and every
+  connector configuration currently registered stands exactly as it stood, in membership and
+  in every registration's own content; and d moves the operator to no other surface — the
+  operator remains on s, editing. d takes effect only where the operator, having asked for d,
+  states in a further act that d is to be performed; where the operator does not so state, no
+  field of s changes and the edit stands exactly as the operator left it. d is offered on no
+  surface authoring a registration at an identity nothing is currently registered at, on none
+  whose read has not answered and on none whose read failed, those surfaces holding no read
+  registration for d to return the fields to. Nothing here turns on how much of the edit was
+  made, on which fields it touched, or on how the operator reached s.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+Each of these two registries publishes exactly one write — `register-capability` of `contracts/integration/capability-registry` and `register-connector` of `contracts/integration/connector-configuration-registry` — and each of them is a create-or-replace an operator submits from a surface that loaded the registration it is editing: `read-capability-by-identity` answers the capability standing at a name and version, `read-connector-configuration` answers the configuration standing under a connector name. Between that read and a submission the operator holds an edit that exists on the surface and nowhere else. No node stated whether the operator may put that edit down and take the read content back without leaving the surface. Left unstated, an operator who changed their mind about an edit had only the leaving, and whether the fields could be recovered at all fell to whatever a surface happened to offer.
+
+The act is owed where a registration was read, because the way out this specification has already stated is a leaving and not a putting-down. `an-abandoned-capability-registration-entry-registers-nothing` and `a-connector-configuration-authoring-may-be-abandoned-without-registering` each give a way out that costs nothing, and each of them ends the operator's work at that surface by returning them to the surface the authoring was reached from. An operator who wants the read content back and wants to go on working at it is asking for something neither of those answers: leaving and coming back is the only route left them, and coming back directly is not owed — what `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` and `a-connector-configuration-surface-offers-a-route-to-the-listing` owe from these surfaces is a route to the listing, so the return runs through the set to arrive at exactly the content the read already answered. The surface is holding that content already, so the recovery costs the registry nothing and its absence charges the operator navigation for it. What is recovered is real rather than nominal: a connector configuration is opaque text whose keys are the executing connector's own statement (`domain/integration/connector-configuration`), and a capability's declared contract carries an input schema and an output schema, none of which an operator who has edited over them can retype from memory.
+
+A surface authoring at an identity nothing is registered at is offered nothing here, because it read nothing there is to go back to. Emptying such a surface's fields recovers no content — it is indistinguishable from the operator clearing them — and the identity itself is one `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has the identity-keyed read refuse, which is the same reason `an-abandoned-capability-registration-entry-registers-nothing` refuses that identity as an abandonment's destination. The surfaces whose read has not answered or has failed are excluded for the same reason and by an existing statement: `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` hold that no attribute of any registration is presented as the content standing at that identity in either window, so there is no read content in hand for this act to restore.
+
+The further, explicit act is owed because the discard destroys content held nowhere else and the specification publishes nothing that recovers it. An edit never submitted has entered no registry — `an-abandoned-capability-registration-entry-registers-nothing` states that the registry holds registrations and never entries, and `a-connector-configuration-is-tested-through-a-registered-capability` states that even a diagnostic exercises the configuration currently registered, never text an operator holds unsaved — so an edit discarded is an edit gone, with no operation of either contract able to answer it back. What distinguishes this from the abandonment, which takes no such act, is what follows it: an abandonment ends the operator's engagement with the content and shows itself by landing them somewhere they were not, while this leaves the operator exactly where they were and expecting to continue. The next act after a discard is another edit, made on top of content that silently went back to what was read, and where the lost edit was a partial change inside a long opaque configuration or a schema an operator may go on and submit content they did not intend over a write both registries make total — `domain/integration/connector-configuration` is replaced whole on every edit, and `register-capability` replaces whatever stood at the identity with the whole declared contract submitted. A second act by the operator is the least that separates the discard asked for from the discard mis-triggered, and this specification already reads a costly act as the operator's own to state rather than something a surface infers: `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` has the reattempt issued only on the operator's own act and never on the surface's.
+
+One fact, decided once for both registries, on the reading `a-submitted-registration-states-its-outcome-to-the-operator` already took over the same pair: one write each, create-or-replace keyed on an identity the operator supplies, authored directly by an operator on surfaces this specification already governs together. Deciding it separately would answer one question twice and invite two answers, which is what the two abandonment rules' shared destination and this specification's own log already record as the failure to avoid.
+
+Nothing here moves what either registry answers or where any other act lands. `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` still decides where a submission that succeeded takes the operator, the two abandonment rules still decide where a leaving lands them, and the clause both route rules carry — that what becomes of content an authoring surface holds unwritten when the route is taken is no part of them — stays open, this stating only the act in which the operator does not go. No call is refused, no attribute is added to `domain/integration/capability` or `domain/integration/connector-configuration`, and no operation is published. Which control carries the discard, which carries the further act, their wording, where they sit and how the second is presented to the operator are form and belong to the interface, not here, exactly as this specification's other surface rules leave them.
+
+Consistency is eventual because the content the fields are returned to is never held by the surface: it is what a read issued separately to a registry answered, and this act restores that answer rather than anything the surface owns.
+
 === rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
 ---
 type: invariant
@@ -4947,6 +5199,140 @@ The affordance is not stated because it is form. `no-route-enforces-authenticati
 Its reach is the registry's own surfaces and nothing beyond. The route names no page of the listing: which page opens is `listings-are-paged`'s own answer, and this states only the destination. Nothing is refused, no attribute gains a value, no capability's registration moves, and what may then be done through the listing stays where `capability-registry` and `a-capability-is-read-only` already put it. What happens to content an authoring surface holds unwritten when the route is taken this decides nothing about. Surfaces over any other subject — a connector configuration, a case, a hypothesis — are untouched: a route owed there would be its own fact about its own element.
 
 Consistency is immediate because the route's presence follows from the surface's own subject alone, one capability, and from nothing read elsewhere; no fact here spans two reads.
+
+=== rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+---
+type: policy
+statement: >-
+  An operator-facing surface that submits a registration to the capability registry or to the
+  connector configuration registry states to that operator the outcome the registry answered:
+  where the registration was made, that it was made, naming what now stands registered — the
+  capability at the name and version submitted, or the connector configuration under the
+  connector name submitted; where the registry refused the submission, that nothing was
+  registered and which refusal answered it, the condition the registry's answer named stated
+  apart from every other condition that route can name and apart from a refusal whose
+  condition the surface does not recognise. Neither outcome is stated of a submission the
+  registry has not answered, and the two never read alike.
+expression: >-
+  For an operator submitting a registration r through register-capability of
+  contracts/integration/capability-registry or register-connector of
+  contracts/integration/connector-configuration-registry, and the surface s from which r was
+  submitted: where the registry answers that r registered, s states that r registered and
+  states what it registered — for a capability, the name and version r carried; for a
+  connector configuration, the connector name r carried. Where the registry refuses r, s
+  states that r registered nothing and states which refusal answered it: where the registry's
+  answer names a condition, s states that condition, distinguishably from every other
+  condition that route can name and from a refusal carrying no named condition; where the
+  registry's answer names no condition, s states that the submission failed for a reason it
+  does not recognise, never as a named condition and never as a registration. s states neither
+  outcome of a submission the registry has not answered. The two outcomes are distinguishable
+  from one another to the operator, and neither is presented as the other.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+Each of these two registries publishes exactly one write: `register-capability` of `contracts/integration/capability-registry`, which creates a capability at a new name and version or replaces whatever stood at that identity, and `register-connector` of `contracts/integration/connector-configuration-registry`, which creates a connector configuration or replaces whatever answered to its name. Both are calls an authoring surface makes and waits on, so between the operator submitting and the registry answering there is an act taken and an outcome not yet in hand. No node stated what the operator is then told. Left unstated, an operator who submitted would learn what happened only by reading the registry again — or would learn nothing at all, and resubmit over a registration already made, or leave believing a refused submission had registered.
+
+The registered outcome is owed because a create-or-replace write is exactly the one whose success an operator cannot infer from the surface they are standing on. Both writes are total: `domain/integration/connector-configuration` is replaced whole on every edit, and a capability registration replaces whatever stood at its identity with its own whole declared contract. A surface that looks after the submission exactly as it looked before it leaves the operator to distinguish a registration made from one that never left, and both `an-abandoned-capability-registration-entry-registers-nothing` and `a-connector-configuration-authoring-may-be-abandoned-without-registering` turn on that same distinction being real: an abandoned entry registers nothing, and an operator who cannot tell a submission from an abandonment cannot tell which of the two they just performed.
+
+The refused outcome is owed in the same words this specification has already used twice. `scenarios/glossary/a-concept-with-no-description-is-refused` holds that the operator console tells the operator specifically what was wrong with a refused registration, never only a generic failure notice; `scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so` holds a named condition apart from the notice shown for a failure whose reason the interface does not recognise, on the reasoning that the two teach opposite things — one says there is nothing left to do, the other says the outcome is unknown and the act should be retried, reloaded or escalated. That is why the refusal here is not merely reported but carries which refusal answered it, and why a refusal the surface cannot name is stated as exactly that rather than dressed as a condition: `a-release-refusal-with-no-named-violation-says-so` already refuses an unexplained, empty refusal in favour of saying so explicitly.
+
+What the routes themselves answer is untouched. `constraints/a-malformed-request-is-refused-with-a-validation-error` fixes the shape of a refusal over a request the route's own shape rejects, `constraints/a-domain-error-unmapped-by-status-is-refused-generically` fixes the generic refusal for a domain error the status map does not name, and the registration rules each route imposes — `a-capability-declares-its-contract`, `a-capability-declares-well-formed-schemas`, `a-connector-configuration-holds-a-well-formed-object`, `a-connector-configuration-names-its-connector`, `a-connector-placeholder-is-declared-by-its-capability`, `one-capability-answers-one-concept` — name their own conditions. This states only what the operator is told about whichever of those answered, and moves none of them. The generic refusal is precisely the branch in which no condition was named, so it is the branch this rule requires to be stated as unrecognised rather than left to read like a named one.
+
+One fact, decided once for both registries. The two are the same shape in every particular that bears on it: one write each, create-or-replace keyed on an identity the operator supplies, authored directly by an operator on a surface this specification already governs (`a-single-capability-surface-offers-a-route-to-the-capabilities-listing`, `a-connector-configuration-surface-offers-a-route-to-the-listing`), and refusals carried on the same system-wide error surface. Deciding it separately would answer one question twice and invite two answers, which is what deciding it here once refuses.
+
+This is about a write, and the sibling rules about a read stay where they are. `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` state what a surface says while it is loading a registration it did not write and what it says when that load fails; neither says anything about a submission the operator made. A read that failed is worth issuing again and those rules offer that act; a submission is not re-issued by anything stated here, because a write repeated is a second write and never a recovery of the first.
+
+What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here, and neither is what it presents in the interval before the registry answers at all. Which control carries either statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
+
+Consistency is eventual because the surface performs no registration itself: what it states is the answer to a call issued separately to a registry that holds the registration, and the statement settles only when that call settles.
+
+=== rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+---
+type: invariant
+statement: >-
+  An operator whose submitted capability registration succeeds is taken to the surface
+  addressed by that capability's own name and version — the surface
+  read-capability-by-identity answers — and neither to the listing of registered
+  capabilities nor left on the authoring surface the registration was submitted from.
+  This holds alike where the submission created a capability at a name and version
+  nothing was registered at and where it replaced the capability that already stood at
+  that identity.
+expression: >-
+  For an operator submitting a capability registration entry e naming name n and version
+  v, where the register-capability call carrying e succeeds: what that operator is taken
+  to is the surface addressed by (n, v), the one read-capability-by-identity of
+  contracts/integration/capability-registry answers. It is that surface in both branches
+  of register-capability's own create-or-replace — an identity nothing was registered at
+  and an identity a capability already stood at — and it turns on nothing about the
+  surface the authoring of e was reached from. It is not the listing
+  list-capabilities answers, and it is not the authoring surface e was submitted from.
+constrains:
+  - domain/integration/capability
+---
+
+## Description
+
+`register-capability` is the one operation of `contracts/integration/capability-registry` that writes, and a submission it answers successfully leaves a capability standing at the name and version the entry named — created there, or put in place of whatever stood there before. The one surface the specification addresses by exactly that identity is the one `read-capability-by-identity` answers, added to this contract for a surface keyed by a capability's own name and version that loads on first navigation or a refresh. Landing the operator there lands them where what they just registered now stands.
+
+A destination keyed on the entry's own identity is safe here for the reason it is unsafe elsewhere. `an-abandoned-capability-registration-entry-registers-nothing` refuses that destination for an abandonment, because `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has `read-capability-by-identity` refuse a name and version nothing is currently registered at, which is exactly what an abandoned creation leaves behind. A successful submission leaves the opposite behind: the identity is registered when the operator arrives, in both branches of the create-or-replace, so the read the destination rests on answers. The two acts take different destinations because they leave different things standing — an abandonment undoes the step that opened the entry and leaves nothing to show, while a submission that succeeded leaves a registration, and the surface addressed by it is where that registration is.
+
+Leaving the operator on the authoring surface would make a submission that succeeded indistinguishable from one not yet made. This specification has refused that shape wherever it has met it — `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` holds three readings of one surface apart because each asks a different act of whoever meets it, and `a-case-holding-no-versions-is-told-explicitly` refuses an unexplained sameness over a stored set — and the sameness costs more here than a misreading: the act the authoring surface still offers is another `register-capability` at the same identity, which after the first success is a replacement of what was just registered rather than the creation the operator thought they were making.
+
+The listing is not the destination either. `constraints/listings-are-paged` answers `list-capabilities` one page at a time, and which page the new registration falls on is that constraint's own answer and not this one's, so the listing is a destination on which the operator's own registration is not reliably in view. Nothing is lost by not landing there: `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` owes a route to that listing on every reading of the very surface this lands on, so the operator who wanted the set takes the route already owed them.
+
+This states where the operator lands and nothing further. What that surface then states about its own read — the read still outstanding, the read that failed, the registration read and shown — is `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed`'s own and is untouched. Nothing here refuses a call, moves what the registry answers, adds an attribute to `domain/integration/capability` or publishes an operation, and the registration rules the registry imposes on what a submission carries — `a-capability-is-read-only`, `a-capability-declares-its-contract`, `a-capability-declares-well-formed-schemas`, `a-capability-input-schema-holds-a-well-formed-object`, `one-capability-answers-one-concept` — stand exactly as they did. It states nothing about a submission the registry refuses, which registers nothing and reaches none of this.
+
+Which control carries the submission, its wording and where it sits are form and belong to the interface, not here, the same reading `an-abandoned-capability-registration-entry-registers-nothing` and `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` already take over their own controls.
+
+Both facts this rests on are that one aggregate's own — that the submission succeeded and the name and version it succeeded at — so it constrains `domain/integration/capability` and holds immediately, inside one boundary, the shape `an-abandoned-capability-registration-entry-registers-nothing` already took for the other end of the same act.
+
+=== rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+---
+type: invariant
+statement: >-
+  An operator whose submitted connector configuration registration succeeds is taken to
+  the surface addressed by that configuration's own connector name — the surface
+  read-connector-configuration answers — and neither to the listing of registered
+  connector configurations nor left on the authoring surface the registration was
+  submitted from. This holds alike where the submission created a configuration under a
+  connector name nothing was registered under and where it replaced the configuration
+  that already answered to that name.
+expression: >-
+  For an operator submitting a connector configuration registration r naming connector
+  name c, where the register-connector call carrying r succeeds: what that operator is
+  taken to is the surface addressed by c, the one read-connector-configuration of
+  contracts/integration/connector-configuration-registry answers. It is that surface in
+  both branches of register-connector's own create-or-replace — a connector name nothing
+  was registered under and a name a configuration already answered to — and it turns on
+  nothing about the surface the authoring of r was reached from. It is not the listing
+  list-connector-configurations answers, and it is not the authoring surface r was
+  submitted from.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+`register-connector` is the one operation of `contracts/integration/connector-configuration-registry` that writes, and a submission it answers successfully leaves a connector configuration standing under the connector name the registration carried — created there, or put in place of whatever answered to that name before. The one surface the specification addresses by exactly that name is the one `read-connector-configuration` answers, the surface `a-presented-connector-configuration-states-an-outstanding-or-failed-read` already governs across its three readings. Landing the operator there lands them where what they just registered now stands.
+
+A destination keyed on the registration's own connector name is safe here for the reason it is unsafe elsewhere. `a-connector-configuration-authoring-may-be-abandoned-without-registering` refuses that destination for an abandonment and returns the operator to the surface the authoring was reached from, because `a-connector-configuration-read-by-an-unregistered-name-is-refused` has `read-connector-configuration` refuse a connector name nothing has registered, which is exactly what an abandoned authoring leaves behind. A successful submission leaves the opposite behind: the name is registered when the operator arrives, in both branches of the create-or-replace, so the read the destination rests on answers. The two acts take different destinations because they leave different things standing — an abandonment undoes the step that opened the authoring and leaves nothing to show, while a submission that succeeded leaves a registration, and the surface addressed by it is where that registration is.
+
+That this registry states its unregistered-name refusal in a rule of its own while the capability registry states its own in `constraints/the-capability-identity-read-refuses-an-unregistered-identity`, and that the two name different conditions, bears on where each refusal is recorded and what it tells a caller — not on whether the read answers once a registration stands under the name it is asked for. On the only question this rule turns on, the two registries read alike, so `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` and this state one answer rather than two.
+
+Leaving the operator on the authoring surface would make a submission that succeeded indistinguishable from one not yet made. This specification has refused that shape wherever it has met it — `a-presented-connector-configuration-states-an-outstanding-or-failed-read` holds three readings of one surface apart because each asks a different act of whoever meets it, and `a-case-holding-no-versions-is-told-explicitly` refuses an unexplained sameness over a stored set — and the sameness costs more here than a misreading: `domain/integration/connector-configuration` is replaced whole on every edit, so the act the authoring surface still offers is another `register-connector` under the same name, which after the first success replaces the whole of what was just registered rather than creating what the operator thought they were creating.
+
+The listing is not the destination either. `constraints/listings-are-paged` answers `list-connector-configurations` one page at a time, and which page the new registration falls on is that constraint's own answer and not this one's, so the listing is a destination on which the operator's own registration is not reliably in view. Nothing is lost by not landing there: `a-connector-configuration-surface-offers-a-route-to-the-listing` owes a route to that listing on every reading of the very surface this lands on, so the operator who wanted the set takes the route already owed them.
+
+This states where the operator lands and nothing further. What that surface then states about its own read — the read still outstanding, the read that failed, the configuration read and shown — is `a-presented-connector-configuration-states-an-outstanding-or-failed-read`'s own and is untouched. What the operator is told about the submission itself is `a-submitted-registration-states-its-outcome-to-the-operator`'s own, which states the registered and the refused outcomes for both registries and expressly leaves where the surface goes once a registration was made undecided; this decides that one question for this registry and moves nothing that rule holds. Nothing here refuses a call, moves what the registry answers, adds an attribute to `domain/integration/connector-configuration` or publishes an operation, and the registration rules the registry imposes on what a submission carries — `a-connector-configuration-holds-a-well-formed-object`, `a-connector-configuration-names-its-connector`, `a-connector-placeholder-is-declared-by-its-capability` — stand exactly as they did. It states nothing about a submission the registry refuses, which registers nothing and reaches none of this.
+
+Which control carries the submission, its wording and where it sits are form and belong to the interface, not here, the same reading `a-connector-configuration-authoring-may-be-abandoned-without-registering` and `a-connector-configuration-surface-offers-a-route-to-the-listing` already take over their own controls.
+
+Both facts this rests on are that one element's own — that the submission succeeded and the connector name it succeeded under — so it constrains `domain/integration/connector-configuration` and holds immediately, inside one boundary, the shape `a-connector-configuration-authoring-may-be-abandoned-without-registering` already took for the other end of the same act.
 
 === rules/integration/an-abandoned-capability-registration-entry-registers-nothing
 ---
@@ -6566,6 +6952,50 @@ It states what the surface discloses and nothing about whether the release may t
 
 The rule is a policy holding eventually because the conditions are read across aggregate roots: the case version whose release is offered, and — for the condition this specification currently states — each pinned hypothesis-revision, whose own release reaches into no version's manifest to change it.
 Which control carries the statements, their wording and where they sit are form and belong to the interface, not here.
+
+=== rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+---
+type: invariant
+statement: >-
+  A curator editing a case version may leave that editing before submitting it; the
+  leaving writes no change to the version, leaves the version's own declared
+  attributes and every entry of its manifest exactly as they were, and returns the
+  curator to the surface the editing was reached from.
+expression: >-
+  For a draft case version v whose editing was reached from surface s and left before
+  the edit is submitted: no update-draft, place-hypothesis or remove-hypothesis call
+  carries that edit, so every declared attribute of v holds exactly the value it held
+  when the editing opened and v's manifest holds exactly the entries it then held —
+  the same positions and the same referenced revisions; v is neither discarded nor
+  released and stands in draft as it stood; and the curator is returned to s. Leaving
+  is available for as long as the edit has not been submitted, and turns on nothing
+  else: not on how much of the edit was filled in, not on which of v's own attributes
+  or manifest entries the edit touched, and not on which surface s is — a listing of
+  the case's versions, the version's own manifest, the case's own detail and any
+  other surface the editing is reachable from are alike here, and none of them holds
+  a privilege among them.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+Editing a draft and submitting the edit are two moments, and everything this specification states about the change is stated about the second: `contracts/knowledge/case-lifecycle` publishes `update-draft` over a version's own declared attributes and `place-hypothesis` and `remove-hypothesis` over its manifest, and each of them writes only where it is called.
+A curator who opens a version's editing and does not submit it calls none of them, and this states that the not-submitting is an offered act rather than an accident of navigation: a curator who opened the wrong version, or thought better of a title's wording or of a hypothesis's position, has a way out that costs nothing.
+
+Writing nothing is the whole of what the leaving does to the version, and it is neither of the acts that do write.
+It is not `discard` (`only-a-draft-case-version-may-be-discarded`), which removes a draft that already exists; the version left is standing when the curator comes back to it, in draft, exactly as they found it.
+It is not a submission of unchanged content either: an `update-draft` carrying the values as they already stood is still a call, answered against the version's state by `a-case-version-moves-through-its-declared-lifecycle` rather than against how much of the content it changed.
+Leaving is the absence of that call, so every declared attribute keeps the value it held and every manifest entry keeps its position and its referenced revision — `a-presented-case-version-states-its-own-declared-attributes` and `a-manifest-entrys-pinned-revision-is-always-shown` answer afterwards exactly what they answered before, `a-cases-current-pins-come-from-its-highest-numbered-version` reads the same pins it read before, and `a-surface-offering-release-states-which-release-conditions-the-draft-meets` decides its conditions over content this leaving did not touch.
+A curator may leave and open the editing again as often as curation needs, and the version is what it was.
+
+Where the curator is returned is the surface the editing was reached from, and this specification has answered that same question three times already in that same direction: `an-abandoned-revision-composition-writes-nothing` returns the curator to the screen the composition was opened from, and `an-abandoned-capability-registration-entry-registers-nothing` and `a-connector-configuration-authoring-may-be-abandoned-without-registering` each return the operator to the surface the authoring was reached from.
+A fixed destination — the case's own detail surface, say — would answer one gesture two ways inside one specification, and it would be wrong on exactly the readings that matter: a curator who reached the editing from a listing of the case's versions, from that version's own manifest, or from anywhere other than the case's detail, is moved somewhere they never came from and loses the place they were curating in.
+Nothing is lost by landing the leaving where the curator came from, because the routes this specification owes between a case's own readings are owed regardless — `a-listed-case-version-offers-a-route-to-its-own-manifest` carries a curator from a listing of a case's versions to any presented version's manifest on every reading of that listing — so the curator who did want another of the case's surfaces takes the route already owed them.
+Getting out costs no more than getting in did, and the step the leaving undoes is the one that opened the editing.
+
+Which control carries the leaving, its wording and where it sits are form and belong to the interface, not here.
 
 === rules/knowledge/an-abandoned-revision-composition-writes-nothing
 ---
