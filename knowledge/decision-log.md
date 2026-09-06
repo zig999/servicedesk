@@ -2627,20 +2627,30 @@ entries:
       the effect on the registry nor where the operator is left was decided.
     decided: 'An operator authoring a capability registration may abandon the entry before submitting
       it: nothing is sent to the registry, no capability is created and none already registered is replaced,
-      and the operator is returned to the listing of registered capabilities.'
+      and the operator is returned to the surface the authoring entry was reached from.'
     why: register-capability is the only operation of this contract that writes, so an entry that issues
       no call can only leave the registered set exactly as it stood — creating nothing at a new identity
       and replacing nothing at an existing one — and any other reading would require a second, unpublished
       write the contract's closed operations list does not hold. The registry holds registrations rather
       than entries, so retaining a half-composed one would be a creation by another name and would make
       it findable through reads that answer only from what is currently registered. The return destination
-      is list-capabilities because that listing is the registry's own read over the set the abandonment
-      left untouched, is reachable for a new capability and a replacement alike, and always answers
-      — whereas read-capability-by-identity, the only identity-keyed alternative, is required by constraints/the-capability-identity-read-refuses-an-unregistered-identity
-      to refuse a name and version nothing is registered at, which is exactly what an abandoned creation
-      leaves behind. Recorded as an invariant over domain/integration/capability, immediate and inside
-      that one aggregate, matching a-capability-is-read-only's own shape for a condition the registry
-      imposes on what does and does not become a registration.
+      is the surface the authoring was reached from, so that abandoning undoes exactly the step that opened
+      the entry and leaves the operator where they were working; landing on list-capabilities instead would
+      be a destination chosen for the registry rather than the operator, and would be wrong on precisely
+      the readings that matter — an operator who reached the entry from a capability's own surface, or
+      from anywhere other than the listing, would be moved somewhere they never came from. Nothing is lost
+      by it, because rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+      owes a route to that listing on every reading of the same surface, so the operator who did want the
+      listing takes the route already owed them. What the destination must avoid is a read that cannot answer,
+      which is what a destination keyed on the entry's own identity would be, since constraints/the-capability-identity-read-refuses-an-unregistered-identity
+      requires read-capability-by-identity to refuse a name and version nothing is registered at, exactly
+      what an abandoned creation leaves behind, while the surface the authoring was reached from has answered
+      once already. This value replaces an earlier one recorded in this same entry, which read the destination
+      as the listing, and that reading contradicted rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering,
+      which states the reached-from surface for the same act over the sibling registry, and one gesture
+      answering two ways across two registries is one specification giving two answers. Recorded as an invariant
+      over domain/integration/capability, immediate and inside that one aggregate, matching a-capability-is-read-only's
+      own shape for a condition the registry imposes on what does and does not become a registration.
   - location: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing.md
     field: statement
     unstated: Whether an operator on a surface presenting one registered capability, or authoring one
