@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
+      "title": "The error-code mapping keys on CaseVersionNotValidError",
+      "summary": "The frontend's error-code mapping table now keys the case-not-valid UI state on the wire code the backend actually sends, CaseVersionNotValidError, instead of the stale CaseNotValidError name.",
+      "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
+    },
+    {
+      "id": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "proof",
+      "file": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
+      "title": "The error-code mapping keys on CaseVersionNotValidError — proof",
+      "summary": "Tests hold uiStateForApiError, useCaseCurrentVersionValidity and CaseDetailScreen's Versions panel to the six criteria over the wire code the backend actually sends, and exclude the one admitted implementation the task's Notes name as underdetermined.",
+      "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

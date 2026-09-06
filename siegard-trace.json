@@ -5704,6 +5704,10 @@
       "digest": "sha256:3250bfc5b06bb263626adbbfb21e76fdd28e59ae4b3948e657f412a1af40d986",
       "files": [
         {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
@@ -6348,6 +6352,20 @@
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
           "digest": "sha256:916d45ed3c4b6f9a0c8f9ca1ef52fa4e06a0116dc6087904452c7ab84257a3ca"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "digest": "sha256:9155b079b2f0837c579fd28c755d3703b078114fbb7a80c74ab57a6cbe53497d",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+        },
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         }
       ]
     },

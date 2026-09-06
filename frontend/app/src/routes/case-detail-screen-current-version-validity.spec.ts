@@ -25,7 +25,7 @@ describe("CaseDetailScreen's Versions panel -- a current version that does not r
     const versions = [{ version: 2, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
-      [versionDetailPath(2)]: () => errorResponse("CaseNotValidError"),
+      [versionDetailPath(2)]: () => errorResponse("CaseVersionNotValidError"),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -44,7 +44,7 @@ describe("CaseDetailScreen's Versions panel -- answering the case's highest-numb
     ];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
-      [versionDetailPath(7)]: () => errorResponse("CaseNotValidError"),
+      [versionDetailPath(7)]: () => errorResponse("CaseVersionNotValidError"),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -60,7 +60,7 @@ describe("CaseDetailScreen's Versions panel -- still lists every version alongsi
     const versions = [{ version: 1, state: "released" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
-      [versionDetailPath(1)]: () => errorResponse("CaseNotValidError"),
+      [versionDetailPath(1)]: () => errorResponse("CaseVersionNotValidError"),
     });
 
     await mountCaseDetailScreen(fetchMock);
@@ -148,7 +148,7 @@ describe("CaseDetailScreen's Versions panel -- no field of the unreadable versio
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
       [versionDetailPath(9)]: () =>
-        errorResponse("CaseNotValidError", 422, {
+        errorResponse("CaseVersionNotValidError", 422, {
           title: "SECRET-TITLE",
           when_to_use: "SECRET-WHEN-TO-USE",
           subject: "SECRET-SUBJECT",
@@ -161,5 +161,36 @@ describe("CaseDetailScreen's Versions panel -- no field of the unreadable versio
     expect(screen.queryByText("SECRET-TITLE")).toBeNull();
     expect(screen.queryByText("SECRET-WHEN-TO-USE")).toBeNull();
     expect(screen.queryByText("SECRET-SUBJECT")).toBeNull();
+  });
+});
+
+describe("CaseDetailScreen's Versions panel -- a refusal the mapping holds no presentation of its own for states nothing else, not even an attribute of the case or its version", () => {
+  it("renders only the fixed did-not-complete statement, never an attribute of the case or its version, when the current version's own read fails with a code the mapping does not recognize", async () => {
+    const versions = [{ version: 9, state: "draft" }];
+    const fetchMock = createFetchStub({
+      [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
+      [versionDetailPath(9)]: () =>
+        errorResponse("SomeUnrecognizedError", 500, {
+          title: "SECRET-TITLE",
+          when_to_use: "SECRET-WHEN-TO-USE",
+          subject: "SECRET-SUBJECT",
+          fallback: { outcome: "SECRET-FALLBACK-OUTCOME" },
+          consolidation_register: "SECRET-CONSOLIDATION-REGISTER",
+          state: "SECRET-STATE",
+          manifest: ["SECRET-MANIFEST-ENTRY"],
+        }),
+    });
+
+    await mountCaseDetailScreen(fetchMock);
+
+    expect(await screen.findByText(READ_FAILED_TEXT)).toBeTruthy();
+    expect(screen.queryByText(NOT_VALID_TEXT)).toBeNull();
+    expect(screen.queryByText("SECRET-TITLE")).toBeNull();
+    expect(screen.queryByText("SECRET-WHEN-TO-USE")).toBeNull();
+    expect(screen.queryByText("SECRET-SUBJECT")).toBeNull();
+    expect(screen.queryByText("SECRET-FALLBACK-OUTCOME")).toBeNull();
+    expect(screen.queryByText("SECRET-CONSOLIDATION-REGISTER")).toBeNull();
+    expect(screen.queryByText("SECRET-STATE")).toBeNull();
+    expect(screen.queryByText("SECRET-MANIFEST-ENTRY")).toBeNull();
   });
 });

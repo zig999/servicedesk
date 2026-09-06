@@ -74,7 +74,7 @@ describe("uiStateForApiError", () => {
       "CaseHoldsNoDraftError",
       "ConceptNotInGlossaryError",
       "ConceptRefusesSubjectTypeError",
-      "CaseNotValidError",
+      "CaseVersionNotValidError",
     ];
 
     const targetKind = uiStateForApiError(
@@ -134,10 +134,15 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("generic-error");
   });
 
-  it("resolves CaseNotValidError to its own distinct case-not-valid state, no longer the shared generic-error fallback", () => {
-    const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
+  it("resolves CaseVersionNotValidError, the name the backend's refusal actually carries, to its own distinct case-not-valid state, not the shared generic-error fallback", () => {
+    const state = uiStateForApiError(new ApiError("CaseVersionNotValidError", "not valid"));
     expect(state.kind).toBe("case-not-valid");
     expect(state.kind).not.toBe("generic-error");
+  });
+
+  it("resolves CaseNotValidError, the retired name the mapping no longer keys on, to the shared generic-error state rather than case-not-valid", () => {
+    const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
+    expect(state.kind).toBe("generic-error");
   });
 
   it("resolves a code the table does not name to the generic-error state rather than throwing", () => {
