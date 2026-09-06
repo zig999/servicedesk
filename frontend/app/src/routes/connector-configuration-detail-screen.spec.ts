@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
   ARRAY_CONFIGURATION,
   CAPABILITIES_PATH,
@@ -45,12 +45,13 @@ describe("ConnectorConfigurationDetailScreen -- shows the loaded record (criteri
 });
 
 describe("ConnectorConfigurationDetailScreen -- a control returns to the list (criterion 3)", () => {
-  it("navigates back to the connector-configurations list when Back to connector configurations is clicked", async () => {
+  it("navigates back to the connector-configurations list when the footer's Cancel link is clicked", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
     await screen.findByLabelText("Configuration");
 
-    fireEvent.click(screen.getByRole("link", { name: "Back to connector configurations" }));
+    const footer = screen.getByRole("group", { name: "Actions" });
+    fireEvent.click(within(footer).getByRole("link", { name: "Cancel" }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
   });
@@ -61,10 +62,58 @@ describe("ConnectorConfigurationDetailScreen -- a control returns to the list (c
     });
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
-    expect(await screen.findByRole("button", { name: "Retry" })).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: "Back to connector configurations" }),
-    ).toBeTruthy();
+    await screen.findByRole("button", { name: "Retry" });
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("button", { name: "Retry" })).toBeTruthy();
+    expect(within(footer).getByRole("link", { name: "Cancel" })).toBeTruthy();
+  });
+});
+
+describe("ConnectorConfigurationDetailScreen -- the ready phase's route registers nothing before it navigates (UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing leaves open whether the route submits before landing on the listing)", () => {
+  it("issues no PUT request when the footer's Cancel link is clicked -- an implementation that submits register-connector before navigating would fail this", async () => {
+    const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
+    const router = await mountConnectorConfigurationDetailScreen(fetchMock);
+    await screen.findByLabelText("Configuration");
+
+    const footer = screen.getByRole("group", { name: "Actions" });
+    fireEvent.click(within(footer).getByRole("link", { name: "Cancel" }));
+
+    await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+    expect(putCallCount(fetchMock)).toBe(0);
+  });
+});
+
+describe("ConnectorConfigurationDetailScreen -- exactly one link renders once the read succeeds (criterion 1, criterion 8)", () => {
+  it("renders exactly one link, the ready view's Cancel, during the ready phase", async () => {
+    const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
+    await mountConnectorConfigurationDetailScreen(fetchMock);
+    await screen.findByLabelText("Configuration");
+
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+  });
+});
+
+describe("ConnectorConfigurationDetailScreen -- the load-error phase's Retry re-issues the same read, and only on that action (criteria 5, 6)", () => {
+  it("issues exactly one more GET to the same connector's configuration per Retry click, never zero and never more than one", async () => {
+    const fetchMock = createFetchStub({
+      [CONFIGURATION_PATH]: () => errorResponse("SomeUpstreamError", 500),
+    });
+    await mountConnectorConfigurationDetailScreen(fetchMock);
+    await screen.findByRole("button", { name: "Retry" });
+
+    const callsBeforeRetry = fetchMock.mock.calls.filter(
+      ([input]) => input === CONFIGURATION_PATH,
+    ).length;
+    expect(callsBeforeRetry).toBe(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+
+    await waitFor(() => {
+      const callsAfterRetry = fetchMock.mock.calls.filter(
+        ([input]) => input === CONFIGURATION_PATH,
+      ).length;
+      expect(callsAfterRetry).toBe(callsBeforeRetry + 1);
+    });
   });
 });
 

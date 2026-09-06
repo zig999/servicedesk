@@ -42,6 +42,14 @@
       "task": "task/registry-authoring-footers/connector-configuration-form-action-footer"
     },
     {
+      "id": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/connector-configuration-screen-return-route.md",
+      "title": "Connector configuration screen return route",
+      "summary": "The standalone Back to connector configurations links are removed from every phase of both connector-configuration screens, and the detail screen's loading and load-error phases — which carried no footer at all — now offer the route to the listing through the shared ButtonFooter instead.",
+      "task": "task/registry-authoring-footers/connector-configuration-screen-return-route"
+    },
+    {
       "id": "implementation/shared-action-footer/button-footer-component",
       "kind": "implementation",
       "file": "implementation/shared-action-footer/button-footer-component.md",
@@ -88,6 +96,14 @@
       "title": "Connector configuration form action footer proof",
       "summary": "Tests proving the create screen and detail ready view route their actions through the footer's Actions group, that Cancel abandons authoring without registering on both surfaces, that the discard stays out of the windows the rule withholds it from, that the create surface states a success naming the connector only once the registry answers, and that the detail surface's new refusal handling distinguishes a recognised refusal from a generic one.",
       "task": "task/registry-authoring-footers/connector-configuration-form-action-footer"
+    },
+    {
+      "id": "proof/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/connector-configuration-screen-return-route.md",
+      "title": "Connector configuration screen return route proof",
+      "summary": "The four specs that queried the removed Back to connector configurations link are rewritten against the footer's Cancel control, keeping every phase's route assertion, and three of the task's four underdetermined notes gain a test that would fail over the implementation each names.",
+      "task": "task/registry-authoring-footers/connector-configuration-screen-return-route"
     },
     {
       "id": "proof/shared-action-footer/button-footer-component",
@@ -313,6 +329,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/shared-action-footer/button-footer-component",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "implements",
@@ -345,6 +379,12 @@
     {
       "from": "proof/registry-authoring-footers/connector-configuration-form-action-footer",
       "to": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
       "kind": "proves",
       "at": "the path"
     },

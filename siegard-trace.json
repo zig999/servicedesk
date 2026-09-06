@@ -4821,7 +4821,11 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
+          "digest": "sha256:911cda5bbf95d8ea078ded0fb536d74371211cb7addd7c6dfb6ac4c3ee494246"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
+          "digest": "sha256:9ebf0cd5864afe051a3b8ac238361aa99836fe7fcf6000915bb0a5ae823924d2"
         }
       ]
     },
@@ -4884,6 +4888,16 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
           "digest": "sha256:79b73063e0f2f600c5e872959efc3cbb0063c52da94e4783747b8554349a5baa"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "digest": "sha256:0dd775a80de8973f980777adb0d11f3fbd72716bae15bd71dc47143f0f91b42f",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
+          "digest": "sha256:9ebf0cd5864afe051a3b8ac238361aa99836fe7fcf6000915bb0a5ae823924d2"
         }
       ]
     },

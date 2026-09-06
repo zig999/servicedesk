@@ -49,18 +49,17 @@ describe("ConnectorConfigurationFormFields -- whatever a screen passes through t
   });
 });
 
-describe("ConnectorConfigurationCreateScreen -- Cancel and the pre-existing listing route stay two distinct controls (disclosed inference)", () => {
-  it("renders both a top-of-screen 'Back to connector configurations' link and a separate footer Cancel link, though both resolve to the same destination today", async () => {
+describe("ConnectorConfigurationCreateScreen -- the footer Cancel link is the screen's only route to the listing (criterion 1, criterion 8)", () => {
+  it("renders exactly one link on the screen, the footer's Cancel, resolving to /connectors", async () => {
     const fetchMock = createCreateScreenFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await screen.findByLabelText("Configuration");
 
-    const backLink = screen.getByRole("link", { name: "Back to connector configurations" });
     const footer = screen.getByRole("group", { name: "Actions" });
-    const cancelLink = within(footer).getByRole("link", { name: "Cancel" });
+    const links = screen.getAllByRole("link");
 
-    expect(backLink).not.toBe(cancelLink);
-    expect(backLink.getAttribute("href")).toBe("/connectors");
-    expect(cancelLink.getAttribute("href")).toBe("/connectors");
+    expect(links).toHaveLength(1);
+    expect(within(footer).getByRole("link", { name: "Cancel" })).toBe(links[0]);
+    expect(links[0].getAttribute("href")).toBe("/connectors");
   });
 });

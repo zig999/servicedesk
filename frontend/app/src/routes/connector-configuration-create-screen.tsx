@@ -21,7 +21,6 @@ export function ConnectorConfigurationCreateScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <Link to="/connectors">Back to connector configurations</Link>
       <h1 className="text-lg font-semibold text-foreground">New connector configuration</h1>
       <ConnectorConfigurationFormFields
         form={state.form}
