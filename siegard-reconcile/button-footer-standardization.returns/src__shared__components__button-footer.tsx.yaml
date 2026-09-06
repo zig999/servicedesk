@@ -1,0 +1,5 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function ButtonFooter({ children }: ButtonFooterProps): JSX.Element {\n  return (\n    <div className=\"sticky bottom-0 flex flex-wrap items-center justify-end gap-4 border-t border-border bg-surface py-4\">\n      {children}\n    </div>\n  );\n}"
+looked_past: the component's Tailwind layout classes (sticky positioning, flex-wrap, spacing) are presentational and unconventional-review territory rather than a domain fact, so I did not report on them.

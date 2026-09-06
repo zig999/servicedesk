@@ -16,6 +16,27 @@
       "title": "ButtonFooter component proof",
       "summary": "Tests that ButtonFooter renders whatever children it is given, in order, confined to wherever it is placed with no escape hatch that could reach the shell's disclosure; the three layout-dependent criteria have no test this suite can honestly write and are named in untested instead.",
       "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "review/button-footer-standardization",
+      "kind": "review",
+      "file": "review/button-footer-standardization.md",
+      "title": "Review of the shared ButtonFooter delivery",
+      "summary": "What four passes found over the two files task/shared-action-footer/button-footer-component wrote, with the standard's one departure, the coverage the tests do not reach, and two failures the captured run reported from files outside this change.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "A screen rendering the footer still shows the shell's own statement that this build enforces no authentication, visibly and not merely rendered.",
+        "ButtonFooter renders every button passed to it as children, in the order it received them, in a row aligned to the end.",
+        "Content scrolled to its end stays fully readable above the footer rather than covered by it.",
+        "The footer sits inside the AppShell's existing `<main>` scroll region and frontend/app/src/shared/components/app-shell.tsx is left unmodified by this task.",
+        "The footer stays visible at the bottom of the AppShell's scrollable region while its screen's content is scrolled."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -30,6 +51,12 @@
       "to": "implementation/shared-action-footer/button-footer-component",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/button-footer-standardization",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

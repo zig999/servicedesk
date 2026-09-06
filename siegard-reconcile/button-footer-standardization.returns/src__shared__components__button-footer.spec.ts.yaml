@@ -1,0 +1,5 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "const disclosureText = \"No auth in this build\";\n    render(\n      createElement(\"div\", { key: \"shell\" }, [\n        createElement(\"div\", { key: \"topbar\" }, disclosureText),\n        ...\n      ]),\n    );\n\n    ...\n    expect(within(scrollRegion).queryByText(disclosureText)).toBeNull();\n    expect(screen.getByText(disclosureText)).toBeTruthy();"
+looked_past: the file's own facts — that ButtonFooter renders children in the order given, renders nothing when given none, and stays confined to the container it is placed in while a sibling element outside that container remains visible — are the rendering contract of a reusable UI component, not a business fact the specification would state, so I did not report them; the third test's use of the disclosure wording is a synthetic fixture string standing in for an unrelated element in a hand-built "shell" div, never a claim about how the actual disclosure is produced or worded, and the constraint node itself already leaves that wording free.
