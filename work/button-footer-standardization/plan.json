@@ -1,0 +1,697 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/knowledge-authoring-footers",
+      "kind": "epic",
+      "file": "epic/knowledge-authoring-footers.md",
+      "title": "Knowledge authoring footers",
+      "summary": "The hypothesis revision form and the case version editor moving their action rows into the shared ButtonFooter, one gaining the standard Cancel and the other carrying the Cancel it already has."
+    },
+    {
+      "id": "epic/registry-authoring-footers",
+      "kind": "epic",
+      "file": "epic/registry-authoring-footers.md",
+      "title": "Registry authoring footers",
+      "summary": "The capability and connector-configuration authoring screens moving their action rows into the shared ButtonFooter and dropping the standalone Back link above their headings."
+    },
+    {
+      "id": "epic/shared-action-footer",
+      "kind": "epic",
+      "file": "epic/shared-action-footer.md",
+      "title": "Shared action footer",
+      "summary": "The reusable ButtonFooter component that pins a screen's primary action buttons to the bottom of the AppShell's scrollable content area, and the system-scoped constraints standing over every screen it appears on."
+    },
+    {
+      "id": "inventory/button-footer-standardization-frontend-app",
+      "kind": "inventory",
+      "file": "inventory/button-footer-standardization-frontend-app.md",
+      "title": "ButtonFooter target area in frontend/app",
+      "summary": "The routes and shared components under frontend/app/src that the ButtonFooter migration touches, plus the AppShell scroll region it must fix inside without editing."
+    },
+    {
+      "id": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "task",
+      "file": "task/knowledge-authoring-footers/case-version-editor-action-footer.md",
+      "title": "Case version editor action footer",
+      "summary": "The case version editor's Release, Discard, Save changes and Cancel rendered through the shared ButtonFooter.",
+      "epic": "knowledge-authoring-footers"
+    },
+    {
+      "id": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "task",
+      "file": "task/knowledge-authoring-footers/hypothesis-revision-action-footer.md",
+      "title": "Hypothesis revision action footer",
+      "summary": "The hypothesis revision form's action row rendered through the shared ButtonFooter, with the Cancel this form has never had.",
+      "epic": "knowledge-authoring-footers"
+    },
+    {
+      "id": "task/registry-authoring-footers/capability-form-action-footer",
+      "kind": "task",
+      "file": "task/registry-authoring-footers/capability-form-action-footer.md",
+      "title": "Capability form action footer",
+      "summary": "The capability form's action row rendered through the shared ButtonFooter, carrying Save, the screen's injected actions and a Cancel.",
+      "epic": "registry-authoring-footers"
+    },
+    {
+      "id": "task/registry-authoring-footers/capability-screen-return-route",
+      "kind": "task",
+      "file": "task/registry-authoring-footers/capability-screen-return-route.md",
+      "title": "Capability screen return route",
+      "summary": "The standalone Back to capabilities link removed from every capability screen, the route to the listing carried by the shared ButtonFooter instead, on every phase.",
+      "epic": "registry-authoring-footers"
+    },
+    {
+      "id": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "task",
+      "file": "task/registry-authoring-footers/connector-configuration-form-action-footer.md",
+      "title": "Connector configuration form action footer",
+      "summary": "The connector-configuration form's action row rendered through the shared ButtonFooter, carrying Save, the screen's injected actions and a Cancel.",
+      "epic": "registry-authoring-footers"
+    },
+    {
+      "id": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "task",
+      "file": "task/registry-authoring-footers/connector-configuration-screen-return-route.md",
+      "title": "Connector configuration screen return route",
+      "summary": "The standalone Back to connector configurations link removed from every connector-configuration screen, the route to the listing carried by the shared ButtonFooter instead, on every phase.",
+      "epic": "registry-authoring-footers"
+    },
+    {
+      "id": "task/shared-action-footer/button-footer-component",
+      "kind": "task",
+      "file": "task/shared-action-footer/button-footer-component.md",
+      "title": "Shared ButtonFooter component",
+      "summary": "The new shared component that renders a screen's primary action buttons pinned to the bottom of the AppShell's scrollable content area.",
+      "epic": "shared-action-footer"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "scenarios/investigation/an-in-place-revision-edit-stales-the-shown-result",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/knowledge-authoring-footers",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "constraints/the-concept-read-refuses-an-unanswered-concept",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/registry-authoring-footers",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/shared-action-footer",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-screen-return-route",
+      "to": "task/registry-authoring-footers/capability-form-action-footer",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-screen-return-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/capability-screen-return-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/shared-action-footer/button-footer-component",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
