@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "implementation",
+      "file": "implementation/knowledge-authoring-footers/case-version-editor-action-footer.md",
+      "title": "Case version editor action footer, its release-conditions disclosure, and Cancel's own-origin return",
+      "summary": "Moves the case version editor's Release, Discard, Save and Cancel row into the shared ButtonFooter, replaces the release checklist with the single manifest-pin condition the specification names, and fixes Cancel to return to whichever surface the editing was actually reached from.",
+      "task": "task/knowledge-authoring-footers/case-version-editor-action-footer"
+    },
+    {
       "id": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
       "kind": "implementation",
       "file": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer.md",
@@ -32,6 +40,14 @@
       "title": "Shared ButtonFooter component",
       "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned, accessibly-grouped row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
       "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "proof/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "proof",
+      "file": "proof/knowledge-authoring-footers/case-version-editor-action-footer.md",
+      "title": "Case version editor action footer proof",
+      "summary": "Tests that the editor's action row composes the shared footer, that its release-conditions disclosure states met, not met and not yet decided before any dialog opens, that Cancel returns to whichever screen the editing was actually reached from, and that the pre-creation draft screen withholds every control including Cancel until the created version's record answers.",
+      "task": "task/knowledge-authoring-footers/case-version-editor-action-footer"
     },
     {
       "id": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer",
@@ -88,6 +104,60 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
       "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
@@ -212,6 +282,12 @@
       "from": "implementation/shared-action-footer/button-footer-component",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "proves",
       "at": "the path"
     },
     {

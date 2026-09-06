@@ -5901,7 +5901,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:ffa27f60095e3c035d55b437c8bcfe014ed4ca4d71fb57dc06962cbeef87c593"
+          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -6049,11 +6049,15 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:40574df314ce09048987fae8fa1623cb988f1904c21ea87d617bbc186a4b8a96"
+          "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
           "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+        },
+        {
+          "path": "frontend/app/src/routes/new-case-draft-screen.tsx",
+          "digest": "sha256:b104f07b1b809f84de64b46a1cb283d0b558e8f3cb6b96b143884c4ae774dc5b"
         }
       ]
     },
@@ -6434,6 +6438,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "digest": "sha256:85aaa93d602749c76f64ef597d97fdfc9c3c8fb5d3c2ff9b44cc60ea2469a4a9",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/routes/new-case-draft-screen.tsx",
+          "digest": "sha256:b104f07b1b809f84de64b46a1cb283d0b558e8f3cb6b96b143884c4ae774dc5b"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
       "digest": "sha256:c6963d907b7fb63a2dba42b8ff160d60a602c4a1a029ce69d9204d05b3cc4f97",
       "files": [
@@ -6479,11 +6497,15 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:ffa27f60095e3c035d55b437c8bcfe014ed4ca4d71fb57dc06962cbeef87c593"
+          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
           "digest": "sha256:b8b7146f305eb126b03e593ff81e3f63c3af8b2d14a852d2b54774fe0bab73bd"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-manifest-pinned-revision-states.ts",
+          "digest": "sha256:0ede715dd7f70a3d77267d055ea0627ecac3ea440ebfee93e1a15942ca87b26d"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-row-revisions.ts",
@@ -6499,7 +6521,7 @@
         },
         {
           "path": "frontend/app/src/services/release-checklist.ts",
-          "digest": "sha256:2413892536b4959c1d935440b724eb4c02c840ccce4f414bc869f44f76026fcd"
+          "digest": "sha256:cbefd35e2a05a593ad55b8bc6b1df80c72244a833f7d909d5af22a99dc79208f"
         },
         {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
@@ -6620,6 +6642,42 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "digest": "sha256:bb837a0f834e02e6c2d91c0934e83bfe289dff0175dbe750cee1f88e1360d0f8",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+        },
+        {
+          "path": "frontend/app/src/services/release-checklist.ts",
+          "digest": "sha256:cbefd35e2a05a593ad55b8bc6b1df80c72244a833f7d909d5af22a99dc79208f"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "digest": "sha256:a05b04357caf0678d56a28190fbdc076131b3f290bb05902e1111effbbc33896",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
         }
       ]
     },
@@ -6823,7 +6881,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:ffa27f60095e3c035d55b437c8bcfe014ed4ca4d71fb57dc06962cbeef87c593"
+          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -6840,6 +6898,20 @@
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
           "digest": "sha256:d7b2b127256eb30379192629898af08415864070ceda4379a6f3eb6291d82831"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "digest": "sha256:9538bc2dabe62cc2eae0aca00e3d358e107ba1d2c8e99c5779aa01f64d5128fb",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+        },
+        {
+          "path": "frontend/app/src/services/discard-confirmation.ts",
+          "digest": "sha256:5c2e982a55ea79125fc46599a8fd24b8a1cddfb654df47d594d5fa60b1bc0907"
         }
       ]
     },

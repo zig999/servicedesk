@@ -75,7 +75,7 @@ describe("CaseVersionEditorScreen — the Release… control's own visibility (c
 });
 
 describe("CaseVersionEditorScreen — opening the Release Dialog (criteria 2 and 3)", () => {
-  it("opens an in-place Dialog (no navigation) listing exactly the three checklist items, every one satisfied by already-loaded data", async () => {
+  it("opens an in-place Dialog (no navigation) stating the release description, with no violations before any attempt", async () => {
     const fetchMock = createFetchStub(releaseHandlers());
     const router = await mountCaseVersionEditor(fetchMock);
 
@@ -84,14 +84,12 @@ describe("CaseVersionEditorScreen — opening the Release Dialog (criteria 2 and
     expect(router.state.location.pathname).toBe(`/cases/${SLUG}/versions/3`);
 
     const dialog = screen.getByRole("dialog");
-    const items = within(dialog).getAllByRole("listitem");
-
-    expect(items).toHaveLength(3);
-    expect(within(dialog).getByText(/✓\s*Manifest holds at least one hypothesis \(1\)/)).toBeTruthy();
-    expect(within(dialog).getByText(/✓\s*Fallback resolution is set/)).toBeTruthy();
     expect(
-      within(dialog).getByText(/✓\s*Every collected concept accepts the case subject/),
+      within(dialog).getByText(
+        "Once released, this version and every manifest entry it holds are frozen — permanently.",
+      ),
     ).toBeTruthy();
+    expect(within(dialog).queryByRole("alert")).toBeNull();
   });
 
   it("closes the Dialog and issues no request when Cancel is clicked", async () => {

@@ -1,16 +1,13 @@
 import { ApiError } from "./api-client";
-import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
-import type { ConceptOption } from "../hooks/use-concept-options";
-import type { CaseVersionRecord } from "./case-version-record";
+import type { CaseVersionManifestEntry } from "./case-version-record";
+import type { ManifestPinnedRevisionStates } from "../hooks/use-manifest-pinned-revision-states";
 
-export type ReleaseChecklistItem = {
+export type ReleaseConditionStatus = "met" | "unmet" | "undecided";
+
+export type ReleaseCondition = {
   readonly label: string;
-  readonly satisfied: boolean;
+  readonly status: ReleaseConditionStatus;
 };
-
-export type ReleaseDialogContent =
-  | { readonly kind: "checklist"; readonly items: readonly ReleaseChecklistItem[] }
-  | { readonly kind: "violations"; readonly violations: readonly string[] };
 
 export type ReleaseControlState = {
   readonly version: number;
@@ -18,50 +15,42 @@ export type ReleaseControlState = {
   readonly canRelease: boolean;
   readonly isOpen: boolean;
   readonly onOpenChange: (open: boolean) => void;
-  readonly dialog: ReleaseDialogContent;
+
+  readonly conditions: readonly ReleaseCondition[];
+  readonly violations: readonly string[] | null;
+
   readonly isConfirming: boolean;
   readonly onConfirm: () => void;
 };
 
-export function buildReleaseChecklist(params: {
-  readonly record: CaseVersionRecord;
-  readonly outcomeOptions: GlossaryVocabularyOptions;
-  readonly actionOptions: GlossaryVocabularyOptions;
-  readonly recipientOptions: GlossaryVocabularyOptions;
-  readonly concepts: readonly ConceptOption[];
-}): readonly ReleaseChecklistItem[] {
-  const { record, outcomeOptions, actionOptions, recipientOptions, concepts } = params;
-  const manifestEntries = record.manifest ?? [];
+export const MANIFEST_PIN_RELEASE_CONDITION_LABEL =
+  "Every manifest entry references a released hypothesis revision";
 
-  const fallbackTermsExist =
-    outcomeOptions.options.some((option) => option.value === record.fallback.outcome) &&
-    actionOptions.options.some((option) => option.value === record.fallback.referral.action) &&
-    recipientOptions.options.some(
-      (option) => option.value === record.fallback.referral.recipient,
-    );
+export function manifestPinReleaseCondition(
+  manifest: readonly CaseVersionManifestEntry[],
+  pinnedStates: ManifestPinnedRevisionStates,
+): ReleaseCondition {
+  let hasUnreleasedEntry = false;
+  let hasUnreadEntry = false;
 
-  const conceptsAcceptSubject = manifestEntries.every((entry) => {
-    const collects = entry.hypothesis_revision.collects;
-    if (!Array.isArray(collects)) {
-      return false;
+  for (const entry of manifest) {
+    const pinned = pinnedStates.get(entry.position);
+    if (pinned === undefined || pinned.status !== "resolved") {
+      hasUnreadEntry = true;
+      continue;
     }
-    return collects.every((conceptName) => {
-      const concept = concepts.find((candidate) => candidate.name === conceptName);
-      return concept !== undefined && concept.accepts.includes(record.subject);
-    });
-  });
+    if (pinned.state !== "released") {
+      hasUnreleasedEntry = true;
+    }
+  }
 
-  return [
-    {
-      label: `Manifest holds at least one hypothesis (${manifestEntries.length})`,
-      satisfied: manifestEntries.length > 0,
-    },
-    { label: "Fallback resolution is set", satisfied: fallbackTermsExist },
-    {
-      label: "Every collected concept accepts the case subject",
-      satisfied: conceptsAcceptSubject,
-    },
-  ];
+  const status: ReleaseConditionStatus = hasUnreleasedEntry
+    ? "unmet"
+    : hasUnreadEntry
+      ? "undecided"
+      : "met";
+
+  return { label: MANIFEST_PIN_RELEASE_CONDITION_LABEL, status };
 }
 
 export function extractReleaseViolations(error: unknown): readonly string[] {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -15,14 +15,13 @@ import {
   useGlossaryVocabularyOptions,
   type GlossaryVocabularyOptions,
 } from "./use-glossary-vocabulary";
-import { useConceptOptions } from "./use-concept-options";
 import type { CaseVersionManifestEntry, CaseVersionRecord } from "../services/case-version-record";
 import {
-  buildReleaseChecklist,
   extractReleaseViolations,
-  type ReleaseDialogContent,
+  manifestPinReleaseCondition,
   type ReleaseControlState,
 } from "../services/release-checklist";
+import { useManifestPinnedRevisionStates } from "./use-manifest-pinned-revision-states";
 
 import { buildDiscardControlState, buildDiscardMutationOptions, type DiscardControlState } from "../services/discard-confirmation";
 
@@ -44,6 +43,7 @@ export type EditDraftVersionFormState =
       readonly recipientOptions: GlossaryVocabularyOptions;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
       readonly onFieldBlur: () => void;
+      readonly onCancel: () => void;
 
       readonly release?: ReleaseControlState;
 
@@ -84,6 +84,7 @@ export function useEditDraftVersionForm(
   version: number | null,
 ): EditDraftVersionFormState {
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const telemetry = useTelemetry();
   const [status, setStatus] = useState<SaveStatus>("clean");
@@ -105,7 +106,10 @@ export function useEditDraftVersionForm(
   });
   const outcomeOptions = useGlossaryVocabularyOptions("outcome"); const actionOptions = useGlossaryVocabularyOptions("action"); const recipientOptions = useGlossaryVocabularyOptions("recipient");
 
-  const conceptOptions = useConceptOptions();
+  const manifestPinnedStates = useManifestPinnedRevisionStates(
+    slug,
+    versionQuery.data?.manifest ?? [],
+  );
 
   const form = useForm<CaseVersionFormValues>({
     resolver: zodResolver(caseVersionFormSchema),
@@ -264,19 +268,10 @@ export function useEditDraftVersionForm(
   }
 
   const canRelease = record.state === "draft" && !isReleased;
-  const releaseDialog: ReleaseDialogContent =
-    releaseViolations !== null
-      ? { kind: "violations", violations: releaseViolations }
-      : {
-          kind: "checklist",
-          items: buildReleaseChecklist({
-            record,
-            outcomeOptions,
-            actionOptions,
-            recipientOptions,
-            concepts: conceptOptions.concepts,
-          }),
-        };
+  const releaseCondition = manifestPinReleaseCondition(
+    record.manifest ?? [],
+    manifestPinnedStates,
+  );
 
   const submit = form.handleSubmit((values) => {
     if (isSubmittingRef.current) {
@@ -286,6 +281,10 @@ export function useEditDraftVersionForm(
     setStatus("saving");
     patchMutation.mutate(values);
   });
+
+  const cancelEditing = (): void => {
+    router.history.back();
+  };
 
   return {
     phase: "ready",
@@ -307,6 +306,7 @@ export function useEditDraftVersionForm(
         void submit();
       }
     },
+    onCancel: cancelEditing,
 
     isReadOnly: record.state === "released",
     manifest: record.manifest,
@@ -316,18 +316,13 @@ export function useEditDraftVersionForm(
       isOpen: isReleaseDialogOpen,
       onOpenChange: (open: boolean) => {
         setIsReleaseDialogOpen(open);
-        if (open) {
-
-          outcomeOptions.refetch();
-          actionOptions.refetch();
-          recipientOptions.refetch();
-          conceptOptions.refetch();
-        } else {
+        if (!open) {
 
           setReleaseViolations(null);
         }
       },
-      dialog: releaseDialog,
+      conditions: [releaseCondition],
+      violations: releaseViolations,
       isConfirming: releaseMutation.isPending,
       onConfirm: () => releaseMutation.mutate(),
     },

@@ -160,12 +160,11 @@ describe("CaseVersionEditorScreen — a 409 CaseVersionNotDraftAtReleaseError re
     await openReleaseDialog();
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).queryByRole("alert")).toBeNull();
-    expect(within(dialog).getByText(/Manifest holds at least one hypothesis \(1\)/)).toBeTruthy();
   });
 });
 
 describe("CaseVersionEditorScreen — resetting the Dialog after Cancel closes a violations view", () => {
-  it("shows the checklist again, never the previous violations list, once Cancel closes a Dialog that had shown a 422's violations", async () => {
+  it("shows no violations, never the previous list, once Cancel closes a Dialog that had shown a 422's violations and it is reopened", async () => {
     const violations = ["Some violation from the backend"];
     const fetchMock = createFetchStub(
       releaseHandlers({
@@ -190,12 +189,11 @@ describe("CaseVersionEditorScreen — resetting the Dialog after Cancel closes a
     await openReleaseDialog();
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).queryByRole("alert")).toBeNull();
-    expect(within(dialog).getByText(/Manifest holds at least one hypothesis \(1\)/)).toBeTruthy();
   });
 });
 
 describe("CaseVersionEditorScreen — a Release failure outside 409 and 422", () => {
-  it("leaves the Dialog open with the checklist intact and the confirm control usable again", async () => {
+  it("leaves the Dialog open with no violations shown and the confirm control usable again", async () => {
     const fetchMock = createFetchStub(
       releaseHandlers({
         [`POST ${RELEASE_PATH}`]: () =>
@@ -211,7 +209,6 @@ describe("CaseVersionEditorScreen — a Release failure outside 409 and 422", ()
       expect(releaseConfirmButton().hasAttribute("disabled")).toBe(false);
     });
     const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByText(/Manifest holds at least one hypothesis \(1\)/)).toBeTruthy();
     expect(within(dialog).queryByRole("alert")).toBeNull();
   });
 });
