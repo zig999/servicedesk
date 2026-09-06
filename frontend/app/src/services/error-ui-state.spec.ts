@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { ApiError } from "./api-client";
 import { uiStateForApiError } from "./error-ui-state";
 
-describe("uiStateForApiError", () => {
+describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
   it("resolves CaseNotFoundError to the case-not-found state", () => {
     const state = uiStateForApiError(new ApiError("CaseNotFoundError", "not found"));
     expect(state.kind).toBe("case-not-found");
@@ -208,6 +208,11 @@ describe("uiStateForApiError", () => {
     const state = uiStateForApiError(
       new ApiError("ConceptDescriptionRequiredError", "description required"),
     );
+    expect(Object.keys(state)).toEqual(["kind"]);
+  });
+
+  it("resolves a code the table does not name to a fallback state carrying only the kind, not the refusal's own message", () => {
+    const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "some future message"));
     expect(Object.keys(state)).toEqual(["kind"]);
   });
 });

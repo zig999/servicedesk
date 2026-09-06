@@ -6,15 +6,15 @@
       "kind": "implementation",
       "file": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
       "title": "The error-code mapping keys on CaseVersionNotValidError",
-      "summary": "The frontend's error-code mapping table now keys the case-not-valid UI state on the wire code the backend actually sends, CaseVersionNotValidError, instead of the stale CaseNotValidError name.",
+      "summary": "The frontend's error-code mapping table keys the case-not-valid UI state on the wire code the backend actually sends, CaseVersionNotValidError, instead of the stale CaseNotValidError name.",
       "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
     },
     {
       "id": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
       "kind": "proof",
       "file": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
-      "title": "The error-code mapping keys on CaseVersionNotValidError — proof",
-      "summary": "Tests hold uiStateForApiError, useCaseCurrentVersionValidity and CaseDetailScreen's Versions panel to the six criteria over the wire code the backend actually sends, and exclude the one admitted implementation the task's Notes name as underdetermined.",
+      "title": "The error-code mapping keys CaseVersionNotValidError to the case-not-valid state — proof",
+      "summary": "Tests over error-ui-state.ts, use-case-current-version-validity.ts and case-detail-screen.tsx establish that a CaseVersionNotValidError refusal resolves to the case-not-valid state and its own distinct statement, that an unmapped code discloses no code, message, carried value or attribute of the case or its version including one left over from an earlier cached read, and that the three case-facing statements stay mutually exclusive.",
       "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
     },
     {

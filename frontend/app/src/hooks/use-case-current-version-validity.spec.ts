@@ -49,7 +49,7 @@ describe("useCaseCurrentVersionValidity -- the current version fails to read bac
   it('resolves to phase "not-valid", carrying the failing version\'s own number, when reading it as a case is refused', async () => {
     stubFetch({
       [VERSIONS_PATH]: () => jsonResponse({ data: [{ version: 4, state: "draft" }] }),
-      [versionPath(4)]: () => errorResponse("CaseVersionNotValidError"),
+      [versionPath(4)]: () => errorResponse("CaseVersionNotValidError", 409),
     });
 
     const { result } = renderHook(() => useCaseCurrentVersionValidity(SLUG), {
@@ -71,7 +71,7 @@ describe("useCaseCurrentVersionValidity -- answering the highest-numbered versio
             { version: 5, state: "released" },
           ],
         }),
-      [versionPath(5)]: () => errorResponse("CaseVersionNotValidError"),
+      [versionPath(5)]: () => errorResponse("CaseVersionNotValidError", 409),
     });
 
     const { result } = renderHook(() => useCaseCurrentVersionValidity(SLUG), {

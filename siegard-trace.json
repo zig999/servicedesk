@@ -6360,6 +6360,10 @@
       "digest": "sha256:9155b079b2f0837c579fd28c755d3703b078114fbb7a80c74ab57a6cbe53497d",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-current-version-validity.ts",
+          "digest": "sha256:4d29e5d1a79f585c3b3962fad24880b885e4697b86f3fe911d5b885073e13ed7"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
