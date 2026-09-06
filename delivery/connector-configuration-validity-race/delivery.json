@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready.md",
+      "title": "Detail hook computes configuration validity synchronously, not after an effect",
+      "summary": "useConnectorConfigurationDetail derives configurationValid from the loaded configuration's own text at render time, so the ready outcome's isValid is already correct the first time a consumer reads it, rather than a default an effect corrects one render later.",
+      "task": "task/connector-configuration-validity-race/hook-computes-validity-before-ready"
+    },
+    {
+      "id": "proof/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "kind": "proof",
+      "file": "proof/connector-configuration-validity-race/hook-computes-validity-before-ready.md",
+      "title": "First-reading determinism for the connector-configuration detail hook's validity",
+      "summary": "New render-log tests in the existing validity spec file assert configuration.isValid at the very first commit that reports the ready phase, deterministically over the pre-fix hook's deferred-effect race, alongside the pre-existing settled-state assertions this task's criteria also require.",
+      "task": "task/connector-configuration-validity-race/hook-computes-validity-before-ready"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "to": "task/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "to": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
