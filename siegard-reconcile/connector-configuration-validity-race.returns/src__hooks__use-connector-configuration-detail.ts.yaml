@@ -1,0 +1,32 @@
+findings:
+- file: src/hooks/use-connector-configuration-detail.ts
+  where: isValidConfigurationObject (lines 14-21) and the submit guard at lines 119-124
+  evidence: return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+  cost: The registry's own well-formedness criteria — must parse as JSON, must be an object, neither null
+    nor an array — is re-derived independently here to gate submission, rather than the hook simply submitting
+    and surfacing the server's own refusal. If the invariant's definition ever changes at rules/integration/a-connector-configuration-holds-a-well-formed-object,
+    a reader who updates only the specification has no reason to know this file also encodes the same
+    test, and the two can silently diverge — the client accepting or rejecting something the registry
+    no longer agrees with.
+  kind: contradicts
+  node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+read:
+- node: contracts/integration/connector-configuration-registry
+  held_at: the useQuery call for read-connector-configuration at lines 49-53 and the useMutation PUT call
+    for register-connector at lines 76-87
+  evidence: 'queryFn: () => apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`)
+    ... mutationFn: (values) => apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(values.connector)}`,
+    { method: "PUT", ... })'
+- node: domain/integration/connector-configuration
+  held_at: the mutation body at lines 83-85 and the configuration state held as a string throughout, configurationValue
+    and configurationBaseline
+  evidence: 'body: JSON.stringify({ configuration: getJsonTextareaMinifiedValue(configurationValue) })'
+- node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+  held_at: isValidConfigurationObject at lines 14-21, driving configurationValid and the submit guard
+    at line 120
+  evidence: 'const parsed: unknown = JSON.parse(minified); return typeof parsed === "object" && parsed
+    !== null && !Array.isArray(parsed);'
+looked_past: The hook has no branch surfacing a failed mutation — no onError, no exposed error state —
+  even though the registry can refuse a PUT with ConnectorConfigurationNotWellFormedError or IncompleteConnectorConfigurationError;
+  that is a completeness question about error-path handling, not a domain fact this file states differently
+  from a node, so it is not reported here.

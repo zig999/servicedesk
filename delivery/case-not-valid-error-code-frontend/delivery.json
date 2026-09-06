@@ -1,0 +1,77 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
+      "title": "The error-code mapping keys on CaseVersionNotValidError",
+      "summary": "The frontend's error-code mapping table keys the case-not-valid UI state on the wire code the backend actually sends, CaseVersionNotValidError, instead of the stale CaseNotValidError name.",
+      "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
+    },
+    {
+      "id": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "proof",
+      "file": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
+      "title": "The error-code mapping keys CaseVersionNotValidError to the case-not-valid state — proof",
+      "summary": "Tests over error-ui-state.ts, use-case-current-version-validity.ts and case-detail-screen.tsx establish that a CaseVersionNotValidError refusal resolves to the case-not-valid state and its own distinct statement, that an unmapped code discloses no code, message, carried value or attribute of the case or its version including one left over from an earlier cached read, and that the three case-facing statements stay mutually exclusive.",
+      "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
+    },
+    {
+      "id": "review/case-not-valid-error-code-frontend",
+      "kind": "review",
+      "file": "review/case-not-valid-error-code-frontend.md",
+      "title": "Review — the error-code mapping keys on the name the refusal now carries",
+      "summary": "Coverage, specification-conformance, standard-conformance and failures passes over the case-not-valid-error-code-frontend initiative's one delivered task.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A case-keyed surface meeting a CaseVersionNotValidError refusal presents no attribute of the non-validating version — its title, when_to_use, subject, fallback, consolidation_register, state or manifest, nor anything derived from them — as the case's current content.",
+        "An API error whose code the frontend's mapping holds no presentation of its own for resolves to the state the surface shows for a read that did not complete, and the surface discloses neither that error code, nor the refusal's own message, nor any value the refusal carries.",
+        "What a case-keyed surface states for a current version that fails validation, what it states for a read of that case that did not complete, and what it states for a case currently holding no version are three statements, no two of which are presented alike."
+      ],
+      "findings": 3
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/case-not-valid-error-code-frontend",
+      "to": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    }
+  ]
+}
