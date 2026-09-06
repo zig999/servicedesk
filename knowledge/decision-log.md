@@ -2594,4 +2594,27 @@ entries:
       treats structural and coherence rules as one set answering together at release, and a-case-is-read-whole
       leaves nothing partial to answer with in either family, so the read takes the same set rather than
       splitting one refusal in two by which rule failed.
+  - location: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record.md
+    field: statement
+    unstated: >-
+      Whether the curator's draft editor may present the attribute values the curator just
+      submitted as the new draft version's content before that draft's own record has been read
+      back from the knowledge context, or must present only values read back from that record.
+    decided: >-
+      Only content the knowledge context's own record of that version answers is presented; the
+      submitted attribute values are never presented as the created version's content, and while
+      no answer has arrived the surface states that the version is still being read rather than
+      presenting content for it.
+    why: >-
+      The submitted attributes are strictly less than the version — a-new-drafts-manifest-is-
+      copied-from-an-existing-version gives the draft a manifest the submission never carried,
+      and domain/knowledge/case-version declares both manifest and state required — so presenting
+      them presents a case version neither the store held nor the curator composed;
+      validation-runs-at-every-read makes a version read as a case only through a read that
+      validated it, which an echo of the request never passed; and filling the interval with the
+      submission makes a pending read indistinguishable from a completed one, the same silence
+      a-case-holding-no-versions-is-told-explicitly and
+      a-cases-current-pins-come-from-its-highest-numbered-version each already refused, while
+      a-manifest-entrys-pinned-revision-is-always-shown already fixes the record itself as the
+      source of what a reader is shown.
 ---

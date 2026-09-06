@@ -1,0 +1,208 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/manifest-cache-seed-corrective",
+      "kind": "epic",
+      "file": "epic/manifest-cache-seed-corrective.md",
+      "title": "Draft manifest cache seed correctness",
+      "summary": "Corrects a React Query cache-seeding defect that crashes the new-draft flow before its manifest ever loads."
+    },
+    {
+      "id": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "kind": "task",
+      "file": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed.md",
+      "title": "Fix the new-draft cache seed so Manifest never crashes on it",
+      "summary": "The shared case-version cache entry a new draft seeds is missing manifest/state, and crashes the Manifest screen when opened first.",
+      "epic": "manifest-cache-seed-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/manifest-cache-seed-corrective",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "implements",
+      "at": "implements[5]"
+    }
+  ]
+}

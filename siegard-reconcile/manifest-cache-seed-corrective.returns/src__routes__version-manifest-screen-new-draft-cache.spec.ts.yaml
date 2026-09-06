@@ -1,0 +1,41 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: nowhere
+    evidence: |
+      manifest: [
+        { position: 1, hypothesis_revision: { hypothesis: { name: "Solo" }, revision: 1 } },
+      ],
+  - node: contracts/knowledge/case-query
+    held_at: the GET handler exercising read-case for the just-created version, in each `it` block
+    evidence: |
+      [`GET ${versionPath(NEW_VERSION)}`]: () =>
+            jsonResponse({
+  - node: domain/knowledge/case-version
+    held_at: the GET response fixtures built for each `it` block (lines 80-92, 113-127, 171-184)
+    evidence: |
+      title: "Copied from the released version",
+            when_to_use: "Copied use",
+            subject: SUBJECT_TYPE_TERMS.data[0].name,
+            fallback: {
+              outcome: "resolved",
+              referral: { action: "escalate", recipient: "supervisor" },
+            },
+            state: "draft",
+            manifest: [
+  - node: domain/knowledge/manifest-entry
+    held_at: the manifest fixture entries (lines 90, 123-124, 181)
+    evidence: '{ position: 1, hypothesis_revision: { hypothesis: { name: "Solo" }, revision: 1 } }'
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: the three `it` blocks' assertions
+    evidence: |
+      expect(screen.getByText("Loading manifest…")).toBeTruthy();
+      expect(screen.queryByRole("table")).toBeNull();
+      expect(screen.queryByRole("row")).toBeNull();
+      ...
+      expect(await screen.findByRole("row", { name: /Solo/ })).toBeTruthy();
+      ...
+      expect(moveDownButton.disabled).toBe(true);
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: nowhere
+    evidence: 'title: "Copied from the released version",'
+looked_past: the three `it` blocks share near-identical GET-fixture shapes and a `mountThenCreateDraft` helper duplicating setup, which is a style matter rather than a specification-conformance one.

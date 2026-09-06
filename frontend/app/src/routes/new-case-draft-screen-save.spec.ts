@@ -125,29 +125,53 @@ describe("NewCaseDraftScreen — Save issues POST /v1/cases", () => {
 });
 
 describe("NewCaseDraftScreen — switching into edit mode after a 201", () => {
-  it("seeds the switched-in form from the content just submitted and the returned version, issuing no follow-up GET, and leaves Save disabled (nothing new to save yet)", async () => {
+  const CREATED_VERSION_RECORD = {
+    title: VALID_FORM_INPUT.title,
+    when_to_use: VALID_FORM_INPUT.when_to_use,
+    subject: SUBJECT_TYPE_TERMS.data[0].name,
+    fallback: {
+      outcome: VALID_FORM_INPUT.outcome,
+      referral: {
+        action: VALID_FORM_INPUT.action,
+        recipient: VALID_FORM_INPUT.recipient,
+      },
+    },
+    state: "draft",
+  };
+
+  it("states the draft is still being read, showing none of the just-submitted content, until a follow-up GET to the created version's own URL resolves", async () => {
+    let resolveGet: (response: Response) => void = () => {};
+    const getPromise = new Promise<Response>((resolve) => {
+      resolveGet = resolve;
+    });
     const fetchMock = createFetchStub(
       baseHandlers({
         [`POST ${CREATE_PATH}`]: () => jsonResponse({ slug: SLUG, version: 9 }, 201),
+        [`GET ${versionPath(9)}`]: () => getPromise,
       }),
     );
     await mountNewCaseDraft(fetchMock);
     await fillValidForm();
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
-    expect(await screen.findByDisplayValue(VALID_FORM_INPUT.title)).toBeTruthy();
-    expect(wasCalledWith(fetchMock, "GET", versionPath(9))).toBe(false);
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Save changes" }).hasAttribute("disabled")).toBe(
-        true,
-      );
+      expect(wasCalledWith(fetchMock, "GET", versionPath(9))).toBe(true);
     });
+    expect(screen.getByText("Loading…")).toBeTruthy();
+    expect(screen.queryByDisplayValue(VALID_FORM_INPUT.title)).toBeNull();
+    expect(screen.queryByLabelText("Title")).toBeNull();
+
+    await act(async () => {
+      resolveGet(jsonResponse(CREATED_VERSION_RECORD));
+    });
+    expect(await screen.findByDisplayValue(VALID_FORM_INPUT.title)).toBeTruthy();
   });
 
   it("stays addressable at the New Draft route after a successful create, rather than navigating to the created version's own URL", async () => {
     const fetchMock = createFetchStub(
       baseHandlers({
         [`POST ${CREATE_PATH}`]: () => jsonResponse({ slug: SLUG, version: 9 }, 201),
+        [`GET ${versionPath(9)}`]: () => jsonResponse(CREATED_VERSION_RECORD),
       }),
     );
     const router = await mountNewCaseDraft(fetchMock);
@@ -162,6 +186,7 @@ describe("NewCaseDraftScreen — switching into edit mode after a 201", () => {
     const fetchMock = createFetchStub(
       baseHandlers({
         [`POST ${CREATE_PATH}`]: () => jsonResponse({ slug: SLUG, version: 9 }, 201),
+        [`GET ${versionPath(9)}`]: () => jsonResponse(CREATED_VERSION_RECORD),
         [`PATCH ${versionPath(9)}`]: () =>
           jsonResponse({
             title: "Edited after create",

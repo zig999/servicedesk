@@ -1,0 +1,64 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "kind": "implementation",
+      "file": "implementation/manifest-cache-seed-corrective/fix-new-draft-cache-seed.md",
+      "title": "Stop seeding a partial case-version cache entry at draft creation",
+      "summary": "Removed the incomplete initialData seed a new draft wrote into the shared [\"case-version\", slug, version] React Query cache entry, so every consumer of that key — the new-draft editor and the Manifest screen alike — now only ever sees the version's own record read back from the backend, and states a pending read until it arrives.",
+      "task": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed"
+    },
+    {
+      "id": "proof/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "kind": "proof",
+      "file": "proof/manifest-cache-seed-corrective/fix-new-draft-cache-seed.md",
+      "title": "Fix for the new-draft cache-seed crash on the Manifest screen",
+      "summary": "Proves that removing the partial case-version cache seed at draft creation stops the Manifest screen from crashing on an undefined manifest, keeps every consumer of that shared cache key from ever observing a resolved value missing manifest or state, and keeps the new-draft editor screen stating a pending read instead of presenting the curator's just-submitted content ahead of a real read-back.",
+      "task": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed"
+    },
+    {
+      "id": "review/manifest-cache-seed-corrective",
+      "kind": "review",
+      "file": "review/manifest-cache-seed-corrective.md",
+      "title": "Review — fix the new-draft cache-seed crash on the Manifest screen",
+      "summary": "Coverage, specification-conformance, standard-conformance and failures passes over the manifest-cache-seed-corrective initiative's one delivered task.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Creating a new draft version for a case whose latest released version manifests at least one hypothesis, then immediately opening that draft's Manifest screen without any prior edit or save on the draft's own editor screen, renders the manifest rows drawn from the backend's own manifest array instead of throwing \"manifest is not iterable\".",
+        "Immediately after creating a new draft, before that draft's own record has been read back from the backend, the new-draft editor screen states that the draft is still being read rather than presenting the curator's just-submitted title, when_to_use, subject, fallback or consolidation_register as the created version's content."
+      ],
+      "findings": 4
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "to": "implementation/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/manifest-cache-seed-corrective",
+      "to": "task/manifest-cache-seed-corrective/fix-new-draft-cache-seed",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    }
+  ]
+}
