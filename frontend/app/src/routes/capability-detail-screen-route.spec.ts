@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import {
   CAPABILITY_PATH,
   baseHandlers,
@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)", () => {
-  it("renders 'Back to capabilities' while the capability read is still pending -- an implementation withholding the route here would fail this", async () => {
+  it("renders a Cancel route to the capabilities listing while the capability read is still pending -- an implementation withholding the route here would fail this", async () => {
     const fetchMock = createFetchStub({
       ...baseHandlers(),
       [CAPABILITY_PATH]: () => new Promise<Response>(() => {}),
@@ -20,6 +20,9 @@ describe("CapabilityDetailScreen -- a route to the listing is offered while the 
     await mountCapabilityDetailScreen(fetchMock);
 
     await screen.findByText(/Loading capability/);
-    expect(screen.getByRole("link", { name: "Back to capabilities" })).toBeTruthy();
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+      "/capabilities",
+    );
   });
 });

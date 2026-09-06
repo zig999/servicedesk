@@ -4676,6 +4676,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "digest": "sha256:928e03455e9d5203bf31ff2c6439269c657d0de390888dd500b6af01c5bd1d58",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-detail-screen.tsx",
+          "digest": "sha256:ab9f8e01c96f361828d6f1fee81c8d8a069c8b7569e3c457e3177cf23acab9e5"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
       "digest": "sha256:dc878540f88c8c7be41bcda929259b69633d156d92394aedacfcff6edbb982a8",
       "files": [
@@ -4874,6 +4884,20 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
           "digest": "sha256:79b73063e0f2f600c5e872959efc3cbb0063c52da94e4783747b8554349a5baa"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "digest": "sha256:b0ac71afb7d1c06a2cfbc379db4df7909d829e2a57b5561702c89b2bc74aae87",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-create-screen.tsx",
+          "digest": "sha256:6346a5a17c9117ce8687c0ea22996b285561dc2e6e4fbb387aa57fa4dcf99b29"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-detail-screen.tsx",
+          "digest": "sha256:ab9f8e01c96f361828d6f1fee81c8d8a069c8b7569e3c457e3177cf23acab9e5"
         }
       ]
     },

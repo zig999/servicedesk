@@ -26,6 +26,14 @@
       "task": "task/registry-authoring-footers/capability-form-action-footer"
     },
     {
+      "id": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/capability-screen-return-route.md",
+      "title": "Capability screen return route",
+      "summary": "The standalone Back to capabilities links are removed from both capability screens, and every phase of both — including the loading and load-error phases that had no footer at all — now offers the route to the listing through the shared ButtonFooter instead.",
+      "task": "task/registry-authoring-footers/capability-screen-return-route"
+    },
+    {
       "id": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
       "kind": "implementation",
       "file": "implementation/registry-authoring-footers/connector-configuration-form-action-footer.md",
@@ -64,6 +72,14 @@
       "title": "Capability form action footer proof",
       "summary": "Tests establishing that the capability create and detail-ready surfaces compose Save, Cancel, Discard and trailingActions through one ButtonFooter group, that the discard and route controls hold exactly the windows the task's underdetermined notes name, that a submission's outcome is stated only once the registry answers, and repairing an earlier initiative's incomplete sonner stub so its own success-path assertions exercise this delivery's code rather than throwing past it.",
       "task": "task/registry-authoring-footers/capability-form-action-footer"
+    },
+    {
+      "id": "proof/registry-authoring-footers/capability-screen-return-route",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/capability-screen-return-route.md",
+      "title": "Capability screen return route proof",
+      "summary": "The three specs still querying the removed Back to capabilities link are rewritten against the footer's Cancel control on every phase it now appears on, closing the task's one criterion the implementation could not satisfy alone without dropping any phase's route coverage.",
+      "task": "task/registry-authoring-footers/capability-screen-return-route"
     },
     {
       "id": "proof/registry-authoring-footers/connector-configuration-form-action-footer",
@@ -243,6 +259,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "to": "task/registry-authoring-footers/capability-screen-return-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
       "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
       "kind": "encodes",
@@ -299,6 +333,12 @@
     {
       "from": "proof/registry-authoring-footers/capability-form-action-footer",
       "to": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/capability-screen-return-route",
+      "to": "implementation/registry-authoring-footers/capability-screen-return-route",
       "kind": "proves",
       "at": "the path"
     },

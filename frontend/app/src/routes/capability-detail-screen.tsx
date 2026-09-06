@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 import { Link, useParams } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
+import { ButtonFooter } from "../shared/components/button-footer";
 import { useCapabilityDetailView } from "../hooks/use-capability-detail-view";
 import { CapabilityDetailReadyView } from "./capability-detail-ready-view";
 
@@ -11,10 +12,14 @@ export function CapabilityDetailScreen(): JSX.Element {
   if (state.phase === "loading") {
     return (
       <section className="flex flex-col gap-4">
-        <Link to="/capabilities">Back to capabilities</Link>
         <p>
           Loading capability {name} {version}…
         </p>
+        <ButtonFooter>
+          <Button variant="secondary" asChild>
+            <Link to="/capabilities">Cancel</Link>
+          </Button>
+        </ButtonFooter>
       </section>
     );
   }
@@ -22,18 +27,21 @@ export function CapabilityDetailScreen(): JSX.Element {
   if (state.phase === "load-error") {
     return (
       <section className="flex flex-col gap-4">
-        <Link to="/capabilities">Back to capabilities</Link>
         <p>Unable to load this capability right now.</p>
-        <Button type="button" onClick={state.retryLoad}>
-          Retry
-        </Button>
+        <ButtonFooter>
+          <Button type="button" onClick={state.retryLoad}>
+            Retry
+          </Button>
+          <Button variant="secondary" asChild>
+            <Link to="/capabilities">Cancel</Link>
+          </Button>
+        </ButtonFooter>
       </section>
     );
   }
 
   return (
     <section className="flex flex-col gap-4">
-      <Link to="/capabilities">Back to capabilities</Link>
       <h1 className="text-lg font-semibold text-foreground">
         Capability {name} {version}
       </h1>

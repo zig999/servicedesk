@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { UseFormReturn } from "react-hook-form";
 import { Button } from "@tui/ui/button";
+import { ButtonFooter } from "../shared/components/button-footer";
 import { useCapabilityForm } from "../hooks/use-capability-form";
 import type { CapabilityFormValues } from "../services/capability-form-schema";
 import { CapabilityFormFields } from "./capability-form-fields";
@@ -25,15 +26,28 @@ export function CapabilityCreateScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <Link to="/capabilities">Back to capabilities</Link>
       <h1 className="text-lg font-semibold text-foreground">New capability</h1>
-      {state.phase === "loading" && <p>Loading…</p>}
+      {state.phase === "loading" && (
+        <>
+          <p>Loading…</p>
+          <ButtonFooter>
+            <Button variant="secondary" asChild>
+              <Link to="/capabilities">Cancel</Link>
+            </Button>
+          </ButtonFooter>
+        </>
+      )}
       {state.phase === "load-error" && (
         <section>
           <p>Unable to load concepts.</p>
-          <Button type="button" onClick={state.retryLoad}>
-            Retry
-          </Button>
+          <ButtonFooter>
+            <Button type="button" onClick={state.retryLoad}>
+              Retry
+            </Button>
+            <Button variant="secondary" asChild>
+              <Link to="/capabilities">Cancel</Link>
+            </Button>
+          </ButtonFooter>
         </section>
       )}
       {state.phase === "ready" && (

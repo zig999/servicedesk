@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import {
   CONCEPTS_PATH,
   CONCEPTS_RESPONSE,
@@ -142,33 +142,42 @@ describe("CapabilityCreateScreen -- a failure state offering a retry when the co
     expect(await screen.findByLabelText("Concept")).toBeTruthy();
   });
 
-  it("keeps the Back link available while the load has failed (edge case: a dependency that fails)", async () => {
+  it("keeps a Cancel route to the capabilities listing available while the load has failed (edge case: a dependency that fails)", async () => {
     const fetchMock = createFetchStub({
       [CONCEPTS_PATH]: () => errorResponse("SomeUpstreamError", 500),
     });
     await mountCapabilityCreateScreen(fetchMock);
 
     await screen.findByRole("button", { name: "Retry" });
-    expect(screen.getByRole("link", { name: "Back to capabilities" })).toBeTruthy();
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+      "/capabilities",
+    );
   });
 });
 
-describe("CapabilityCreateScreen -- a link back to the capabilities list (criterion 13)", () => {
-  it("renders a 'Back to capabilities' link to /capabilities", async () => {
+describe("CapabilityCreateScreen -- a Cancel route back to the capabilities list on every reading (criterion 13)", () => {
+  it("renders Cancel as a link to /capabilities once the form is ready", async () => {
     const fetchMock = createFetchStub(baseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
 
-    const link = await screen.findByRole("link", { name: "Back to capabilities" });
-    expect(link.getAttribute("href")).toBe("/capabilities");
+    await screen.findByLabelText("Connector");
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+      "/capabilities",
+    );
   });
 
-  it("renders the same Back link while the concept vocabulary is still loading", async () => {
+  it("renders the same Cancel route while the concept vocabulary is still loading", async () => {
     const fetchMock = createFetchStub({
       [CONCEPTS_PATH]: () => new Promise<Response>(() => {}),
     });
     await mountCapabilityCreateScreen(fetchMock);
 
     await screen.findByText("Loading…");
-    expect(screen.getByRole("link", { name: "Back to capabilities" })).toBeTruthy();
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+      "/capabilities",
+    );
   });
 });
