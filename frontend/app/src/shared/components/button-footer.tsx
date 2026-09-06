@@ -6,7 +6,11 @@ export type ButtonFooterProps = {
 
 export function ButtonFooter({ children }: ButtonFooterProps): JSX.Element {
   return (
-    <div className="sticky bottom-0 flex flex-wrap items-center justify-end gap-4 border-t border-border bg-surface py-4">
+    <div
+      role="group"
+      aria-label="Actions"
+      className="sticky bottom-0 flex flex-wrap items-center justify-end gap-4 border-t border-border bg-surface py-4"
+    >
       {children}
     </div>
   );

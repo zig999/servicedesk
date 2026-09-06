@@ -6,7 +6,7 @@
       "kind": "implementation",
       "file": "implementation/shared-action-footer/button-footer-component.md",
       "title": "Shared ButtonFooter component",
-      "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
+      "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned, accessibly-grouped row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
       "task": "task/shared-action-footer/button-footer-component"
     },
     {
@@ -14,7 +14,7 @@
       "kind": "proof",
       "file": "proof/shared-action-footer/button-footer-component.md",
       "title": "ButtonFooter component proof",
-      "summary": "Tests that ButtonFooter renders whatever children it is given, in order, confined to wherever it is placed with no escape hatch that could reach the shell's disclosure; the three layout-dependent criteria have no test this suite can honestly write and are named in untested instead.",
+      "summary": "Tests that ButtonFooter renders whatever children it is given in an accessible, end-aligned sticky group, mounted both in isolation and inside the real AppShell, where its containment inside main and the shell's disclosure staying present and structurally outside it are proven against app-shell.tsx itself rather than a fixture.",
       "task": "task/shared-action-footer/button-footer-component"
     },
     {
