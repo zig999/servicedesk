@@ -1,0 +1,14 @@
+read:
+- node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+  held_at: the it.each(NON_OBJECT_CONFIGURATIONS) blocks at lines 36-50, 70-90, 113-133 and 153-173, and
+    the paired object-configuration assertions at lines 53-67, 92-111 and 135-152, which check configuration.isValid
+    against parsed values that are an array, a bare string, a number, true, null, versus a plain object
+  evidence: expect(readyState(result.current).configuration.isValid).toBe(false); asserted for the text
+    values "[1,2,3]", '"just a string"', "42", "true", "null"; and expect(readyState(result.current).configuration.isValid).toBe(true);
+    asserted for LOADED_CONFIGURATION and UPDATED_CONFIGURATION, both JSON objects
+- node: domain/integration/connector-configuration
+  held_at: the stubbed load responses, for example line 40
+  evidence: 'jsonResponse({ connector: CONNECTOR, configuration: text })'
+looked_past: the render-timing assertions, that configuration.isValid is already correct on the very first
+  ready log entry with no flash of a stale value, test a React state-synchronization property rather than
+  a domain fact, so they are not reported here.

@@ -16,6 +16,20 @@
       "title": "First-reading determinism for the connector-configuration detail hook's validity",
       "summary": "New render-log tests in the existing validity spec file assert configuration.isValid at the very first commit that reports the ready phase, deterministically over the pre-fix hook's deferred-effect race, alongside the pre-existing settled-state assertions this task's criteria also require.",
       "task": "task/connector-configuration-validity-race/hook-computes-validity-before-ready"
+    },
+    {
+      "id": "review/connector-configuration-validity-race",
+      "kind": "review",
+      "file": "review/connector-configuration-validity-race.md",
+      "title": "Review — the detail hook knows a configuration's validity before it reports ready",
+      "summary": "Coverage, specification-conformance, standard-conformance and failures passes over the connector-configuration-validity-race initiative's one delivered task.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -42,6 +56,12 @@
       "to": "implementation/connector-configuration-validity-race/hook-computes-validity-before-ready",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-validity-race",
+      "to": "task/connector-configuration-validity-race/hook-computes-validity-before-ready",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
