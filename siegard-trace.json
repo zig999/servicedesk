@@ -4465,7 +4465,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "src/src/errors/concept-description-required.error.ts",
@@ -4603,7 +4603,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "frontend/app/src/shared/components/json-textarea-field.tsx",
@@ -4655,7 +4655,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
@@ -4689,7 +4689,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "frontend/app/src/shared/services/plain-record.ts",
@@ -4927,7 +4927,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
@@ -6169,7 +6169,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
@@ -6811,7 +6811,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
         {
           "path": "src/src/errors/concept-description-required.error.ts",
@@ -7275,7 +7275,7 @@
       "files": [
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:bedc0815012df64ea7af39ad89d5091104c8e1e322dc2c9d8180c331a707331d"
+          "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         }
       ]
     },

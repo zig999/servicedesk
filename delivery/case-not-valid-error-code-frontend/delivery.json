@@ -16,6 +16,24 @@
       "title": "The error-code mapping keys on CaseVersionNotValidError — proof",
       "summary": "Tests hold uiStateForApiError, useCaseCurrentVersionValidity and CaseDetailScreen's Versions panel to the six criteria over the wire code the backend actually sends, and exclude the one admitted implementation the task's Notes name as underdetermined.",
       "task": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name"
+    },
+    {
+      "id": "review/case-not-valid-error-code-frontend",
+      "kind": "review",
+      "file": "review/case-not-valid-error-code-frontend.md",
+      "title": "Review — the error-code mapping keys on the name the refusal now carries",
+      "summary": "Coverage, specification-conformance, standard-conformance and failures passes over the case-not-valid-error-code-frontend initiative's one delivered task.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A case-keyed surface meeting a CaseVersionNotValidError refusal presents no attribute of the non-validating version — its title, when_to_use, subject, fallback, consolidation_register, state or manifest, nor anything derived from them — as the case's current content.",
+        "An API error whose code the frontend's mapping holds no presentation of its own for resolves to the state the surface shows for a read that did not complete, and the surface discloses neither that error code, nor the refusal's own message, nor any value the refusal carries.",
+        "What a case-keyed surface states for a current version that fails validation, what it states for a read of that case that did not complete, and what it states for a case currently holding no version are three statements, no two of which are presented alike."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -48,6 +66,12 @@
       "to": "implementation/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-not-valid-error-code-frontend",
+      "to": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

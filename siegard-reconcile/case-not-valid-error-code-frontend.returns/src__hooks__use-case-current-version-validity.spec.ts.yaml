@@ -1,0 +1,57 @@
+findings:
+- file: src/hooks/use-case-current-version-validity.spec.ts
+  where: the errorResponse helper's default status, used unmodified at the versionPath(4) and versionPath(5)
+    stubs, lines 18-20 and 52 and 74
+  evidence: "function errorResponse(code: string, status = 422): Response {\n  return new Response(JSON.stringify({\
+    \ error: { code, message: code } }), { status });\n}\n...\n[versionPath(4)]: () => errorResponse(\"\
+    CaseVersionNotValidError\"),\n...\n[versionPath(5)]: () => errorResponse(\"CaseVersionNotValidError\"\
+    ),"
+  cost: The fixture models a CaseVersionNotValidError refusal as arriving at HTTP 422 in both the criterion-1
+    and criterion-2 tests, while the node reserves 422 for a different class of refusal entirely — a well-formed
+    write violating an invariant — and fixes this one at 409. A reader taking this spec file as the shape
+    of the wire contract, the only place in this file that models the refusal at all, learns the wrong
+    status, and nothing else in the file corrects it.
+  kind: contradicts
+  correction: Pass status 409 to errorResponse at both call sites simulating CaseVersionNotValidError,
+    versionPath(4) and versionPath(5), matching the node's fixed HTTP 409.
+  node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+read:
+- node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+  held_at: the six describe blocks, whose phase assertions keep not-valid (current version fails validation),
+    read-failed (an unrecognized refusal), no-version (case holds no version) and pending/checking (a
+    read still in flight) each distinct from the others
+  evidence: 'await waitFor(() => expect(result.current.phase).toBe("not-valid"));
+
+    ...
+
+    await waitFor(() => expect(result.current.phase).toBe("read-failed"));
+
+    ...
+
+    await waitFor(() => expect(result.current.phase).toBe("no-version"));'
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: the mapping from a CaseVersionNotValidError refusal on the current version's own read to phase
+    not-valid, carrying that version's number — the status attached to the refusal is where the file departs
+    from the node, see findings
+  evidence: '[versionPath(4)]: () => errorResponse("CaseVersionNotValidError"),
+
+    ...
+
+    await waitFor(() => expect(result.current.phase).toBe("not-valid"));
+
+    expect(result.current).toMatchObject({ phase: "not-valid", version: 4 });'
+- node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+  held_at: the criterion-7 test, which resolves an unrecognized refusal code to phase read-failed and
+    asserts it distinct from not-valid — the file does not itself assert that read-failed is presented
+    identically to a read still in flight, which is a fact of whatever surface consumes this hook rather
+    than of the hook's own phase value
+  evidence: '[versionPath(3)]: () => errorResponse("SomeOtherError", 500),
+
+    ...
+
+    await waitFor(() => expect(result.current.phase).toBe("read-failed"));
+
+    expect(result.current).toMatchObject({ phase: "read-failed", version: 3 });'
+looked_past: The no-version phase test's underlying fact, that a case holding no version is told apart
+  from other states, is governed by scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly,
+  outside this delegation's node set; the file does not contradict it, so it produced no finding.
