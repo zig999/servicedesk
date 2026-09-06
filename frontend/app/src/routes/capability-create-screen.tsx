@@ -45,6 +45,11 @@ export function CapabilityCreateScreen(): JSX.Element {
           isEditingIdentity={state.isEditingIdentity}
           isSubmitting={state.isSubmitting}
           onSubmit={state.onSubmit}
+          trailingActions={
+            <Button variant="secondary" asChild>
+              <Link to="/capabilities">Cancel</Link>
+            </Button>
+          }
         />
       )}
     </section>

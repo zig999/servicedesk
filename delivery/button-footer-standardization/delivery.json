@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/capability-form-action-footer.md",
+      "title": "Capability form action footer",
+      "summary": "The capability create and detail-ready surfaces render Save, Discard, Cancel and trailingActions through the shared ButtonFooter, and both surfaces state a registered or refused outcome only once the registry has answered.",
+      "task": "task/registry-authoring-footers/capability-form-action-footer"
+    },
+    {
       "id": "implementation/shared-action-footer/button-footer-component",
       "kind": "implementation",
       "file": "implementation/shared-action-footer/button-footer-component.md",
       "title": "Shared ButtonFooter component",
       "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned, accessibly-grouped row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
       "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "proof/registry-authoring-footers/capability-form-action-footer",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/capability-form-action-footer.md",
+      "title": "Capability form action footer proof",
+      "summary": "Tests establishing that the capability create and detail-ready surfaces compose Save, Cancel, Discard and trailingActions through one ButtonFooter group, that the discard and route controls hold exactly the windows the task's underdetermined notes name, that a submission's outcome is stated only once the registry answers, and repairing an earlier initiative's incomplete sonner stub so its own success-path assertions exercise this delivery's code rather than throwing past it.",
+      "task": "task/registry-authoring-footers/capability-form-action-footer"
     },
     {
       "id": "proof/shared-action-footer/button-footer-component",
@@ -41,9 +57,39 @@
   ],
   "edges": [
     {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "task/registry-authoring-footers/capability-form-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/shared-action-footer/button-footer-component",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/capability-form-action-footer",
+      "to": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "kind": "proves",
       "at": "the path"
     },
     {

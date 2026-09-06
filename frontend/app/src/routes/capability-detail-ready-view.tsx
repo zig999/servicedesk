@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import {
   Dialog,
@@ -51,18 +52,6 @@ export function CapabilityDetailReadyView({
         isDirty={state.isDirty}
         trailingActions={
           <>
-            {/*
-              Discard (criterion 5) resets every field, including both JSON
-              schemas, back to the originally loaded (or most recently saved)
-              values and re-disables Save -- use-capability-detail-view.ts's own
-              header comment on how it derives what to reset back to. Disabled
-              while there is nothing to discard or a save is already in flight,
-              the same convention every other action in this app disables
-              itself under (e.g. JsonTextareaField's own Beautify button,
-              disabled while there is nothing valid to beautify). Confirmed
-              through a Dialog before it runs -- this file's own header comment
-              above.
-            */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button
@@ -93,11 +82,13 @@ export function CapabilityDetailReadyView({
               </DialogContent>
             </Dialog>
             {state.justSaved && (
-
               <p role="status" className="text-sm text-foreground">
                 Saved.
               </p>
             )}
+            <Button variant="secondary" asChild>
+              <Link to="/capabilities">Cancel</Link>
+            </Button>
           </>
         }
       />

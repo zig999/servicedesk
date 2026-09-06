@@ -4,6 +4,7 @@ import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Select, type SelectOption } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
+import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capability-form-schema";
 import type { ConceptOption } from "../hooks/use-concept-options";
@@ -179,16 +180,6 @@ export function CapabilityFormFields({
             disabled={isSubmitting}
             tall
           />
-          {/*
-            task/capability-output-schema-guidance/output-schema-field-guidance's own
-            criteria 1-4: guidance beside the shared JsonTextareaField rather than inside it
-            (JsonTextareaField itself is untouched, criterion 5 -- it has three other
-            consumers this scope does not reach), stating what
-            domain/investigation/field-semantics reads and what
-            rules/glossary/a-description-states-meaning-never-policy holds a description to.
-            A hint, never enforced (criterion 6): nothing here validates properties, so a
-            schema whose fields declare no description still saves.
-          */}
           <p className="text-sm text-muted-foreground">
             Para cada campo em <code>properties</code>, a plataforma lê seu próprio{" "}
             <code>type</code> e <code>description</code> como o significado declarado
@@ -200,12 +191,12 @@ export function CapabilityFormFields({
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3">
+      <ButtonFooter>
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
           Save
         </Button>
         {trailingActions}
-      </div>
+      </ButtonFooter>
     </form>
   );
 }

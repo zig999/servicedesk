@@ -45,7 +45,7 @@ const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = 
     "Another capability already answers this concept; each concept resolves to exactly one capability.",
 };
 
-function saveFailureMessage(error: unknown): string {
+export function saveFailureMessage(error: unknown): string {
   if (error instanceof ApiError) {
     const state = uiStateForApiError(error);
     return SAVE_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_SAVE_FAILURE_MESSAGE;
@@ -96,13 +96,12 @@ export function useCapabilityForm(
           }),
         },
       ),
-    onSuccess: () => {
-
+    onSuccess: (_data, values) => {
+      toast.success(`Capability ${values.name} ${values.version} registered.`);
       void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
       onSaved();
     },
     onError: (error) => {
-
       toast.error(saveFailureMessage(error));
     },
   });

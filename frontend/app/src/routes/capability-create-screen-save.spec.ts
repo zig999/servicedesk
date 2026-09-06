@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("sonner", () => ({ toast: { error: vi.fn() } }));
+vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 import { toast } from "sonner";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
@@ -24,6 +24,7 @@ const VERSION = "1.0.0";
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.mocked(toast.error).mockClear();
+  vi.mocked(toast.success).mockClear();
 });
 
 describe("CapabilityCreateScreen -- dispatches at the name and version typed into the form (criterion 8)", () => {

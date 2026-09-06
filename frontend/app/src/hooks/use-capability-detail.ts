@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } fro
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { apiFetch } from "../services/api-client";
 import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
 import {
@@ -10,7 +11,7 @@ import {
 } from "../services/capability-form-schema";
 import { useConceptOptions, type ConceptOption } from "./use-concept-options";
 import type { Capability } from "./use-capabilities";
-import type { JsonSchemaFieldState } from "./use-capability-form";
+import { saveFailureMessage, type JsonSchemaFieldState } from "./use-capability-form";
 
 export type CapabilityDetailState =
   | { readonly phase: "loading" }
@@ -93,13 +94,15 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
         },
       ),
     onSuccess: (_data, values) => {
-
       form.reset(values);
       setInputSchemaBaseline(inputSchemaValue);
       setOutputSchemaBaseline(outputSchemaValue);
 
       void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
       void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+    },
+    onError: (error) => {
+      toast.error(saveFailureMessage(error));
     },
   });
 
