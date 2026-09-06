@@ -4668,6 +4668,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "digest": "sha256:dc878540f88c8c7be41bcda929259b69633d156d92394aedacfcff6edbb982a8",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:79b73063e0f2f600c5e872959efc3cbb0063c52da94e4783747b8554349a5baa"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "digest": "sha256:14c9d155cb700b26c65f867e450d6d377c4bf54a7018a5ae2661ebb6807c3f01",
       "files": [
@@ -4784,6 +4798,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "digest": "sha256:80f4fb0ec02a4800a6f7f7d7803d02228b169f4ddd94716a6d0019b0b608254f",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
       "digest": "sha256:5badc08744c9ca8793f157866d2362fe367af6993e9e093430ff09522793e676",
       "files": [
@@ -4832,6 +4856,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "digest": "sha256:8d540b391ccebf6728bdd943afc16831bcecaf2de0e057a5fdd1687951b3102f",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:79b73063e0f2f600c5e872959efc3cbb0063c52da94e4783747b8554349a5baa"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
       "digest": "sha256:d4c20d76e248582918fd5fab91e971e1069e88c6f4d620d97445f77194ba69cd",
       "files": [
@@ -4842,6 +4880,32 @@
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
           "digest": "sha256:0b2f5b5a90938b404d73d436c34a76c4cf829572d0699c1fcfd47e50e4ecf7e4"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:bc2aa44081f6f13a5783fff270609f07d927d4c1744a604abdc446be6b1ef265"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:e947773d386f15a7397f1296495aa2de86e835f2e9644419c4fa7e0e7ab400f9"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:79b73063e0f2f600c5e872959efc3cbb0063c52da94e4783747b8554349a5baa"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "digest": "sha256:b0947d737cd8cd72d27e27e9cd422646ab6b7873ce5f40ba994d965d04bf46e3",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:bc2aa44081f6f13a5783fff270609f07d927d4c1744a604abdc446be6b1ef265"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
         }
       ]
     },

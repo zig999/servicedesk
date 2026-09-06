@@ -2,6 +2,7 @@ import type { JSX } from "react";
 import { useRef } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { UseFormReturn } from "react-hook-form";
+import { Button } from "@tui/ui/button";
 import { useConnectorConfigurationForm } from "../hooks/use-connector-configuration-form";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import { ConnectorConfigurationFormFields } from "./connector-configuration-form-fields";
@@ -28,6 +29,11 @@ export function ConnectorConfigurationCreateScreen(): JSX.Element {
         isEditingIdentity={state.isEditingIdentity}
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
+        trailingActions={
+          <Button variant="secondary" asChild>
+            <Link to="/connectors">Cancel</Link>
+          </Button>
+        }
       />
     </section>
   );

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } fro
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { apiFetch } from "../services/api-client";
 import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
 import {
@@ -9,7 +10,7 @@ import {
   type ConnectorConfigurationFormValues,
 } from "../services/connector-configuration-form-schema";
 import type { ConnectorConfiguration } from "./use-connector-configurations";
-import type { ConfigurationFieldState } from "./use-connector-configuration-form";
+import { saveFailureMessage, type ConfigurationFieldState } from "./use-connector-configuration-form";
 
 function isValidConfigurationObject(text: string): boolean {
   const minified = getJsonTextareaMinifiedValue(text);
@@ -86,6 +87,9 @@ export function useConnectorConfigurationDetail(
 
       void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
       void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+    },
+    onError: (error) => {
+      toast.error(saveFailureMessage(error));
     },
   });
 

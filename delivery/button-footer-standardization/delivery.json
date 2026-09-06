@@ -10,6 +10,14 @@
       "task": "task/registry-authoring-footers/capability-form-action-footer"
     },
     {
+      "id": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/connector-configuration-form-action-footer.md",
+      "title": "Connector configuration form action footer",
+      "summary": "The connector-configuration create screen and detail ready view route their action row through the shared ButtonFooter, carrying Save, a Cancel that abandons authoring without registering, the pre-existing detail Discard, and both outcomes of a submission.",
+      "task": "task/registry-authoring-footers/connector-configuration-form-action-footer"
+    },
+    {
       "id": "implementation/shared-action-footer/button-footer-component",
       "kind": "implementation",
       "file": "implementation/shared-action-footer/button-footer-component.md",
@@ -24,6 +32,14 @@
       "title": "Capability form action footer proof",
       "summary": "Tests establishing that the capability create and detail-ready surfaces compose Save, Cancel, Discard and trailingActions through one ButtonFooter group, that the discard and route controls hold exactly the windows the task's underdetermined notes name, that a submission's outcome is stated only once the registry answers, and repairing an earlier initiative's incomplete sonner stub so its own success-path assertions exercise this delivery's code rather than throwing past it.",
       "task": "task/registry-authoring-footers/capability-form-action-footer"
+    },
+    {
+      "id": "proof/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/connector-configuration-form-action-footer.md",
+      "title": "Connector configuration form action footer proof",
+      "summary": "Tests proving the create screen and detail ready view route their actions through the footer's Actions group, that Cancel abandons authoring without registering on both surfaces, that the discard stays out of the windows the rule withholds it from, that the create surface states a success naming the connector only once the registry answers, and that the detail surface's new refusal handling distinguishes a recognised refusal from a generic one.",
+      "task": "task/registry-authoring-footers/connector-configuration-form-action-footer"
     },
     {
       "id": "proof/shared-action-footer/button-footer-component",
@@ -81,6 +97,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/shared-action-footer/button-footer-component",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "implements",
@@ -89,6 +141,12 @@
     {
       "from": "proof/registry-authoring-footers/capability-form-action-footer",
       "to": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
       "kind": "proves",
       "at": "the path"
     },
