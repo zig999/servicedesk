@@ -16,6 +16,26 @@
       "title": "CaseVersionNotValidError renamed and mapped to 409, six stale test files corrected, status-map coverage added, and the specification gap documented without asserting it",
       "summary": "Proves the renamed CaseVersionNotValidError maps to HTTP 409 with the right error code across every non-replay read while CaseNotFoundError's 404 and replay's unrevalidated read stay untouched, corrects six test files still naming the retired identifier CaseNotValidError, adds the missing status-map unit test, and converts the one test that would have asserted the task's own UNDERDETERMINED note into a non-asserting it.todo so the suite stays green while the gap stays visible.",
       "task": "task/case-not-valid-status-mapping/rename-and-map-status"
+    },
+    {
+      "id": "review/case-not-valid-read-status-hotfix",
+      "kind": "review",
+      "file": "review/case-not-valid-read-status-hotfix.md",
+      "title": "rename-and-map-status, first review",
+      "summary": "What four passes found over the CaseNotValidError-to-CaseVersionNotValidError rename and its 409 status-map entry.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A revalidating read (any read other than a replay) that loads a stored case version whose content currently fails a validator rule of validation-runs-at-every-read responds with HTTP status 409, regardless of which route reached that read or which validator rule failed (a coherence rule or a structural one, e.g. the document failing to assemble into a well-formed case).",
+        "No file under the backend target source root names the identifier CaseNotValidError.",
+        "That response is never HTTP 404.",
+        "That response is never HTTP 500.",
+        "That response's error body reports the error code \"CaseVersionNotValidError\"."
+      ],
+      "findings": 15
     }
   ],
   "edges": [
@@ -42,6 +62,12 @@
       "to": "implementation/case-not-valid-status-mapping/rename-and-map-status",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-not-valid-read-status-hotfix",
+      "to": "task/case-not-valid-status-mapping/rename-and-map-status",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

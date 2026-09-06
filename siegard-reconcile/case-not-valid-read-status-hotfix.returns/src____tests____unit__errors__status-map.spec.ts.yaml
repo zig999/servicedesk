@@ -1,0 +1,34 @@
+read:
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: the test 'resolves CaseVersionNotValidError to 409, never the generic unmapped-error fallback'
+    (lines 100-106)
+  evidence: "const error = new CaseVersionNotValidError('a-slug', 1, ['a violation']);\n\n  const status\
+    \ = statusForError(error);\n\n  expect(status).toBe(409);"
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: the file's only import from the module under test is `import { statusForError } from '../../../errors/status-map.js';`
+    — every one of its 25 cases asserts a status code for a constructed error, and none reads a stored
+    case version or asserts anything about when validation runs
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: "it('returns undefined for a typed domain error the table does not name', () => {\n  const\
+    \ error = new IncoherentCaseError('a-slug', ['a violation']);\n\n  const status = statusForError(error);\n\
+    \n  expect(status).toBeUndefined();\n});"
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: the test 'resolves CaseNotFoundError to 404' (lines 28-34)
+  evidence: "const error = new CaseNotFoundError('a-slug', 1);\n\n  const status = statusForError(error);\n\
+    \n  expect(status).toBe(404);"
+looked_past: 'the file''s remaining twenty-odd assertions map other error classes (CaseAlreadyHasDraftError,
+  ManifestPositionOccupiedError, CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError, CaseVersionNotReleasedError,
+  CaseVersionNotReleasableError, ManifestWouldHoldNoHypothesisError, IncompleteConnectorConfigurationError,
+  MalformedCapabilityInputSchemaError, SubjectDoesNotCoverCaseInputsError, ConnectorPlaceholderOutsideInputSchemaError,
+  CaseHoldsNoDraftError, ReleasedHypothesisRevisionNotAlterableError, ConceptNotInGlossaryError, HypothesisRevisionCollectsNoConceptError,
+  ConceptRefusesSubjectTypeError, ConceptDescriptionRequiredError, InvestigationWriteDeadlineExceededError,
+  CapabilityIdentityNotFoundError, HypothesisNotInManifestError, ConceptNotAnsweredError) to statuses;
+  every one of those checked against knowledge/projections/full-text.md matches a node outside this file''s
+  set exactly (status and error name), so none is unstated or contradicted, and none of those nodes is
+  named here because they are not this file''s set and no discrepancy was found to attribute. Also not
+  reported: the file tests only the status code per class and never the "never the generic fallback"/"never
+  CaseNotFoundError" alternatives of a-case-version-failing-validation-at-a-read-is-refused-by-name nor
+  the slug/version detail payload of a-case-read-by-an-unknown-slug-or-version-is-refused — a completeness-of-proof
+  question for the coverage pass, not a conformance one.'

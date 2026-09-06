@@ -1,0 +1,76 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the assertions of the first `it()` block, lines 218-222"
+    evidence: |
+      const result = await query.readCase(SLUG, VERSION);
+
+      expect(result.case.slug).toBe(SLUG);
+      expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the reviseHypothesis call inside placeFixtureHypotheses, lines 95-102"
+    evidence: |
+      const revised = await lifecycle.reviseHypothesis({
+        slug: fixture.slug,
+        hypothesis_name: entry.hypothesis_name,
+        criterion: entry.criterion,
+        collects: entry.collects,
+        resolution: entry.resolution,
+        subject: fixture.subject,
+      });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the RELEASED_REVISION_STATE constant and the assertion at line 240"
+    evidence: |
+      const RELEASED_REVISION_STATE = 'released';
+      ...
+      expect(rows.every((row) => row.state === RELEASED_REVISION_STATE)).toBe(true);
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the assertion at line 252"
+    evidence: "expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the refusal assertion of the second-invocation test, lines 387-391"
+    evidence: |
+      const refusal = await lifecycle
+        .releaseHypothesisRevision(ownedSlug, released.hypothesisName, released.revision)
+        .catch((error: unknown) => error);
+
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the joined query over released case versions, lines 228-240, and the release-ordering test, lines 349-369"
+    evidence: |
+      SELECT hr.state
+         FROM hypothesis_revisions hr
+         JOIN case_version_hypotheses cvh
+           ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
+         JOIN case_versions cv
+           ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
+        WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released'
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the DELETE against hypothesis_revision_collects and the unchanged-rows assertion, lines 333-342"
+    evidence: |
+      await connection.query(
+        'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+        [ownedSlug, hypothesisName],
+      );
+
+      const { rows } = await connection.query<{ concept_name: string }>(
+        'SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+        [ownedSlug, hypothesisName],
+      );
+      expect(rows.map((row) => row.concept_name)).toEqual([collectedConcept]);
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the un-caught readCase calls repeated after mutation, lines 401-407"
+    evidence: |
+      const result = await query.readCase(SLUG, VERSION);
+
+      expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+      expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: "the string \"reads the shared canonical fixture case whole with no CaseVersionNotValidError, and with every hypothesis still \" (line 399) names the error only in the test's title; no assertion in the file checks for CaseVersionNotValidError, its HTTP status or its error code — the file imports only HypothesisRevisionNotDraftAtReleaseError (line 6)"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js'; — the only error type this file imports or asserts against; no INTERNAL_ERROR or generic-500 case is exercised"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: "import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js'; — no CaseNotFoundError import or assertion appears anywhere in the file"
+looked_past: the file's incomplete exercise of the refusal-path nodes (a-case-version-failing-validation-at-a-read-is-refused-by-name, the generic-error constraint, and the unknown-slug-or-version rule) is a coverage question for coverage-auditor, not a conformance departure — nothing in the file misstates or invents a fact for those nodes, it simply never reaches their refusal branch.

@@ -1,0 +1,77 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "return undefined;"
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the map entry pairing CapabilityIdentityNotFoundError with its status, line 45
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: the map entries for the errors this contract's operations raise
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: contracts/investigation/diagnosis
+    held_at: the map entries for the errors diagnose raises
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the map entries for the errors this contract's operations raise
+    evidence: "[CaseAlreadyHasDraftError, 409],"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the map entry pairing ConceptDescriptionRequiredError with its status, line 71
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: the map entry pairing MalformedCapabilityInputSchemaError with its status, line 64
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: the map entries pairing ConnectorConfigurationNotWellFormedError and IncompleteConnectorConfigurationError with their statuses, lines 65-66
+    evidence: "[ConnectorConfigurationNotWellFormedError, 422],\n  [IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: the map entry pairing IncompleteConnectorConfigurationError with its status, line 66
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the map entry pairing ConnectorConfigurationNotFoundError with its status, line 43
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: the map entry pairing ConnectorPlaceholderOutsideInputSchemaError with its status, line 68
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the map entry pairing SubjectDoesNotCoverCaseInputsError with its status, line 67
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: the map entry pairing HypothesisNotInManifestError with its status, line 46
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the map entry pairing InvestigationWriteDeadlineExceededError with its status, line 72
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the map entry pairing CaseVersionNotValidError with its status, line 52
+    evidence: "[CaseVersionNotValidError, 409],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: the map entry pairing ConceptRefusesSubjectTypeError with its status, line 70
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the map entry pairing HypothesisRevisionCollectsNoConceptError with its status, line 69
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the map entry pairing CaseHoldsNoDraftError with its status, line 56
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the map entry pairing HypothesisRevisionNotDraftAtReleaseError with its status, line 58
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: the map entry pairing ReleasedHypothesisRevisionNotAlterableError with its status, line 57
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: the map entry pairing ConceptNotInGlossaryError with its status, line 47
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the map entry pairing ConceptDescriptionRequiredError with its status, line 71
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: the map entry pairing SubjectDoesNotCoverCaseInputsError with its status, line 67
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "[CaseVersionNotValidError, 409],"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the map entry pairing CaseNotFoundError with its status, line 39
+    evidence: "[CaseNotFoundError, 404],"
+looked_past: the Map-and-instanceof lookup shape of STATUS_BY_ERROR_CLASS and the ordering of the import list are a code-quality matter, not a domain fact, so I did not report them.

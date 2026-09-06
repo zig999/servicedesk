@@ -1,0 +1,21 @@
+findings:
+  - file: src/__tests__/unit/case/case-query.service.spec.ts
+    where: "the test \"answers a draft version's input requirements even though the same content currently fails read-case's own coherence check\" (lines 722-735) and the adjacent it.todo (lines 737-742)"
+    evidence: "await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);\n\n  const result = await service.readCaseInputRequirements(SLUG, version);\n\n  expect(result.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']); ... \"readCaseInputRequirements today calls only structuralCase and never refuseIncoherence, so this stays a documented gap rather than a criterion this task owes\""
+    cost: "the next reader who checks rules/knowledge/a-case-versions-input-requirements-are-derived or contracts/knowledge/case-input-requirements to learn whether a case version's input requirements are still answered once the version fails coherence (a missing glossary concept, say) finds nothing either way; the answer — that they are, because this read never re-runs the coherence checks read-case runs — exists only in this test file and its own it.todo, and the specification stays silent on a business-facing question: whether a curator sees input requirements for a case that currently would not read back as a case at all"
+    correction: "state, at rules/knowledge/a-case-versions-input-requirements-are-derived or contracts/knowledge/case-input-requirements, whether this read requires the pinned version to hold coherently or is derived from its structural manifest regardless of a coherence failure"
+    kind: unstated
+read:
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "the refusal assertions for a structurally or coherently invalid version, lines 480-524"
+    evidence: "expect(refusal).toBeInstanceOf(CaseVersionNotValidError); ... expect((refusal as CaseVersionNotValidError).context).toEqual({ slug: SLUG, version, violations: ['the case declares no hypothesis'] });"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the later-read refusal tests, lines 575-599, and the replay tests that skip revalidation entirely, lines 612-640"
+    evidence: "glossary.forgetConcept(CONCEPT);\n\n  const refusal = await readAsError(service.readCase(SLUG, version));\n  expect(refusal).toBeInstanceOf(CaseVersionNotValidError); ... const replayed = await replayCase(SLUG, version, store);\n\n  expect(replayed.hypotheses).toEqual([]);"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "await expect(service.readCase(SLUG, version)).rejects.toBe(failure); — the one unmapped-looking domain error this file exercises (DuplicateConceptAnswerError) is asserted to propagate as itself; no assertion here ever checks an HTTP 500, an INTERNAL_ERROR code or the fixed fallback message"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: "the CaseNotFoundError assertions, lines 471-478 and 758-765"
+    evidence: "expect(refusal).toBeInstanceOf(CaseNotFoundError);\n  expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });"
+looked_past: "The test asserting that a document failing a structural rule reports no coherence violation even where one is present (lines 542-559) reads as a consequence of validation-runs-at-every-read's own account of content that \"does not assemble into a whole, well-formed case version\" rather than a separate business fact, so it is left for a pass better placed to weigh implementation necessity against specification silence."

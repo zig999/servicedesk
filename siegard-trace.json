@@ -7,11 +7,11 @@
       "files": [
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -237,7 +237,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
@@ -899,7 +899,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1117,7 +1117,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
@@ -1307,7 +1307,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1473,7 +1473,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -3389,7 +3389,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -3893,7 +3893,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -4035,7 +4035,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts",
@@ -4173,7 +4173,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
@@ -4473,7 +4473,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -4637,7 +4637,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         }
       ]
     },
@@ -4705,7 +4705,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         }
       ]
     },
@@ -4753,7 +4753,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         }
       ]
     },
@@ -4767,7 +4767,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -4805,7 +4805,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
@@ -5031,7 +5031,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
@@ -5085,7 +5085,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         }
       ]
     },
@@ -5397,7 +5397,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -5479,7 +5479,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -5861,7 +5861,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         }
       ]
     },
@@ -5923,7 +5923,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -5949,7 +5949,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/case/case.ts",
@@ -5969,7 +5969,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -6043,7 +6043,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -6167,7 +6167,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts",
@@ -6191,7 +6191,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
@@ -6385,7 +6385,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -6415,7 +6415,7 @@
         },
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:0ed4d41587f235e2066c420f0e55bc53fcf4d683b95a9be94e55af7e5405390b"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
@@ -6439,7 +6439,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         }
       ]
     },
@@ -6547,7 +6547,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -6581,7 +6581,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -6723,7 +6723,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -6787,7 +6787,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -6857,7 +6857,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:08116b7fa933e9268be3eef4448c9a729a6e112f407564d7547086bc3e2ee3d7"
+          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",

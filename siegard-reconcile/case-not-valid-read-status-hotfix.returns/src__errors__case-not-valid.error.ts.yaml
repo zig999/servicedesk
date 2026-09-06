@@ -1,0 +1,17 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+looked_past: the file's own name (case-not-valid) differs from the class and module it re-exports (CaseVersionNotValidError, case-version-not-valid.error.js), a naming choice rather than a domain fact, so it is not reported here.

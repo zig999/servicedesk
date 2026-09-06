@@ -12,7 +12,7 @@ standard:
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3
 run: run/case-not-valid-status-mapping-rename-and-map-status-suite-4
 tests:
-- file: src/errors/status-map.spec.ts
+- file: src/__tests__/unit/errors/status-map.spec.ts
   name: resolves CaseVersionNotValidError to 409, never the generic unmapped-error fallback
   proves: Criterion 1 and 3's core mapping in isolation — status-map.ts's STATUS_BY_ERROR_CLASS answers
     409 for the renamed class before any route or middleware is involved.
@@ -210,7 +210,7 @@ divergences:
   departure: 'This proof edits eight test files the implementation record does not list: the six the task
     explicitly named as broken by the rename (simulate-case.controller.spec.ts, case-fixture-reads-clean.spec.ts,
     case-input-requirements.routes.spec.ts, case-query.factory.spec.ts, case-query.service.spec.ts, read-case.routes.spec.ts),
-    plus src/errors/status-map.spec.ts, which needed a new test rather than a rename (it held no reference
+    plus src/__tests__/unit/errors/status-map.spec.ts, which needed a new test rather than a rename (it held no reference
     to the old identifier at all, but exhaustively tested every other STATUS_BY_ERROR_CLASS entry except
     this task''s new one), and the same case-query.service.spec.ts file a second time for the it.todo
     described below.'

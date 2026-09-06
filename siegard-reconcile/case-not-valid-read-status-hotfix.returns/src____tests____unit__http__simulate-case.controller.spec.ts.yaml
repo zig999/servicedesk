@@ -1,0 +1,14 @@
+read:
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "the test block at lines 224-233, \"reuses case-query's own CaseVersionNotValidError unchanged for an incoherent case version, before runSimulate is ever called\""
+    evidence: "const notValid = new CaseVersionNotValidError('a-slug', 1, ['a violated rule']); readCase.mockRejectedValueOnce(notValid); ... await expect(rejection).rejects.toBe(notValid); expect(runSimulate).not.toHaveBeenCalled();"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the three test blocks at lines 106-151 exercising both a draft-state and a released-state case version through the same path with no branch"
+    evidence: "it('reads the pinned case through readCase with no branch on its declared state, calling runSimulate for a draft version exactly as it would for a released one' ... expect(draftDependencies.runSimulate).toHaveBeenCalledTimes(1); expect(releasedDependencies.runSimulate).toHaveBeenCalledTimes(1);"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "the file's only refusal assertions are `rejects.toBeInstanceOf(SubjectCarriesNoAttributeError)`, `rejects.toBeInstanceOf(SubjectAttributeNotInGlossaryError)`, `rejects.toBe(notFound)` and `rejects.toBe(notValid)` — no test in this file raises an error the status map does not name or asserts an HTTP 500/INTERNAL_ERROR answer"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: "the test block at lines 213-222, \"reuses case-query's own CaseNotFoundError unchanged for an unknown case slug or version, before runSimulate is ever called\""
+    evidence: "const notFound = new CaseNotFoundError('an-unknown-slug', 9); readCase.mockRejectedValueOnce(notFound); ... await expect(rejection).rejects.toBe(notFound); expect(runSimulate).not.toHaveBeenCalled();"
+looked_past: the file also exercises SubjectCarriesNoAttributeError, SubjectAttributeNotInGlossaryError and the response-shape assertions (evidence, evaluations, resolved, assessment, cost, durations, no narrative/ticket_ref/prompts, draft-or-released readability) against contracts/investigation/case-simulation and other subject-attribute rules that govern them elsewhere in the specification but sit outside this delegation's node set, so a judgment over those is left to whichever pass was given those nodes; the simulate response's field shape and draft-or-released readability was checked against contracts/investigation/case-simulation.md and found consistent, not a misattribution.

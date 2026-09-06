@@ -1,0 +1,25 @@
+read:
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "the test 'refuses with 409 reporting CaseVersionNotValidError...' (lines 176-186)"
+    evidence: |
+      built.readCase.mockRejectedValueOnce(new CaseVersionNotValidError('a-slug', 1, ['a violated rule']));
+      ...
+      expect(response.statusCode).toBe(409);
+      const body = response.json() as { error: { code: string; details?: unknown } };
+      expect(body.error.code).toBe('CaseVersionNotValidError');
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const readCase: ReadCaseMock = vi.fn(); — readCase is fully stubbed for every test in this file, so no read-time validation timing, structural/coherence checking or replay-pinning behavior is exercised here at all"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError); — the handler is wired but no test in this file rejects readCase with an error the status map does not name, so the 500/INTERNAL_ERROR fallback this constraint states is never asserted here"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: "the test 'refuses with the status the status map assigns CaseNotFoundError...' (lines 163-174)"
+    evidence: |
+      built.readCase.mockRejectedValueOnce(new CaseNotFoundError('an-absent-slug', 9));
+      ...
+      expect(response.statusCode).toBe(404);
+      const body = response.json() as { error: { code: string; details?: unknown } };
+      expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
+looked_past: the 200-response body-shape tests, the DTO-key assertions, and the three 400 tests for a non-numeric/zero/empty version segment are governed by domain/knowledge/case-version's own DTO projection and by constraints/a-malformed-request-is-refused-with-a-validation-error, neither of which is in this file's node set.

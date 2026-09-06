@@ -1,0 +1,84 @@
+findings:
+  - file: src/case/case-query.service.ts
+    where: "readCaseInputRequirements(), lines 41-46"
+    evidence: |-
+      const assembled = await heldVersion(this.caseStore, slug, version);
+          const theCase = structuralCase(assembled, slug, version);
+          const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+          return deriveCaseInputRequirements(theCase, registeredCapabilities);
+    cost: readCase and readCaseInputRequirements read the same stored version, but only readCase follows structuralCase with `this.refuseIncoherence(theCase, version)`; readCaseInputRequirements returns derived requirements for a case version whose glossary terms, concepts or capabilities may currently be incoherent, with no 409/CaseVersionNotValidError refusal at all. A curator composing against a broken draft, or any caller of this operation, gets computed input requirements for something the specification says is "not yet readable as a case at all, whether previewed."
+    kind: contradicts
+    correction: readCaseInputRequirements should call the same coherence check readCase does (e.g. `await this.refuseIncoherence(theCase, version)`) before deriving requirements, so a validator-rule failure at that reading is refused the same way for both operations.
+    node: rules/knowledge/validation-runs-at-every-read
+
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "readCase(), lines 34-39 — heldVersion, structuralCase and refuseIncoherence run in sequence before the case is returned"
+    evidence: |-
+      const assembled = await heldVersion(this.caseStore, slug, version);
+          const theCase = structuralCase(assembled, slug, version);
+          await this.refuseIncoherence(theCase, version);
+          return { case: theCase };
+  - node: contracts/knowledge/case-query
+    held_at: "the class declaration and its five public methods"
+    evidence: "export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery"
+  - node: contracts/system/case-authoring
+    held_at: "trustedCaseOf/assembledAsRawDocument copying `state` and manifest content through with no branch on draft vs released, and trustedManifestEntryOf reading whatever hypothesis-revision content the manifest currently references"
+    evidence: |-
+      state: assembled.state,
+          ...(assembled.released_at !== undefined ? { released_at: assembled.released_at } : {}),
+          manifest,
+  - node: domain/knowledge/case
+    held_at: "trustedCaseOf and assembledAsRawDocument, setting `slug` from the assembled version and nothing else of the case identity"
+    evidence: "slug: assembled.slug,"
+  - node: domain/knowledge/hypothesis
+    held_at: "trustedManifestEntryOf and trustedHypothesisOf, taking `name` from the revision's own hypothesis reference and criterion/collects/resolution from the revision itself"
+    evidence: |-
+      hypothesis: { name: content.hypothesis_name },
+            revision: content.revision,
+            criterion: content.criterion,
+            collects: content.collects,
+            resolution: content.resolution,
+  - node: rules/investigation/replay-is-pinned
+    held_at: "replayCase(), lines 82-85"
+    evidence: |-
+      export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
+        const assembled = await heldVersion(caseStore, slug, version);
+        return trustedCaseOf(assembled);
+      }
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "refuseIncoherence() and structuralCase()'s catch clause, both throwing CaseVersionNotValidError"
+    evidence: |-
+      if (violations.length > 0) {
+            throw new CaseVersionNotValidError(theCase.slug, version, violations);
+          }
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: "readCaseInputRequirements(), delegating to deriveCaseInputRequirements(theCase, registeredCapabilities) after everyRegisteredCapability reads the registry fresh"
+    evidence: |-
+      const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+          return deriveCaseInputRequirements(theCase, registeredCapabilities);
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: "heldVersion(store, slug, version) reads by slug and version without any uniqueness check; this file presupposes the slug already names one case rather than enforcing it"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "heldVersion(), calling store.assembleVersion(slug, version) for the named version rather than only a latest one"
+    evidence: "const assembled = await store.assembleVersion(slug, version);"
+  - node: rules/knowledge/the-contract-check-reads-the-current-registration
+    held_at: "readCaseInputRequirements(), calling everyRegisteredCapability(this.capabilities) fresh on each call rather than from a stored/cached registration"
+    evidence: "const registeredCapabilities = await everyRegisteredCapability(this.capabilities);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "readCase(), via structuralCase (structural) followed by refuseIncoherence (coherence); readCaseInputRequirements() performs only structuralCase and omits the coherence check"
+    evidence: |-
+      const theCase = structuralCase(assembled, slug, version);
+          await this.refuseIncoherence(theCase, version);
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "this file only throws the named domain errors CaseNotFoundError and CaseVersionNotValidError; no generic/unmapped fallback is constructed here"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: "heldVersion(), lines 131-137"
+    evidence: |-
+      if (assembled === undefined) {
+          throw new CaseNotFoundError(slug, version);
+        }
+
+looked_past: trustedCaseOf and assembledAsRawDocument construct nearly identical object literals from `assembled` (the same field list, spread conditionals and manifest mapping repeated twice) — a duplication concern for the standard-conformance pass, not a domain-fact discrepancy.

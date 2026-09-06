@@ -1,0 +1,21 @@
+findings:
+  - file: src/__tests__/unit/http/case-input-requirements.routes.spec.ts
+    where: "the sixth `it`, lines 95-103 (\"answers 400 for a version of zero, one below the positive range the domain declares, without ever reaching the query\")"
+    evidence: "'answers 400 for a version of zero, one below the positive range the domain declares, without ever reaching the query'"
+    cost: "the test's own title asserts, as settled fact, that the domain declares a positive range for a case version number and that zero falls outside it; domain/knowledge/case-version.md declares the `version` attribute only as `type: integer, required: true`, with no floor, and no rule (a-case-version-number-is-never-reused included) fixes a starting value or excludes zero — a reader who goes to the specification to confirm that a version of zero is invalid finds nothing there and is left trusting this test (and the route's own `.positive()` schema) as if it were the decision"
+    kind: unstated
+    correction: "decide, into domain/knowledge/case-version.md or a dedicated rule, whether a case version number is bounded below (e.g. positive, or minimum 1), disclosed in the decision log, and have this test's title cite that node rather than asserting the range as an already-settled domain fact"
+read:
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "the fourth `it`, lines 73-83"
+    evidence: "built.read.mockRejectedValueOnce(new CaseVersionNotValidError('a-slug', 1, ['a violated rule'])); ... expect(response.statusCode).toBe(409); ... expect(body.error.code).toBe('CaseVersionNotValidError');"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "const caseInputRequirementsQuery: ICaseInputRequirementsQuery = { readCaseInputRequirements: read }; — the query is a mock (`read: ReadMock = vi.fn()`), so this file never exercises validation, structural or coherence rules, or replay's pinned-read exception at all; it only asserts what the route does with whatever the query resolves or rejects with"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: "'refuses with 409 reporting CaseVersionNotValidError, never the generic 500 envelope, when the named version fails a structural rule' — the phrase names the generic 500 envelope only in the test's title; no assertion in the file exercises a domain error the status map does not name, or checks for INTERNAL_ERROR, the fixed message, or its absence"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: "the third `it`, lines 60-71"
+    evidence: "built.read.mockRejectedValueOnce(new CaseNotFoundError('an-absent-slug', 9)); ... expect(response.statusCode).toBe(404); expect(body.error.code).toBe('CaseNotFoundError'); expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });"
+looked_past: "the file leaves several assertions incomplete against nodes it does touch — e.g. no test checks that the 400 responses carry code VALIDATION_ERROR or a non-empty details list (constraints/a-malformed-request-is-refused-with-a-validation-error), and the 409 test never asserts the response is not also a 500 or a 404 — which is coverage, not conformance, and another pass's to weigh."

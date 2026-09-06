@@ -1,0 +1,24 @@
+findings:
+  - file: src/errors/case-version-not-valid.error.ts
+    where: the constructor body, lines 5-10
+    evidence: |-
+      `the case "${slug}" at version ${version} violates its validator rules: ${violations.join('; ')}`,
+      ...
+      this.context = { slug, version, violations };
+    cost: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name states only that this read is refused with an HTTP 409 reporting a CaseVersionNotValidError; it says nothing about the refusal naming which validator rules failed. This file makes that disclosure decision on its own — the error's message and its `context.violations` list enumerate the failed rules — with no node saying whether a caller ever learns which rule failed or only that validation failed. A later reader who wants to know what this 409 discloses looks in the specification and finds no field for it; the sibling 422 refusal (a-release-refusal-with-no-named-violation-says-so) does state its error "names every violated rule together," so the silence here reads as an oversight rather than a considered choice, and the next person to touch this file has no node to check the shape against.
+    kind: unstated
+    correction: state, in rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name or a sibling node, whether the 409 refusal's details name the validator rules that failed, the way a-case-read-by-an-unknown-slug-or-version-is-refused states its details carry the named slug and version.
+read:
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "the class declaration and its `name` field, lines 1 and 8"
+    evidence: "export class CaseVersionNotValidError extends Error { ... this.name = 'CaseVersionNotValidError';"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: the file only declares the error's shape (slug, version, violations, message) and carries no read-time validation logic — that lives elsewhere.
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: the file declares no status mapping or fallback text; it only builds the domain error object CaseVersionNotValidError.
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: the file names no CaseNotFoundError and states no refusal for an unwritten slug or version; it defines only CaseVersionNotValidError.
+looked_past: the use of `Readonly<{...}>` typing and the specific TypeScript class-extension style are code-shape choices, not domain facts, so I did not report them.
