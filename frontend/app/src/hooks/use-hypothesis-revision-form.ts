@@ -1,6 +1,6 @@
 import { useEffect, useRef, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -65,6 +65,7 @@ export type HypothesisRevisionFormState =
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
 
       readonly onOpenManifest: () => void;
+      readonly onCancel: () => void;
     }
   | {
       readonly phase: "success";
@@ -103,6 +104,7 @@ export function useHypothesisRevisionForm(
   hypothesisName: string | null,
 ): HypothesisRevisionFormState {
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const telemetry = useTelemetry();
   const isSubmittingRef = useRef(false);
@@ -113,6 +115,10 @@ export function useHypothesisRevisionForm(
       to: "/cases/$slug/versions/$version/manifest",
       params: { slug, version: String(version) },
     });
+  };
+
+  const cancelComposition = (): void => {
+    router.history.back();
   };
 
   const versionQuery = useQuery({
@@ -273,5 +279,6 @@ export function useHypothesisRevisionForm(
     isSubmitting: reviseMutation.isPending,
     onSubmit: submit,
     onOpenManifest: openManifest,
+    onCancel: cancelComposition,
   };
 }

@@ -64,6 +64,11 @@ export function HypothesisRevisionScreen({
         recipientOptions={state.recipientOptions}
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
+        trailingActions={
+          <Button type="button" variant="secondary" onClick={state.onCancel}>
+            Cancel
+          </Button>
+        }
       />
     </section>
   );

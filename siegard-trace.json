@@ -1251,7 +1251,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:c3b1c0dfdb7e1c92af8f7731354e238207632993dea68ac1c1cda173fa438be8"
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-release.ts",
@@ -3535,7 +3535,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:c3b1c0dfdb7e1c92af8f7731354e238207632993dea68ac1c1cda173fa438be8"
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -3576,6 +3576,10 @@
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
           "digest": "sha256:600125ac93976d6a3b9470ff817fd813f22932c5dc107c518ba30a694ed688b8"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
@@ -3849,7 +3853,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:c3b1c0dfdb7e1c92af8f7731354e238207632993dea68ac1c1cda173fa438be8"
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -3865,7 +3869,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/new-hypothesis-screen.tsx",
@@ -3955,7 +3959,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:c3b1c0dfdb7e1c92af8f7731354e238207632993dea68ac1c1cda173fa438be8"
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-release.ts",
@@ -3992,6 +3996,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
           "digest": "sha256:59f0279c725716efffe545d64b677233198ff1a7031d2b86692d924f1e69de53"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
@@ -6036,8 +6044,16 @@
           "digest": "sha256:ffa27f60095e3c035d55b437c8bcfe014ed4ca4d71fb57dc06962cbeef87c593"
         },
         {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
+        },
+        {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:40574df314ce09048987fae8fa1623cb988f1904c21ea87d617bbc186a4b8a96"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         }
       ]
     },
@@ -6133,7 +6149,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:c3b1c0dfdb7e1c92af8f7731354e238207632993dea68ac1c1cda173fa438be8"
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -6555,7 +6571,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:dfa34ecac8a90968a1afe8da50157b50a8763d183367b428b6cb811f591c4325"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -6569,11 +6585,11 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:c3b1c0dfdb7e1c92af8f7731354e238207632993dea68ac1c1cda173fa438be8"
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:dfa34ecac8a90968a1afe8da50157b50a8763d183367b428b6cb811f591c4325"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         }
       ]
     },
@@ -6604,6 +6620,24 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "digest": "sha256:fec8a1b8ff58bc59bb2e6442ec16ee766b7a0fdbb419004460d7349694dae699",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:92cd5d9d308f664d4bd43aeca68e28e87a058341621dc990345b2c181a9c7549"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         }
       ]
     },

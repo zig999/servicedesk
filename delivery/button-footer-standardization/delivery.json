@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "implementation",
+      "file": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer.md",
+      "title": "Hypothesis revision action footer, with its first Cancel",
+      "summary": "hypothesis-revision-form-fields renders Save hypothesis and a new Cancel through the shared ButtonFooter, with Cancel returning the curator to whichever screen actually opened the composition and never gating on submission progress or revision state.",
+      "task": "task/knowledge-authoring-footers/hypothesis-revision-action-footer"
+    },
+    {
       "id": "implementation/registry-authoring-footers/capability-form-action-footer",
       "kind": "implementation",
       "file": "implementation/registry-authoring-footers/capability-form-action-footer.md",
@@ -24,6 +32,14 @@
       "title": "Shared ButtonFooter component",
       "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned, accessibly-grouped row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
       "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "proof",
+      "file": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer.md",
+      "title": "Hypothesis revision action footer proof",
+      "summary": "Proves the footer composition, the Cancel's write-nothing and return-to-origin behaviour, its fill-state-invariant offer, and the revision-release gate the task's own note names, leaving the unchanged submit, validation, subject, loading and manifest-offer behaviour to the pre-existing suite that already proves it.",
+      "task": "task/knowledge-authoring-footers/hypothesis-revision-action-footer"
     },
     {
       "id": "proof/registry-authoring-footers/capability-form-action-footer",
@@ -72,6 +88,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/registry-authoring-footers/capability-form-action-footer",
       "to": "contracts/integration/capability-registry",
@@ -136,6 +212,12 @@
       "from": "implementation/shared-action-footer/button-footer-component",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "proves",
       "at": "the path"
     },
     {
