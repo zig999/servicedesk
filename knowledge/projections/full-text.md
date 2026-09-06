@@ -3192,6 +3192,199 @@ entries:
       a-cases-current-pins-come-from-its-highest-numbered-version each already refused, while
       a-manifest-entrys-pinned-revision-is-always-shown already fixes the record itself as the
       source of what a reader is shown.
+  - location: rules/integration/an-abandoned-capability-registration-entry-registers-nothing.md
+    field: statement
+    unstated: No node states what happens when an operator composing a capability registration leaves
+      the entry without submitting it. The registry's published surface (contracts/integration/capability-registry)
+      names register-capability and its three reads and says nothing about an entry never submitted;
+      every registration rule in the integration context is written over what a submission carries;
+      and no rule, scenario or constraint mentions abandoning an authoring entry at all — so neither
+      the effect on the registry nor where the operator is left was decided.
+    decided: 'An operator authoring a capability registration may abandon the entry before submitting
+      it: nothing is sent to the registry, no capability is created and none already registered is replaced,
+      and the operator is returned to the listing of registered capabilities.'
+    why: register-capability is the only operation of this contract that writes, so an entry that issues
+      no call can only leave the registered set exactly as it stood — creating nothing at a new identity
+      and replacing nothing at an existing one — and any other reading would require a second, unpublished
+      write the contract's closed operations list does not hold. The registry holds registrations rather
+      than entries, so retaining a half-composed one would be a creation by another name and would make
+      it findable through reads that answer only from what is currently registered. The return destination
+      is list-capabilities because that listing is the registry's own read over the set the abandonment
+      left untouched, is reachable for a new capability and a replacement alike, and always answers
+      — whereas read-capability-by-identity, the only identity-keyed alternative, is required by constraints/the-capability-identity-read-refuses-an-unregistered-identity
+      to refuse a name and version nothing is registered at, which is exactly what an abandoned creation
+      leaves behind. Recorded as an invariant over domain/integration/capability, immediate and inside
+      that one aggregate, matching a-capability-is-read-only's own shape for a condition the registry
+      imposes on what does and does not become a registration.
+  - location: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing.md
+    field: statement
+    unstated: Whether an operator on a surface presenting one registered capability, or authoring one
+      for registration, is offered any way back to the listing of registered capabilities, and — where
+      one is offered — whether the specification holds it to a standalone navigation link placed above
+      the surface's heading rather than to any affordance reaching that listing. contracts/integration/capability-registry
+      publishes list-capabilities, read-capability-by-identity and register-capability, and its own
+      decision-log entry records that the identity-keyed read exists for a detail/edit surface, but
+      no node says an operator ever leaves such a surface for the listing, so the return's existence
+      and its form alike fell to whatever a surface happened to render.
+    decided: 'The route back to the listing of registered capabilities is owed — offered on every reading
+      of a surface presenting or authoring one capability, its presence turning on nothing further,
+      including a read that has not completed, has failed or answered no capability at that identity,
+      and a capability not yet registered — and the specification states no affordance carrying it:
+      a standalone navigation link above the heading and a control among the surface''s own actions
+      satisfy it alike, neither being required.'
+    why: Splitting the fact this way is the reading this specification has already taken twice. a-listed-case-version-offers-a-route-to-its-own-manifest
+      states a route as owed where a reader stands one step from what they need, with the same turns-on-nothing-further
+      clause, and closes by putting which control carries it, its wording and where it sits with the
+      interface; no-route-enforces-authentication's own logged decision holds the frontend to the substance
+      of a disclosure on every screen and to no wording, on this project's routing rule that a control's
+      label or placement is surface while what a person can learn or do is not. An operator able to
+      reach a single capability but not the set it belongs to loses something they could do, so the
+      route's presence is the specification's; which control carries it changes nothing an operator
+      can do, so pinning it to a link above the heading would freeze presentation and make every later
+      re-arrangement of one control a change to a domain fact.
+  - location: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed.md
+    field: statement
+    unstated: What an operator-facing surface presenting the one capability registered at a name and
+      version tells the operator while the identity-keyed read of that capability has not yet answered
+      and where that read fails to answer, and whether the operator is offered a way to issue that read
+      again. contracts/integration/capability-registry publishes read-capability-by-identity, the-capability-identity-read-refuses-an-unregistered-identity
+      states the route's answer for an identity nothing is registered at, and the-capability-identity-read-is-rate-limited
+      states its answer past the limit — all three say what the route answers a caller, and no node
+      says what the operator's surface states in either window, so both windows would fall to whatever
+      the interface happened to render.
+    decided: 'Each window is stated explicitly and never left blank: while the read has not answered,
+      the surface states that the capability at that name and version is still being read; where the
+      read fails to answer, it states that the capability at that name and version could not be read.
+      In neither window is any attribute of any capability presented as that identity''s content, and
+      the three presentations — a capability read and shown, a read still outstanding, a read that failed
+      — are distinguishable from one another. The surface offers, in the failed window alone, a control
+      whose one effect is to issue the same read for the same identity again; the surface never re-issues
+      that read on its own. The registry''s refusal of an identity no capability is registered at is
+      its own answer and is not this failed window. Recorded as a new policy over domain/integration/capability,
+      eventual.'
+    why: 'This specification has answered the identical shape twice in the same direction, both times
+      because a presentation that reads alike in materially different situations sends the reader to
+      the wrong act: a-presented-manifest-entry-states-its-pinned-revisions-state states the outstanding
+      and the failed read on the entry in their own right, and a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+      holds three readings of one surface apart on the reasoning that a pending read is one to attempt
+      again while its neighbours are not. A blank here reads like a capability declaring nothing — which
+      a-capability-declares-its-contract says the registry never holds — or like an identity nothing
+      is registered at, which the-capability-identity-read-refuses-an-unregistered-identity already
+      answers distinctly. No attribute accompanies either statement because a registration answers whole
+      or is refused, so a partial contract shown beside the statement would state content nobody read.
+      The reattempt is offered because both precedents name retrying as the act a failed read asks of
+      its reader, and a surface that names the act while withholding it leaves the operator to a page
+      reload; it is bound to the operator''s own act rather than performed by the surface because the-capability-identity-read-is-rate-limited
+      holds this exact route to sixty requests a minute per source address, a limit written against
+      precisely the unbounded loop an automatic re-read would be. Only the substance is stated and the
+      wording, control and placement are left to the interface, following every other surface rule this
+      specification holds. It lands in a new rule rather than in either capability-identity constraint
+      because those state what the HTTP route answers a caller, which this leaves untouched, and because
+      no existing node states what any capability-keyed surface tells an operator.'
+  - location: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing.md
+    field: statement
+    unstated: Whether an operator-facing surface that presents or authors a single connector configuration
+      offers any route back to the listing of registered connector configurations, and on which of its
+      readings. contracts/integration/connector-configuration-registry publishes read-connector-configuration,
+      list-connector-configurations and register-connector as operations, and no rule, scenario or constraint
+      anywhere in the specification states what routes lead between the operator surfaces those reads
+      answer — so whether an operator who reached one configuration can return to the set it belongs
+      to would follow from whatever control an interface happened to leave there, and from how that
+      operator arrived.
+    decided: 'The route is owed, and owed unconditionally: a surface presenting one registered connector
+      configuration, or authoring one, offers the operator a route to the listing of registered connector
+      configurations, on every reading — a read that answered, a read still outstanding, a read refused,
+      a configuration not yet registered — and whatever surface the operator reached it from; taking
+      the route issues no register-connector call and leaves every registered configuration as it stood.
+      Which control carries the route, whether it stands apart from the controls that register, its
+      wording and where it sits relative to the surface''s heading are not decided: they are form, and
+      this specification has held them to belong to the interface each time it has met them.'
+    why: 'The specification decided this same question once already, for a curator one step from a case
+      version''s manifest (rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest),
+      and decided it toward the offer with the reason that the step must not be left to whatever address
+      a reader could construct; the listing is the same kind of neighbour to a single configuration''s
+      surface, and deciding it the other way here would answer one question two ways. That rule also
+      made its route''s presence turn on nothing further, and the same unconditionality is what makes
+      the route relied on rather than noticed: the readings a condition would drop it from — a read
+      that has not answered, one refused, a configuration being authored, an arrival from somewhere
+      other than the listing — are precisely the ones where the operator has nothing on the surface
+      to act on and no other way back. The registers-nothing clause follows from register-connector
+      being the sole writer and from connector-configuration being replaced whole, so leaving must be
+      distinguishable from registering. The control''s identity and its placement are left undecided
+      deliberately and not by omission: four rules of this specification (a-listed-case-version-offers-a-route-to-its-own-manifest,
+      a-revise-offers-the-draft-manifest-only-when-the-pin-must-move, a-draft-versions-content-is-presented-only-from-its-own-record,
+      a-presented-case-version-states-its-own-declared-attributes) each state that which control carries
+      a thing, its wording and where it sits are form belonging to the interface, and stating a control''s
+      position relative to a heading here would reverse that standing boundary for one surface.'
+  - location: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read.md
+    field: statement
+    unstated: 'The specification publishes read-connector-configuration on contracts/integration/connector-configuration-registry
+      and states the refusal an unregistered connector name gets, but no node states anything about
+      the operator-facing screen that presents one connector configuration: what it shows while that
+      read is still outstanding, what it shows when the read fails, what it shows when the read returns,
+      and whether a failed read is reported to the operator at all or offered to them to run again.
+      All three windows would fall to whatever the interface happened to render.'
+    decided: 'Stated as a new invariant, rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read:
+      while the read has not returned the screen states that the configuration is still being read and
+      presents no connector or configuration value; where the read fails the screen states explicitly
+      that the configuration could not be read and offers the operator that same read again; where the
+      read returns the screen presents the connector name and the configuration exactly as the read
+      answered them. The three presentations are distinguishable from one another, and the re-issued
+      read runs only on the operator''s act — the screen never retries on its own.'
+    why: 'Home: a new rule rather than the api contract, which cannot declare a presentation at all,
+      and rather than domain/integration/connector-configuration, which declares what a configuration
+      is and not what a surface states about reading one — the same placement every sibling presentation
+      fact in this specification already took (a-draft-versions-content-is-presented-only-from-its-own-record,
+      a-presented-manifest-entry-states-its-pinned-revisions-state, presentation-reads-the-evidence-snapshot).
+      Substance: this specification has refused a blank or an undifferentiated presentation in this
+      exact shape four times — a-case-holding-no-versions-is-told-explicitly, a-cases-current-pins-come-from-its-highest-numbered-version,
+      a-draft-versions-content-is-presented-only-from-its-own-record and a-presented-manifest-entry-states-its-pinned-revisions-state,
+      the last of which decided both windows in these very words ("still being read", "could not be
+      read") for a read of a separate aggregate root behind a presented surface; deciding the same question
+      differently here would give one specification two answers. A configuration is opaque text the
+      operator edits, so a blank window reads like a configuration holding nothing, the worst of the
+      available misreadings. Retry: the two unsettled windows are only worth telling apart because the
+      operator''s next act differs, and a-presented-manifest-entry-states-its-pinned-revisions-state
+      already records the reason as "a failed read is worth retrying" without any surface owing the
+      act; stating the failure and withholding the act would report a condition and deny its remedy.
+      It is stated as a fact rather than left to the interface because it changes what a person can
+      do, not how it looks, which is this project''s own line between the two; the control, its wording
+      and its placement stay the interface''s. Operator-initiated rather than automatic, because nothing
+      in this specification lets a screen name when to call a failing far end again — the one place
+      a caller is told when to come back is the capability identity read''s own Retry-After. Corroboration:
+      the intake material describing the delivered screen already reports three distinguishable states
+      over this same read, so the decision fixes what the specification owes rather than imposing a
+      shape on a surface that never had one.'
+  - location: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets.md
+    field: statement
+    unstated: Whether a surface offering the release of a draft case version tells the curator, before
+      the release is attempted, which of the conditions that release must satisfy the draft currently
+      meets and which it does not. a-release-refusal-with-no-named-violation-says-so states what a refused
+      release names, and a-presented-manifest-entry-states-its-pinned-revisions-state states one condition's
+      input on the manifest surface, but no node states that the surface offering the release discloses
+      the conditions themselves, so the refused attempt would be the only place the verdict stands.
+    decided: A surface offering the release of a draft case version states, before any release of that
+      version is attempted, for every condition release must satisfy that a version reading back as
+      a case may still fail, whether the draft currently meets it — met stated as met, unmet stated
+      as unmet, and a condition whose inputs the surface has not read stated as not yet decided, never
+      as either. The conditions answered by the version reading back as a case at all are not among
+      them. Recorded as a new policy over domain/knowledge/case-version and domain/knowledge/hypothesis-revision,
+      eventual.
+    why: 'a-presented-manifest-entry-states-its-pinned-revisions-state already settled this specification''s
+      answer one step earlier in the same neighbourhood — the fact governing a release is owed before
+      the release, "never only from a refused release of that version" — and withholding it on the very
+      surface the release is offered from would leave the verdict addressable everywhere except where
+      it is acted on. Both sides are stated because this log has three times refused a silence a reader
+      cannot tell from an answer (a-case-holding-no-versions-is-told-explicitly, a-cases-current-pins-come-from-its-highest-numbered-version,
+      a-draft-versions-content-is-presented-only-from-its-own-record), and an unread condition is stated
+      as undecided for that same reason rather than defaulted to met, which would state a fact nobody
+      read. The set is bounded to what release weighs beyond the read because validation-runs-at-every-read
+      makes a version failing any validator rule not read back as a case at all and expressly refuses
+      a field marking one "not ready" — so the structural and coherence family is already answered by
+      a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case, and enumerating
+      it here would reopen the gate that rule closed. Policy and eventual for the same reason its sibling
+      is: the manifest-pin condition reads hypothesis-revision, an aggregate root separate from the
+      case version whose release is offered.'
 ---
 
 === domain/glossary/_context
@@ -4438,6 +4631,80 @@ constrains:
 A project decision, not a limitation: it erases human mutation approval, write scopes and half the security concerns, and it is imposed by the registry rather than by discipline.
 The system diagnoses and refers, never acts.
 
+=== rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+---
+type: policy
+statement: >-
+  A surface presenting to an operator the one capability registered at a name and version that
+  operator named states explicitly, while the read of that identity has not yet answered, that
+  the capability at that name and version is still being read, and states explicitly, where
+  that read fails to answer, that the capability at that name and version could not be read;
+  in neither window does it present any attribute of any capability as the content standing at
+  that identity, a capability read and shown and the two windows are told apart from one
+  another, and in the failed window alone the surface offers the operator a control that
+  issues the same read for the same identity again — a reattempt the surface never makes on
+  its own.
+expression: >-
+  For a name n and a version v an operator named, and a surface presenting the capability
+  registered at (n, v): while the read of (n, v) has not returned, the surface states that the
+  capability at (n, v) is still being read. Where that read returns nothing, or returns
+  something the surface cannot read as the capability at (n, v) — the registry's own refusal
+  of an identity no capability is currently registered at excepted, that refusal being its own
+  answer and not this window — the surface states that the capability at (n, v) could not be
+  read, and carries a control whose one effect is to issue the read of (n, v) again. In
+  neither window is any attribute of any capability — its nature, input schema, output schema,
+  timeout, connector or concept — presented as the content standing at (n, v). The three
+  presentations, a capability read and shown, a read still outstanding and a read that failed,
+  are distinguishable from one another to the operator, and none of them is presented as
+  another. The reattempt control stands in the failed presentation and in neither of the other
+  two, and the read is issued again only on the operator's own act.
+constrains:
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+`read-capability-by-identity` of `contracts/integration/capability-registry` is the read this surface is addressed by — the identity-keyed read added exactly so a screen naming a capability by its own name and version loads directly on first navigation or a refresh.
+That read is issued separately from the surface that presents it, so between the operator naming the identity and the answer arriving there is a window in which the surface holds no registration to show, and a read that fails leaves it with none at all.
+
+A blank in either window is the silence this specification has refused wherever it has met it.
+`a-presented-manifest-entry-states-its-pinned-revisions-state` states the outstanding read and the failed read on the entry itself, in their own right, for exactly this reason, and `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` holds three readings of one surface apart because they ask different acts of the reader who meets them.
+Here the acts differ the same way: an outstanding read resolves on its own and is worth waiting for, a failed read is worth attempting again, and a registration read is what the operator inspects or edits.
+A surface showing nothing while the read is outstanding reads like a capability whose contract declares nothing, which `a-capability-declares-its-contract` says the registry never holds; a surface showing nothing after a failure reads like an identity nothing is registered at, which is the registry's own distinct answer under `the-capability-identity-read-refuses-an-unregistered-identity`.
+
+No attribute accompanies either statement, because there is nothing partial to honestly present: a registration answers whole, every required attribute declared or the registration refused, so a nature, schema, timeout or connector shown beside "still being read" or "could not be read" would state as this identity's content a declaration nobody read — the substitution `a-manifest-entrys-pinned-revision-is-always-shown` refuses for a pin.
+
+The reattempt is offered because this specification already names retrying as the act a failed read asks of its reader, and telling an operator the read failed while leaving the retry to a page reload or a re-navigation names the act and withholds it.
+It is the operator's own act and never the surface's: `the-capability-identity-read-is-rate-limited` holds this one route to sixty requests a minute from one source address, a limit written against an unbounded loop, and a surface re-issuing the read on its own is that loop — a deliberate reattempt, one per operator act, sits nowhere near the limit.
+The control stands in the failed window alone because an outstanding read has nothing to reattempt and a registration already shown has nothing to recover.
+
+Nothing here moves what the registry answers.
+The refusal of an unregistered identity and the refusal past the rate limit stay that route's own, and this states only what the operator is told around them; a read refused past the limit answered nothing and so stands in the failed window, while a read that answered that no capability is registered at the identity answered, and is not that window.
+Which control carries each statement, its wording, and where on the surface it sits are form and belong to the interface, as this specification's other surface rules leave them.
+
+Consistency is eventual because the surface never holds the registration it presents: what it states is drawn from a read of the capability issued separately, and the two windows this rule states are precisely the interval in which that read has not settled.
+
+=== rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+---
+type: invariant
+statement: >-
+  An operator authoring a connector configuration may leave the authoring surface without
+  registering anything: no connector configuration is created, every configuration already
+  registered is left exactly as it stood, and the operator is returned to the surface the
+  authoring surface was reached from.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+Register-connector is the only write the registry publishes (contracts/integration/connector-configuration-registry), so configuration an operator has authored but not registered has never entered the registry at all: leaving the surface without registering creates nothing, replaces nothing and removes nothing, and the connector name being authored under keeps answering exactly what it answered before — or keeps answering nothing, where nothing was ever registered under it.
+That unregistered text already has no standing anywhere else in this specification: `a-connector-configuration-is-tested-through-a-registered-capability` holds that a diagnostic exercises the configuration currently registered under the connector name, never configuration text an operator holds unsaved in an authoring surface. Abandoning is the ordinary end of that same unsaved text — an operator who opened the surface to reconsider, or to start an edit and think better of it, leaves at no cost to the registry.
+The leaving lands the operator back on the surface the authoring was reached from, so getting out costs no more than getting in did, and no operator is ever left on a surface whose only other exit is a registration they have decided against.
+Whether the authoring was entered to configure a connector name nothing has registered yet or to replace one already registered makes no difference: both are `register-connector`'s own create-or-replace, and neither has written anything until it is registered.
+Which control carries the return, its wording and where it sits are form and belong to the interface, not here.
+
 === rules/integration/a-connector-configuration-holds-a-well-formed-object
 ---
 type: invariant
@@ -4496,6 +4763,39 @@ constrains:
 
 Nothing said what read-connector-configuration answers when the name it is asked for resolves to nothing: an unregistered name is not an ordinary empty result a caller could read as though something answered to it, but a refusal of its own, addressable by an error value of its own — the same distinction a-connector-configuration-holds-a-well-formed-object already draws for a malformed write, held here for a miss on read.
 
+=== rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+---
+type: invariant
+statement: >-
+  A surface presenting one registered connector configuration, or authoring one, offers
+  the operator a route to the listing of registered connector configurations, and taking
+  that route registers nothing and alters no registered configuration. The route's
+  presence turns on nothing further — not on whether the surface reads a configuration or
+  authors one, not on the read of that configuration having answered, and not on how the
+  operator reached the surface.
+expression: >-
+  For a surface s presenting or authoring a single connector configuration: s carries a
+  route to the listing answered by list-connector-configurations of
+  contracts/integration/connector-configuration-registry, on every reading of s — one
+  whose read of the configuration has answered, one whose read has not yet answered, one
+  whose read was refused, and one authoring a configuration nothing has registered yet —
+  and whatever surface the operator reached s from. Following that route from s issues no
+  register-connector call and leaves every registered connector configuration exactly as
+  it stood.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+`contracts/integration/connector-configuration-registry` publishes both the listing of every configuration currently registered and the read of the one registered under a name, so the listing is where an operator surveys what exists and a single-configuration surface is one step off it. Nothing said whether that step is offered back. Left unsaid, an operator standing at one configuration — having opened it, having begun authoring a new one, or having loaded its address directly — would keep a way to the listing only where the interface happened to leave one, and otherwise would have to construct an address to reach the read the registry publishes for exactly that purpose.
+
+`rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest` already decided this shape once, in the other direction: where one operator surface is one step from the only place a neighbouring reading is answered, the step is offered rather than left to whatever address a reader could construct. The route is owed here for the same reason, and owed unconditionally for the same reason it is unconditional there — a route present on only some readings is one the operator cannot rely on, and the conditions that would narrow it (a read still outstanding, a read refused, a configuration not yet authored) are exactly the readings the operator has least reason to stay on. How the surface was reached does not narrow it either: a route that returns only whoever arrived from the listing leaves the operator who arrived any other way exactly where this rule refuses to leave them.
+
+Taking it registers nothing. `register-connector` is the one operation that creates a configuration or replaces whatever answered to its name, and `domain/integration/connector-configuration` is replaced whole on every edit; a route away that wrote what the surface was holding would make leaving indistinguishable from registering, on a value object where the write is total. What becomes of content an authoring surface was holding when the operator leaves it is no part of this: the route says where the operator lands, never what happens to content never registered.
+
+Which control carries the route, whether it stands apart from the controls that register or is carried by one of them, its wording, and where it sits — above the surface's heading, beneath it, or anywhere else — are form and belong to the interface, not here, the same reading `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-draft-versions-content-is-presented-only-from-its-own-record` already take over their own controls. This adds no attribute to `domain/integration/connector-configuration`, publishes no operation, discloses nothing further about a configuration, and refuses no call.
+
 === rules/integration/a-connector-placeholder-is-declared-by-its-capability
 ---
 type: policy
@@ -4524,6 +4824,149 @@ constrains:
 ## Description
 
 A connector configuration's call may name a credential the executing connector reads from environment configuration rather than from the configuration text itself, so nobody has to author a secret directly into an operator-editable field. The diagnostic operation exists to let an operator see the request a connector configuration would actually issue (contracts/integration/connector-diagnostics), and that same visibility would otherwise hand back the one thing the indirection was meant to keep out of an editable field and a response body alike. Masking is what keeps the diagnostic honest about shape without being honest about the secret.
+
+=== rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+---
+type: invariant
+statement: >-
+  An operator-facing screen presenting the connector configuration registered under one
+  named connector states which of three windows it stands in, and never leaves two of them
+  reading alike: while the read of that configuration has not returned, the screen states
+  that the configuration is still being read and presents no connector or configuration
+  value; where that read fails, the screen states explicitly that the configuration could
+  not be read and offers the operator that same read again; and where the read returns, the
+  screen presents the connector name and the configuration exactly as the read answered
+  them. The offered read is the operator's own act: the screen re-issues a failed read on no
+  initiative of its own.
+expression: >-
+  For a connector name n and a screen presenting the connector configuration registered
+  under n through read-connector-configuration: where that read has not returned, the screen
+  states that the configuration is still being read and states no value of connector or
+  configuration; where that read failed, the screen states that the configuration could not
+  be read, states no value of connector or configuration, and carries an action that
+  re-issues that same read; where that read returned, the screen states connector and
+  configuration as that answer carries them, and states no value that answer did not carry.
+  The three presentations are distinguishable from one another to the operator, and none of
+  them is presented as either of the other two. No read is issued again except by the
+  operator taking that action.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+`read-connector-configuration` of `contracts/integration/connector-configuration-registry` is
+a call the screen waits on: between an operator opening this screen and an answer arriving
+there is a window in which nothing about the configuration is known, and after a failure a
+window in which nothing ever will be unless the read is made again. Neither window is a
+configuration, and neither is a configuration that is absent — so neither may be presented
+as one, and neither may be presented as the other.
+
+This specification has refused a presentation of exactly this shape four times already, and
+always for one reason: a surface that reads identically in materially different situations
+tells its reader nothing about which one they are in.
+`a-case-holding-no-versions-is-told-explicitly` refuses an emptiness a reader cannot tell
+from a pending read or a failure; `a-cases-current-pins-come-from-its-highest-numbered-version`
+took that same answer again for a surface with nothing to state;
+`a-draft-versions-content-is-presented-only-from-its-own-record` states that a version is
+still being read rather than filling the interval with content no record answered; and
+`a-presented-manifest-entry-states-its-pinned-revisions-state` states both windows on the
+entry so that neither is ever shown as a state. A connector configuration is opaque text an
+operator authors and edits, so a blank in either window reads to them exactly like a
+configuration holding nothing — the one reading that would have them edit over content the
+registry never answered.
+
+The two unsettled windows are told apart, rather than merged into one notice, because the
+operator's next act differs across them: an outstanding read settles on its own and is worth
+waiting for, while a failed one settles only if it is made again. That is why the failure is
+not merely stated but carries the read with it. Reporting a condition an operator can act on
+and then withholding the act would leave reloading the whole screen or leaving it as the only
+routes back, and the reader could not distinguish a far end that was briefly unavailable from
+one that is gone. The offer is a fact rather than form by this specification's own division —
+what a person using the system can learn or do is stated here; which control carries each of
+the three statements, its wording and its placement are the interface's own, exactly as
+`a-presented-manifest-entry-states-its-pinned-revisions-state` and
+`constraints/no-route-enforces-authentication` already leave them.
+
+The read is issued again only on the operator's act, so that a far end already failing is
+never called repeatedly by a screen nobody is watching, and so that what the operator sees
+after a failure stays what they last asked for.
+
+This decides what the screen states in each window and nothing beyond it. It adds no
+attribute to `domain/integration/connector-configuration`, publishes no operation, and
+refuses no call: the refusal a read by an unregistered connector name is answered with stays
+`a-connector-configuration-read-by-an-unregistered-name-is-refused`'s own, and what the
+registry answers is untouched.
+
+=== rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+---
+type: policy
+statement: >-
+  An operator on a surface that presents one registered capability, or that authors one for
+  registration, is offered a route to the listing of registered capabilities, on every
+  reading of that surface; the route's presence turns on nothing further — not on whether
+  the read backing the surface has completed, failed or answered no capability at that
+  identity, and not on whether the capability being authored is registered yet. The
+  specification states no affordance carrying it: a standalone navigation link above the
+  surface's heading and a control among the surface's own actions answer it alike, and
+  neither is owed.
+expression: >-
+  For an operator and a surface s presenting exactly one capability — one read by its own
+  identity, name and version together, or one being authored for registration: the
+  presentation of s carries a route whose destination is the listing of registered
+  capabilities that contracts/integration/capability-registry's list-capabilities answers.
+  The route is present at every reading of s, and its presence is conditioned on nothing
+  else: not on the state of the read backing s, whether that read completed, failed or
+  answered no capability at that identity, and not on whether the capability s authors is
+  already registered. No property of the control carrying the route is evaluated — which
+  control it is, its wording and where on s it sits are each unconstrained, and any
+  affordance from which the operator reaches that listing satisfies this.
+constrains:
+  - domain/integration/capability
+consistency: immediate
+---
+
+## Description
+
+An operator authors capabilities directly — `domain/integration/_context` states holding what an operator registers directly, a capability among them — and reads one back by its own identity, name and version together: `read-capability-by-identity` was added to `contracts/integration/capability-registry` for exactly the surface addressed by a capability's own identity, which loads on first navigation or a page refresh without knowing which concept that capability currently answers. The set those surfaces are reached from is the listing `list-capabilities` answers, one page at a time (`constraints/listings-are-paged`). A surface addressed by one capability, or authoring one that no registration yet holds, is otherwise a terminus: no node said the operator gets back to the set from it, so whether an operator could return at all fell to whatever a surface happened to render.
+
+That a route is owed where a reader stands one step from what they need is already this specification's own reading. `a-listed-case-version-offers-a-route-to-its-own-manifest` states the route from a listing to the single thing listed, carrying the same clause that its presence turns on nothing further — not on the presented thing's state, not on what preceded the reading. This states the reverse direction over the registry's own subject: from the single capability back to the set of them. The two do not stand in each other's way, carrying different content over different elements.
+
+The affordance is not stated because it is form. `no-route-enforces-authentication` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface. Holding this route to a standalone navigation link above the surface's heading would make relocating or relabelling one control a change to the specification, while the whole of what an operator learns or does here — reaching the listing from the single capability — is exactly what the statement holds. A surface carrying the route among its own actions and a surface carrying it as a link above its heading are indistinguishable in what the operator can do, and this refuses to prefer either.
+
+Its reach is the registry's own surfaces and nothing beyond. The route names no page of the listing: which page opens is `listings-are-paged`'s own answer, and this states only the destination. Nothing is refused, no attribute gains a value, no capability's registration moves, and what may then be done through the listing stays where `capability-registry` and `a-capability-is-read-only` already put it. What happens to content an authoring surface holds unwritten when the route is taken this decides nothing about. Surfaces over any other subject — a connector configuration, a case, a hypothesis — are untouched: a route owed there would be its own fact about its own element.
+
+Consistency is immediate because the route's presence follows from the surface's own subject alone, one capability, and from nothing read elsewhere; no fact here spans two reads.
+
+=== rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+---
+type: invariant
+statement: >-
+  An operator authoring a capability registration may abandon the entry before submitting
+  it: nothing is sent to the registry, no capability is created and none already registered
+  is replaced, and the operator is returned to the listing of registered capabilities.
+expression: >-
+  For an operator composing a capability registration entry e and abandoning e before
+  submitting it: no register-capability call carries e; the set of capabilities currently
+  registered is identical before and after the abandonment, in membership and in every
+  registration's own declared contract; and what the operator is returned to is the listing
+  of registered capabilities. This holds whether e was composed at a name and version no
+  capability is currently registered at or at the identity of one that is.
+constrains:
+  - domain/integration/capability
+---
+
+## Description
+
+`register-capability` is the one operation of `contracts/integration/capability-registry` that writes — creating a capability at a new name and version, or replacing whatever already stood at that identity — so an entry abandoned before submission makes no such call and leaves both outcomes unreached: an identity no capability stood at stays unregistered, and a capability already standing at the entry's identity keeps every attribute of its declared contract exactly as it was.
+
+Nothing of the abandoned entry survives the abandonment, because the registry holds registrations and never entries: `read-capability`, `read-capability-by-identity` and `list-capabilities` all answer from what is currently registered, and an entry never submitted never entered that set. A half-composed registration is therefore not something a later read can find, and no refusal is owed for one — the registration rules the registry imposes (`a-capability-is-read-only`, `a-capability-declares-its-contract`, `a-capability-declares-well-formed-schemas`, `a-capability-input-schema-holds-a-well-formed-object`, `one-capability-answers-one-concept`) are all conditions on what a registration submits, and an abandoned entry submits nothing for them to judge.
+
+Where the operator is returned is the listing of registered capabilities — `list-capabilities` of the same contract, the read over everything currently registered, which is precisely the set the abandonment left untouched. That is the read from which an authoring entry is reached, for a new capability and for a replacement alike, and it is answerable whatever the entry held: a read keyed on the entry's own identity could not be, since `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has `read-capability-by-identity` refusing a name and version nothing is registered at, which is exactly what an abandoned creation leaves behind. `constraints/listings-are-paged` governs that listing here as it does every other reading of it.
+
+This is not the discard of something that exists. `only-a-draft-case-version-may-be-discarded` removes a version that was created and persisted; abandonment here ends an entry that was never sent, so there is nothing to remove and nothing that was ever usable in its place.
+
+Which control carries the abandonment, its wording and where it sits are form and belong to the interface, not here.
 
 === rules/integration/an-http-connector-configuration-declares-its-call
 ---
@@ -6049,6 +6492,107 @@ constrains:
 
 The slug is the case's identity, and it stopped being kept unique by the file system the moment the file stopped being the medium.
 Two cases under one slug would give every investigation that pinned it two procedures to have run, and no pin could tell which.
+
+=== rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+---
+type: policy
+statement: >-
+  A surface offering the release of a draft case version states, before any release of that
+  version is attempted, for every condition that release must satisfy which a version reading
+  back as a case may still fail, whether that draft currently meets it — the met ones stated
+  as met and the unmet ones as unmet, so that a surface showing no unmet condition is
+  distinguishable from one that established none; where the surface has not read what
+  deciding such a condition requires, it states that condition as not yet decided for that
+  draft, never as met and never as unmet.
+expression: >-
+  For a draft case version v and a surface offering v's release: let C be the conditions a
+  release of v must satisfy that a v reading back as a case may still violate — every rule
+  constraining case-version whose violation a refused release of v would name among its own
+  violations (a-release-refusal-with-no-named-violation-says-so), other than those already
+  answered by v reading back as a case at all (validation-runs-at-every-read); as this
+  specification currently states them, that is the manifest-pin condition of
+  a-released-case-version-manifests-only-released-hypothesis-revisions. Before any release of
+  v is attempted, and for every c in C, the surface states exactly one of three things of v
+  and c: that v meets c, that v does not meet c, or that whether v meets c is not yet decided
+  — the third only where the surface has not read what deciding c requires. The three are
+  distinguishable from one another to the curator, and none of them is the presentation of a
+  surface stating nothing of c. The statement turns on nothing further: not on a release of v
+  having been attempted, and not on the curator opening any further control.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+Release is the one act that turns a draft into a version nothing may still merge into (`contracts/knowledge/case-lifecycle`), and it answers every rule at once, refusing together or not at all.
+Left unstated here, the conditions that act evaluates reach the curator only through the act itself: a draft every condition holds for reads exactly like one where a condition does not, and the single thing that tells them apart is the attempt that fails.
+
+This specification has already refused a silence of exactly this shape around exactly this act.
+`a-presented-manifest-entry-states-its-pinned-revisions-state` states each pinned revision's own state on the manifest so that a curator learns it "never only from a refused release of that version".
+That rule discloses one condition's *input*, on the surface where a manifest is presented; this states the *condition* where the release is offered, and the two are neither the same surface nor the same content.
+A curator reading a manifest of many entries still has to assemble the release's own verdict out of them, and a surface offering release need not present the manifest at all.
+
+Both sides are stated, not the failures alone.
+A surface that names only what a draft does not meet leaves its own silence carrying two readings — every condition met, and no condition established — which is the confusion `a-case-holding-no-versions-is-told-explicitly` refused for an emptiness, `a-cases-current-pins-come-from-its-highest-numbered-version` refused for a pin nothing holds, and `a-draft-versions-content-is-presented-only-from-its-own-record` refused for an interval before an answer arrived.
+For the same reason a condition whose inputs the surface has not read is stated as undecided rather than defaulted either way: presenting an unread condition as met states a fact nobody read, and presenting it as unmet reports a violation nobody found.
+
+What release evaluates at the read itself is deliberately outside C.
+`validation-runs-at-every-read` has a stored version read as a case only while every validator rule holds at that reading, draft as much as released, "no separate field marks it 'not ready'" — a version failing one does not read back as a case at all, and `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` already states what a surface says when it meets one.
+So this adds no attribute to `domain/knowledge/case-version`, marks nothing on the stored version and reopens no intermediate gate; it states, on a surface, only what a release still weighs beyond the version reading back as a case — today the one condition `a-released-case-version-manifests-only-released-hypothesis-revisions` gates at release precisely because placement never gates it.
+
+Nothing here moves what the refusal owes.
+A release attempted over a draft that does not meet a condition is still refused once, naming every violated rule together (`a-release-refusal-with-no-named-violation-says-so`), and that naming stays the refusal's own; a disclosure read before the attempt is not that refusal, and the two are each answered at the moment they are read, so a draft changed in between is answered by the later reading rather than by the earlier one.
+Nor does this restrict composition: placing an entry that pins a draft revision is still never refused, and a condition stated as unmet is a disclosure, not a warning this specification words.
+It states what the surface discloses and nothing about whether the release may then be attempted or whether the offer is made at all — that stays where `a-case-version-moves-through-its-declared-lifecycle` and the release's own refusal already put it.
+
+The rule is a policy holding eventually because the conditions are read across aggregate roots: the case version whose release is offered, and — for the condition this specification currently states — each pinned hypothesis-revision, whose own release reaches into no version's manifest to change it.
+Which control carries the statements, their wording and where they sit are form and belong to the interface, not here.
+
+=== rules/knowledge/an-abandoned-revision-composition-writes-nothing
+---
+type: policy
+statement: >-
+  A curator composing a hypothesis revision may abandon that composition before submitting
+  it; the abandonment writes no revision, leaves the hypothesis's existing revisions and
+  its case's draft version exactly as they were, and returns the curator to the screen the
+  composition was opened from.
+expression: >-
+  For a composition of a revision of hypothesis h, opened from screen s and abandoned
+  before it is submitted: no revise of h is requested, so h's revisions are exactly the
+  revisions h held when the composition opened — the same numbers, the same content and
+  the same states — the draft version of h's case is exactly what it was, in its own
+  declared attributes and in every entry of its manifest, and the curator is returned to
+  s. Abandonment is available for as long as the composition has not been submitted, and
+  turns on nothing else: not on whether a submit would have replaced h's highest existing
+  revision in place or created h's next revision, and not on how much of the composition
+  was filled in.
+constrains:
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+Composing a revision and saving one are two moments, and everything this specification states about a revise is stated about the second: `a-hypothesis-revision-is-overwritten-while-unreleased` decides which revision a save lands on, `a-revise-answers-the-revision-number-it-saved` states what the curator is told once it has, and `a-revise-offers-the-draft-manifest-only-when-the-pin-must-move` states what a completed revise then offers — each of them beginning where a submitted revise ends.
+A curator who opens a composition and does not submit it reaches none of those moments, and this states that the not-reaching is an offered act rather than an accident of navigation: a curator who opened the wrong hypothesis, or thought better of a criterion's wording, has a way out that costs nothing.
+
+Writing no revision is the whole of what the abandonment does to the hypothesis, and it is neither of the two acts that do write.
+It is not `discard` (`only-a-draft-case-version-may-be-discarded`), which removes a draft version that already exists; a composition is not a revision until it is submitted, so there is nothing here to remove.
+It is not a save of unchanged content either: a save would still land somewhere by `a-hypothesis-revision-is-overwritten-while-unreleased` — replacing the highest existing revision's content in place, or creating the next number where a released version had frozen the one the draft pins — and `a-hypothesis-revision-number-is-never-reused` would keep a number so spent spent.
+Abandoning is the absence of that call, so every revision the hypothesis holds keeps its number, its content and its own state, and `a-hypothesis-revisions-listing-answers-highest-revision-first` answers afterwards exactly what it answered before.
+
+The case's draft version is named for the same reason a revise reads it at all.
+`a-hypothesis-is-revised-only-against-its-cases-draft` makes that draft the anchor a submitted revise is checked against, and `a-revise-offers-the-draft-manifest-only-when-the-pin-must-move` reads its manifest afterwards to decide what to offer; an abandonment does neither, so no pin moves, no manifest entry is added or removed, and no declared attribute of the draft changes.
+A curator may abandon and open the composition again as often as curation needs, and the version being composed is what it was.
+
+Returning to the screen the composition was opened from is part of the fact rather than its presentation: what a curator can do next is decided by where the abandonment leaves them, and leaving them anywhere else would cost them the place in the case they were curating to buy nothing.
+Which control carries the abandonment, its wording and where it sits are form and belong to the interface, not here.
+
+Consistency is eventual because the fact spans two aggregates read separately: the hypothesis whose revisions are unchanged, and the case version whose draft is unchanged.
 
 === rules/knowledge/case-terms-exist-in-the-glossary
 ---
