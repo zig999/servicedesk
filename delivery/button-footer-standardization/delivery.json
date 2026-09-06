@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/shared-action-footer/button-footer-component",
+      "kind": "implementation",
+      "file": "implementation/shared-action-footer/button-footer-component.md",
+      "title": "Shared ButtonFooter component",
+      "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
+      "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "proof/shared-action-footer/button-footer-component",
+      "kind": "proof",
+      "file": "proof/shared-action-footer/button-footer-component.md",
+      "title": "ButtonFooter component proof",
+      "summary": "Tests that ButtonFooter renders whatever children it is given, in order, confined to wherever it is placed with no escape hatch that could reach the shell's disclosure; the three layout-dependent criteria have no test this suite can honestly write and are named in untested instead.",
+      "task": "task/shared-action-footer/button-footer-component"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/shared-action-footer/button-footer-component",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/shared-action-footer/button-footer-component",
+      "to": "implementation/shared-action-footer/button-footer-component",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

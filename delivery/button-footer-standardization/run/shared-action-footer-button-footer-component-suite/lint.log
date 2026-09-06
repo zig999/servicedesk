@@ -1,0 +1,30 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/buttonfooter/frontend/app/src/shared/components/button-footer.spec.ts
+    9:7   error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   24:7   error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   27:20  error  Do not use any type assertions                                                                    @typescript-eslint/consistent-type-assertions
+   27:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   27:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   34:7   error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   37:20  error  Do not use any type assertions                                                                    @typescript-eslint/consistent-type-assertions
+   37:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   37:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   45:7   error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   48:20  error  Do not use any type assertions                                                                    @typescript-eslint/consistent-type-assertions
+   48:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   48:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   55:7   error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   58:20  error  Do not use any type assertions                                                                    @typescript-eslint/consistent-type-assertions
+   58:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   58:30  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+   64:14  error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   77:11  error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+   99:11  error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+  107:24  error  Avoid direct Node access. Prefer using the methods from Testing Library                           testing-library/no-node-access
+
+✖ 21 problems (21 errors, 0 warnings)
+
