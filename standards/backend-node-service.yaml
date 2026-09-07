@@ -1066,12 +1066,6 @@ elsewhere:
       an approval gate, which made the reviewer the gate. A finding states what it costs; a person
       decides what that means.
 
-  - what: Whether two modules import each other in a cycle.
-    lives_in: Nowhere yet — a declared gap.
-    why: It is decidable by walking the import graph, so it belongs to a script rather than to a
-      rule an agent judges. No such script ships, and stating the rule here would hand a mechanical
-      question to a reading.
-
   - what: The shape of a commit message, and which branch work happens on.
     lives_in: The project's own git conventions, outside this framework.
     why: Siegard never touches the consumer's git state, and a rule here could not be checked by
