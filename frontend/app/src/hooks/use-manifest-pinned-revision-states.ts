@@ -9,18 +9,24 @@ import type { CaseVersionManifestEntry } from "../services/case-version-record";
 
 export type ManifestPinnedRevisionStates = ReadonlyMap<number, PinnedRevisionStateResult>;
 
+function hasReadableHypothesisName(entry: CaseVersionManifestEntry): boolean {
+  return typeof entry.hypothesis_revision?.hypothesis?.name === "string";
+}
+
 export function useManifestPinnedRevisionStates(
   slug: string,
   manifest: readonly CaseVersionManifestEntry[],
 ): ManifestPinnedRevisionStates {
+  const readableEntries = manifest.filter(hasReadableHypothesisName);
+
   const defaultResults = useQueries({
-    queries: manifest.map((entry) =>
+    queries: readableEntries.map((entry) =>
       hypothesisRevisionsQueryOptions(slug, entry.hypothesis_revision.hypothesis.name),
     ),
   });
 
   const offPageResults = useQueries({
-    queries: manifest.map((entry, index) =>
+    queries: readableEntries.map((entry, index) =>
       offPageRevisionStateQueryOptions(
         slug,
         entry.hypothesis_revision.hypothesis.name,
@@ -31,7 +37,7 @@ export function useManifestPinnedRevisionStates(
   });
 
   const states = new Map<number, PinnedRevisionStateResult>();
-  manifest.forEach((entry, index) => {
+  readableEntries.forEach((entry, index) => {
     states.set(
       entry.position,
       pinnedRevisionStateOf(

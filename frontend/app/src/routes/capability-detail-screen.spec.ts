@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
   CAPABILITY_PATH,
   LOADED_INPUT_SCHEMA,
@@ -45,24 +45,45 @@ describe("CapabilityDetailScreen -- shows the loaded record (criterion 1)", () =
 });
 
 describe("CapabilityDetailScreen -- a control returns to the list (criterion 3)", () => {
-  it("navigates back to the capabilities list when Back to capabilities is clicked", async () => {
+  it("navigates back to the capabilities list when Cancel is clicked", async () => {
     const fetchMock = createFetchStub(baseHandlers());
     const router = await mountCapabilityDetailScreen(fetchMock);
     await screen.findByLabelText("Connector");
 
-    fireEvent.click(screen.getByRole("link", { name: "Back to capabilities" }));
+    const footer = screen.getByRole("group", { name: "Actions" });
+    fireEvent.click(within(footer).getByRole("button", { name: "Cancel" }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities"));
   });
 
-  it("keeps the same control available when the load fails (edge case: a dependency that fails)", async () => {
+  it("keeps a Capabilities route to the listing available when the load fails (edge case: a dependency that fails)", async () => {
     const fetchMock = createFetchStub({
       [CAPABILITY_PATH]: () => errorResponse("SomeUpstreamError", 500),
     });
     await mountCapabilityDetailScreen(fetchMock);
 
     expect(await screen.findByRole("button", { name: "Retry" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Back to capabilities" })).toBeTruthy();
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
+      "/capabilities",
+    );
+  });
+});
+
+describe("CapabilityDetailScreen -- an identity nothing is registered at renders its own reading, distinct from the failed-read reading (this task's criteria 7, 15)", () => {
+  it("withholds Retry and keeps Cancel and Capabilities available when the read fails because the identity itself is unregistered -- an implementation rendering this as the failed-read reading would fail this", async () => {
+    const fetchMock = createFetchStub({
+      [CAPABILITY_PATH]: () => errorResponse("CapabilityIdentityNotFoundError", 404),
+    });
+    await mountCapabilityDetailScreen(fetchMock);
+
+    await screen.findByText("Unable to load this capability right now.");
+    expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("button", { name: "Cancel" })).toBeTruthy();
+    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
+      "/capabilities",
+    );
   });
 });
 

@@ -1,0 +1,54 @@
+findings:
+  - file: src/routes/capability-detail-screen.tsx
+    where: the "not-registered" phase branch, lines 49-63
+    evidence: '<p>Unable to load this capability right now.</p>'
+    cost: an operator who reaches this identity because nothing was ever registered there (a stale link, a typo'd name or version) is told the identical sentence a genuinely failed read shows at line 33 ("Unable to load this capability right now."), the one visible difference being the absence of the Retry control; the specification's own rule treats the registry's refusal of an unregistered identity as "its own answer and not this window" — a different situation from a read that merely failed to answer — so the source has settled, on its own, that this fourth reading tells the operator the same thing a failed read does, and no node records that as the decided content of this reading. A future reader who wants to know what a capability-keyed surface states when nothing is registered at the named identity will look for that fact in the specification and find only the read-in-flight/read-failed rule, which explicitly disclaims covering this case.
+    kind: unstated
+    correction: a node deciding what this surface states when the identity-keyed read answers that no capability is registered there — paralleling the connector-configuration side, which already has such a node for its own registry — would give this reading its own content instead of the failed-read window's reused wording.
+read:
+  - node: domain/integration/capability
+    held_at: "the heading of the ready reading, lines 67-69"
+    evidence: 'Capability {name} {version}'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the loading branch (lines 12-28) and the load-error branch (lines 30-47)"
+    evidence: 'Loading capability {name} {version}… … <p>Unable to load this capability right now.</p> … <Button type="button" onClick={state.retryLoad}>Retry</Button>'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the phase gating that renders CapabilityDetailReadyView — the surface that would carry a discard act — only on the ready reading, never on loading, load-error or not-registered"
+    evidence: 'if (state.phase === "loading") ... if (state.phase === "load-error") ... if (state.phase === "not-registered") ... return ( <section ...><CapabilityDetailReadyView state={state} /></section> )'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the Capabilities link present in every early-return branch, lines 22-24, 41-43, 57-59"
+    evidence: '<Link to="/capabilities">Capabilities</Link>'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the Cancel button present in every early-return branch, lines 19-21, 38-40, 54-56"
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file holds no authoring entry or submission logic of its own — it only branches on state.phase and, on the ready reading, delegates to CapabilityDetailReadyView"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "the file names no destination logic for an authoring surface reached from nothing; onCancel and the Capabilities link are its only navigational acts"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file contains no reference to a connector configuration or its listing"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file's three non-ready phases state only a capability's loading, load-error and not-registered readings; no connector configuration is presented here"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file contains no connector configuration authoring surface"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "the file performs no registration and declares no nature; it only presents a capability by identity"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "the file issues no register-capability call and states no submission outcome; it only branches on state.phase"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "the file contains no output-schema entry"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "the file declares no field or schema attribute of its own"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "the file contains no description entry"
+looked_past: the fuller conformance of CapabilityDetailReadyView — the ready-reading component this file delegates to, which is where domain/integration/capability's full attribute set, the discard-edit act and the submitted-registration outcome most likely actually sit — is not judged here because that file is outside this file set.

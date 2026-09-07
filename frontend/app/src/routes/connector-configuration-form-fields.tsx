@@ -3,6 +3,7 @@ import type { UseFormReturn } from "react-hook-form";
 import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
+import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import type { ConfigurationFieldState } from "../hooks/use-connector-configuration-form";
@@ -81,12 +82,12 @@ export function ConnectorConfigurationFormFields({
         disabled={isSubmitting}
       />
 
-      <div className="flex items-center justify-end gap-3">
+      <ButtonFooter>
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
           Save
         </Button>
         {trailingActions}
-      </div>
+      </ButtonFooter>
     </form>
   );
 }

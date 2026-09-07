@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { apiFetch } from "../services/api-client";
 import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
 import {
@@ -9,7 +11,7 @@ import {
   type ConnectorConfigurationFormValues,
 } from "../services/connector-configuration-form-schema";
 import type { ConnectorConfiguration } from "./use-connector-configurations";
-import type { ConfigurationFieldState } from "./use-connector-configuration-form";
+import { saveFailureMessage, type ConfigurationFieldState } from "./use-connector-configuration-form";
 
 function isValidConfigurationObject(text: string): boolean {
   const minified = getJsonTextareaMinifiedValue(text);
@@ -21,8 +23,12 @@ function isValidConfigurationObject(text: string): boolean {
 }
 
 export type ConnectorConfigurationDetailState =
-  | { readonly phase: "loading" }
-  | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | { readonly phase: "loading"; readonly onCancel: () => void }
+  | {
+      readonly phase: "load-error";
+      readonly retryLoad: () => void;
+      readonly onCancel: () => void;
+    }
   | {
       readonly phase: "ready";
       readonly form: UseFormReturn<ConnectorConfigurationFormValues>;
@@ -32,14 +38,25 @@ export type ConnectorConfigurationDetailState =
 
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+      readonly onCancel: () => void;
     };
 
 export function useConnectorConfigurationDetail(
   connector: string,
 ): ConnectorConfigurationDetailState {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const navigate = useNavigate();
 
   const isSubmittingRef = useRef(false);
+
+  const onCancel = (): void => {
+    if (router.history.canGoBack()) {
+      router.history.back();
+      return;
+    }
+    void navigate({ to: "/connectors" });
+  };
 
   const [configurationValue, setConfigurationValue] = useState("");
   const [configurationValid, setConfigurationValid] = useState(true);
@@ -93,6 +110,9 @@ export function useConnectorConfigurationDetail(
       void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
       void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
     },
+    onError: (error) => {
+      toast.error(saveFailureMessage(error));
+    },
   });
 
   const handleConfigurationChange = useCallback((value: string): void => {
@@ -106,10 +126,11 @@ export function useConnectorConfigurationDetail(
       retryLoad: () => {
         void query.refetch();
       },
+      onCancel,
     };
   }
   if (query.isLoading || !query.data) {
-    return { phase: "loading" };
+    return { phase: "loading", onCancel };
   }
 
   const isDirty =
@@ -147,5 +168,6 @@ export function useConnectorConfigurationDetail(
     isSubmitting: mutation.isPending,
     isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
+    onCancel,
   };
 }

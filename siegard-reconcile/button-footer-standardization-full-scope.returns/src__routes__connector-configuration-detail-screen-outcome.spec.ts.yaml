@@ -1,0 +1,98 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: &inline 'describe("ConnectorConfigurationDetailScreen -- a successful save states its outcome only through the pre-existing inline status, never a second toast (disclosed inference)", () => {'
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: &refused 'describe("ConnectorConfigurationDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)", () => {'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: *inline
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: *refused
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: *inline
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'await mountConnectorConfigurationDetailScreen(fetchMock);'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: 'const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'fireEvent.click(screen.getByRole("button", { name: "Save" }));'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: 'fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the assertions immediately after the Save click in all three tests: the success test's expectations that the inline text reads and no error toast fired, and each refusal test's waitFor over toast.error's argument"
+    evidence: |-
+      expect(await screen.findByText("Saved.")).toBeTruthy();
+      expect(toast.error).not.toHaveBeenCalled();
+      ...
+      expect(toast.error).toHaveBeenCalledWith(
+        "This configuration is not syntactically valid JSON.",
+      ),
+      ...
+      expect(toast.error).toHaveBeenCalledWith(
+        "Something went wrong while saving this connector configuration. Try again.",
+      ),
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: 'expect(await screen.findByText("Saved.")).toBeTruthy();'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: *refused
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: *inline
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: *refused
+looked_past: "The success block asserts only the inline 'Saved.' text and the absence of a toast call, never that the surface states what registered (the connector name a-submitted-registration-states-its-outcome-to-the-operator also requires of a success outcome) — that is a coverage question over the rule, not a fact this file states wrongly, so it is left to the coverage-auditor pass; likewise the choice of an inline status over a toast, and which HTTP method reaches the mock endpoint, are form/wiring this file exercises rather than facts it asserts."
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object

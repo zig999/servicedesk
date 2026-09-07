@@ -1,0 +1,44 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file's sole test is `expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();` — nothing here exercises submission, abandonment or a returned-to surface"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "the file mounts the create screen and asserts a control's absence; it issues no navigation and asserts no destination"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file asserts nothing about a route to the listing of registered capabilities"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the assertion in the sole `it` block"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull(); — proving no discard act is offered on a create (authoring, no read registration) surface, consistent with \"A surface holding no read registration — one authoring at an identity nothing is registered at... — is offered no such act, having no content to return its fields to.\""
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "no act landing the operator on a reached-from surface is exercised or asserted here"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file asserts nothing about an outstanding-read or failed-read presentation; it awaits `screen.findByLabelText(\"Connector\")` and then checks a control's absence"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file concerns the capability create screen only; no connector-configuration surface or listing route is asserted"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file exercises no connector-configuration read state"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file exercises the capability create screen only, not a connector-configuration authoring surface"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "the file asserts nothing about a capability's nature or a registry refusal"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "the file never submits a registration and asserts no outcome statement"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "the file asserts nothing about output-schema entry guidance"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "the file asserts nothing about a field's name, type or description"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "the file asserts nothing about a description's content"
+looked_past: the describe block's own label "(criterion 8)" cites a task criterion rather than a specification identity, which is a plan/delivery-record concern rather than a domain fact this pass judges.

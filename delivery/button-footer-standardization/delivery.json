@@ -1,0 +1,860 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route.md",
+      "title": "Capability creation surface's abandonment split from its listing route",
+      "summary": "The creation surface now carries two separate controls in every phase — an abandonment that returns to the surface the authoring was reached from, or the capabilities listing where none exists, and an unconditional route to the capabilities listing.",
+      "task": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route"
+    },
+    {
+      "id": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route.md",
+      "title": "Capability detail surface's return to origin split from its listing route, with the unregistered-identity refusal told apart from a failed read",
+      "summary": "The detail surface's single Cancel link is split into an origin-aware return act and an unconditional route to the capabilities listing, both present on every reading, and the registry's own refusal of an identity nothing is registered at is carved out of the failed-read reading into a reading of its own that withholds the reattempt.",
+      "task": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route"
+    },
+    {
+      "id": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route.md",
+      "title": "Connector-configuration creation surface's abandonment split from its listing route",
+      "summary": "The creation surface now carries two separate controls — an abandonment that returns to the surface the authoring was reached from, or the connector-configurations listing where none exists, and an unconditional route to that same listing.",
+      "task": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route"
+    },
+    {
+      "id": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route.md",
+      "title": "Connector-configuration detail surface's return to origin split from its listing route",
+      "summary": "The detail surface's single Cancel link is split into a return-to-origin act carried by the router's own history and an unconditional route to the connector-configurations listing, both rendered on every reading, with neither control's presence turning on how the surface was reached.",
+      "task": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route"
+    },
+    {
+      "id": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "implementation",
+      "file": "implementation/knowledge-authoring-footers/case-version-editor-action-footer.md",
+      "title": "Case version editor action footer, its release-conditions disclosure, and Cancel's own-origin return",
+      "summary": "Moves the case version editor's Release, Discard, Save and Cancel row into the shared ButtonFooter, replaces the release checklist with the single manifest-pin condition the specification names, and fixes Cancel to return to whichever surface the editing was actually reached from.",
+      "task": "task/knowledge-authoring-footers/case-version-editor-action-footer"
+    },
+    {
+      "id": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "implementation",
+      "file": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer.md",
+      "title": "Hypothesis revision action footer, with its first Cancel",
+      "summary": "hypothesis-revision-form-fields renders Save hypothesis and a new Cancel through the shared ButtonFooter, with Cancel returning the curator to whichever screen actually opened the composition and never gating on submission progress or revision state.",
+      "task": "task/knowledge-authoring-footers/hypothesis-revision-action-footer"
+    },
+    {
+      "id": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "implementation",
+      "file": "implementation/misstated-facts-in-source/nature-refusal-fixture-status.md",
+      "title": "Nature-refusal fixture corrected to HTTP 422",
+      "summary": "The one stand-in in the frontend suite that built CapabilityNotReadOnlyError with a status now carries 422, the value rules/integration/a-capability-is-read-only states.",
+      "task": "task/misstated-facts-in-source/nature-refusal-fixture-status"
+    },
+    {
+      "id": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "implementation",
+      "file": "implementation/misstated-facts-in-source/output-schema-help-copy.md",
+      "title": "Output-schema entry guidance rewritten to the specification's five claims",
+      "summary": "The Portuguese help paragraph beside the capability form's output-schema field now states exactly what the system reads from an entered schema, sourced only from the nodes that hold those claims, with no worked example.",
+      "task": "task/misstated-facts-in-source/output-schema-help-copy"
+    },
+    {
+      "id": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/capability-form-action-footer.md",
+      "title": "Capability form action footer",
+      "summary": "The capability create and detail-ready surfaces render Save, Discard, Cancel and trailingActions through the shared ButtonFooter, and both surfaces state a registered or refused outcome only once the registry has answered.",
+      "task": "task/registry-authoring-footers/capability-form-action-footer"
+    },
+    {
+      "id": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/capability-screen-return-route.md",
+      "title": "Capability screen return route",
+      "summary": "The standalone Back to capabilities links are removed from both capability screens, and every phase of both — including the loading and load-error phases that had no footer at all — now offers the route to the listing through the shared ButtonFooter instead.",
+      "task": "task/registry-authoring-footers/capability-screen-return-route"
+    },
+    {
+      "id": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/connector-configuration-form-action-footer.md",
+      "title": "Connector configuration form action footer",
+      "summary": "The connector-configuration create screen and detail ready view route their action row through the shared ButtonFooter, carrying Save, a Cancel that abandons authoring without registering, the pre-existing detail Discard, and both outcomes of a submission.",
+      "task": "task/registry-authoring-footers/connector-configuration-form-action-footer"
+    },
+    {
+      "id": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "implementation",
+      "file": "implementation/registry-authoring-footers/connector-configuration-screen-return-route.md",
+      "title": "Connector configuration screen return route",
+      "summary": "The standalone Back to connector configurations links are removed from every phase of both connector-configuration screens, and the detail screen's loading and load-error phases — which carried no footer at all — now offer the route to the listing through the shared ButtonFooter instead.",
+      "task": "task/registry-authoring-footers/connector-configuration-screen-return-route"
+    },
+    {
+      "id": "implementation/shared-action-footer/button-footer-component",
+      "kind": "implementation",
+      "file": "implementation/shared-action-footer/button-footer-component.md",
+      "title": "Shared ButtonFooter component",
+      "summary": "Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned, accessibly-grouped row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.",
+      "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/capability-create-abandon-and-listing-route.md",
+      "title": "Capability create screen's abandonment and listing-route controls",
+      "summary": "Tests prove the split creation-surface controls — an abandonment that goes back through router history, or falls to the listing with none to return to, and issues no register call, and an unconditional route to the listing on every reading that also issues none — correct three pre-existing specs on this surface that asserted the pre-split fixed-link behaviour, and correct one assertion in a sibling task's spec that pinned the control's role.",
+      "task": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/capability-detail-abandon-and-listing-route.md",
+      "title": "Capability detail surface's return-to-origin and listing-route split, across every reading",
+      "summary": "New tests prove the return act's origin-aware landing, the unconditional listing route, their presence and side-effect-freedom across all four readings including the new nothing-registered reading, and the reattempt's exclusivity to the failed reading; five pre-existing specs the split falsified are corrected in place, four owned by earlier tasks of this plan and the fifth owned by no record at all.",
+      "task": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/connector-create-abandon-and-listing-route.md",
+      "title": "Connector-configuration creation surface's abandonment and listing route",
+      "summary": "Proves the create screen's split abandonment — a button going back through history or falling back to the listing — and its separate listing-route link against all seven criteria, correcting three pre-existing specs the delivered split falsified.",
+      "task": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/connector-detail-abandon-and-listing-route.md",
+      "title": "Connector-configuration detail surface's return-to-origin split, proved, and its earlier-task specs repaired",
+      "summary": "New tests establish the return-to-origin control's history-walk-with-listing-fallback behaviour and its coexistence with the listing-route control across every reading and origin this task's criteria name, and four specs earlier tasks delivered are corrected to query the control each assertion now actually reaches.",
+      "task": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "proof",
+      "file": "proof/knowledge-authoring-footers/case-version-editor-action-footer.md",
+      "title": "Case version editor action footer proof",
+      "summary": "Tests that the editor's action row composes the shared footer, that its release-conditions disclosure states met, not met and not yet decided before any dialog opens, that Cancel returns to whichever screen the editing was actually reached from, and that the pre-creation draft screen withholds every control including Cancel until the created version's record answers.",
+      "task": "task/knowledge-authoring-footers/case-version-editor-action-footer"
+    },
+    {
+      "id": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "proof",
+      "file": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer.md",
+      "title": "Hypothesis revision action footer proof",
+      "summary": "Proves the footer composition, the Cancel's write-nothing and return-to-origin behaviour, its fill-state-invariant offer, and the revision-release gate the task's own note names, leaving the unchanged submit, validation, subject, loading and manifest-offer behaviour to the pre-existing suite that already proves it.",
+      "task": "task/knowledge-authoring-footers/hypothesis-revision-action-footer"
+    },
+    {
+      "id": "proof/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "proof",
+      "file": "proof/misstated-facts-in-source/nature-refusal-fixture-status.md",
+      "title": "Nature-refusal fixture status proof",
+      "summary": "Tests confirming the capability detail outcome proof's stand-in refusal for a not-read-only nature carries HTTP 422, that no other stand-in under the frontend suite pairs CapabilityNotReadOnlyError with a different status, and that the two pre-existing refusal-message tests still hold the operator-facing distinction unchanged.",
+      "task": "task/misstated-facts-in-source/nature-refusal-fixture-status"
+    },
+    {
+      "id": "proof/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "proof",
+      "file": "proof/misstated-facts-in-source/output-schema-help-copy.md",
+      "title": "Output-schema entry guidance rewrite, proven against its ten criteria",
+      "summary": "Every claim the rewritten output-schema paragraph makes, its absence of a worked example, its silence on any check the two named nodes do not state, its narrower reading over the read-only refusal, the surface's refusal to check on any of these grounds, and both disclosed inferences are each proven by a test that fails over exactly the wording or behaviour it targets.",
+      "task": "task/misstated-facts-in-source/output-schema-help-copy"
+    },
+    {
+      "id": "proof/registry-authoring-footers/capability-form-action-footer",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/capability-form-action-footer.md",
+      "title": "Capability form action footer proof",
+      "summary": "Tests establishing that the capability create and detail-ready surfaces compose Save, Cancel, Discard and trailingActions through one ButtonFooter group, that the discard and route controls hold exactly the windows the task's underdetermined notes name, that a submission's outcome is stated only once the registry answers, and repairing an earlier initiative's incomplete sonner stub so its own success-path assertions exercise this delivery's code rather than throwing past it.",
+      "task": "task/registry-authoring-footers/capability-form-action-footer"
+    },
+    {
+      "id": "proof/registry-authoring-footers/capability-screen-return-route",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/capability-screen-return-route.md",
+      "title": "Capability screen return route proof",
+      "summary": "The three specs still querying the removed Back to capabilities link are rewritten against the footer's Cancel control on every phase it now appears on, closing the task's one criterion the implementation could not satisfy alone without dropping any phase's route coverage.",
+      "task": "task/registry-authoring-footers/capability-screen-return-route"
+    },
+    {
+      "id": "proof/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/connector-configuration-form-action-footer.md",
+      "title": "Connector configuration form action footer proof",
+      "summary": "Tests proving the create screen and detail ready view route their actions through the footer's Actions group, that Cancel abandons authoring without registering on both surfaces, that the discard stays out of the windows the rule withholds it from, that the create surface states a success naming the connector only once the registry answers, and that the detail surface's new refusal handling distinguishes a recognised refusal from a generic one.",
+      "task": "task/registry-authoring-footers/connector-configuration-form-action-footer"
+    },
+    {
+      "id": "proof/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "proof",
+      "file": "proof/registry-authoring-footers/connector-configuration-screen-return-route.md",
+      "title": "Connector configuration screen return route proof",
+      "summary": "The four specs that queried the removed Back to connector configurations link are rewritten against the footer's Cancel control, keeping every phase's route assertion, and three of the task's four underdetermined notes gain a test that would fail over the implementation each names.",
+      "task": "task/registry-authoring-footers/connector-configuration-screen-return-route"
+    },
+    {
+      "id": "proof/shared-action-footer/button-footer-component",
+      "kind": "proof",
+      "file": "proof/shared-action-footer/button-footer-component.md",
+      "title": "ButtonFooter component proof",
+      "summary": "Tests that ButtonFooter renders whatever children it is given in an accessible, end-aligned sticky group, mounted both in isolation and inside the real AppShell, where its containment inside main and the shell's disclosure staying present and structurally outside it are proven against app-shell.tsx itself rather than a fixture.",
+      "task": "task/shared-action-footer/button-footer-component"
+    },
+    {
+      "id": "review/button-footer-standardization",
+      "kind": "review",
+      "file": "review/button-footer-standardization.md",
+      "title": "Review of the shared ButtonFooter delivery",
+      "summary": "What four passes found over the two files task/shared-action-footer/button-footer-component wrote, with the standard's one departure, the coverage the tests do not reach, and two failures the captured run reported from files outside this change.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "A screen rendering the footer still shows the shell's own statement that this build enforces no authentication, visibly and not merely rendered.",
+        "ButtonFooter renders every button passed to it as children, in the order it received them, in a row aligned to the end.",
+        "Content scrolled to its end stays fully readable above the footer rather than covered by it.",
+        "The footer sits inside the AppShell's existing `<main>` scroll region and frontend/app/src/shared/components/app-shell.tsx is left unmodified by this task.",
+        "The footer stays visible at the bottom of the AppShell's scrollable region while its screen's content is scrolled."
+      ],
+      "findings": 3
+    },
+    {
+      "id": "review/button-footer-standardization-full-scope",
+      "kind": "review",
+      "file": "review/button-footer-standardization-full-scope.md",
+      "title": "The ButtonFooter standardization, all seven tasks",
+      "summary": "What four passes found over the twenty-one source files and twenty-eight specs the seven tasks of button-footer-standardization delivered, with the failures pass not run because the captured run passed whole.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A screen rendering the footer still shows the shell's own statement that this build enforces no authentication, visibly and not merely rendered.",
+        "After a save, the route to the draft's manifest is offered where the draft's manifest held no entry for the hypothesis and where the revision written is higher than the revision that entry pinned immediately before, and is not offered where the revise wrote into the very revision that entry already pins.",
+        "After a save, the screen states the revision number the revise answered, and states nothing further distinguishing a revise that replaced the highest existing revision in place from one that created the next.",
+        "Asking to discard issues no discard; a discard is issued only where the curator, having asked, states in a further act that the discard is to be performed and reproduces the case's own slug in that act, and an act reproducing no slug or a slug that is not the case's issues no discard.",
+        "Cancel leaves the editing without submitting it, writes no change to the version, leaves the version's declared attributes and every manifest entry exactly as they were, and returns the curator to the surface the editing was reached from.",
+        "Content scrolled to its end stays fully readable above the footer rather than covered by it.",
+        "Neither the loading phase nor the load-error phase presents any attribute of any capability as the content standing at that identity.",
+        "No capability screen renders a link whose accessible name is Back to capabilities, in any of its phases.",
+        "No connector-configuration screen renders a link whose accessible name is Back to connector configurations, in any of its phases.",
+        "No spec under frontend/app/src/routes queries a Back to capabilities link.",
+        "No spec under frontend/app/src/routes queries a Back to connector configurations link.",
+        "On a capability detail surface whose read answered, the footer offers a control returning every field to the content that read answered, which registers nothing, leaves the operator on that surface, and takes effect only after a further explicit act by the operator.",
+        "On a connector-configuration detail surface whose read answered, the footer offers a control returning every field to the content that read answered, which registers nothing, leaves the operator on that surface, and takes effect only after a further explicit act by the operator.",
+        "Save changes still carries `form={CASE_VERSION_EDITOR_FORM_ID}` and still submits the editor's form from outside the `<form>` element.",
+        "Submitting the connector-configuration form issues the registration, and where it succeeds the operator is taken to the surface addressed by that configuration's own connector name.",
+        "Submitting the form still saves the hypothesis revision through the same call it made before.",
+        "The Discard draft control is offered only while the version being edited is a draft.",
+        "The footer carries a Cancel that abandons the composition before it is submitted, writing no revision and leaving the hypothesis's existing revisions and its case's draft version exactly as they were, and returns the curator to the screen the composition was opened from.",
+        "The footer carries a Cancel that leaves the authoring without registering anything, creating no configuration and leaving every registered configuration exactly as it stood, and returns the operator to the surface the authoring was reached from.",
+        "The footer carries a Cancel that leaves the authoring without submitting it, registering nothing and replacing no registered capability, and returns the operator to the surface the authoring was reached from.",
+        "The footer sits inside the AppShell's existing `<main>` scroll region and frontend/app/src/shared/components/app-shell.tsx is left unmodified by this task.",
+        "The footer stays visible at the bottom of the AppShell's scrollable region while its screen's content is scrolled.",
+        "The form still renders hypothesis name, criterion, collects and resolution, with their validation unchanged.",
+        "The subject type is shown read-only and read from the case's draft version and from nowhere else.",
+        "Whatever a screen passes through the existing `trailingActions` prop is rendered inside the footer beside Save, and no second prop for appending buttons is introduced.",
+        "While the case's draft version record has not answered, the form states that the version is still being read and states no attribute of it, presenting neither a partial content nor an empty one as the version's.",
+        "capability-detail-screen's load-error phase states that the capability at that name and version could not be read, and carries a control whose one effect is to issue that same read again.",
+        "capability-detail-screen's loading phase carries no control that issues the read again, and neither phase re-issues that read on the screen's own initiative.",
+        "capability-detail-screen's loading phase states that the capability at that name and version is still being read.",
+        "connector-configuration-detail-screen's load-error phase states that the configuration could not be read, states no value of connector or configuration, and carries an action that re-issues that same read.",
+        "connector-configuration-detail-screen's loading phase states that the configuration is still being read and states no value of connector or configuration."
+      ],
+      "findings": 42
+    },
+    {
+      "id": "review/scope-review-corrections",
+      "kind": "review",
+      "file": "review/scope-review-corrections.md",
+      "title": "The six corrections the full-scope review raised",
+      "summary": "What three passes found over the five hooks, seven route files and twenty-six specs the six corrective tasks of button-footer-standardization delivered, with the failures pass not run because the captured run passed whole.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Neither the outstanding-read reading nor the failed-read reading states a connector or configuration value.",
+        "No control returning the surface's fields to the content of a read registration renders in the outstanding-read reading, in the reading standing on a read that failed other than by that refusal, or in the reading where that read answered that no capability is registered at that name and version.",
+        "No proof of the capability creation surface asserts that the abandonment lands the operator at the capabilities listing where a reaching surface exists.",
+        "No proof of the connector-configuration creation surface asserts that the abandonment lands the operator at the connector-configurations listing where a reaching surface exists.",
+        "No stand-in in the frontend suite builds CapabilityNotReadOnlyError with a status other than 422.",
+        "Taking the control whose destination is the capabilities listing issues no register-capability call.",
+        "Taking the control whose destination is the connector-configurations listing issues no register-connector call.",
+        "Taking the return-to-origin control issues no register-capability call and leaves every registered capability exactly as it stood, in membership and in every registration's own declared contract, in each of the four readings and on both destinations the act may land on.",
+        "Taking the return-to-origin control issues no register-connector call and leaves every registered connector configuration exactly as it stood, in membership and in every registration's own content, in each of the four readings and on both destinations the act may land on.",
+        "That same reading carries a control whose one effect is to issue that same read again, and no other reading of the surface carries that control.",
+        "That text carries no worked example, whether composed for the surface or reproduced from anywhere else.",
+        "That text promises no check beyond the ones `rules/integration/a-capability-declares-its-contract` and `rules/integration/a-capability-declares-well-formed-schemas` state a submitted registration is checked for.",
+        "That text states no further claim about what an entered output schema is read for.",
+        "The outstanding-read reading, the reading standing on a read that failed other than by that refusal, and the reading that shows the configuration are each distinguishable from the other two to the operator, and none of the three is rendered as either of the others.",
+        "The reading that shows the configuration states the connector and the configuration as the read answered them, and states no value that answer did not carry.",
+        "The surface issues the read of that name and version again only where the operator takes that control, and on no initiative of its own.",
+        "The surface refuses no entry and checks no entered content on any of the grounds that text states."
+      ],
+      "findings": 31
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "task/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "to": "task/registry-authoring-footers/capability-form-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "to": "task/registry-authoring-footers/capability-screen-return-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/shared-action-footer/button-footer-component",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/knowledge-authoring-footers/case-version-editor-action-footer",
+      "to": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "to": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/misstated-facts-in-source/output-schema-help-copy",
+      "to": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/capability-form-action-footer",
+      "to": "implementation/registry-authoring-footers/capability-form-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/capability-screen-return-route",
+      "to": "implementation/registry-authoring-footers/capability-screen-return-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/connector-configuration-form-action-footer",
+      "to": "implementation/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-authoring-footers/connector-configuration-screen-return-route",
+      "to": "implementation/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/shared-action-footer/button-footer-component",
+      "to": "implementation/shared-action-footer/button-footer-component",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/button-footer-standardization",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/capability-form-action-footer",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/capability-screen-return-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    }
+  ]
+}

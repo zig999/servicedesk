@@ -1,0 +1,70 @@
+findings:
+- file: src/hooks/use-capability-detail.ts
+  where: lines 62-68, the useQuery call reading the capability by identity
+  evidence: 'const query = useQuery({ queryKey: ["capability", name, version], queryFn: () => apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`), });'
+  cost: 'This call sets no retry option, so it inherits the shared QueryClient''s retry: 1 default (src/services/query-client.ts, retry: 1), and TanStack Query silently reissues this identity read once on its own before the failed window — or the not-registered window — is ever shown to the operator. The node states the read is issued again only on the operator''s own act, and that a surface re-issuing the read on its own is that loop the rate limit is written against; every load of this surface now contains exactly that automatic reissue, invisible to the operator and independent of anything they did. The hook''s own test harness (use-capability-detail.test-support.ts) disables retry explicitly to avoid this, which is itself evidence that production is left with it active.'
+  kind: contradicts
+  correction: 'Pass retry: false (or an equivalent override) on this useQuery call so the identity read fires exactly once until the operator''s own reattempt act asks for it again.'
+  node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+- file: src/hooks/use-capability-detail.ts
+  where: the ready-phase return object (lines 188-207), against the private baseline state set at lines 59-60 and 89/92
+  evidence: 'const [inputSchemaBaseline, setInputSchemaBaseline] = useState(""); const [outputSchemaBaseline, setOutputSchemaBaseline] = useState(""); ... setInputSchemaBaseline(query.data.input_schema); ... setOutputSchemaBaseline(query.data.output_schema); ... return { phase: "ready", form, conceptOptions: conceptOptions.concepts, inputSchema: { value: inputSchemaValue, isValid: inputSchemaValid, onChange: handleInputSchemaChange }, outputSchema: { value: outputSchemaValue, isValid: outputSchemaValid, onChange: handleOutputSchemaChange }, isDirty, isSubmitting: mutation.isPending, isSubmitSuccessful: mutation.isSuccess, onSubmit, onCancel };'
+  cost: The node requires an act, on a surface that has read a registration, whose whole effect is to return every field to the content that read answered. This hook computes inputSchemaBaseline and outputSchemaBaseline from that same read but never returns them, and returns no discard callback either — only form (recoverable via form.reset()) is exposed. Whatever renders this ready phase has the means to discard an edited nature, timeout, connector or concept, but no means at all to discard an edited input or output schema back to what the registry answered; the two attributes whose recovery the node's own description calls out by name are exactly the ones this hook leaves unrecoverable.
+  kind: contradicts
+  correction: Return the schema baselines (or a discard act built from them) from the ready phase so a consumer can restore both schema fields, not only the form-managed ones, to the last-read registration.
+  node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+read:
+- node: contracts/integration/capability-registry
+  held_at: the useQuery call (read-capability-by-identity) and the mutationFn (register-capability, create-or-replace)
+  evidence: 'apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`) ... apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`, { method: "PUT", ... })'
+- node: domain/integration/capability
+  held_at: the form.reset() effect and the mutation request body
+  evidence: 'form.reset({ name: query.data.name, version: query.data.version, nature: query.data.nature, timeout: query.data.timeout, connector: query.data.connector, concept: query.data.concept }); ... body: JSON.stringify({ nature: values.nature, input_schema: ..., output_schema: ..., timeout: values.timeout, connector: values.connector, concept: values.concept })'
+- node: rules/integration/a-capability-declares-well-formed-schemas
+  held_at: the client-side well-formedness gate before submit
+  evidence: setInputSchemaValid(getJsonTextareaMinifiedValue(query.data.input_schema) !== null); ... if (!inputSchemaValid || !outputSchemaValid) { return; }
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: the query.isError / not-registered / load-error / loading branches (lines 138-163) and retryLoad
+  evidence: 'if (query.error instanceof ApiError && query.error.code === "CapabilityIdentityNotFoundError") { return { phase: "not-registered", onCancel }; } return { phase: "load-error", retryLoad: () => { void query.refetch(); conceptOptions.refetch(); }, onCancel };'
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: onCancel, present in every returned phase (loading, load-error, not-registered, ready)
+  evidence: 'const onCancel = (): void => { if (router.history.canGoBack()) { router.history.back(); return; } void navigate({ to: "/capabilities" }); };'
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: mutation.onError (toast.error via saveFailureMessage) and the isSubmitSuccessful flag exposed in the ready phase
+  evidence: 'onError: (error) => { toast.error(saveFailureMessage(error)); }, ... isSubmitSuccessful: mutation.isSuccess,'
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: onCancel — no register-capability call, navigates away only
+  evidence: 'const onCancel = (): void => { if (router.history.canGoBack()) { router.history.back(); return; } void navigate({ to: "/capabilities" }); };'
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: onCancel's fallback branch
+  evidence: 'void navigate({ to: "/capabilities" });'
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: This hook exposes only onCancel (the return-to-origin act); no distinct affordance to the capabilities listing, independent of history, is returned here.
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: See finding above — no discard act, and the schema baselines needed to build one are never returned.
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: This file concerns only capabilities; it contains no connector-configuration listing or route logic.
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: This file contains no connector-configuration read or presentation logic.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: This file contains no connector-configuration authoring logic.
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: No handling of a capability's nature value or a read-only refusal appears in this file; the fact, if enforced client-side at all, is not here.
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: This hook carries no field guidance text; it only manages the raw schema value/validity/onChange triple.
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: No per-field (name/type/description) modeling of the output schema's properties occurs in this file.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: No description text is composed, read or validated in this file.
+looked_past: The absence of a distinct listing-route affordance and the disclosed lack of any node-stated wording for the not-registered phase are both plausibly answered outside this file (a persistent navigation link, and the presenting route component respectively) — this file carries no phase text at all, so the disclosed reuse of the failed window's wording cannot be observed here one way or the other.
+candidates_opened:
+- constraints/the-capability-identity-read-refuses-an-unregistered-identity

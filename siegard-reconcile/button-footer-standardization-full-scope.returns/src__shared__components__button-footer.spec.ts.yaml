@@ -1,0 +1,94 @@
+findings:
+  - file: src/shared/components/button-footer.spec.ts
+    where: "the it block \"still shows AppShell's own no-authentication disclosure, present and outside the footer's own group\", lines 109-117"
+    evidence: "expect(within(mainRegion).queryByText(\"No auth in this build\")).toBeNull();\n      expect(screen.getByText(\"No auth in this build\")).toBeTruthy();"
+    cost: "The node holds that the disclosure's substance — telling every user, on every screen, that this build enforces no authentication — is the fact, and states explicitly that \"the exact copy is the frontend's own to choose and free to change without this statement moving.\" This test pins that exact literal string as a pass/fail condition, so a wording change the node explicitly permits (e.g. rephrasing the notice) breaks this suite even though the specification's actual requirement — the substance disclosed on every screen — still holds; the next person who touches that copy has to also chase down this test rather than reading the node and trusting it says the whole story."
+    kind: contradicts
+    node: constraints/no-route-enforces-authentication
+    correction: "Assert on the presence of some non-authentication disclosure surfaced by AppShell (by role, test id, or a semantic marker naming the concept), rather than on the literal copy \"No auth in this build\", so the exact wording stays free to change without the test moving."
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: "the assertions at lines 114-116, `within(mainRegion).queryByText(\"No auth in this build\")` and `screen.getByText(\"No auth in this build\")`"
+    evidence: "expect(within(mainRegion).queryByText(\"No auth in this build\")).toBeNull();\n      expect(screen.getByText(\"No auth in this build\")).toBeTruthy();"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import { ButtonFooter } from \"./button-footer\";"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "import { ButtonFooter } from \"./button-footer\";"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "import { ButtonFooter } from \"./button-footer\";"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "import { ButtonFooter } from \"./button-footer\";"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "import { ButtonFooter } from \"./button-footer\";"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "describe(\"ButtonFooter\", () => {"
+looked_past: "The remaining assertions in this file — child render order, the accessible group named \"Actions\", the Tailwind classes for flex/justify-end/border/background/sticky positioning, and the AppShell scrollable-main-region composition check — are layout, accessibility-label and CSS presentation concerns with no node in this set (or found elsewhere) governing them, so they are a standard/code-review matter rather than this pass's."

@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
   createFetchStub,
   mountConnectorConfigurationCreateScreen,
+  putCallCount,
 } from "./connector-configuration-create-screen.test-support";
 
 afterEach(() => {
@@ -75,13 +76,50 @@ describe("ConnectorConfigurationCreateScreen -- no loading or load-error phase (
   });
 });
 
-describe("ConnectorConfigurationCreateScreen -- a link back to the list (criterion 12)", () => {
-  it("renders a 'Back to connector configurations' link to /connectors", async () => {
+describe("ConnectorConfigurationCreateScreen -- a route back to the list (criterion 12)", () => {
+  it("renders the footer's Connectors link to /connectors", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
+    await screen.findByLabelText("Configuration");
 
-    const link = await screen.findByRole("link", { name: "Back to connector configurations" });
+    const footer = screen.getByRole("group", { name: "Actions" });
+    const link = within(footer).getByRole("link", { name: "Connectors" });
     expect(link.getAttribute("href")).toBe("/connectors");
+  });
+});
+
+describe("ConnectorConfigurationCreateScreen -- the footer Connectors link registers nothing before it navigates (UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing leaves open whether the route submits before landing on the listing)", () => {
+  it("navigates to /connectors on Connectors without issuing any PUT request -- an implementation that submits register-connector before navigating would fail this", async () => {
+    const fetchMock = createFetchStub();
+    const router = await mountConnectorConfigurationCreateScreen(fetchMock);
+    await screen.findByLabelText("Configuration");
+
+    const footer = screen.getByRole("group", { name: "Actions" });
+    fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
+
+    await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+    expect(putCallCount(fetchMock)).toBe(0);
+  });
+});
+
+describe("ConnectorConfigurationCreateScreen -- the route does not turn on how the operator arrived (UNDERDETERMINED note: both route criteria are satisfiable by a reading that varies with arrival)", () => {
+  it("renders the footer's Connectors link when the screen is loaded directly at /connectors/new, carrying no navigation state recording arrival from the listing -- an implementation that renders the route only on an arrival-from-listing state would fail this", async () => {
+    const fetchMock = createFetchStub();
+    await mountConnectorConfigurationCreateScreen(fetchMock, "/connectors/new");
+    await screen.findByLabelText("Configuration");
+
+    const footer = screen.getByRole("group", { name: "Actions" });
+    expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
+  });
+});
+
+describe("ConnectorConfigurationCreateScreen -- carries no discard control (UNDERDETERMINED note: no criterion distinguishes which controls the shared footer carries on the create screen)", () => {
+  it("renders no Discard changes control", async () => {
+    const fetchMock = createFetchStub();
+    await mountConnectorConfigurationCreateScreen(fetchMock);
+    await screen.findByLabelText("Configuration");
+
+    expect(screen.queryByRole("button", { name: "Discard changes" })).toBeNull();
   });
 });
 

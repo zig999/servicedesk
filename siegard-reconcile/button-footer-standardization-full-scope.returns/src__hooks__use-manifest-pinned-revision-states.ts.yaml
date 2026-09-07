@@ -1,0 +1,125 @@
+findings:
+  - file: src/hooks/use-manifest-pinned-revision-states.ts
+    where: "`hasReadableHypothesisName` and the `readableEntries` filter it drives, lines 12-14 and 20-49"
+    evidence: |
+      function hasReadableHypothesisName(entry: CaseVersionManifestEntry): boolean {
+        return typeof entry.hypothesis_revision?.hypothesis?.name === "string";
+      }
+      ...
+      const readableEntries = manifest.filter(hasReadableHypothesisName);
+      ...
+      readableEntries.forEach((entry, index) => {
+        states.set(
+          entry.position,
+          pinnedRevisionStateOf(...),
+        );
+      });
+      return states;
+    cost: "A manifest entry whose `hypothesis_revision.hypothesis.name` does not read back as a string never gets an entry in the returned map at all — no `pending`, no `failed`, no `resolved` — so whatever renders the manifest keyed off this map shows that entry with nothing, which is exactly the blank the node refuses (\"none of them is the presentation of an entry that carries no state\"). The next reader who wants to know what governs an entry with an unreadable hypothesis reference will look in the specification and find no such carve-out."
+    kind: contradicts
+    correction: "Compute a state for every manifest entry unconditionally — where the hypothesis reference itself cannot be read, state that explicitly (a failed read) rather than omitting the entry from the map."
+    node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+
+read:
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: "the `states.set(entry.position, pinnedRevisionStateOf(defaultResults[index], offPageResults[index], entry.hypothesis_revision.revision))` loop, for every entry that passes `hasReadableHypothesisName`"
+    evidence: |
+      readableEntries.forEach((entry, index) => {
+        states.set(
+          entry.position,
+          pinnedRevisionStateOf(
+            defaultResults[index],
+            offPageResults[index],
+            entry.hypothesis_revision.revision,
+          ),
+        );
+      });
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "The hook only builds `ManifestPinnedRevisionStates`, a map from position to a read result (`pending`/`failed`/`resolved`); it issues no release call and states no refusal — `return states;` is the whole of what the function does."
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "The file declares no route, no request identity and no authentication check anywhere in its 51 lines — it only composes `useQueries` calls over `hypothesisRevisionsQueryOptions` and `offPageRevisionStateQueryOptions`."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "No capability, capability-registry read or write appears in this file; its only imports are `use-hypothesis-revisions`, `use-pinned-revision-state` and `case-version-record`."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "The file calls no `create-draft`, `revise-hypothesis`, `place-hypothesis`, `release` or any other case-lifecycle operation; it only reads pinned-revision state for manifest entries already supplied to it."
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "The hook receives `manifest: readonly CaseVersionManifestEntry[]` as a plain parameter and states nothing about a case version's own attributes, state or lifecycle."
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "`entry.hypothesis_revision.hypothesis.name` is read only as a key to query by; the hook declares no attribute of `hypothesis` and no operation over it."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "`entry.hypothesis_revision.revision` is passed through to `pinnedRevisionStateOf` as an opaque number; the file states nothing about a revision's own draft/released lifecycle or its immutability once released."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "No capability read, and no reattempt control, appears anywhere in this file."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No connector configuration, authoring surface or abandonment act is referenced in this file."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "No connector configuration surface or listing route is referenced in this file."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No registration, edit-discard act, capability or connector configuration is referenced in this file."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "No connector configuration or its read states appear anywhere in this file."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "No capability listing or route is referenced in this file."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "This file issues no `register-capability` or `register-connector` call and states no registration outcome; it only reads hypothesis-revision states."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "No capability registration or navigation destination is referenced in this file."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "No connector configuration registration or navigation destination is referenced in this file."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "No capability registration entry or abandonment is referenced in this file."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "The hook never calls `release` or any other lifecycle operation and states nothing about a case version's own state transitions."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "The hook receives `manifest` as an already-resolved array; it does not create a draft, does not read a case-version record, and states nothing about a version still being read."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "No `revise-hypothesis` call or concept-acceptance check appears in this file."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "No release, discard or update-draft act, and no newly-created draft, is referenced in this file."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "No revise call or its answer is referenced anywhere in this file; `entry.hypothesis_revision.revision` is read from the manifest entry already supplied, never from a revise response."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "No revise call, and no offered route to the draft manifest, appears in this file."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "The hook states only a per-entry pinned-revision read result; it computes and states no release condition, met, unmet or undecided."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "No editing, submission or abandonment act over a case version is referenced in this file."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "No revision composition or abandonment act is referenced in this file."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "No discard call or case-version state check is referenced in this file."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "No release or discard act, and no further-act confirmation, is referenced in this file."
+
+looked_past: "The `hasReadableHypothesisName` type guard duplicates a runtime check over data the domain model (manifest-entry's required cardinality-1 reference to hypothesis-revision, and hypothesis's required `name`) already guarantees present, which reads as ordinary defensive coding rather than a stated domain exception in itself — only its consequence (a silently state-less entry) is reported above."
+
+candidates_opened:
+  - domain/knowledge/manifest-entry

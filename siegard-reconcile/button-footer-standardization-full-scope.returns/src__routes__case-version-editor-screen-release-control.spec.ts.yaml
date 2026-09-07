@@ -1,0 +1,99 @@
+findings:
+  - file: src/routes/case-version-editor-screen-release-control.spec.ts
+    where: "it(\"disables the Release trigger while a Save to the same version is in flight\", ...), lines 51-74"
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Release…\" }).hasAttribute(\"disabled\")).toBe(\n        true,\n      );"
+    cost: "The rule that the Release trigger is withheld for the whole span of an in-flight Save to the same version lives only in this assertion; nothing in the specification says these two acts overlap this way, so a reader checking the specification for what a curator may do while a save is pending finds nothing, and a future change dropping the disablement breaks no rule the specification states."
+    kind: unstated
+    correction: "state, alongside the release-offering rules already in the specification, whether and how a pending update-draft withholds the release act."
+  - file: src/routes/case-version-editor-screen-release-control.spec.ts
+    where: "it(\"disables the Dialog's own Cancel control while a confirm is in flight\", ...), lines 106-126"
+    evidence: "expect(releaseCancelButton().hasAttribute(\"disabled\")).toBe(true);"
+    cost: "Withholding Cancel for the duration of the confirmed release's own call is a rule this test enforces and no node states; a reader looking to `releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act` for what a curator may do while that further act is outstanding finds nothing about Cancel, so the behavior can drift silently."
+    kind: unstated
+    correction: "state, alongside rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act, whether the Cancel act stands available or withheld while the confirmed act's own call is in flight."
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "\"CaseVersionEditorScreen — the Release… control's own visibility (criterion 1)\" — the file's own describe blocks cover only the Release control and its Dialog, never an authentication disclosure."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "The file imports only case-version editor helpers (`mountCaseVersionEditor`, `openReleaseDialog`, `RELEASE_PATH`, `VERSION_PATH`); no capability-registry operation is named."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "The file triggers release only through the opaque helpers `openReleaseDialog`/`releaseConfirmButton`/`RELEASE_PATH`; it states no operation identity of this contract itself."
+  - node: domain/knowledge/case-version
+    held_at: "the \"the loaded version's own state is draft\" / \"is released\" tests, lines 25-40"
+    evidence: "\"renders the Release… control once the loaded version's own state is draft\" and expect(screen.queryByRole(\"button\", { name: \"Release…\" })).toBeNull(); under a released state"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "No test in this file references a hypothesis."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "No test in this file references a hypothesis-revision."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "File tests only the Release control/Dialog; no capability read states are asserted."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No connector-configuration authoring surface appears in this file."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "Same as above — no connector-configuration content in this file."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No registration-edit-discard act is tested here."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "No connector configuration read is tested here."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "No capability listing route is tested here."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "No capability/connector registration submission is tested here."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "No capability registration is tested here."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "No connector registration is tested here."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "No capability registration abandonment is tested here."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "\"renders the Release… control once the loaded version's own state is draft\" / \"renders no Release control when the loaded version's own state is released\", lines 25-40"
+    evidence: "expect(await screen.findByRole(\"button\", { name: \"Release…\" })).toBeTruthy(); for draft, and expect(screen.queryByRole(\"button\", { name: \"Release…\" })).toBeNull(); for released"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "This file never tests a newly created draft's content-presentation interval."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "No hypothesis revise is exercised in this file."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "This file mounts an already-loaded version (`mountCaseVersionEditor`), never a newly created draft awaiting its own record."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "No manifest-entry / release-refusal content is tested in this file."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "No revise flow is tested in this file."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "No revise flow is tested in this file."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "\"opens an in-place Dialog... with no violations before any attempt\", lines 86-92"
+    evidence: "expect(within(dialog).queryByRole(\"alert\")).toBeNull();"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "This file's Cancel test concerns the release dialog's own further-act rule, not the edit-abandonment act; no update-draft edit is left unsubmitted here."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "No hypothesis-revision composition is tested in this file."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "This file never tests discard, only release."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "\"closes the Dialog and issues no request when Cancel is clicked\", lines 95-104"
+    evidence: "expect(releaseCallCount(fetchMock)).toBe(0); after fireEvent.click(releaseCancelButton());"
+looked_past: The assertion that the Release trigger and Dialog confirm never carry a "destructive" CSS variant, and the test covering a loaded version record missing its required `state` field entirely, are a styling choice and a defensive-coding choice for data the specification's own read-validation already rules out, respectively — neither is a domain fact, so neither is reported here.

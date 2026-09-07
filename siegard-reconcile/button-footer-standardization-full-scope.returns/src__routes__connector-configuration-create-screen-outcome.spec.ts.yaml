@@ -1,0 +1,95 @@
+findings:
+  - file: src/routes/connector-configuration-create-screen-outcome.spec.ts
+    where: "the second `it`, lines 55-58 (\"shows no success statement while the registration is still pending\")"
+    evidence: 'expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true)'
+    cost: "the test pins a specific behavior of the create screen while a submission is outstanding -- the Save control going disabled -- as a requirement any implementation must satisfy to pass the suite. The specification's own decision log for rules/integration/a-submitted-registration-states-its-outcome-to-the-operator lists this exactly, in these words: \"Not decided here: what the surface presents while the submission is in flight...\". A reader who later wants to know what a connector-configuration create screen may show while a registration is outstanding will look in the specification, find it explicitly left open, and have no way to learn that this test already requires an answer."
+    kind: unstated
+    correction: "either drop the disabled-attribute assertion (leaving only the toast.success timing check the node does cover), or have the fact decided into the specification -- filling a-submitted-registration-states-its-outcome-to-the-operator's own stated gap, or a new node -- before a test asserts it as behavior owed."
+
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'the file mounts mountConnectorConfigurationCreateScreen and stubs only connectorPutPath("deepl-connector") -- no capability-identity read is exercised'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: 'neither `it` block asserts anything about leaving the screen without submitting'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'neither `it` block queries for or asserts a route to a listing'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: 'neither `it` block asserts a discard/revert act on the form fields'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'the file exercises only the PUT to connectorPutPath("deepl-connector") on submission; no read-connector-configuration call or its three windows are exercised'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: 'the file concerns ConnectorConfigurationCreateScreen only; no capability surface or listing route is exercised'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: 'the `waitFor` assertions on `toast.success` in both `it` blocks, and the `expect(toast.success).not.toHaveBeenCalled()` before the pending PUT resolves'
+    evidence: 'expect(toast.success).toHaveBeenCalledWith("Connector configuration deepl-connector registered."); ... expect(toast.success).not.toHaveBeenCalled();'
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: 'the file concerns connector-configuration registration, never capability registration'
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: 'neither `it` block asserts a navigation/route change after the toast fires -- only that toast.success was called'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'the file concerns connector-configuration registration, never capability registration'
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: 'describe("ConnectorConfigurationCreateScreen -- a successful registration states its outcome, naming the connector submitted (criterion 4)", ...'
+
+looked_past: "the exact toast wording asserted (\"Connector configuration deepl-connector registered.\") is a literal string, but rules/integration/a-submitted-registration-states-its-outcome-to-the-operator itself names wording, control and placement as form left to the interface, so the string is not a fact the node owed and not reported as one; the field labels \"Connector\"/\"Configuration\" the helper queries by are likewise form."

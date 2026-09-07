@@ -2,6 +2,7 @@ import type { JSX } from "react";
 import { useRef } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { UseFormReturn } from "react-hook-form";
+import { Button } from "@tui/ui/button";
 import { useConnectorConfigurationForm } from "../hooks/use-connector-configuration-form";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import { ConnectorConfigurationFormFields } from "./connector-configuration-form-fields";
@@ -20,7 +21,6 @@ export function ConnectorConfigurationCreateScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <Link to="/connectors">Back to connector configurations</Link>
       <h1 className="text-lg font-semibold text-foreground">New connector configuration</h1>
       <ConnectorConfigurationFormFields
         form={state.form}
@@ -28,6 +28,16 @@ export function ConnectorConfigurationCreateScreen(): JSX.Element {
         isEditingIdentity={state.isEditingIdentity}
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
+        trailingActions={
+          <>
+            <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
+            <Button variant="secondary" asChild>
+              <Link to="/connectors">Connectors</Link>
+            </Button>
+          </>
+        }
       />
     </section>
   );

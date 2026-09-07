@@ -1,0 +1,88 @@
+read:
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "manifestPinReleaseCondition, lines 29-54"
+    evidence: "if (pinned.state !== \"released\") {\n      hasUnreleasedEntry = true;\n    }"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "the ReleaseConditionStatus type (line 5) and the status computation in manifestPinReleaseCondition, lines 47-51"
+    evidence: "const status: ReleaseConditionStatus = hasUnreleasedEntry\n    ? \"unmet\"\n    : hasUnreadEntry\n      ? \"undecided\"\n      : \"met\";"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { ApiError } from \"./api-client\";"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export function manifestPinReleaseCondition("
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export function extractReleaseViolations(error: unknown): readonly string[] {"
+  - node: domain/knowledge/case-version
+    held_at: "the `version` field of ReleaseControlState, line 13"
+    evidence: "readonly version: number;"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "for (const entry of manifest) {"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the `pinned.state` read in manifestPinReleaseCondition, line 42"
+    evidence: "if (pinned.state !== \"released\") {"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"./case-version-record\";"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "export type ReleaseCondition = {"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "export type ReleaseCondition = {"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "export type ReleaseControlState = {"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "export type ReleaseControlState = {"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "export type ReleaseControlState = {"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "export function extractReleaseViolations(error: unknown): readonly string[] {"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "export function extractReleaseViolations(error: unknown): readonly string[] {"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "export function extractReleaseViolations(error: unknown): readonly string[] {"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "export function extractReleaseViolations(error: unknown): readonly string[] {"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "readonly version: number;"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "readonly version: number;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "for (const entry of manifest) {"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "readonly canRelease: boolean;"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "for (const entry of manifest) {"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "for (const entry of manifest) {"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "readonly canRelease: boolean;"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "for (const entry of manifest) {"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "readonly canRelease: boolean;"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "the isOpen/onOpenChange and isConfirming/onConfirm fields of ReleaseControlState, lines 16-17 and 22-23"
+    evidence: "readonly isOpen: boolean;\n  readonly onOpenChange: (open: boolean) => void;\n\n  readonly conditions: readonly ReleaseCondition[];\n  readonly violations: readonly string[] | null;\n\n  readonly isConfirming: boolean;\n  readonly onConfirm: () => void;"
+looked_past: "The gate that actually confirms release only on a further explicit curator act, and the surface's explicit statement when a release refusal names no violated rule, are implemented by whatever component wires ReleaseControlState and consumes extractReleaseViolations (candidate rules/knowledge/a-release-refusal-with-no-named-violation-says-so is bound to src/routes/case-version-editor-ready-view.tsx, not this file) — this file only supplies the type shape and the pure data helpers, so that wiring is another file's judgment."
+candidates_opened:
+  - rules/knowledge/a-release-refusal-with-no-named-violation-says-so

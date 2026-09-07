@@ -6,6 +6,7 @@ import { Label } from "@tui/ui/label";
 import { Select } from "@tui/ui/select";
 import { Checkbox } from "@tui/ui/checkbox";
 import { Button } from "@tui/ui/button";
+import { ButtonFooter } from "../shared/components/button-footer";
 import type { HypothesisRevisionFormValues } from "../services/hypothesis-revision-form-schema";
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
@@ -20,6 +21,8 @@ export type HypothesisRevisionFormFieldsProps = {
   readonly recipientOptions: GlossaryVocabularyOptions;
   readonly isSubmitting: boolean;
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+
+  readonly trailingActions?: ReactNode;
 };
 
 function FormField({
@@ -58,6 +61,7 @@ export function HypothesisRevisionFormFields({
   recipientOptions,
   isSubmitting,
   onSubmit,
+  trailingActions,
 }: HypothesisRevisionFormFieldsProps): JSX.Element {
   const {
     register,
@@ -235,11 +239,12 @@ export function HypothesisRevisionFormFields({
         </FormField>
       </div>
 
-      <div className="flex items-center justify-end">
+      <ButtonFooter>
         <Button type="submit" disabled={isSubmitting}>
           Save hypothesis
         </Button>
-      </div>
+        {trailingActions}
+      </ButtonFooter>
     </form>
   );
 }

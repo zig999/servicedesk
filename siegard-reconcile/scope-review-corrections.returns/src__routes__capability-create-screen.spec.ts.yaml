@@ -1,0 +1,66 @@
+findings:
+  - file: src/routes/capability-create-screen.spec.ts
+    where: "the describe blocks for criteria 6 and 7, lines 103–156 (\"a loading state while the concept vocabulary is pending\" and \"a failure state offering a retry when the concept vocabulary fails to load\")"
+    evidence: |
+      expect(await screen.findByText("Loading…")).toBeTruthy();
+      expect(screen.queryByLabelText("Concept")).toBeNull();
+      ...
+      expect(await screen.findByText("Unable to load concepts.")).toBeTruthy();
+      expect(screen.queryByLabelText("Concept")).toBeNull();
+      expect(screen.getByRole("button", { name: "Retry" })).toBeTruthy();
+    cost: "The three-window shape this specification states elsewhere for a registration read (still-being-read / could-not-be-read-with-a-retry / answered, told apart and never presented as one another) is asserted here for a different read — the concept vocabulary listing this create screen depends on — with no node stating that this read gets the same treatment, that the operator is told anything at all while it is outstanding or has failed, or that a retry is owed. A later reader who wants to know what the create screen owes the operator when the concept vocabulary fails to load will search the specification for it and find nothing; the fact lives only in this test and the component it exercises."
+    correction: "State, in the specification, what a surface offering entry against the glossary's concept vocabulary tells the operator while that read is outstanding and where it fails — analogous to a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed and a-presented-connector-configuration-states-an-outstanding-or-failed-read, which state exactly this shape for the capability-by-identity and connector-configuration reads but not for list-concepts."
+    kind: unstated
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "The file's seven describe blocks — \"routing (criteria 1 and 2)\", \"name and version are both editable (criterion 3)\", \"composes the shared form-fields component (criterion 4)\", \"form state reflects the shared create/edit hook's own create-mode default (criterion 5)\", \"a loading state while the concept vocabulary is pending (criterion 6)\", \"a failure state offering a retry when the concept vocabulary fails to load (criterion 7)\", \"a route to the capabilities listing on every reading (criterion 13)\" — contain no test composing then abandoning an entry, and no assertion about where leaving without submitting lands the operator."
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "Same seven describe blocks as above; none tests reaching the create screen at its own address (or by reload) and then leaving without submitting."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the \"Capabilities\" link assertions in the criterion-7 and criterion-13 describe blocks, lines 145–156 and 159–183"
+    evidence: |
+      const footer = screen.getByRole("group", { name: "Actions" });
+      expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
+        "/capabilities",
+      );
+      asserted identically once the form is ready, once while the concept vocabulary is still loading, and once after the concept-vocabulary load has failed — matching the rule's own "conditioned on nothing else" clause.
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No test in this file loads a standing registration or offers a discard-back-to-read-content act; the screen under test is the creation surface, which authors at no identity anything is registered under."
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "No test asserts a return-to-origin act; the one navigation test to /capabilities/new/v7 only checks that the detail screen, not this one, is reached — it does not exercise that screen's own return act."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "\"reaches the capability detail screen, not this create screen, at /capabilities/new/<version>\" only asserts routing (`expect(await screen.findByText(\"Capability Detail Placeholder\")).toBeTruthy();`); it does not exercise or assert the outstanding/failed read states this rule states for that other screen."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "The file concerns capability-create-screen only; no connector-configuration surface, read or route appears anywhere in it."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "Same as above — no connector configuration content anywhere in this file."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "Same as above — no connector configuration authoring or abandonment tested here."
+  - node: rules/integration/a-capability-is-read-only
+    held_at: "the criterion-5 describe block, lines 85–92"
+    evidence: |
+      it("defaults Nature to read-only, the hook's own create-mode default", async () => {
+        ...
+        expect(screen.getByLabelText("Nature").textContent).toBe("read-only");
+      });
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "No test in this file submits a registration to register-capability or asserts a registered/refused outcome; the one Save-and-error test never reaches a submission — it stops at the client-side \"String must contain at least 1 character(s)\" message before any call."
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "\"expect(screen.getByLabelText(\"Output schema\")).toBeTruthy();\" only asserts the field's presence; no assertion in this file states the JSON/properties/type/description guidance this rule requires at that entry."
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "No assertion in this file reads or states a field's name, type or description drawn from an output schema's properties object."
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "No assertion in this file concerns a description's content, meaning-versus-decision or any concept/field description text."
+looked_past: "The aria-describedby/aria-invalid wiring asserted in the criterion-4 validation test, and the client-side zod message \"String must contain at least 1 character(s)\", are an accessibility/technical-validation concern rather than a fact any of this file's fourteen nodes states or contradicts."

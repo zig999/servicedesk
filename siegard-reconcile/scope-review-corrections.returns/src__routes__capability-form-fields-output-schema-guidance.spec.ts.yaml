@@ -1,0 +1,84 @@
+findings:
+  - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+    where: "`findGuidanceParagraph` (lines 15-21) and the criterion 2-6 assertions locating and checking the guidance paragraph (lines 41-100)"
+    evidence: |
+      /o que é inserido aqui é json/i.test(p.textContent ?? "")
+      ...
+      expect(guidance?.textContent).toMatch(
+        /os nomes de campo lidos a partir dele são as chaves do próprio objeto properties de nível superior deste schema/i,
+      );
+    cost: "The five claims rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it requires are locked to their current Portuguese sentences character-for-character, and the very function used to find the paragraph (`findGuidanceParagraph`) depends on one of those exact sentences too. A legitimate rewording of the guidance copy that still states every one of the five claims and adds no sixth — exactly what the node requires — would fail every one of these assertions and the locator itself, so whoever edits the screen's copy must edit this file in lockstep. The node itself states wording is form the interface owns (\"which control carries the statement, its wording... are form and belong to the interface, not here\"), so this file has no standing to require one specific rendering of it; the day the copy is reworded for clarity, nobody reading a failing assertion here can tell whether substance regressed or only phrasing changed."
+    kind: contradicts
+    node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    correction: "Replace the full-sentence literal regexes (and the locator's exact-phrase match) with substance-level checks — presence of the concepts (JSON; the `properties` object; `type`/`description` as semantics; nothing else read; description states meaning not decision) independent of the exact words chosen — so a reworded but substantively unchanged paragraph still passes."
+  - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+    where: "the criterion 8 assertion (lines 122-134)"
+    evidence: |
+      const sentences = (guidance?.textContent ?? "")
+        .split(".")
+        .map((sentence) => sentence.trim())
+        .filter((sentence) => sentence.length > 0);
+      expect(sentences).toHaveLength(5);
+    cost: "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it requires that the surface state exactly five claims and no sixth — a claim count, not a sentence count. Counting period-delimited fragments instead means a paragraph that states the same five claims and nothing else, but renders them across a different number of sentences (a semicolon joining two, or an added clarifying clause with its own period that introduces no new claim), fails this test even though the domain requirement it stands in for is still met — pinning a textual shape the node leaves to the interface as though it were the claim count itself."
+    kind: contradicts
+    node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    correction: "Assert the five claims individually (as criteria 2-6 do) and drop the sentence-count proxy, or state the intent as a claim-count check rather than a `.` split."
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "The file's whole scope is `CapabilityFormFields — the output-schema guidance...`; nothing in it composes, submits or abandons a capability registration entry."
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "No test in this file navigates away from, reloads, or asserts a landing destination for either authoring surface; every test stays on the mounted create screen and asserts only the guidance paragraph or the Save button."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "No test asserts a route or link to `list-capabilities`; the only navigation-adjacent assertion is `screen.findByLabelText(\"Connector\")`, used to await the mounted form."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No discard act is exercised; `fillValidForm` is used only to reach a state where the Save button's disabled attribute is asserted (lines 164-188)."
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "The file mounts only `mountCapabilityCreateScreen` and `mountCapabilityDetailScreen`; no test asserts where any act lands the operator."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "No test asserts a still-being-read or could-not-be-read statement; every assertion targets the static guidance paragraph beside the Output schema field."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "The file imports only capability-create-screen and capability-detail-screen test-support (lines 3-9); no connector-configuration surface is mounted or asserted."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "Same imports as above (lines 3-9): no connector-configuration surface appears anywhere in this file."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No connector-configuration authoring surface is mounted or exercised in this file."
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "The nearest test, `expect(guidance?.textContent ?? \"\").not.toMatch(/somente leitura|read-only|natureza/i);` (lines 149-156), checks only that the guidance paragraph names no read-only vocabulary; it exercises no registration submission and asserts nothing about a 422 refusal or `CapabilityNotReadOnlyError`, which is this node's own fact."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "No test submits a registration or asserts a stated outcome; the `fillValidForm` calls (lines 161-188) only populate fields to probe the Save button's disabled state."
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: "the criterion 1-9 describe blocks (lines 23-157), which locate the guidance paragraph, assert each of its five stated claims, and assert the absence of a worked example, a sixth claim, and check/refusal vocabulary"
+    evidence: |
+      expect(guidance?.textContent ?? "").not.toMatch(/\d/);
+      ...
+      expect(sentences).toHaveLength(5);
+  - node: domain/investigation/field-semantics
+    held_at: "the criterion 3 and criterion 4 assertions (lines 52-76)"
+    evidence: |
+      expect(guidance?.textContent).toMatch(
+        /os nomes de campo lidos a partir dele são as chaves do próprio objeto properties de nível superior deste schema/i,
+      );
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: "the criterion 6 assertion (lines 89-100) and the third criterion 10 behavioral test (lines 178-188)"
+    evidence: |
+      expect(guidance?.textContent).toMatch(
+        /uma description aqui declara o que seu valor significa e não nomeia nenhuma decisão/i,
+      );
+      ...
+      fillValidForm({
+        outputSchema:
+          '{"properties":{"status":{"type":"string","description":"quando 2, confirme a hipótese"}}}',
+      });
+      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+looked_past: "The 'disclosed inferences' section's Portuguese-language and CSS-class/parent-text assertions (lines 191-212) pin styling and language choices, but these are implementation form rather than domain fact, and their brittleness is an ordinary test-quality matter, not this pass's to report."

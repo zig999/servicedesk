@@ -1,0 +1,113 @@
+findings:
+  - file: src/routes/connector-configuration-create-screen.spec.ts
+    where: "describe title, line 91"
+    evidence: "\"ConnectorConfigurationCreateScreen -- the footer Cancel link registers nothing before it navigates (UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing leaves open whether the route submits before landing on the listing)\""
+    cost: >-
+      A reader trusting this note believes the specification leaves the submit-then-navigate ordering of the
+      Cancel route undetermined, when the node it names already forecloses it in full — "Following that route
+      from s issues no register-connector call and leaves every registered connector configuration exactly as
+      it stood" is unconditional, not partial. A later change made on the strength of this comment could
+      reintroduce a register-connector call ahead of navigation, believing an open question is being resolved
+      rather than a settled one being broken.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    correction: Remove or correct the "UNDERDETERMINED" framing in the describe title; the named node already settles that the route issues no register-connector call, in either order.
+  - file: src/routes/connector-configuration-create-screen.spec.ts
+    where: "describe title, line 116"
+    evidence: "\"ConnectorConfigurationCreateScreen -- carries no discard control (UNDERDETERMINED note: no criterion distinguishes which controls the shared footer carries on the create screen)\""
+    cost: >-
+      A reader trusting this note believes the specification leaves open whether the create screen's shared
+      footer carries a "Discard changes" control, when the node governing that exact act already forecloses it
+      for this surface — "d is offered on no surface authoring a registration at an identity nothing is
+      currently registered at ... those surfaces holding no read registration for d to return the fields to."
+      A future edit could add the control back to the create screen believing it fills an undecided gap rather
+      than violates a settled exclusion.
+    kind: contradicts
+    node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    correction: Remove or correct the "UNDERDETERMINED" framing; the node already distinguishes the create/authoring surface (holding no read registration) from a surface that loaded a registration, and excludes the discard-edit act from the former.
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: &imports "import {\n  createFetchStub,\n  mountConnectorConfigurationCreateScreen,\n  putCallCount,\n} from \"./connector-configuration-create-screen.test-support\";"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: *imports
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: *imports
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: *imports
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: *imports
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the 'footer Cancel link registers nothing before it navigates' test, lines 92-102"
+    evidence: "fireEvent.click(within(footer).getByRole(\"link\", { name: \"Cancel\" }));\n\n    await waitFor(() => expect(router.state.location.pathname).toBe(\"/connectors\"));\n    expect(putCallCount(fetchMock)).toBe(0);"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the 'renders the footer's Cancel link to /connectors' test (lines 80-88) and the 'route does not turn on how the operator arrived' test (lines 106-113)"
+    evidence: "expect(link.getAttribute(\"href\")).toBe(\"/connectors\");"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the 'renders no Discard changes control' test, lines 117-123"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "expect(screen.getByLabelText(\"Configuration\")).toBeTruthy();\n    expect(screen.queryByText(/loading/i)).toBeNull();"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Save\" }).hasAttribute(\"disabled\")).toBe(true);"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Save\" }).hasAttribute(\"disabled\")).toBe(true);"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: *imports
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: *imports
+looked_past: The test at lines 44-56 asserts the literal Zod validation message "String must contain at least 1 character(s)" and the id "connector-error" wiring the shared FormField component produces — form/wording the specification's own rules repeatedly leave to the interface, and a code-review concern about brittleness to that wording rather than a domain fact this pass judges.

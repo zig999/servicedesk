@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { afterEach, describe, expect, it, vi } from \"vitest\"; — the file exercises only rendered footer controls of the connector-configuration screens; no assertion concerns authentication or its disclosure."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import { createFetchStub as createCreateScreenFetchStub, mountConnectorConfigurationCreateScreen } from \"./connector-configuration-create-screen.test-support\"; — the file imports only connector-configuration test supports, none touching the capability registry."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "same import block above — nothing in the file mounts or asserts against a case, draft or hypothesis surface."
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "same import block above — no case-version content is read or asserted."
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "same import block above — no hypothesis content is read or asserted."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "same import block above — no hypothesis-revision content is read or asserted."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "same import block above — the file mounts only connector-configuration create/detail screens, never a capability surface."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" })).toBeTruthy(); — this only asserts the Cancel control's presence and label; it makes no assertion that leaving via Cancel registers nothing or returns the operator to the surface authoring was reached from."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the third describe block, \"renders exactly one link on the screen, the footer's Cancel, resolving to /connectors\""
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" })).toBe(links[0]);\n    expect(links[0].getAttribute(\"href\")).toBe(\"/connectors\");"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"button\", { name: \"Discard changes\" })).toBeTruthy(); — only the control's presence and label are asserted; nothing verifies that performing it returns the form's fields to the loaded registration's content, or that it stays on the surface."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "await screen.findByLabelText(\"Configuration\"); — the file waits for the loaded state and never asserts the outstanding or failed presentations this node requires."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "same import block above — no capability surface is mounted."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "same import block above — no submission is issued or asserted in this file."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "same import block above — no capability registration is exercised."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "same import block above — no submission or navigation-on-success is exercised; only static rendering is asserted."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "same import block above — no capability authoring surface is mounted."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "same import block above — no case version or lifecycle call appears."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "same import block above — no draft case version is presented."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "same import block above — no hypothesis revision is exercised."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "same import block above — no draft case version creation is exercised."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "same import block above — no manifest or release is exercised."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "same import block above — no revise call is exercised."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "same import block above — no revise call is exercised."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "same import block above — no release-offering surface is mounted."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "same import block above — no case-version editing surface is mounted."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "same import block above — no revision-composition surface is mounted."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "same import block above — no case-version discard is exercised."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "same import block above — no release or discard act is exercised."
+looked_past: The create screen's Cancel link is hardcoded to "/connectors" (frontend/app/src/routes/connector-configuration-create-screen.tsx, `<Link to="/connectors">Cancel</Link>`) rather than to the surface the authoring was reached from, which rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering requires — that is a question about that production file's own conformance, not about what this test file itself enunciates.

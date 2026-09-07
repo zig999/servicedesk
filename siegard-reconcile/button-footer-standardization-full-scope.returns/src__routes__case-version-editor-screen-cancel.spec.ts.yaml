@@ -1,0 +1,149 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      describe("Cancel returns the curator to the screen the editing was actually reached from (criterion 3)"
+    # the file exercises only the Cancel control's navigation and write-suppression; no assertion touches authentication disclosure
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # the file mounts only the case-version editor screen; no capability-registry read or write is exercised
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |-
+      expect(patchCallCount(fetchMock)).toBe(0);
+    # the file asserts absence of a PATCH after Cancel; it never exercises create-draft, release, discard or the manifest operations this contract publishes
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      fireEvent.change(titleInput, { target: { value: "Never saved" } });
+    # the file edits the title field only to trigger dirtiness before Cancel; it asserts nothing about the aggregate's own attributes or manifest
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no hypothesis or its revision is read, composed or asserted on in this file
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no hypothesis-revision is read, composed or asserted on in this file
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no capability surface is mounted or exercised here
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no connector-configuration authoring surface is mounted or exercised here
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no connector-configuration surface is present in this file
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # this file's Cancel does leave the surface (it navigates elsewhere); it is not the loaded-registration discard-in-place act this rule governs, and no capability/connector surface is exercised
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no connector-configuration read states are exercised
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no capability surface is exercised
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      expect(patchCallCount(fetchMock)).toBe(0);
+    # this file asserts a submission is never made on Cancel; it never exercises a submitted registration's outcome
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no capability registration is submitted in this file
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no connector-configuration registration is submitted in this file
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: |-
+      import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+    # no capability authoring is exercised in this file
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: |-
+      expect(patchCallCount(fetchMock)).toBe(0);
+    # the file asserts no update is sent, but exercises no lifecycle transition (release) or its refusal
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # this file mounts an already-loaded version (baseHandlers' GET) and never asserts on a newly-created draft's pending-read presentation
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no hypothesis revision is composed in this file
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # this file does not exercise a newly created draft or the interval before its record arrives
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no release or manifest content is asserted on in this file
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no hypothesis revise is exercised in this file
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no hypothesis revise is exercised in this file
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no release-conditions disclosure is asserted on in this file
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: "the two `it` blocks of the describe at line 60, exercising Cancel: the navigation assertion at lines 61-75 and the no-write assertion at lines 77-89"
+    evidence: |-
+      fireEvent.click(await screen.findByRole("button", CANCEL_BUTTON));
+
+      await waitFor(() => {
+        expect(router.state.location.pathname).toBe(openedFrom);
+      });
+      ...
+      fireEvent.click(screen.getByRole("button", CANCEL_BUTTON));
+
+      expect(patchCallCount(fetchMock)).toBe(0);
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no hypothesis-revision composition is exercised in this file; the abandonment tested here is over a case-version edit, a different surface
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no discard is exercised or asserted on in this file
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: |-
+      const titleInput = await screen.findByLabelText("Title");
+    # no release or discard confirmation act is exercised in this file; Cancel here is the leaving act of a different rule
+looked_past: the second test asserts only that no PATCH call is issued on Cancel, without also checking that no other write (e.g. a manifest place/remove call) is issued, and the file's only reference to a task criterion ("criterion 3") in a test title is a plan citation rather than a domain claim — both are the coverage pass's to weigh, not this one's.

@@ -1,0 +1,122 @@
+findings:
+  - file: src/routes/connector-configuration-detail-ready-view.tsx
+    where: "the justSaved status message, lines 82-87"
+    evidence: |-
+      {state.justSaved && (
+
+              <p role="status" className="text-sm text-foreground">
+                Saved.
+              </p>
+            )}
+    cost: An operator who just submitted a replacement registration is told only "Saved." — nothing here names the connector name that now stands registered, and this file states no distinguishable message for a refused submission at all, so an operator relying on this surface cannot tell what was registered nor, on a failure, which condition answered it; they would have to reload or reread the registry to be sure the write they intended is the write that happened.
+    kind: contradicts
+    correction: State, alongside the success confirmation, the connector name the submission registered, and render a distinguishable statement for a refused submission naming the condition the registry answered.
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  - file: src/routes/connector-configuration-detail-ready-view.tsx
+    where: "the Cancel control, lines 88-90"
+    evidence: |-
+      <Button variant="secondary" asChild>
+              <Link to="/connectors">Cancel</Link>
+            </Button>
+    cost: An operator who reached this authoring surface from anywhere other than the connectors listing — for instance immediately after a successful registration, which a-successful-connector-registration-lands-on-the-configurations-own-surface lands them on this very surface for — is sent to the fixed /connectors listing rather than back to where they came from, losing the place they were working from with no way back except constructing the address themselves.
+    kind: contradicts
+    correction: Return the operator to the surface the authoring was reached from rather than a hardcoded /connectors destination.
+    node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "nowhere directly — the view consumes state already built from the registry's operations rather than invoking read-connector-configuration, list-connector-configurations or register-connector itself"
+    evidence: "configurationText={state.registeredConfigurationText}"
+  - node: domain/integration/connector-configuration
+    held_at: "the configuration validity check and the connector name prop"
+    evidence: "{!state.configuration.isValid && ("
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the Cancel control, lines 88-90 — see findings"
+    evidence: "<Link to=\"/connectors\">Cancel</Link>"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the invalid-configuration warning shown while !state.configuration.isValid"
+    evidence: "This connector configuration's stored value must be a JSON object. Correct it before Save can succeed."
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: "the ConnectorTestPanel's configurationText prop, fed from the registered text rather than the live edited form"
+    evidence: "configurationText={state.registeredConfigurationText}"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the Discard dialog — trigger disabled while the edit is not dirty, effect taken only on the dialog's own explicit confirm"
+    evidence: "disabled={!state.isDirty || state.isSubmitting}"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the justSaved status message — see findings"
+    evidence: "Saved."
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "role=\"alert\""
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "nowhere — this component only ever renders the ready phase"
+    evidence: "readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the Cancel control, an unconditional route to the listing present regardless of read state"
+    evidence: "<Link to=\"/connectors\">Cancel</Link>"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "nowhere — this component only ever renders once the read has answered (phase \"ready\"); the outstanding and failed windows are a phase this file never handles"
+    evidence: "readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "nowhere — onSubmit is passed straight through with no post-success navigation logic in this file"
+    evidence: "onSubmit={state.onSubmit}"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps"
+looked_past: The extra disable condition on the Discard trigger (isSubmitting, beyond the dirty check the node turns on) and the wording of the invalid-configuration and discard-dialog copy are interface form, not a domain-fact departure, and are not reported here.

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
 
 export type CapabilityDetailViewState =
-  | Extract<CapabilityDetailState, { phase: "loading" | "load-error" }>
+  | Extract<CapabilityDetailState, { phase: "loading" | "load-error" | "not-registered" }>
   | (Extract<CapabilityDetailState, { phase: "ready" }> & {
 
       readonly onDiscard: () => void;

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { apiFetch } from "../services/api-client";
+import { toast } from "sonner";
+import { apiFetch, ApiError } from "../services/api-client";
 import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
 import {
   capabilityFormSchema,
@@ -10,11 +12,16 @@ import {
 } from "../services/capability-form-schema";
 import { useConceptOptions, type ConceptOption } from "./use-concept-options";
 import type { Capability } from "./use-capabilities";
-import type { JsonSchemaFieldState } from "./use-capability-form";
+import { saveFailureMessage, type JsonSchemaFieldState } from "./use-capability-form";
 
 export type CapabilityDetailState =
-  | { readonly phase: "loading" }
-  | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | { readonly phase: "loading"; readonly onCancel: () => void }
+  | {
+      readonly phase: "load-error";
+      readonly retryLoad: () => void;
+      readonly onCancel: () => void;
+    }
+  | { readonly phase: "not-registered"; readonly onCancel: () => void }
   | {
       readonly phase: "ready";
       readonly form: UseFormReturn<CapabilityFormValues>;
@@ -26,12 +33,23 @@ export type CapabilityDetailState =
 
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+      readonly onCancel: () => void;
     };
 
 export function useCapabilityDetail(name: string, version: string): CapabilityDetailState {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const navigate = useNavigate();
 
   const isSubmittingRef = useRef(false);
+
+  const onCancel = (): void => {
+    if (router.history.canGoBack()) {
+      router.history.back();
+      return;
+    }
+    void navigate({ to: "/capabilities" });
+  };
 
   const [inputSchemaValue, setInputSchemaValue] = useState("");
   const [inputSchemaValid, setInputSchemaValid] = useState(true);
@@ -93,13 +111,15 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
         },
       ),
     onSuccess: (_data, values) => {
-
       form.reset(values);
       setInputSchemaBaseline(inputSchemaValue);
       setOutputSchemaBaseline(outputSchemaValue);
 
       void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
       void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+    },
+    onError: (error) => {
+      toast.error(saveFailureMessage(error));
     },
   });
 
@@ -115,17 +135,31 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     setOutputSchemaValid(isValid);
   }, []);
 
-  if (query.isError || isConceptsError) {
+  if (query.isError) {
+    if (query.error instanceof ApiError && query.error.code === "CapabilityIdentityNotFoundError") {
+      return { phase: "not-registered", onCancel };
+    }
     return {
       phase: "load-error",
       retryLoad: () => {
         void query.refetch();
         conceptOptions.refetch();
       },
+      onCancel,
+    };
+  }
+  if (isConceptsError) {
+    return {
+      phase: "load-error",
+      retryLoad: () => {
+        void query.refetch();
+        conceptOptions.refetch();
+      },
+      onCancel,
     };
   }
   if (query.isLoading || isLoadingConcepts || !query.data) {
-    return { phase: "loading" };
+    return { phase: "loading", onCancel };
   }
 
   const isDirty =
@@ -169,5 +203,6 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     isSubmitting: mutation.isPending,
     isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
+    onCancel,
   };
 }

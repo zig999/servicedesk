@@ -1,0 +1,70 @@
+findings:
+  - file: src/hooks/use-capability-form.ts
+    where: "SAVE_FAILURE_MESSAGE_BY_KIND['incomplete-capability-contract'], lines 46-47"
+    evidence: "\"This capability does not declare its contract completely; every field of its contract is required.\""
+    cost: "An operator who omitted only the timeout is told by this message that every field of the contract is required, but rules/integration/a-capability-declares-its-contract has a registration that states no timeout take the default of sixty seconds rather than being refused as incomplete — the message asserts a stricter rule than the registry enforces, and the next reader who wants the timeout's real default behavior finds it contradicted here instead of confirmed."
+    kind: contradicts
+    node: rules/integration/a-capability-declares-its-contract
+    correction: "State the condition without the blanket \"every field of its contract is required\" claim, or except timeout's stated default from it, so the message does not assert a completeness rule stricter than the one the node states."
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "the mutation's mutationFn, issuing the registry's register-capability operation"
+    evidence: "apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`, { method: \"PUT\", ... })"
+  - node: domain/integration/capability
+    held_at: "the form's defaultValues and the mutation body, together carrying all eight declared attributes"
+    evidence: "name: existing?.name ?? \"\", version: existing?.version ?? \"\", nature: existing?.nature ?? \"read-only\", timeout: existing?.timeout, connector: existing?.connector ?? \"\", concept: existing?.concept ?? \"\", ... body: JSON.stringify({ nature: values.nature, input_schema: ..., output_schema: ..., timeout: values.timeout, connector: values.connector, concept: values.concept })"
+  - node: domain/integration/capability-registry
+    held_at: "the same mutationFn (register-capability); resolve-concept is not exercised by this hook"
+    evidence: "apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`, { method: \"PUT\", ... })"
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: "nowhere structurally — the completeness check is server-side; the file only echoes the outcome, and overstates it"
+    evidence: "\"incomplete-capability-contract\": \"This capability does not declare its contract completely; every field of its contract is required.\""
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the client-side submit gate and the matching outcome message"
+    evidence: "if (!inputSchemaValid || !outputSchemaValid) { return; } ... \"capability-schema-not-well-formed\": \"The input schema or the output schema is not syntactically valid JSON.\""
+  - node: rules/integration/a-capability-is-read-only
+    held_at: "the default nature value and the matching outcome message"
+    evidence: "nature: existing?.nature ?? \"read-only\" ... \"capability-not-read-only\": \"This capability's declared nature is not read-only; the registry only accepts read-only capabilities.\""
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the mutation's onSuccess and onError handlers"
+    evidence: "onSuccess: (_data, values) => { toast.success(`Capability ${values.name} ${values.version} registered.`); ... }, onError: (error) => { toast.error(saveFailureMessage(error)); }"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "onCancel, which never calls the mutation and returns the operator to the surface it was reached from"
+    evidence: "const onCancel = (): void => { if (router.history.canGoBack()) { router.history.back(); return; } void navigate({ to: \"/capabilities\" }); };"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "the same onCancel's fallback branch"
+    evidence: "void navigate({ to: \"/capabilities\" });"
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: "the matching outcome message"
+    evidence: "\"concept-already-answered\": \"Another capability already answers this concept; each concept resolves to exactly one capability.\""
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "CapabilityFormState exposes only onCancel, retryLoad, onSubmit and the form fields — no route-to-listing action independent of onCancel"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "CapabilityFormState's \"ready\" phase exposes only form, conceptOptions, inputSchema, outputSchema, isEditingIdentity, isSubmitting, onSubmit, onCancel — no discard-without-leaving act"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "onCancel, returned unconditionally from every phase"
+    evidence: "{ readonly phase: \"loading\"; readonly onCancel: () => void }, { readonly phase: \"load-error\"; ...; readonly onCancel: () => void }, and the \"ready\" phase's own onCancel"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere — the loading/failed phases here are driven by the concept-options read, not a capability-by-identity read
+    evidence: "if (conceptOptions.isError) { return { phase: \"load-error\", retryLoad: () => conceptOptions.refetch(), onCancel }; } if (conceptOptions.isLoading) { return { phase: \"loading\", onCancel }; }"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere — this file addresses capability registration only
+    evidence: "the mutation's endpoint `/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`, the only registry surface this file calls"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere — same reason
+    evidence: "no connector-configuration read or state appears anywhere in this file"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere — same reason
+    evidence: "no connector-configuration authoring or abandonment appears anywhere in this file"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere — the file tracks schema text and validity but states nothing to the operator about what is read from it
+    evidence: "export type JsonSchemaFieldState = { readonly value: string; readonly isValid: boolean; readonly onChange: (value: string, isValid: boolean) => void; };"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "export type JsonSchemaFieldState = { readonly value: string; readonly isValid: boolean; readonly onChange: (value: string, isValid: boolean) => void; };"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere — the file carries no description-entry content
+    evidence: "no `description` field or entry copy appears anywhere in this file"
+looked_past: "the read-only and concept-already-answered outcome messages also paraphrase their governing rules' general policy alongside the specific condition, but their wording is left to the interface by a-submitted-registration-states-its-outcome-to-the-operator's own carve-out, and neither states something the node does not — only the incomplete-capability-contract message states a completeness claim the node's own timeout exception makes false, so only that one is reported."

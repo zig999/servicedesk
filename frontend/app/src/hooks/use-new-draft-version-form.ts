@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -38,6 +38,7 @@ type CreatedDraft = {
 
 export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {
   const navigate = useNavigate();
+  const router = useRouter();
   const telemetry = useTelemetry();
   const isSubmittingRef = useRef(false);
   const [created, setCreated] = useState<{ readonly version: number } | null>(null);
@@ -105,8 +106,7 @@ export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState 
         });
       }
     } catch {
-      // Nothing further to tell the curator beyond the toast already shown;
-      // see this function's own header comment.
+      return;
     }
   }
 
@@ -215,8 +215,9 @@ export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState 
     recipientOptions,
     onSubmit: submit,
 
-    onFieldBlur: () => {
-      // Deliberately no-op; see this property's own comment above.
+    onFieldBlur: () => {},
+    onCancel: () => {
+      router.history.back();
     },
 
     isFirstVersion: latestReleasedVersionNumber === undefined,

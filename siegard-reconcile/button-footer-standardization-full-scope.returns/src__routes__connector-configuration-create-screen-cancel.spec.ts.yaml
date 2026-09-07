@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "describe(\"ConnectorConfigurationCreateScreen -- offers no discard control, having read no registration (criterion 6)\", ...) — the file asserts nothing about an authentication disclosure on any screen"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import { connectorPutPath, createFetchStub, jsonResponse, mountConnectorConfigurationCreateScreen, putCallCount } from \"./connector-configuration-create-screen.test-support\"; — no capability-registry operation is invoked or asserted"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file's two describe blocks exercise only the connector-configuration create screen's Cancel and discard-control behavior; no case, draft or hypothesis operation appears"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the file holds no reference to a case version, its state or its manifest"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "the file holds no reference to a hypothesis"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "the file holds no reference to a hypothesis-revision"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file mounts only ConnectorConfigurationCreateScreen and asserts nothing about a capability-keyed surface's outstanding or failed read"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the second describe block's it(), the assertions after the Cancel click"
+    evidence: "fireEvent.click(screen.getByRole(\"link\", { name: \"Cancel\" }));\n\n    await waitFor(() => expect(router.state.location.pathname).toBe(\"/connectors\"));\n    expect(putCallCount(fetchMock)).toBe(0);"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the same Cancel-click assertions"
+    evidence: "await waitFor(() => expect(router.state.location.pathname).toBe(\"/connectors\"));"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the first describe block's it(), \"renders no Discard changes control\""
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the mounted screen is the create screen, which reads no registration; the file asserts nothing about an outstanding or failed read window"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file concerns the connector-configuration create screen, not a capability surface"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0); — no submission is made in this file, so no submitted-registration outcome is asserted"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "the file asserts nothing about a capability registration succeeding or its destination"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the fetch stub registers a PUT handler at connectorPutPath(\"deepl-connector\") but the test asserts putCallCount(fetchMock)).toBe(0) — no successful registration ever occurs for this file to state a landing surface for"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file concerns a connector-configuration authoring surface, not a capability registration entry"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "the file holds no case-version lifecycle call or assertion"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "the file holds no draft case-version content assertion"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "the file holds no hypothesis-revise call or assertion"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "the file holds no create-draft call or assertion"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file holds no manifest or release assertion"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file holds no revise call or assertion of a revision number"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "the file holds no revise call or manifest-route assertion"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "the file holds no release-condition assertion"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "the file holds no case-version edit or abandonment assertion"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "the file holds no hypothesis-revision composition or abandonment assertion"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "the file holds no case-version discard call or assertion"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "the file holds no release or discard confirmation-act assertion"
+looked_past: The describe block labels this Cancel test "criterion 7" (the abandonment rule) while the literal destination it asserts, "/connectors", is exactly what the neighbouring listing-route rule commits to and the abandonment rule leaves generic ("wherever the authoring surface was reached from") — whether the abandonment rule's own dynamic-destination requirement is exercised anywhere, as opposed to only this fixed-destination case, is a coverage question for another pass, not a domain fact this file states falsely.

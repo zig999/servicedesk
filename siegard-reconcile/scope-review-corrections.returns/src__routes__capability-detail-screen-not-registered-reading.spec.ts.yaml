@@ -1,0 +1,51 @@
+findings:
+  - file: src/routes/capability-detail-screen-not-registered-reading.spec.ts
+    where: "line 21, `await screen.findByText(\"Unable to load this capability right now.\");`"
+    evidence: "await screen.findByText(\"Unable to load this capability right now.\");"
+    cost: "The decision log records, three times over, that no node states what the capability detail surface presents to the operator on the reading where the identity-keyed read answered that nothing is registered at that name and version (rule a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed explicitly excepts this refusal from its own failed window, calling it \"its own answer and not this window,\" and its neighbouring log entries call the surface's actual statement in this reading \"noticed and not decided\" — twice for the capability side specifically). This assertion fixes that undecided fact to one literal string, and the source (capability-detail-screen.tsx) reuses the exact same text for the genuinely-failed window, so a reader who wants to know what this reading states finds the answer only in this test and in the component's own duplicated string, never in a node; a future change that gave the not-registered reading its own wording (the way the connector-configuration sibling already got one) would break silently against a test the specification gives it no standing to hold."
+    kind: unstated
+    correction: "State, in a node constraining domain/integration/capability, what the capability detail surface tells the operator on the reading where read-capability-by-identity answered that nothing is registered at that name and version — closing the silence the log already discloses twice — and have this test assert against that decided statement rather than a literal only the test and the component agree on."
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- no field-restoring control renders where the read answered that nothing is registered at that name and version (criterion 18)\""
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- no field-restoring control renders where the read answered that nothing is registered at that name and version (criterion 18)\""
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "it(\"renders no Discard control in the nothing-registered reading\", async () => { ... await mountCapabilityDetailScreen(fetchMock); await screen.findByText(\"Unable to load this capability right now.\"); expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull(); });"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "line 22"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "it(\"renders no Discard control in the nothing-registered reading\", async () => { ... await screen.findByText(\"Unable to load this capability right now.\"); expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull(); });"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "const fetchMock = createFetchStub({ [CAPABILITY_PATH]: () => errorResponse(\"CapabilityIdentityNotFoundError\", 404), });"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "import { CAPABILITY_PATH, createFetchStub, errorResponse, mountCapabilityDetailScreen } from \"./capability-detail-screen.test-support\";"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "import { CAPABILITY_PATH, createFetchStub, errorResponse, mountCapabilityDetailScreen } from \"./capability-detail-screen.test-support\";"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "import { CAPABILITY_PATH, createFetchStub, errorResponse, mountCapabilityDetailScreen } from \"./capability-detail-screen.test-support\";"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "const fetchMock = createFetchStub({ [CAPABILITY_PATH]: () => errorResponse(\"CapabilityIdentityNotFoundError\", 404), });"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "const fetchMock = createFetchStub({ [CAPABILITY_PATH]: () => errorResponse(\"CapabilityIdentityNotFoundError\", 404), }); await mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "await screen.findByText(\"Unable to load this capability right now.\"); expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "await screen.findByText(\"Unable to load this capability right now.\"); expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "await screen.findByText(\"Unable to load this capability right now.\"); expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+looked_past: "The test omits any assertion that the route-to-listing and return-to-origin controls actually render on this reading, despite the describe title and the task's own criterion naming both; that is a coverage gap for a different pass to weigh, not a conformance departure, so it is not reported as a finding here."

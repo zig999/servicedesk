@@ -1,0 +1,114 @@
+findings:
+  - file: src/routes/case-version-editor-screen-release-checklist.spec.ts
+    where: "the it block \"states the manifest-pin condition as Met, vacuously, for a manifest holding no entry (this task's own inference)\", lines 55-65"
+    evidence: |-
+      [`GET ${VERSION_PATH}`]: () => jsonResponse({ ...DRAFT_RECORD, manifest: [] }),
+      ...
+      expect(within(region).getByText(`Met: ${CONDITION_TEXT}`)).toBeTruthy();
+    cost: "The test stubs the version's own read endpoint to succeed with a 200 payload carrying an empty manifest, and asserts the screen renders that as an ordinary draft whose manifest-pin condition reads Met. `rules/knowledge/a-case-has-at-least-one-hypothesis` holds `manifest` to at least one entry, `rules/knowledge/validation-runs-at-every-read` makes every stored version — draft or released — read as a case only while every such validator rule holds at that reading, and `rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name` states that a read naming a version failing one of those rules is refused with an HTTP 409 CaseVersionNotValidError rather than answered at all. This test locks in, as passing behavior, a read the specification says can never succeed with this content — a maintainer trusting the suite would believe an empty-manifest draft is a reachable, normally-rendered state, and code written to keep this test green would be normalizing a read the domain refuses outright."
+    kind: contradicts
+    correction: "Either remove this scenario (the state it fixtures — a successful 200 read of a version whose manifest holds no entry — cannot occur per the specification) or restate the fixture as the refusal `a-case-version-failing-validation-at-a-read-is-refused-by-name` describes, and test whatever the screen does with a failed/invalid read instead of asserting a Met checklist over it."
+    node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "expect(screen.queryByRole(\"dialog\")).toBeNull();"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "jsonResponse({ ...DRAFT_RECORD, manifest: [] })"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "hypothesis: { name: \"second-hypothesis\" },"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "revision: 1, criterion: \"Some other criterion\", collects: [\"late-payment\"],"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "import { createFetchStub, DRAFT_MANIFEST_HYPOTHESIS_NAME, DRAFT_RECORD, hypothesisRevisionsPage, hypothesisRevisionsPath, jsonResponse, mountCaseVersionEditor, releaseHandlers, VERSION_PATH } from \"./case-version-editor-release.test-support\";"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "expect(screen.queryByRole(\"dialog\")).toBeNull();"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "await mountCaseVersionEditor(fetchMock);"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "hypothesis: { name: \"second-hypothesis\" }, revision: 1, criterion: \"Some other criterion\","
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "await mountCaseVersionEditor(fetchMock);"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the CONDITION_TEXT constant and every it block's Met/Not met text keyed off hypothesis-revision state, lines 20 and 28/52/64/89/105/121"
+    evidence: |-
+      const CONDITION_TEXT = "Every manifest entry references a released hypothesis revision";
+      ...
+      await within(region).findByText(`Not met: ${CONDITION_TEXT}`);
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "revision: 1, criterion: \"Some other criterion\", collects: [\"late-payment\"],"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "await mountCaseVersionEditor(fetchMock);"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "every it block's findByRole(\"region\", CONDITIONS_REGION) and its Met/Not met/Not yet decided assertions, lines 27-30, 51-53, 63-65, 88-91, 104-108, 120-123"
+    evidence: |-
+      const CONDITIONS_REGION = { name: "Release conditions" };
+      ...
+      const region = await screen.findByRole("region", CONDITIONS_REGION);
+      await within(region).findByText(`Not yet decided: ${CONDITION_TEXT}`);
+      expect(within(region).queryByText(`Met: ${CONDITION_TEXT}`)).toBeNull();
+      expect(within(region).queryByText(`Not met: ${CONDITION_TEXT}`)).toBeNull();
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "await mountCaseVersionEditor(fetchMock);"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "hypothesis: { name: \"second-hypothesis\" },"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "expect(screen.queryByRole(\"dialog\")).toBeNull();"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "expect(screen.queryByRole(\"dialog\")).toBeNull();"
+
+looked_past: "The exact copy 'Met:'/'Not met:'/'Not yet decided:', the region name \"Release conditions\", and CONDITION_TEXT's literal wording are form the governing rule explicitly leaves to the interface, so I did not flag them; the vacuous-truth reasoning itself (empty conjunction over zero manifest entries) is a sound derivation from the rule's own universally-quantified expression and is not, on its own, an unstated fact — only the fixture that makes that state reachable through a successful read is."
+
+candidates_opened:
+  - rules/knowledge/a-case-has-at-least-one-hypothesis
+  - rules/knowledge/validation-runs-at-every-read
+  - rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  - rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case

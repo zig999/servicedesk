@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/buttonfooter/frontend/app/src/shared/components/button-footer.spec.ts
+  28:12  error  Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"  testing-library/no-container
+  37:12  error  Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"  testing-library/no-container
+  46:12  error  Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"  testing-library/no-container
+  55:12  error  Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"  testing-library/no-container
+
+✖ 4 problems (4 errors, 0 warnings)
+

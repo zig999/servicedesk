@@ -1,0 +1,44 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'the file''s one test only mounts the detail screen against a capability read that never resolves and checks a listing link in the footer; it makes no register-capability call and asserts nothing about abandoning a composed entry'
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: 'no assertion in the file concerns a surface reached from nothing or a return-to-origin act; the only destination checked is the footer link''s href'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: 'lines 23-26, the footer-link assertion'
+    evidence: 'const footer = screen.getByRole("group", { name: "Actions" });\n    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(\n      "/capabilities",\n    );'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: 'the test never loads a registration or edits a field; the capability read is stubbed to never resolve, so there is no loaded content to discard'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: 'the file checks only the listing route in the footer; it makes no assertion about an act that lands the operator on the surface the detail screen was reached from'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: 'line 22, the outstanding-read assertion'
+    evidence: 'await screen.findByText(/Loading capability/);'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'the file mounts CapabilityDetailScreen only; it makes no assertion about any connector configuration surface'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'the file mounts CapabilityDetailScreen only; no connector configuration read is exercised'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: 'the file mounts CapabilityDetailScreen only; no connector configuration authoring surface is exercised'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: 'the test asserts nothing about a capability''s nature or a registry refusal for a non-read-only capability'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: 'the stubbed capability read never resolves and no register-capability call is made or awaited in this file, so no submission outcome is exercised'
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: 'the file presents no output-schema entry surface at all'
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: 'the file asserts nothing about a field''s name, type or description read from an output schema'
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: 'the file contains no description entry or assertion about what a description may state'
+looked_past: the file's title cites "task's own UNDERDETERMINED note" and a companion reading — the registry-refused-identity window the decision log records as noticed and not decided — but this file's single test exercises only the read-outstanding window and makes no assertion about that refused-identity reading, so there is nothing here to weigh on that front.

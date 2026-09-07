@@ -1,0 +1,57 @@
+findings:
+- file: src/routes/capability-detail-screen-return-to-origin.spec.ts
+  where: line 72, it("lands on the capabilities listing from the nothing-registered reading", ...)
+  evidence: await screen.findByText("Unable to load this capability right now.");
+  cost: The specification's own decision log records this reading's presented content as noticed and not decided — no node says what the surface states when the identity read answers that nothing is registered. Pinning this exact sentence in the test makes the wording a fact the test enforces rather than one the specification holds, so a later analysis that decides this fact (as it already did for the sibling connector-configuration surface) can contradict a test nobody wrote it against, and a reader who wants to know what this reading presents will not find it in the specification.
+  kind: unstated
+  correction: Decide, by analysis, what the capability-detail surface states in this reading (paralleling rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under for connectors), record it in a node, and bring this assertion into line with the decided text rather than the source's own invention.
+- file: src/routes/capability-detail-screen-return-to-origin.spec.ts
+  where: line 141, it("renders where the read answered that no capability is registered at that name and version", ...)
+  evidence: await screen.findByText("Unable to load this capability right now.");
+  cost: Same as the finding above — a second occurrence of the same unheld fact, asserted independently in a different test, so the specification's silence is doubled in the source rather than closed.
+  kind: unstated
+  correction: Same as the finding above.
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: the criterion-3 test, line 93-103
+  evidence: 'fireEvent.change(connectorField, { target: { value: "a-different-connector" } }); ... expect(putCallCount(fetchMock)).toBe(0);'
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: the same criterion-3 test, line 101
+  evidence: await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities"));
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: This file exercises only the Cancel/return-to-origin control in the Actions footer; no test in it locates or follows a separate route to the capabilities listing.
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: The only edit-related test (line 93-103) exercises the return-to-origin/abandonment act via Cancel, never an in-place discard that leaves the operator on the surface.
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: criterion-1 test (line 27-36), criterion-2 tests (line 40-89), and the criteria-4-7 rendering tests (line 107-144)
+  evidence: 'await waitFor(() => expect(router.state.location.pathname).toBe(ORIGIN_PATH_ONE)); and, for the no-origin readings, await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities")); and expect(within(actionsFooter()).getByRole("button", { name: "Cancel" })).toBeTruthy();'
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: line 40-46 and 118-126 (outstanding/failed windows)
+  evidence: 'await screen.findByText(/Loading capability/); and await screen.findByRole("button", { name: "Retry" });'
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: This file concerns only the capability detail screen; no connector-configuration surface appears.
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: No connector-configuration surface appears in this file.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: No connector-configuration authoring surface appears in this file.
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: No assertion in this file concerns a capability's nature or its read-only refusal.
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: This file tests Cancel/return-to-origin only; no test submits a registration or asserts a submission outcome.
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: No output-schema entry or its guidance is exercised in this file.
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: No output-schema field reading is exercised in this file.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: No description-field content is exercised in this file.
+looked_past: The tests locate the outstanding-read and failed-read states via literal presentation text whose exact wording every governing surface rule declares to be form; that pinning is the same class of issue as the reported finding but concerns readings the specification does describe, so whether the specific wording used should be less literal is a test-design question for another pass, not a missing or contradicted domain fact.

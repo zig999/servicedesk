@@ -1,0 +1,96 @@
+findings:
+  - file: src/routes/capability-detail-screen-outcome.spec.ts
+    where: "the PUT handler stub for CAPABILITY_PATH, lines 26-28"
+    evidence: "method === \"PUT\"\n            ? errorResponse(\"CapabilityNotReadOnlyError\", 409)"
+    cost: "A reader treating this fixture as a working example of the registry's own read-only refusal learns that CapabilityNotReadOnlyError answers with HTTP 409; the decision log fixes this refusal at HTTP 422 (rules/integration/a-capability-is-read-only, and decision-log.md's own split — 422 for \"a well-formed request whose content would violate an invariant,\" 409 reserved for \"an operation the target's current standing forbids\"). Anyone building a mock server, a contract test, or a status-map change against this file's own fixture would embed the wrong status for this exact refusal."
+    kind: contradicts
+    correction: "the fixture's second argument to errorResponse for CapabilityNotReadOnlyError should read 422, matching the node's own statement"
+    node: rules/integration/a-capability-is-read-only
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file's whole content is the describe block \"CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)\" with two `it` blocks over a PUT refusal; nothing in it discloses or asserts anything about authentication"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "the file issues no assertion about which operations the registry publishes; it only stubs one PUT response for CAPABILITY_PATH and reads the resulting toast"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file imports nothing from and asserts nothing about case-lifecycle's operations; it mounts CapabilityDetailScreen alone"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no case version attribute, state or manifest is referenced anywhere in the file"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "no hypothesis is referenced anywhere in the file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no hypothesis-revision is referenced anywhere in the file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file only mocks read-capability-by-identity via jsonResponse(LOADED_CAPABILITY) on GET, and never exercises or asserts an outstanding or failed read of the capability itself"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file contains no connector configuration authoring or abandonment path"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file asserts no route to any listing; it never touches a connector configuration surface"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the file never asserts a discard-edit control on the loaded capability; it only edits the Connector field and submits"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file presents no connector configuration at all"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file asserts no route or navigation control to any listing"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the two `it` blocks, lines 23-65, each asserting toast.error for one of the rule's two refusal branches"
+    evidence: "expect(toast.error).toHaveBeenCalledWith(\n        \"This capability's declared nature is not read-only; the registry only accepts read-only capabilities.\",\n      )\n...\nexpect(toast.error).toHaveBeenCalledWith(\n        \"Something went wrong while saving this capability. Try again.\",\n      )"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "both tests stub the PUT as refused (409, 500); neither exercises a successful registration or any resulting navigation"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the file contains no connector configuration registration"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file has no abandonment path; the operator only edits and submits"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case version lifecycle transition appears anywhere in the file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "the file presents no case version draft content"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis revision is composed or checked anywhere in the file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no draft case version creation or offered act appears in the file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry or release is asserted anywhere in the file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no hypothesis revise is performed or asserted in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no revise, pin or manifest route is asserted in the file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-condition disclosure is asserted anywhere in the file"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case version edit or abandonment appears in the file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no revision composition or abandonment appears in the file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no discard of any case version appears in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release or discard, nor any further-act confirmation, appears in the file"
+looked_past: "the exact wording of both toast.error messages is asserted verbatim in the file, but rules/integration/a-submitted-registration-states-its-outcome-to-the-operator itself leaves wording, and which control carries it, to the interface, so the specific copy is not this pass's finding."
+candidates_opened:
+  - rules/integration/a-capability-is-read-only

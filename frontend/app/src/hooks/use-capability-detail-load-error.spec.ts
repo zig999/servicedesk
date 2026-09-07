@@ -34,19 +34,6 @@ describe("useCapabilityDetail -- reporting load-error with a retry action (crite
     expect(typeof loadErrorState(result.current).retryLoad).toBe("function");
   });
 
-  it("reports the load-error phase when the identified (name, version) capability does not exist", async () => {
-    stubFetch(
-      defaultHandlers({
-        [CAPABILITY_PATH]: () => errorResponse("CapabilityIdentityNotFoundError", 404),
-      }),
-    );
-    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
-      wrapper: createWrapper().Wrapper,
-    });
-
-    await waitFor(() => expect(result.current.phase).toBe("load-error"));
-  });
-
   it("reissues the GET when retryLoad is called, resolving to ready once the failure clears", async () => {
     let shouldFail = true;
     const fetchMock = stubFetch(
@@ -68,6 +55,23 @@ describe("useCapabilityDetail -- reporting load-error with a retry action (crite
 
     await waitFor(() => expect(fetchMock.mock.calls.length).toBeGreaterThan(callsBeforeRetry));
     await waitFor(() => expect(result.current.phase).toBe("ready"));
+  });
+});
+
+describe("useCapabilityDetail -- distinguishing the registry's unregistered-identity refusal from a generic read failure (this task's criteria 7, 15)", () => {
+  it("reports the not-registered phase, with no retryLoad exposed, when the identified (name, version) capability does not exist", async () => {
+    stubFetch(
+      defaultHandlers({
+        [CAPABILITY_PATH]: () => errorResponse("CapabilityIdentityNotFoundError", 404),
+      }),
+    );
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.phase).toBe("not-registered"));
+    expect("retryLoad" in result.current).toBe(false);
+    expect(typeof result.current.onCancel).toBe("function");
   });
 });
 

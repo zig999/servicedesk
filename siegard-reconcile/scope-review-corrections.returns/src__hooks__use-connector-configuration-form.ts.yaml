@@ -1,0 +1,77 @@
+findings:
+  - file: src/hooks/use-connector-configuration-form.ts
+    where: "SAVE_FAILURE_MESSAGE_BY_KIND (lines 44-47) and the `??` fallback inside saveFailureMessage (line 52)"
+    evidence: |
+      const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+        "connector-configuration-not-well-formed":
+          "This configuration is not syntactically valid JSON.",
+      };
+      ...
+      return SAVE_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_SAVE_FAILURE_MESSAGE;
+    cost: rules/integration/a-connector-configuration-holds-a-well-formed-object names two distinct refusal conditions for register-connector — ConnectorConfigurationNotWellFormedError and IncompleteConnectorConfigurationError. This file distinguishes only the first; any other named condition, the incomplete one included, falls through to the same GENERIC_SAVE_FAILURE_MESSAGE ("Something went wrong while saving this connector configuration. Try again.") that a wholly unrecognised failure produces. An operator refused for a specific, nameable reason therefore reads exactly the same toast as one refused for a reason the surface does not recognise, which is precisely the pair a-submitted-registration-states-its-outcome-to-the-operator requires be told apart.
+    kind: contradicts
+    correction: give the incomplete-configuration condition its own entry in SAVE_FAILURE_MESSAGE_BY_KIND (and its own UiErrorStateKind upstream), distinguishable from both the not-well-formed message and the generic/unrecognised one.
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the mutationFn, lines 86-96"
+    evidence: "apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(values.connector)}`, { method: \"PUT\", headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify({ configuration: getJsonTextareaMinifiedValue(configurationValue) }) })"
+  - node: domain/integration/connector-configuration
+    held_at: "the form defaults and the mutation body, lines 80-96"
+    evidence: "defaultValues: { connector: existing?.connector ?? \"\" } ... body: JSON.stringify({ configuration: getJsonTextareaMinifiedValue(configurationValue) })"
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "the refusal and replace-whole-on-edit behaviour this node states belongs to the registry the file calls; this file only issues the PUT and reads back its answer — `apiFetch<ConnectorConfiguration>(...)`"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "onCancel, lines 67-73"
+    evidence: |
+      const onCancel = (): void => {
+        if (router.history.canGoBack()) {
+          router.history.back();
+          return;
+        }
+        void navigate({ to: "/connectors" });
+      };
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "isValidConfigurationObject, lines 16-23, and the well-formed message entry, lines 44-47"
+    evidence: "return typeof parsed === \"object\" && parsed !== null && !Array.isArray(parsed); ... \"connector-configuration-not-well-formed\": \"This configuration is not syntactically valid JSON.\""
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the mutation's onSuccess and onError, lines 97-105"
+    evidence: "toast.success(`Connector configuration ${values.connector} registered.`); ... toast.error(saveFailureMessage(error));"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "onCancel's no-history branch, line 72"
+    evidence: "void navigate({ to: \"/connectors\" });"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file contains no capability-registration code; every write it makes is `apiFetch<ConnectorConfiguration>(\"/v1/connectors/...\", { method: \"PUT\", ... })`"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "no capability listing route is built anywhere in this file"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the returned state — `{ form, configuration: {...}, isEditingIdentity, isSubmitting, onSubmit, onCancel }` (lines 127-142) — exposes no discard/reset act"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "the hook takes `existing: ConnectorConfiguration | null` as an already-resolved value (line 58) rather than managing a read of its own, so no reading-state-conditioned act is implemented here"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "no capability read logic exists in this file"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the returned state carries no standing route to the listing; `onCancel` only navigates to \"/connectors\" as an abandonment destination when there is no history to return to (lines 67-73)"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the hook receives `existing` already resolved (line 58) and states nothing about an outstanding or failed read"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "no capability logic exists in this file"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "no output-schema entry code exists in this file"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "no output-schema / field-semantics code exists in this file"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "no description-field code exists in this file"
+looked_past: the hook accepts an `existing` parameter and computes `isEditingIdentity`/an initial `configurationValid` from it, but the only call site (connector-configuration-create-screen.tsx) always passes null, and the `isDispatchingRef` double-submit guard is a robustness device — both are code-shape observations rather than a domain fact stated or contradicted, so they are left to a different pass.

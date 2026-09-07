@@ -1,0 +1,44 @@
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: the three `it` blocks, lines 18-48 — each mounts the screen under a distinct read outcome and asserts exactly one of the three presentations is visible
+  evidence: 'await screen.findByText(`Loading capability ${NAME} ${VERSION}…`); expect(screen.queryByText("Unable to load this capability right now.")).toBeNull(); expect(screen.queryByRole("heading", { name: `Capability ${NAME} ${VERSION}` })).toBeNull();'
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- the outstanding, failed-read and shown readings are each distinguishable from the other two (criterion 17, and criterion 12's own wording)")
+looked_past: this file makes no assertion over the failed-read window naming the capability's own name and version (unlike the outstanding window), and it does not test the fourth, not-registered reading the task background flags as unstated in the specification — both belong to the sibling spec files and to a coverage judgment, not to this file's own conformance.

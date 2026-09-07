@@ -1,0 +1,77 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — the file mounts and tests only the connector-configuration detail screen; no capability registration entry, no `register-capability` call and no capability fixture appear anywhere in it.
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "the four sub-tests of the describe block at line 121 (`... the return-to-origin control falls back to the listing with no surface to return to, in each of the four readings, registering nothing`)"
+    evidence: |
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+      expect(putCallCount(fetchMock)).toBe(0);
+      — asserted once per reading (read outstanding, read failed for another reason, read refused as not-registered, read answered with no edits), each mounted with no history entry preceding the detail route.
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — no capability-keyed surface or capabilities-listing route appears in this file.
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "line 187, inside the `criteria 7, 10, 19` test"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "line 87 (reached-from branch) and lines 133, 148, 161, 172 (no-surface-reached-from branch)"
+    evidence: |
+      await waitFor(() => expect(router.state.location.pathname).toBe("/origin-surface-a"));
+      expect(putCallCount(fetchMock)).toBe(0);
+      ...
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — this file exercises no capability-keyed surface.
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the describe block at line 92, all three sub-tests"
+    evidence: |
+      expect(screen.getByRole("button", { name: "Cancel" })).toBeTruthy();
+      expect(screen.getByRole("link", { name: "Connectors" })).toBeTruthy();
+      — asserted when reached from "/origin-surface-a", from "/origin-surface-b" and from "/connectors" itself.
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "line 129 and line 144, used only as synchronization points"
+    evidence: |
+      await screen.findByText(`Loading connector configuration ${CONNECTOR}…`);
+      ...
+      await screen.findByRole("button", { name: "Retry" });
+      — the file waits for the outstanding-read and failed-read presentations to settle before exercising the return act, but asserts nothing further about what either window states.
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — this file mounts the detail/edit surface for a registered connector name, never an authoring surface.
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — no capability nature or registry refusal appears in this file.
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0); — every test in this file asserts that no register-connector call is made; none submits a registration or reads an outcome."
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — no output-schema entry appears in this file.
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — no field-semantics value appears in this file.
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: |
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+      — no description field appears in this file.
+looked_past: The exact synchronization text used to detect the outstanding and failed windows ("Loading connector configuration …", the "Retry" button awaited even in the not-registered (404) reading) is test-timing scaffolding rather than an assertion of what that reading states, and whether the screen component itself folds the not-registered reading into the ordinary failed window (a fact of `connector-configuration-detail-screen.tsx`, outside this file set) is a different file's conformance question, not this spec file's.
+candidates_opened:
+  - rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+  - rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under

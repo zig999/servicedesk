@@ -1,0 +1,64 @@
+findings:
+  - file: src/routes/capability-create-screen-listing-route.spec.ts
+    where: "the fifth describe block, lines 80-108 (\"the route to the capabilities listing is not dropped while a save is pending (UNDERDETERMINED, from the specification)\")"
+    evidence: |
+      it("keeps the Capabilities link rendered while a save is pending -- an implementation offering the route on only the three readings the criteria name, and dropping it on every other reading, would fail this", async () => {
+      ...
+      expect(screen.getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
+        "/capabilities",
+      );
+    cost: "The task's own criteria for this node enumerate three readings only — the concept read outstanding, the concept read failed, and the surface ready to author — and a submission in flight is not one of them, in the task or in any of the fourteen nodes' own enumerated readings. This test nonetheless requires the link to survive a pending PUT, binding a future implementation to a guarantee the specification's own criteria never named; a reader who finds this test failing will look to the node's stated readings for why and find only three, not four, and the requirement that the route also survive a pending submission lives only in this test."
+    kind: unstated
+    correction: "Either the node is read (or amended) to state explicitly that the route's presence also holds through a pending registration submission, disclosed as such, or the assertion is narrowed to the three readings the task's criteria actually name."
+    node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "The file's five describe blocks are titled only over \"the route to the capabilities listing\" (lines 22, 36, 50, 62, 80); none composes and abandons an entry before submission, and none asserts a return to a reached-from surface."
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "No test in this file opens the create screen at its own address with no reached-from surface, or asserts a destination for leaving without registering; every assertion here is about the Capabilities link, not an abandonment act."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "lines 22-78, the first four describe/it blocks (criteria 4-7)"
+    evidence: |
+      expect(screen.getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
+        "/capabilities",
+      );
+      ...
+      fireEvent.click(screen.getByRole("link", { name: "Capabilities" }));
+      await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities"));
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "This file never presents a capability read-capability-by-identity answered, never edits a loaded registration's fields, and asserts no discard act; it only mounts CapabilityCreateScreen, an authoring surface, not a presented-registration surface."
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "No test asserts a return to a reached-from surface; every navigation assertion in this file targets \"/capabilities\" or \"/capabilities/${NAME}/${VERSION}\", never the surface the create screen was reached from."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "The outstanding/failed reads this file exercises are of CONCEPTS_PATH (the concept vocabulary), e.g. \"[CONCEPTS_PATH]: () => new Promise<Response>(() => {})\" and \"[CONCEPTS_PATH]: () => errorResponse(\"SomeUpstreamError\", 500)\" — not the identity-keyed capability read this node states over, which this file never mocks or asserts on."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "This file mounts only mountCapabilityCreateScreen and asserts only over capability paths (CONCEPTS_PATH, capabilityPutPath); no connector-configuration surface or route appears anywhere in it."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "No connector configuration is read or presented in this file; its subject throughout is the capability create screen and its listing-route link."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No abandonment of any authoring surface is exercised here, and no connector configuration is authored; the file's only acts are clicking the Capabilities link and clicking Save."
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "No test in this file registers a capability whose nature is not read-only, or asserts any 422/CapabilityNotReadOnlyError outcome; fillValidForm and the PUT stubs here answer success (jsonResponse) or stay pending, never a refusal."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "The one test that submits (lines 80-108) asserts only navigation — \"expect(router.state.location.pathname).toBe(`/capabilities/${NAME}/${VERSION}`)\" — and asserts no stated outcome message, named refusal, or distinguishable success/failure text to the operator."
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "fillValidForm({ name: NAME, version: VERSION }) is the only form interaction in this file; no test enters or asserts on an output schema field, its JSON parsing, its properties keys, or any statement about how it is read."
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "No evidence item, output-schema property, or field name/type/description attribute is asserted anywhere in this file."
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "No description text is entered, asserted, or checked for meaning-versus-decision content anywhere in this file."
+looked_past: "The fifth test's `await waitFor(() => expect(screen.getByRole(\"button\", { name: \"Save\" }).hasAttribute(\"disabled\")).toBe(true))` and its final navigation to `/capabilities/${NAME}/${VERSION}` after resolvePut are, respectively, a synchronization checkpoint for reaching the pending state and an assertion of the successful-registration destination governed by a sibling node (the capability analogue of a-successful-connector-registration-lands-on-the-configurations-own-surface) that is neither in this file's node set nor offered as a candidate — not this pass's to report."

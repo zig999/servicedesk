@@ -1,0 +1,12 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/buttonfooter/frontend/app/src/routes/capability-form-fields-output-schema-guidance.spec.ts
+  166:24  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  176:24  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  189:24  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 3 problems (3 errors, 0 warnings)
+

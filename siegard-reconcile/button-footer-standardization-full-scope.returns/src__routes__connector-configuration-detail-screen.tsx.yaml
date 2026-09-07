@@ -1,0 +1,110 @@
+findings:
+  - file: src/routes/connector-configuration-detail-screen.tsx
+    where: the ready-state return (lines 41-46), the branch taken once the read has answered
+    evidence: |-
+      return (
+          <section className="flex flex-col gap-4">
+            <h1 className="text-lg font-semibold text-foreground">Connector {connector}</h1>
+            <ConnectorConfigurationDetailReadyView state={state} connector={connector} />
+          </section>
+        );
+    cost: The node requires the route to the listing on every reading of the surface, turning on nothing about whether the read has completed, failed or answered no configuration — yet the loading branch (line 18) and the load-error branch (line 34) each carry a `<Link to="/connectors">Cancel</Link>` inside a `ButtonFooter`, and this ready branch, the one an operator reaches on a successful read, carries none. `connector-configuration-detail-ready-view.tsx` is not among the files the trace binds this node to, so the responsibility for this reading is this file's own. An operator who opens a configuration successfully is left with no stated way back to the listing, unlike the same operator on either of the surface's other two readings.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    correction: render the same route to the listing (a Cancel link, or any other control reaching "/connectors") in the ready-state branch that the loading and load-error branches already carry.
+  - file: src/routes/connector-configuration-detail-screen.tsx
+    where: the loading branch, line 15
+    evidence: "<p>Loading connector configuration {connector}…</p>"
+    cost: "The node's expression states that while the read has not returned the screen \"states no value of connector or configuration\" — the sibling capability rule (`a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed`) explicitly permits an outstanding-read message to name the identity being read (\"the capability at (n, v) is still being read\"), but this node's own text carries no equivalent allowance and instead states the prohibition flatly. Here the connector's own name — one of exactly two attributes `domain/integration/connector-configuration` declares — is asserted in the loading message before the registry has answered whether any configuration is registered under it at all, which is exactly the value this window is stated to withhold."
+    kind: contradicts
+    node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    correction: state that a configuration is being read without naming the connector value in that sentence (e.g. "Loading connector configuration…"), consistent with the load-error branch, which already states no connector or configuration value.
+read:
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "const { connector } = useParams({ from: \"/connectors/$connector\" });\n  const state = useConnectorConfigurationDetailView(connector);"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the Cancel `<Link to=\"/connectors\">` inside `ButtonFooter` in the loading branch (line 18) and the load-error branch (line 34); absent from the ready-state branch (see finding)"
+    evidence: "<Link to=\"/connectors\">Cancel</Link>"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the loading branch (states the read is in progress) and the load-error branch (states the read failed and offers a retry via `onClick={state.retryLoad}`); the read-returned window is delegated to `ConnectorConfigurationDetailReadyView`"
+    evidence: "<p>Unable to load this connector configuration right now.</p>\n        <ButtonFooter>\n          <Button type=\"button\" onClick={state.retryLoad}>\n            Retry\n          </Button>"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: the file's full 47 lines contain no statement about authentication or the system's identity posture
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: the file imports and calls only `useConnectorConfigurationDetailView` and renders only connector-configuration content; no capability operation is named
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: the file contains no case, draft, hypothesis or manifest operation
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: the file contains no case-version attribute or state
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: the file contains no hypothesis reference
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: the file contains no hypothesis-revision reference
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the useParams route is \"/connectors/$connector\", not a capability name-and-version route, and no capability read is issued here"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: this screen only presents `state.phase` of "loading", "load-error" or the ready view; it carries no authoring form and no abandon act
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: this screen renders no editable field and offers no discard-edit act; it delegates all editing to `ConnectorConfigurationDetailReadyView`
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: the only listing route rendered is `<Link to="/connectors">`, the connector-configuration listing, not the capabilities listing
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: the file issues no register-capability or register-connector call and states no registration outcome
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: the file addresses connector configurations by connector name, not capabilities by name and version
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: this file is a read-only presentation of `useConnectorConfigurationDetailView`; it contains no register-connector call or post-submission navigation decision — landing here is decided by whichever authoring surface navigates to it
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: the file has no capability-authoring entry to abandon
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: the file contains no case-version state or lifecycle transition
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: the file presents no case-version content
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: the file contains no hypothesis-revise call
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: the file offers no release, discard or update-draft act of any kind
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: the file contains no manifest entry or release call
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: the file issues no revise call and states no revision number
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: the file contains no manifest-pin comparison or offered route to a manifest
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: the file offers no release act and states no release condition
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: the file offers no case-version edit to abandon
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: the file offers no hypothesis-revision composition to abandon
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: the file offers no discard act
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: the file offers no release or discard act, and no further-act confirmation
+looked_past: The `ButtonFooter` layout component, button variants and label wording ("Cancel", "Retry") are interface form and, per the candidate index, this file is not the node the surface-form rules leave to code — I did not treat them as findings.

@@ -1,5 +1,4 @@
 import type { JSX } from "react";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
@@ -13,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@tui/ui/dialog";
+import { ButtonFooter } from "../shared/components/button-footer";
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import {
   CASE_VERSION_EDITOR_FORM_ID,
@@ -33,6 +33,7 @@ import {
   pinnedRevisionStateCell,
   type PinnedRevisionStateResult,
 } from "../hooks/use-pinned-revision-state";
+import type { ReleaseConditionStatus } from "../services/release-checklist";
 
 const CONFLICT_BANNER_TITLE = "This version was released by someone else";
 const CONFLICT_BANNER_MESSAGE =
@@ -53,6 +54,12 @@ const MANIFEST_COLUMNS: StatusTableColumn[] = [
 ];
 
 const STILL_UNRESOLVED_PIN_STATE: PinnedRevisionStateResult = { status: "pending" };
+
+const RELEASE_CONDITION_STATUS_LABEL: Record<ReleaseConditionStatus, string> = {
+  met: "Met",
+  unmet: "Not met",
+  undecided: "Not yet decided",
+};
 
 function toManifestRow(
   entry: CaseVersionManifestEntry,
@@ -125,7 +132,18 @@ export function CaseVersionEditorReadyView({
           <ManifestTable slug={slug} manifest={state.manifest ?? []} />
         </section>
       )}
-      <div className="flex flex-wrap items-center justify-end gap-4">
+      {release !== undefined && release.canRelease && (
+        <section aria-label="Release conditions" className="flex flex-col gap-1 text-sm">
+          <ul className="flex flex-col gap-1">
+            {release.conditions.map((condition) => (
+              <li key={condition.label}>
+                {RELEASE_CONDITION_STATUS_LABEL[condition.status]}: {condition.label}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <ButtonFooter>
         {release !== undefined && release.canRelease && (
           <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
             <DialogTrigger asChild>
@@ -138,28 +156,16 @@ export function CaseVersionEditorReadyView({
                 <DialogTitle>Release v{release.version}?</DialogTitle>
               </DialogHeader>
               <DialogDescription>{RELEASE_DIALOG_DESCRIPTION}</DialogDescription>
-              {release.dialog.kind === "checklist" ? (
-                <ul className="flex flex-col gap-1 text-sm">
-                  {release.dialog.items.map((item) => (
-                    <li
-                      key={item.label}
-                      className={item.satisfied ? "text-foreground" : "text-destructive"}
-                    >
-                      {item.satisfied ? "✓" : "!"} {item.label}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-
+              {release.violations !== null && (
                 <div role="alert">
-                  {release.dialog.violations.length === 0 ? (
+                  {release.violations.length === 0 ? (
 
                     <p className="text-sm text-destructive">
                       No specific violation was returned.
                     </p>
                   ) : (
                     <ul className="flex flex-col gap-1 text-sm text-destructive">
-                      {release.dialog.violations.map((violation) => (
+                      {release.violations.map((violation) => (
                         <li key={violation}>! {violation}</li>
                       ))}
                     </ul>
@@ -191,7 +197,6 @@ export function CaseVersionEditorReadyView({
                 <DialogTitle>Discard this draft?</DialogTitle>
               </DialogHeader>
               <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
-              {/* Label's own default styling (uppercase, wide tracking, accent color, all CSS-inherited) is reset in this wrapping div, matching case-version-editor-form-fields.tsx's own FormField convention for the same reason -- otherwise it would cascade into the typed slug itself. */}
               <Label className="flex flex-col gap-1">
                 <span>Type {slug} to confirm</span>
                 <div className="normal-case tracking-normal font-normal text-foreground">
@@ -237,12 +242,10 @@ export function CaseVersionEditorReadyView({
             Save changes
           </Button>
         )}
-        <Button type="button" variant="secondary" asChild>
-          <Link to="/cases/$slug" params={{ slug }}>
-            Cancel
-          </Link>
+        <Button type="button" variant="secondary" onClick={state.onCancel}>
+          Cancel
         </Button>
-      </div>
+      </ButtonFooter>
     </>
   );
 }

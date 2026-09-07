@@ -1,0 +1,67 @@
+findings:
+  - file: src/routes/connector-configuration-form-fields-action-footer.spec.ts
+    where: "lines 38 and 63 — `within(footer).getByRole(\"link\", { name: \"Connectors\" })`, in both the create-surface composition test and the footer-link-uniqueness test"
+    evidence: |
+      expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
+      ...
+      expect(within(footer).getByRole("link", { name: "Connectors" })).toBe(links[0]);
+    cost: "The test fails the instant the Connectors control is rendered as anything other than an anchor element carrying ARIA role `link` — a button that programmatically navigates to the listing, for instance. The rule governing this exact control states that which control carries the route is the interface's own choice, not the specification's; the test freezes that choice into a passing/failing condition, so a future, fully conformant change to the control's implementation reads here as a regression, and whoever meets that failure will look in the specification for a link-role requirement and find none."
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    correction: "Locate the control by its accessible name/text alone (e.g. `getByText(\"Connectors\")`, as this same file already does for the detail surface's Cancel control at line 49) rather than pinning it to `getByRole(\"link\", ...)`."
+  - file: src/routes/connector-configuration-form-fields-action-footer.spec.ts
+    where: "lines 60 and 62 — `const links = screen.getAllByRole(\"link\"); ... expect(links).toHaveLength(1);`"
+    evidence: |
+      const links = screen.getAllByRole("link");
+
+      expect(links).toHaveLength(1);
+    cost: "This states, as a fact about the whole screen and not just the footer, that no link-role element exists anywhere on it besides the Connectors control. No node in the set bounds or even mentions a total count of links a connector-configuration surface may carry — the route rule states only that a route is offered, never that it is the surface's sole link-type element. A later, unrelated addition of any other link anywhere on the page (a help link, a breadcrumb) would fail this test though nothing in the specification forbids it, and the failure would send a reader looking in the specification for a one-link rule that isn't there."
+    kind: unstated
+    correction: "Drop the screen-wide `getAllByRole(\"link\")`/`toHaveLength(1)` assertion, or scope whatever remains to asserting only that the footer's Connectors control resolves to the listing — the specification makes no claim about the rest of the screen's link inventory."
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "The file mounts only `mountConnectorConfigurationCreateScreen` and `mountConnectorConfigurationDetailScreen` (imports, lines 3-12); no capability surface, no capability registration entry and no abandonment of one appears anywhere in the file."
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "Every assertion in the file is a `toBeTruthy()`/`toHaveLength()` check on a control's presence (e.g. `expect(within(footer).getByRole(\"button\", { name: \"Cancel\" })).toBeTruthy();`, line 37); no test fires the control or asserts where the operator lands afterward, so no navigation destination — reached-from or otherwise — is stated."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "The file's only route assertions concern the connector-configuration listing (`getAttribute(\"href\")).toBe(\"/connectors\")`, line 64); no capability surface or capabilities-listing route is exercised anywhere."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the presence assertion for a `Discard changes` button on the connector-configuration detail surface, line 48"
+    evidence: 'expect(within(footer).getByRole("button", { name: "Discard changes" })).toBeTruthy();'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the presence assertion for `Cancel` on the connector-configuration detail surface (a surface presenting a single loaded registration), line 49"
+    evidence: 'expect(within(footer).getByText("Cancel")).toBeTruthy();'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "The detail-surface test mounts with `LOADED_CONFIGURATION` (line 42) — a settled read — and no capability surface or in-flight/failed read window is exercised anywhere in the file."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the create-surface assertions that a `Connectors` link exists in the Actions group and resolves to `/connectors` (lines 38, 60-64) — held in a form the finding above reports as over-constrained"
+    evidence: |
+      expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
+      ...
+      expect(links[0].getAttribute("href")).toBe("/connectors");
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "The detail surface is mounted only against `LOADED_CONFIGURATION` (line 42, via `detailScreenBaseHandlers(LOADED_CONFIGURATION)`); no outstanding-read or failed-read window is ever presented or asserted on in this file."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the presence assertion for `Cancel` on the connector-configuration create (authoring) surface, line 37"
+    evidence: 'expect(within(footer).getByRole("button", { name: "Cancel" })).toBeTruthy();'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "The file contains no capability content at all — every import and mount is `ConnectorConfiguration*` (lines 3-12)."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: 'expect(within(footer).getByRole("button", { name: "Save" })).toBeTruthy(); — only the Save control''s presence is checked; no test submits it or asserts any outcome the registry answered.'
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "No output-schema entry, no capability form field and no field-authoring surface appears anywhere in this file, which tests only the footer/Actions composition of the connector-configuration screens."
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "No schema, field, or evidence-item content is read or asserted anywhere in this file; its scope is the Actions-group footer alone."
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "No `description` field or glossary concept is entered, read or asserted anywhere in this file."
+looked_past: "The file's assertions for Save, Discard, and Cancel check only that a correspondingly labelled control exists inside the Actions group — none of them fires the control or asserts the act's actual effect (registering nothing, restoring fields, landing on the origin surface), so whether those rules' substantive behavior is actually exercised is a coverage question for another pass, not a conformance question answered here."

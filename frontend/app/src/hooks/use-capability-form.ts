@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -17,8 +18,12 @@ export type JsonSchemaFieldState = {
 };
 
 export type CapabilityFormState =
-  | { readonly phase: "loading" }
-  | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | { readonly phase: "loading"; readonly onCancel: () => void }
+  | {
+      readonly phase: "load-error";
+      readonly retryLoad: () => void;
+      readonly onCancel: () => void;
+    }
   | {
       readonly phase: "ready";
       readonly form: UseFormReturn<CapabilityFormValues>;
@@ -29,6 +34,7 @@ export type CapabilityFormState =
       readonly isEditingIdentity: boolean;
       readonly isSubmitting: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+      readonly onCancel: () => void;
     };
 
 const GENERIC_SAVE_FAILURE_MESSAGE =
@@ -45,7 +51,7 @@ const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = 
     "Another capability already answers this concept; each concept resolves to exactly one capability.",
 };
 
-function saveFailureMessage(error: unknown): string {
+export function saveFailureMessage(error: unknown): string {
   if (error instanceof ApiError) {
     const state = uiStateForApiError(error);
     return SAVE_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_SAVE_FAILURE_MESSAGE;
@@ -59,8 +65,18 @@ export function useCapabilityForm(
 ): CapabilityFormState {
   const queryClient = useQueryClient();
   const conceptOptions = useConceptOptions();
+  const router = useRouter();
+  const navigate = useNavigate();
 
   const isDispatchingRef = useRef(false);
+
+  const onCancel = (): void => {
+    if (router.history.canGoBack()) {
+      router.history.back();
+      return;
+    }
+    void navigate({ to: "/capabilities" });
+  };
 
   const [inputSchemaValue, setInputSchemaValue] = useState(existing?.input_schema ?? "");
   const [inputSchemaValid, setInputSchemaValid] = useState(existing !== null);
@@ -96,13 +112,12 @@ export function useCapabilityForm(
           }),
         },
       ),
-    onSuccess: () => {
-
+    onSuccess: (_data, values) => {
+      toast.success(`Capability ${values.name} ${values.version} registered.`);
       void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
       onSaved();
     },
     onError: (error) => {
-
       toast.error(saveFailureMessage(error));
     },
   });
@@ -111,10 +126,11 @@ export function useCapabilityForm(
     return {
       phase: "load-error",
       retryLoad: () => conceptOptions.refetch(),
+      onCancel,
     };
   }
   if (conceptOptions.isLoading) {
-    return { phase: "loading" };
+    return { phase: "loading", onCancel };
   }
 
   const submit = form.handleSubmit((values) => {
@@ -159,5 +175,6 @@ export function useCapabilityForm(
     isEditingIdentity: existing !== null,
     isSubmitting: mutation.isPending,
     onSubmit,
+    onCancel,
   };
 }

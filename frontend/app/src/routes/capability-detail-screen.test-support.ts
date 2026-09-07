@@ -16,6 +16,8 @@ export const NAME = "some-capability";
 export const VERSION = "v1";
 export const CAPABILITY_PATH = `/v1/capabilities/${NAME}/${VERSION}`;
 export const CONCEPTS_PATH = "/v1/glossary/concepts";
+export const ORIGIN_PATH_ONE = "/origin-one";
+export const ORIGIN_PATH_TWO = "/origin-two";
 
 export const LOADED_INPUT_SCHEMA = '{"type":"object"}';
 export const LOADED_OUTPUT_SCHEMA = '{"type":"string"}';
@@ -80,7 +82,7 @@ export function baseHandlers(
   };
 }
 
-function buildTestRouter(initialPath: string) {
+function buildTestRouter(initialEntries: string[]) {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const detailRoute = createRoute({
     getParentRoute: () => rootRoute,
@@ -93,10 +95,25 @@ function buildTestRouter(initialPath: string) {
     path: "/capabilities",
     component: () => createElement("div", null, "Capabilities List Placeholder"),
   });
-  const routeTree = rootRoute.addChildren([detailRoute, listRoute]);
+  const originOneRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: ORIGIN_PATH_ONE,
+    component: () => createElement("div", null, "Origin One Placeholder"),
+  });
+  const originTwoRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: ORIGIN_PATH_TWO,
+    component: () => createElement("div", null, "Origin Two Placeholder"),
+  });
+  const routeTree = rootRoute.addChildren([
+    detailRoute,
+    listRoute,
+    originOneRoute,
+    originTwoRoute,
+  ]);
   return createRouter({
     routeTree,
-    history: createMemoryHistory({ initialEntries: [initialPath] }),
+    history: createMemoryHistory({ initialEntries }),
   });
 }
 
@@ -104,8 +121,15 @@ export async function mountCapabilityDetailScreen(
   fetchMock: FetchFn,
   initialPath = `/capabilities/${NAME}/${VERSION}`,
 ): Promise<ReturnType<typeof buildTestRouter>> {
+  return mountCapabilityDetailScreenAt(fetchMock, [initialPath]);
+}
+
+export async function mountCapabilityDetailScreenAt(
+  fetchMock: FetchFn,
+  initialEntries: string[],
+): Promise<ReturnType<typeof buildTestRouter>> {
   vi.stubGlobal("fetch", fetchMock);
-  const router = buildTestRouter(initialPath);
+  const router = buildTestRouter(initialEntries);
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   await router.load();
   render(

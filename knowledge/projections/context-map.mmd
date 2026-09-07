@@ -10,6 +10,22 @@ flowchart LR
     integration -->|capability-registry| knowledge
     knowledge -->|case-query| investigation
     system -->|corporate-records| integration
+    integration ==>|model: concept| glossary
+    investigation ==>|model: concept| glossary
+    investigation ==>|model: outcome| glossary
+    investigation ==>|model: subject-attribute| glossary
+    investigation ==>|model: subject-type| glossary
+    investigation ==>|model: capability| integration
+    investigation ==>|model: case| knowledge
+    investigation ==>|model: consolidation-register| knowledge
+    investigation ==>|model: referral| knowledge
+    knowledge ==>|model: action| glossary
+    knowledge ==>|model: concept| glossary
+    knowledge ==>|model: outcome| glossary
+    knowledge ==>|model: recipient| glossary
+    knowledge ==>|model: subject-attribute| glossary
+    knowledge ==>|model: subject-type| glossary
+    knowledge ==>|model: capability| integration
     outside(["outside"])
     glossary -.->|glossary-authoring| outside
     integration -.->|connector-configuration-registry| outside

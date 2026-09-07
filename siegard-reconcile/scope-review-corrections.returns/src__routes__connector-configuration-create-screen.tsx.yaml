@@ -1,0 +1,56 @@
+read:
+- node: contracts/integration/connector-configuration-registry
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen calls no registry operation itself.
+- node: domain/integration/connector-configuration
+  held_at: nowhere
+  evidence: <ConnectorConfigurationFormFields form={state.form} configuration={state.configuration} .../> — the value object's attributes are passed through, never declared or handled by this file.
+- node: domain/integration/connector-configuration-registry
+  held_at: nowhere
+  evidence: onSubmit={state.onSubmit} — the write is delegated to the hook; this file performs no registration itself.
+- node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+  held_at: handleSaved, lines 14-17
+  evidence: 'void navigate({ to: "/connectors/$connector", params: { connector } });'
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: the trailingActions render only Cancel and the Connectors link — no field-restoring act appears, consistent with the hook being constructed with no existing registration, which this rule says is offered no such act.
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: the Connectors link, lines 36-38
+  evidence: <Link to="/connectors">Connectors</Link>
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: the Cancel button, lines 33-35
+  evidence: <Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: const state = useConnectorConfigurationForm(null, handleSaved); — the screen delegates every registry operation to the hook and renders only the form fields and its footer, so the node's own subject is not stated here.
+looked_past: the button labels, the heading copy and where each control sits are form the nodes themselves leave to the interface, not evaluated here.

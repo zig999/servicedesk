@@ -1,0 +1,44 @@
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: each `it` under the criterion-10 describe block, and the `it` under the criterion-11 describe block
+  evidence: 'within(actionsFooter()).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe("/capabilities"); — asserted once per reading (outstanding, failed, ready, not-registered) — and, separately, fireEvent.click(...); await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities")); expect(putCallCount(fetchMock)).toBe(0);'
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: describe("CapabilityDetailScreen -- a control whose destination is the capabilities listing renders on every reading (criterion 10)") and describe("CapabilityDetailScreen -- taking the capabilities-listing control issues no register-capability call (criterion 11)") — the file's only two describe blocks
+looked_past: capability-detail-screen.tsx presents the identical text "Unable to load this capability right now." for both the load-error and not-registered phases, and this file's fourth test merely uses that shared text to synchronize to the not-registered reading before asserting the listing-control's href — whether that shared wording itself conforms is a finding against capability-detail-screen.tsx, a file outside this set, not against this spec file, whose only assertions here are the link's href and the absent PUT call.

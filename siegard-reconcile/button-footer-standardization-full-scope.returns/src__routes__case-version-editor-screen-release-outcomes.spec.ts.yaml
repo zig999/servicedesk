@@ -1,0 +1,137 @@
+findings:
+  - file: src/routes/case-version-editor-screen-release-outcomes.spec.ts
+    where: "\"a 200 response to Release (criterion 5)\" — lines 60-77"
+    evidence: |
+      expect(screen.queryByRole("button", { name: "Release…" })).toBeNull();
+      expect(screen.getByLabelText("Title").hasAttribute("disabled")).toBe(true);
+      expect(screen.getByRole("button", { name: "Save changes" }).hasAttribute("disabled")).toBe(
+        true,
+      );
+    cost: "The specification's own case-version node says the record is never altered again once released, but nothing in the specification says the editor surface must hide the Release control and disable every field and Save the moment a release succeeds — the withholding pattern the specification does state (rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives) covers only the interval before a new draft's record has arrived, not the far end of the lifecycle. A reader who wants to know what a released version's editor screen offers will find that answer only in this test and the component it exercises, never in the specification."
+    kind: unstated
+    correction: "A rule (or an extension of a-newly-created-draft-offers-no-act-before-its-own-record-arrives's sibling shape) stating what acts a released case version's editor surface offers — none of release, discard, correction or save — would give this behavior a specification home."
+  - file: src/routes/case-version-editor-screen-release-outcomes.spec.ts
+    where: "\"a 409 CaseVersionNotDraftAtReleaseError response (criterion 7)\" — lines 140-164"
+    evidence: |
+      it("closes the Dialog and re-fetches the version rather than showing a violations list, resetting for the next open", async () => {
+      ...
+        await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+        await waitFor(() => expect(versionGetCallCount(fetchMock)).toBe(2));
+    cost: "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle states only the backend's refusal shape for this condition — HTTP 409 reporting CaseVersionNotDraftAtReleaseError — and says nothing about what the editor screen does in response. This test states a specific recovery behavior (the dialog is dismissed and the version is silently re-fetched) that no node governs; the next reader who wants to know what a curator sees when their release attempt turns out stale has nowhere in the specification to look, only this test and its implementation."
+    kind: unstated
+    correction: "A rule stating what a case-version editor surface does when a release it submitted is refused as CaseVersionNotDraftAtReleaseError — closing the offer and refreshing the surface's own read, as opposed to showing a refusal message — would give this its specification home."
+  - file: src/routes/case-version-editor-screen-release-outcomes.spec.ts
+    where: "\"a Release failure outside 409 and 422\" — lines 195-214"
+    evidence: |
+      it("leaves the Dialog open with no violations shown and the confirm control usable again", async () => {
+      ...
+        await waitFor(() => {
+          expect(releaseConfirmButton().hasAttribute("disabled")).toBe(false);
+        });
+        const dialog = screen.getByRole("dialog");
+        expect(within(dialog).queryByRole("alert")).toBeNull();
+      });
+    cost: "constraints/a-domain-error-unmapped-by-status-is-refused-generically fixes only the backend's generic refusal shape (HTTP 500, INTERNAL_ERROR, the fixed message); rules/integration/a-submitted-registration-states-its-outcome-to-the-operator states an analogous 'operator is told the outcome' rule for capability and connector-configuration registrations but is expressly scoped to those two registries, not to case-version release. No node states what a case-version release's own surface does when a submission fails outside 409 and 422 — this test states that specific recovery contract (dialog stays open, no violations rendered, confirm re-enabled) as though it were decided, and it lives only here and in the implementation."
+    kind: unstated
+    correction: "A rule stating what a case-version release's surface does on a refusal it does not recognise as 409 or 422 — leaving the dialog open with the confirm control usable again, as this test asserts — would give the fact a specification home, the same way a-submitted-registration-states-its-outcome-to-the-operator does for the two registries."
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "The file's whole scope is the release dialog's outcomes — describe(\"CaseVersionEditorScreen — confirming Release (criterion 4)\", ...) through the 500 case — and never touches authentication disclosure."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "The file exercises only the case-lifecycle's release operation against RELEASE_PATH; no capability-registry operation is called or asserted."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the release POST assertions, lines 32-34"
+    evidence: |
+      await waitFor(() => expect(releaseCallCount(fetchMock)).toBe(1));
+      expect(releasePostInit(fetchMock)?.body).toBeUndefined();
+  - node: domain/knowledge/case-version
+    held_at: "criterion 5's assertions, lines 71-75"
+    evidence: |
+      expect(screen.queryByRole("button", { name: "Release…" })).toBeNull();
+      expect(screen.getByLabelText("Title").hasAttribute("disabled")).toBe(true);
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "Violation strings such as \"Concept 'late-payment' does not accept subject 'billing-dispute'\" (line 83) are opaque backend text the test renders verbatim; no hypothesis operation is exercised."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "Same violations array (lines 82-83) is rendered as opaque text; no hypothesis-revision attribute or operation is read or asserted."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "The file has no capability-keyed surface; every fetch mocked is against VERSION_PATH or RELEASE_PATH."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No connector-configuration authoring surface appears anywhere in this file."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "No connector-configuration surface or listing route is exercised here."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No capability or connector-configuration registration edit is exercised; the file tests only case-version release."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "No connector-configuration read is ever issued in this file."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "No capability surface or listing route is exercised here."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "This file submits only a case-version release (POST .../release), never a register-capability or register-connector call the rule constrains."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "No capability registration is submitted anywhere in this file."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "No connector-configuration registration is submitted anywhere in this file."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "No capability registration entry or its abandonment appears in this file."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the 409 test's mocked response, lines 144-148"
+    evidence: |
+      jsonResponse(
+        { error: { code: "CaseVersionNotDraftAtReleaseError", message: "no longer a draft" } },
+        409,
+      ),
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "The version loaded here is DRAFT_RECORD/RELEASED_RECORD, an already-answered read; the file never exercises the interval before a newly created draft's own record has arrived."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "No revise-hypothesis call or hypothesis composition appears in this file."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "The file mounts an already-loaded version (mountCaseVersionEditor with DRAFT_RECORD/RELEASED_RECORD already answered); it never tests the window before a newly created draft's record arrives."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "The 422 violations rendered (lines 82-83, 168) are arbitrary backend strings the test never ties to a manifested draft hypothesis-revision; the specific manifest-pin condition this rule states is never exercised."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "No revise-hypothesis call or revision-number answer appears anywhere in this file."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "No revise-hypothesis call or manifest-route offer appears anywhere in this file."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "expect(within(dialog).queryByText(/Manifest holds at least one hypothesis/)).toBeNull(); — the test only asserts the pre-release checklist is absent once violations are shown; it never states which conditions the checklist itself discloses or how."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "The file never tests leaving an edit unsubmitted; every test here submits the release confirm act."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "No hypothesis-revision composition or its abandonment is exercised in this file."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "No discard call is issued or asserted anywhere in this file; every test here is about release."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "the open-dialog-then-confirm sequence, lines 29-32"
+    evidence: |
+      await openReleaseDialog();
+      fireEvent.click(releaseConfirmButton());
+
+      await waitFor(() => expect(releaseCallCount(fetchMock)).toBe(1));
+looked_past: "The test's assertions that the release POST carries no body, and that a rapid second confirm click is coalesced into exactly one POST while the confirm button is disabled in flight, are wire-format and double-submission-guard details rather than domain facts about what an operator learns or does, and are not reported here."
+candidates_opened:
+  - rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  - scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions

@@ -1,0 +1,149 @@
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: "the three glossary-vocabulary reads wired for the fallback's outcome, action and recipient fields"
+    evidence: "const outcomeOptions = useGlossaryVocabularyOptions(\"outcome\"); const actionOptions = useGlossaryVocabularyOptions(\"action\"); const recipientOptions = useGlossaryVocabularyOptions(\"recipient\");"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the PATCH and release POST the two mutations issue"
+    evidence: "apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`, { method: \"PATCH\", headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify(values) })"
+  - node: contracts/knowledge/case-query
+    held_at: "the version query's queryFn"
+    evidence: "apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`,)"
+  - node: domain/glossary/action
+    held_at: "actionOptions, read and exposed on the ready state"
+    evidence: "const actionOptions = useGlossaryVocabularyOptions(\"action\");"
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: "manifest: record.manifest, — the manifest is only passed through opaquely; no concept is ever named directly by this file"
+  - node: domain/glossary/outcome
+    held_at: "outcomeOptions, read and exposed on the ready state"
+    evidence: "const outcomeOptions = useGlossaryVocabularyOptions(\"outcome\");"
+  - node: domain/glossary/recipient
+    held_at: "recipientOptions, read and exposed on the ready state"
+    evidence: "const recipientOptions = useGlossaryVocabularyOptions(\"recipient\");"
+  - node: domain/glossary/subject-type
+    held_at: "record.subject copied into the form and sent back as the PATCH body's subject field"
+    evidence: "subject: record.subject,"
+  - node: domain/knowledge/case
+    held_at: "the slug identity threaded through every call"
+    evidence: "`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`"
+  - node: domain/knowledge/case-version
+    held_at: "the attributes resetFormFrom copies from the record read by versionQuery"
+    evidence: "form.reset({ title: record.title, when_to_use: record.when_to_use, subject: record.subject, fallback: record.fallback, consolidation_register: record.consolidation_register, });"
+  - node: domain/knowledge/case-version-state
+    held_at: "the draft/released comparisons gating release, discard and read-only"
+    evidence: "const canRelease = record.state === \"draft\" && !isReleased;"
+  - node: domain/knowledge/manifest-entry
+    held_at: "record.manifest passed to the release condition and exposed on the ready state"
+    evidence: "manifest: record.manifest,"
+  - node: domain/knowledge/referral
+    held_at: "carried inside the fallback object reset onto the form"
+    evidence: "fallback: record.fallback,"
+  - node: domain/knowledge/resolution
+    held_at: "the fallback field, reset and submitted as a whole"
+    evidence: "fallback: record.fallback,"
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: nowhere
+    evidence: "manifest: record.manifest, — the manifest is only read and passed through; the file carries no place-hypothesis or remove-hypothesis call and no check against an emptied manifest"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "isBlocked and isReadOnly, computed off record.state"
+    evidence: "isBlocked: status === \"saving\" || status === \"conflict\" || record.state === \"released\" || isReleased, ... isReadOnly: record.state === \"released\","
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the case-version-not-draft and case-version-not-draft-at-release branches of the two mutations' onError"
+    evidence: "if (kind === \"case-version-not-draft\") { setStatus(\"conflict\"); ... } ... if (kind === \"case-version-not-draft-at-release\") { setIsReleaseDialogOpen(false); setReleaseViolations(null); ... }"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: nowhere
+    evidence: "the onError branches name only \"case-version-not-draft\", \"case-not-found\", \"case-version-not-releasable\" and \"case-version-not-draft-at-release\"; the file never requests a hypothesis-revision, so no concept-subject-type refusal is ever read here"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "the loading guard before the record is read, and resetFormFrom sourcing every field from it"
+    evidence: "if (versionQuery.isLoading || isLoadingGlossary || !versionQuery.data) { return { phase: \"loading\" }; }"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the case-version-not-releasable branch, and the release condition wired from manifestPinReleaseCondition"
+    evidence: "if (kind === \"case-version-not-releasable\") { setReleaseViolations(extractReleaseViolations(error)); return; }"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "the conditions array handed to the release control state"
+    evidence: "conditions: [releaseCondition],"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: "cancelEditing, wired as onCancel"
+    evidence: "const cancelEditing = (): void => { router.history.back(); };"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the three glossary-vocabulary option reads offered alongside the form"
+    evidence: "outcomeOptions,\n    actionOptions,\n    recipientOptions,"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: "canDiscard passed into buildDiscardControlState"
+    evidence: "canDiscard: record.state === \"draft\" && !isReleased,"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "the case-version-not-releasable branch of releaseMutation's onError"
+    evidence: "if (kind === \"case-version-not-releasable\") { setReleaseViolations(extractReleaseViolations(error)); return; }"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "toast.error(\"Something went wrong while saving. Try again.\"); — the only literal user-facing strings this file states are the two generic error toasts; it states nothing about an authentication posture"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry, CaseVersionRecord } from \"../services/case-version-record\"; — the file's only apiFetch targets are case-version paths, never a capability route"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry, CaseVersionRecord } from \"../services/case-version-record\"; — no hypothesis type or call is imported or referenced anywhere in this file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry, CaseVersionRecord } from \"../services/case-version-record\"; — no hypothesis-revision type or call is imported or referenced anywhere in this file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "const versionQuery = useQuery({ queryKey: [\"case-version\", slug, version], ... }); — the only read this file waits on is the case-version read, never a capability read"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "const cancelEditing = (): void => { router.history.back(); }; — the abandonment this file offers is over a case-version edit, never over a connector configuration"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "return { phase: \"ready\", form, status, savedAt, ... }; — this state carries no route to any connector-configuration listing"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "discard: buildDiscardControlState({ version, slug, canDiscard: record.state === \"draft\" && !isReleased, ... }), — this discard is only-a-draft-case-version-may-be-discarded's own act, never a registration-edit discard"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "if (versionQuery.isError || isGlossaryError) { return { phase: \"load-error\", retryLoad: () => {...} }; } — the only outstanding/failed read this file states is over a case version and the glossary options, never a connector configuration"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "return { phase: \"ready\", form, status, savedAt, ... }; — this state carries no route to any capabilities listing"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "toast.error(\"Something went wrong while saving. Try again.\"); — the outcomes this file states are a case-version update and release outcome, never a capability or connector registration"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "void navigate({ to: \"/cases\" }); — the only navigate call in this file targets the cases listing on a case-not-found error, never a capability's own surface"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "void navigate({ to: \"/cases\" }); — the only navigate call in this file targets the cases listing, never a connector configuration's own surface"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "const cancelEditing = (): void => { router.history.back(); }; — the abandonment here ends a case-version edit, never a capability registration entry"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry, CaseVersionRecord } from \"../services/case-version-record\"; — the file never issues a revise-hypothesis call"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: "the loading guard, which withholds every act (submit, release, discard) while version is null or the record has not answered"
+    evidence: "enabled: version !== null, ... if (versionQuery.isLoading || isLoadingGlossary || !versionQuery.data) { return { phase: \"loading\" }; }"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry, CaseVersionRecord } from \"../services/case-version-record\"; — no revise-hypothesis answer is read or exposed anywhere in this file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry, CaseVersionRecord } from \"../services/case-version-record\"; — the file offers no route derived from a just-completed revise"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "const cancelEditing = (): void => { router.history.back(); }; — the abandonment here is an-abandoned-case-version-edit-writes-nothing's own, never a hypothesis-revision composition's"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "the release dialog's isOpen/onConfirm pair and the discard control's dialogOpen/slugConfirmation pair"
+    evidence: "isOpen: isReleaseDialogOpen, onOpenChange: (open: boolean) => {...}, ... onConfirm: () => releaseMutation.mutate(), ... discard: buildDiscardControlState({ ... dialogOpen: [isDiscardDialogOpen, setIsDiscardDialogOpen], slugConfirmation: [discardSlugConfirmation, setDiscardSlugConfirmation], ... })"
+looked_past: >-
+  Noticed but not reported as a spec finding: isReadOnly is computed from
+  record.state === "released" alone while isBlocked and canDiscard also check the
+  local isReleased flag, so immediately after a successful release and before the
+  invalidated query refetches, isReadOnly could read false while isBlocked reads
+  true — a reactivity gap the server-side refusal (setStatus("conflict") on a
+  stale PATCH) still covers, not a misstated domain fact; the declared
+  `isFirstVersion?: boolean` field is never populated in the returned object; and
+  the effect that calls resetFormFrom on every change to versionQuery.data would
+  also overwrite an in-progress, unsubmitted edit on a background refetch (e.g.
+  window refocus) rather than only on the curator's own leaving — a robustness
+  question about this hook's own reactivity, not a fact the source asserts against
+  a node.

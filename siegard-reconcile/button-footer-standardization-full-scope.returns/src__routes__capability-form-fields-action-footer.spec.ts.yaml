@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file mounts capability-create and capability-detail screens and asserts only on a footer's Actions group and named buttons/links — no assertion touches an authentication posture or disclosure"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "the file never asserts on a register-capability call, a read-capability answer or any registry operation — it asserts only on the footer's role=group and its child controls' accessible names"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file mounts no case-version or hypothesis surface and makes no assertion touching create-draft, revise-hypothesis, release or discard"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no case-version attribute, state or manifest is referenced anywhere in the file"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "no hypothesis is referenced anywhere in the file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no hypothesis-revision is referenced anywhere in the file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file asserts only `await screen.findByLabelText(\"Connector\")` to await the mounted form, and never asserts on a loading or failed-read presentation"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file mounts only capability create and detail screens (via capability-create-screen.test-support and capability-detail-screen.test-support) and makes no assertion about a connector configuration authoring surface"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "no route to a connector-configuration listing is asserted anywhere in the file"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "line 47, `expect(within(footer).getByRole(\"button\", { name: \"Discard changes\" })).toBeTruthy();`, checks only that a button with that name renders inside the group — it asserts nothing about the act's effect (fields returned to the read registration, no register-capability call, operator kept on the surface)"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "no connector-configuration read state is asserted anywhere in the file"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "no route to the capabilities listing is asserted anywhere in the file"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "no submission is made or asserted on in the file — the fetch stubs back the mount but no test submits the form or checks a registered/refused outcome"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "no submission and no navigation destination is asserted anywhere in the file"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the file never mounts a connector-configuration screen"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "line 37, `expect(within(footer).getByRole(\"link\", { name: \"Cancel\" })).toBeTruthy();`, checks only that a link named Cancel renders inside the group — it asserts nothing about the act's effect (no register-capability call, the operator returned to the surface authoring was reached from)"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version transition or refusal is referenced anywhere in the file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft case-version content or its presentation is referenced anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis revise flow is referenced anywhere in the file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no newly-created draft or its offered acts are referenced anywhere in the file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry or release condition is referenced anywhere in the file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise-hypothesis answer is referenced anywhere in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no manifest-route offer following a revise is referenced anywhere in the file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-condition disclosure is referenced anywhere in the file"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case-version editing or its abandonment is referenced anywhere in the file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no revision composition or its abandonment is referenced anywhere in the file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no case-version discard is referenced anywhere in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release or discard confirmation act is referenced anywhere in the file"
+looked_past: the file's own assertions — that footer controls sit inside a role=group named "Actions" and that Save, Cancel and Discard changes render there together — are ARIA-grouping and control-naming decisions, which every node here that touches these same controls (the abandon and discard-edit rules among them) explicitly assigns to the interface rather than stating itself, so the file's actual content is a layout test rather than a domain-fact assertion and is not this pass's to flag.
