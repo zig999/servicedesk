@@ -18,6 +18,14 @@
       "task": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route"
     },
     {
+      "id": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route.md",
+      "title": "Connector-configuration detail surface's return to origin split from its listing route",
+      "summary": "The detail surface's single Cancel link is split into a return-to-origin act carried by the router's own history and an unconditional route to the connector-configurations listing, both rendered on every reading, with neither control's presence turning on how the surface was reached.",
+      "task": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route"
+    },
+    {
       "id": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
       "kind": "implementation",
       "file": "implementation/knowledge-authoring-footers/case-version-editor-action-footer.md",
@@ -275,6 +283,42 @@
     {
       "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
       "to": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
       "kind": "implements",
       "at": "the path"
     },

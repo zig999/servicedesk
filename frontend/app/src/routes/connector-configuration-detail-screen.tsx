@@ -14,8 +14,11 @@ export function ConnectorConfigurationDetailScreen(): JSX.Element {
       <section className="flex flex-col gap-4">
         <p>Loading connector configuration {connector}…</p>
         <ButtonFooter>
+          <Button type="button" variant="secondary" onClick={state.onCancel}>
+            Cancel
+          </Button>
           <Button variant="secondary" asChild>
-            <Link to="/connectors">Cancel</Link>
+            <Link to="/connectors">Connectors</Link>
           </Button>
         </ButtonFooter>
       </section>
@@ -30,8 +33,11 @@ export function ConnectorConfigurationDetailScreen(): JSX.Element {
           <Button type="button" onClick={state.retryLoad}>
             Retry
           </Button>
+          <Button type="button" variant="secondary" onClick={state.onCancel}>
+            Cancel
+          </Button>
           <Button variant="secondary" asChild>
-            <Link to="/connectors">Cancel</Link>
+            <Link to="/connectors">Connectors</Link>
           </Button>
         </ButtonFooter>
       </section>

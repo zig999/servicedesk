@@ -85,8 +85,11 @@ export function ConnectorConfigurationDetailReadyView({
                 Saved.
               </p>
             )}
+            <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
             <Button variant="secondary" asChild>
-              <Link to="/connectors">Cancel</Link>
+              <Link to="/connectors">Connectors</Link>
             </Button>
           </>
         }
