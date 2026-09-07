@@ -26,6 +26,14 @@
       "task": "task/misstated-facts-in-source/nature-refusal-fixture-status"
     },
     {
+      "id": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "implementation",
+      "file": "implementation/misstated-facts-in-source/output-schema-help-copy.md",
+      "title": "Output-schema entry guidance rewritten to the specification's five claims",
+      "summary": "The Portuguese help paragraph beside the capability form's output-schema field now states exactly what the system reads from an entered schema, sourced only from the nodes that hold those claims, with no worked example.",
+      "task": "task/misstated-facts-in-source/output-schema-help-copy"
+    },
+    {
       "id": "implementation/registry-authoring-footers/capability-form-action-footer",
       "kind": "implementation",
       "file": "implementation/registry-authoring-footers/capability-form-action-footer.md",
@@ -88,6 +96,14 @@
       "title": "Nature-refusal fixture status proof",
       "summary": "Tests confirming the capability detail outcome proof's stand-in refusal for a not-read-only nature carries HTTP 422, that no other stand-in under the frontend suite pairs CapabilityNotReadOnlyError with a different status, and that the two pre-existing refusal-message tests still hold the operator-facing distinction unchanged.",
       "task": "task/misstated-facts-in-source/nature-refusal-fixture-status"
+    },
+    {
+      "id": "proof/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "proof",
+      "file": "proof/misstated-facts-in-source/output-schema-help-copy.md",
+      "title": "Output-schema entry guidance rewrite, proven against its ten criteria",
+      "summary": "Every claim the rewritten output-schema paragraph makes, its absence of a worked example, its silence on any check the two named nodes do not state, its narrower reading over the read-only refusal, the surface's refusal to check on any of these grounds, and both disclosed inferences are each proven by a test that fails over exactly the wording or behaviour it targets.",
+      "task": "task/misstated-facts-in-source/output-schema-help-copy"
     },
     {
       "id": "proof/registry-authoring-footers/capability-form-action-footer",
@@ -331,6 +347,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/output-schema-help-copy",
+      "to": "task/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/registry-authoring-footers/capability-form-action-footer",
       "to": "contracts/integration/capability-registry",
       "kind": "encodes",
@@ -447,6 +487,12 @@
     {
       "from": "proof/misstated-facts-in-source/nature-refusal-fixture-status",
       "to": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/misstated-facts-in-source/output-schema-help-copy",
+      "to": "implementation/misstated-facts-in-source/output-schema-help-copy",
       "kind": "proves",
       "at": "the path"
     },

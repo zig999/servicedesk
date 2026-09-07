@@ -2991,7 +2991,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -4509,7 +4509,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         }
       ]
     },
@@ -5000,6 +5000,16 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "digest": "sha256:f34e2239987801d90e397279af263b3dd80935509e527c231227496b4ba92de7",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         }
       ]
     },

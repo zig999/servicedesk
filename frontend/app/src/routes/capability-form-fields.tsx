@@ -181,12 +181,13 @@ export function CapabilityFormFields({
             tall
           />
           <p className="text-sm text-muted-foreground">
-            Para cada campo em <code>properties</code>, a plataforma lê seu próprio{" "}
-            <code>type</code> e <code>description</code> como o significado declarado
-            desse campo — nenhum outro conteúdo deste schema é lido ou validado. Uma
-            description declara o que um valor significa (&quot;2 = suspenso por
-            inadimplência&quot;), nunca uma decisão (&quot;quando 2, confirme a
-            hipótese&quot;).
+            O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir
+            dele são as chaves do próprio objeto <code>properties</code> de nível
+            superior deste schema. O <code>type</code> e a <code>description</code>{" "}
+            declarados por cada uma dessas chaves, onde o schema os declara, são lidos
+            como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é
+            lido ou validado. Uma <code>description</code> aqui declara o que seu valor
+            significa e não nomeia nenhuma decisão.
           </p>
         </div>
       </div>
