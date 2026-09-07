@@ -1,0 +1,142 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-not-valid-error-code",
+      "kind": "epic",
+      "file": "epic/case-not-valid-error-code.md",
+      "title": "The error-code mapping answers the refusal the backend now sends",
+      "summary": "The one correction to frontend/app/src/services/error-ui-state.ts, so a case version that fails validation at a read reaches the curator as itself rather than as the generic error."
+    },
+    {
+      "id": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "kind": "task",
+      "file": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name.md",
+      "title": "The error-code mapping keys on the name the refusal now carries",
+      "summary": "The frontend's mapping from an API error code to a user-facing state answers the CaseVersionNotValidError refusal the backend sends for a case version that fails validation at a read.",
+      "epic": "case-not-valid-error-code"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-not-valid-error-code",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-not-valid-error-code/error-code-mapping-keys-on-the-current-name",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

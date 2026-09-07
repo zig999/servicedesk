@@ -9,7 +9,16 @@ Derived by spec.py from the specification files; never edited.
 | glossary | supporting | 6 | 10 | 2 | 1 |
 | integration | generic | 5 | 30 | 6 | 3 |
 | investigation | supporting | 16 | 37 | 7 | 17 |
-| knowledge | core | 12 | 54 | 5 | 12 |
+| knowledge | core | 12 | 55 | 5 | 12 |
+
+## Aggregates
+
+- integration/capability — 0 entity(ies) inside, 8 attribute(s) on the root
+- investigation/investigation — 0 entity(ies) inside, 13 attribute(s) on the root
+- knowledge/case — 0 entity(ies) inside, 2 attribute(s) on the root
+- knowledge/case-version — 0 entity(ies) inside, 10 attribute(s) on the root
+- knowledge/hypothesis — 0 entity(ies) inside, 1 attribute(s) on the root
+- knowledge/hypothesis-revision — 0 entity(ies) inside, 5 attribute(s) on the root
 
 ## Capabilities
 
@@ -42,4 +51,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-219 decision(s) disclosed in the decision log.
+220 decision(s) disclosed in the decision log.

@@ -1,0 +1,27 @@
+read:
+- node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+  held_at: nowhere
+  evidence: the file distinguishes only two of the three states this node holds apart — a distinct case-not-valid
+    kind versus case-not-found and generic-error — but nowhere in this file is a case that currently holds
+    no version, or a read that did not complete, given a kind of its own to hold apart from these; the
+    file only ever consumes an ApiError's code, so those two states have no construct here to sit in
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: the assertion that CaseVersionNotValidError resolves to its own kind, never the shared generic-error
+    state and never case-not-found
+  evidence: "it(\"resolves CaseVersionNotValidError, the name the backend's refusal actually carries,\
+    \ to its own distinct case-not-valid state, not the shared generic-error fallback\", () => {\n  const\
+    \ state = uiStateForApiError(new ApiError(\"CaseVersionNotValidError\", \"not valid\"));\n  expect(state.kind).toBe(\"\
+    case-not-valid\");\n  expect(state.kind).not.toBe(\"generic-error\");\n});"
+- node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+  held_at: nowhere
+  evidence: "it(\"resolves a code the table does not name to the generic-error state rather than throwing\"\
+    , () => {\n  const state = uiStateForApiError(new ApiError(\"SomeFutureBackendError\", \"unrecognized\"\
+    ));\n  expect(state.kind).toBe(\"generic-error\");\n}); — the file only checks that an unmapped code\
+    \ falls to a generic-error kind and that a state carries only the kind, no wording of its own; it\
+    \ never asserts that a case-keyed surface renders that kind identically to a read that did not complete,\
+    \ which is the fact this node actually states, and which this generic, cross-feature mapping file\
+    \ has no case-keyed notion to hold"
+looked_past: one test's own title asserts that CaseNotValidError is the retired name the mapping no longer
+  keys on — a claim about the code's own naming history rather than a current business rule, and no node
+  or decision-log entry records any such former name, so I treat it as outside this pass's domain-fact
+  scope rather than as a finding against the specification.

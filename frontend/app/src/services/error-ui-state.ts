@@ -57,7 +57,7 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   ConceptNotInGlossaryError: GENERIC_ERROR_STATE,
   ConceptRefusesSubjectTypeError: GENERIC_ERROR_STATE,
 
-  CaseNotValidError: { kind: "case-not-valid" },
+  CaseVersionNotValidError: { kind: "case-not-valid" },
 };
 
 export function uiStateForApiError(error: ApiError): UiErrorState {

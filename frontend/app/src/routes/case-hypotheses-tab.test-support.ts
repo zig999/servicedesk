@@ -68,6 +68,7 @@ function newQueryClient(): QueryClient {
 export async function mountCaseDetailScreen(
   fetchMock: FetchFn,
   initialPath: string = `/cases/${SLUG}`,
+  queryClient: QueryClient = newQueryClient(),
 ): Promise<void> {
   vi.stubGlobal("fetch", fetchMock);
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
@@ -107,7 +108,6 @@ export async function mountCaseDetailScreen(
     routeTree,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
   });
-  const queryClient = newQueryClient();
   await router.load();
   render(
     createElement(

@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { ApiError } from "./api-client";
 import { uiStateForApiError } from "./error-ui-state";
 
-describe("uiStateForApiError", () => {
+describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
   it("resolves CaseNotFoundError to the case-not-found state", () => {
     const state = uiStateForApiError(new ApiError("CaseNotFoundError", "not found"));
     expect(state.kind).toBe("case-not-found");
@@ -74,7 +74,7 @@ describe("uiStateForApiError", () => {
       "CaseHoldsNoDraftError",
       "ConceptNotInGlossaryError",
       "ConceptRefusesSubjectTypeError",
-      "CaseNotValidError",
+      "CaseVersionNotValidError",
     ];
 
     const targetKind = uiStateForApiError(
@@ -134,10 +134,15 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("generic-error");
   });
 
-  it("resolves CaseNotValidError to its own distinct case-not-valid state, no longer the shared generic-error fallback", () => {
-    const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
+  it("resolves CaseVersionNotValidError, the name the backend's refusal actually carries, to its own distinct case-not-valid state, not the shared generic-error fallback", () => {
+    const state = uiStateForApiError(new ApiError("CaseVersionNotValidError", "not valid"));
     expect(state.kind).toBe("case-not-valid");
     expect(state.kind).not.toBe("generic-error");
+  });
+
+  it("resolves CaseNotValidError, the retired name the mapping no longer keys on, to the shared generic-error state rather than case-not-valid", () => {
+    const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
+    expect(state.kind).toBe("generic-error");
   });
 
   it("resolves a code the table does not name to the generic-error state rather than throwing", () => {
@@ -203,6 +208,11 @@ describe("uiStateForApiError", () => {
     const state = uiStateForApiError(
       new ApiError("ConceptDescriptionRequiredError", "description required"),
     );
+    expect(Object.keys(state)).toEqual(["kind"]);
+  });
+
+  it("resolves a code the table does not name to a fallback state carrying only the kind, not the refusal's own message", () => {
+    const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "some future message"));
     expect(Object.keys(state)).toEqual(["kind"]);
   });
 });

@@ -1,0 +1,30 @@
+findings:
+- file: src/routes/case-detail-screen-current-version-validity.spec.ts
+  where: the errorResponse helper's default status, line 15, applied at lines 28, 47 and 63, and stated
+    explicitly again at line 151
+  evidence: 'function errorResponse(code: string, status = 422, details?: unknown): Response { ... [versionDetailPath(2)]:
+    () => errorResponse("CaseVersionNotValidError"),'
+  cost: the fixture is the one place in this file that fixes what status code a CaseVersionNotValidError
+    refusal carries at read, and it fixes it at 422 — a reader consulting this test to learn the wire
+    contract for this refusal, rather than the node, takes away the wrong status, even though the mapping
+    under test, uiStateForApiError, never branches on it
+  kind: contradicts
+  correction: mock the CaseVersionNotValidError refusal at 409, for example errorResponse("CaseVersionNotValidError",
+    409)
+  node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+read:
+- node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+  held_at: the assertions distinguishing the current-version statement from the read-did-not-complete
+    and no-version statements, lines 33-35, repeated at lines 52, 68-73, 87-90, 110-111, 124-126
+  evidence: "expect(await screen.findByText(NOT_VALID_TEXT)).toBeTruthy();\n    expect(screen.queryByText(READ_FAILED_TEXT)).toBeNull();\n\
+    \    expect(screen.queryByText(NO_VERSION_TEXT)).toBeNull();"
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: the mock naming the CaseVersionNotValidError code as what drives the current-version statement,
+    lines 28 and 33 — but at the status contradicted above, not the one the node states
+  evidence: "[versionDetailPath(2)]: () => errorResponse(\"CaseVersionNotValidError\"),\n\n    await mountCaseDetailScreen(fetchMock);\n\
+    \n    expect(await screen.findByText(NOT_VALID_TEXT)).toBeTruthy();"
+- node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+  held_at: the tests mocking an unrecognized code and asserting the read-did-not-complete statement with
+    no attribute of the refusal disclosed, lines 81-90 and 172-195
+  evidence: "[versionDetailPath(4)]: () => errorResponse(\"SomeOtherError\", 500),\n\n    await mountCaseDetailScreen(fetchMock);\n\
+    \n    expect(await screen.findByText(READ_FAILED_TEXT)).toBeTruthy();\n    expect(screen.queryByText(NOT_VALID_TEXT)).toBeNull();"
