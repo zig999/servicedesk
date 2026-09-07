@@ -86,8 +86,11 @@ export function CapabilityDetailReadyView({
                 Saved.
               </p>
             )}
+            <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
             <Button variant="secondary" asChild>
-              <Link to="/capabilities">Cancel</Link>
+              <Link to="/capabilities">Capabilities</Link>
             </Button>
           </>
         }

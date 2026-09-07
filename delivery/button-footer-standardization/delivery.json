@@ -10,6 +10,14 @@
       "task": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route"
     },
     {
+      "id": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route.md",
+      "title": "Capability detail surface's return to origin split from its listing route, with the unregistered-identity refusal told apart from a failed read",
+      "summary": "The detail surface's single Cancel link is split into an origin-aware return act and an unconditional route to the capabilities listing, both present on every reading, and the registry's own refusal of an identity nothing is registered at is carved out of the failed-read reading into a reading of its own that withholds the reattempt.",
+      "task": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route"
+    },
+    {
       "id": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
       "kind": "implementation",
       "file": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route.md",
@@ -259,6 +267,48 @@
     {
       "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
       "to": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
       "kind": "implements",
       "at": "the path"
     },

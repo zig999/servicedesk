@@ -4684,8 +4684,12 @@
       "digest": "sha256:928e03455e9d5203bf31ff2c6439269c657d0de390888dd500b6af01c5bd1d58",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:f74d25520f7491062221b8223ab9b03632cad6c3d4790460d5d804e3602a5e2f"
+        },
+        {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:ab9f8e01c96f361828d6f1fee81c8d8a069c8b7569e3c457e3177cf23acab9e5"
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         }
       ]
     },
@@ -4898,6 +4902,10 @@
       "digest": "sha256:8d540b391ccebf6728bdd943afc16831bcecaf2de0e057a5fdd1687951b3102f",
       "files": [
         {
+          "path": "frontend/app/src/routes/capability-detail-screen.tsx",
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
+        },
+        {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
           "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
         },
@@ -4930,8 +4938,12 @@
           "digest": "sha256:34f54bd51a4dc60ab105281bbef9bcaa9ca3878bee692c5de9815f2679f923c3"
         },
         {
+          "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
+          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
+        },
+        {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:ab9f8e01c96f361828d6f1fee81c8d8a069c8b7569e3c457e3177cf23acab9e5"
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         }
       ]
     },
@@ -4940,8 +4952,20 @@
       "digest": "sha256:09cdbfb0d83ecd0fb3a9fd09c960f8b612d871d50a120df42f2e06abac94d912",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:f74d25520f7491062221b8223ab9b03632cad6c3d4790460d5d804e3602a5e2f"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
           "digest": "sha256:79ce261a90b92265435153899f504d449456c258fbb450dd188c530df8a81830"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
+          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-detail-screen.tsx",
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
@@ -5002,6 +5026,10 @@
       "digest": "sha256:6d31be5bb9969eb109ba60955f54abcd51bda7ba9cebb86ac2433e76c946c88f",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:f74d25520f7491062221b8223ab9b03632cad6c3d4790460d5d804e3602a5e2f"
+        },
+        {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
           "digest": "sha256:0c6ced39bf83d7e4a175db6b469d1afb127b43a6e1f2d93c00b93625164caee5"
         },
@@ -5019,6 +5047,10 @@
       "node": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
       "digest": "sha256:06a5c5a76fcf043df1e32a697050d239e1be4bf04740cc566139679d2952024f",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:f74d25520f7491062221b8223ab9b03632cad6c3d4790460d5d804e3602a5e2f"
+        },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
           "digest": "sha256:0c6ced39bf83d7e4a175db6b469d1afb127b43a6e1f2d93c00b93625164caee5"
