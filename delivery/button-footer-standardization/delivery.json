@@ -133,6 +133,52 @@
         "The footer stays visible at the bottom of the AppShell's scrollable region while its screen's content is scrolled."
       ],
       "findings": 3
+    },
+    {
+      "id": "review/button-footer-standardization-full-scope",
+      "kind": "review",
+      "file": "review/button-footer-standardization-full-scope.md",
+      "title": "The ButtonFooter standardization, all seven tasks",
+      "summary": "What four passes found over the twenty-one source files and twenty-eight specs the seven tasks of button-footer-standardization delivered, with the failures pass not run because the captured run passed whole.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A screen rendering the footer still shows the shell's own statement that this build enforces no authentication, visibly and not merely rendered.",
+        "After a save, the route to the draft's manifest is offered where the draft's manifest held no entry for the hypothesis and where the revision written is higher than the revision that entry pinned immediately before, and is not offered where the revise wrote into the very revision that entry already pins.",
+        "After a save, the screen states the revision number the revise answered, and states nothing further distinguishing a revise that replaced the highest existing revision in place from one that created the next.",
+        "Asking to discard issues no discard; a discard is issued only where the curator, having asked, states in a further act that the discard is to be performed and reproduces the case's own slug in that act, and an act reproducing no slug or a slug that is not the case's issues no discard.",
+        "Cancel leaves the editing without submitting it, writes no change to the version, leaves the version's declared attributes and every manifest entry exactly as they were, and returns the curator to the surface the editing was reached from.",
+        "Content scrolled to its end stays fully readable above the footer rather than covered by it.",
+        "Neither the loading phase nor the load-error phase presents any attribute of any capability as the content standing at that identity.",
+        "No capability screen renders a link whose accessible name is Back to capabilities, in any of its phases.",
+        "No connector-configuration screen renders a link whose accessible name is Back to connector configurations, in any of its phases.",
+        "No spec under frontend/app/src/routes queries a Back to capabilities link.",
+        "No spec under frontend/app/src/routes queries a Back to connector configurations link.",
+        "On a capability detail surface whose read answered, the footer offers a control returning every field to the content that read answered, which registers nothing, leaves the operator on that surface, and takes effect only after a further explicit act by the operator.",
+        "On a connector-configuration detail surface whose read answered, the footer offers a control returning every field to the content that read answered, which registers nothing, leaves the operator on that surface, and takes effect only after a further explicit act by the operator.",
+        "Save changes still carries `form={CASE_VERSION_EDITOR_FORM_ID}` and still submits the editor's form from outside the `<form>` element.",
+        "Submitting the connector-configuration form issues the registration, and where it succeeds the operator is taken to the surface addressed by that configuration's own connector name.",
+        "Submitting the form still saves the hypothesis revision through the same call it made before.",
+        "The Discard draft control is offered only while the version being edited is a draft.",
+        "The footer carries a Cancel that abandons the composition before it is submitted, writing no revision and leaving the hypothesis's existing revisions and its case's draft version exactly as they were, and returns the curator to the screen the composition was opened from.",
+        "The footer carries a Cancel that leaves the authoring without registering anything, creating no configuration and leaving every registered configuration exactly as it stood, and returns the operator to the surface the authoring was reached from.",
+        "The footer carries a Cancel that leaves the authoring without submitting it, registering nothing and replacing no registered capability, and returns the operator to the surface the authoring was reached from.",
+        "The footer sits inside the AppShell's existing `<main>` scroll region and frontend/app/src/shared/components/app-shell.tsx is left unmodified by this task.",
+        "The footer stays visible at the bottom of the AppShell's scrollable region while its screen's content is scrolled.",
+        "The form still renders hypothesis name, criterion, collects and resolution, with their validation unchanged.",
+        "The subject type is shown read-only and read from the case's draft version and from nowhere else.",
+        "Whatever a screen passes through the existing `trailingActions` prop is rendered inside the footer beside Save, and no second prop for appending buttons is introduced.",
+        "While the case's draft version record has not answered, the form states that the version is still being read and states no attribute of it, presenting neither a partial content nor an empty one as the version's.",
+        "capability-detail-screen's load-error phase states that the capability at that name and version could not be read, and carries a control whose one effect is to issue that same read again.",
+        "capability-detail-screen's loading phase carries no control that issues the read again, and neither phase re-issues that read on the screen's own initiative.",
+        "capability-detail-screen's loading phase states that the capability at that name and version is still being read.",
+        "connector-configuration-detail-screen's load-error phase states that the configuration could not be read, states no value of connector or configuration, and carries an action that re-issues that same read.",
+        "connector-configuration-detail-screen's loading phase states that the configuration is still being read and states no value of connector or configuration."
+      ],
+      "findings": 42
     }
   ],
   "edges": [
@@ -399,6 +445,48 @@
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "reviews",
       "at": "tasks[0]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/shared-action-footer/button-footer-component",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/capability-form-action-footer",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/capability-screen-return-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/connector-configuration-form-action-footer",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/registry-authoring-footers/connector-configuration-screen-return-route",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/button-footer-standardization-full-scope",
+      "to": "task/knowledge-authoring-footers/case-version-editor-action-footer",
+      "kind": "reviews",
+      "at": "tasks[6]"
     }
   ]
 }

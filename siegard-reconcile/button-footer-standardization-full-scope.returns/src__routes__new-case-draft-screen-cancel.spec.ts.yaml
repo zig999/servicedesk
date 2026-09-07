@@ -1,0 +1,114 @@
+findings:
+  - file: src/routes/new-case-draft-screen-cancel.spec.ts
+    where: "describe block \"Cancel on a not-yet-created draft returns to the screen it was opened from (criterion 3)\", lines 67-92 (both its tests)"
+    evidence: |
+      fireEvent.click(await screen.findByRole("button", CANCEL_BUTTON));
+
+      await waitFor(() => {
+        expect(router.state.location.pathname).toBe(openedFrom);
+      });
+      ...
+      fireEvent.click(screen.getByRole("button", CANCEL_BUTTON));
+
+      expect(postCallCount(fetchMock)).toBe(0);
+    cost: "The rule enforced here — that canceling out of the new-case-draft screen before create-draft has ever been called returns the curator to the screen the screen was opened from, rather than a fixed destination, and issues no create-draft/POST call — lives only in this test. The four abandonment rules the specification does state (rules/knowledge/an-abandoned-case-version-edit-writes-nothing, rules/knowledge/an-abandoned-revision-composition-writes-nothing, rules/integration/an-abandoned-capability-registration-entry-registers-nothing, rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering) each govern a different act — editing content that already exists, or an entry/composition already opened toward a write that already exists to abandon — never the composition of a not-yet-created case version through create-draft. A reader who checks the specification for what an abandoned new-draft composition costs will not find it decided anywhere but here, and a later change to this navigation or to whether Cancel is wired to issue the call at all would have nothing in the specification to answer to."
+    kind: unstated
+    correction: "Decide, through the analysis (blind to the task, as the framework's unstated-fact route requires), a rule for abandoning a not-yet-submitted case-version composition — parallel in shape to rules/knowledge/an-abandoned-revision-composition-writes-nothing — stating that leaving before create-draft is called issues no create-draft call and returns the curator to the surface the composition was opened from, and record it in decision-log.md the way the sibling abandonment rules were recorded."
+
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "The file's whole scope is the Cancel control on the new-case-draft screen and the withholding of controls before a created draft's record resolves; nothing in it states or tests any authentication-disclosure text."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "The file imports only NewCaseDraftScreen and case-draft test support (`import { NewCaseDraftScreen } from \"./new-case-draft-screen\";`); no capability-registry operation is exercised."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "The file exercises a mocked POST at CREATE_PATH and a mocked GET at versionPath(9) through createFetchStub, but nowhere restates or asserts the operations list this contract publishes; it only checks that the POST is (not) called."
+  - node: domain/knowledge/case-version
+    held_at: "the mocked GET response resolved for the created draft, lines 116-131"
+    evidence: |
+      jsonResponse({
+        title: VALID_FORM_INPUT.title,
+        when_to_use: VALID_FORM_INPUT.when_to_use,
+        subject: SUBJECT_TYPE_TERMS.data[0].name,
+        fallback: { outcome: VALID_FORM_INPUT.outcome, referral: { action: VALID_FORM_INPUT.action, recipient: VALID_FORM_INPUT.recipient } },
+        state: "draft",
+      })
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "No hypothesis field or identity appears anywhere in the file; its scope is the case-version draft screen and its Cancel control only."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "No hypothesis-revision field, criterion or state appears anywhere in the file."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "The file tests only the new-case-draft screen's own read of a newly created version; no capability-keyed surface or its in-flight/failed states are exercised."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No connector-configuration authoring surface is touched by this file; CANCEL_BUTTON is the case-draft screen's own control."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "No listing route or connector-configuration surface appears in the file."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No capability or connector-configuration registration edit, and no in-place discard act, is exercised anywhere in the file."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "No connector-configuration read, outstanding or failed, is exercised; the only outstanding/failed-adjacent read tested is the new draft's own GET."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "No capability surface or capabilities-listing route appears in the file."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "No capability or connector-configuration registration submission is exercised; the only submission tested is create-draft's own POST, whose absence (not outcome) is what is asserted."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "No capability registration success or destination is exercised anywhere in the file."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "No connector-configuration registration success or destination is exercised anywhere in the file."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "No capability-registration entry or its abandonment is exercised; the file's own abandonment scenario is over a not-yet-created case version, a different aggregate and a different contract."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "No lifecycle-transition refusal (CaseVersionNotDraftError or CaseVersionNotDraftAtReleaseError) is asserted anywhere in this file."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "The test resolves the GET inside `act(async () => { resolveGet(jsonResponse({...})); });` and asserts nothing about what the screen then shows; it stops at resolving the promise, so no assertion checks that the presented content is drawn from the record rather than the submitted values."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "No revise-hypothesis call or subject-type check is exercised anywhere in the file."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: "lines 111-113, the assertions made while the GET is still outstanding"
+    evidence: |
+      await screen.findByText("Loading…");
+      expect(screen.queryByRole("button", CANCEL_BUTTON)).toBeNull();
+      expect(screen.queryAllByRole("button")).toHaveLength(0);
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "No release or manifest-entry state is exercised anywhere in the file."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "No revise-hypothesis response or revision number is asserted anywhere in the file."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "No revise-hypothesis call or manifest-route offer is exercised anywhere in the file."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "No release-offering surface or release-condition disclosure is exercised anywhere in the file."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "This node's own statement and expression govern a curator 'editing a case version' through update-draft, place-hypothesis or remove-hypothesis over a version that already exists; the file's Cancel scenario is over a version not yet created — no create-draft has been issued — so this node's own text does not reach it (confirmed by its decision-log entry, which scopes it to update-draft/place-hypothesis/remove-hypothesis and does not mention create-draft)."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "No hypothesis-revision composition or its abandonment is exercised anywhere in the file."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "No discard call or discard refusal is exercised anywhere in the file."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "No release or discard further-act (nor slug confirmation) is exercised anywhere in the file."
+
+looked_past: "The literal string \"Loading…\" asserted at line 111, and the exact zero-button count at line 113, are wording and control-layout choices the specification's own sibling rules repeatedly and explicitly leave to the interface (\"which control carries..., its wording... are form\"), so asserting them is not itself a domain-fact claim outside the specification — that is a standard/form concern, not this pass's."

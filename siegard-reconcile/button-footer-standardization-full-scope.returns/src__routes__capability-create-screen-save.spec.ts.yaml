@@ -1,0 +1,117 @@
+findings:
+  - file: src/routes/capability-create-screen-save.spec.ts
+    where: "the two tests inside the 'blocks dispatch while a declared schema is not valid JSON' describe block, lines 74-94"
+    evidence: |
+      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+      fireEvent.click(screen.getByRole("button", { name: "Save" }));
+      expect(putCallCount(fetchMock)).toBe(0);
+    cost: "The specification's own statement on malformed schemas — rules/integration/a-capability-declares-well-formed-schemas — is entirely about the registry: 'The registry refuses to register or update a capability whose input schema or output schema is not syntactically valid JSON, with an HTTP 422 response.' Nothing in the specification says the operator is blocked from ever submitting such text. This test instead pins a client-side gate (Save disabled, zero PUT calls dispatched) as the required behavior. A reader who wants to know when Save is unavailable will read the well-formed-schemas rule and find only a server-side 422 refusal — the client-side block this test locks in as fact lives nowhere they will look, and a later change relying on the registry's own refusal (per a-submitted-registration-states-its-outcome-to-the-operator) instead of a client-side gate would fail this test against a rule the specification never wrote."
+    kind: unstated
+    correction: "State, in rules/integration/a-capability-declares-well-formed-schemas or a sibling rule, whether an authoring surface must withhold submission of unparseable schema text before the registry is ever called, or drop the disabled-button/zero-dispatch assertions and test only the registry's own 422 refusal path already covered by a-submitted-registration-states-its-outcome-to-the-operator."
+
+  - file: src/routes/capability-create-screen-save.spec.ts
+    where: "line 114, inside the 'a concept-already-answered refusal is reported without leaving the screen' test, lines 97-117"
+    evidence: 'expect(router.state.location.pathname).toBe("/capabilities/new");'
+    cost: "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator's own Description says exactly the opposite of a decided fact here: 'What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here.' No sibling rule fills that gap for a refused submission the way a-successful-capability-registration-lands-on-the-capabilitys-own-surface fills it for a successful one. This test nonetheless locks the operator's post-refusal destination to the create route as a hard requirement — a future change that reloads or redirects on a named refusal (something no node forbids) would fail this test on a question the specification explicitly leaves open, and nobody reading the specification would learn this screen must stay put on a refusal."
+    kind: unstated
+    correction: "Add an invariant naming where an operator lands after a refused capability (or connector) registration — e.g., that the authoring surface is unchanged — the same way a-successful-capability-registration-lands-on-the-capabilitys-own-surface names the destination for a successful one; or drop the pathname assertion if this destination is not meant to be a decided fact."
+
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- dispatches at the name and version typed into the form (criterion 8)", () => {'
+  - node: contracts/integration/capability-registry
+    held_at: "the two 'dispatches at the name and version typed' tests (lines 31-70) and the PUT-body test (lines 155-186), which exercise register-capability's create-or-replace call"
+    evidence: |
+      input === capabilityPutPath(NAME, VERSION) &&
+                (init?.method ?? "GET").toUpperCase() === "PUT",
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- dispatches at the name and version typed into the form (criterion 8)", () => {'
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- dispatches at the name and version typed into the form (criterion 8)", () => {'
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- dispatches at the name and version typed into the form (criterion 8)", () => {'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- dispatches at the name and version typed into the form (criterion 8)", () => {'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file contains no assertion about an outstanding or failed read of an existing capability; every test here mounts the create screen and drives a submission"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file contains no connector-configuration surface or abandonment test"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file contains no connector-configuration surface or listing-route test"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the file contains no discard/revert test over a loaded registration"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file contains no connector-configuration read or presentation test"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file contains no assertion about a route to the capabilities listing"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the refusal-message assertion (lines 109-113) and the 'never refuses a concept itself before dispatching' test (lines 119-133)"
+    evidence: |
+      expect(toast.error).toHaveBeenCalledWith(
+        "Another capability already answers this concept; each concept resolves to exactly one capability.",
+      ),
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: "the navigation assertion in the 'a successful save navigates...' test, lines 148-151"
+    evidence: 'expect(router.state.location.pathname).toBe(`/capabilities/${NAME}/${VERSION}`),'
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the file contains no connector-configuration registration or navigation test"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file contains no abandonment test; every test here submits a filled form"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "the file contains no case-version content"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "the file contains no case-version content"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "the file contains no hypothesis-revision content"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "the file contains no case-version content"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file contains no manifest or hypothesis-revision content"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file contains no hypothesis-revision content"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "the file contains no hypothesis-revision content"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "the file contains no release-conditions content"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "the file contains no case-version editing content"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "the file contains no hypothesis-revision composition content"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "the file contains no discard content"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "the file contains no release/discard content"
+
+looked_past: "The exact toast wording asserted in the refusal test ('Another capability already answers this concept; each concept resolves to exactly one capability.') restates rules/integration/one-capability-answers-one-concept's own statement almost verbatim, but wording is form the specification's own surface rules leave to the interface, so pinning it is a test-design concern rather than a specification-conformance one."
+candidates_opened:
+  - domain/integration/capability
+  - domain/integration/capability-nature
+  - rules/integration/a-capability-declares-well-formed-schemas
+  - rules/integration/a-capability-declares-its-contract
+  - rules/integration/one-capability-answers-one-concept
+  - scenarios/glossary/a-concept-with-no-description-is-refused

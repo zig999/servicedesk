@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file mounts `HypothesisRevisionFormFields` through `mountHypothesisForm`/`Harness` and asserts only footer button presence — nothing here states or checks any authentication posture disclosure"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "the file's whole scope is `import { HypothesisRevisionFormFields } from \"./hypothesis-revision-form-fields\"` and its footer buttons — no capability-registry operation is invoked or asserted"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "`onSubmit: vi.fn()` is passed but never invoked in any test; no `revise-hypothesis`, `release-hypothesis`, `update-draft` or other lifecycle call is exercised or asserted"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "`subjectType: \"billing-dispute\"` is passed to the harness but no test reads or asserts any case-version attribute, state or manifest fact"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "`hypothesis_name: \"\"` is a default form value; no test asserts the hypothesis's own name or identity"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "`criterion: \"\", collects: [], resolution: { outcome: \"\", referral: { action: \"\", recipient: \"\" } }` are default values never read back or asserted by any test in this file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "no capability read, loading state or failure state appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "no connector configuration or registration flow is present; the file only renders `HypothesisRevisionFormFields`"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "no listing route or connector-configuration surface is referenced in the file"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the file tests only whether a `Cancel` button renders (`screen.queryByRole(\"button\", { name: \"Cancel\" })`), never whether an edit is discarded back to a loaded registration"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "no connector configuration presentation or read-state assertion occurs in the file"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "no capability listing or route assertion occurs in the file"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "`isSubmitting: false` is a static prop value; no submission or registration outcome is issued or asserted"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "no capability registration or navigation-on-success is exercised in the file"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "no connector registration or navigation-on-success is exercised in the file"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "no capability entry composition or abandonment is present; the file's abandonment-adjacent assertion is limited to whether a `Cancel` control renders"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version state or transition is read or asserted; the file asserts only footer button presence"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft record or pending-read presentation is asserted; the harness supplies static `defaultValues` directly"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no revise call is made and no draft/subject-type check is exercised; `subjectType` is passed as a static prop only"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no newly-created draft or withheld-act interval is modeled; the file asserts only which footer buttons render"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry, release attempt or hypothesis-revision state is asserted"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "`onSubmit: vi.fn()` is never invoked and no revision number is asserted anywhere in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no post-revise offer or manifest-pin comparison is exercised; the file only checks static footer rendering"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-condition disclosure appears anywhere in the file"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "the file never asserts what leaving the editing writes or where it returns the curator — only that a `Cancel` button is present or absent"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "\"renders only Save hypothesis when the form-fields component is used with no trailingActions element passed\" asserts button presence/absence only, never that clicking Cancel writes no revision or returns to any screen"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no discard call or case-version state check is present in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release/discard flow or further-explicit-act is exercised; the file's only act-related assertions are button-presence checks"
+looked_past: The file asserts UI structure this specification consistently reserves to the interface — an accessible group's role/name "Actions", the literal button labels "Save hypothesis" and "Cancel", and the trailingActions prop shape — none of which is a domain fact any node here states or denies, so no finding is raised over them; whether that structure itself is good practice is the standard-conformance pass's question, not this one's.

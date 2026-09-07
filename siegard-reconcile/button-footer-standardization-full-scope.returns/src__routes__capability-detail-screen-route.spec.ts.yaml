@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "const fetchMock = createFetchStub({ ...baseHandlers(), [CAPABILITY_PATH]: () => new Promise<Response>(() => {}) });"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the wait on the outstanding-read statement, line 22"
+    evidence: "await screen.findByText(/Loading capability/);"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the assertion on the footer's Cancel link, lines 23-26"
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" }).getAttribute(\"href\")).toBe(\"/capabilities\",);"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)\""
+looked_past: the test locks in specific form the two governing nodes explicitly leave to the interface — the "Loading capability" wording, the "Cancel" label, the footer's "Actions" group name and the literal "/capabilities" href — none of which either node constrains, so it is a test-fragility matter rather than a specification-conformance one.

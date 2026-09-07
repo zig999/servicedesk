@@ -1,0 +1,188 @@
+findings:
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "isValidConfigurationObject, lines 15-22"
+    evidence: |
+      function isValidConfigurationObject(text: string): boolean {
+        const minified = getJsonTextareaMinifiedValue(text);
+        if (minified === null) {
+          return false;
+        }
+        const parsed: unknown = JSON.parse(minified);
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      }
+    cost: "The object/null/array distinction that defines a well-formed connector configuration — the substance rules/integration/a-connector-configuration-holds-a-well-formed-object states for the registry's own refusal — is hand-encoded here as a client-side gate that decides whether the operator may even submit. If the specification's definition of well-formed ever moves (what counts as an object, whether null or an array is ever admitted), nothing forces this predicate to move with it: the client would go on admitting or blocking submissions on a criterion the node no longer states, silently diverging from the registry it is supposed to pre-empt."
+    kind: contradicts
+    correction: "Derive the well-formedness check from one place shared with the specification's own statement of it (or drop the client-side well-formedness gate entirely and let the registry's own refusal, surfaced through saveFailureMessage, be the one place that judges it), rather than re-deriving the object/null/array distinction in this hook."
+    node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the useQuery call (read-connector-configuration) and the useMutation call (register-connector), lines 50-54 and 71-82"
+    evidence: |
+      queryFn: () =>
+        apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
+      ...
+      mutationFn: (values: ConnectorConfigurationFormValues) =>
+        apiFetch<ConnectorConfiguration>(
+          `/v1/connectors/${encodeURIComponent(values.connector)}`,
+          { method: "PUT", ... }
+        ),
+  - node: domain/integration/connector-configuration
+    held_at: "the form's connector field and the configuration state populated from the read, lines 56-59 and 61-67"
+    evidence: |
+      form.reset({ connector: query.data.connector });
+      setConfigurationValue(query.data.configuration);
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "isValidConfigurationObject, lines 15-22 (see finding above — held here, but as a second home rather than a read from the node)"
+    evidence: |
+      return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the isSubmitSuccessful field returned in the ready phase, line 146, and the onError toast, line 92"
+    evidence: |
+      isSubmitSuccessful: mutation.isSuccess,
+      ...
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "the mutation's onSuccess handler, lines 83-90 — it issues no navigation, which is consistent with this hook already presenting the surface addressed by the connector's own name"
+    evidence: |
+      onSuccess: () => {
+        form.reset({ connector });
+        setConfigurationBaseline(configurationValue);
+        void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+        void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+      },
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`)
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export function useConnectorConfigurationDetail(
+        connector: string,
+      ): ConnectorConfigurationDetailState {
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |
+      export function useConnectorConfigurationDetail(
+        connector: string,
+      ): ConnectorConfigurationDetailState {
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |
+      queryKey: ["connector-configuration", connector],
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: |
+      export function useConnectorConfigurationDetail(
+        connector: string,
+      ): ConnectorConfigurationDetailState {
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: |
+      export type ConnectorConfigurationDetailState =
+        | { readonly phase: "loading" }
+        | { readonly phase: "load-error"; readonly retryLoad: () => void }
+        | { readonly phase: "ready"; ... }
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |
+      return {
+        phase: "ready",
+        form,
+        configuration: { value: configurationValue, isValid: configurationValid, onChange: handleConfigurationChange },
+        isDirty,
+        isSubmitting: mutation.isPending,
+        isSubmitSuccessful: mutation.isSuccess,
+        onSubmit,
+      };
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the three-way phase branching, lines 101-111 and the ConnectorConfigurationDetailState union, lines 24-36"
+    evidence: |
+      if (query.isError) {
+        return { phase: "load-error", retryLoad: () => { void query.refetch(); } };
+      }
+      if (query.isLoading || !query.data) {
+        return { phase: "loading" };
+      }
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: |
+      export function useConnectorConfigurationDetail(
+        connector: string,
+      ): ConnectorConfigurationDetailState {
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: |
+      useEffect(() => {
+        if (query.data) {
+          form.reset({ connector: query.data.connector });
+      ...
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: |
+      import type { ConnectorConfiguration } from "./use-connector-configurations";
+
+looked_past: "saveFailureMessage's own mapping (in use-connector-configuration-form.ts) and uiStateForApiError's error-code table (in error-ui-state.ts) leave IncompleteConnectorConfigurationError falling to the same generic message as an unrecognised refusal — a possible gap against a-submitted-registration-states-its-outcome-to-the-operator's distinguishability requirement — but that mapping is declared in files outside this one's set, not in use-connector-configuration-detail.ts itself."

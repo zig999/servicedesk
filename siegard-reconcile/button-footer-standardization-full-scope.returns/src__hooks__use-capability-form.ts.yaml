@@ -1,0 +1,114 @@
+findings:
+  - file: src/hooks/use-capability-form.ts
+    where: "the SAVE_FAILURE_MESSAGE_BY_KIND map, \"incomplete-capability-contract\" entry (lines 40-41)"
+    evidence: "\"This capability does not declare its contract completely; every field of its contract is required.\""
+    cost: "The rule this message stands for carves timeout out of what a registration must declare — \"a registration that states no timeout takes the default of sixty seconds\" — so an IncompleteCapabilityContractError is never about a missing timeout. Telling the operator \"every field of its contract is required\" states the opposite of that carve-out for the one condition this message is shown to explain, and an operator reading it has no way to learn from this surface that timeout is the one field they may leave blank."
+    kind: contradicts
+    node: rules/integration/a-capability-declares-its-contract
+    correction: "State completeness without claiming every field is mandatory, or state the timeout default alongside it the way the rule does."
+
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "the mutationFn's PUT call implementing register-capability"
+    evidence: "apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`, { method: \"PUT\", ... })"
+  - node: domain/integration/capability
+    held_at: "the request body the mutationFn assembles"
+    evidence: "body: JSON.stringify({ nature: values.nature, input_schema: getJsonTextareaMinifiedValue(inputSchemaValue), output_schema: getJsonTextareaMinifiedValue(outputSchemaValue), timeout: values.timeout, connector: values.connector, concept: values.concept, })"
+  - node: domain/integration/capability-registry
+    held_at: "the same PUT call, the registry's one register-capability write"
+    evidence: "apiFetch<Capability>(`/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`, { method: \"PUT\", ... })"
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: "the SAVE_FAILURE_MESSAGE_BY_KIND \"incomplete-capability-contract\" entry"
+    evidence: "\"incomplete-capability-contract\": \"This capability does not declare its contract completely; every field of its contract is required.\","
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the SAVE_FAILURE_MESSAGE_BY_KIND \"capability-schema-not-well-formed\" entry"
+    evidence: "\"capability-schema-not-well-formed\": \"The input schema or the output schema is not syntactically valid JSON.\","
+  - node: rules/integration/a-capability-is-read-only
+    held_at: "the SAVE_FAILURE_MESSAGE_BY_KIND \"capability-not-read-only\" entry"
+    evidence: "\"capability-not-read-only\": \"This capability's declared nature is not read-only; the registry only accepts read-only capabilities.\","
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the mutation's onSuccess/onError handlers and saveFailureMessage()"
+    evidence: "toast.success(`Capability ${values.name} ${values.version} registered.`); ... onError: (error) => { toast.error(saveFailureMessage(error)); }"
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: "the SAVE_FAILURE_MESSAGE_BY_KIND \"concept-already-answered\" entry"
+    evidence: "\"concept-already-answered\": \"Another capability already answers this concept; each concept resolves to exactly one capability.\","
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function useCapabilityForm(existing: Capability | null, onSaved: () => void): CapabilityFormState { ... } — a form-state hook with no screen-level disclosure content of any kind"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file imports only api-client, error-ui-state, json-textarea-field, capability-form-schema, use-concept-options and use-capabilities — nothing from the knowledge context"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "same import list; no case-version content anywhere in the hook"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "same import list; no hypothesis content anywhere in the hook"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "same import list; no hypothesis-revision content anywhere in the hook"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "useCapabilityForm(existing: Capability | null, onSaved: () => void) — the capability is received already resolved as a prop; this hook issues no read-capability-by-identity call and states no outstanding/failed-read window itself"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the hook has no connector-configuration content; its only write is the capability PUT in the mutationFn"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "no listing-route content anywhere in the returned CapabilityFormState shape (lines 19-32)"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the \"ready\" phase of CapabilityFormState exposes only form, conceptOptions, inputSchema, outputSchema, isEditingIdentity, isSubmitting and onSubmit — no discard/reset-to-loaded act"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "no connector-configuration read or its outstanding/failed states appear in the file"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the returned CapabilityFormState (lines 19-32) carries no route to a capabilities listing"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "onSaved(); — the destination after a successful registration is decided by whatever the caller supplies as onSaved, not by this file"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "no connector-configuration registration or destination content anywhere in the file"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the hook exposes no leave/cancel/abandon act — only onSubmit, in the ready-phase return (lines 138-161)"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version or lifecycle-state content anywhere in the file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft case-version content anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis-revision content anywhere in the file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no draft case-version content anywhere in the file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest or hypothesis-revision content anywhere in the file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no hypothesis-revise content anywhere in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no hypothesis-revise or manifest content anywhere in the file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-condition content anywhere in the file"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case-version editing content anywhere in the file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no hypothesis-revision composition content anywhere in the file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no case-version discard content anywhere in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release/discard content anywhere in the file"
+
+looked_past: "the isDispatchingRef double-submit guard around onSubmit (lines 63, 127-136) is an implementation safeguard against duplicate clicks, not a domain fact, so it is left for a code-quality reading rather than reported here."

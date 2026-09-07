@@ -1,0 +1,91 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the whole file addresses only heading and group placement — `expect(screen.getByRole(\"heading\", { name: \"Test\" })).toBeTruthy();` — nothing about authentication disclosure"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "no capability-registry operation appears anywhere in the file; the only calls are `screen.findByLabelText`, `screen.getByRole` and `within(footer).queryByRole`"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file mounts `mountConnectorConfigurationDetailScreen` and asserts on headings/groups only — no case-lifecycle operation is invoked"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no case-version attribute, state or manifest is read or asserted anywhere in the file"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "no hypothesis identity or attribute appears in the file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no hypothesis-revision attribute or state appears in the file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the test asserts only `screen.getByRole(\"heading\", { name: \"Test\" })` and a group named \"Actions\"; no loading, failure or reattempt state for a capability is asserted"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "no abandonment control or navigation-away assertion appears; the test never touches authoring or leaving the surface"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "no route to a listing is asserted; the test checks only `getByRole(\"group\", { name: \"Actions\" })` and a `\"Test\"` heading's position relative to it"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "no discard/reset control is referenced anywhere in the file"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the test waits only for `screen.findByLabelText(\"Configuration\")` to resolve and never asserts a loading or failure presentation"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file concerns a connector-configuration screen, not a capability surface, and asserts no listing route"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "no submission is made in the test and no registered/refused outcome is asserted"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "no registration or navigation-on-success is exercised; the file only mounts an already-loaded read view"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "no register-connector call or resulting navigation is exercised anywhere in the file"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "no capability authoring or abandonment appears in the file"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version transition, release or refusal is exercised anywhere in the file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft case-version content is presented or asserted; the file is scoped to the connector-configuration detail screen"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis revision is exercised in the file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no draft creation or withheld act is exercised in the file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry or release is exercised in the file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise call or revision-number assertion appears in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no revise-completion offer is exercised in the file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-condition disclosure is asserted; the file's only assertions concern a \"Test\" heading and an \"Actions\" group"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case-version edit or abandonment is exercised in the file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no revision composition or abandonment is exercised in the file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no discard of any case version is exercised in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release or discard confirmation flow is exercised in the file"
+looked_past: >-
+  The test asserts only that a "Test" heading sits outside an "Actions" group
+  ("expect(within(footer).queryByRole(\"heading\", { name: \"Test\" })).toBeNull();") — a
+  control-grouping/placement fact every relevant node in this pack repeatedly disclaims as form
+  belonging to the interface, not the specification, and (per its own title) answers a plan-level
+  criterion rather than a domain rule, so it is not this pass's finding to make.

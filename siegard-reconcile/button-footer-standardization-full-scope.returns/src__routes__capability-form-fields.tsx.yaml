@@ -1,0 +1,197 @@
+findings:
+  - file: src/routes/capability-form-fields.tsx
+    where: the help paragraph beneath the Output schema field, lines 183–186
+    evidence: >-
+      Para cada campo em <code>properties</code>, a plataforma lê seu próprio{" "}
+      <code>type</code> e <code>description</code> como o significado declarado
+      desse campo — nenhum outro conteúdo deste schema é lido ou validado.
+    cost: >-
+      Which two attributes of a properties entry are read as a field's declared meaning, and
+      that nothing else in the output schema is read or validated, is domain/investigation/field-semantics'
+      own statement; it now also lives, translated, as hardcoded copy inside this form component.
+      If that node is ever amended — a third attribute read, or the "no other content" boundary
+      narrowed or widened — nothing rebinds this paragraph, and every operator who opens this
+      screen keeps being told the rule as it stood before the change.
+    kind: contradicts
+    correction: >-
+      Remove this restatement of field-semantics from the component (or replace it with a
+      pointer to documentation rather than the rule's own words), leaving the fact held only by
+      domain/investigation/field-semantics.
+    node: domain/investigation/field-semantics
+  - file: src/routes/capability-form-fields.tsx
+    where: the same help paragraph, lines 186–190
+    evidence: >-
+      Uma description declara o que um valor significa (&quot;2 = suspenso por
+      inadimplência&quot;), nunca uma decisão (&quot;quando 2, confirme a
+      hipótese&quot;).
+    cost: >-
+      rules/glossary/a-description-states-meaning-never-policy states this same distinction with
+      this same worked example ("2 = suspended for delinquency" / "when 2, confirm the
+      financial-block hypothesis"); the component now carries a translated copy of both the
+      policy and its example. A later change to the node's own wording or example leaves this
+      paragraph exactly as it is, so the two can read apart from the day the node is next edited,
+      with the UI still teaching the retired version.
+    kind: contradicts
+    correction: >-
+      Drop the restated policy and example from the component; if operator-facing guidance is
+      wanted at all, phrase it without repeating the node's own words or example.
+    node: rules/glossary/a-description-states-meaning-never-policy
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the form's field set, one per declared attribute — Concept (lines 86–103), Name and Version
+      (lines 106–122), Nature (lines 124–140), Timeout (lines 142–152), Connector (lines 155–162),
+      Input schema and Output schema (lines 165–191)
+    evidence: |-
+      <FormField label="Name" errorId="name-error" error={errors.name?.message}>
+        <Input
+          {...register("name")}
+          disabled={isEditingIdentity || isSubmitting}
+      ...
+      <FormField label="Version" errorId="version-error" error={errors.version?.message}>
+      ...
+      <FormField label="Nature" errorId="nature-error" error={errors.nature?.message}>
+      ...
+      <FormField label="Timeout (ms)" errorId="timeout-error" error={errors.timeout?.message}>
+      ...
+      <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
+  - node: domain/integration/capability-nature
+    held_at: "the Nature select's options, lines 28–31"
+    evidence: |-
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: >-
+      Para cada campo em <code>properties</code>, a plataforma lê seu próprio{" "} <code>type</code>
+      e <code>description</code> como o significado declarado desse campo — nenhum outro conteúdo
+      deste schema é lido ou validado.
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: >-
+      Uma description declara o que um valor significa (&quot;2 = suspenso por
+      inadimplência&quot;), nunca uma decisão (&quot;quando 2, confirme a hipótese&quot;).
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the isSaveDisabled expression, line 81–82"
+    evidence: "isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |-
+      <FormField label="Nature" errorId="nature-error" error={errors.nature?.message}>
+        <Controller
+          control={control}
+          name="nature"
+          render={({ field }) => (
+            <Select
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              options={NATURE_OPTIONS}
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: |-
+      <Select
+        value={field.value}
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        options={conceptSelectOptions}
+        disabled={isSubmitting}
+        placeholder="Select a concept"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "import { CAPABILITY_NATURES, type CapabilityFormValues } from \"../services/capability-form-schema\";"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |-
+      export type CapabilityFormFieldsProps = {
+        readonly form: UseFormReturn<CapabilityFormValues>;
+        readonly conceptOptions: readonly ConceptOption[];
+        readonly inputSchema: JsonSchemaFieldState;
+        readonly outputSchema: JsonSchemaFieldState;
+        readonly isEditingIdentity: boolean;
+        readonly isSubmitting: boolean;
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "error={errors.concept?.message}"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "export function CapabilityFormFields({"
+looked_past: >-
+  The isDirty === false clause in isSaveDisabled, the shared FormField helper's structure, and
+  the repeated Tailwind class strings are implementation/style choices rather than a domain fact
+  this file states or omits, so they are left to whichever pass reads code quality rather than
+  specification conformance.

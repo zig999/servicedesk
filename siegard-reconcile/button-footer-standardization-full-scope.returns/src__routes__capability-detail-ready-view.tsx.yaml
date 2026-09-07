@@ -1,0 +1,111 @@
+read:
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the two schema-validity warning blocks, lines 34-43"
+    evidence: |-
+      {!state.inputSchema.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_INPUT_SCHEMA_WARNING}
+        </p>
+      )}
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the Cancel link, lines 89-91"
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/capabilities">Cancel</Link>
+      </Button>
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file's whole render tree (lines 33-96) carries no statement about authentication posture; the disclosure this constraint requires on every screen is carried once by the shell wrapping every route, not by this component"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import { CapabilityFormFields } from \"./capability-form-fields\"; import type { CapabilityDetailViewState } from \"../hooks/use-capability-detail-view\"; — the file consumes a hook's already-resolved state and issues no read-capability-by-identity or register-capability call itself"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file's whole subject is CapabilityDetailReadyViewProps (line 25-27); no case, draft, hypothesis or manifest construct appears anywhere in it"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "same as above — no case-version attribute or state is read or rendered here"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "same as above — no hypothesis construct appears in this file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "same as above — no hypothesis-revision construct appears in this file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |-
+      export type CapabilityDetailReadyViewProps = {
+        readonly state: Extract<CapabilityDetailViewState, { phase: "ready" }>;
+      };
+      — this component only ever renders the answered-read phase; the outstanding and failed windows are stated by capability-detail-screen.tsx, not here
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file imports only CapabilityFormFields and CapabilityDetailViewState; no connector-configuration authoring surface is rendered here"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "same scope limitation — the one route offered here (line 90) goes to /capabilities, not a connector-configuration listing"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the Discard-changes dialog, lines 55-83"
+    evidence: |-
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onDiscard}>
+          Discard changes
+        </Button>
+      </DialogClose>
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "no connector-configuration read or its windows are presented in this file"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the Cancel link, lines 89-91"
+    evidence: '<Link to="/capabilities">Cancel</Link>'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the justSaved status message, lines 84-88 (the registered branch only)"
+    evidence: |-
+      {state.justSaved && (
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "the file's only navigation-capable import is `Link`, used solely for the Cancel control (line 90); no navigate() or redirect follows a successful save here — landing is this surface by construction, decided upstream in capability-detail-screen.tsx"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "no connector-configuration registration or its landing is addressed in this file"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version lifecycle state or transition appears in this file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft case-version content is presented here"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis-revision request is composed or read in this file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no draft case-version or its offered acts appear in this file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest entry or hypothesis-revision state is read here"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no revise-hypothesis answer is read or displayed in this file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no manifest-pin comparison or route offer of this kind appears in this file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "this file offers no case-version release; it offers only a capability's own save, discard and cancel"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case-version editing is abandoned here; the abandonment this file states (state.onDiscard, lines 77-79 of the hook) concerns a capability registration, a different aggregate"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no hypothesis-revision composition appears in this file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "the 'Discard changes' control here discards an unsaved capability edit, not a case version; no case-version discard appears in this file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no case-version release or discard act is offered in this file — the further-explicit-act pattern present here (lines 55-83) is the capability-registration discard, governed instead by a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface"
+looked_past: the discard-dialog markup and copy (DISCARD_DIALOG_DESCRIPTION, the Dialog/DialogTrigger/DialogContent structure) are duplicated near-verbatim in connector-configuration-detail-ready-view.tsx — a code-duplication concern the specification is silent on and this pass does not judge.

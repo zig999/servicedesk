@@ -1,0 +1,116 @@
+findings:
+  - file: src/hooks/use-connector-configuration-form.ts
+    where: "`isValidConfigurationObject` (lines 15-22) and the `configurationValid` gate inside `submit` (lines 96-102)"
+    evidence: "return typeof parsed === \"object\" && parsed !== null && !Array.isArray(parsed);"
+    cost: "the registry's own definition of a well-formed connector configuration — an object, never null, never an array — is re-derived here as the frontend's own authoritative gate before the registry ever sees the value; if the registry's own definition of well-formed ever moves (say, to accept an array), nothing here follows it, and this gate keeps refusing what the registry would now accept, with no single place left to read the current definition from"
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    correction: "stop treating this local object/non-null/non-array check as the authoritative definition of well-formed — let the registry's own 422 answer be the one place that judgment is made, and keep this check, if kept at all, as a non-authoritative aid"
+
+  - file: src/hooks/use-connector-configuration-form.ts
+    where: "`SAVE_FAILURE_MESSAGE_BY_KIND` (lines 42-45) and `saveFailureMessage` (lines 47-53)"
+    evidence: "const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {\n  \"connector-configuration-not-well-formed\":\n    \"This configuration is not syntactically valid JSON.\",\n};"
+    cost: "`rules/integration/a-connector-configuration-holds-a-well-formed-object` (also this file's own node) names two distinct refusal conditions for this same registration — a configuration that is not well-formed JSON object text, and one that is entirely absent or of the wrong shape (`IncompleteConnectorConfigurationError`) — but only the first gets its own message; an operator refused for the second falls through `saveFailureMessage` to `GENERIC_SAVE_FAILURE_MESSAGE`, the exact same text shown for a refusal this surface does not recognise at all, so the two named conditions the operator-facing rule requires be told apart read alike here"
+    kind: contradicts
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    correction: "give the incomplete-configuration condition its own distinguishable message in this map (which requires a distinct kind carried up from the error mapping), rather than letting it collapse into the same bucket as an unrecognised refusal"
+
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the mutation's PUT call, which invokes register-connector"
+    evidence: "apiFetch<ConnectorConfiguration>(\n        `/v1/connectors/${encodeURIComponent(values.connector)}`,\n        {\n          method: \"PUT\","
+  - node: domain/integration/connector-configuration
+    held_at: "the form's default `connector` value and the `configurationValue` state"
+    evidence: "connector: existing?.connector ?? \"\",  ... const [configurationValue, setConfigurationValue] = useState(existing?.configuration ?? \"\");"
+  - node: domain/integration/connector-configuration-registry
+    held_at: "the same PUT call, the frontend's one invocation of register-connector"
+    evidence: "apiFetch<ConnectorConfiguration>(\n        `/v1/connectors/${encodeURIComponent(values.connector)}`,"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "`isValidConfigurationObject` and the `configurationValid` gate in `submit` — restated, not merely applied (see finding)"
+    evidence: "return typeof parsed === \"object\" && parsed !== null && !Array.isArray(parsed);"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "`mutation`'s `onSuccess` and `onError` handlers — the registered branch stated fully, the refused branch only partly (see finding)"
+    evidence: "toast.success(`Connector configuration ${values.connector} registered.`); ... toast.error(saveFailureMessage(error));"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "return {\n    form,\n    configuration: {...},\n    isEditingIdentity: existing !== null,\n    isSubmitting: mutation.isPending,\n    onSubmit,\n  };"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "return {\n    form,\n    configuration: {...},\n    isEditingIdentity: existing !== null,\n    isSubmitting: mutation.isPending,\n    onSubmit,\n  };"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "return {\n    form,\n    configuration: {...},\n    isEditingIdentity: existing !== null,\n    isSubmitting: mutation.isPending,\n    onSubmit,\n  };"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "const [configurationValue, setConfigurationValue] = useState(existing?.configuration ?? \"\");"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "onSuccess: (_data, values) => {\n      toast.success(`Connector configuration ${values.connector} registered.`);\n      void queryClient.invalidateQueries({ queryKey: [\"connector-configurations\"] });\n      onSaved();\n    },"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "export function useConnectorConfigurationForm(\n  existing: ConnectorConfiguration | null,\n  onSaved: () => void,\n): ConnectorConfigurationFormState {"
+
+looked_past: "The double-submit guard (`isDispatchingRef`) and the exact wording of both save-failure strings are interface form, not a domain fact any node governs, so they are not reported here."

@@ -1,0 +1,125 @@
+findings:
+  - file: src/routes/capability-detail-screen.spec.ts
+    where: "the describe block \"a route to the listing is offered even for an identity nothing is registered at (task's own UNDERDETERMINED note)\", its one test, lines 73-86"
+    evidence: |
+      const fetchMock = createFetchStub({
+        [CAPABILITY_PATH]: () => errorResponse("CapabilityIdentityNotFoundError", 404),
+      });
+      await mountCapabilityDetailScreen(fetchMock);
+
+      await screen.findByRole("button", { name: "Retry" });
+    cost: >-
+      rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+      is the one node that ever puts a reattempt control on this surface, and its own
+      expression carves this exact refusal out of that window: "the registry's own refusal
+      of an identity no capability is currently registered at excepted, that refusal being
+      its own answer and not this window." This test locks a "Retry" control onto precisely
+      the refusal the node excepts, and the test's own title concedes the point ("task's own
+      UNDERDETERMINED note") rather than citing a node that settles it. A future reader
+      checking what the specification says an operator sees when the identity itself is
+      unregistered finds only an exception, never a presentation to point at, while the
+      running suite now locks in one anyway.
+    kind: unstated
+    correction: >-
+      Decide, in the specification, what a capability-identity-keyed surface presents when
+      the registry refuses read-capability-by-identity because the name and version are
+      unregistered — whether that reuses the reattempt-carrying failed presentation or is a
+      distinct presentation of its own — and record the decision (and its reasoning) rather
+      than leaving the render locked in by this test alone.
+
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "The file has no assertion about a disclosure of the system's authentication posture on any screen."
+  - node: contracts/integration/capability-registry
+    held_at: "the fetch-call assertion in \"shows the loaded record (criterion 1)\", line 43"
+    evidence: 'expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITY_PATH)).toBe(true);'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "The file contains no reference to a case, a draft, a hypothesis or any case-lifecycle operation."
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "The file contains no reference to a case version, its manifest or its lifecycle."
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "The file contains no reference to a hypothesis."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "The file contains no reference to a hypothesis revision."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the failed-read test, \"keeps a Cancel route to the capabilities listing available when the load fails\", line 65"
+    evidence: 'expect(await screen.findByRole("button", { name: "Retry" })).toBeTruthy();'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "The file contains no reference to a connector configuration or its authoring."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "The file contains no reference to a connector configuration surface."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "The file has no test of a discard-edit act; the screen it exercises offers no such control here."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "The file contains no reference to a connector configuration read."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the Cancel-route tests, e.g. lines 53-56 and 65-69"
+    evidence: 'fireEvent.click(within(footer).getByRole("link", { name: "Cancel" }));'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "The file issues no submission; it has no test of Save being clicked or of a registered/refused outcome being stated."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "No test in this file submits a registration or asserts a post-submission destination."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "The file contains no reference to a connector configuration registration."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "The file exercises a screen presenting an already-registered capability, never an authoring entry being abandoned."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "The file contains no reference to a case version's lifecycle."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "The file contains no reference to a draft case version."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "The file contains no reference to revising a hypothesis."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "The file contains no reference to a newly created draft."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "The file contains no reference to a case version's manifest or release."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "The file contains no reference to a hypothesis revise."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "The file contains no reference to a hypothesis revise or a manifest pin."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "The file contains no reference to a release-offering surface."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "The file contains no reference to editing a case version."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "The file contains no reference to composing a hypothesis revision."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "The file contains no reference to discarding a case version."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "The file contains no reference to releasing or discarding a case version."
+
+looked_past: >-
+  The first test also asserts that the Name and Version fields render disabled
+  (`nameInput.hasAttribute("disabled")`, `versionInput.hasAttribute("disabled")`); that
+  behavior comes from the shared, out-of-set `capability-form-fields.tsx` component's own
+  `isEditingIdentity` prop — this file only exercises the existing component, as the
+  criterion-6 describe block's own title states ("reuses the existing
+  capability-form-fields.tsx markup unchanged") — so whether disabling identity is itself a
+  fact any node holds is that component's own file's question, not this one's.
+candidates_opened:
+  - constraints/the-capability-identity-read-refuses-an-unregistered-identity

@@ -1,0 +1,216 @@
+findings:
+  - file: src/hooks/use-new-draft-version-form.ts
+    where: the useEffect syncing the create form from the source-version query, lines 90-94
+    evidence: |-
+      useEffect(() => {
+          if (sourceVersionQuery.data) {
+            resetFormFrom(createForm, sourceVersionQuery.data);
+          }
+        }, [sourceVersionQuery.data]);
+    cost: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version names one starting move for a new draft — copying its manifest — and its own description calls creating a draft "never a second decision about what the draft starts holding." Here a curator opening the create form for a case that already holds a released version finds title, when-to-use, subject, fallback and even the consolidation register already filled in with that released version's own content before they have touched anything. Nothing in the node, or anywhere else in the specification, says a new draft's own declared attributes begin as a copy of a prior version — only its manifest does — so a reader who checks that node to learn what a new draft starts holding learns about the manifest alone and has no way to learn the rest of the form arrives pre-written too.
+    kind: contradicts
+    node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    correction: either stop copying the create form's non-manifest fields from the source version (leaving only the manifest copied, server-side, as the node states), or have the analysis decide and record in the specification that a new draft's own declared attributes also start as a copy of the source version's.
+  - file: src/hooks/use-new-draft-version-form.ts
+    where: the createMutation request-body construction, lines 113-129
+    evidence: |-
+      ...(latestReleasedVersionNumber !== undefined
+                ? {
+                    consolidation_register: values.consolidation_register,
+                    source_version: latestReleasedVersionNumber,
+                  }
+                : {}),
+    cost: domain/knowledge/case-version declares consolidation_register as an attribute a case version may carry, with no stated condition on when it may be authored, and the decision log records it as "not required" full stop. Here, a curator authoring a case's very first version — the one case a-new-drafts-manifest-is-copied-from-an-existing-version names no source for — has any consolidation register they chose on the form silently dropped before the request is sent, with nothing telling them so. A reader of domain/knowledge/case-version or domain/knowledge/consolidation-register finds no rule tying this attribute's presence to a prior released version existing.
+    kind: unstated
+    node: domain/knowledge/case-version
+    correction: >-
+      send `consolidation_register: values.consolidation_register` unconditionally, independent of
+      latestReleasedVersionNumber — or have the analysis decide, and record in the specification,
+      that a case's first-ever version may not declare a consolidation register.
+
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: the four glossary-vocabulary hooks assembled for the create form, lines 46-49
+    evidence: |-
+      const subjectOptions = useGlossaryVocabularyOptions("subject-type");
+        const outcomeOptions = useGlossaryVocabularyOptions("outcome");
+        const actionOptions = useGlossaryVocabularyOptions("action");
+        const recipientOptions = useGlossaryVocabularyOptions("recipient");
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the createMutation's POST to /v1/cases, lines 130-134
+    evidence: |-
+      return apiFetch<CreatedDraft>("/v1/cases", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            });
+  - node: contracts/knowledge/case-query
+    held_at: the sourceVersionQuery reading one specific version, and redirectToExistingDraft listing versions, lines 60-67 and 96-101
+    evidence: |-
+      apiFetch<CaseVersionRecord>(
+              `/v1/cases/${encodeURIComponent(slug)}/versions/${latestReleasedVersionNumber}`,
+            ),
+      ...
+      const page = await apiFetch<CaseVersionsPage>(
+            `/v1/cases/${encodeURIComponent(slug)}/versions`,
+          );
+  - node: domain/glossary/subject-type
+    held_at: the subjectValue effect defaulting the form's subject field, lines 79-88
+    evidence: |-
+      const subjectValue = subjectOptions.options[0]?.value;
+        useEffect(() => {
+          if (
+            subjectValue !== undefined &&
+            hasLoadedVersions &&
+            latestReleasedVersionNumber === undefined
+          ) {
+            createForm.setValue("subject", subjectValue);
+          }
+        }, [subjectValue, hasLoadedVersions, latestReleasedVersionNumber]);
+  - node: domain/knowledge/case
+    held_at: the request body naming the case's own slug, lines 114-117
+    evidence: |-
+      const body: CreateDraftRequestBody = {
+              slug,
+              authored_at: new Date().toISOString(),
+  - node: domain/knowledge/case-version
+    held_at: the CreateDraftRequestBody type and its construction, lines 23-32 and 113-129 (see finding on the consolidation_register conditioning)
+    evidence: |-
+      type CreateDraftRequestBody = {
+        readonly slug: string;
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly authored_at: string;
+        readonly subject: string;
+        readonly fallback: CaseVersionFormValues["fallback"];
+        readonly consolidation_register?: CaseVersionFormValues["consolidation_register"];
+        readonly source_version?: number;
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: the literal "released"/"draft" comparisons, lines 53 and 101
+    evidence: |-
+      .filter((item) => item.state === "released")
+      ...
+      const existingDraft = page.data.find((item) => item.state === "draft");
+  - node: domain/knowledge/consolidation-register
+    held_at: the conditional consolidation_register field in the request body, lines 123-128 (see finding)
+    evidence: |-
+      consolidation_register: values.consolidation_register,
+                  source_version: latestReleasedVersionNumber,
+  - node: domain/knowledge/referral
+    held_at: the form's default fallback.referral value, lines 74-76
+    evidence: 'fallback: { outcome: "", referral: { action: "", recipient: "" } },'
+  - node: domain/knowledge/resolution
+    held_at: the form's default fallback value pairing outcome with referral, lines 74-76
+    evidence: 'fallback: { outcome: "", referral: { action: "", recipient: "" } },'
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: the onError branch reacting to the case-already-has-draft outcome, lines 142-149
+    evidence: |-
+      const kind = errorStateKind(error);
+            if (kind === "case-already-has-draft") {
+              toast.error(`A draft already exists for the case "${slug}".`);
+              void redirectToExistingDraft();
+              return;
+            }
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: the `if (created) return editState` branch, lines 155-159
+    evidence: |-
+      const editState = useEditDraftVersionForm(slug, created?.version ?? null);
+
+        if (created) {
+          return editState;
+        }
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: the latestReleasedVersionNumber computation and its use as source_version, lines 52-57 and 123-128 (contradicted in part — see finding)
+    evidence: |-
+      const latestReleasedVersionNumber = versionsQuery.data?.data
+          .filter((item) => item.state === "released")
+          .reduce<number | undefined>(
+            (latest, item) => (latest === undefined || item.version > latest ? item.version : latest),
+            undefined,
+          );
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: the same `if (created) return editState` delegation, lines 155-159
+    evidence: |-
+      const editState = useEditDraftVersionForm(slug, created?.version ?? null);
+
+        if (created) {
+          return editState;
+        }
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: the onCancel handler, lines 219-221
+    evidence: |-
+      onCancel: () => {
+              router.history.back();
+            },
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'return { phase: "loading" };'
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: 'export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState {'
+
+looked_past: the isSubmittingRef double-submit guard, the no-op onFieldBlur, the "isFirstVersion"-conditioned default subject value, and the generic "Something went wrong while saving" toast for unrecognized errors are UI/implementation choices this pass does not judge — none of them states a domain fact the specification does not already hold or fails to state.

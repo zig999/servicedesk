@@ -1,0 +1,102 @@
+findings:
+  - file: src/routes/capability-create-screen.tsx
+    where: "the three `Cancel` links (loading phase line 35, load-error phase line 48, ready phase line 64)"
+    evidence: "<Link to=\"/capabilities\">Cancel</Link>"
+    cost: "an operator who opened this create screen from anywhere other than the capabilities listing — a capability's own detail surface, say, once such a link exists, or a direct navigation — is sent to the listing on Cancel rather than back to where they came from; the decision log records this exact value (returning to the listing) as an earlier reading of this same node that was replaced because it privileged the listing over the reached-from surface, and the code reintroduces precisely that replaced value with no way to recover the original surface."
+    kind: contradicts
+    correction: "make Cancel return to the surface the create screen was reached from (the pattern already used elsewhere in this codebase via the router's own history, e.g. in use-new-draft-version-form.ts and use-hypothesis-revision-form.ts), and, if a standalone route to the listing is still wanted to satisfy the separate listing-route rule, offer it as its own control rather than folding both destinations into one link to /capabilities."
+    node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "nowhere in this file"
+    evidence: "the screen calls no registry operation itself; it renders `<CapabilityFormFields form={state.form} ... onSubmit={state.onSubmit} .../>` and leaves `register-capability` (and every other operation) to `useCapabilityForm`"
+  - node: domain/integration/capability
+    held_at: "nowhere in this file"
+    evidence: "the screen passes only `conceptOptions`, `inputSchema` and `outputSchema` through to `CapabilityFormFields`; no attribute of `domain/integration/capability` is declared, read or validated here"
+  - node: domain/integration/capability-registry
+    held_at: "nowhere in this file"
+    evidence: "`const state = useCapabilityForm(null, handleSaved);` — resolution and registration are the hook's own operations, not this file's"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the `Cancel` link rendered in every phase — loading (line 35), load-error (line 48) and ready (line 64)"
+    evidence: "<Link to=\"/capabilities\">Cancel</Link>"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "<Link to=\"/capabilities\">Cancel</Link> — the same fixed target in all three phases, regardless of where the screen was reached from"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file's whole JSX — a heading, a loading/load-error/ready branch and the form fields — states nothing about authentication anywhere"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file imports only `useCapabilityForm`, `CapabilityFormFields` and routing helpers; no case-lifecycle operation is named or invoked"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the file declares no case-version attribute or state; its only domain concern, via the imported hook and fields component, is a capability"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "no hypothesis identity, revision or field appears anywhere in this file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no hypothesis-revision identity, revision or field appears anywhere in this file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "`useCapabilityForm(null, handleSaved)` — `existing` is always `null`; this screen never reads a capability by identity, so it has no in-flight/failed identity-read window to state"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file names no connector configuration or `register-connector` anywhere"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file names no connector-configuration listing or surface"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the render's own action set — no Discard/undo control appears in any phase"
+    evidence: "the returned JSX offers only `Retry` (load-error) and the fields component's own submit plus `Cancel`; no discard control is rendered, consistent with this surface never holding a read registration (`existing` is always `null`)"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file presents no connector configuration and issues no `read-connector-configuration` call"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "nowhere in this file"
+    evidence: "`const state = useCapabilityForm(null, handleSaved);` — the toast success/error statements this rule requires are composed inside `useCapabilityForm` (`toast.success`, `toast.error`), not in this component's own JSX"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: "`handleSaved`, lines 15-20"
+    evidence: "void navigate({ to: \"/capabilities/$name/$version\", params: { name, version } });"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the file names no connector-configuration registration or its own surface"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version lifecycle operation (release, discard, etc.) is named anywhere in this file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "the file presents no case-version content of any kind"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis revision or subject-type check appears anywhere in this file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "the file offers no case-version acts (release, discard, update-draft) at all — it is a capability form"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no manifest, hypothesis-revision or release check appears anywhere in this file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no hypothesis-revision `revise` call or its answer appears anywhere in this file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no manifest or pin comparison appears anywhere in this file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "the file offers no release act and states no release condition anywhere"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case-version editing is opened or left in this file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no hypothesis-revision composition is opened or left in this file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no discard act of any kind appears anywhere in this file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release or discard act, and no confirming further act, appears anywhere in this file"
+
+looked_past: "the ready-phase submit path itself (`state.onSubmit` handed to `CapabilityFormFields`, and the concept/schema wiring `useCapabilityForm` performs) is the hook's and the fields component's own conformance, neither of which this file's own code decides — this file only wires their outputs into its three phases and the two navigations named above."

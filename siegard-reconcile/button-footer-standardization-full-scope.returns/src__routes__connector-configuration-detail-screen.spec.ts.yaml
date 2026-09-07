@@ -1,0 +1,143 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: &imports |
+      import {
+        ARRAY_CONFIGURATION,
+        CAPABILITIES_PATH,
+        CONFIGURATION_PATH,
+        CONNECTOR,
+        INVALID_CONFIGURATION,
+        LOADED_CONFIGURATION,
+        NULL_CONFIGURATION,
+        SUBJECT_TYPE_PATH,
+        UPDATED_CONFIGURATION,
+        baseHandlers,
+        createFetchStub,
+        errorResponse,
+        mountConnectorConfigurationDetailScreen,
+        prettyPrinted,
+        putCallCount,
+      } from "./connector-configuration-detail-screen.test-support";
+  - node: contracts/integration/capability-registry
+    held_at: "the ConnectorTestPanel mount assertions, lines 129-135"
+    evidence: |
+      expect(await screen.findByRole("heading", { name: "Test" })).toBeTruthy();
+      await waitFor(() =>
+        expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITIES_PATH)).toBe(true),
+      );
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: &shortimports |
+      import {
+        ARRAY_CONFIGURATION,
+        CAPABILITIES_PATH,
+        CONFIGURATION_PATH,
+        CONNECTOR,
+      } from "./connector-configuration-detail-screen.test-support";
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: *shortimports
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: *shortimports
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |
+      const fetchMock = createFetchStub({
+        [CONFIGURATION_PATH]: () => errorResponse("SomeUpstreamError", 500),
+      });
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: |
+      const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
+      const router = await mountConnectorConfigurationDetailScreen(fetchMock);
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the Cancel-link tests, lines 47-84"
+    evidence: |
+      const footer = screen.getByRole("group", { name: "Actions" });
+      fireEvent.click(within(footer).getByRole("link", { name: "Cancel" }));
+
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the read-success, load-error and retry tests, lines 29-117"
+    evidence: |
+      expect(await screen.findByRole("heading", { name: `Connector ${CONNECTOR}` })).toBeTruthy();
+      const connectorInput = screen.getByLabelText<HTMLInputElement>("Connector");
+      expect(connectorInput.value).toBe(CONNECTOR);
+      ...
+      fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+      await waitFor(() => {
+        const callsAfterRetry = fetchMock.mock.calls.filter(
+          ([input]) => input === CONFIGURATION_PATH,
+        ).length;
+        expect(callsAfterRetry).toBe(callsBeforeRetry + 1);
+      });
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: |
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: *shortimports
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: *shortimports
+looked_past: >-
+  The describe title at line 72 ("UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing
+  leaves open whether the route submits before landing on the listing") describes the node as leaving
+  something open that the node's own statement ("taking that route registers nothing") already settles,
+  and the "renders exactly one link" / footer-group role assertions test rendering structure the
+  specification leaves to the interface — neither is a domain-fact discrepancy this pass reports.
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object

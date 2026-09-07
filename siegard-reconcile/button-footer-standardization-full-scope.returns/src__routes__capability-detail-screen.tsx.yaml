@@ -1,0 +1,89 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "the file's ready branch renders `<CapabilityDetailReadyView state={state} />` and states nothing else; no attribute of the capability (nature, schemas, timeout, connector, concept) is declared in this file itself"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the `state.phase === \"loading\"` branch (lines 12-25) and the `state.phase === \"load-error\"` branch (lines 27-41)"
+    evidence: "\"Loading capability {name} {version}…\" in the loading branch; \"Unable to load this capability right now.\" together with `<Button type=\"button\" onClick={state.retryLoad}>Retry</Button>` in the load-error branch alone"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the `<Link to=\"/capabilities\">Cancel</Link>` control inside `ButtonFooter` in the loading and load-error branches"
+    evidence: "`<Link to=\"/capabilities\">Cancel</Link>` appears in both the loading return (line 20) and the load-error return (line 36)"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file's entire content is the three phase branches around `useCapabilityDetailView(name, version)`; none states anything about the system's authentication posture"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "`const state = useCapabilityDetailView(name, version);` — the operation invoked against the registry lives inside that hook, not in this file"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file names only `name`, `version` and a capability read state; no draft, hypothesis or case-lifecycle operation appears"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the file contains no reference to a case version, its attributes or its manifest"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "the file contains no reference to a hypothesis"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "the file contains no reference to a hypothesis revision"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file presents a capability read only; it authors no connector configuration"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file's only listing route is `<Link to=\"/capabilities\">`, to the capability listing, not a connector configuration listing"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the file offers no edit, no registration and no discard-edit act; it only reads and presents"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file's outstanding/failed states (`\"loading\"`, `\"load-error\"`) speak of a capability, not a connector configuration"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "the file has no submission path — no register-capability or register-connector call appears anywhere in it"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "the file is the destination surface addressed by `useParams({ from: \"/capabilities/$name/$version\" })`, not the surface that submits a registration"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the file concerns a capability, not a connector configuration, and contains no registration submission"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file offers no authoring entry and no abandonment act; it is a read-only presentation of an existing identity"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "the file contains no case version state or lifecycle transition"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "the file presents a capability's read state, never a draft case version's content"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "the file contains no revise-hypothesis act and no case draft"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "the file offers no release, discard or update-draft act of any kind; its only acts are `state.retryLoad` and the `/capabilities` link"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "the file contains no manifest entry and no hypothesis-revision reference"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file states no revision number and performs no revise"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "the file offers no route to a case version's manifest; its only route is `<Link to=\"/capabilities\">`"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "the file offers no release act and states no release condition"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "the file contains no case version editing surface"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "the file contains no hypothesis-revision composition"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "the file offers no discard act and holds no case version"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "the file offers neither a release nor a discard act; its own explicit acts are limited to `state.retryLoad` and navigation to `/capabilities`"
+looked_past: "the ready branch renders `<CapabilityDetailReadyView state={state} />` without this file's own JSX carrying a link to `/capabilities`, so whether rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing is met in the ready reading turns on that component, which is outside this file set and not judged here."

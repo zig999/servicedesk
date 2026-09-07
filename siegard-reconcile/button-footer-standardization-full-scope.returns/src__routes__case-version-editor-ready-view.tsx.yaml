@@ -1,0 +1,120 @@
+findings:
+  - file: src/routes/case-version-editor-ready-view.tsx
+    where: "the CONFLICT_BANNER_TITLE / CONFLICT_BANNER_MESSAGE constants (top of file) and their use at `state.status === \"conflict\"`"
+    evidence: |
+      const CONFLICT_BANNER_TITLE = "This version was released by someone else";
+      const CONFLICT_BANNER_MESSAGE =
+        "Your changes were not saved. Reload to see the current state, or start a new draft.";
+      ...
+      {state.status === "conflict" && (
+        <ConflictBanner title={CONFLICT_BANNER_TITLE} message={CONFLICT_BANNER_MESSAGE} />
+      )}
+    cost: "The specification states that a lifecycle operation asked of a version no longer in draft is refused (a-case-version-moves-through-its-declared-lifecycle), but it never says what a curator submitting an edit against a version somebody else just released is told, or what recovery is offered. This file decides both — that the cause is named as \"released by someone else\" and that the offered way forward is to reload or \"start a new draft\" — as hard-coded copy. A reader who wants to know what the system tells a curator in this situation, or whether starting a new draft is the sanctioned recovery, finds it only here; a later change to what can produce a \"conflict\" status (e.g. a concurrent discard, not a release) would leave this copy silently naming the wrong cause with no node to catch the disagreement."
+    kind: unstated
+    correction: "State, alongside a-case-version-moves-through-its-declared-lifecycle or as a sibling surface policy, what a curator editing a draft is told when the save is refused because the version no longer stands in draft, and what recovery the specification intends (reload, start a new draft, or something else)."
+
+read:
+  - node: domain/knowledge/case
+    held_at: "the `slug` prop, threaded to the manifest table and to the discard slug-confirmation control"
+    evidence: "readonly slug: string;\n...\n<span>Type {slug} to confirm</span>"
+  - node: domain/knowledge/case-version
+    held_at: "release.version stated in the release dialog title, and state.manifest passed to the manifest table"
+    evidence: "<DialogTitle>Release v{release.version}?</DialogTitle>"
+  - node: domain/knowledge/manifest-entry
+    held_at: "toManifestRow, mapping each entry's position and its pinned hypothesis-revision"
+    evidence: "position: entry.position,\n    hypothesis: entry.hypothesis_revision.hypothesis.name,\n    revision: entry.hypothesis_revision.revision,"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "isReadOnly gating the editable form and hiding the Save button, plus the release dialog's disclosure"
+    evidence: "{!isReadOnly && (\n          <Button\n            type=\"submit\"\n            form={CASE_VERSION_EDITOR_FORM_ID}\n            disabled={state.isBlocked || state.status === \"clean\"}\n          >\n            Save changes\n          </Button>\n        )}"
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: "the manifest row's state cell, falling back to a pending state until the pin's own read answers"
+    evidence: "const STILL_UNRESOLVED_PIN_STATE: PinnedRevisionStateResult = { status: \"pending\" };\n...\nstate: pinnedRevisionStateCell(pinnedState),"
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: "the empty-violations branch of the release dialog's alert"
+    evidence: "<p className=\"text-sm text-destructive\">\n                      No specific violation was returned.\n                    </p>"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "the named-violations list rendered when a release attempt is refused"
+    evidence: "<ul className=\"flex flex-col gap-1 text-sm text-destructive\">\n                      {release.violations.map((violation) => (\n                        <li key={violation}>! {violation}</li>\n                      ))}\n                    </ul>"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "the release-conditions section listing each condition's met/unmet/undecided label"
+    evidence: "{release.conditions.map((condition) => (\n              <li key={condition.label}>\n                {RELEASE_CONDITION_STATUS_LABEL[condition.status]}: {condition.label}\n              </li>\n            ))}"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: "the unconditional Cancel control at the end of the footer"
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n          Cancel\n        </Button>"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "the Release dialog (statement-only confirm) and the Discard dialog (slug-reproduction confirm)"
+    evidence: "<Button type=\"button\" loading={release.isConfirming} onClick={release.onConfirm}>\n                  Release\n                </Button>\n...\n<Input\n                    value={discard.slugConfirmation}\n                    onChange={(event) => discard.onSlugConfirmationChange(event.target.value)}"
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "the same named-violations list shown on a refused release"
+    evidence: "{release.violations.map((violation) => (\n                        <li key={violation}>! {violation}</li>\n                      ))}"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function CaseVersionEditorReadyView({\n  state,\n  slug,\n}: CaseVersionEditorReadyViewProps): JSX.Element {"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the Save/Release/Discard controls triggering update-draft, release and discard respectively"
+    evidence: "<Button type=\"button\" loading={release.isConfirming} onClick={release.onConfirm}>\n                  Release\n                </Button>"
+  - node: domain/knowledge/hypothesis
+    held_at: "the manifest row's hypothesis name"
+    evidence: "hypothesis: entry.hypothesis_revision.hypothesis.name,"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the manifest row's revision number and criterion"
+    evidence: "revision: entry.hypothesis_revision.revision,\n    state: pinnedRevisionStateCell(pinnedState),\n    criterion: entry.hypothesis_revision.criterion,"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the conflict banner reacting to state.status, without stating the transition or refusal itself"
+    evidence: "{state.status === \"conflict\" && (\n        <ConflictBanner title={CONFLICT_BANNER_TITLE} message={CONFLICT_BANNER_MESSAGE} />\n      )}"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "readonly state: Extract<EditDraftVersionFormState, { phase: \"ready\" }>;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "readonly state: Extract<EditDraftVersionFormState, { phase: \"ready\" }>;"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "import type { CaseVersionManifestEntry } from \"../services/case-version-record\";"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: "the discard trigger and dialog, gated on discard.canDiscard"
+    evidence: "{discard !== undefined && discard.canDiscard && (\n          <Dialog open={discard.isOpen} onOpenChange={discard.onOpenChange}>"
+
+looked_past: "The RELEASE_DIALOG_DESCRIPTION and DISCARD_DIALOG_DESCRIPTION strings restate consequences a-case-version-is-written-once and only-a-draft-case-version-may-be-discarded already state, but every sibling rule of this shape leaves wording and control placement to the interface, so the restatement is form rather than a second home for the fact; I did not report it."

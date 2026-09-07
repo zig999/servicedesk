@@ -1,0 +1,86 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: "the `version: number` prop declared on HypothesisRevisionScreenProps and used to identify the case's draft version whose subject type is forwarded"
+    evidence: "readonly version: number;"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "the `loading` and `load-error` branches, which present no case-version attribute at all before an answer has arrived or where none ever will"
+    evidence: "if (state.phase === \"loading\") {\n    return <p>Loading…</p>;\n  }"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the success-phase message"
+    evidence: "Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the conditionally rendered \"Open Manifest Builder\" button in the success phase"
+    evidence: "{state.offerManifestBuilder && (\n          <Button type=\"button\" onClick={state.onOpenManifestBuilder}>\n            Open Manifest Builder\n          </Button>\n        )}"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: "the Cancel control in trailingActions, offered for as long as the composition has not been submitted"
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n            Cancel\n          </Button>"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file's only rendered text is Loading…, Unable to load this form right now., the revision-saved message, the hypothesis heading and the form's own controls — no disclosure of the system's authentication posture appears anywhere in it"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "onSubmit={state.onSubmit}"
+  - node: domain/knowledge/hypothesis
+    held_at: "the `hypothesisName` prop and the heading that reads it"
+    evidence: "<h1>{hypothesisName === null ? \"New hypothesis\" : `Revise hypothesis — ${hypothesisName}`}</h1>"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the success-phase message stating the saved revision number"
+    evidence: "saved as revision {state.revision}."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "import { useHypothesisRevisionForm } from \"../hooks/use-hypothesis-revision-form\";"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "import { HypothesisRevisionFormFields } from \"./hypothesis-revision-form-fields\";"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "<Button type=\"button\" onClick={state.onOpenManifest}>\n        View Manifest\n      </Button>"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "onSubmit={state.onSubmit}"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "if (state.phase === \"load-error\") {"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "<Button type=\"button\" onClick={state.onOpenManifest}>\n        View Manifest\n      </Button>"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n            Cancel\n          </Button>"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "readonly version: number;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "subjectType={state.subjectType}"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "if (state.phase === \"loading\") {\n    return <p>Loading…</p>;\n  }"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n            Cancel\n          </Button>"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionScreen({ slug, version, hypothesisName }: HypothesisRevisionScreenProps): JSX.Element {"
+looked_past: "Generic phase-string branching, the wording chosen for the loading/error/success messages and the JSX structure itself are form and code-shape concerns, not domain facts, and are left to whichever pass reviews those."

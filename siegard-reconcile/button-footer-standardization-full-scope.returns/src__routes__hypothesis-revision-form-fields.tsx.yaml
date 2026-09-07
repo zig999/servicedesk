@@ -1,0 +1,113 @@
+read:
+  - node: domain/glossary/action
+    held_at: "the \"Referral action\" field, lines 187-212"
+    evidence: "name=\"resolution.referral.action\"\n                options={actionOptions.options}"
+  - node: domain/glossary/concept
+    held_at: "the Collects fieldset's checkbox list, lines 130-149"
+    evidence: "const checked = field.value.includes(concept.name);"
+  - node: domain/glossary/outcome
+    held_at: "the \"Resolution outcome\" field, lines 161-185"
+    evidence: "options={outcomeOptions.options}"
+  - node: domain/glossary/recipient
+    held_at: "the \"Referral recipient\" field, lines 214-239"
+    evidence: "options={recipientOptions.options}"
+  - node: domain/glossary/subject-type
+    held_at: "the \"Subject type (from draft, fixed)\" field, lines 88-90"
+    evidence: "<Input value={subjectType} disabled readOnly />"
+  - node: domain/knowledge/case-version
+    held_at: "the same subjectType field, lines 88-90, surfacing the version's own declared subject read-only"
+    evidence: "<Input value={subjectType} disabled readOnly />"
+  - node: domain/knowledge/hypothesis
+    held_at: "the \"Hypothesis name\" field, lines 80-85"
+    evidence: "{...register(\"hypothesis_name\")}\n            disabled={!hypothesisNameEditable || isSubmitting}"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the criterion, collects and resolution fields together, lines 93-240"
+    evidence: "{...register(\"criterion\")}"
+  - node: domain/knowledge/referral
+    held_at: "the nested resolution.referral.action and resolution.referral.recipient fields, lines 187-239"
+    evidence: "name=\"resolution.referral.action\""
+  - node: domain/knowledge/resolution
+    held_at: "the grouping of resolution.outcome with resolution.referral.*, lines 160-240"
+    evidence: "name=\"resolution.outcome\""
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: "the trailingActions slot rendered in ButtonFooter, line 246"
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the Select and Checkbox controls, which offer only the vocabulary supplied through props rather than free text, lines 130-239"
+    evidence: "options={outcomeOptions.options}"
+  - node: rules/knowledge/every-position-declares-a-resolution
+    held_at: "the resolution.outcome, resolution.referral.action and resolution.referral.recipient fields rendered unconditionally, lines 160-240"
+    evidence: "name=\"resolution.referral.recipient\""
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function HypothesisRevisionFormFields({\n  form,\n  hypothesisNameEditable,\n  subjectType,\n  ...\n}): JSX.Element {"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import type { HypothesisRevisionFormValues } from \"../services/hypothesis-revision-form-schema\";"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "import { Select } from \"@tui/ui/select\";"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "import { ButtonFooter } from \"../shared/components/button-footer\";"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "readonly trailingActions?: ReactNode;"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "readonly isSubmitting: boolean;"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "readonly onSubmit: (event?: BaseSyntheticEvent) => void;"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "readonly collectsOptions: readonly ConceptOption[];"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "onSubmit={onSubmit}"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "onSubmit={onSubmit}"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "onSubmit={onSubmit}"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "readonly subjectType: string;"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "const {\n    register,\n    control,\n    formState: { errors },\n  } = form;"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the read-only subjectType field, lines 88-90, which is not registered with the form and so carries no value in the submitted payload"
+    evidence: "<Input value={subjectType} disabled readOnly />"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "readonly hypothesisNameEditable: boolean;"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "readonly form: UseFormReturn<HypothesisRevisionFormValues>;"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "<Button type=\"submit\" disabled={isSubmitting}>\n          Save hypothesis\n        </Button>"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "export type HypothesisRevisionFormFieldsProps = {"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "readonly outcomeOptions: GlossaryVocabularyOptions;"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "{trailingActions}"
+looked_past: "The comment at lines 102-113 citing accessibility rules ACC-01/ACC-03 for the fieldset/legend choice, and the comment at lines 118-121 matching TUI's Label CSS classes, are form/interface and standard-conformance concerns rather than domain facts, so they are not reported here."

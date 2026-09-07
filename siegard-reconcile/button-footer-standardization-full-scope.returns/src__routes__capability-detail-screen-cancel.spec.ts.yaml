@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "await screen.findByLabelText(\"Connector\");"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\", () => {"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "both `it` blocks: the link's own href (line 20-21) and the click/navigation/no-PUT assertions (lines 30-33)"
+    evidence: "const cancel = screen.getByRole(\"link\", { name: \"Cancel\" });\n    expect(cancel.getAttribute(\"href\")).toBe(\"/capabilities\");\n ... fireEvent.click(screen.getByRole(\"link\", { name: \"Cancel\" }));\n\n    await waitFor(() => expect(router.state.location.pathname).toBe(\"/capabilities\"));\n    expect(putCallCount(fetchMock)).toBe(0);"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0);"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "expect(cancel.getAttribute(\"href\")).toBe(\"/capabilities\");"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- a Cancel control leaves the surface without submitting or replacing the registered capability (criterion 7, disclosed inference)\""
+looked_past: The file names "Discard" only to distinguish Cancel's control from it, and does not itself exercise `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface`'s reset-and-stay behavior or `an-abandoned-capability-registration-entry-registers-nothing`'s return-to-entry-surface behavior — both are bound (per the candidate index) to `capability-detail-ready-view.tsx`, a sibling file outside this one, so their absence here is not this file's gap to answer for.

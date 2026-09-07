@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "<div role=\"group\" aria-label=\"Actions\" className=\"sticky bottom-0 flex flex-wrap items-center justify-end gap-4 border-t border-border bg-surface py-4\">{children}</div>"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export function ButtonFooter({ children }: ButtonFooterProps): JSX.Element { return (<div role=\"group\" ...>{children}</div>); }"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "export function ButtonFooter({ children }: ButtonFooterProps): JSX.Element { return (<div role=\"group\" ...>{children}</div>); }"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "export type ButtonFooterProps = { readonly children: ReactNode; };"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export type ButtonFooterProps = { readonly children: ReactNode; };"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "export type ButtonFooterProps = { readonly children: ReactNode; };"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "{children}"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "{children}"
+looked_past: The role="group", aria-label="Actions" and the Tailwind layout classes (sticky, flex-wrap, justify-end, spacing, border, background) are interface form — which control a screen offers, where it sits and how it is styled — not a domain fact any of these nodes states, so no finding is made over them.

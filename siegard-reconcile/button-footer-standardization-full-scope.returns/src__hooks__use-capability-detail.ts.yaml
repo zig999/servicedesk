@@ -1,0 +1,169 @@
+findings:
+  - file: src/hooks/use-capability-detail.ts
+    where: "the phase-selection guards, lines 121-132"
+    evidence: |-
+      if (query.isError || isConceptsError) {
+          return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+              conceptOptions.refetch();
+            },
+          };
+        }
+        if (query.isLoading || isLoadingConcepts || !query.data) {
+          return { phase: "loading" };
+        }
+    cost: "A capability read that has already answered — successfully — is still shown as \"could not be read\" (or \"still being read\") whenever the unrelated concept-options list is the one that failed or has not yet answered, since both conditions are folded into the same two phases as the capability's own read state. The operator reading this screen cannot tell a capability that loaded fine but whose concept picklist failed from a capability whose own identity-keyed read failed, even though the rule requires the three presentations to be distinguishable and none of them presented as another."
+    kind: contradicts
+    node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    correction: "Key the load-error/loading phases to query.isError/query.isLoading alone for the capability's own read, and let a concept-options failure or pending state be represented as its own, separate condition rather than folded into the capability's read-state phases."
+
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "the query and mutation definitions"
+    evidence: |-
+      queryFn: () =>
+          apiFetch<Capability>(
+            `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+          ),
+      ...
+      mutationFn: (values: CapabilityFormValues) =>
+          apiFetch<Capability>(
+            `/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`,
+            { method: "PUT", ... }
+          ),
+  - node: domain/integration/capability
+    held_at: "the useEffect mapping query.data into the form, and the mutation's request body"
+    evidence: |-
+      form.reset({
+            name: query.data.name,
+            version: query.data.version,
+            nature: query.data.nature,
+            timeout: query.data.timeout,
+            connector: query.data.connector,
+            concept: query.data.concept,
+          });
+      ...
+      body: JSON.stringify({
+              nature: values.nature,
+              input_schema: getJsonTextareaMinifiedValue(inputSchemaValue),
+              output_schema: getJsonTextareaMinifiedValue(outputSchemaValue),
+              timeout: values.timeout,
+              connector: values.connector,
+              concept: values.concept,
+            }),
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the submit guard and the schema-validity state"
+    evidence: |-
+      if (!inputSchemaValid || !outputSchemaValid) {
+            return;
+          }
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the mutation's onError handler states the refused outcome; the onSuccess handler exposes only a boolean flag"
+    evidence: |-
+      onSuccess: (_data, values) => {
+            form.reset(values);
+            setInputSchemaBaseline(inputSchemaValue);
+            setOutputSchemaBaseline(outputSchemaValue);
+            void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+            void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+          },
+          onError: (error) => {
+            toast.error(saveFailureMessage(error));
+          },
+      ...
+      isSubmitSuccessful: mutation.isSuccess,
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function useCapabilityDetail(name: string, version: string): CapabilityDetailState { — this file renders no screen and carries no disclosure text; it is a state hook consumed by a view."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "the file's only network calls are to `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`; nothing in it touches case, draft or hypothesis operations."
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "the file's returned state (CapabilityDetailState) and its fields — form, conceptOptions, inputSchema, outputSchema, isDirty, isSubmitting, isSubmitSuccessful, onSubmit — carry no case-version content."
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "same as above — no hypothesis identity or content appears anywhere in this file."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "same as above — no hypothesis-revision content appears anywhere in this file."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the phase branches, lines 121-132 (see finding above)"
+    evidence: |-
+      if (query.isError || isConceptsError) {
+          return { phase: "load-error", retryLoad: () => { void query.refetch(); conceptOptions.refetch(); } };
+        }
+        if (query.isLoading || isLoadingConcepts || !query.data) {
+          return { phase: "loading" };
+        }
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file authors and registers only a capability (`register-capability`'s own PUT), never a connector configuration."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file offers no navigation of any kind — it is a hook with no rendered controls."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "inputSchemaBaseline/outputSchemaBaseline are tracked only to compute isDirty; no function is returned that resets any field back to the baseline, and the baselines themselves are never exposed."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file's read is `apiFetch<Capability>(...)` keyed by name and version; no connector configuration is read anywhere in it."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file renders no controls and offers no route; it only returns data and callbacks for a consuming view."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: "the mutation's onSuccess handler, which performs no navigation"
+    evidence: |-
+      onSuccess: (_data, values) => {
+            form.reset(values);
+            setInputSchemaBaseline(inputSchemaValue);
+            setOutputSchemaBaseline(outputSchemaValue);
+            void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+            void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+          },
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "the file's mutation targets `/v1/capabilities/...` only; no connector configuration registration is submitted anywhere in it."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "this hook presents and edits an already-registered capability (read by identity on mount); it holds no fresh, unsubmitted authoring entry and no abandonment path."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case-version state or transition appears anywhere in this file."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft case version is presented anywhere in this file."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis revision or draft-version check appears anywhere in this file."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no created draft or withheld act appears anywhere in this file."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case-version manifest or hypothesis-revision state appears anywhere in this file."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no hypothesis revise operation appears anywhere in this file."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no manifest-pin comparison or route offer appears anywhere in this file."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-condition disclosure appears anywhere in this file."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case-version editing or abandonment appears anywhere in this file."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no hypothesis-revision composition or abandonment appears anywhere in this file."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no discard of any case version appears anywhere in this file."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release or discard act, protected or otherwise, appears anywhere in this file."
+
+looked_past: "Whether a discard-to-baseline act or an explicit success message is owed for this surface may be answered by capability-form-schema.ts or by the consuming view file (capability-detail-ready-view.tsx), neither of which is in this file set, so I did not treat their absence here as a finding, since this file only exposes state (isDirty, isSubmitSuccessful) for such a view to act on."

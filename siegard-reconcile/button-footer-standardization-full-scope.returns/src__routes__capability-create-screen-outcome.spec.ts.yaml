@@ -1,0 +1,94 @@
+findings:
+  - file: src/routes/capability-create-screen-outcome.spec.ts
+    where: "the second `it` block, lines 58-61 (the `waitFor` on the Save button's `disabled` attribute)"
+    evidence: 'expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true)'
+    cost: "the requirement that the Save control disables while a capability registration is in flight lives only in this assertion; a reader checking the specification for what a submitting surface must do before the registry answers finds this question explicitly marked undecided in the decision log for the governing rule, so the next reader who looks in the specification for this behavior does not find it there"
+    kind: unstated
+    correction: "either add the pending-state disclosure/control-disabling behavior as its own decided fact (e.g. extending rules/integration/a-submitted-registration-states-its-outcome-to-the-operator, whose own decision log entry names this as 'not decided here'), or drop the assertion and rely only on the synchronization the test actually needs"
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: contracts/integration/capability-registry
+    held_at: "the mocked `register-capability` write, via `capabilityPutPath(NAME, VERSION)` and `jsonResponse({ name: NAME, version: VERSION })`"
+    evidence: '[capabilityPutPath(NAME, VERSION)]: () => jsonResponse({ name: NAME, version: VERSION }),'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- a successful registration states its outcome, naming what was registered (criterion 4)", ...'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- a successful registration states its outcome, naming what was registered (criterion 4)", ...'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- a successful registration states its outcome, naming what was registered (criterion 4)", ...'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the `toast.success` assertions in both `it` blocks, naming the capability's name and version once the registry answers"
+    evidence: 'expect(toast.success).toHaveBeenCalledWith(`Capability ${NAME} ${VERSION} registered.`)'
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- a successful registration states its outcome, naming what was registered (criterion 4)", ...'
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'describe("CapabilityCreateScreen -- a successful registration states its outcome, naming what was registered (criterion 4)", ...'
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: 'import { baseHandlers, capabilityPutPath, createFetchStub, fillValidForm, jsonResponse, mountCapabilityCreateScreen } from "./capability-create-screen.test-support";'
+looked_past: "the exact literal toast text asserted in both tests (`Capability ${NAME} ${VERSION} registered.`) is not reported — the governing rule's own text leaves wording, control choice and placement to the interface, so pinning a literal string is form rather than an undisclosed domain fact."

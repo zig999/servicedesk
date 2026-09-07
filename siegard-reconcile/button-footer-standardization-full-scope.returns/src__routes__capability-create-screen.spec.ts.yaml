@@ -1,0 +1,107 @@
+findings:
+  - file: src/routes/capability-create-screen.spec.ts
+    where: "the describe blocks \"a loading state while the concept vocabulary is pending (criterion 6)\" and \"a failure state offering a retry when the concept vocabulary fails to load (criterion 7)\", lines 103-157"
+    evidence: |
+      expect(await screen.findByText("Loading…")).toBeTruthy();
+      expect(screen.queryByLabelText("Concept")).toBeNull();
+      ...
+      expect(await screen.findByText("Unable to load concepts.")).toBeTruthy();
+      expect(screen.queryByLabelText("Concept")).toBeNull();
+      expect(screen.getByRole("button", { name: "Retry" })).toBeTruthy();
+      ...
+      fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+      expect(await screen.findByLabelText("Concept")).toBeTruthy();
+    cost: "The specification already refuses this exact shape — a pending read, a failed read and an answered read reading alike, with the failed one recovered only by the operator's own act — four separate times, for four separate reads (a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed, a-presented-connector-configuration-states-an-outstanding-or-failed-read, a-draft-versions-content-is-presented-only-from-its-own-record, a-presented-manifest-entry-states-its-pinned-revisions-state), and each time as a business decision, not an engineering default. This test pins the identical three-window disclosure and manual-retry discipline for a new read — the concept vocabulary backing capability authoring — that none of those rules, and no other node, names. A reader of the specification who wants to know whether this read is owed a pending statement, a failure statement, and an operator-triggered retry (as opposed to silence, an auto-retry, or a blank interval) will not find that decision anywhere but in this test and the component it locks down."
+    kind: unstated
+    correction: "A node constraining the concept-vocabulary read (mirroring the shape of a-presented-connector-configuration-states-an-outstanding-or-failed-read, but over domain/glossary/concept's list read) would need to be added to the specification, deciding that this screen states a pending read, states a failed read with a retry the operator alone triggers, and never conflates either with an answered read."
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "describe(\"CapabilityCreateScreen -- routing (criteria 1 and 2)\", () => {"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "const fetchMock = createFetchStub(baseHandlers());"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "describe(\"CapabilityCreateScreen -- composes the shared form-fields component (criterion 4)\", () => {"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "describe(\"CapabilityCreateScreen -- form state reflects the shared create/edit hook's own create-mode default (criterion 5)\", () => {"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "describe(\"CapabilityCreateScreen -- a loading state while the concept vocabulary is pending (criterion 6)\", () => {"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "describe(\"CapabilityCreateScreen -- a failure state offering a retry when the concept vocabulary fails to load (criterion 7)\", () => {"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "expect(await screen.findByText(\"Capability Detail Placeholder\")).toBeTruthy();"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "await screen.findByLabelText(\"Connector\");"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" }).getAttribute(\"href\")).toBe(\"/capabilities\",);"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Save\" }).hasAttribute(\"disabled\")).toBe(true);"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "expect(await screen.findByText(\"Unable to load concepts.\")).toBeTruthy();"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the Cancel-link assertions in the ready state, the concept-loading state and the concept-load-failure state, lines 145-182"
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" }).getAttribute(\"href\")).toBe(\"/capabilities\",);"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Save\" }).hasAttribute(\"disabled\")).toBe(true);"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "expect(await screen.findByText(\"Capability Detail Placeholder\")).toBeTruthy();"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "expect(router.state.location.pathname).toBe(\"/capabilities/new/v7\");"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" }).getAttribute(\"href\")).toBe(\"/capabilities\",);"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "expect(await screen.findByRole(\"heading\", { name: \"New capability\" })).toBeTruthy();"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "expect(nameInput.disabled).toBe(false);"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "expect(versionInput.disabled).toBe(false);"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "expect(screen.getByLabelText(\"Nature\").textContent).toBe(\"read-only\");"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Save\" }).hasAttribute(\"disabled\")).toBe(true);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "fireEvent.click(screen.getByRole(\"button\", { name: \"Retry\" }));"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "expect(await screen.findByLabelText(\"Concept\")).toBeTruthy();"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "await screen.findByRole(\"button\", { name: \"Retry\" });"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "const footer = screen.getByRole(\"group\", { name: \"Actions\" });"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" }).getAttribute(\"href\")).toBe(\"/capabilities\",);"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "await screen.findByText(\"Loading…\");"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "const footer = screen.getByRole(\"group\", { name: \"Actions\" });"
+looked_past: "The exact validation copy \"String must contain at least 1 character(s)\" and the aria-describedby wiring are generic form-library behaviour delegated to CapabilityFormFields' own FormField, and the /capabilities/new/<version> route disambiguation, the un-disabled Name/Version inputs, and the read-only Nature default are form/routing choices already consistent with domain/integration/capability and domain/integration/capability-nature (opened as candidates) rather than new domain facts of this file's own."
+candidates_opened:
+  - domain/integration/capability
+  - domain/integration/capability-nature
+  - rules/integration/a-capability-is-read-only
+  - rules/integration/a-capability-declares-well-formed-schemas

@@ -1,0 +1,95 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved); — the file forwards state.onSubmit into the shared form-fields component rather than calling register-connector, read-connector-configuration or list-connector-configurations itself"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "import type { ConnectorConfigurationFormValues } from \"../services/connector-configuration-form-schema\"; — only the type is imported; the attributes connector/configuration are not declared or validated in this file"
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved); — the replace-whole-on-edit registration logic is not present in this file"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the trailingActions Cancel control, line 32-34"
+    evidence: "<Link to=\"/connectors\">Cancel</Link>"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the trailingActions Cancel control, line 32-34"
+    evidence: "<Link to=\"/connectors\">Cancel</Link>"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "trailingActions={<Button variant=\"secondary\" asChild><Link to=\"/connectors\">Cancel</Link></Button>} — no discard-to-loaded-content control is rendered, consistent with a create surface holding no read registration"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "handleSaved, lines 14-17"
+    evidence: "void navigate({ to: \"/connectors/$connector\", params: { connector } });"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "<h1 className=\"text-lg font-semibold text-foreground\">New connector configuration</h1> — this screen states nothing about the authentication posture"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import { useConnectorConfigurationForm } from \"../hooks/use-connector-configuration-form\"; — the file's whole scope is the connector-configuration hook and form-fields; nothing of capability-registry appears"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "import { ConnectorConfigurationFormFields } from \"./connector-configuration-form-fields\"; — no case-lifecycle operation is referenced anywhere in the file"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — the whole function body concerns only connector configuration, never a case version"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no hypothesis concept appears in the file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no hypothesis-revision concept appears in the file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved); — this screen presents no capability read at all"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved); — passing null as the read key means this create screen issues no read-connector-configuration and states no outstanding/failed-read window"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "<Link to=\"/connectors\">Cancel</Link> — this route is to the connector-configuration listing, not the capabilities listing, and the file contains no capability content"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "<ConnectorConfigurationFormFields form={state.form} configuration={state.configuration} isEditingIdentity={state.isEditingIdentity} isSubmitting={state.isSubmitting} onSubmit={state.onSubmit} ... /> — no outcome/refusal message state is held or rendered in this file; only isSubmitting and onSubmit are forwarded"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "void navigate({ to: \"/connectors/$connector\", params: { connector } }); — the only landing logic in the file addresses a connector configuration, never a capability"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "<Link to=\"/connectors\">Cancel</Link> — the abandonment this file implements is the connector-configuration one; no capability entry is authored here"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no case-version state or transition appears in the file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no draft case-version content is presented in the file"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no hypothesis revision is composed or checked in the file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no draft case-version or its acts are offered in the file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no manifest or hypothesis-revision state appears in the file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no hypothesis revise is issued or answered in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no manifest-pin comparison occurs in the file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — the file offers no release act and states no release conditions"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no case-version editing is opened in the file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no hypothesis-revision composition is opened in the file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no discard of a case version appears in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationCreateScreen(): JSX.Element { — no release or discard act of any kind is offered in the file"
+looked_past: the heading copy ("New connector configuration"), the button's secondary variant and the section's flex/gap classes are wording and layout, which the connector-configuration surface rules themselves leave to the interface, and any outcome-message rendering, discard-to-loaded-content control or field-level behavior lives in ConnectorConfigurationFormFields and use-connector-configuration-form.ts, outside this file.

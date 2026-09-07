@@ -1,0 +1,122 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the reviseMutation's mutationFn, POST-ing to the hypotheses collection (revise-hypothesis)"
+    evidence: "return apiFetch<RevisedHypothesis>(`/v1/cases/${encodeURIComponent(slug)}/hypotheses`, {\n        method: \"POST\","
+  - node: contracts/knowledge/case-query
+    held_at: "versionQuery (read-case by slug+version) and revisionsQuery (list-hypothesis-revisions)"
+    evidence: "apiFetch<CaseVersionSubject>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`)"
+  - node: domain/glossary/action
+    held_at: "actionOptions, sourced from the glossary vocabulary hook and passed through to the ready/success state"
+    evidence: "const actionOptions = useGlossaryVocabularyOptions(\"action\");"
+  - node: domain/glossary/concept
+    held_at: "availableConcepts, filtered by subject-type acceptance"
+    evidence: "const availableConcepts = conceptOptions.concepts.filter((concept) =>\n    concept.accepts.includes(subjectType),\n  );"
+  - node: domain/glossary/outcome
+    held_at: "outcomeOptions, sourced from the glossary vocabulary hook"
+    evidence: "const outcomeOptions = useGlossaryVocabularyOptions(\"outcome\");"
+  - node: domain/glossary/recipient
+    held_at: "recipientOptions, sourced from the glossary vocabulary hook"
+    evidence: "const recipientOptions = useGlossaryVocabularyOptions(\"recipient\");"
+  - node: domain/glossary/subject-type
+    held_at: "subjectType, read from the case version's own record and used to filter concepts"
+    evidence: "const subjectType = versionQuery.data.subject;"
+  - node: domain/knowledge/case-version
+    held_at: "CaseVersionSubject, a narrowed local view of the version's subject and manifest"
+    evidence: "type CaseVersionSubject = {\n  readonly subject: string;\n  readonly manifest: readonly ManifestEntryDto[];\n};"
+  - node: domain/knowledge/hypothesis
+    held_at: "hypothesisNameEditable, which locks the name once an existing identity is being revised"
+    evidence: "hypothesisNameEditable: hypothesisName === null,"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "HypothesisRevisionListItem, and the useEffect seeding the form from the latest revision's own record"
+    evidence: "form.reset({\n      hypothesis_name: hypothesisName,\n      criterion: latest.criterion,\n      collects: [...latest.collects],\n      resolution: latest.resolution,\n    });"
+  - node: domain/knowledge/manifest-entry
+    held_at: "ManifestEntryDto, and pinnedRevisionFor reading the entry's own reference"
+    evidence: "const entry = manifest.find(\n    (item) => item.hypothesis_revision.hypothesis.name === hypothesisName,\n  );\n  return entry === undefined ? null : entry.hypothesis_revision.revision;"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the availableConcepts filter, offering only concepts that accept the loaded subject type"
+    evidence: "concept.accepts.includes(subjectType)"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "the \"loading\" phase branch, gating all content on the record having arrived"
+    evidence: "if (versionQuery.isLoading || !versionQuery.data || isLoadingGlossary || isRevisionsPending) {\n    return { phase: \"loading\" };\n  }"
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: "pinnedRevisionFor's single .find() over the manifest"
+    evidence: "manifest.find(\n    (item) => item.hypothesis_revision.hypothesis.name === hypothesisName,\n  )"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the revise body, carrying the draft version's own subject rather than any curator-supplied value"
+    evidence: "subject: versionQuery.data.subject,"
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: "pinnedRevision, read from the version's own manifest entry rather than from the revisions listing"
+    evidence: "pinnedRevision: pinnedRevisionFor(versionQuery.data.manifest, hypothesisName),"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "offerManifestBuilder in the success phase"
+    evidence: "offerManifestBuilder: pinnedBeforeSave === null || revision > pinnedBeforeSave,"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: "cancelComposition, wired to onCancel, returning the curator without writing anything"
+    evidence: "const cancelComposition = (): void => {\n    router.history.back();\n  };"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the glossary-sourced option hooks (concept/outcome/action/recipient) offered to the curator to choose from"
+    evidence: "const conceptOptions = useConceptOptions();\n  const outcomeOptions = useGlossaryVocabularyOptions(\"outcome\");"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { toast } from \"sonner\";"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "type CaseVersionSubject = {\n  readonly subject: string;\n  readonly manifest: readonly ManifestEntryDto[];\n};"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: "the \"loading\" phase, which exposes no act at all while the version's record has not arrived"
+    evidence: "if (versionQuery.isLoading || !versionQuery.data || isLoadingGlossary || isRevisionsPending) {\n    return { phase: \"loading\" };\n  }"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "type CaseVersionSubject = {\n  readonly subject: string;\n  readonly manifest: readonly ManifestEntryDto[];\n};"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "RevisedHypothesis and the onSuccess handler, which reads only hypothesis_name and revision"
+    evidence: "type RevisedHypothesis = {\n  readonly hypothesis_name: string;\n  readonly revision: number;\n};"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "type CaseVersionSubject = {\n  readonly subject: string;\n  readonly manifest: readonly ManifestEntryDto[];\n};"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "const cancelComposition = (): void => {\n    router.history.back();\n  };"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "export function useHypothesisRevisionForm("
+looked_past: the generic onError toast ("Something went wrong while saving. Try again."), the missing `form` dependency on the seeding useEffect, and the telemetry payload shape are copy/quality/instrumentation matters with no node of this file's set (or found candidate) governing them, so they are left to the standard-conformance and code-review passes.
+candidates_opened:
+  - domain/knowledge/resolution
+  - domain/knowledge/referral

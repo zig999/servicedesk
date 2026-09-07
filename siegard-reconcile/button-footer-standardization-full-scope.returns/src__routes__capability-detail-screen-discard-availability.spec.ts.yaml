@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "describe(\"CapabilityDetailScreen -- the Discard control is withheld while the read is outstanding (task's own UNDERDETERMINED note)\", () => {"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "[CAPABILITY_PATH]: () => new Promise<Response>(() => {}),"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the two `it` blocks' setup, lines 23 and 36"
+    evidence: "await screen.findByText(/Loading capability/); ... await screen.findByRole(\"button\", { name: \"Retry\" });"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the two `it` blocks' final assertion, lines 24 and 37"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "mountCapabilityDetailScreen(fetchMock);"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "import { screen } from \"@testing-library/react\";"
+looked_past: The button label "Discard changes" and the loading/retry copy the tests match against are chosen implementation wording, which rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface and rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed both leave to the interface, so their presence in a query is not itself a stated domain fact.

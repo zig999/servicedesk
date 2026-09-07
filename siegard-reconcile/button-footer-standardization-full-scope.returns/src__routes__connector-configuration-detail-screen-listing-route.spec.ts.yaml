@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "the file's whole subject is `mountConnectorConfigurationDetailScreen`'s loading, error and route behaviour — no test in this file mounts or asserts anything about an authentication disclosure banner or notice"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "the file imports only `CONFIGURATION_PATH, CONNECTOR, LOADED_CONFIGURATION, baseHandlers, createFetchStub, errorResponse, jsonResponse, mountConnectorConfigurationDetailScreen` from `./connector-configuration-detail-screen.test-support` — no capability fixture or read is exercised"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "no test opens a case, a draft, a hypothesis or any lifecycle operation; every `it` mounts the connector configuration detail screen alone"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no case version attribute or state is referenced anywhere in the file"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "no hypothesis is referenced anywhere in the file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "no hypothesis revision is referenced anywhere in the file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "every fetch stub in this file is keyed by `CONFIGURATION_PATH`, and every assertion names a connector configuration, never a capability"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file mounts `mountConnectorConfigurationDetailScreen` throughout; no test composes or abandons an authoring entry"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "lines 18-46, both `describe` blocks asserting the footer's Cancel link"
+    evidence: "expect(within(footer).getByRole(\"link\", { name: \"Cancel\" }).getAttribute(\"href\")).toBe(\n      \"/connectors\",\n    );"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "lines 118-142, the withheld-Discard-control describe block"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "lines 74-116, the loading-phase and load-error-phase describe blocks"
+    evidence: "await screen.findByText(`Loading connector configuration ${CONNECTOR}…`);\n    expect(screen.queryByLabelText(\"Connector\")).toBeNull();\n    expect(screen.queryByLabelText(\"Configuration\")).toBeNull();"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "no capability listing route or capability surface is asserted anywhere in the file"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "no test in this file submits a registration; every fetch stub answers only `read-connector-configuration`'s own path"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "no capability registration is exercised anywhere in the file"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "no test submits a connector configuration registration; the file only reads a configuration and asserts the Cancel route and the withheld-Discard control"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "no capability authoring or abandonment is exercised anywhere in the file"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no case version transition is exercised anywhere in the file"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "no draft case version is presented anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "no hypothesis revise is exercised anywhere in the file"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "no draft case version creation is exercised anywhere in the file"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "no case version release is exercised anywhere in the file"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "no hypothesis revise is exercised anywhere in the file"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "no hypothesis revise is exercised anywhere in the file"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "no release-offering surface is exercised anywhere in the file"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "no case version editing is exercised anywhere in the file"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "no revision composition is exercised anywhere in the file"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "no case version discard is exercised anywhere in the file"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "no release or discard act is exercised anywhere in the file"
+looked_past: the exact copy asserted ("Loading connector configuration …", "Unable to load this connector configuration right now.", "Cancel", "Discard changes") and the "/connectors" href and link-count assertions are wording, control identity and layout, which every relevant node here leaves to the interface, so I did not treat them as domain facts to weigh.

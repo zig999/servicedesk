@@ -1,0 +1,98 @@
+findings:
+  - file: src/routes/connector-configuration-form-fields.tsx
+    where: "the connector name Input, line 71"
+    evidence: 'disabled={isEditingIdentity || isSubmitting}'
+    cost: "the code decides that once an existing connector configuration is loaded for editing, the operator can never change the connector name it is registered under from this surface — a restriction on what the operator may do with a value object's own identity that the specification, thorough elsewhere about this identity (register-connector's create-or-replace keyed on the name, the surfaces addressed by that name, abandonment and discard around it), never states; a reader wanting to know whether renaming a connector configuration through its edit surface is possible has to read this component instead of the specification"
+    kind: unstated
+    correction: "a node constraining domain/integration/connector-configuration (or a policy alongside the other connector-configuration surface rules) would have to state whether an operator editing an existing registration may change the connector name it is registered under"
+
+read:
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: nowhere — the well-formedness check itself is not performed in this file; it is only consumed
+    evidence: "const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function ConnectorConfigurationFormFields({ form, configuration, isEditingIdentity, isSubmitting, onSubmit, isDirty, trailingActions }: ConnectorConfigurationFormFieldsProps): JSX.Element {"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere — this component renders no loading or failed-read state at all
+    evidence: "return (\n    <form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere — this file exposes only a `trailingActions` slot; it does not itself implement an abandon act
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere — no route to a listing is rendered in this file
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere — no discard-to-loaded-content act appears in this file
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere — this component assumes a ready configuration is already in hand and states no outstanding or failed read
+    evidence: "value={configuration.value}\n        onChange={configuration.onChange}"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere — the outcome of a submission (registered or refused) is not stated in this file
+    evidence: "<Button type=\"submit\" loading={isSubmitting} disabled={isSaveDisabled}>\n          Save\n        </Button>"
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "onSubmit: (event?: BaseSyntheticEvent) => void;"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere — where the operator lands after a successful submission is not decided in this file
+    evidence: "onSubmit: (event?: BaseSyntheticEvent) => void;"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "<form onSubmit={onSubmit} noValidate className=\"flex flex-col gap-4\">"
+
+looked_past: "the Save button's `isDirty === false` gate (line 64) is a UI/form convention identical to the sibling capability-form-fields.tsx component, and reads as a UX guard against redundant submissions rather than a domain rule about connector-configuration, so it is not reported here."

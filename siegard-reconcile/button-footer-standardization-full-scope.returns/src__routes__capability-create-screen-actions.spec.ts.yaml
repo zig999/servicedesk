@@ -1,0 +1,96 @@
+findings:
+  - file: src/routes/capability-create-screen-actions.spec.ts
+    where: "the second `it` block, lines 30-44 (`navigates to the capabilities listing when Cancel is clicked, issuing no PUT`)"
+    evidence: "await waitFor(() => expect(router.state.location.pathname).toBe(\"/capabilities\"));"
+    cost: "rules/integration/an-abandoned-capability-registration-entry-registers-nothing requires the abandoned entry's operator to land on \"the surface the authoring entry was reached from\" and says explicitly that landing on the listing instead \"would be wrong on exactly the readings that matter\" for an operator who reached the create screen from anywhere other than the listing — the decision log even records an earlier draft of this same rule that fixed the destination to the listing being replaced for exactly that reason. This test locks the suite's certification of Cancel's abandonment behavior to a fixed \"/capabilities\" pathname regardless of origin, so a reader trusting the suite to enforce the specification's return-to-origin rule finds instead a green test for the destination the specification's own history already rejected."
+    kind: contradicts
+    correction: "Mount the create screen from a non-listing origin (or otherwise track the surface the authoring was reached from) and assert Cancel returns the operator there, rather than asserting a fixed \"/capabilities\" pathname for every abandonment."
+    node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "import { afterEach, describe, expect, it, vi } from \"vitest\"; — the file exercises only Cancel/Discard behavior on the capability create screen and states nothing about authentication."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0); — the file checks only that no write call was made on abandonment; it states nothing about the registry's read or write operations themselves."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — the file's whole scope is the capability create screen; it states nothing about case-lifecycle operations."
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no assertion in this file concerns a case version."
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no assertion in this file concerns a hypothesis."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no assertion in this file concerns a hypothesis-revision."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "await screen.findByLabelText(\"Connector\"); — the file exercises only the create screen, never a read-in-flight or read-failed presentation of a registered capability."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — the file's subject is the capability create screen, not connector configuration."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no connector-configuration surface is exercised."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the third `it` block, lines 47-55 (`offers no Discard control, having read no registration`)"
+    evidence: "expect(screen.queryByRole(\"button\", { name: \"Discard changes\" })).toBeNull();"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no connector-configuration read presentation is exercised."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the first `it` block, lines 21-28 (`renders Cancel as a link addressed at the capabilities listing`)"
+    evidence: "const cancel = screen.getByRole(\"link\", { name: \"Cancel\" }); expect(cancel.getAttribute(\"href\")).toBe(\"/capabilities\");"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0); — the file checks that no submission is made; it states nothing about the outcome of a submission that was made."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "expect(putCallCount(fetchMock)).toBe(0); — no successful registration is exercised in this file."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no connector configuration registration is exercised."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the second `it` block, lines 30-44 — holds only the no-call half of the fact; the destination half is stated as the fixed listing rather than as the surface the authoring was reached from"
+    evidence: "fireEvent.click(screen.getByRole(\"link\", { name: \"Cancel\" })); await waitFor(() => expect(router.state.location.pathname).toBe(\"/capabilities\")); expect(putCallCount(fetchMock)).toBe(0);"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — the file states nothing about a case version's lifecycle."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no draft case version presentation is exercised."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no hypothesis revision is exercised."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no newly created draft case version is exercised."
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no case version release is exercised."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no hypothesis revise is exercised."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no hypothesis revise is exercised."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no release-offering surface is exercised."
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no case version edit is exercised."
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no revision composition is exercised."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no case version discard is exercised."
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "mountCapabilityCreateScreen(fetchMock) — no release or discard act is exercised."
+
+looked_past: "capability-create-screen.tsx itself hardcodes the Cancel link to `/capabilities` (`<Link to=\"/capabilities\">Cancel</Link>`), which is where the destination the finding above quotes actually comes from — that source file is outside this file set, so its own conformance is another pass's to weigh."

@@ -1,0 +1,86 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the button assertions inside the Actions group, lines 27-30 and 41-43"
+    evidence: "expect(within(footer).getByRole(\"button\", { name: \"Release…\" })).toBeTruthy();\n    expect(within(footer).getByRole(\"button\", { name: \"Discard draft\" })).toBeTruthy();\n    expect(within(footer).getByRole(\"button\", { name: \"Save changes\" })).toBeTruthy();"
+  - node: domain/knowledge/case-version
+    held_at: "the DRAFT_RECORD/RELEASED_RECORD fixtures, lines 16-17, and the state-conditioned assertions, lines 33-44"
+    evidence: "const DRAFT_RECORD = { ...LOADED_RECORD, state: \"draft\" as const };\nconst RELEASED_RECORD = { ...LOADED_RECORD, state: \"released\" as const };"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the second test's assertion withholding Release for a released version, line 43"
+    evidence: "expect(within(footer).queryByRole(\"button\", { name: \"Release…\" })).toBeNull();"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: "await mountCaseVersionEditor(fetchMock);\n\n    const footer = await screen.findByRole(\"group\", { name: \"Actions\" });"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: "const fetchMock = createFetchStub(\n      baseHandlers({ [`GET ${VERSION_PATH}`]: () => jsonResponse(DRAFT_RECORD) }),\n    );"
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"button\", { name: \"Release…\" })).toBeTruthy();"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: "the Cancel-button assertions present in both draft and released readings, lines 30 and 41"
+    evidence: "expect(within(footer).getByRole(\"button\", { name: \"Cancel\" })).toBeTruthy();"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: "describe(\"CaseVersionEditorScreen's action row composes the shared ButtonFooter (criterion 1)\", ..."
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: "the first test's assertion that Discard draft is offered for a draft version, line 28"
+    evidence: "expect(within(footer).getByRole(\"button\", { name: \"Discard draft\" })).toBeTruthy();"
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: "expect(within(footer).getByRole(\"button\", { name: \"Release…\" })).toBeTruthy();"
+looked_past: The pack carries a broad batch of integration-registry nodes (capability, connector configuration) that this footer test never touches, and this file also leaves untested the released-state absence of Discard and the release-condition disclosure rule — an absence of coverage, which is the coverage-auditor's judgment rather than this pass's.
