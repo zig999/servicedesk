@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("CapabilityDetailScreen -- a route to the listing is offered while the read is still outstanding (task's own UNDERDETERMINED note)", () => {
-  it("renders a Cancel route to the capabilities listing while the capability read is still pending -- an implementation withholding the route here would fail this", async () => {
+  it("renders a Capabilities route to the listing while the capability read is still pending -- an implementation withholding the route here would fail this", async () => {
     const fetchMock = createFetchStub({
       ...baseHandlers(),
       [CAPABILITY_PATH]: () => new Promise<Response>(() => {}),
@@ -21,7 +21,7 @@ describe("CapabilityDetailScreen -- a route to the listing is offered while the 
 
     await screen.findByText(/Loading capability/);
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
       "/capabilities",
     );
   });

@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 describe("ConnectorConfigurationDetailScreen -- the route to the listing stays available before the read answers (UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing owes it on every reading)", () => {
-  it("renders the footer's Cancel link to /connectors while the read is still outstanding -- an implementation that withholds the route until the read answers would fail this", async () => {
+  it("renders the footer's Connectors link to /connectors while the read is still outstanding -- an implementation that withholds the route until the read answers would fail this", async () => {
     let resolveGet!: (response: Response) => void;
     const pending = new Promise<Response>((resolve) => {
       resolveGet = resolve;
@@ -26,7 +26,7 @@ describe("ConnectorConfigurationDetailScreen -- the route to the listing stays a
 
     await screen.findByText(`Loading connector configuration ${CONNECTOR}…`);
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+    expect(within(footer).getByRole("link", { name: "Connectors" }).getAttribute("href")).toBe(
       "/connectors",
     );
 
@@ -35,18 +35,18 @@ describe("ConnectorConfigurationDetailScreen -- the route to the listing stays a
 });
 
 describe("ConnectorConfigurationDetailScreen -- the route does not turn on how the operator arrived (UNDERDETERMINED note: both route criteria are satisfiable by a reading that varies with arrival)", () => {
-  it("renders the footer's Cancel link when the screen is loaded directly at its own address, carrying no navigation state recording arrival from the listing -- an implementation that renders the route only on an arrival-from-listing state would fail this", async () => {
+  it("renders the footer's Connectors link when the screen is loaded directly at its own address, carrying no navigation state recording arrival from the listing -- an implementation that renders the route only on an arrival-from-listing state would fail this", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock, `/connectors/${CONNECTOR}`);
     await screen.findByLabelText("Configuration");
 
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("link", { name: "Cancel" })).toBeTruthy();
+    expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
   });
 });
 
 describe("ConnectorConfigurationDetailScreen -- exactly one link renders while the read is outstanding or has failed (criterion 1, criterion 8)", () => {
-  it("renders exactly one link, the footer's Cancel, during the loading phase", async () => {
+  it("renders exactly one link, the footer's Connectors link, during the loading phase", async () => {
     let resolveGet!: (response: Response) => void;
     const pending = new Promise<Response>((resolve) => {
       resolveGet = resolve;
@@ -60,7 +60,7 @@ describe("ConnectorConfigurationDetailScreen -- exactly one link renders while t
     resolveGet(jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }));
   });
 
-  it("renders exactly one link, the footer's Cancel, during the load-error phase", async () => {
+  it("renders exactly one link, the footer's Connectors link, during the load-error phase", async () => {
     const fetchMock = createFetchStub({
       [CONFIGURATION_PATH]: () => errorResponse("SomeUpstreamError", 500),
     });

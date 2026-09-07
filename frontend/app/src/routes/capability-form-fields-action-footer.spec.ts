@@ -34,7 +34,10 @@ describe("CapabilityFormFields -- whatever a screen passes through trailingActio
 
     const footer = screen.getByRole("group", { name: "Actions" });
     expect(within(footer).getByRole("button", { name: "Save" })).toBeTruthy();
-    expect(within(footer).getByRole("link", { name: "Cancel" })).toBeTruthy();
+    const cancelControl =
+      within(footer).queryByRole("button", { name: "Cancel" }) ??
+      within(footer).queryByRole("link", { name: "Cancel" });
+    expect(cancelControl).toBeTruthy();
   });
 
   it("renders the detail surface's own Discard and Cancel controls beside Save, inside the same Actions group", async () => {
@@ -45,6 +48,9 @@ describe("CapabilityFormFields -- whatever a screen passes through trailingActio
     const footer = screen.getByRole("group", { name: "Actions" });
     expect(within(footer).getByRole("button", { name: "Save" })).toBeTruthy();
     expect(within(footer).getByRole("button", { name: "Discard changes" })).toBeTruthy();
-    expect(within(footer).getByRole("link", { name: "Cancel" })).toBeTruthy();
+    const cancelControl =
+      within(footer).queryByRole("button", { name: "Cancel" }) ??
+      within(footer).queryByRole("link", { name: "Cancel" });
+    expect(cancelControl).toBeTruthy();
   });
 });

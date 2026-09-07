@@ -106,6 +106,38 @@
       "task": "task/shared-action-footer/button-footer-component"
     },
     {
+      "id": "proof/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/capability-create-abandon-and-listing-route.md",
+      "title": "Capability create screen's abandonment and listing-route controls",
+      "summary": "Tests prove the split creation-surface controls — an abandonment that goes back through router history, or falls to the listing with none to return to, and issues no register call, and an unconditional route to the listing on every reading that also issues none — correct three pre-existing specs on this surface that asserted the pre-split fixed-link behaviour, and correct one assertion in a sibling task's spec that pinned the control's role.",
+      "task": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/capability-detail-abandon-and-listing-route.md",
+      "title": "Capability detail surface's return-to-origin and listing-route split, across every reading",
+      "summary": "New tests prove the return act's origin-aware landing, the unconditional listing route, their presence and side-effect-freedom across all four readings including the new nothing-registered reading, and the reattempt's exclusivity to the failed reading; five pre-existing specs the split falsified are corrected in place, four owned by earlier tasks of this plan and the fifth owned by no record at all.",
+      "task": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/connector-create-abandon-and-listing-route.md",
+      "title": "Connector-configuration creation surface's abandonment and listing route",
+      "summary": "Proves the create screen's split abandonment — a button going back through history or falling back to the listing — and its separate listing-route link against all seven criteria, correcting three pre-existing specs the delivered split falsified.",
+      "task": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route"
+    },
+    {
+      "id": "proof/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "proof",
+      "file": "proof/abandonment-and-listing-route/connector-detail-abandon-and-listing-route.md",
+      "title": "Connector-configuration detail surface's return-to-origin split, proved, and its earlier-task specs repaired",
+      "summary": "New tests establish the return-to-origin control's history-walk-with-listing-fallback behaviour and its coexistence with the listing-route control across every reading and origin this task's criteria name, and four specs earlier tasks delivered are corrected to query the control each assertion now actually reaches.",
+      "task": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route"
+    },
+    {
       "id": "proof/knowledge-authoring-footers/case-version-editor-action-footer",
       "kind": "proof",
       "file": "proof/knowledge-authoring-footers/case-version-editor-action-footer.md",
@@ -628,6 +660,30 @@
       "from": "implementation/shared-action-footer/button-footer-component",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "implementation/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "proves",
       "at": "the path"
     },
     {

@@ -45,13 +45,13 @@ describe("ConnectorConfigurationDetailScreen -- shows the loaded record (criteri
 });
 
 describe("ConnectorConfigurationDetailScreen -- a control returns to the list (criterion 3)", () => {
-  it("navigates back to the connector-configurations list when the footer's Cancel link is clicked", async () => {
+  it("navigates back to the connector-configurations list when the footer's Connectors link is clicked", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
     await screen.findByLabelText("Configuration");
 
     const footer = screen.getByRole("group", { name: "Actions" });
-    fireEvent.click(within(footer).getByRole("link", { name: "Cancel" }));
+    fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
   });
@@ -65,18 +65,18 @@ describe("ConnectorConfigurationDetailScreen -- a control returns to the list (c
     await screen.findByRole("button", { name: "Retry" });
     const footer = screen.getByRole("group", { name: "Actions" });
     expect(within(footer).getByRole("button", { name: "Retry" })).toBeTruthy();
-    expect(within(footer).getByRole("link", { name: "Cancel" })).toBeTruthy();
+    expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
   });
 });
 
 describe("ConnectorConfigurationDetailScreen -- the ready phase's route registers nothing before it navigates (UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing leaves open whether the route submits before landing on the listing)", () => {
-  it("issues no PUT request when the footer's Cancel link is clicked -- an implementation that submits register-connector before navigating would fail this", async () => {
+  it("issues no PUT request when the footer's Connectors link is clicked -- an implementation that submits register-connector before navigating would fail this", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
     await screen.findByLabelText("Configuration");
 
     const footer = screen.getByRole("group", { name: "Actions" });
-    fireEvent.click(within(footer).getByRole("link", { name: "Cancel" }));
+    fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
     expect(putCallCount(fetchMock)).toBe(0);
@@ -84,7 +84,7 @@ describe("ConnectorConfigurationDetailScreen -- the ready phase's route register
 });
 
 describe("ConnectorConfigurationDetailScreen -- exactly one link renders once the read succeeds (criterion 1, criterion 8)", () => {
-  it("renders exactly one link, the ready view's Cancel, during the ready phase", async () => {
+  it("renders exactly one link, the ready view's Connectors link, during the ready phase", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
     await screen.findByLabelText("Configuration");

@@ -19,7 +19,7 @@ describe("ConnectorConfigurationDetailReadyView -- the footer's Cancel abandons 
     const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
     fireEvent.change(configurationField, { target: { value: '{"key":"changed"}' } });
 
-    fireEvent.click(screen.getByRole("link", { name: "Cancel" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
     expect(putCallCount(fetchMock)).toBe(0);
