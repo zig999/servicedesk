@@ -1,0 +1,114 @@
+findings:
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "the isValidConfigurationObject function, lines 16-23"
+    evidence: |
+      function isValidConfigurationObject(text: string): boolean {
+        const minified = getJsonTextareaMinifiedValue(text);
+        if (minified === null) {
+          return false;
+        }
+        const parsed: unknown = JSON.parse(minified);
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      }
+    cost: The definition of a well-formed connector configuration — a JSON object that is neither an array nor null — now lives twice, once in the registry the node describes and again in this hook's own gate; a reader who needs to know what "well-formed" means for a connector configuration has two definitions to reconcile, and if the registry's own criterion is ever revised only one of the two copies would change, so this client gate could silently start refusing submissions the registry would now accept.
+    kind: contradicts
+    correction: Remove the independent object/array/null re-derivation and let the registry's own 422 refusal (surfaced through the existing onError/saveFailureMessage path) be the one place "well-formed" is decided, keeping only the JSON-syntax check the textarea field already performs.
+    node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "the query.isError branch of the phase computation, lines 118-126"
+    evidence: |
+      if (query.isError) {
+        return {
+          phase: "load-error",
+          retryLoad: () =>
+            void query.refetch();
+          },
+          onCancel,
+        };
+      }
+    cost: An operator opening this surface for a connector name nothing is registered under is shown the identical "load-error" state, with a retryLoad action, as any transient failure; the retry can never succeed while nothing is registered under that name, so the operator is handed an act that promises a recovery that will never come, and cannot tell a name that is merely unreachable right now from one nothing has ever been registered under.
+    kind: contradicts
+    correction: Distinguish the read refused because nothing is registered under this connector name from every other failure (by inspecting the error the query carries) and return a fourth, non-retryable state for it instead of folding it into "load-error".
+    node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the query (read-connector-configuration) and mutation (register-connector) definitions"
+    evidence: |
+      queryFn: () => apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
+      ...
+      apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(values.connector)}`, { method: "PUT", ... })
+  - node: domain/integration/connector-configuration
+    held_at: "the sync of query.data into form/configuration state, and the PUT body"
+    evidence: |
+      form.reset({ connector: query.data.connector });
+      setConfigurationValue(query.data.configuration);
+      ...
+      body: JSON.stringify({ configuration: getJsonTextareaMinifiedValue(configurationValue) }),
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the onCancel function, offered from every phase"
+    evidence: |
+      const onCancel = (): void => {
+        if (router.history.canGoBack()) {
+          router.history.back();
+          return;
+        }
+        void navigate({ to: "/connectors" });
+      };
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the isValidConfigurationObject function — restated rather than deferred to the registry (see findings)"
+    evidence: |
+      return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the loading/load-error/ready phase branches — the outstanding and answered windows held, the failed window conflated with the fourth (see findings)"
+    evidence: |
+      if (query.isLoading || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+      ...
+      configuration: {
+        value: configurationValue,
+        isValid: configurationValid,
+        onChange: handleConfigurationChange,
+      },
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "onCancel, returned unconditionally in the loading, load-error and ready phases"
+    evidence: |
+      return { phase: "loading", onCancel };
+      ...
+      return { phase: "load-error", retryLoad: ..., onCancel };
+      ...
+      return { phase: "ready", ..., onCancel };
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the mutation's onError (toast) and the isSubmitSuccessful flag exposed on the ready phase"
+    evidence: |
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+      ...
+      isSubmitSuccessful: mutation.isSuccess,
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "the mutation's onSuccess, which performs no navigation and leaves the operator on the surface keyed by connector"
+    evidence: |
+      onSuccess: () => {
+        form.reset({ connector });
+        setConfigurationBaseline(configurationValue);
+        void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+        void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+      },
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "the fallback branch of onCancel"
+    evidence: |
+      void navigate({ to: "/connectors" });
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |
+      export type ConnectorConfigurationDetailState =
+        | { readonly phase: "loading"; readonly onCancel: () => void }
+        | { readonly phase: "load-error"; readonly retryLoad: () => void; readonly onCancel: () => void }
+        | { readonly phase: "ready"; readonly form: UseFormReturn<ConnectorConfigurationFormValues>; readonly configuration: ConfigurationFieldState; readonly isDirty: boolean; readonly isSubmitting: boolean; readonly isSubmitSuccessful: boolean; readonly onSubmit: (event?: BaseSyntheticEvent) => void; readonly onCancel: () => void; };
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: |
+      const query = useQuery({ queryKey: ["connector-configuration", connector], queryFn: () => apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`) });
+      const mutation = useMutation({ mutationFn: (values: ConnectorConfigurationFormValues) => apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(values.connector)}`, { method: "PUT", ... }) });
+looked_past: "The mapping from refusal codes to operator-facing wording (e.g. whether IncompleteConnectorConfigurationError reads distinguishably or falls to the generic message) lives in the imported saveFailureMessage/uiStateForApiError helpers defined in other files, not stated in this one, so it is those files' finding to make."

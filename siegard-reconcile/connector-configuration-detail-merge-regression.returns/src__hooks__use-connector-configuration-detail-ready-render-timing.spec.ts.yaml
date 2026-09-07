@@ -1,0 +1,28 @@
+read:
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+      — the file exercises only useConnectorConfigurationDetail; no capability read, no capability attribute (nature, schemas, timeout, connector, concept) is asserted anywhere in it.
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: the two `it()` bodies asserting the first "ready"-phase entry in the render log
+    evidence: |-
+      expect(readyState(firstReadyEntry(log)).configuration.value).toBe(LOADED_CONFIGURATION);
+      ...
+      expect(readyState(firstReadyForOther).form.getValues("connector")).toBe(OTHER_CONNECTOR);
+      — both assertions hold the "ready" presentation to exactly the connector name and configuration the corresponding read answered, matching the fact the sibling rule (per its own decision-log entry) already carries "in these very terms" for this registry.
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: |-
+      stubFetch({
+        [CONFIGURATION_PATH]: () =>
+          jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+      ...
+      — the file stubs only read (load) responses for the configuration registry; no test-connector-configuration action, no CapabilityNotRegisteredForTestError/CapabilityConnectorMismatchError, no ${subject:...} placeholder assembly appears anywhere.
+looked_past: The hook implementation file (use-connector-configuration-detail.ts) that these tests exercise was opened only for mechanical context (state shapes, when "ready" is returned); it is not in the file set under review and no claim is made about its own conformance.
+candidates_opened:
+  - domain/integration/connector-configuration
+  - contracts/integration/connector-configuration-registry

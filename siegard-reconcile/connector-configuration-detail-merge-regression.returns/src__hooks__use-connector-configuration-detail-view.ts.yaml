@@ -1,0 +1,25 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the delegation to the wrapped hook, line 21 — this file issues no registry call of its own"
+    evidence: "const detail = useConnectorConfigurationDetail(connector);"
+  - node: domain/integration/connector-configuration
+    held_at: "the onDiscard body, lines 65-67"
+    evidence: "detail.form.reset({ connector });\n      detail.configuration.onChange(configurationBaseline.value, configurationBaseline.isValid);"
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: "return {\n    ...detail,\n    onDiscard: () => {...},\n    justSaved,\n    registeredConfigurationText: configurationBaseline.value,\n  };"
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: "import {\n  useConnectorConfigurationDetail,\n  type ConnectorConfigurationDetailState,\n} from \"./use-connector-configuration-detail\";"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the state union and the early return, lines 7-16 and 59-61"
+    evidence: "| Extract<ConnectorConfigurationDetailState, { phase: \"loading\" | \"load-error\" }>\n  ...\n  if (detail.phase !== \"ready\") {\n    return detail;\n  }"
+looked_past: "I traced onDiscard's behavior (stays on the surface, restores the last non-dirty configuration) to rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface, which requires the discard to take effect only on a further explicit operator act; whether that confirmation is gated is a property of whatever component calls this hook's onDiscard, not of this file, so I did not report it."
+candidates_opened:
+  - rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  - rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+  - rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  - rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface

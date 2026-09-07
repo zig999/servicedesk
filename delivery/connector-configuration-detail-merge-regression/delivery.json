@@ -16,6 +16,23 @@
       "title": "Ready-phase render-timing proof for useCapabilityDetail, useConnectorConfigurationDetail and useConnectorConfigurationDetailView",
       "summary": "Confirms the two pre-existing regression specs now pass and adds render-log-based tests proving every field this task's criteria and underdetermined notes name is already correct in the very first render reporting phase \"ready\", rather than lagging one render behind inside a useEffect.",
       "task": "task/ready-phase-state-lag/capability-and-connector-configuration-ready-lag"
+    },
+    {
+      "id": "review/connector-configuration-detail-merge-regression",
+      "kind": "review",
+      "file": "review/connector-configuration-detail-merge-regression.md",
+      "title": "connector-configuration-detail-merge-regression review",
+      "summary": "What four passes found over the ready-phase render-lag fix in useCapabilityDetail, useConnectorConfigurationDetail and useConnectorConfigurationDetailView, and their tests.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Clicking Add attribute immediately after the connector configuration detail screen finishes loading (before any edit) reads the placeholders in the just-loaded configuration text, not an empty or stale registered baseline.",
+        "The first render in which useCapabilityDetail reports phase \"ready\" carries the loaded capability's input_schema text in inputSchema.value."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -48,6 +65,12 @@
       "to": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-detail-merge-regression",
+      "to": "task/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

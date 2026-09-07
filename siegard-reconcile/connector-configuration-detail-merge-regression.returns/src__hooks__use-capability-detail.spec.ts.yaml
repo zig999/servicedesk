@@ -1,0 +1,13 @@
+read:
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: "the ready-phase assertions in the first three describe blocks (lines 45-112)"
+    evidence: "await waitFor(() => expect(result.current.phase).toBe(\"ready\"));\n    expect(readyState(result.current).inputSchema.value).toBe(LOADED_INPUT_SCHEMA);"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "import { useCapabilityDetail, type CapabilityDetailState } from \"./use-capability-detail\";"
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: "import { useCapabilityDetail, type CapabilityDetailState } from \"./use-capability-detail\";"
+looked_past: "The isDirty tests (criteria 3-4) exercise a change-detection mechanism that no node of this task names directly; I attributed it to rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface, whose own trigger condition (\"the operator has changed one or more of s's fields away from what it answered\") matches the tested semantics, so I did not report it as unstated — whether the hook actually wires isDirty to that node's discard act is a fact about use-capability-detail.ts, not this spec file, and is another file's judgment."
+candidates_opened:
+  - rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface

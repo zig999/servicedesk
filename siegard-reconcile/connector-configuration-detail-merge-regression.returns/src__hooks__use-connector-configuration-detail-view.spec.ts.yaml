@@ -1,0 +1,15 @@
+read:
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: 'import { useConnectorConfigurationDetailView, type ConnectorConfigurationDetailViewState } from "./use-connector-configuration-detail-view";'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the 'equals the just-loaded configuration text immediately after this connector's own record loads' test, asserting the read-and-shown value"
+    evidence: "expect(readyState(result.current).registeredConfigurationText).toBe(LOADED_CONFIGURATION);"
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: "describe(\"useConnectorConfigurationDetailView -- onDiscard resets every field to the most recently loaded-or-saved values (criterion 5)\", ..."
+looked_past: "this file only exercises the ready-phase discard/justSaved/registeredConfigurationText behavior of the hook; the outstanding-and-failed-read windows and the connector-configuration test action this pack's other two nodes govern are not exercised here and are presumably covered by other files in the batch."
+candidates_opened:
+  - rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  - rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator

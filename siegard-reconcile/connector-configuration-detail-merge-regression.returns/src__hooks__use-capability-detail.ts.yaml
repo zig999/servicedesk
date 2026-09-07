@@ -1,0 +1,112 @@
+findings:
+  - file: src/hooks/use-capability-detail.ts
+    where: the useMutation onSuccess callback (lines 114-121)
+    evidence: |-
+      onSuccess: (_data, values) => {
+        form.reset(values);
+        setInputSchemaBaseline(inputSchemaValue);
+        setOutputSchemaBaseline(outputSchemaValue);
+
+        void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+        void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+      },
+    cost: >-
+      After a save succeeds, the fields are reset from the submitted form values — never
+      from _data, the PUT response, and not from any fresh read — while the invalidated
+      ["capability", name, version] query has only been marked stale, not yet refetched.
+      query.isLoading stays false because stale data is already held, so the "ready" phase
+      does not lapse into "loading"; the operator keeps looking at exactly what they submitted,
+      under the same identity, for as long as the background refetch takes. If the registry
+      normalizes, trims or otherwise adjusts any attribute on write, the surface shows a value
+      nobody ever read back, and the next reader who wants to know what a "ready" capability
+      screen shows will look at this hook and find the read conflated with the write it is
+      supposed to stay apart from.
+    kind: contradicts
+    correction: >-
+      Populate the ready-phase fields only from a read's own answer — either the PUT response
+      _data if the contract has it answer identically to read-capability-by-identity, or by
+      waiting for the invalidated ["capability", name, version] query to resolve — rather than
+      seeding form and schema baselines from the submitted values.
+    node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+
+read:
+  - node: contracts/integration/capability-registry
+    held_at: the useQuery queryFn and the useMutation mutationFn
+    evidence: |-
+      apiFetch<Capability>(
+        `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+      ),
+  - node: domain/integration/capability
+    held_at: the form-reset block synced from query.data, and the PUT request body
+    evidence: |-
+      form.reset({
+        name: query.data.name,
+        version: query.data.version,
+        nature: query.data.nature,
+        timeout: query.data.timeout,
+        connector: query.data.connector,
+        concept: query.data.concept,
+      });
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: the guard inside submit, using validity computed from getJsonTextareaMinifiedValue
+    evidence: |-
+      if (!inputSchemaValid || !outputSchemaValid) {
+        return;
+      }
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: the phase branches over query.isError and query.isLoading
+    evidence: |-
+      if (query.isLoading || isLoadingConcepts || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: "the query-sync effect that resets the form from query.data; overridden after a successful save by the onSuccess handler, which resets from the submitted values instead of a read (see findings)"
+    evidence: |-
+      if (query.data !== syncedCapabilityData) {
+        setSyncedCapabilityData(query.data);
+        if (query.data) {
+          form.reset({ name: query.data.name, version: query.data.version, ... });
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: the onCancel function, returned from every phase
+    evidence: |-
+      const onCancel = (): void => {
+        if (router.history.canGoBack()) {
+          router.history.back();
+          return;
+        }
+        void navigate({ to: "/capabilities" });
+      };
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: the mutation's onError toast and the isSubmitSuccessful field
+    evidence: |-
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: the same onCancel function, which issues no register-capability call regardless of isDirty
+    evidence: |-
+      const onCancel = (): void => {
+        if (router.history.canGoBack()) {
+          router.history.back();
+          return;
+        }
+        void navigate({ to: "/capabilities" });
+      };
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: the else-branch of onCancel, landing on the capabilities listing when there is no history to return to
+    evidence: 'void navigate({ to: "/capabilities" });'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file's one query is keyed [\"capability\", name, version] and its one mutation targets /v1/capabilities/...; no connector-configuration read appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: "the only write in the file is the capability PUT at /v1/capabilities/${...}/${...}; no test action, subject assembly or connector-configuration reference appears anywhere in the file"
+
+looked_past: >-
+  mutation.isSuccess (exposed as isSubmitSuccessful) is not reset by react-query when the
+  operator edits a field after a successful save, so a stale "submitted" flag can sit beside a
+  now-dirty form; whether that combination is misleading is a question for whichever component
+  consumes isSubmitSuccessful together with isDirty, not settled by anything this file states on
+  its own.
+candidates_opened:
+  - constraints/the-capability-identity-read-refuses-an-unregistered-identity
