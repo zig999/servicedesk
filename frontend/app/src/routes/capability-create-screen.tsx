@@ -31,8 +31,11 @@ export function CapabilityCreateScreen(): JSX.Element {
         <>
           <p>Loading…</p>
           <ButtonFooter>
+            <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
             <Button variant="secondary" asChild>
-              <Link to="/capabilities">Cancel</Link>
+              <Link to="/capabilities">Capabilities</Link>
             </Button>
           </ButtonFooter>
         </>
@@ -44,8 +47,11 @@ export function CapabilityCreateScreen(): JSX.Element {
             <Button type="button" onClick={state.retryLoad}>
               Retry
             </Button>
+            <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
             <Button variant="secondary" asChild>
-              <Link to="/capabilities">Cancel</Link>
+              <Link to="/capabilities">Capabilities</Link>
             </Button>
           </ButtonFooter>
         </section>
@@ -60,9 +66,14 @@ export function CapabilityCreateScreen(): JSX.Element {
           isSubmitting={state.isSubmitting}
           onSubmit={state.onSubmit}
           trailingActions={
-            <Button variant="secondary" asChild>
-              <Link to="/capabilities">Cancel</Link>
-            </Button>
+            <>
+              <Button type="button" variant="secondary" onClick={state.onCancel}>
+                Cancel
+              </Button>
+              <Button variant="secondary" asChild>
+                <Link to="/capabilities">Capabilities</Link>
+              </Button>
+            </>
           }
         />
       )}

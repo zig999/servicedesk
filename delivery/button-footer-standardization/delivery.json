@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route.md",
+      "title": "Capability creation surface's abandonment split from its listing route",
+      "summary": "The creation surface now carries two separate controls in every phase — an abandonment that returns to the surface the authoring was reached from, or the capabilities listing where none exists, and an unconditional route to the capabilities listing.",
+      "task": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route"
+    },
+    {
       "id": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
       "kind": "implementation",
       "file": "implementation/knowledge-authoring-footers/case-version-editor-action-footer.md",
@@ -214,6 +222,30 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
       "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",

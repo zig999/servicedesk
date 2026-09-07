@@ -142,7 +142,7 @@ describe("CapabilityCreateScreen -- a failure state offering a retry when the co
     expect(await screen.findByLabelText("Concept")).toBeTruthy();
   });
 
-  it("keeps a Cancel route to the capabilities listing available while the load has failed (edge case: a dependency that fails)", async () => {
+  it("keeps a route to the capabilities listing available while the load has failed (edge case: a dependency that fails)", async () => {
     const fetchMock = createFetchStub({
       [CONCEPTS_PATH]: () => errorResponse("SomeUpstreamError", 500),
     });
@@ -150,25 +150,25 @@ describe("CapabilityCreateScreen -- a failure state offering a retry when the co
 
     await screen.findByRole("button", { name: "Retry" });
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
       "/capabilities",
     );
   });
 });
 
-describe("CapabilityCreateScreen -- a Cancel route back to the capabilities list on every reading (criterion 13)", () => {
-  it("renders Cancel as a link to /capabilities once the form is ready", async () => {
+describe("CapabilityCreateScreen -- a route to the capabilities listing on every reading (criterion 13)", () => {
+  it("renders Capabilities as a link to /capabilities once the form is ready", async () => {
     const fetchMock = createFetchStub(baseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
 
     await screen.findByLabelText("Connector");
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
       "/capabilities",
     );
   });
 
-  it("renders the same Cancel route while the concept vocabulary is still loading", async () => {
+  it("renders the same Capabilities route while the concept vocabulary is still loading", async () => {
     const fetchMock = createFetchStub({
       [CONCEPTS_PATH]: () => new Promise<Response>(() => {}),
     });
@@ -176,7 +176,7 @@ describe("CapabilityCreateScreen -- a Cancel route back to the capabilities list
 
     await screen.findByText("Loading…");
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("link", { name: "Cancel" }).getAttribute("href")).toBe(
+    expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe(
       "/capabilities",
     );
   });
