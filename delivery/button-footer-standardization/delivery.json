@@ -10,6 +10,14 @@
       "task": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route"
     },
     {
+      "id": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "implementation",
+      "file": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route.md",
+      "title": "Connector-configuration creation surface's abandonment split from its listing route",
+      "summary": "The creation surface now carries two separate controls — an abandonment that returns to the surface the authoring was reached from, or the connector-configurations listing where none exists, and an unconditional route to that same listing.",
+      "task": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route"
+    },
+    {
       "id": "implementation/knowledge-authoring-footers/case-version-editor-action-footer",
       "kind": "implementation",
       "file": "implementation/knowledge-authoring-footers/case-version-editor-action-footer.md",
@@ -243,6 +251,30 @@
     {
       "from": "implementation/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
       "to": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
       "kind": "implements",
       "at": "the path"
     },

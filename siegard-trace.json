@@ -4694,8 +4694,12 @@
       "digest": "sha256:dc878540f88c8c7be41bcda929259b69633d156d92394aedacfcff6edbb982a8",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:016a4f83f6f6f8768ecf2fd86f672ba67675718bbc90b1af0ed8ad307606a1c5"
+        },
+        {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:4897a04e3ebef5ccf0a44204b86a6f06045a5cd9969546bccfbfffcbe27bb4bb"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
@@ -4825,7 +4829,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:911cda5bbf95d8ea078ded0fb536d74371211cb7addd7c6dfb6ac4c3ee494246"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
@@ -4907,11 +4911,11 @@
     },
     {
       "node": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
-      "digest": "sha256:b0ac71afb7d1c06a2cfbc379db4df7909d829e2a57b5561702c89b2bc74aae87",
+      "digest": "sha256:89acbe576d7c9716dd9dec750795a2777790a768d15a96491e06ae65452468fe",
       "files": [
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:6346a5a17c9117ce8687c0ea22996b285561dc2e6e4fbb387aa57fa4dcf99b29"
+          "digest": "sha256:34f54bd51a4dc60ab105281bbef9bcaa9ca3878bee692c5de9815f2679f923c3"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
@@ -4968,12 +4972,30 @@
       "digest": "sha256:6d31be5bb9969eb109ba60955f54abcd51bda7ba9cebb86ac2433e76c946c88f",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:0c6ced39bf83d7e4a175db6b469d1afb127b43a6e1f2d93c00b93625164caee5"
+        },
+        {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:7918674ff5a4ce03485a363e544804103109ba7fed454cfa09ff744a5637889a"
+          "digest": "sha256:34f54bd51a4dc60ab105281bbef9bcaa9ca3878bee692c5de9815f2679f923c3"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
           "digest": "sha256:19da066d76d77cb06117c41120c2271cc8f4d24899fc1d7871846c4ca08adc59"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "digest": "sha256:06a5c5a76fcf043df1e32a697050d239e1be4bf04740cc566139679d2952024f",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:0c6ced39bf83d7e4a175db6b469d1afb127b43a6e1f2d93c00b93625164caee5"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:016a4f83f6f6f8768ecf2fd86f672ba67675718bbc90b1af0ed8ad307606a1c5"
         }
       ]
     },

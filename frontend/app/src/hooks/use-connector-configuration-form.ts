@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -34,6 +35,7 @@ export type ConnectorConfigurationFormState = {
   readonly isEditingIdentity: boolean;
   readonly isSubmitting: boolean;
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+  readonly onCancel: () => void;
 };
 
 const GENERIC_SAVE_FAILURE_MESSAGE =
@@ -57,8 +59,18 @@ export function useConnectorConfigurationForm(
   onSaved: () => void,
 ): ConnectorConfigurationFormState {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const navigate = useNavigate();
 
   const isDispatchingRef = useRef(false);
+
+  const onCancel = (): void => {
+    if (router.history.canGoBack()) {
+      router.history.back();
+      return;
+    }
+    void navigate({ to: "/connectors" });
+  };
 
   const [configurationValue, setConfigurationValue] = useState(existing?.configuration ?? "");
   const [configurationValid, setConfigurationValid] = useState(existing !== null);
@@ -126,5 +138,6 @@ export function useConnectorConfigurationForm(
     isEditingIdentity: existing !== null,
     isSubmitting: mutation.isPending,
     onSubmit,
+    onCancel,
   };
 }

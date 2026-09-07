@@ -29,9 +29,14 @@ export function ConnectorConfigurationCreateScreen(): JSX.Element {
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
         trailingActions={
-          <Button variant="secondary" asChild>
-            <Link to="/connectors">Cancel</Link>
-          </Button>
+          <>
+            <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
+            <Button variant="secondary" asChild>
+              <Link to="/connectors">Connectors</Link>
+            </Button>
+          </>
         }
       />
     </section>
