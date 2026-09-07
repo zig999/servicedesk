@@ -25,7 +25,7 @@ describe("CapabilityDetailScreen -- a refused save states a distinguishable outc
       baseHandlers(undefined, undefined, {
         [CAPABILITY_PATH]: (method) =>
           method === "PUT"
-            ? errorResponse("CapabilityNotReadOnlyError", 409)
+            ? errorResponse("CapabilityNotReadOnlyError", 422)
             : jsonResponse(LOADED_CAPABILITY),
       }),
     );

@@ -18,6 +18,14 @@
       "task": "task/knowledge-authoring-footers/hypothesis-revision-action-footer"
     },
     {
+      "id": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "implementation",
+      "file": "implementation/misstated-facts-in-source/nature-refusal-fixture-status.md",
+      "title": "Nature-refusal fixture corrected to HTTP 422",
+      "summary": "The one stand-in in the frontend suite that built CapabilityNotReadOnlyError with a status now carries 422, the value rules/integration/a-capability-is-read-only states.",
+      "task": "task/misstated-facts-in-source/nature-refusal-fixture-status"
+    },
+    {
       "id": "implementation/registry-authoring-footers/capability-form-action-footer",
       "kind": "implementation",
       "file": "implementation/registry-authoring-footers/capability-form-action-footer.md",
@@ -72,6 +80,14 @@
       "title": "Hypothesis revision action footer proof",
       "summary": "Proves the footer composition, the Cancel's write-nothing and return-to-origin behaviour, its fill-state-invariant offer, and the revision-release gate the task's own note names, leaving the unchanged submit, validation, subject, loading and manifest-offer behaviour to the pre-existing suite that already proves it.",
       "task": "task/knowledge-authoring-footers/hypothesis-revision-action-footer"
+    },
+    {
+      "id": "proof/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "proof",
+      "file": "proof/misstated-facts-in-source/nature-refusal-fixture-status.md",
+      "title": "Nature-refusal fixture status proof",
+      "summary": "Tests confirming the capability detail outcome proof's stand-in refusal for a not-read-only nature carries HTTP 422, that no other stand-in under the frontend suite pairs CapabilityNotReadOnlyError with a different status, and that the two pre-existing refusal-message tests still hold the operator-facing distinction unchanged.",
+      "task": "task/misstated-facts-in-source/nature-refusal-fixture-status"
     },
     {
       "id": "proof/registry-authoring-footers/capability-form-action-footer",
@@ -297,6 +313,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/registry-authoring-footers/capability-form-action-footer",
       "to": "contracts/integration/capability-registry",
       "kind": "encodes",
@@ -407,6 +441,12 @@
     {
       "from": "proof/knowledge-authoring-footers/hypothesis-revision-action-footer",
       "to": "implementation/knowledge-authoring-footers/hypothesis-revision-action-footer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "implementation/misstated-facts-in-source/nature-refusal-fixture-status",
       "kind": "proves",
       "at": "the path"
     },

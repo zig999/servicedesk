@@ -4658,6 +4658,10 @@
           "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
         },
         {
+          "path": "frontend/app/src/routes/capability-detail-screen-outcome.spec.ts",
+          "digest": "sha256:2973868068ef44636693dfde9e33b1a92c6e4b9712a23e5aeba4e1c1ae0806be"
+        },
+        {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
         },
@@ -4934,6 +4938,10 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:e947773d386f15a7397f1296495aa2de86e835f2e9644419c4fa7e0e7ab400f9"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-detail-screen-outcome.spec.ts",
+          "digest": "sha256:2973868068ef44636693dfde9e33b1a92c6e4b9712a23e5aeba4e1c1ae0806be"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
