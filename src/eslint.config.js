@@ -44,4 +44,78 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // conventions.md rules 1 and 7 — a domain module imports no infrastructure directory, no
+    // infrastructure package, and no adapter file, and it performs no I/O of its own: no
+    // filesystem, no HTTP client, no environment read. `investigation`'s own *.adapter.ts files
+    // are the one place those things belong, so they are excluded from this block rather than
+    // from the rule. One further departure stands and is excluded by name rather than hidden:
+    // connector-placeholder-declaration-check.ts reaches into http-connector for
+    // subjectAttributePlaceholderNamesIn, disclosed in conventions.md rule 1's own text.
+    files: [
+      'src/case/**/*.ts',
+      'src/glossary/**/*.ts',
+      'src/capability-registry/**/*.ts',
+      'src/connector-registry/**/*.ts',
+      'src/investigation/**/*.ts',
+    ],
+    ignores: [
+      'src/investigation/**/*.adapter.ts',
+      'src/connector-registry/connector-placeholder-declaration-check.ts',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/http/*', '**/http-connector/*', '**/persistence/*', '**/factories/*',
+                     '**/config/*', '**/*.adapter.js'],
+              message: 'conventions.md rule 1: a domain module imports no infrastructure '
+                      + 'directory and no adapter file; reach it through a port instead.',
+            },
+          ],
+          paths: [
+            'fastify', 'pg', '@anthropic-ai/sdk', '@modelcontextprotocol/sdk', 'jose',
+            'fs', 'node:fs', 'http', 'node:http',
+          ].map((name) => ({
+            name,
+            message: name === 'fs' || name === 'node:fs' || name === 'http' || name === 'node:http'
+              ? 'conventions.md rule 7: a domain module performs no I/O of its own; what it '
+                + 'needs arrives as a parameter or through a port.'
+              : 'conventions.md rule 1: a domain module imports no infrastructure package; '
+                + 'reach it through a port instead.',
+          })),
+        },
+      ],
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'process',
+          property: 'env',
+          message: 'conventions.md rule 7: a domain module reads no environment variable; it '
+                  + 'arrives as a parameter or through a port.',
+        },
+      ],
+    },
+  },
+  {
+    // conventions.md rule 4 — a service never imports another service; shared behavior
+    // descends into a domain module or ascends into a factory.
+    files: ['src/**/*.service.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/*.service.js'],
+              message: 'conventions.md rule 4: a service never imports another service; move '
+                      + 'the shared behavior into a domain module or a factory.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
