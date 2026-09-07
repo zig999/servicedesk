@@ -4,7 +4,7 @@ title: case-catalog-when-to-use review premise
 summary: task/case-catalog/store-derives-the-case-summary widened the case listing to carry each case's
   derived summary end to end; task/case-catalog/list-cases-answers-the-summary was found to need no further
   code.
-target: src
+target: backend
 files:
 - path: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
   change: written by the delivery of task/case-catalog/store-derives-the-case-summary

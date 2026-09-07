@@ -4,7 +4,7 @@ title: ButtonFooter component, as the button-footer-standardization delivery wro
 summary: The two files the delivery of task/shared-action-footer/button-footer-component wrote under the
   button-footer-standardization initiative, read against the specification nodes the trace binds to them
   and the node that task implements.
-target: frontend/app
+target: frontend
 files:
 - path: src/shared/components/button-footer.spec.ts
   change: written by the delivery of task/shared-action-footer/button-footer-component

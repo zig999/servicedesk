@@ -7,7 +7,7 @@ summary: 'Six tasks of the button-footer-standardization plan wrote these files:
   a return-to-origin act and an unconditional route to its registry''s listing, and the two tasks of the
   misstated-facts-in-source epic corrected a stand-in refusal''s HTTP status and rewrote the output-schema
   entry''s guidance copy. Every implementation and proof record naming these paths sits under delivery/button-footer-standardization.'
-target: frontend/app
+target: frontend
 files:
 - path: src/hooks/use-capability-detail-load-error.spec.ts
   change: written by the delivery of task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route
