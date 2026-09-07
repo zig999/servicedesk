@@ -1,0 +1,72 @@
+read:
+  - node: domain/integration/capability
+    held_at: "the form's own field set — one control per declared attribute (concept, name, version, nature, timeout, connector, input_schema, output_schema)"
+    evidence: |
+      <FormField label="Concept" ...><Controller control={control} name="concept" .../></FormField>
+      <FormField label="Name" ...><Input {...register("name")} disabled={isEditingIdentity || isSubmitting} .../></FormField>
+      <FormField label="Version" ...><Input {...register("version")} .../></FormField>
+      <FormField label="Nature" ...><Controller control={control} name="nature" .../></FormField>
+      <FormField label="Timeout (ms)" ...><Input type="number" {...register("timeout", { setValueAs: ... })} .../></FormField>
+      <FormField label="Connector" ...><Input {...register("connector")} .../></FormField>
+      <JsonTextareaField id="input_schema" ... /> ... <JsonTextareaField id="output_schema" ... />
+  - node: domain/integration/capability-nature
+    held_at: "NATURE_OPTIONS, built from the imported vocabulary and rendered as the Nature select's options"
+    evidence: "const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({ value: nature, label: nature, }));"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "the file carries no code that reads a `type` or `description` off any schema's `properties` object — the only place this fact appears is the help paragraph's own sentence, \"Os nomes de campo lidos a partir dele são as chaves do próprio objeto properties de nível superior deste schema.\", which states the reading rather than performing it"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "\"Uma description aqui declara o que seu valor significa e não nomeia nenhuma decisão.\" states the policy as guidance beside the entry; no code in this file checks or enforces it"
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the Save-button gate, which withholds submission while either schema is invalid"
+    evidence: "const isSaveDisabled =\n    isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "options={NATURE_OPTIONS} offers every value CAPABILITY_NATURES carries, unfiltered — the file refuses nothing on nature; the 422 refusal this rule states is the registry's own"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: "the help paragraph directly beneath the Output schema field"
+    evidence: |
+      <p className="text-sm text-muted-foreground">
+        O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir
+        dele são as chaves do próprio objeto <code>properties</code> de nível
+        superior deste schema. O <code>type</code> e a <code>description</code>
+        declarados por cada uma dessas chaves, onde o schema os declara, são lidos
+        como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é
+        lido ou validado. Uma <code>description</code> aqui declara o que seu valor
+        significa e não nomeia nenhuma decisão.
+      </p>
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: "conceptSelectOptions offers every concept unfiltered; the 409/500 uniqueness refusal this rule states is the registry's own, not checked here"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the component carries no abandon/cancel control of its own — only `{trailingActions}` inside <ButtonFooter>, composed by whichever screen renders this component"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "no navigation or destination logic appears in this file; it renders fields and a footer only"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "no route to a listing is rendered here; `trailingActions` is the only extension point and its content is the caller's"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "no discard/reset control is rendered here — only the Save button and `{trailingActions}`"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "no act landing the operator elsewhere is defined in this file"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "const { register, control, formState: { errors } } = form; — the component assumes a populated form with no branches for an outstanding or failed read"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file declares and renders only capability attributes (concept, name, version, nature, timeout, connector, input_schema, output_schema); no connector-configuration content appears"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "no connector-configuration presentation or read-state text exists in this file"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "no connector-configuration authoring surface or abandonment control is present in this file"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "<Button type=\"submit\" loading={isSubmitting} disabled={isSaveDisabled}>Save</Button> — no outcome (registered / refused) is stated by this file; onSubmit is only invoked, and its result is reported elsewhere"
+looked_past: "the isDirty-gated isSaveDisabled expression duplicates, line for line, the same construct in connector-configuration-form-fields.tsx — a code-duplication concern for the standard-conformance pass, not a specification-conformance one."

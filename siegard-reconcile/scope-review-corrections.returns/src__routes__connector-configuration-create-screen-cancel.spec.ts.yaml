@@ -1,0 +1,44 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: 'the third `it`, lines 100-117 (mounted with its default single-entry history, no prior surface)'
+    evidence: 'fireEvent.click(screen.getByRole("button", { name: "Cancel" }));\n\n    await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));\n    expect(putCallCount(fetchMock)).toBe(0);'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: 'the second `it`, lines 90-98'
+    evidence: 'expect(screen.queryByRole("button", { name: "Discard changes" })).toBeNull();'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: 'the first `it`, lines 68-77, and the third `it`, lines 100-117'
+    evidence: 'fireEvent.click(await screen.findByRole("button", { name: "Cancel" }));\n\n    await waitFor(() => expect(router.state.location.pathname).toBe(openedFrom));'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: 'the mounted route is always `path: "/connectors/new", component: ConnectorConfigurationCreateScreen` (line 30-31) — an authoring surface with no read registration; every scenario in the file ends in abandonment with `putCallCount(fetchMock)` asserted at 0'
+looked_past: "test 1's second case (line 79-87) and the `UNDERDETERMINED note` in the third describe's title assert or hedge on how the destination is reached (history replay versus a fixed value, and whether the listing route is the same control as Cancel) — that is the adequacy of the assertion for proving the mechanism, a test-authoring judgment rather than a domain fact this pass answers for."

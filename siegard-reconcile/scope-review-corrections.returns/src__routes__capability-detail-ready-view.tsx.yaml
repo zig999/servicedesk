@@ -1,0 +1,88 @@
+read:
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the conditional warning banners driven by state.inputSchema.isValid / state.outputSchema.isValid"
+    evidence: |-
+      const INVALID_INPUT_SCHEMA_WARNING =
+        "This capability's stored input schema is not valid JSON. Correct it before Save can succeed.";
+      ...
+      {!state.inputSchema.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_INPUT_SCHEMA_WARNING}
+        </p>
+      )}
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the unconditional listing link inside trailingActions"
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/capabilities">Capabilities</Link>
+      </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the unconditional Cancel button inside trailingActions"
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the same unconditional Cancel button, which discards an unsubmitted edit and leaves the ready surface"
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n  Cancel\n</Button> — the button dispatches state.onCancel unconditionally; no branch here distinguishes a reached-from surface from none"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the Discard-changes dialog, gated on state.isDirty, with a further explicit confirmation act"
+    evidence: |-
+      <Button type="button" variant="secondary" disabled={!state.isDirty || state.isSubmitting}>
+        Discard changes
+      </Button>
+      ...
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onDiscard}>
+          Discard changes
+        </Button>
+      </DialogClose>
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "readonly state: Extract<CapabilityDetailViewState, { phase: \"ready\" }>; — this component only ever receives the ready-phase state; the outstanding/failed windows are rendered elsewhere"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "import { CapabilityFormFields } from \"./capability-form-fields\"; — the file's whole import and render surface concerns capability only, no connector-configuration reference appears"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "import { CapabilityFormFields } from \"./capability-form-fields\"; — no connector-configuration read or presentation occurs in this file"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "import { CapabilityFormFields } from \"./capability-form-fields\"; — no connector-configuration authoring surface exists in this file"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |-
+      <CapabilityFormFields
+        form={state.form}
+        conceptOptions={state.conceptOptions}
+        inputSchema={state.inputSchema}
+        outputSchema={state.outputSchema}
+        isEditingIdentity
+        isSubmitting={state.isSubmitting}
+        onSubmit={state.onSubmit}
+        isDirty={state.isDirty}
+      — nature is neither rendered nor asserted in this file; it is passed through the form fields component
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the state.justSaved status message (the registered-outcome branch only)"
+    evidence: |-
+      {state.justSaved && (
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "outputSchema={state.outputSchema} — passed through with no accompanying explanatory statement in this file"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "outputSchema={state.outputSchema} — the file carries no per-field name/type/description content"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "outputSchema={state.outputSchema} — no description-vocabulary content appears in this file"
+looked_past: The extra isSubmitting gate on the Discard-changes button and the reliance on the parent screen's own heading (outside this file) to name the capability alongside "Saved." are compositional/UX details of the surrounding screen, not a domain-fact departure in this file.

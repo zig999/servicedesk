@@ -275,6 +275,38 @@
         "connector-configuration-detail-screen's loading phase states that the configuration is still being read and states no value of connector or configuration."
       ],
       "findings": 42
+    },
+    {
+      "id": "review/scope-review-corrections",
+      "kind": "review",
+      "file": "review/scope-review-corrections.md",
+      "title": "The six corrections the full-scope review raised",
+      "summary": "What three passes found over the five hooks, seven route files and twenty-six specs the six corrective tasks of button-footer-standardization delivered, with the failures pass not run because the captured run passed whole.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Neither the outstanding-read reading nor the failed-read reading states a connector or configuration value.",
+        "No control returning the surface's fields to the content of a read registration renders in the outstanding-read reading, in the reading standing on a read that failed other than by that refusal, or in the reading where that read answered that no capability is registered at that name and version.",
+        "No proof of the capability creation surface asserts that the abandonment lands the operator at the capabilities listing where a reaching surface exists.",
+        "No proof of the connector-configuration creation surface asserts that the abandonment lands the operator at the connector-configurations listing where a reaching surface exists.",
+        "No stand-in in the frontend suite builds CapabilityNotReadOnlyError with a status other than 422.",
+        "Taking the control whose destination is the capabilities listing issues no register-capability call.",
+        "Taking the control whose destination is the connector-configurations listing issues no register-connector call.",
+        "Taking the return-to-origin control issues no register-capability call and leaves every registered capability exactly as it stood, in membership and in every registration's own declared contract, in each of the four readings and on both destinations the act may land on.",
+        "Taking the return-to-origin control issues no register-connector call and leaves every registered connector configuration exactly as it stood, in membership and in every registration's own content, in each of the four readings and on both destinations the act may land on.",
+        "That same reading carries a control whose one effect is to issue that same read again, and no other reading of the surface carries that control.",
+        "That text carries no worked example, whether composed for the surface or reproduced from anywhere else.",
+        "That text promises no check beyond the ones `rules/integration/a-capability-declares-its-contract` and `rules/integration/a-capability-declares-well-formed-schemas` state a submitted registration is checked for.",
+        "That text states no further claim about what an entered output schema is read for.",
+        "The outstanding-read reading, the reading standing on a read that failed other than by that refusal, and the reading that shows the configuration are each distinguishable from the other two to the operator, and none of the three is rendered as either of the others.",
+        "The reading that shows the configuration states the connector and the configuration as the read answered them, and states no value that answer did not carry.",
+        "The surface issues the read of that name and version again only where the operator takes that control, and on no initiative of its own.",
+        "The surface refuses no entry and checks no entered content on any of the grounds that text states."
+      ],
+      "findings": 31
     }
   ],
   "edges": [
@@ -787,6 +819,42 @@
       "to": "task/knowledge-authoring-footers/case-version-editor-action-footer",
       "kind": "reviews",
       "at": "tasks[6]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/scope-review-corrections",
+      "to": "task/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }

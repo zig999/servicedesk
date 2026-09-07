@@ -1,0 +1,52 @@
+findings:
+- file: src/routes/capability-form-fields-action-footer.spec.ts
+  where: line 50, within the detail-surface test
+  evidence: 'expect(within(footer).getByRole("button", { name: "Discard changes" })).toBeTruthy();'
+  cost: The two neighbouring Cancel assertions (lines 37-40 and 51-54) were loosened this same delivery to accept either a button or a link, so that whichever affordance the interface renders satisfies the test; the Discard changes assertion was left requiring exactly the button role. An interface free, per the node, to render the discard control as any affordance would fail this test though it violates nothing the specification states, so the test becomes a second, stricter authority over a form decision the specification places with the interface.
+  kind: contradicts
+  correction: Loosen the Discard changes query the same way the two Cancel queries were loosened, so no single role is required.
+  node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: the create-surface Cancel-control query, lines 37-40
+  evidence: 'const cancelControl = within(footer).queryByRole("button", { name: "Cancel" }) ?? within(footer).queryByRole("link", { name: "Cancel" }); expect(cancelControl).toBeTruthy();'
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: the detail-surface Discard-control query, line 50 — but pinned to a single role, see finding above
+  evidence: 'expect(within(footer).getByRole("button", { name: "Discard changes" })).toBeTruthy();'
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: the detail-surface Cancel-control query, lines 51-54
+  evidence: 'const cancelControl = within(footer).queryByRole("button", { name: "Cancel" }) ?? within(footer).queryByRole("link", { name: "Cancel" }); expect(cancelControl).toBeTruthy();'
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: the file asserts only footer grouping and control presence over the capability create and detail screens; the node's own subject is not exercised in it.
+looked_past: The Save control is pinned to role "button" in all three assertions with no button-or-link fallback, but no node in this set states that the control carrying submission is form left to the interface, so this is not reported as a finding against these nodes.

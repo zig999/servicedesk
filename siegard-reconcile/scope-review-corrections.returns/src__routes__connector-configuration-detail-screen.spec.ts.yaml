@@ -1,0 +1,94 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: |
+      expect(await screen.findByRole("heading", { name: "Test" })).toBeTruthy();
+      await waitFor(() =>
+        expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITIES_PATH)).toBe(true),
+      );
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: |
+      fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
+
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: |
+      expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITIES_PATH)).toBe(true),
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |
+      expect(screen.getByRole("button", { name: "Save" })).toBeTruthy();
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "lines 47-70, the 'a control returns to the list' describe block"
+    evidence: |
+      fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+      ...
+      await screen.findByRole("button", { name: "Retry" });
+      const footer = screen.getByRole("group", { name: "Actions" });
+      expect(within(footer).getByRole("button", { name: "Retry" })).toBeTruthy();
+      expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |
+      expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITIES_PATH)).toBe(true),
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "lines 47-94, the return/link and 'the ready phase's route registers nothing' and 'exactly one link' blocks"
+    evidence: |
+      expect(screen.getAllByRole("link")).toHaveLength(1);
+      ...
+      fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the ready-record test (lines 29-44) and the Retry-reissue test (lines 96-118)"
+    evidence: |
+      expect(await screen.findByRole("heading", { name: `Connector ${CONNECTOR}` })).toBeTruthy();
+      const connectorInput = screen.getByLabelText<HTMLInputElement>("Connector");
+      expect(connectorInput.value).toBe(CONNECTOR);
+      ...
+      const callsBeforeRetry = fetchMock.mock.calls.filter(
+        ([input]) => input === CONFIGURATION_PATH,
+      ).length;
+      expect(callsBeforeRetry).toBe(1);
+      fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: |
+      await mountConnectorConfigurationDetailScreen(fetchMock);
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |
+      expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITIES_PATH)).toBe(true),
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |
+      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+      fireEvent.click(screen.getByRole("button", { name: "Save" }));
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: |
+      import {
+        ARRAY_CONFIGURATION,
+        CAPABILITIES_PATH,
+        CONFIGURATION_PATH,
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: |
+      import {
+        ARRAY_CONFIGURATION,
+        CAPABILITIES_PATH,
+        CONFIGURATION_PATH,
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: |
+      import {
+        ARRAY_CONFIGURATION,
+        CAPABILITIES_PATH,
+        CONFIGURATION_PATH,
+looked_past: the describe-block titles embed task-criterion numbers ("criterion 1", "corrective criteria 1-4") as test-report labels, which is a documentation/labeling-convention question for the standard-conformance pass, not a domain-fact question for this one.
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object

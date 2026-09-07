@@ -1,0 +1,51 @@
+findings:
+- file: src/routes/capability-detail-screen.spec.ts
+  where: lines 73-88, describe block over an identity nothing is registered at rendering its own reading, distinct from the failed-read reading
+  evidence: 'await screen.findByText("Unable to load this capability right now."); expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();'
+  cost: 'No node states what a capability-keyed surface presents to the operator where the read answered that the capability''s identity itself is unregistered. The governing rule expressly excepts that refusal from its own failed-read window, and the decision log records that this exact silence was noticed and not decided. The sibling fact on the connector-configuration side was decided with its own distinct wording, never could-not-be-read; no equivalent decision exists for capabilities. This test pins the wording shown, identical to the wording the same component states for every other failed read, and pins that Retry is withheld here, as though both facts were already settled. They are not: they are the delivery''s own composition, reusing the neighbouring failure reading''s wording, encoded into a passing test as if it were specification-derived behaviour.'
+  kind: unstated
+  correction: Decide, in the specification, what this surface states to the operator where the read answered that the name and version are unregistered — on the model of the connector-configuration sibling — then align this assertion's wording and control expectations to that decision.
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: the failed-read test, lines 59-70
+  evidence: 'expect(within(footer).getByRole("link", { name: "Capabilities" }).getAttribute("href")).toBe("/capabilities");'
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: the Cancel test, lines 47-57
+  evidence: 'fireEvent.click(within(footer).getByRole("button", { name: "Cancel" })); await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities"));'
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: the failed-read test, lines 59-70
+  evidence: 'expect(await screen.findByRole("button", { name: "Retry" })).toBeTruthy();'
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: The only reference to nature is expect(screen.getByLabelText("Nature").textContent).toBe("read-only"), which asserts the loaded mock value is displayed; it exercises no registry refusal of a non-read-only nature.
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: The Save button's presence is asserted, but no submission is issued or its outcome asserted in this file.
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: The output-schema field is asserted only for its loaded display value, never for entry-time guidance text.
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: This file mounts and exercises only CapabilityDetailScreen, a surface presenting an already-registered capability; the node's own subject does not appear in it.
+looked_past: I did not report on whether every reading each node covers is exercised somewhere in the test suite as a whole — that completeness question belongs to coverage, not to this pass, which answers only for what this one file states.

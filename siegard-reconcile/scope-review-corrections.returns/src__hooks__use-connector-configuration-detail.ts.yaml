@@ -1,0 +1,116 @@
+findings:
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "the `query.isError` branch, lines 117-125"
+    evidence: |
+      if (query.isError) {
+        return {
+          phase: "load-error",
+          retryLoad: () => {
+            void query.refetch();
+          },
+          onCancel,
+        };
+      }
+    cost: An operator who names a connector nothing has ever been registered under gets the identical "could not be read" experience as one whose read merely glitched, reattempt control included — the specification's own distinct, reattempt-free "nothing is registered under this connector name" presentation is never reached by any code path, so a later reader auditing how an unregistered connector name reads finds only the generic failure branch and has no reason to suspect a fourth presentation was ever specified, let alone that it forbids exactly the reattempt this branch offers.
+    kind: contradicts
+    correction: distinguish a ConnectorConfigurationNotFoundError (HTTP 404) response from other query failures and return a distinct state that states nothing is registered under the connector name, presents no connector or configuration value, and carries no reattempt action — reserving `retryLoad` for the remaining, genuine failures the current `load-error` phase is meant to cover.
+    node: rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "the `ready`-phase return and the `configuration` field it constructs, lines 152-166"
+    evidence: |
+      configuration: {
+        value: configurationValue,
+        isValid: configurationValid,
+
+        onChange: handleConfigurationChange,
+      },
+    cost: "The hook itself computes `isDirty` by comparing the live text against `configurationBaseline` (line 130-132), so it knows an edit is in place, but it exposes no way to put that edit down without leaving: `configurationBaseline` is set only by `setConfigurationBaseline` and never returned, and the only way to change `configurationValue` from outside is `handleConfigurationChange`, which re-validates whatever text it is given rather than restoring the last read. No view built against this hook's own return type can offer the discard the specification calls for, no matter how it is written — the capability the rule requires does not exist anywhere reachable from this surface."
+    kind: contradicts
+    correction: "return a function (e.g. a `discardEdit` alongside `configuration`) that resets `configurationValue` and the form's own fields to `configurationBaseline`, gated by a further explicit confirming act before it takes effect, and expose it in the `ready` phase."
+    node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the `useQuery` read call (lines 66-70) and the `useMutation` register call (lines 87-98)"
+    evidence: |
+      apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`)
+      apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(values.connector)}`, { method: "PUT", ... })
+  - node: domain/integration/connector-configuration
+    held_at: "the form's default values and the raw configuration state, lines 74 and 80"
+    evidence: |
+      defaultValues: { connector }
+      setConfigurationValue(query.data.configuration);
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "`onCancel`, lines 53-59"
+    evidence: |
+      if (router.history.canGoBack()) {
+        router.history.back();
+        return;
+      }
+      void navigate({ to: "/connectors" });
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "`isValidConfigurationObject`, lines 16-23, gating submission at line 135-137"
+    evidence: |
+      return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "`onCancel`, returned unconditionally in the `loading` (line 127), `load-error` (lines 118-124) and `ready` (line 165) phases"
+    evidence: |
+      return { phase: "loading", onCancel };
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "`mutation.onError`'s toast (lines 107-109) and `isSubmitSuccessful` exposed in the ready phase (line 163)"
+    evidence: |
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "`mutation.onSuccess`, lines 99-106, which performs no navigation and leaves the operator on the surface already addressed by `connector`"
+    evidence: |
+      onSuccess: () => {
+        form.reset({ connector });
+        setConfigurationBaseline(configurationValue);
+        void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+        void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+      },
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "`onCancel`'s fallback branch, line 58"
+    evidence: |
+      void navigate({ to: "/connectors" });
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "`export type ConnectorConfigurationDetailState =` — the file's whole state surface is `loading` / `load-error` / `ready` over a connector configuration; no capability entry or abandonment appears anywhere in it (grep for \"capability\" in this file returns no matches)."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "same as above — no capability listing route is carried by this file."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |
+      configuration: {
+        value: configurationValue,
+        isValid: configurationValid,
+
+        onChange: handleConfigurationChange,
+      },
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "same file-scope quote — no capability read states are stated by this file."
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the `ConnectorConfigurationDetailState` union (lines 25-42) exposes no route-to-listing function or field distinct from `onCancel`; a static link in the consuming view would need none from this hook."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the outstanding window at lines 126-128 and the failed window at lines 117-125 — but the failed window does not except the \"nothing registered\" reading (see finding above)"
+    evidence: |
+      if (query.isLoading || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "same file-scope quote — no capability nature is read or stated here."
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "same file-scope quote — no output schema entry appears in this file."
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "same file-scope quote — no field-semantics value is read or produced here."
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "same file-scope quote — no description text is authored or read in this file."
+candidates_opened: []

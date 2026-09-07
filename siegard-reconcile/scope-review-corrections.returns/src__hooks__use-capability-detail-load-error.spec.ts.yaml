@@ -1,0 +1,102 @@
+findings:
+  - file: src/hooks/use-capability-detail-load-error.spec.ts
+    where: >-
+      the describe block "useCapabilityDetail -- bundling the concept vocabulary into the ready
+      phase (an inference the implementation recorded)", lines 78-122
+    evidence: >-
+      it("reports the load-error phase when the concept vocabulary read fails, even though the
+      capability identity GET itself succeeds", async () => { ... await waitFor(() =>
+      expect(result.current.phase).toBe("load-error")); }); ... it("reissues the concept
+      vocabulary read when retryLoad is called after only that read failed, resolving to ready
+      once it succeeds", async () => { ... loadErrorState(result.current).retryLoad(); ... await
+      waitFor(() => expect(result.current.phase).toBe("ready")); });
+    cost: >-
+      the file pins, as a passing test, that this surface's "ready" versus "load-error" state and
+      what a single retry control replays both turn on a second resource — the glossary's concept
+      vocabulary — succeeding alongside the capability read, and that one retry reissues both
+      reads together. None of this file's fourteen nodes, nor
+      a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed (which states the
+      in-flight/failed/read windows only for the capability identity read itself), say that a
+      second, unrelated read gates the same state or that retrying replays it too; a reader
+      checking what blocks an operator from reaching "ready", or what a retry control actually
+      re-issues, finds only the capability-identity rule and nothing about the concept vocabulary
+      it is silently bundled with.
+    kind: unstated
+    correction: >-
+      a node would need to state that this surface's read state is a function of both the
+      capability read and the concept-vocabulary read together, and that its retry control
+      reissues both.
+  - file: src/hooks/use-capability-detail-load-error.spec.ts
+    where: >-
+      the describe block "useCapabilityDetail -- exposing no isEditingIdentity flag (an
+      inference the implementation recorded)", lines 124-134
+    evidence: 'expect("isEditingIdentity" in readyState(result.current)).toBe(false);'
+    cost: >-
+      pinning the absence of a property on the hook's own return shape states a fact about this
+      surface's internal composition rather than about what an operator can learn or do, and no
+      node of this file's set constrains that shape either way — so nothing here is weighed
+      against the specification; noted for completeness rather than pressed as a finding.
+    kind: unstated
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: >-
+      the file's four describe blocks cover only load-error/not-registered read states, the
+      bundled concept-vocabulary read, and the ready-state shape — none exercises abandoning an
+      unsubmitted registration.
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: >-
+      onCancel is only asserted to be a function ('expect(typeof result.current.onCancel).toBe("function")'),
+      never exercised for where it lands when no history exists.
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: >-
+      no test in this file asserts a route to the capabilities listing on any reading.
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: no test exercises a discard act or restoring fields to read content.
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: >-
+      the not-registered-phase test, line 74
+    evidence: 'expect(typeof result.current.onCancel).toBe("function");'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: >-
+      the first two describe blocks, lines 25-58 and 61-76
+    evidence: >-
+      await waitFor(() => expect(result.current.phase).toBe("load-error"));
+      expect(typeof loadErrorState(result.current).retryLoad).toBe("function"); ... await
+      waitFor(() => expect(result.current.phase).toBe("not-registered"));
+      expect("retryLoad" in result.current).toBe(false);
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: this file tests only useCapabilityDetail; no connector-configuration surface appears.
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: this file tests only useCapabilityDetail; no connector-configuration surface appears.
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: this file tests only useCapabilityDetail; no connector-configuration authoring surface appears.
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: no test in this file asserts a nature/read-only refusal.
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: no test in this file submits a registration or asserts a submission outcome.
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: no test in this file exercises output-schema entry guidance.
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: no test in this file reads or asserts output-schema field semantics.
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: no test in this file asserts anything about a description field's content.
+looked_past: >-
+  the isEditingIdentity-absence assertion is a shape check on the hook's own return type rather
+  than a domain-fact claim, and the numeric "criterion 7" / "criteria 7, 15" references in the
+  describe titles are task bookkeeping, not specification citations, so neither is pressed beyond
+  noting it.
+candidates_opened:
+  - domain/integration/capability
+  - rules/integration/one-capability-answers-one-concept

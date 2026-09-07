@@ -1,0 +1,57 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: |
+      the file's whole scope is stated in its describe block — "CapabilityDetailScreen -- the presence of both controls turns on nothing about the reached-from surface (criterion 8)" — and no test here composes, submits or abandons a registration entry.
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: |
+      every mount supplies an origin path — `await mountCapabilityDetailScreenAt(fetchMock, [ORIGIN_PATH_ONE, DETAIL_PATH]);`, `[ORIGIN_PATH_TWO, DETAIL_PATH]`, `["/capabilities", DETAIL_PATH]` — so the reading this node governs, a surface reached from nothing, is never exercised here.
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: the "Capabilities" link assertion inside expectBothControlsPresent, exercised across all three origin variants
+    evidence: 'expect(within(footer).getByRole("link", { name: "Capabilities" })).toBeTruthy();'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |
+      the only assertions made are `await screen.findByLabelText("Connector");` and the two control-presence checks in the footer; no field is edited and no discard act is exercised.
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: the "Cancel" button assertion inside expectBothControlsPresent, exercised across all three origin variants including the listing itself as origin
+    evidence: |
+      'expect(within(footer).getByRole("button", { name: "Cancel" })).toBeTruthy();' together with 'await mountCapabilityDetailScreenAt(fetchMock, ["/capabilities", DETAIL_PATH]);' in the third test.
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: |
+      every test waits for the read to answer — `await screen.findByLabelText("Connector");` — before asserting anything; no test exercises the outstanding-read or failed-read window.
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: |
+      the file mounts only `mountCapabilityDetailScreenAt`; no connector-configuration surface is exercised anywhere in it.
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: |
+      same as above — the file exercises only the capability detail screen, never a connector-configuration presentation.
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: |
+      no connector-configuration authoring surface is mounted or exercised in this file.
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |
+      no registration write or refusal is exercised; the file only asserts the presence of two controls after a read answers.
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |
+      no submission is issued anywhere in this file; only navigation-control presence is asserted.
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: |
+      no output-schema entry UI is exercised in this file.
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: |
+      no field-semantics reading is exercised in this file.
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: |
+      no description entry is exercised in this file.
+looked_past: this file exercises only the "reached-from-surface" dimension of the two route rules it does hold, leaving the read-in-flight, read-failed and read-answered-nothing readings those same rules also require untested here — that is a coverage question for another file or pass, not a conformance departure in this one.

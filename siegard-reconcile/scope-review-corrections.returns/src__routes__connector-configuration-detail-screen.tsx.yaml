@@ -1,0 +1,64 @@
+findings:
+  - file: src/routes/connector-configuration-detail-screen.tsx
+    where: the `loading` branch, line 15
+    evidence: '<p>Loading connector configuration {connector}…</p>'
+    cost: while the read of this connector's configuration is still outstanding, the screen already shows the connector's own name inline in the loading text — a value indistinguishable, to the operator, from a connector value the read has confirmed, which is exactly the confusion the rule exists to keep apart from an unanswered read.
+    kind: contradicts
+    correction: state the outstanding read without interpolating the connector name into the message (e.g. "Loading connector configuration…"), leaving the connector name to appear only once the read answers, in the ready presentation.
+    node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  - file: src/routes/connector-configuration-detail-screen.tsx
+    where: the `load-error` branch, lines 28-45
+    evidence: '<p>Unable to load this connector configuration right now.</p> <Button type="button" onClick={state.retryLoad}>Retry</Button>'
+    cost: an operator who reached this screen by a connector name nothing is registered under is told the configuration "could not be read right now" and is handed a Retry that can never succeed, rather than being told explicitly that nothing is registered under that name with no dead-end reattempt offered — a definite, permanent refusal is presented exactly like a transient one worth trying again, so the operator cannot tell the two apart or learn that retrying is pointless.
+    kind: contradicts
+    correction: carry the "nothing is registered under this connector name" refusal in a reading of its own, apart from the generic load-error window — stating that explicitly, presenting no connector or configuration value, saying nothing implying the configuration could not be read, and carrying no reattempt control for this specific refusal.
+    node: rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+read:
+  - node: domain/integration/connector-configuration
+    held_at: "the `connector` route param, carried through the screen and into the hook and the ready view"
+    evidence: 'const { connector } = useParams({ from: "/connectors/$connector" }); const state = useConnectorConfigurationDetailView(connector); ... <ConnectorConfigurationDetailReadyView state={state} connector={connector} />'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the `Connectors` link present in both the `loading` and `load-error` branches; the third reading (answered) delegates its presentation to `ConnectorConfigurationDetailReadyView`, outside this file"
+    evidence: '<Button variant="secondary" asChild><Link to="/connectors">Connectors</Link></Button>'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: '<ConnectorConfigurationDetailReadyView state={state} connector={connector} />'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the `loading` branch states the outstanding read, and the `load-error` branch states a failed read with a reattempt control; the answered presentation is delegated to `ConnectorConfigurationDetailReadyView`"
+    evidence: '<p>Loading connector configuration {connector}…</p> ... <p>Unable to load this connector configuration right now.</p> <Button type="button" onClick={state.retryLoad}>Retry</Button>'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the `Cancel` button present in both the `loading` and `load-error` branches, wired to `state.onCancel`"
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'import { useConnectorConfigurationDetailView } from "../hooks/use-connector-configuration-detail-view"; import { ConnectorConfigurationDetailReadyView } from "./connector-configuration-detail-ready-view";'
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "the `Cancel` control's wiring (`onClick={state.onCancel}`) triggers the act, but which destination it lands on — the origin surface or the listing where none exists — is decided by the hook this file calls, not by this file"
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: 'import { Button } from "@tui/ui/button"; import { ButtonFooter } from "../shared/components/button-footer";'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'export function ConnectorConfigurationDetailScreen(): JSX.Element {'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: '<ConnectorConfigurationDetailReadyView state={state} connector={connector} />'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: 'import type { JSX } from "react"; import { Link, useParams } from "@tanstack/react-router";'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: '<ConnectorConfigurationDetailReadyView state={state} connector={connector} />'
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: 'export function ConnectorConfigurationDetailScreen(): JSX.Element {'
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: 'export function ConnectorConfigurationDetailScreen(): JSX.Element {'
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: 'export function ConnectorConfigurationDetailScreen(): JSX.Element {'
+looked_past: the repeated Cancel/Connectors button pair duplicated verbatim across the loading and load-error branches, and the ready branch's use of the route param rather than the read's own answered value for the heading's connector name (the two are guaranteed identical on an answered read), are construction concerns rather than domain facts and are left for a different pass.
+candidates_opened:
+  - rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under

@@ -1,0 +1,62 @@
+findings:
+  - file: src/routes/connector-configuration-detail-ready-view.tsx
+    where: "the INVALID_CONFIGURATION_WARNING constant (lines 18-19) and the alert gated on `!state.configuration.isValid` (lines 35-39)"
+    evidence: "\"This connector configuration's stored value must be a JSON object. Correct it before Save can succeed.\""
+    cost: "This file is the only place in the tree that decides a registered connector configuration's stored value can be not-a-JSON-object and gates Save on the operator correcting it. Every check the specification holds a connector configuration to is a registration-time gate — register-connector refuses a not-well-formed or incomplete configuration at the write (rules/integration/a-connector-configuration-holds-a-well-formed-object), and domain/integration/connector-configuration states its configuration \"is held and answered as JSON object text, whatever form a registration supplied it in\" — so no node anywhere states that a read of an already-registered configuration can answer something that isn't a JSON object, or what a surface should tell the operator when it does. A reader who meets this warning and looks in the specification for when a stored configuration is invalid, and what corrects it, will not find the rule there; it exists only in this component's own text."
+    kind: unstated
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "nowhere directly — the file never calls read-connector-configuration, list-connector-configurations or register-connector itself; it threads opaque callbacks from the hook to child components instead"
+    evidence: "onSubmit={state.onSubmit}"
+  - node: domain/integration/connector-configuration
+    held_at: "the `configuration` prop passed to ConnectorConfigurationFormFields and the `registeredConfigurationText` passed to ConnectorTestPanel"
+    evidence: "configurationText={state.registeredConfigurationText}"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the Cancel button's onClick"
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the INVALID_CONFIGURATION_WARNING alert gated on `!state.configuration.isValid` — see the finding above, which is about this same construct"
+    evidence: "{!state.configuration.isValid && ("
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: "the configurationText prop passed to ConnectorTestPanel, sourced from state.registeredConfigurationText rather than any locally edited form text"
+    evidence: "configurationText={state.registeredConfigurationText}"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the Connectors link, present unconditionally in trailingActions"
+    evidence: "<Link to=\"/connectors\">Connectors</Link>"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the Discard changes dialog — disabled while not dirty, and requiring the further explicit confirm click inside the dialog"
+    evidence: "disabled={!state.isDirty || state.isSubmitting}"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the Cancel button, offered regardless of isDirty and distinct from both the Discard dialog and the Connectors link"
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n              Cancel\n            </Button>"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the state.justSaved status message"
+    evidence: "<p role=\"status\" className=\"text-sm text-foreground\">\n                Saved.\n              </p>"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps = {\n  readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;\n  readonly connector: string;\n};"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "nowhere in this file — state.onCancel is invoked as a single opaque callback; whether it branches to the listing when no origin exists is not visible here"
+    evidence: "onClick={state.onCancel}"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "import { ConnectorConfigurationFormFields } from \"./connector-configuration-form-fields\";"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "nowhere — this file is structurally restricted to the ready phase; a capability read has no presence here at all"
+    evidence: "readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "nowhere in this file — it is structurally restricted to the ready phase; the outstanding and failed windows are a sibling component's concern"
+    evidence: "readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps = {\n  readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;\n  readonly connector: string;\n};"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps = {\n  readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;\n  readonly connector: string;\n};"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps = {\n  readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;\n  readonly connector: string;\n};"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "export type ConnectorConfigurationDetailReadyViewProps = {\n  readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: \"ready\" }>;\n  readonly connector: string;\n};"
+looked_past: "Whether the connector name is stated back to the operator alongside `Saved.` (owed by a-submitted-registration-states-its-outcome-to-the-operator) and whether state.onCancel lands on the listing when no origin exists (owed by an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing) both depend on state.onCancel's own implementation and on ConnectorConfigurationFormFields's rendering of the identity field, neither of which is in this file's set, so I did not fault this file for what those callbacks and siblings do."

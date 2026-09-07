@@ -1,0 +1,46 @@
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: the Cancel click and its destination assertion, lines 20-25
+  evidence: 'fireEvent.change(configurationField, { target: { value: changed JSON } }); fireEvent.click(screen.getByRole("button", { name: "Cancel" })); await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));'
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: the Cancel click and its destination assertion, lines 20-25
+  evidence: 'fireEvent.click(screen.getByRole("button", { name: "Cancel" })); await waitFor(() => expect(router.state.location.pathname).toBe("/connectors")); expect(putCallCount(fetchMock)).toBe(0);'
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: the file's one test loads a registered connector configuration, edits it, clicks Cancel and asserts the landing and the absence of a register call; the node's own subject is not exercised in it.
+looked_past: the describe title's own UNDERDETERMINED note flags an untested implementation detail about a sibling control rather than asserting a domain fact this pass would need to check, and is a test-completeness matter rather than a specification-conformance one.
+candidates_opened:
+- contracts/integration/connector-configuration-registry

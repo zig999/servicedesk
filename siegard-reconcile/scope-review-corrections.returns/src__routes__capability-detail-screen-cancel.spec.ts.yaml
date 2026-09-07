@@ -1,0 +1,44 @@
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "the file's two tests edit an already-loaded registration (fireEvent.change on the Connector field fetched from CAPABILITY_PATH) and cancel with no surface reached from; this node states the destination only for the reached-from-surface case, which this file never mounts"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "test 2, lines 27-37"
+    evidence: "fireEvent.click(screen.getByRole(\"button\", { name: \"Cancel\" }));\n\n    await waitFor(() => expect(router.state.location.pathname).toBe(\"/capabilities\"));\n    expect(putCallCount(fetchMock)).toBe(0);"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "test 1, lines 23-24"
+    evidence: "const listingLink = screen.getByRole(\"link\", { name: \"Capabilities\" });\n    expect(listingLink.getAttribute(\"href\")).toBe(\"/capabilities\");"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "expect(screen.getByRole(\"button\", { name: \"Discard changes\" })).not.toBe(cancel);"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "the file mounts only with a single initial history entry (mountCapabilityDetailScreen uses initialPath alone); no test here exercises a surface reached from an origin, which is what this node's own return-to-origin branch states"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file's handlers (baseHandlers()) answer the capability read immediately; neither test asserts an outstanding or failed read state"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file tests only CapabilityDetailScreen; no connector configuration surface appears"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file tests only CapabilityDetailScreen; no connector configuration surface appears"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file tests only CapabilityDetailScreen; no connector configuration authoring surface appears"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "neither test asserts anything about a capability's nature or a registry refusal"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "both tests assert Cancel issues no PUT call at all; neither exercises a submission or its outcome"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "the file never asserts on output-schema entry guidance"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "the file never asserts on field name/type/description semantics"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "the file never asserts on description content"
+looked_past: "The tests pin specific implementation choices — Cancel's exact tagName, the literal href \"/capabilities\", and Discard being tagName-distinct from Cancel — which is a testing-convention concern rather than a domain fact the specification does or doesn't hold, since the nodes themselves disclaim control choice, wording and placement as form."

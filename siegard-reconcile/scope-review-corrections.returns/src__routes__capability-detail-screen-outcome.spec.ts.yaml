@@ -1,0 +1,46 @@
+read:
+  - node: rules/integration/a-capability-is-read-only
+    held_at: "the CAPABILITY_PATH PUT handler in the first `it` block, line 28"
+    evidence: 'errorResponse("CapabilityNotReadOnlyError", 422)'
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "the two `toast.error` assertions, one per `it` block, that distinguish a registry-named refusal from one the surface does not recognise"
+    evidence: 'expect(toast.error).toHaveBeenCalledWith("This capability''s declared nature is not read-only; the registry only accepts read-only capabilities."); ... expect(toast.error).toHaveBeenCalledWith("Something went wrong while saving this capability. Try again.")'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: 'describe("CapabilityDetailScreen -- a refused save states a distinguishable outcome to the operator (criterion 4)"'
+looked_past: "The exact copy the connector-field edit and mount helpers exercise (capability-form-fields, the detail hook) is another file's own conformance, not this test's."
+candidates_opened:
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

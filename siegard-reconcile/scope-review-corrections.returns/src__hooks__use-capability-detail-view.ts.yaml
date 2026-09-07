@@ -1,0 +1,44 @@
+read:
+- node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+  held_at: nowhere
+  evidence: 'onDiscard: () => { detail.form.reset(); const inputBaseline = inputSchemaBaselineRef.current; detail.inputSchema.onChange(inputBaseline.value, inputBaseline.isValid); const outputBaseline = outputSchemaBaselineRef.current; detail.outputSchema.onChange(outputBaseline.value, outputBaseline.isValid); setJustSaved(false); }, — this is the in-place discard the sibling rule governs, not an abandoned authoring entry; the file composes and abandons nothing.'
+- node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  held_at: nowhere
+  evidence: 'if (detail.phase !== "ready") { return detail; } and return { ...detail, onDiscard: () => {...} }'
+- node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+  held_at: nowhere
+  evidence: 'return { ...detail, onDiscard: () => {...}, justSaved }; — the only fields added beyond the pass-through are onDiscard and justSaved, no listing route.'
+- node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  held_at: the onDiscard closure, lines 73-81
+  evidence: detail.form.reset(); const inputBaseline = inputSchemaBaselineRef.current; detail.inputSchema.onChange(inputBaseline.value, inputBaseline.isValid); const outputBaseline = outputSchemaBaselineRef.current; detail.outputSchema.onChange(outputBaseline.value, outputBaseline.isValid); setJustSaved(false);
+- node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  held_at: the widened pass-through union, lines 4-11, and the unmodified passthrough at lines 67-72
+  evidence: 'export type CapabilityDetailViewState = | Extract<CapabilityDetailState, { phase: "loading" | "load-error" | "not-registered" }> | (Extract<CapabilityDetailState, { phase: "ready" }> & {...}); ... if (detail.phase !== "ready") { return detail; } ... return { ...detail,'
+- node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+  held_at: the union at lines 4-5, keeping "load-error" and "not-registered" apart
+  evidence: 'Extract<CapabilityDetailState, { phase: "loading" | "load-error" | "not-registered" }>'
+- node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  held_at: nowhere
+  evidence: import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail"; — the file never references a connector configuration.
+- node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  held_at: nowhere
+  evidence: same import, line 2 — no connector-configuration read or state appears anywhere in the file.
+- node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+  held_at: nowhere
+  evidence: same import, line 2 — the file authors nothing and holds no connector-configuration logic.
+- node: rules/integration/a-capability-is-read-only
+  held_at: nowhere
+  evidence: the file carries no reference to a capability's nature, and no mutation-error branch at all — onDiscard and the justSaved effect are its only added logic.
+- node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  held_at: the justSaved-tracking effect, lines 53-65
+  evidence: const succeeded = currentIsSubmitSuccessful ?? false; const dirty = currentIsDirty ?? false; if (succeeded && !wasSubmitSuccessfulRef.current) { setJustSaved(true); } else if (dirty) { setJustSaved(false); } wasSubmitSuccessfulRef.current = succeeded;
+- node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  held_at: nowhere
+  evidence: 'const currentOutputSchemaValue = isReady ? detail.outputSchema.value : null; — the file only forwards the schema value and validity, it states no guidance about what is read from it.'
+- node: domain/investigation/field-semantics
+  held_at: nowhere
+  evidence: same line — the file never parses a schema's properties, type or description.
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: the file holds no description field or vocabulary content anywhere.
+looked_past: whether the discard/just-saved baseline genuinely equals the registration the surface last read after a successful save, versus the operator's own submitted text, turns on use-capability-detail.ts's isDirty/baseline computation, which this hook only consumes and which is not in this file's scope.

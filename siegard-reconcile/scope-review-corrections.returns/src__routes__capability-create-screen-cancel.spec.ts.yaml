@@ -1,0 +1,72 @@
+findings:
+  - file: src/routes/capability-create-screen-cancel.spec.ts
+    where: "the describe block \"the abandonment control renders on every reading of the surface (disclosed inference)\", lines 126-154"
+    evidence: |-
+      it("renders Cancel while the concept vocabulary is still loading", async () => {
+        ...
+        await screen.findByText("Loading…");
+        expect(screen.getByRole("button", CANCEL_BUTTON)).toBeTruthy();
+      });
+
+      it("renders Cancel once the concept vocabulary has failed to load", async () => {
+        ...
+        await screen.findByRole("button", { name: "Retry" });
+        expect(screen.getByRole("button", CANCEL_BUTTON)).toBeTruthy();
+      });
+    cost: "The test locks in, as a required behavior, that the abandonment control must survive the concept-vocabulary loading and failed-load windows of the capability authoring surface — a distinction the specification draws explicitly for the sibling listing route (\"The route's presence turns on nothing further — not on whether the read backing the surface has completed, failed\") and for the origin-return act on a detail surface (\"present at every reading... conditioned on nothing else\"), but never draws for the abandonment act on an authoring surface. The test's own label, \"disclosed inference\", names the gap: a future reviewer holding the create screen to the specification finds no node stating this and has only this test's word for it, so the rule the business actually wants here lives in a test file rather than in the specification."
+    kind: unstated
+  - file: src/routes/capability-create-screen-cancel.spec.ts
+    where: "same describe block, line 126"
+    evidence: "\"CapabilityCreateScreen -- the abandonment control renders on every reading of the surface (disclosed inference)\""
+    cost: "The self-applied label \"disclosed inference\" reads like a decision-log citation but points nowhere: decision-log.md records no entry for this fact, so the phrase claims a provenance the file does not carry, and a reader who trusts the label stops looking for the rule the specification never states."
+    kind: unstated
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the describe blocks \"...criterion 1\" (lines 74-95) and \"...criterion 3\" (lines 108-124)"
+    evidence: |-
+      await waitFor(() => expect(router.state.location.pathname).toBe(openedFrom));
+      ...
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "the describe block \"...criterion 2\" (lines 97-106)"
+    evidence: "await waitFor(() => expect(router.state.location.pathname).toBe(\"/capabilities\"));"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "the file's whole scope is the Cancel control (`const CANCEL_BUTTON = { name: \"Cancel\" };`); no test here exercises the separate always-present \"Capabilities\" link this rule governs"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "the file mounts only `/capabilities/new`, an authoring surface with no read registration to discard back to; no discard act is exercised"
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "the file never mounts a capability detail (identity-keyed) surface; every test here mounts `/capabilities/new`"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: nowhere
+    evidence: "the file asserts nothing about a capability-identity read's in-flight or failed state; the loading/error windows it tests are the concept-vocabulary read, a different resource"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "the file contains no connector-configuration surface or route"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "the file contains no connector-configuration presentation"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "the file's abandonment tests are all over `CapabilityCreateScreen`, never a connector-configuration authoring surface"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "the file asserts no refusal and no capability nature; its PUT handler in the one submission test returns a bare success body"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "the one test that fills the form (criterion 3) abandons rather than submits, and asserts only `putCallCount(fetchMock)).toBe(0)`; no submission outcome is stated or checked"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "the file never inspects the output-schema entry or any statement beside it"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "the file never reads or asserts a field's name, type or description drawn from an output schema"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "the file makes no assertion about a description's content"
+looked_past: "the actual component (capability-create-screen.tsx) renders both the Cancel control and a separate, always-present \"Capabilities\" link across the loading/error/ready phases — whether that second, unconditional link satisfies a-single-capability-surface-offers-a-route-to-the-capabilities-listing is a question for whichever file's review covers that link, not this cancel-focused spec."
+candidates_opened:
+  - domain/integration/capability
+  - contracts/integration/capability-registry

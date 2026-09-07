@@ -1,0 +1,51 @@
+findings:
+  - file: src/routes/capability-detail-screen-reattempt-exclusivity.spec.ts
+    where: "the describe block's title, line 14"
+    evidence: 'describe("CapabilityDetailScreen -- the reattempt control is withheld from every reading but the failed-read one (criterion 15)", () => {'
+    cost: "The node this suite is named for (rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed) enumerates exactly three presentations -- read-and-shown, outstanding, failed -- and its expression withholds the reattempt control from only 'the other two' of those three; the registry's refusal of an unregistered name and version is expressly excepted from being 'this window' at all, so no node says whether the control is withheld there. The two tests in this file exercise only the outstanding and shown presentations, yet the suite's own title generalizes to 'every reading but the failed-read one' -- a total exclusivity that includes the not-registered presentation. A reader who takes this title as the specification's own claim will believe the not-registered reading's control-withholding is settled by the specification, when in fact that reading is carried in capability-detail-screen.tsx's own 'not-registered' branch with no node backing it, and this suite offers no test of it either. The gap between what the title claims and what is tested is the gap between the node's loose statement ('in the failed window alone') and its bounded expression ('the other two' of three named presentations)."
+    kind: unstated
+    correction: "Narrow the describe title to the two presentations the tests actually cover (outstanding and shown), or add a third test exercising the not-registered reading together with a node stating what that reading's control presentation must be."
+read:
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: "This file mounts only the read path (CAPABILITY_PATH GET responses); no abandonment, submission or entry is exercised anywhere in it."
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: nowhere
+    evidence: "No navigation, origin or listing destination is asserted in either test; both stop at `expect(screen.queryByRole(\"button\", { name: \"Retry\" })).toBeNull()`."
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: nowhere
+    evidence: "Neither test queries for a listing link or route; both assertions are about the Retry button's absence."
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "No field is changed and no Discard control is queried in this file."
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: nowhere
+    evidence: "No origin surface is set up (mountCapabilityDetailScreen is called with no origin argument) and no return act is asserted."
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the two `it` blocks, lines 15-24 and 26-32"
+    evidence: "\"renders no Retry control while the read is still outstanding\" ... expect(screen.queryByRole(\"button\", { name: \"Retry\" })).toBeNull(); and \"renders no Retry control once the capability has been read and is shown\" ... expect(screen.queryByRole(\"button\", { name: \"Retry\" })).toBeNull();"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: nowhere
+    evidence: "This file mounts only CapabilityDetailScreen; no connector configuration surface is present."
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: "No connector configuration screen or read is exercised in this file."
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: "No connector configuration authoring surface appears in this file."
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "No registration write (PUT) is issued by either test; both only assert on the render of a GET-backed read."
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: "Neither test submits a registration or asserts a toast/outcome message; both stop at the Retry-button query."
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: nowhere
+    evidence: "No output-schema entry or its accompanying statement is queried in this file."
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: "No field name, type or description read from an output schema appears in this file."
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "No description text is asserted anywhere in this file."
+looked_past: "capability-detail-screen.tsx's own 'not-registered' branch (lines 49-63) already omits the Retry button there, which is itself a decision no node states -- that is a finding against that file, not against this spec file, and I did not report it here."
