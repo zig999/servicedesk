@@ -2,11 +2,25 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/abandonment-and-listing-route",
+      "kind": "epic",
+      "file": "epic/abandonment-and-listing-route.md",
+      "title": "Abandonment and the listing route as separate controls",
+      "summary": "The four capability and connector-configuration registration surfaces — two authoring, two presenting one registration — carrying an act that returns the operator to the surface it was reached from, and a route to the listing, as two controls rather than one."
+    },
+    {
       "id": "epic/knowledge-authoring-footers",
       "kind": "epic",
       "file": "epic/knowledge-authoring-footers.md",
       "title": "Knowledge authoring footers",
       "summary": "The hypothesis revision form and the case version editor moving their action rows into the shared ButtonFooter, one gaining the standard Cancel and the other carrying the Cancel it already has."
+    },
+    {
+      "id": "epic/misstated-facts-in-source",
+      "kind": "epic",
+      "file": "epic/misstated-facts-in-source.md",
+      "title": "Facts a source file states wrongly or twice",
+      "summary": "The stand-in that refuses a capability save with a status the registry does not answer that refusal with, and the help copy beside the output-schema field that reproduces two specification nodes."
     },
     {
       "id": "epic/registry-authoring-footers",
@@ -23,11 +37,50 @@
       "summary": "The reusable ButtonFooter component that pins a screen's primary action buttons to the bottom of the AppShell's scrollable content area, and the system-scoped constraints standing over every screen it appears on."
     },
     {
+      "id": "inventory/button-footer-standardization-corrections",
+      "kind": "inventory",
+      "file": "inventory/button-footer-standardization-corrections.md",
+      "title": "Registration-authoring footers, cancel-destination specs, a nature-refusal fixture, and one help copy in frontend/app",
+      "summary": "Where the four capability and connector authoring screens compose their action footer today, the abandon-via-router-history pattern already used on the knowledge surfaces, the four specs asserting a fixed listing destination for Cancel, and the help copy under output schema that reproduces two specification nodes."
+    },
+    {
       "id": "inventory/button-footer-standardization-frontend-app",
       "kind": "inventory",
       "file": "inventory/button-footer-standardization-frontend-app.md",
       "title": "ButtonFooter target area in frontend/app",
       "summary": "The routes and shared components under frontend/app/src that the ButtonFooter migration touches, plus the AppShell scroll region it must fix inside without editing."
+    },
+    {
+      "id": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "kind": "task",
+      "file": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route.md",
+      "title": "Capability creation surface abandonment and listing route",
+      "summary": "The capability creation surface's single Cancel link separated into an abandonment that lands the operator on the surface the authoring was reached from and an unconditional route to the capabilities listing.",
+      "epic": "abandonment-and-listing-route"
+    },
+    {
+      "id": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "kind": "task",
+      "file": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route.md",
+      "title": "Capability detail surface return to origin and listing route",
+      "summary": "The capability detail surface's single Cancel link separated into an act that lands the operator on the surface the detail surface was reached from and an unconditional route to the capabilities listing, both present on every reading of the surface and neither turning on how the surface was reached, with the outstanding, failed and shown readings each told apart from the other two.",
+      "epic": "abandonment-and-listing-route"
+    },
+    {
+      "id": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "kind": "task",
+      "file": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route.md",
+      "title": "Connector-configuration creation surface abandonment and listing route",
+      "summary": "The connector-configuration creation surface's single Cancel link separated into an abandonment that lands the operator on the surface the authoring was reached from and its own route to the connector-configurations listing.",
+      "epic": "abandonment-and-listing-route"
+    },
+    {
+      "id": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "kind": "task",
+      "file": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route.md",
+      "title": "Connector-configuration detail surface return to origin and listing route",
+      "summary": "The connector-configuration detail surface's single Cancel link separated into an act that lands the operator on the surface the detail surface was reached from and an unconditional route to the connector-configurations listing, both present on every reading of the surface and neither turning on how the surface was reached, with the outstanding, failed and shown readings each told apart from the other two.",
+      "epic": "abandonment-and-listing-route"
     },
     {
       "id": "task/knowledge-authoring-footers/case-version-editor-action-footer",
@@ -44,6 +97,22 @@
       "title": "Hypothesis revision action footer",
       "summary": "The hypothesis revision form's action row rendered through the shared ButtonFooter, with the Cancel this form has never had.",
       "epic": "knowledge-authoring-footers"
+    },
+    {
+      "id": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "task",
+      "file": "task/misstated-facts-in-source/nature-refusal-fixture-status.md",
+      "title": "Nature-refusal stand-in status",
+      "summary": "The stand-in refusal of a capability whose nature is not read-only, built with the status the registry answers that refusal with.",
+      "epic": "misstated-facts-in-source"
+    },
+    {
+      "id": "task/misstated-facts-in-source/output-schema-help-copy",
+      "kind": "task",
+      "file": "task/misstated-facts-in-source/output-schema-help-copy.md",
+      "title": "Output-schema entry guidance",
+      "summary": "The text beside the capability output-schema entry, rewritten to state what the system reads out of what is entered there, bounded to the claims the specification already holds and carrying no worked example at all.",
+      "epic": "misstated-facts-in-source"
     },
     {
       "id": "task/registry-authoring-footers/capability-form-action-footer",
@@ -87,6 +156,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/abandonment-and-listing-route",
+      "to": "rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
     {
       "from": "epic/knowledge-authoring-footers",
       "to": "contracts/knowledge/case-lifecycle",
@@ -254,6 +383,36 @@
       "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "epic/misstated-facts-in-source",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/misstated-facts-in-source",
+      "to": "domain/investigation/field-semantics",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/misstated-facts-in-source",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/misstated-facts-in-source",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/misstated-facts-in-source",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[4]"
     },
     {
       "from": "epic/registry-authoring-footers",
@@ -460,6 +619,132 @@
       "at": "covers[9]"
     },
     {
+      "from": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-create-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/capability-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-create-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/abandonment-and-listing-route/connector-detail-abandon-and-listing-route",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
       "from": "task/knowledge-authoring-footers/case-version-editor-action-footer",
       "to": "task/shared-action-footer/button-footer-component",
       "kind": "depends_on",
@@ -572,6 +857,36 @@
       "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
       "kind": "implements",
       "at": "implements[8]"
+    },
+    {
+      "from": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/misstated-facts-in-source/nature-refusal-fixture-status",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/misstated-facts-in-source/output-schema-help-copy",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/misstated-facts-in-source/output-schema-help-copy",
+      "to": "domain/investigation/field-semantics",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/misstated-facts-in-source/output-schema-help-copy",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "implements",
+      "at": "implements[2]"
     },
     {
       "from": "task/registry-authoring-footers/capability-form-action-footer",

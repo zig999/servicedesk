@@ -1,71 +1,26 @@
 ---
 type: invariant
-statement: >-
-  An operator-facing screen presenting the connector configuration registered under one
-  named connector states which of three windows it stands in, and never leaves two of them
-  reading alike: while the read of that configuration has not returned, the screen states
-  that the configuration is still being read and presents no connector or configuration
-  value; where that read fails, the screen states explicitly that the configuration could
-  not be read and offers the operator that same read again; and where the read returns, the
-  screen presents the connector name and the configuration exactly as the read answered
-  them. The offered read is the operator's own act: the screen re-issues a failed read on no
-  initiative of its own.
-expression: >-
-  For a connector name n and a screen presenting the connector configuration registered
-  under n through read-connector-configuration: where that read has not returned, the screen
-  states that the configuration is still being read and states no value of connector or
-  configuration; where that read failed, the screen states that the configuration could not
-  be read, states no value of connector or configuration, and carries an action that
-  re-issues that same read; where that read returned, the screen states connector and
-  configuration as that answer carries them, and states no value that answer did not carry.
-  The three presentations are distinguishable from one another to the operator, and none of
-  them is presented as either of the other two. No read is issued again except by the
-  operator taking that action.
+statement: 'An operator-facing screen presenting the connector configuration registered under one named connector states which of three windows it stands in, and never leaves two of them reading alike: while the read of that configuration has not returned, the screen states that the configuration is still being read and presents no connector or configuration value; where that read fails — the read refused because nothing is registered under that connector name excepted, that refusal being the registry''s own answer and a reading of its own — the screen states explicitly that the configuration could not be read and offers the operator that same read again; and where the read returns, the screen presents the connector name and the configuration exactly as the read answered them. The offered read is the operator''s own act: the screen re-issues a failed read on no initiative of its own.'
+expression: 'For a connector name n and a screen presenting the connector configuration registered under n through read-connector-configuration: where that read has not returned, the screen states that the configuration is still being read and states no value of connector or configuration; where that read failed — a read refused because nothing is registered under n excepted, which stands in the reading a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under states — the screen states that the configuration could not be read, states no value of connector or configuration, and carries an action that re-issues that same read; where that read returned, the screen states connector and configuration as that answer carries them, and states no value that answer did not carry. The three presentations are distinguishable from one another to the operator, and none of them is presented as either of the other two. No read is issued again except by the operator taking that action.'
 constrains:
-  - domain/integration/connector-configuration
+- domain/integration/connector-configuration
 ---
 
 ## Description
 
-`read-connector-configuration` of `contracts/integration/connector-configuration-registry` is
-a call the screen waits on: between an operator opening this screen and an answer arriving
-there is a window in which nothing about the configuration is known, and after a failure a
-window in which nothing ever will be unless the read is made again. Neither window is a
-configuration, and neither is a configuration that is absent — so neither may be presented
-as one, and neither may be presented as the other.
+`read-connector-configuration` of `contracts/integration/connector-configuration-registry` is a call the screen waits on: between an operator opening this screen and an answer arriving there is a window in which nothing about the configuration is known, and after a failure a window in which nothing ever will be unless the read is made again.
+Neither window is a configuration, and neither is a configuration that is absent — so neither may be presented as one, and neither may be presented as the other.
 
-This specification has refused a presentation of exactly this shape four times already, and
-always for one reason: a surface that reads identically in materially different situations
-tells its reader nothing about which one they are in.
-`a-case-holding-no-versions-is-told-explicitly` refuses an emptiness a reader cannot tell
-from a pending read or a failure; `a-cases-current-pins-come-from-its-highest-numbered-version`
-took that same answer again for a surface with nothing to state;
-`a-draft-versions-content-is-presented-only-from-its-own-record` states that a version is
-still being read rather than filling the interval with content no record answered; and
-`a-presented-manifest-entry-states-its-pinned-revisions-state` states both windows on the
-entry so that neither is ever shown as a state. A connector configuration is opaque text an
-operator authors and edits, so a blank in either window reads to them exactly like a
-configuration holding nothing — the one reading that would have them edit over content the
-registry never answered.
+This specification has refused a presentation of exactly this shape four times already, and always for one reason: a surface that reads identically in materially different situations tells its reader nothing about which one they are in.
+`a-case-holding-no-versions-is-told-explicitly` refuses an emptiness a reader cannot tell from a pending read or a failure; `a-cases-current-pins-come-from-its-highest-numbered-version` took that same answer again for a surface with nothing to state; `a-draft-versions-content-is-presented-only-from-its-own-record` states that a version is still being read rather than filling the interval with content no record answered; and `a-presented-manifest-entry-states-its-pinned-revisions-state` states both windows on the entry so that neither is ever shown as a state.
+A connector configuration is opaque text an operator authors and edits, so a blank in either window reads to them exactly like a configuration holding nothing — the one reading that would have them edit over content the registry never answered.
 
-The two unsettled windows are told apart, rather than merged into one notice, because the
-operator's next act differs across them: an outstanding read settles on its own and is worth
-waiting for, while a failed one settles only if it is made again. That is why the failure is
-not merely stated but carries the read with it. Reporting a condition an operator can act on
-and then withholding the act would leave reloading the whole screen or leaving it as the only
-routes back, and the reader could not distinguish a far end that was briefly unavailable from
-one that is gone. The offer is a fact rather than form by this specification's own division —
-what a person using the system can learn or do is stated here; which control carries each of
-the three statements, its wording and its placement are the interface's own, exactly as
-`a-presented-manifest-entry-states-its-pinned-revisions-state` and
-`constraints/no-route-enforces-authentication` already leave them.
+The two unsettled windows are told apart, rather than merged into one notice, because the operator's next act differs across them: an outstanding read settles on its own and is worth waiting for, while a failed one settles only if it is made again.
+That is why the failure is not merely stated but carries the read with it.
+Reporting a condition an operator can act on and then withholding the act would leave reloading the whole screen or leaving it as the only routes back, and the reader could not distinguish a far end that was briefly unavailable from one that is gone.
+The offer is a fact rather than form by this specification's own division — what a person using the system can learn or do is stated here; which control carries each of the three statements, its wording and its placement are the interface's own, exactly as `a-presented-manifest-entry-states-its-pinned-revisions-state` and `constraints/no-route-enforces-authentication` already leave them.
 
-The read is issued again only on the operator's act, so that a far end already failing is
-never called repeatedly by a screen nobody is watching, and so that what the operator sees
-after a failure stays what they last asked for.
+The read is issued again only on the operator's act, so that a far end already failing is never called repeatedly by a screen nobody is watching, and so that what the operator sees after a failure stays what they last asked for.
 
-This decides what the screen states in each window and nothing beyond it. It adds no
-attribute to `domain/integration/connector-configuration`, publishes no operation, and
-refuses no call: the refusal a read by an unregistered connector name is answered with stays
-`a-connector-configuration-read-by-an-unregistered-name-is-refused`'s own, and what the
-registry answers is untouched.
+This decides what the screen states in each window and nothing beyond it.
+It adds no attribute to `domain/integration/connector-configuration`, publishes no operation, and refuses no call: the refusal a read by an unregistered connector name is answered with stays `a-connector-configuration-read-by-an-unregistered-name-is-refused`'s own, what the screen states in that reading stays `a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under`'s own — a reading of this screen told apart from the failed window stated here rather than merged into it, which is why the failed window excepts that refusal — and what the registry answers is untouched.
