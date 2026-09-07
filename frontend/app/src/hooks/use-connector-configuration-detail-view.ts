@@ -34,14 +34,13 @@ export function useConnectorConfigurationDetailView(
   const currentConfigurationValid = isReady ? detail.configuration.isValid : null;
   const currentIsSubmitSuccessful = isReady ? detail.isSubmitSuccessful : null;
 
-  useEffect(() => {
-    if (isReady && currentIsDirty === false) {
-      setConfigurationBaseline({
-        value: currentConfigurationValue ?? "",
-        isValid: currentConfigurationValid ?? true,
-      });
+  if (isReady && currentIsDirty === false) {
+    const nextValue = currentConfigurationValue ?? "";
+    const nextIsValid = currentConfigurationValid ?? true;
+    if (nextValue !== configurationBaseline.value || nextIsValid !== configurationBaseline.isValid) {
+      setConfigurationBaseline({ value: nextValue, isValid: nextIsValid });
     }
-  }, [isReady, currentIsDirty, currentConfigurationValue, currentConfigurationValid]);
+  }
 
   useEffect(() => {
     if (!isReady) {

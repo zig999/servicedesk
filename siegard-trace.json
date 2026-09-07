@@ -4763,7 +4763,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
-          "digest": "sha256:b648457bfdb2d65879e53fd4712d90e6174ee45f445010cb74fe889a7de9d6e7"
+          "digest": "sha256:db4c757af3f2243c742184b008e47dd7f7f9ccc809911ccb5d1ecec5b3b988bf"
         },
         {
           "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
@@ -4920,9 +4920,23 @@
       ]
     },
     {
-      "node": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
-      "digest": "sha256:0dd775a80de8973f980777adb0d11f3fbd72716bae15bd71dc47143f0f91b42f",
+      "node": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "digest": "sha256:1386d73793992a0ed815e8235b96e4d6b9963367f225dc2a16cae0585d0ae079",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:57cab358bb32a689a765dcf94196002deff3a1ec396b46028c498a673f3e7630"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "digest": "sha256:eb02a3bbc5e674660964a80a71094201786c383e83ad18d8fb60951c40f8ff6e",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:cd64841d1c3973c8960f9a225fcf1396b68c4dade8c32f56193fe25d04f5a723"
+        },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:9ebf0cd5864afe051a3b8ac238361aa99836fe7fcf6000915bb0a5ae823924d2"

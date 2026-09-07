@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { useConnectorConfigurationDetailView } from "./use-connector-configuration-detail-view";
+import {
+  useConnectorConfigurationDetailView,
+  type ConnectorConfigurationDetailViewState,
+} from "./use-connector-configuration-detail-view";
 import {
   CONFIGURATION_PATH,
   CONNECTOR,
@@ -17,6 +21,17 @@ import {
 afterEach(() => {
   vi.unstubAllGlobals();
 });
+
+function useLoggedConnectorConfigurationDetailView(
+  connector: string,
+  log: ConnectorConfigurationDetailViewState[],
+): ConnectorConfigurationDetailViewState {
+  const state = useConnectorConfigurationDetailView(connector);
+  useEffect(() => {
+    log.push(state);
+  });
+  return state;
+}
 
 describe("useConnectorConfigurationDetailView -- onDiscard resets every field to the most recently loaded-or-saved values (criterion 5)", () => {
   it("resets the edited configuration text back to its loaded value and clears isDirty", async () => {
@@ -276,5 +291,31 @@ describe("useConnectorConfigurationDetailView -- registeredConfigurationText is 
     await waitFor(() => expect(readyState(result.current).isSubmitting).toBe(false));
     expect(readyState(result.current).registeredConfigurationText).toBe(LOADED_CONFIGURATION);
     expect(readyState(result.current).isDirty).toBe(true);
+  });
+});
+
+describe("useConnectorConfigurationDetailView -- onDiscard already resets to the loaded configuration at the very first ready render, not an empty or stale baseline (an underdetermined note in this task)", () => {
+  it("resets configuration.value to the loaded text, not the empty string, when onDiscard is invoked from the render log's first ready entry", async () => {
+    stubFetch({
+      [CONFIGURATION_PATH]: () =>
+        jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+    });
+    const log: ConnectorConfigurationDetailViewState[] = [];
+    const { result } = renderHook(
+      () => useLoggedConnectorConfigurationDetailView(CONNECTOR, log),
+      { wrapper: createWrapper().Wrapper },
+    );
+    await waitFor(() => expect(log.some((entry) => entry.phase === "ready")).toBe(true));
+
+    const firstReady = log.find((entry) => entry.phase === "ready");
+    if (!firstReady) {
+      throw new Error("expected a ready-phase entry in the render log");
+    }
+
+    act(() => {
+      readyState(firstReady).onDiscard();
+    });
+
+    expect(readyState(result.current).configuration.value).toBe(LOADED_CONFIGURATION);
   });
 });

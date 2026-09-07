@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
+import { useCallback, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
@@ -73,7 +73,9 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     defaultValues: { name, version },
   });
 
-  useEffect(() => {
+  const [syncedCapabilityData, setSyncedCapabilityData] = useState(query.data);
+  if (query.data !== syncedCapabilityData) {
+    setSyncedCapabilityData(query.data);
     if (query.data) {
       form.reset({
         name: query.data.name,
@@ -84,14 +86,13 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
         concept: query.data.concept,
       });
       setInputSchemaValue(query.data.input_schema);
-
       setInputSchemaValid(getJsonTextareaMinifiedValue(query.data.input_schema) !== null);
       setInputSchemaBaseline(query.data.input_schema);
       setOutputSchemaValue(query.data.output_schema);
       setOutputSchemaValid(getJsonTextareaMinifiedValue(query.data.output_schema) !== null);
       setOutputSchemaBaseline(query.data.output_schema);
     }
-  }, [query.data]);
+  }
 
   const mutation = useMutation({
     mutationFn: (values: CapabilityFormValues) =>

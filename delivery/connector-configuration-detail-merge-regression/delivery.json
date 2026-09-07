@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "kind": "implementation",
+      "file": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag.md",
+      "title": "Fix the ready-phase render lag in the capability and connector configuration detail hooks",
+      "summary": "use-capability-detail.ts, use-connector-configuration-detail.ts and use-connector-configuration-detail-view.ts now populate every field their ready phase exposes synchronously in the same render where phase first reads \"ready\", instead of one render later inside a useEffect.",
+      "task": "task/ready-phase-state-lag/capability-and-connector-configuration-ready-lag"
+    },
+    {
+      "id": "proof/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "kind": "proof",
+      "file": "proof/ready-phase-state-lag/capability-and-connector-configuration-ready-lag.md",
+      "title": "Ready-phase render-timing proof for useCapabilityDetail, useConnectorConfigurationDetail and useConnectorConfigurationDetailView",
+      "summary": "Confirms the two pre-existing regression specs now pass and adds render-log-based tests proving every field this task's criteria and underdetermined notes name is already correct in the very first render reporting phase \"ready\", rather than lagging one render behind inside a useEffect.",
+      "task": "task/ready-phase-state-lag/capability-and-connector-configuration-ready-lag"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "to": "task/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "to": "implementation/ready-phase-state-lag/capability-and-connector-configuration-ready-lag",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

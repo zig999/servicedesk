@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
+import { useCallback, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
@@ -69,26 +69,21 @@ export function useConnectorConfigurationDetail(
       apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
   });
 
-  const [syncedConfigurationData, setSyncedConfigurationData] = useState(query.data);
-  if (query.data !== syncedConfigurationData) {
-    setSyncedConfigurationData(query.data);
-    if (query.data) {
-      setConfigurationValid(isValidConfigurationObject(query.data.configuration));
-    }
-  }
-
   const form = useForm<ConnectorConfigurationFormValues>({
     resolver: zodResolver(connectorConfigurationFormSchema),
     defaultValues: { connector },
   });
 
-  useEffect(() => {
+  const [syncedConfigurationData, setSyncedConfigurationData] = useState(query.data);
+  if (query.data !== syncedConfigurationData) {
+    setSyncedConfigurationData(query.data);
     if (query.data) {
       form.reset({ connector: query.data.connector });
       setConfigurationValue(query.data.configuration);
+      setConfigurationValid(isValidConfigurationObject(query.data.configuration));
       setConfigurationBaseline(query.data.configuration);
     }
-  }, [query.data]);
+  }
 
   const mutation = useMutation({
     mutationFn: (values: ConnectorConfigurationFormValues) =>

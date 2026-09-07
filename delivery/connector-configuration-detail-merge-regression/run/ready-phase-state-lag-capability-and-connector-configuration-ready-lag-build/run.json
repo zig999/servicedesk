@@ -1,0 +1,74 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/ready-phase-state-lag-capability-and-connector-configuration-ready-lag-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-07T20:55:55.675+00:00",
+      "ended_at": "2026-09-07T20:56:01.814+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-07T20:56:01.814+00:00",
+      "ended_at": "2026-09-07T20:56:08.239+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-07T20:56:08.239+00:00",
+      "ended_at": "2026-09-07T20:56:14.143+00:00"
+    },
+    {
+      "name": "style",
+      "command": "npm run lint:css",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "style.log",
+      "started_at": "2026-09-07T20:56:14.143+00:00",
+      "ended_at": "2026-09-07T20:56:14.476+00:00"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "build.log",
+      "started_at": "2026-09-07T20:56:14.476+00:00",
+      "ended_at": "2026-09-07T20:56:17.398+00:00"
+    },
+    {
+      "name": "a11y",
+      "command": "npm run test:a11y",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "a11y.log",
+      "started_at": "2026-09-07T20:56:17.398+00:00",
+      "ended_at": "2026-09-07T20:56:21.686+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-07T20:56:21.686+00:00",
+      "ended_at": "2026-09-07T20:56:22.058+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
