@@ -332,6 +332,10 @@
           "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
         },
@@ -2382,6 +2386,56 @@
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
           "digest": "sha256:ecaca164d5a27e2012a85f97ec921db18a952669c96e286107aa4348acbee6f8"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft",
+      "digest": "sha256:78240115a0f0e67440bbfd7bfd7e8a4c524d324214b29470e7b6191d2c70774b",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft-generated-credential",
+      "digest": "sha256:0268a3b3ebaffd85006e52c858ba29e57922f5bbebe89dfcf36af6f84522d605",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft-method-mismatch",
+      "digest": "sha256:ec56f13e184ed245d4833c29bf46618de2b74380df7f8b6c6365f9755cb26a26",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft-unresolved-item",
+      "digest": "sha256:744281a7ed8930dec86be4e318aff85fb29b19ece83b9ad375e90f378b4f1270",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "digest": "sha256:d9fa93d3ce2e353ef490e7c25ee0d266db2d14de3aef2b9cd8e06ea81662eb83",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
         }
       ]
     },

@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-openapi-draft-backend-draft-domain-shape-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/connector-configuration-openapi-helper/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-08T22:18:15.620+00:00",
+      "ended_at": "2026-09-08T22:18:19.357+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

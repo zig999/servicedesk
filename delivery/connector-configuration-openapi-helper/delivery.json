@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
+      "title": "The connector configuration draft's domain shape",
+      "summary": "One new domain module declares the draft value object, its unresolved item, its closed unresolved-reason vocabulary, its generated-credential and its method-mismatch, all as plain readonly TypeScript types with no infrastructure import.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
+      "title": "The connector configuration draft's domain shape, proven at the type",
+      "summary": "One new spec file proves the draft's five domain elements -- the closed unresolved-reason vocabulary, the draft value object with its two required-but-possibly-empty lists and optional method mismatch, the unresolved item, the generated credential and the method mismatch -- through exact-shape type assertions, @ts-expect-error refusals, and a source-text scan proving the module imports nothing.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
