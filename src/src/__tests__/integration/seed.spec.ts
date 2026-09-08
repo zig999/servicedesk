@@ -34,6 +34,7 @@ interface IConceptFixture {
   readonly name: string;
   readonly accepts: readonly string[];
   readonly ttl: number;
+  readonly description: string;
 }
 
 interface ICapabilityFixture {
@@ -292,6 +293,25 @@ it('holds every concept the curated case collects, each with the subject types i
 
   expect(answered).toEqual(expectedSorted);
 });
+
+it(
+  "writes the concepts.description column with the fixture's own non-empty description text, for every concept the curated case collects",
+  async () => {
+    const expected = await readConceptFixture();
+    const conceptNames = expected.map((concept) => concept.name);
+    const { rows } = await connection.query<{ name: string; description: string }>(
+      'SELECT name, description FROM concepts WHERE name = ANY($1)',
+      [conceptNames],
+    );
+
+    for (const concept of expected) {
+      expect(concept.description.length).toBeGreaterThan(0);
+      const stored = rows.find((row) => row.name === concept.name);
+      expect(stored, `no concept row stored for "${concept.name}"`).toBeDefined();
+      expect(stored?.description).toBe(concept.description);
+    }
+  },
+);
 
 it(
   'registers one read-only capability, with every attribute the fixture declares, for each of the two concepts the curated case collects',

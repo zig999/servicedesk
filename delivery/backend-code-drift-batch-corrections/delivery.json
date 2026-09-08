@@ -42,6 +42,14 @@
       "task": "task/investigation-record-declared-types/written-at-is-required"
     },
     {
+      "id": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "kind": "implementation",
+      "file": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions.md",
+      "title": "Seeded concepts declare a description",
+      "summary": "The seed reads and publishes a required description for every concept it writes, sourced from the concept fixture rather than a literal, even when a stale description-less row from another setup path already exists.",
+      "task": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions"
+    },
+    {
       "id": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proof",
       "file": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
@@ -80,6 +88,14 @@
       "title": "Investigation.written_at required — compile-time proof",
       "summary": "New and added type-level tests prove Investigation.written_at is a required string rejected by the compiler when absent or mis-typed, while pre-existing runtime tests already prove no producer computes or invents a written_at value.",
       "task": "task/investigation-record-declared-types/written-at-is-required"
+    },
+    {
+      "id": "proof/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "kind": "proof",
+      "file": "proof/seeded-concept-vocabulary/seeded-concepts-declare-descriptions.md",
+      "title": "Seeded concepts declare a description, proven at the fixture, the source and the seeded row",
+      "summary": "Property tests over the concept fixture, the seed script's own source, and a real Postgres run prove every seeded concept carries a non-empty, fixture-sourced description that restates neither the case's hypothesis criterion nor its resolution.",
+      "task": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions"
     }
   ],
   "edges": [
@@ -174,6 +190,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "to": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proves",
@@ -200,6 +234,12 @@
     {
       "from": "proof/investigation-record-declared-types/written-at-is-required",
       "to": "implementation/investigation-record-declared-types/written-at-is-required",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
       "kind": "proves",
       "at": "the path"
     }
