@@ -579,6 +579,28 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
+it('refuses updateDraft with CaseVersionNotDraftError, naming the slug, version and state, and writes no attribute, when the version is not in draft state', async () => {
+  const recorded: { text: string }[] = [];
+  const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+    recorded.push({ text });
+    if (text.includes('SELECT state FROM case_versions')) return { rows: [{ state: 'released' }] };
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.updateDraft('a-slug', 1, {
+    title: 'A corrected title',
+    when_to_use: 'A corrected use',
+    subject: 'a-subject-type',
+    fallback: aResolution(),
+  });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug', version: 1, state: 'released' } });
+  expect(recorded.some((entry) => entry.text.includes('UPDATE case_versions'))).toBe(false);
+});
+
 it('answers an AssembledCaseVersion carrying exactly the manifest entries it was given, with no entry lost or duplicated', async () => {
   const { handleQuery } = recordingQuery({
     caseVersions: [caseVersionRow()],

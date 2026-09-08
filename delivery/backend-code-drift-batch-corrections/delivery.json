@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "implementation",
+      "file": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
+      "title": "isCaseVersionState derives membership from the exported canonical CaseVersionState array",
+      "summary": "The relational case store's isCaseVersionState guard now checks membership against the pre-existing exported CASE_VERSION_STATES canonical array from src/case/case.ts, mirroring the Set-based form isHypothesisRevisionState already uses, instead of a hand-written literal comparison.",
+      "task": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list"
+    },
+    {
+      "id": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "proof",
+      "file": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
+      "title": "isCaseVersionState's canonical-array rewrite proven through the guard's boundary and the two refusals it feeds",
+      "summary": "Proves the case-version-state guard still accepts exactly draft and released and rejects everything else, that all six named paths still resolve the same state, and that the two lifecycle refusals still carry the correct status, name and -- closing the one ground the task's own Notes flagged as reachable and unguarded -- the correct stored state in their payload, adding one new unit test for updateDraftVersion's refusal path where that ground previously had no unit-level test at all.",
+      "task": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "to": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "to": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
