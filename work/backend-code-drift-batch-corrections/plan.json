@@ -1,0 +1,296 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-version-read-and-lifecycle-fidelity",
+      "kind": "epic",
+      "file": "epic/case-version-read-and-lifecycle-fidelity.md",
+      "title": "A stored case version reads and lifecycle state held to their rules",
+      "summary": "The corrections over the knowledge context's stored case version -- the input-requirements read skipping the validation every read runs, and the stored lifecycle state resolved through a hand-written union instead of the enumeration's canonical values."
+    },
+    {
+      "id": "epic/connector-and-registry-fidelity",
+      "kind": "epic",
+      "file": "epic/connector-and-registry-fidelity.md",
+      "title": "The HTTP connector's stated vocabularies and the capability registry's binding",
+      "summary": "The corrections over the integration surface -- the malformed-configuration refusal restating vocabularies as literal text, and the trace asserting that the judgment stage answers for the capability-registry contract."
+    },
+    {
+      "id": "epic/investigation-record-declared-types",
+      "kind": "epic",
+      "file": "epic/investigation-record-declared-types.md",
+      "title": "The investigation record's declared types held where code declares them",
+      "summary": "The corrections where a code declaration of an investigation record's attribute disagrees with the type or required-ness its domain node declares -- the aggregate's own type and the simulation response schemas."
+    },
+    {
+      "id": "epic/seeded-concept-vocabulary",
+      "kind": "epic",
+      "file": "epic/seeded-concept-vocabulary.md",
+      "title": "Seeded concepts publish a stated meaning",
+      "summary": "The correction where the seed writes glossary concepts with no description, which domain/glossary/concept declares required."
+    },
+    {
+      "id": "inventory/backend-code-drift-batch-corrections",
+      "kind": "inventory",
+      "file": "inventory/backend-code-drift-batch-corrections.md",
+      "title": "Backend code-drift batch corrections — existing modules, conventions, and reuse points",
+      "summary": "The nine files named by the scope sit in three areas of src/src (investigation, case, persistence) plus two http/dto siblings; canonical vocabularies already live as exported 'as const' arrays beside their types, zod schemas elsewhere already validate integers with .int() or .number().int(), and glossary concept persistence already has a description requirement path the seed script bypasses."
+    },
+    {
+      "id": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "task",
+      "file": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
+      "title": "The case-version-state guard derives from one canonical list",
+      "summary": "The relational case store's case-version-state guard decides membership against an exported canonical list of the enumeration's values, in the form the sibling hypothesis-revision-state guard already uses.",
+      "epic": "case-version-read-and-lifecycle-fidelity"
+    },
+    {
+      "id": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "kind": "task",
+      "file": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read.md",
+      "title": "The input-requirements read runs the validation every read runs",
+      "summary": "A read of a stored case version input requirements is refused where a validator rule does not hold at that reading, the same way a read of the case itself is.",
+      "epic": "case-version-read-and-lifecycle-fidelity"
+    },
+    {
+      "id": "task/connector-and-registry-fidelity/capability-registry-binding",
+      "kind": "task",
+      "file": "task/connector-and-registry-fidelity/capability-registry-binding.md",
+      "title": "The capability-registry contract is bound only to files holding its operations",
+      "summary": "The trace stops asserting that src/src/investigation/judgment-stage.ts answers for contracts/integration/capability-registry, while every other node that file answers for stays bound.",
+      "epic": "connector-and-registry-fidelity"
+    },
+    {
+      "id": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "task",
+      "file": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies.md",
+      "title": "The malformed-configuration refusal derives its vocabularies from their canonical lists",
+      "summary": "The HTTP connector's malformed-configuration problem messages name the accepted methods and the evidence-result endings by deriving them from HTTP_METHODS and EVIDENCE_RESULTS rather than restating them as literal text.",
+      "epic": "connector-and-registry-fidelity"
+    },
+    {
+      "id": "task/investigation-record-declared-types/simulation-response-integer-fields",
+      "kind": "task",
+      "file": "task/investigation-record-declared-types/simulation-response-integer-fields.md",
+      "title": "Integer-declared numeric fields of the simulation responses validate as integers",
+      "summary": "usage tokens, evaluation elapsed_ms and the durations fields in both simulation response schemas validate as integers, as their domain nodes declare.",
+      "epic": "investigation-record-declared-types"
+    },
+    {
+      "id": "task/investigation-record-declared-types/written-at-is-required",
+      "kind": "task",
+      "file": "task/investigation-record-declared-types/written-at-is-required.md",
+      "title": "written_at is a required attribute of the Investigation type",
+      "summary": "The Investigation type declares written_at as required, matching the attribute declaration in domain/investigation/investigation.",
+      "epic": "investigation-record-declared-types"
+    },
+    {
+      "id": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "kind": "task",
+      "file": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions.md",
+      "title": "Every seeded concept carries a stated description",
+      "summary": "The seed writes no glossary concept without a description, supplying it from the concept fixture the seed already reads.",
+      "epic": "seeded-concept-vocabulary"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-version-read-and-lifecycle-fidelity",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-version-read-and-lifecycle-fidelity",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-version-read-and-lifecycle-fidelity",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-version-read-and-lifecycle-fidelity",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-version-read-and-lifecycle-fidelity",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-and-registry-fidelity",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-and-registry-fidelity",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-and-registry-fidelity",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/investigation-record-declared-types",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/investigation-record-declared-types",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/investigation-record-declared-types",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/investigation-record-declared-types",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/investigation-record-declared-types",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/seeded-concept-vocabulary",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seeded-concept-vocabulary",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/seeded-concept-vocabulary",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-and-registry-fidelity/capability-registry-binding",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-record-declared-types/written-at-is-required",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-record-declared-types/written-at-is-required",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

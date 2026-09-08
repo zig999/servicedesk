@@ -3617,4 +3617,36 @@ entries:
     the api contract, which cannot declare a presentation, or the domain element, which declares what
     a capability is and not what a surface states about reading one; eventual for the reason its neighbour
     over this same surface states, that the surface never holds the capability it presents.
+- location: rules/investigation/written-at-records-when-the-write-settled.md
+  field: statement
+  unstated: Whether the domain model declares an element for an investigation assembled but whose write
+    has not yet settled -- one carrying no written_at, because only the settled write fixes that value
+    -- and if it does, what that element declares and which port receives it; or whether instead persistence
+    receives the investigation record itself with written_at already fixed by whatever calls the store.
+    The element declares written_at required and this rule ties its value to the store's settle instant,
+    but no node says what the store is handed before that instant exists, nor whether that pre-settle
+    content is an element of its own.
+  decided: No such element. written_at is filled by the settling write itself and by nothing that precedes
+    it; what persistence hands the store is the investigation's own content less written_at, and the store
+    answers the persisted investigation with its written_at fixed -- so the domain model declares one
+    Investigation and no second element for an unsettled one, and the question of which port receives
+    such an element does not arise.
+  why: 'The second reading is already refused by this rule''s own standing statement. Whatever calls the
+    store fixes a value before the call returns, so a caller-supplied written_at is fixed no later than
+    the instant an attempt was issued against the store -- precisely the instant this rule names as what
+    written_at is never -- and it would date the record by the call that carried it rather than by the
+    write it claims to record. That leaves either a declared pre-write element or none, and none is the
+    smaller statement: a second element would restate every attribute domain/investigation/investigation
+    declares in a second house that a later change has to remember to edit both of (the reasoning constraints/the-system-persists-to-one-relational-database
+    already gives for not naming the engine twice), and it would give a record whose whole discipline
+    is being written once and never mutated a second shape that is a record in nothing but name -- nothing
+    publishes it, no rule reads it, no audit replays it, and no contract carries it. This specification''s
+    own idiom for what a call receives is a rule''s statement, not an element: the-writing-input-is-narrowed
+    states exactly what consolidation receives and what enters no prompt without declaring a narrowed
+    element for it, and this log''s connector-configuration entry already reads what a registry holds
+    internally as representation while the specification holds the answer''s shape. Home: this is the
+    one node that owns written_at''s provenance, and the fact is the other half of the same condition
+    -- stating it in an-investigation-is-written-once (which owns identity and the duplicate write) or
+    in a new rule would put one fact in two houses. The store is named as ''the store'' because that is
+    the term this rule and no-stage-aborts-on-its-deadline already use for it; no new identifier is minted.'
 ---

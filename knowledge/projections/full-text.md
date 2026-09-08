@@ -4192,6 +4192,38 @@ entries:
     the api contract, which cannot declare a presentation, or the domain element, which declares what
     a capability is and not what a surface states about reading one; eventual for the reason its neighbour
     over this same surface states, that the surface never holds the capability it presents.
+- location: rules/investigation/written-at-records-when-the-write-settled.md
+  field: statement
+  unstated: Whether the domain model declares an element for an investigation assembled but whose write
+    has not yet settled -- one carrying no written_at, because only the settled write fixes that value
+    -- and if it does, what that element declares and which port receives it; or whether instead persistence
+    receives the investigation record itself with written_at already fixed by whatever calls the store.
+    The element declares written_at required and this rule ties its value to the store's settle instant,
+    but no node says what the store is handed before that instant exists, nor whether that pre-settle
+    content is an element of its own.
+  decided: No such element. written_at is filled by the settling write itself and by nothing that precedes
+    it; what persistence hands the store is the investigation's own content less written_at, and the store
+    answers the persisted investigation with its written_at fixed -- so the domain model declares one
+    Investigation and no second element for an unsettled one, and the question of which port receives
+    such an element does not arise.
+  why: 'The second reading is already refused by this rule''s own standing statement. Whatever calls the
+    store fixes a value before the call returns, so a caller-supplied written_at is fixed no later than
+    the instant an attempt was issued against the store -- precisely the instant this rule names as what
+    written_at is never -- and it would date the record by the call that carried it rather than by the
+    write it claims to record. That leaves either a declared pre-write element or none, and none is the
+    smaller statement: a second element would restate every attribute domain/investigation/investigation
+    declares in a second house that a later change has to remember to edit both of (the reasoning constraints/the-system-persists-to-one-relational-database
+    already gives for not naming the engine twice), and it would give a record whose whole discipline
+    is being written once and never mutated a second shape that is a record in nothing but name -- nothing
+    publishes it, no rule reads it, no audit replays it, and no contract carries it. This specification''s
+    own idiom for what a call receives is a rule''s statement, not an element: the-writing-input-is-narrowed
+    states exactly what consolidation receives and what enters no prompt without declaring a narrowed
+    element for it, and this log''s connector-configuration entry already reads what a registry holds
+    internally as representation while the specification holds the answer''s shape. Home: this is the
+    one node that owns written_at''s provenance, and the fact is the other half of the same condition
+    -- stating it in an-investigation-is-written-once (which owns identity and the duplicate write) or
+    in a new rule would put one fact in two houses. The store is named as ''the store'' because that is
+    the term this rule and no-stage-aborts-on-its-deadline already use for it; no new identifier is minted.'
 ---
 
 === domain/glossary/_context
@@ -6132,7 +6164,7 @@ Surfaces over any other subject are untouched: the same silence over a case vers
 === rules/integration/an-http-connector-configuration-declares-its-call
 ---
 type: invariant
-statement: A connector configuration executed by the HTTP connector declares a method that is one of GET, POST, PUT, PATCH or DELETE, a responseMap that is an object of string paths, and a statusMap that is an object mapping an HTTP status to one evidence-result ending; an observation reaching a configuration that lacks any of the three issues no call and ends unavailable, with a result detail reporting a MalformedHttpConnectorConfigurationError. The same configuration declares an address, a non-empty string, and may declare a query and headers, each an object of string values, and a body of any shape; any of the four may embed one or more placeholders naming a Subject attribute, the requester, or a credential read from environment configuration at resolution time, substituted as plain text and never evaluated as code. Such a placeholder is written as the literal text form ${kind} or ${kind:argument}; a placeholder naming a Subject attribute is written ${subject:<attribute-name>}, with the attribute name as its argument; a placeholder naming the requester is written ${requester}, with no argument; and a placeholder naming a credential is written ${credential:<name>}, with the credential name as its argument. A configuration missing its address, declaring query or headers as anything but an object of string values, naming a placeholder kind this connector does not recognize, or naming a placeholder with no argument where one is required, issues no call and ends unavailable, with a result detail reporting an IncompleteConnectorCallDescriptorError; a configuration naming a Subject attribute or a credential that resolves to nothing issues no call and ends unavailable the same way, with the result detail an-unresolvable-observation-ends-unavailable itself names for that condition.
+statement: A connector configuration executed by the HTTP connector declares a method that is one of GET, POST, PUT, PATCH or DELETE, a responseMap that is an object of string paths, and a statusMap that is an object mapping an HTTP status to one evidence-result ending; an observation reaching a configuration that lacks any of the three issues no call and ends unavailable, with a result detail reporting a MalformedHttpConnectorConfigurationError, and that result detail states beside that error the vocabulary the malformed key is held to — where the method is not one of the five, the methods an HTTP connector configuration may declare, and where the statusMap is not such an object, the evidence-result endings a statusMap may map a status to. The same configuration declares an address, a non-empty string, and may declare a query and headers, each an object of string values, and a body of any shape; any of the four may embed one or more placeholders naming a Subject attribute, the requester, or a credential read from environment configuration at resolution time, substituted as plain text and never evaluated as code. Such a placeholder is written as the literal text form ${kind} or ${kind:argument}; a placeholder naming a Subject attribute is written ${subject:<attribute-name>}, with the attribute name as its argument; a placeholder naming the requester is written ${requester}, with no argument; and a placeholder naming a credential is written ${credential:<name>}, with the credential name as its argument. A configuration missing its address, declaring query or headers as anything but an object of string values, naming a placeholder kind this connector does not recognize, or naming a placeholder with no argument where one is required, issues no call and ends unavailable, with a result detail reporting an IncompleteConnectorCallDescriptorError; a configuration naming a Subject attribute or a credential that resolves to nothing issues no call and ends unavailable the same way, with the result detail an-unresolvable-observation-ends-unavailable itself names for that condition.
 constrains:
   - domain/integration/connector-configuration
 ---
@@ -6142,6 +6174,7 @@ constrains:
 The registry still holds a connector configuration to nothing but well-formedness (a-connector-configuration-holds-a-well-formed-object), because what its keys mean is the executing connector's own business.
 This rule is that connector's statement of what it needs, for the one connector kind this build ships, so an operator learns the required keys from the specification rather than from a failed collection.
 The absence is answered as an ending rather than a fault because collection records how an attempt ended and never raises (domain/investigation/evidence).
+The detail states the vocabulary a malformed method or statusMap was held to for the same reason the rule states the keys at all: the configuration is authored directly and opaquely (domain/integration/connector-configuration), so the accepted values are what an operator has to learn to correct the one that failed. Those values are this rule's own text and domain/investigation/evidence-result's own values, so stating them carries nothing out of the failed call — unlike the assembled address, query, headers and body, which an-unreachable-connector-ends-unavailable keeps out of a detail because a credential placeholder may have resolved into them.
 The address, query, headers and body, and their placeholder mechanism, are the same connector's statement of how its call reaches into a Subject, a requester and a credential without either living in the configuration's own text — `rules/integration/a-diagnostic-response-masks-a-resolved-credential` already presumes a credential placeholder exists and masks what it resolves to; this is the first node stating the mechanism itself.
 A configuration missing its address or naming an unrecognized or malformed placeholder never reaches a call at all — the same evidence-result ending the missing-key case above already declares, distinguished only by its own named cause. A configuration whose placeholder is well-formed but resolves to nothing is a different fact, about the data or the environment rather than about the configuration's own shape, and ends unavailable through an-unresolvable-observation-ends-unavailable's own condition for it instead.
 
@@ -6800,7 +6833,7 @@ Breadth is unconditional now, not only when nothing confirmed: a confirmed outco
 === rules/investigation/written-at-records-when-the-write-settled
 ---
 type: invariant
-statement: An investigation's written_at holds the instant the store settled the write that persisted that investigation's record — never the instant the diagnose request arrived, and never the instant a write attempt was issued against the store; where persistence makes two attempts, exactly one of them persists the record, and the persisted written_at is that write's own settle instant, unchanged by a later attempt that settles by finding the record already present.
+statement: An investigation's written_at holds the instant the store settled the write that persisted that investigation's record — never the instant the diagnose request arrived, and never the instant a write attempt was issued against the store; where persistence makes two attempts, exactly one of them persists the record, and the persisted written_at is that write's own settle instant, unchanged by a later attempt that settles by finding the record already present; written_at is filled by that settling write and by nothing that precedes it, so what persistence hands the store is the investigation's own content less written_at, the store answers the persisted investigation with its written_at fixed, and the domain model declares no second element for an investigation assembled but not yet settled.
 constrains:
   - domain/investigation/investigation
 ---
@@ -6811,6 +6844,9 @@ written_at exists so an audit can say when the record came into being, which no 
 An instant fixed before the write describes an event that had not yet happened when it was fixed — the same reasoning domain/investigation/durations gives for why a value already fixed cannot describe a stage that has not yet run — so an instant read at the request's arrival, or at the moment an attempt was issued, dates the record by the call that carried it rather than by the write it claims to record.
 Two attempts need no tie-break: an-investigation-is-written-once leaves exactly one write persisting a record under one id, so that write's settle instant is unambiguous even where a first attempt is abandoned and lands unobserved, and an attempt that settles by finding the record already there persists nothing and changes nothing.
 Where no-stage-aborts-on-its-deadline raises without reaching the store, or where both attempts overrun, no record exists at all and the-response-follows-the-record leaves nothing to ask this of.
+Whatever calls the store fixes a value before the call, so a written_at supplied by the caller is fixed no later than the moment an attempt is issued — the reading this rule already refuses — which is why the value is not part of what is handed to the store at all: it is what the settling write fills, and the persisted investigation the store answers is the first form of the record that carries it.
+An investigation assembled but not yet settled is therefore no element of the domain model: nothing publishes it, no rule reads it and no audit replays it, and the content it holds is content domain/investigation/investigation already declares, held for the length of one call by the stage that is about to write it — representation inside the persistence stage, the same way the connector registry's internally held object is representation of a configuration the specification answers as text.
+Declaring a second element for it would put every attribute of the record in two houses and give the write-once record a second shape that is a record in nothing but name; what a call receives is stated here as a condition on the write, as the-writing-input-is-narrowed states what consolidation receives without minting an element for it.
 
 === rules/knowledge/a-case-has-at-least-one-hypothesis
 ---
