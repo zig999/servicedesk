@@ -56,7 +56,7 @@ export async function buildInvestigation(options: BuildInvestigationOptions): Pr
     assessment: options.assessment,
     cost: options.cost,
     durations: options.durations,
-    written_at: options.written_at,
+    written_at: options.written_at!,
   };
 }
 

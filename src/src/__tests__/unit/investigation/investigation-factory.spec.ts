@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, expectTypeOf, it } from 'vitest';
 import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import { InvestigationNotBuildableError } from '../../../errors/investigation-not-buildable.error.js';
 import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
@@ -16,6 +16,7 @@ import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import type { BuildInvestigationOptions } from '../../../investigation/investigation-factory.js';
 import { buildInvestigation } from '../../../investigation/investigation-factory.js';
+import type { Investigation } from '../../../investigation/investigation.js';
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 
 const CASE_SLUG = 'a-case';
@@ -522,4 +523,12 @@ it('copies the given evaluations array rather than holding onto it, so mutating 
 
   expect(investigation.evaluations).toHaveLength(2);
   expect(investigation.evaluations.map((item) => item.hypothesis)).toEqual(['h1', 'h2']);
+});
+
+it('resolves to an Investigation itself, never to a second hand-declared type standing in for every attribute but written_at', () => {
+  expectTypeOf(buildInvestigation).returns.toEqualTypeOf<Promise<Investigation>>();
+});
+
+it('still declares written_at optional on BuildInvestigationOptions, so a caller before settle supplies none rather than inventing one', () => {
+  expectTypeOf<BuildInvestigationOptions['written_at']>().toEqualTypeOf<string | undefined>();
 });
