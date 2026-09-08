@@ -3649,4 +3649,58 @@ entries:
     -- stating it in an-investigation-is-written-once (which owns identity and the duplicate write) or
     in a new rule would put one fact in two houses. The store is named as ''the store'' because that is
     the term this rule and no-stage-aborts-on-its-deadline already use for it; no new identifier is minted.'
+- location: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered.md
+  field: statement
+  unstated: The material proposing this feature describes a method mismatch as comparing the chosen
+    OpenAPI operation's method against the method already registered on the capability that names the
+    same connector. No node lets that comparison exist -- domain/integration/capability declares no
+    method attribute at all, and rules/integration/an-http-connector-configuration-declares-its-call
+    already states that a method is declared inside a connector configuration's own text, alongside
+    address, query, headers and body, never by the capability that names its connector. A concrete case
+    exposes the conflict -- a capability registered against connector erp-http, a connector configuration
+    already registered under erp-http declaring method GET, and a chosen operation declaring POST -- the
+    material's own reading has nothing on the capability side to compare the operation's method against.
+  decided: A drafted method is compared against the method the connector configuration currently
+    registered under the same connector name declares, never against the capability. Where no connector
+    configuration is registered under that name, or the one registered declares no method, the draft
+    states no mismatch.
+  why: an-http-connector-configuration-declares-its-call already fixes where method lives -- inside a
+    connector configuration's own declared call -- and domain/integration/capability declares no method
+    attribute at all. The specification already answers this question once; the new rule is held to
+    that existing answer rather than restating it a second, disagreeing way.
+- location: domain/integration/connector-configuration-draft-unresolved-reason.md
+  field: values
+  unstated: The material describes, in prose, why a parameter, a request-body field or a security scheme
+    may be left unresolved -- no capability registered, no matching input schema property, a security
+    scheme the credential mechanism cannot reduce to one value -- but names no closed vocabulary of
+    reason identifiers for a reader or a caller to test against.
+  decided: no-capability-registered, no-matching-input-schema-property, security-scheme-not-reducible-to-a-credential.
+  why: These are exactly the three distinct causes the connector configuration's own placeholder
+    mechanism (rules/integration/an-http-connector-configuration-declares-its-call, which recognizes
+    only a subject, a requester and a credential placeholder kind) and the material between them name;
+    a closed enumeration is what lets a caller test which of the three applies rather than parse a
+    free-text reason.
+- location: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme.md
+  field: statement
+  unstated: The material decides a generated credential name is upper-cased but leaves its exact
+    composition -- which parts, joined how -- undecided, naming it as a question for this analysis to
+    settle.
+  decided: The generated name is the connector's own name and the security scheme's own name from the
+    OpenAPI document, each with every character outside A-Z0-9 replaced by an underscore, joined by an
+    underscore, the whole upper-cased -- connector erp-http and scheme apiKeyHeader generate
+    ERP_HTTP_APIKEYHEADER.
+  why: Both segments are already-available, deterministic identifiers the OpenAPI document and the
+    connector registration each supply on their own; composing from exactly these two avoids inventing
+    a third source of naming, and upper-casing was already decided.
+- location: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme.md
+  field: statement
+  unstated: The material never considers a security scheme the ${credential:name} mechanism cannot
+    reduce to one value -- OAuth2 and OpenID Connect among them -- only an API key and bearer-like
+    schemes were discussed.
+  decided: Such a scheme is named in the draft's unresolved list, with reason
+    security-scheme-not-reducible-to-a-credential, and never becomes a placeholder.
+  why: The connector configuration's own placeholder mechanism resolves a credential placeholder to
+    exactly one environment-read value; a multi-step scheme has no single value to substitute, so
+    forcing one in would misstate what the draft can honestly resolve -- the same disclose-rather-than-guess
+    reading the sibling rule over subject placeholders already holds a name to.
 ---

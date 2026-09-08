@@ -224,6 +224,17 @@ The case's title and when_to_use enter as situational context, so the model judg
 rules/investigation/a-cited-field-exists-in-the-capability-output-schema demands a citation's field exist among the field names its own evidence item snapshotted, and a model never shown those field names has no way to satisfy it; they enter per evidence item alongside their own type and description and the observation, still as data the model reads and never as an instruction.
 rules/investigation/judgment-reads-the-evidence-snapshot is what keeps this pure: the semantics that ground a judgment are fixed at collection, inside the evidence itself, so a capability re-registered or a concept re-described after collection never changes what an already-collected item's judgment sees.
 
+=== constraints/the-openapi-document-is-fetched-by-the-backend
+---
+statement: The OpenAPI document a connector configuration draft is generated from is fetched by the backend that generates the draft; no frontend module issues that fetch directly.
+scope: integration
+fitness: A dependency and network-call audit over the frontend module finds no direct request to an OpenAPI document's own URL; the fetch runs only inside the backend operation that generates the draft.
+---
+
+## Description
+
+Fetching server-side avoids a browser-side CORS dependency on whatever application publishes the OpenAPI document, and keeps the one place that reads an operator-supplied URL auditable as a single, reviewable path rather than one folded into whichever screen happens to render it.
+
 === constraints/the-schema-replays-from-its-scripts
 ---
 statement: The schema is reconstructible on an empty database by applying the migration scripts in the order they are numbered.
@@ -317,6 +328,18 @@ operations:
 ## Description
 
 The open host service of the integration context: observe one concept for one subject, read-only, within the requester's scope, answering in the glossary's vocabulary within the capability's timeout.
+
+=== contracts/integration/connector-configuration-draft
+---
+type: api
+direction: published
+operations:
+  - draft-connector-configuration-from-openapi
+---
+
+## Description
+
+Generate a candidate connector configuration for one connector name from one operation of a fetched OpenAPI document — a read, never a registration. Diagnostic in the same sense contracts/integration/connector-diagnostics already is: nothing this operation returns is registered, and no investigation ever reads what it returned.
 
 === contracts/integration/connector-configuration-registry
 ---
@@ -4224,6 +4247,60 @@ entries:
     -- stating it in an-investigation-is-written-once (which owns identity and the duplicate write) or
     in a new rule would put one fact in two houses. The store is named as ''the store'' because that is
     the term this rule and no-stage-aborts-on-its-deadline already use for it; no new identifier is minted.'
+- location: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered.md
+  field: statement
+  unstated: The material proposing this feature describes a method mismatch as comparing the chosen
+    OpenAPI operation's method against the method already registered on the capability that names the
+    same connector. No node lets that comparison exist -- domain/integration/capability declares no
+    method attribute at all, and rules/integration/an-http-connector-configuration-declares-its-call
+    already states that a method is declared inside a connector configuration's own text, alongside
+    address, query, headers and body, never by the capability that names its connector. A concrete case
+    exposes the conflict -- a capability registered against connector erp-http, a connector configuration
+    already registered under erp-http declaring method GET, and a chosen operation declaring POST -- the
+    material's own reading has nothing on the capability side to compare the operation's method against.
+  decided: A drafted method is compared against the method the connector configuration currently
+    registered under the same connector name declares, never against the capability. Where no connector
+    configuration is registered under that name, or the one registered declares no method, the draft
+    states no mismatch.
+  why: an-http-connector-configuration-declares-its-call already fixes where method lives -- inside a
+    connector configuration's own declared call -- and domain/integration/capability declares no method
+    attribute at all. The specification already answers this question once; the new rule is held to
+    that existing answer rather than restating it a second, disagreeing way.
+- location: domain/integration/connector-configuration-draft-unresolved-reason.md
+  field: values
+  unstated: The material describes, in prose, why a parameter, a request-body field or a security scheme
+    may be left unresolved -- no capability registered, no matching input schema property, a security
+    scheme the credential mechanism cannot reduce to one value -- but names no closed vocabulary of
+    reason identifiers for a reader or a caller to test against.
+  decided: no-capability-registered, no-matching-input-schema-property, security-scheme-not-reducible-to-a-credential.
+  why: These are exactly the three distinct causes the connector configuration's own placeholder
+    mechanism (rules/integration/an-http-connector-configuration-declares-its-call, which recognizes
+    only a subject, a requester and a credential placeholder kind) and the material between them name;
+    a closed enumeration is what lets a caller test which of the three applies rather than parse a
+    free-text reason.
+- location: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme.md
+  field: statement
+  unstated: The material decides a generated credential name is upper-cased but leaves its exact
+    composition -- which parts, joined how -- undecided, naming it as a question for this analysis to
+    settle.
+  decided: The generated name is the connector's own name and the security scheme's own name from the
+    OpenAPI document, each with every character outside A-Z0-9 replaced by an underscore, joined by an
+    underscore, the whole upper-cased -- connector erp-http and scheme apiKeyHeader generate
+    ERP_HTTP_APIKEYHEADER.
+  why: Both segments are already-available, deterministic identifiers the OpenAPI document and the
+    connector registration each supply on their own; composing from exactly these two avoids inventing
+    a third source of naming, and upper-casing was already decided.
+- location: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme.md
+  field: statement
+  unstated: The material never considers a security scheme the ${credential:name} mechanism cannot
+    reduce to one value -- OAuth2 and OpenID Connect among them -- only an API key and bearer-like
+    schemes were discussed.
+  decided: Such a scheme is named in the draft's unresolved list, with reason
+    security-scheme-not-reducible-to-a-credential, and never becomes a placeholder.
+  why: The connector configuration's own placeholder mechanism resolves a credential placeholder to
+    exactly one environment-read value; a multi-step scheme has no single value to substitute, so
+    forcing one in would misstate what the draft can honestly resolve -- the same disclose-rather-than-guess
+    reading the sibling rule over subject placeholders already holds a name to.
 ---
 
 === domain/glossary/_context
@@ -4472,6 +4549,119 @@ A capability's own connector attribute may name one of these by its connector va
 ## Responsibility
 
 Hold, by name, whatever configuration a connector currently answers to, replacing it whole on every edit rather than merging into what stood before; carry a connector name, since without one there is nothing to hold it by.
+
+=== domain/integration/connector-configuration-draft
+---
+type: value-object
+attributes:
+  - name: connector
+    type: string
+    required: true
+  - name: configuration
+    type: string
+    required: true
+  - name: unresolved
+    type: connector-configuration-draft-unresolved-item
+    required: true
+    many: true
+  - name: generated_credentials
+    type: connector-configuration-draft-generated-credential
+    required: true
+    many: true
+  - name: method_mismatch
+    type: connector-configuration-draft-method-mismatch
+relationships:
+  - target: capability
+    type: reference
+    cardinality: "0..1"
+---
+
+## Description
+
+A candidate connector configuration, generated from one operation of an OpenAPI document for one connector name, offered for an operator to review and apply — never registered by its own generation.
+Its configuration holds the same address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name exactly matches a property the named capability's own input schema declares, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
+The capability reference is the one, if any, currently registered naming the connector the draft is generated for — absent where none is, since resolving a subject placeholder has nothing to check a name against without one.
+
+## Responsibility
+
+Hold, for review, everything one operation of an OpenAPI document could honestly resolve toward one connector's configuration, and disclose by name and by reason everything it could not.
+
+=== domain/integration/connector-configuration-draft-generated-credential
+---
+type: value-object
+attributes:
+  - name: name
+    type: string
+    required: true
+  - name: security_scheme
+    type: string
+    required: true
+---
+
+## Description
+
+One ${credential:<name>} placeholder a connector configuration draft generated for one operation's security scheme, disclosed by the name it generated and the security scheme's own name in the OpenAPI document — never a value the scheme's own credential already resolved to.
+
+## Responsibility
+
+Disclose one generated credential name and the security scheme it was generated for.
+
+=== domain/integration/connector-configuration-draft-method-mismatch
+---
+type: value-object
+attributes:
+  - name: registered
+    type: string
+    required: true
+  - name: operation
+    type: string
+    required: true
+---
+
+## Description
+
+Present on a connector configuration draft only where a connector configuration is already registered under the same connector name, its own text declares a method, and the chosen operation's own HTTP method differs from it — the two methods named side by side, never one silently replacing the other.
+
+## Responsibility
+
+Name the method a currently registered connector configuration declares and the method the drafted operation declares, where the two disagree.
+
+=== domain/integration/connector-configuration-draft-unresolved-item
+---
+type: value-object
+attributes:
+  - name: name
+    type: string
+    required: true
+  - name: reason
+    type: connector-configuration-draft-unresolved-reason
+    required: true
+---
+
+## Description
+
+One parameter or request-body field, or one security scheme, an operation named that a connector configuration draft could not honestly turn into a placeholder — the name exactly as the OpenAPI document itself gives it, paired with why.
+
+## Responsibility
+
+Name one thing the draft left unresolved and the one reason it did.
+
+=== domain/integration/connector-configuration-draft-unresolved-reason
+---
+type: enumeration
+values:
+  - no-capability-registered
+  - no-matching-input-schema-property
+  - security-scheme-not-reducible-to-a-credential
+---
+
+## Description
+
+The closed set of reasons a connector configuration draft names a parameter, a request-body field, or a security scheme apart from what it resolved: no capability is currently registered naming the connector the draft is generated for; one is registered but its input schema names no property matching that exact name; or the operation's security scheme is not one the connector configuration's own ${credential:<name>} mechanism can reduce to a single value.
+
+## Responsibility
+
+None.
 
 === domain/integration/connector-configuration-registry
 ---
@@ -5544,6 +5734,108 @@ The leaving lands the operator back on the surface the authoring was reached fro
 Whether the authoring was entered to configure a connector name nothing has registered yet or to replace one already registered makes no difference: both are `register-connector`'s own create-or-replace, and neither has written anything until it is registered.
 Which control carries the return, its wording and where it sits are form and belong to the interface, not here.
 
+=== rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+---
+type: invariant
+statement: A surface authoring or editing a connector configuration offers, beneath its Configuration field, a Configuration Helper through which an operator names an OpenAPI document link and one of its operations and requests a connector configuration draft generated from it; requesting a draft issues no register-connector call.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The helper lives inside the one surface an operator already authors or edits a connector configuration from, never a separate screen or a dialog of its own — the same surface a-connector-configuration-authoring-may-be-abandoned-without-registering and a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface already govern. Offering it is a fact about what the operator can do there; which control carries it, its wording and where exactly it sits beneath the Configuration field are form and belong to the interface, not here.
+
+=== rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+---
+type: invariant
+statement: An operation's security scheme reducible to one credential value — an API key or an HTTP basic or bearer scheme — becomes a ${credential:<name>} placeholder in the draft's configuration, with the generated name naming the connector and that scheme together, upper-cased; the generated name is always disclosed in the draft's generated_credentials, never presented as a value already resolved. A security scheme not reducible to one credential value — OAuth2 and OpenID Connect among them — is named in the draft's unresolved list instead, with reason security-scheme-not-reducible-to-a-credential, and never becomes a placeholder.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The connector configuration's own placeholder mechanism resolves ${credential:<name>} to exactly one value read from environment configuration at resolution time; an API key or a basic or bearer scheme asks for exactly that one value, so each becomes exactly one generated placeholder. A multi-step scheme like OAuth2 or OpenID Connect has no single value to substitute — forcing one into the same placeholder would misstate what the mechanism can do, so such a scheme is disclosed as unresolved instead, the same honesty the sibling rule over subject placeholders already holds a name to.
+
+The generated name is the connector's own name and the security scheme's own name from the OpenAPI document, each with every character outside A-Z0-9 replaced by an underscore, joined by an underscore, the whole upper-cased — connector erp-http and scheme apiKeyHeader generate ERP_HTTP_APIKEYHEADER. Disclosing it is never resolving it: the credential's real value still comes only from environment configuration, exactly as a-diagnostic-response-masks-a-resolved-credential already keeps a resolved credential out of what a diagnostic response shows.
+
+=== rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+---
+type: policy
+statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration only where a capability is currently registered naming the connector the draft is generated for, and that capability's own input schema names that exact parameter or field name — matched case-sensitively and separator-sensitively, never normalized — among its properties; where no capability is currently registered for that connector, or where the one registered does not name that exact name among its properties, the parameter or field is named in the draft's unresolved list instead, with reason no-capability-registered or no-matching-input-schema-property respectively, and never becomes a placeholder.
+expression: >-
+  For a connector name c a draft is generated for, and a parameter or request-body field
+  named n an operation of the fetched document declares: where no capability is currently
+  registered naming connector c, the draft's unresolved list holds an item naming n with
+  reason no-capability-registered. Where a capability is currently registered naming
+  connector c, and that capability's own input schema properties holds a key equal to n by
+  byte-for-byte comparison, the draft's configuration embeds ${subject:n} at n's own
+  position. Where such a capability is registered and its input schema properties holds no
+  key equal to n, the draft's unresolved list holds an item naming n with reason
+  no-matching-input-schema-property. No third outcome exists for n, and no placeholder is
+  ever generated from a name matched by anything short of byte-for-byte equality.
+constrains:
+  - domain/integration/connector-configuration-draft
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+A capability may be registered before its connector is ever configured, and a connector may be configured before any capability names it (domain/integration/connector-configuration); this rule reads only what already stands on the capability side at the moment the draft is generated, the same restraint a-connector-placeholder-is-declared-by-its-capability already holds for the registration write it protects. A draft built this way can never itself introduce the orphaned placeholder that rule refuses, because it never emits ${subject:name} for a name the registered capability's own input schema does not already declare.
+
+The match is exact rather than normalized on purpose: a name that merely resembles a declared property — a different case, a different separator — is not evidence of the same fact, and silently equating the two would risk resolving a placeholder against an attribute it was never declared for. An operator who judges two differently-spelled names to mean the same thing corrects the draft by hand; the draft itself never guesses.
+
+Where no capability is registered at all, every candidate name is unresolved for that one reason, and the draft still generates — capability registration order is not a precondition this rule imposes, the same reading domain/integration/connector-configuration already gives a configuration authored before its capability exists.
+
+=== rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+---
+type: invariant
+statement: A connector configuration draft never states a value for responseMap or for statusMap — an OpenAPI document names no evidence-result ending for a status and no field path for a response, so both are always absent from the drafted configuration and left for the operator to author directly.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+an-http-connector-configuration-declares-its-call holds statusMap to a mapping of an HTTP status to one evidence-result ending — ok, denied, timeout or unavailable — and holds responseMap to the field paths an evidence result reads a response by. Neither is a fact an OpenAPI document states: its response schemas describe shape, never which of this system's own outcomes a status means, and never which path this system's own evidence reads a field from. Inventing either from a guess would put a fact the business never decided into a drafted configuration silently; leaving both absent is the honest answer, and the drafted configuration still registers, address, query, headers, body and every generated placeholder intact, exactly as incomplete as an operator's own first hand-authored attempt would be.
+
+=== rules/integration/a-connector-configuration-draft-registers-nothing
+---
+type: invariant
+statement: Generating a connector configuration draft issues no register-connector call — no connector configuration is created, and every connector configuration currently registered stands exactly as it stood.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+A draft exists only to be reviewed and, at the operator's own later act, applied to an authoring surface and submitted through register-connector — the one write the registry publishes. Generating one is a read, drawn from an OpenAPI document and whatever is currently registered, and reads change nothing.
+
+=== rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+---
+type: policy
+statement: Where a connector configuration is currently registered under the connector name a draft is generated for, and that registered configuration's own text declares a method, and the chosen operation's own HTTP method differs from it, the draft names both methods in a method_mismatch rather than silently replacing either; where no connector configuration is currently registered under that name, or the one registered declares no method, the draft states no method_mismatch.
+expression: >-
+  For a connector name c a draft is generated for and an operation whose own HTTP method is
+  m: where a connector configuration is currently registered under c, and that
+  configuration's own text declares a method value r, and r is not equal to m, the draft
+  carries a method_mismatch naming registered r and operation m. Where no connector
+  configuration is currently registered under c, or one is registered but its own text
+  declares no method, the draft carries no method_mismatch, whatever m is.
+constrains:
+  - domain/integration/connector-configuration-draft
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+Method is the executing connector's own statement, declared inside a connector configuration's own text alongside address, query, headers and body (an-http-connector-configuration-declares-its-call) — it is not a fact a capability's own declared contract carries, so this comparison reads the connector configuration currently registered under the same name, live, the same way a-connector-configuration-is-tested-through-a-registered-capability already reads a registered configuration at the moment of a test rather than a stored copy.
+
+A draft never overwrites a currently registered method on its own account: register-connector is the one write that replaces a configuration, and it acts only on the operator's own later submission. Where the registered configuration declares no method at all — an incomplete configuration nothing has finished authoring — there is nothing yet to disagree with, and the draft states no mismatch rather than inventing one against an absence.
+
 === rules/integration/a-connector-configuration-holds-a-well-formed-object
 ---
 type: invariant
@@ -5716,6 +6008,18 @@ One fact, decided once for both registries, on the reading `a-submitted-registra
 Nothing here moves what either registry answers or where any other act lands. `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` still decides where a submission that succeeded takes the operator, the two abandonment rules still decide where a leaving lands them, and the clause both route rules carry — that what becomes of content an authoring surface holds unwritten when the route is taken is no part of them — stays open, this stating only the act in which the operator does not go. No call is refused, no attribute is added to `domain/integration/capability` or `domain/integration/connector-configuration`, and no operation is published. Which control carries the discard, which carries the further act, their wording, where they sit and how the second is presented to the operator are form and belong to the interface, not here, exactly as this specification's other surface rules leave them.
 
 Consistency is eventual because the content the fields are returned to is never held by the surface: it is what a read issued separately to a registry answered, and this act restores that answer rather than anything the surface owns.
+
+=== rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+---
+type: invariant
+statement: A request to draft a connector configuration whose fetched document does not parse as a well-formed OpenAPI document, or whose declared version is not OpenAPI 3.x — a Swagger 2.0 document among them — is refused, naming what failed to parse or which version was declared; no draft is generated from an unparseable or unsupported document.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Only OpenAPI 3.x is read: an earlier Swagger 2.0 document names its operations, parameters and security schemes differently, and reading one as though it were 3.x would misname what the draft resolves rather than refuse honestly. A document that does not parse at all is the same refusal for the same reason a-connector-configuration-holds-a-well-formed-object already gives a registration that does not parse: nothing partial is worth drafting from text nobody can read.
 
 === rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
 ---
@@ -6245,6 +6549,18 @@ consistency: eventual
 Every collection ends in exactly one of the four evidence results, and a status nobody classified still has to land in one of them.
 Unavailable is the ending that claims the least: it asserts no denial and no timeout, and it never enters the evidence cache.
 
+=== rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+---
+type: invariant
+statement: A request to draft a connector configuration whose named OpenAPI document link cannot be fetched — a network failure, a timeout, or a response outside the 2xx range — is refused before any parsing is attempted, naming the fetch failure; no draft is generated from a document that was never received.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Fetching and parsing are two different acts that fail for two different reasons: a link nothing answered, or answered wrong, has no content yet to hold a parse failure against. Naming the fetch failure on its own account, rather than folding it into whatever a parser would say about an empty response, is what lets an operator tell a document that does not exist from one that is malformed.
+
 === rules/integration/an-unreachable-connector-ends-unavailable
 ---
 type: policy
@@ -6280,6 +6596,30 @@ consistency: eventual
 A capability may be registered before its connector is ever configured (domain/integration/connector-configuration), so an investigation can reach a concept whose call cannot be assembled.
 The absence of data is a recorded fact and never an exception (domain/investigation/evidence), so what the investigation records is an ending that names its cause, not a fault that aborts the stage.
 A placeholder resolving to nothing joins these three for the same reason each already degrades rather than faults: for a diagnose, with a-diagnosed-subject-covers-its-cases-required-attributes refusing at the door whatever a case's own derived requirements demand, what still reaches a call unresolved here is always something optional — an attribute the capability's own input schema does not require, a required one its registration under-declared (a-connector-placeholder-is-declared-by-its-capability catches that at the write it escaped), or a credential's environment variable absent from configuration. For a simulate-case or simulate-hypothesis call, no such door stands (a-simulated-subject-missing-a-requirement-degrades-not-refuses), so a required attribute's own absence can reach this same ending too — a fact of data or configuration either way, exactly the class this rule already resolves as a recorded ending rather than a fault that aborts the stage.
+
+=== rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+---
+type: invariant
+statement: Where the Configuration field of an authoring or editing surface already holds an edit the operator has not submitted, applying a connector configuration draft to it is performed only where the operator, in a further explicit act, confirms that the unsubmitted edit is to be replaced; where the operator does not so confirm, the field's content stands exactly as it was.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+An applied draft is total over the Configuration field, the same replace-whole an edit typed by hand already is, so applying one over an edit the operator already made would destroy content held nowhere else — the same hazard a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface already answers for a discard with a further explicit act, held to here for the same reason: a costly act this specification refuses to infer from a first gesture alone.
+
+=== rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+---
+type: invariant
+statement: Applying a connector configuration draft to the Configuration field of an authoring or editing surface replaces only that field's own local, unsubmitted content; it issues no register-connector call, and every connector configuration currently registered stands exactly as it stood.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A draft is generated for review, and applying it is the operator carrying that review into the field they are already editing — the same field register-connector submits from and a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface already returns to its last-read content. Applying it registers nothing on its own account, the same restraint a-connector-configuration-draft-registers-nothing already holds for generating one; the operator still reviews the applied text and still submits it, or does not, exactly as they would an edit typed by hand.
 
 === rules/integration/evidence-arrives-in-the-glossary-vocabulary
 ---
@@ -8247,6 +8587,25 @@ involves:
 
 The capability was registered first and already stands; it is the new connector configuration write that is held to what it declares, the direction this rule checks whenever a connector configuration is the side being written.
 
+=== scenarios/integration/a-drafts-method-mismatches-what-is-registered
+---
+subject: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+given:
+  - a connector configuration is currently registered under connector name erp-http, declaring method GET
+  - the chosen operation declares method POST
+when:
+  - a connector configuration draft is generated for connector erp-http from that operation
+then:
+  - the draft's method_mismatch names registered GET and operation POST
+  - the currently registered connector configuration is unchanged
+involves:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+Neither method is replaced by generating the draft; the operator sees the disagreement and decides what to submit.
+
 === scenarios/integration/a-legacy-capability-declares-no-input-attributes
 ---
 subject: rules/integration/a-capability-input-schema-holds-a-well-formed-object
@@ -8267,6 +8626,60 @@ involves:
 
 Nothing about this capability's own registration changes on its own — re-registering it, with the shape this rule now demands, is an operator's act this scenario only makes visible, never one this specification performs for them.
 
+=== scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+---
+subject: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+given:
+  - a capability read-invoices is currently registered naming connector erp-http, with input schema properties holding only customer_id
+  - the operation GET /customers/{customerId}/invoices is chosen from a fetched OpenAPI document
+when:
+  - a connector configuration draft is generated for connector erp-http from that operation
+then:
+  - customerId is named in the draft's unresolved list with reason no-matching-input-schema-property
+  - the draft's configuration embeds no ${subject:customerId} placeholder
+involves:
+  - domain/integration/capability
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+customerId and customer_id read alike to a person; the draft never treats them as the same fact.
+
+=== scenarios/integration/a-swagger-2-document-refuses-the-draft
+---
+subject: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+given:
+  - an OpenAPI document link answers a document declaring swagger 2.0
+when:
+  - a connector configuration draft is requested from that link
+then:
+  - the request is refused, naming the declared version
+  - no draft is generated
+---
+
+## Description
+
+A 2.0 document names its operations, parameters and security schemes differently from 3.x; reading it as though it were 3.x would misname what the draft resolves rather than refuse honestly.
+
+=== scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+---
+subject: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+given:
+  - the chosen operation requires the security scheme apiKeyHeader, an API key carried in the header X-Api-Key
+when:
+  - a connector configuration draft is generated for connector erp-http from that operation
+then:
+  - the draft's configuration embeds "X-Api-Key" ${credential:ERP_HTTP_APIKEYHEADER} in headers
+  - the draft's generated_credentials names ERP_HTTP_APIKEYHEADER paired with apiKeyHeader
+involves:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The generated name is disclosed so the operator knows which environment variable to configure; it is never a value the scheme's own credential resolved to.
+
 === scenarios/integration/an-optional-attribute-absent-degrades-its-observation
 ---
 subject: rules/integration/an-unresolvable-observation-ends-unavailable
@@ -8286,6 +8699,60 @@ involves:
 ## Description
 
 customer_document never blocked the diagnose at the door, because a-diagnosed-subject-covers-its-cases-required-attributes only ever holds a subject to what a case's requirements name required; an optional attribute's absence is this scenario's own, recorded ending instead.
+
+=== scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+---
+subject: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+given:
+  - no capability is currently registered naming connector erp-http
+  - an operation declaring a path parameter and a query parameter is chosen from a fetched OpenAPI document
+when:
+  - a connector configuration draft is generated for connector erp-http from that operation
+then:
+  - both parameters are named in the draft's unresolved list with reason no-capability-registered
+  - the draft's configuration embeds no ${subject:...} placeholder
+  - the draft is generated, not refused
+involves:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Capability registration order is never a precondition here, the same reading domain/integration/connector-configuration already gives a connector configured before any capability names it.
+
+=== scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+---
+subject: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+given:
+  - an OpenAPI document link answers an HTTP 404
+when:
+  - a connector configuration draft is requested from that link
+then:
+  - the request is refused, naming the fetch failure
+  - no parsing is attempted
+---
+
+## Description
+
+A link nothing answered has no content yet to hold a parse failure against.
+
+=== scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation
+---
+subject: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+given:
+  - an operator has edited the Configuration field of a connector configuration authoring surface without submitting it
+when:
+  - the operator requests to apply a freshly generated draft to that same field
+then:
+  - the surface asks the operator to confirm before replacing the field's content
+  - the field's content stands exactly as the operator left it until they confirm
+involves:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The unsubmitted edit is destroyed by an apply exactly as it would be by a register-connector submission; the confirmation is the further explicit act that keeps it from vanishing on a first gesture.
 
 === scenarios/investigation/a-collection-timeout-degrades-to-no-data
 ---

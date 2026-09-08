@@ -28,6 +28,7 @@ flowchart LR
     knowledge ==>|model: capability| integration
     outside(["outside"])
     glossary -.->|glossary-authoring| outside
+    integration -.->|connector-configuration-draft| outside
     integration -.->|connector-configuration-registry| outside
     integration -.->|connector-diagnostics| outside
     investigation -.->|assessment-reviewed| outside

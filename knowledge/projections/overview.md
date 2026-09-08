@@ -7,7 +7,7 @@ Derived by spec.py from the specification files; never edited.
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
 | glossary | supporting | 6 | 10 | 2 | 1 |
-| integration | generic | 5 | 31 | 6 | 3 |
+| integration | generic | 10 | 41 | 7 | 10 |
 | investigation | supporting | 16 | 37 | 7 | 17 |
 | knowledge | core | 12 | 55 | 5 | 12 |
 
@@ -47,8 +47,9 @@ Derived by spec.py from the specification files; never edited.
 - the-domain-depends-on-no-infrastructure (system)
 - the-evidence-cache-admits-only-ok-results (investigation)
 - the-judgment-prompt-is-closed (investigation)
+- the-openapi-document-is-fetched-by-the-backend (integration)
 - the-schema-replays-from-its-scripts (system)
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-222 decision(s) disclosed in the decision log.
+226 decision(s) disclosed in the decision log.
