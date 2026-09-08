@@ -21,6 +21,7 @@ import { InvestigationWriteDeadlineExceededError } from '../../../errors/investi
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
+import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { statusForError } from '../../../errors/status-map.js';
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
@@ -214,6 +215,14 @@ it('resolves ConceptRefusesSubjectTypeError to 422', () => {
 
 it('resolves ConceptDescriptionRequiredError to 422', () => {
   const error = new ConceptDescriptionRequiredError('a-concept', undefined);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+it('resolves OpenApiDocumentNotFetchedError to 422', () => {
+  const error = new OpenApiDocumentNotFetchedError('https://api.example.com/openapi.json', { kind: 'network-failure' });
 
   const status = statusForError(error);
 

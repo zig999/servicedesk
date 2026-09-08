@@ -5,6 +5,7 @@ import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-
 import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
+import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 
 function buildAppThatRejectsWith(thrown: unknown): FastifyInstance {
@@ -84,6 +85,23 @@ it(
     });
   },
 );
+
+it('answers a refused OpenAPI document fetch as HTTP 422 reporting OpenApiDocumentNotFetchedError, once it reaches the shared handler', async () => {
+  app = buildAppThatRejectsWith(
+    new OpenApiDocumentNotFetchedError('https://api.example.com/openapi.json', { kind: 'status-outside-2xx', status: 404 }),
+  );
+
+  const response = await app.inject({ method: 'GET', url: '/throw' });
+
+  expect(response.statusCode).toBe(422);
+  expect(response.json()).toEqual({
+    error: {
+      code: 'OpenApiDocumentNotFetchedError',
+      message: 'the OpenAPI document link "https://api.example.com/openapi.json" could not be fetched: the link answered HTTP 404',
+      details: { link: 'https://api.example.com/openapi.json', kind: 'status-outside-2xx', status: 404 },
+    },
+  });
+});
 
 it('still answers 500 with the unchanged generic envelope for a typed domain error the status map does not name', async () => {
   app = buildAppThatRejectsWith(new IncoherentCaseError('a-slug', ['a violation']));

@@ -10,12 +10,28 @@
       "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch.md",
+      "title": "OpenAPI document fetch -- its own port, adapter and fetch-failure error",
+      "summary": "A dependency-injected, 60-second-bounded fetch of an operator-named OpenAPI document link, behind its own port, refusing with a new OpenApiDocumentNotFetchedError (mapped to HTTP 422) on any network failure, timeout or non-2xx status and attempting no parse, and handing back unparsed body text on a 2xx answer.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch"
+    },
+    {
       "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proof",
       "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
       "title": "The connector configuration draft's domain shape, proven at the type",
       "summary": "One new spec file proves the draft's five domain elements -- the closed unresolved-reason vocabulary, the draft value object with its two required-but-possibly-empty lists and optional method mismatch, the unresolved item, the generated credential and the method mismatch -- through exact-shape type assertions, @ts-expect-error refusals, and a source-text scan proving the module imports nothing.",
       "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch.md",
+      "title": "OpenAPI document fetch -- unit proof of fetch-failure refusal, timeout bound, unparsed success and 422 mapping",
+      "summary": "Unit tests over OpenApiDocumentFetcher, OpenApiDocumentNotFetchedError and the status-map/error-handler pair prove every stated criterion -- 404, any non-2xx status, network failure, the 60000ms timeout boundary, no body parse on any refusal, exact error-context shape, unparsed 2xx body text, and the 422 envelope the shared handler answers with -- leaving the frontend-placement half of the placement criterion and the redirect inference unproven for stated reasons.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch"
     }
   ],
   "edges": [
@@ -62,8 +78,44 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "scenarios/integration/an-unreachable-openapi-link-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
       "kind": "proves",
       "at": "the path"
     }

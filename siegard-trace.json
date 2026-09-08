@@ -444,6 +444,16 @@
       ]
     },
     {
+      "node": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "digest": "sha256:1332ce7cb18ce44db736f3ee72f58bd3fdcaa13dffab8be70adbad3ec7fc5c4f",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
+          "digest": "sha256:98d3ace9545fa289d1a104671a171ee9ae44e643103e1c2f96d3271470e70786"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-schema-replays-from-its-scripts",
       "digest": "sha256:0e4f0f07ed8bc88f4d18b262f07794c34f68cd409d838eb69f37491a448161cc",
       "files": [
@@ -4956,6 +4966,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "digest": "sha256:b11d29b5d7b3a74eeec988d4ee3c9a934773997ffbc94ae2ba6d68d0dc5d2e47",
+      "files": [
+        {
+          "path": "src/src/errors/openapi-document-not-fetched.error.ts",
+          "digest": "sha256:55233dae94148d3f2266a7009479fa3c33c895c9f6bd65de3fc575a7e4c452f4"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:cd5d304568e9484fffaa3c5cea0791831414136d84385e82d3f20fa6374d2d0f"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
       "digest": "sha256:8d540b391ccebf6728bdd943afc16831bcecaf2de0e057a5fdd1687951b3102f",
       "files": [
@@ -5180,6 +5204,20 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-unfetchable-openapi-link-refuses-the-draft",
+      "digest": "sha256:d4910f372489b23e6704d28ac977923edc654c09e31b42ad51144af235a8d76d",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
+          "digest": "sha256:98d3ace9545fa289d1a104671a171ee9ae44e643103e1c2f96d3271470e70786"
+        },
+        {
+          "path": "src/src/errors/openapi-document-not-fetched.error.ts",
+          "digest": "sha256:55233dae94148d3f2266a7009479fa3c33c895c9f6bd65de3fc575a7e4c452f4"
         }
       ]
     },
@@ -7284,6 +7322,16 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/an-unreachable-openapi-link-refuses-the-draft",
+      "digest": "sha256:77ec798c0edf4c085514519879e507e6cb03078f0a07b3687ef6fa9b07b5eae7",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
+          "digest": "sha256:98d3ace9545fa289d1a104671a171ee9ae44e643103e1c2f96d3271470e70786"
         }
       ]
     },
