@@ -1,0 +1,16 @@
+findings:
+  - where: "ConceptFixture type (line 40) and seedConcepts's INSERT (lines 62-77)"
+    evidence: "type ConceptFixture = { readonly name: string; readonly accepts: readonly string[]; readonly ttl: number };\n... await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [\n      concept.name,\n      concept.ttl,\n    ]);"
+    cost: "domain/glossary/concept declares description a required attribute of every concept — the vocabulary term a hypothesis cites and evidence carries. ConceptFixture never carries one, the concept.json fixture data (\"equipment-status\", \"network-outage-flag\") never states one, and the INSERT writes only name and ttl, so every concept this seed produces is persisted with no stated meaning. Anyone reading these entries through the glossary — or through the registry, which would refuse the same omission with a ConceptDescriptionRequiredError — finds a published term nobody can read, and the next reader assumes the seed exercises the full concept shape the domain model requires when it never has."
+    kind: contradicts
+    correction: "seedConcepts would need to read a description from the fixture (and ConceptFixture would need to declare it) and insert it into the concepts table alongside name and ttl."
+    node: domain/glossary/concept
+read:
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "placeFixtureHypotheses forwards the fixture's collects array unchecked: collects: entry.collects, inside the object passed to lifecycle.reviseHypothesis({ slug: fixture.slug, hypothesis_name: entry.hypothesis_name, criterion: entry.criterion, collects: entry.collects, resolution: entry.resolution, subject: fixture.subject }); seed.ts never inspects entry.collects.length; the refusal, if it exists, lives inside reviseHypothesis itself, not in this file."
+looked_past: "The direct-SQL seeding style (raw INSERT strings, ON CONFLICT DO NOTHING, bypassing the capability registry and glossary services other paths use) is a construction-pattern question for the standard pass, not a domain-fact question, so I did not raise it beyond the one field it actually drops."
+candidates_opened:
+  - domain/glossary/concept
+  - rules/glossary/a-concept-declares-its-description
+  - rules/knowledge/a-collected-concept-declares-a-ttl

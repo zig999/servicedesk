@@ -1,0 +1,21 @@
+read:
+  - node: domain/investigation/investigation
+    held_at: "the object literal buildInvestigation() returns, lines 45-60"
+    evidence: |
+      return {
+        id: options.id,
+        requester: options.requester,
+        ticket_ref: options.ticket_ref,
+        narrative: options.narrative,
+        subject,
+        pinned_case: pinnedCaseOf(theCase),
+        prompt_version: options.prompt_version,
+        model: options.model,
+        evidence: [...evidence],
+        evaluations: [...evaluations],
+        assessment: options.assessment,
+        cost: options.cost,
+        durations: options.durations,
+        written_at: options.written_at,
+      };
+looked_past: "the near-identical shape of evidenceTotalityViolations() and evaluationTotalityViolations() is a duplication concern for the standard-conformance pass, not a domain-fact question. Two candidate findings were traced and retracted: refuseAttributesNotInGlossary/refuseTotalityViolations throw SubjectAttributeNotInGlossaryError/InvestigationNotBuildableError, neither mapped in status-map.ts, but knowledge/constraints/a-domain-error-unmapped-by-status-is-refused-generically.md already covers the unmapped case generically, so this is not a gap. written_at being optional here (options.written_at) is not a contradiction of the node's required:true either — rules/investigation/written-at-records-when-the-write-settled (outside this pack) states written_at is set at persistence, not at build time, so a factory-built, not-yet-persisted investigation legitimately lacks it."

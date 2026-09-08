@@ -1,0 +1,11 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "costOf() (line 87) and durationsOf() (line 106)"
+    evidence: "const judgmentUsages = evaluations.flatMap((evaluation): Usage[] => (evaluation.usage === undefined ? [] : [evaluation.usage])); ... const judgment = maxElapsedMs(evaluations.flatMap((evaluation) => (evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms])));"
+  - node: domain/investigation/evidence
+    held_at: "durationsOf() (line 105) and evidenceByHypothesisOf() (line 148)"
+    evidence: "const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms)); ... byHypothesis.set(hypothesis.name, evidence.filter((item) => hypothesis.collects.includes(item.concept)));"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "const subject = buildSubject(options.subjectType, options.subjectAttributes); — the pipeline passes subjectAttributes straight to buildSubject in ./subject.js with no length check of its own"
+looked_past: "JUDGMENT_STAGE_BUDGET_MS = 5_000 and the case.consolidation_register ?? options.defaultConsolidationRegister fallback both state facts governed by nodes outside this file's pack (rules/investigation/an-answer-arrives-within-the-declared-deadline and domain/investigation/assessment respectively); verified against those nodes and found no discrepancy, so neither is reported as a finding."

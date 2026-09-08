@@ -1,0 +1,19 @@
+read:
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "manifestOwnStateViolations(), lines 84-101"
+    evidence: |-
+      const ownState = await hypothesisRevisions.readHypothesisRevisionOwnState(
+        assembled.slug,
+        hypothesisName,
+        revision,
+      );
+      if (ownState !== RELEASED_STATE) {
+        violations.push(`the hypothesis "${hypothesisName}" is manifested at a revision that is not released`);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: "the release()/heldAssembledVersion signatures, which resolve a case version by slug alone"
+    evidence: "public async release(slug: string, version: number): Promise<void> { ... const assembled = await caseStore.assembleVersion(slug, version);"
+looked_past: the structural/coherence validation delegated to parseCaseDocument and caseCoherenceViolations, the CaseNotFoundError and InvalidCaseDocumentError handling, and the manifest-entry serialization in assembledAsDocument are other files' or other nodes' concerns and are not evaluated here.
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - domain/knowledge/hypothesis-revision-state

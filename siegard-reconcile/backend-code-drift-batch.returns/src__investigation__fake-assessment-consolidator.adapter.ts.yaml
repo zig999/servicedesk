@@ -1,0 +1,11 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the `evaluations` parameter of `consolidate()`"
+    evidence: "evaluations: readonly Evaluation[],"
+  - node: domain/investigation/evidence
+    held_at: "the `evidence` parameter of `consolidate()`"
+    evidence: "evidence: readonly Evidence[],"
+looked_past: "The fixture-keying (JSON.stringify of the whole call) and the throw-if-unseeded branch in consolidate() are test-double engineering choices, not domain facts, and are left to a code-quality reading rather than this pass."
+candidates_opened:
+  - domain/investigation/usage
+  - rules/investigation/a-measured-duration-below-one-millisecond-is-zero

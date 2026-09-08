@@ -1,0 +1,30 @@
+findings:
+  - where: "line 29, the `written_at` field of the `Investigation` type"
+    evidence: "readonly written_at?: string;"
+    cost: "The aggregate-root type lets an `Investigation` exist with `written_at` absent — the factory (`investigation-factory.ts`) and the run-diagnosis tests build and pass around such values on purpose before the store settles the write. A caller reading only this type learns that a written record may or may not carry its write instant, and has to consult the specification (or the store's own settle logic) to learn that the specification instead treats written_at as always present on the aggregate; the type is the one place the shape of `Investigation` is declared, and it currently declares a shape the node does not."
+    kind: contradicts
+    correction: "Declare `written_at: string` (non-optional) to match the node's `required: true`, or split the pre-write and post-write shapes into two distinct types so this aggregate-root type only ever describes the record the node governs."
+    node: domain/investigation/investigation
+read:
+  - node: domain/investigation/investigation
+    held_at: "the `Investigation` type, lines 13-30 — every other attribute and the `pinned_case` relationship (cardinality 1, role pinned-case) match the node; `written_at` alone is declared optional against the node's required:true"
+    evidence: |
+      export type Investigation = {
+        readonly id: string;
+        readonly requester: string;
+
+        readonly ticket_ref?: string;
+        readonly narrative: string;
+        readonly subject: Subject;
+        readonly pinned_case: PinnedCase;
+        readonly prompt_version: string;
+        readonly model: string;
+        readonly evidence: readonly Evidence[];
+        readonly evaluations: readonly Evaluation[];
+        readonly assessment: Assessment;
+        readonly cost: Cost;
+        readonly durations: Durations;
+
+        readonly written_at?: string;
+      };
+looked_past: The file declares no runtime construction logic of its own (that belongs to investigation-factory.ts, out of this file set), so no other attribute's required-ness could be checked against a build path here — this file only carries the type shape.

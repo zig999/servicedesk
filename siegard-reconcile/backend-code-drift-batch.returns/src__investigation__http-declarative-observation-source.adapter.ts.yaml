@@ -1,0 +1,34 @@
+findings:
+  - where: "httpConfigurationProblems, line 259, the method-shape diagnostic"
+    evidence: "problems.push('method is not one of GET, POST, PUT, PATCH, DELETE');"
+    cost: "The accepted method set already lives in the imported HTTP_METHODS constant, which the very next line (`isHttpMethod`) reads to decide the same question; this message re-enumerates the same vocabulary as a second, independent literal. If HTTP_METHODS is ever extended or narrowed, this text goes stale while the actual acceptance logic keeps working correctly — an operator reading the rejection is told a set of methods that no longer matches what the connector actually accepts."
+    kind: contradicts
+    correction: "Build the message from HTTP_METHODS.join(', ') (or otherwise read it from the same constant `isHttpMethod` already consults) instead of a literal list."
+    node: rules/integration/an-http-connector-configuration-declares-its-call
+  - where: "httpConfigurationProblems, line 265, the statusMap-shape diagnostic"
+    evidence: "problems.push('statusMap is not a plain object mapping a status to one of ok, unavailable, denied, timeout');"
+    cost: "The evidence-result vocabulary (ok, unavailable, denied, timeout) is already imported as EVIDENCE_RESULTS and read by isEvidenceResult two lines below; this message spells the same four values out again as independent literal text. A future change to the evidence-result enumeration would leave this diagnostic silently wrong while the actual validation, driven by EVIDENCE_RESULTS, stayed correct — the message becomes a second, driftable home for a vocabulary the specification already owns."
+    kind: contradicts
+    correction: "Derive the message from EVIDENCE_RESULTS.join(', ') instead of the literal 'ok, unavailable, denied, timeout' text."
+    node: domain/investigation/evidence-result
+read:
+  - node: domain/investigation/evidence-result
+    held_at: "isEvidenceResult/isStatusEndingMap (validating statusMap values against the enumeration) and the ObservationOutcome literals returned throughout observeConcept/outcomeFromResponse/endingForStatus"
+    evidence: |
+      function isEvidenceResult(value: unknown): value is EvidenceResult {
+        return typeof value === 'string' && (EVIDENCE_RESULTS as readonly string[]).includes(value);
+      }
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: "httpConfigurationProblems/refuseHttpConfigurationDepartures (method/responseMap/statusMap presence and shape, throwing MalformedHttpConnectorConfigurationError) and resolveAssembledRequest's catch of ConnectorPlaceholderNotResolvedError/IncompleteConnectorCallDescriptorError, both converted to an unavailable outcome"
+    evidence: |
+      if (!isHttpMethod(configuration.method)) {
+          problems.push('method is not one of GET, POST, PUT, PATCH, DELETE');
+        }
+        if (!isStringRecord(configuration.responseMap)) {
+      ...
+        if (!isStatusEndingMap(configuration.statusMap)) {
+      ...
+      if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) {
+              return { ok: false, outcome: unavailableFor(error) };
+            }
+looked_past: "The discriminated-union Resolution<T>/resolvePreparedCall control-flow shape, the effectiveTimeoutMsFor clamp (which matches durations wording found outside this file's node set) and the parsedBodyOrUndefined JSON-parse fallback are structural/technical choices with no domain content of their own, left to whichever pass judges code shape. Three nodes outside the pack (rules/integration/an-unclassified-status-ends-unavailable, rules/integration/an-unresolvable-observation-ends-unavailable, rules/investigation/a-cited-field-exists-in-the-capability-output-schema) were checked for consistency and found conforming; not listed as candidates_opened since they were not offered as candidates."

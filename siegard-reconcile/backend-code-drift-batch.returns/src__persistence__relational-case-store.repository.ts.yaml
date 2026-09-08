@@ -1,0 +1,49 @@
+findings:
+  - where: "the DRAFT_STATE/RELEASED_STATE constants (lines 101-102) and the isCaseVersionState function (lines 946-948)"
+    evidence: |
+      const DRAFT_STATE: CaseVersionState = 'draft';
+      const RELEASED_STATE: CaseVersionState = 'released';
+      ...
+      function isCaseVersionState(value: string): value is CaseVersionState {
+        return value === DRAFT_STATE || value === RELEASED_STATE;
+      }
+    cost: "the case-version lifecycle's two legal states are re-enumerated here as hand-typed literals rather than read from any single canonical source — contrast HYPOTHESIS_REVISION_STATE_VALUES a few lines above, which derives from the imported HYPOTHESIS_REVISION_STATES array instead of hardcoding 'draft'/'released' again. If the specification's state machine ever adds a state, this check has no link back to the rule that declares initial/terminal states; a maintainer edits this constant pair from memory, and the next reader who wants to know what states a case version has does not find the answer read from the specification — they find it typed here."
+    kind: contradicts
+    correction: "derive isCaseVersionState from an exported canonical list of case-version states (mirroring the HYPOTHESIS_REVISION_STATES pattern), instead of the two hardcoded literal comparisons."
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+
+read:
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "HYPOTHESIS_REVISION_STATE_VALUES (built from the imported HYPOTHESIS_REVISION_STATES) and isHypothesisRevisionState, lines 92 and 584-586"
+    evidence: |
+      const HYPOTHESIS_REVISION_STATE_VALUES: ReadonlySet<string> = new Set<string>(HYPOTHESIS_REVISION_STATE_VALUES);
+      function isHypothesisRevisionState(value: string): value is HypothesisRevisionState {
+        return HYPOTHESIS_REVISION_STATE_VALUES.has(value);
+      }
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "refuseUnlessDraft and refuseUnlessDraftAtRelease, lines 879-889, guarding every lifecycle operation but release, and releaseVersion, lines 837-840, guarding the one transition"
+    evidence: |
+      function refuseUnlessDraft(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftError(key.slug, key.version, state);
+        }
+      }
+
+      function refuseUnlessDraftAtRelease(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftAtReleaseError(key.slug, key.version, state);
+        }
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: "caseIdentityStatement, line 638"
+    evidence: "INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING"
+
+looked_past: "The message-string match in isReleasedRevisionRefusal (cause.message === 'ReleasedHypothesisRevisionNotAlterableError') and the constraint-name matches in raiseCreateDraftFailure/raisePlaceHypothesisFailure are brittle-looking plumbing that forwards a DB-side refusal into a domain error; their governing rules (a-released-hypothesis-revision-is-never-altered, a-case-has-at-most-one-draft, a-hypothesis-position-is-unique-within-its-case) are correctly matched and not this file's own authority, so I did not report them — any concern about the matching mechanism itself is a code-quality question, not a specification-conformance one."
+
+candidates_opened:
+  - rules/knowledge/a-case-has-at-most-one-draft
+  - rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  - rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - domain/knowledge/case-version-state
+  - domain/knowledge/case-version

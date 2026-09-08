@@ -1,0 +1,5 @@
+read:
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "it(\"changes an already-stored hypothesis revision's own columns on an ordinary UPDATE while the revision's own state is still draft\", ...) — insertHypothesisRevision never names a state column (default 'draft'), so every hypothesis_revisions row this file ever creates stays draft; no test in this file inserts or produces a revision whose own state is 'released' and attempts to alter its criterion, resolution or state, and no test in this file deletes a hypothesis_revision_collects row belonging to a released revision. The rule's own refusal (HTTP 409 / ReleasedHypothesisRevisionNotAlterableError) and its collects no-op are exercised nowhere in this file."
+looked_past: this file also asserts case_versions' and case_version_hypotheses' own release-conditioned immutability (draft/released lifecycle, one-draft-per-case, manifest position uniqueness, backfill defaults) and the 0004-table drop and migration ordering — all governed by other specification nodes not in this file's pack, so I read them for context only and did not judge them.

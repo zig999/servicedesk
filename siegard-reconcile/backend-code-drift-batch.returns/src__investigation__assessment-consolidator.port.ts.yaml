@@ -1,0 +1,8 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: nowhere
+    evidence: "evaluations: readonly Evaluation[],"
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: "evidence: readonly Evidence[],"
+looked_past: "ConsolidationOutcome's own fields (text, register, usage, elapsed_ms, prompt) describe the consolidation call's outcome, an entity neither node in this pack governs, so I did not evaluate it against them."

@@ -1,0 +1,5 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+looked_past: I opened rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name.md (outside the pack) only to confirm the re-exported class name matches the specification's own naming, not to judge the throwing logic itself, which lives in case-version-not-valid.error.ts and is outside this file set.

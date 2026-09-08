@@ -1,0 +1,39 @@
+findings:
+  - where: "usageSchema, lines 35-38"
+    evidence: "input_tokens: z.number(),\n  output_tokens: z.number(),"
+    cost: "domain/investigation/usage declares both attributes type integer; z.number() admits any finite JS number, so a fractional token count (e.g. 12.5) passes validation and is served as a valid usage record — the boundary meant to enforce the domain model's declared shape is looser than the shape it names."
+    kind: contradicts
+    correction: "use z.int() (as caseRefSchema.version already does in this same file) for input_tokens and output_tokens"
+    node: domain/investigation/usage
+  - where: "evaluationSchema, elapsed_ms at lines 48, 56 and 65"
+    evidence: "elapsed_ms: z.number().optional(),"
+    cost: "domain/investigation/evaluation declares elapsed_ms type integer, the same millisecond unit domain/investigation/durations keeps its stage totals in; z.number() lets a fractional millisecond value through validation in all three verdict branches, so the response can carry a call duration the domain model's own type forbids."
+    kind: contradicts
+    correction: "use z.int().optional() for elapsed_ms in each of the three discriminated-union branches"
+    node: domain/investigation/evaluation
+  - where: "durationsSchema, lines 70-74"
+    evidence: "collection: z.number(),\n  judgment: z.number(),\n  total: z.number(),"
+    cost: "domain/investigation/durations declares collection, judgment and total type integer, in milliseconds; z.number() admits fractional milliseconds for all three, so a load test comparing this value against the declared total budget (the node's own stated use) can be handed a value shaped differently than the domain model promises."
+    kind: contradicts
+    correction: "use z.int() for collection, judgment and total"
+    node: domain/investigation/durations
+read:
+  - node: domain/investigation/durations
+    held_at: "durationsSchema, lines 70-74"
+    evidence: "const durationsSchema = z.object({\n  collection: z.number(),\n  judgment: z.number(),\n  total: z.number(),\n});"
+  - node: domain/investigation/evaluation
+    held_at: "evaluationSchema, the discriminated union at lines 42-68"
+    evidence: "z.object({\n    hypothesis: z.string().min(1),\n    verdict: z.literal(CONFIRMED_VERDICT),\n    citations: z.array(citationSchema).min(1).readonly(),\n    usage: usageSchema.optional(),\n    elapsed_ms: z.number().optional(),\n    prompt: z.string().optional(),\n  })"
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from './evidence.dto.js';\n\n... evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from './evidence.dto.js';\n\n... evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/usage
+    held_at: "usageSchema, lines 35-38"
+    evidence: "const usageSchema = z.object({\n  input_tokens: z.number(),\n  output_tokens: z.number(),\n});"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "subjectSchema, lines 11-14"
+    evidence: "const subjectSchema = z.object({\n  type: z.string().min(1),\n  attributes: z.array(subjectAttributeValueSchema).min(1),\n});"
+looked_past: "this file duplicates citationSchema, usageSchema, subjectSchema, subjectAttributeValueSchema and caseRefSchema verbatim against simulate-case.dto.ts, and that duplication is a standard-conformance concern rather than a domain fact. Both domain/investigation/evidence and domain/investigation/evidence-result are only reached in this file through the opaque imported evidenceSchema (defined in src/http/dto/evidence.dto.ts, outside this file set) — their attributes are not encoded here, so held_at is nowhere for this file without that being a finding. The writing attribute of domain/investigation/durations is correctly absent from durationsSchema — cross-checked against src/investigation/simulate-hypothesis-pipeline.ts, whose pipeline never imports or calls an assessment consolidator, so a consolidation writing stage never occurs for a single-hypothesis simulation, matching the node's own conditional-presence rule."

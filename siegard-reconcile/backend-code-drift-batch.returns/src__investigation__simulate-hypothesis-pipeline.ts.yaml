@@ -1,0 +1,5 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "SimulateHypothesisPipelineResult.evaluation and the conditional elapsed_ms read in durationsOf()"
+    evidence: "const judgment = maxElapsedMs(evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]);"
+looked_past: the divergence between this file's mid-pipeline clock adjustment for judgeHypotheses' `now` and investigation-pipeline.ts's unadjusted approach is a cross-implementation consistency question outside this file's node set and outside the file set under review.

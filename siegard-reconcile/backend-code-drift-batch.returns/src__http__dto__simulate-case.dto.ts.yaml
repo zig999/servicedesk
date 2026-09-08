@@ -1,0 +1,72 @@
+findings:
+  - where: "usageSchema, lines 34-37"
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+    cost: "domain/investigation/usage fixes input_tokens and output_tokens as integer, but the wire schema accepts any finite number; a response can legally carry a fractional token count (e.g. 12.5), and a client trusting the specification's integer type has no schema-level guarantee of it — the same file enforces integer-only elsewhere (`version: z.int().positive()`, `elapsed_ms: z.int()`), so the looseness here is not this codebase's general convention for a measured/counted value."
+    kind: contradicts
+    node: domain/investigation/usage
+    correction: "validate input_tokens and output_tokens with z.int() (or z.number().int()) rather than z.number()."
+
+  - where: "evaluationSchema, elapsed_ms in each of the three discriminated-union branches, lines 45, 53, 62"
+    evidence: "elapsed_ms: z.number().optional(),"
+    cost: "domain/investigation/evaluation fixes elapsed_ms as integer; the response schema allows a fractional millisecond count where the specification does not, so the wire contract is looser than the domain type it exposes."
+    kind: contradicts
+    node: domain/investigation/evaluation
+    correction: "validate elapsed_ms with z.int().optional() rather than z.number().optional()."
+
+  - where: "durationsSchema, lines 95-100"
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        writing: z.number().optional(),
+        total: z.number(),
+      });
+    cost: "domain/investigation/durations fixes collection, judgment, writing and total as integer; the response schema accepts fractional values for all four, so a load test or a caller comparing durations against the declared total budget cannot rely on the wire type matching the domain type the node states."
+    kind: contradicts
+    node: domain/investigation/durations
+    correction: "validate collection, judgment, writing and total with z.int() (writing staying optional) rather than z.number()."
+
+read:
+  - node: domain/investigation/durations
+    held_at: "durationsSchema, the `durations` field of simulateCaseResponseSchema, lines 95-108"
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        writing: z.number().optional(),
+        total: z.number(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: "evaluationSchema, the `evaluations` field of simulateCaseResponseSchema, lines 39-65 and 104"
+    evidence: |
+      const evaluationSchema = z.discriminatedUnion('verdict', [
+        z.object({
+          hypothesis: z.string().min(1),
+          verdict: z.literal('confirmed'),
+          citations: z.array(citationSchema).min(1).readonly(),
+          usage: usageSchema.optional(),
+          elapsed_ms: z.number().optional(),
+          prompt: z.string().optional(),
+        }),
+  - node: domain/investigation/evidence
+    held_at: "nowhere in this file itself — the `evidence` field only arrays an externally defined schema, without restating any of its attributes"
+    evidence: "evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/evidence-result
+    held_at: "nowhere in this file itself — the enum is not referenced here at all, only inside the imported evidenceSchema"
+    evidence: "evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/usage
+    held_at: "usageSchema, the `usage` field of evaluationSchema and assessmentSchema, lines 34-37"
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "subjectSchema.attributes, line 13"
+    evidence: "attributes: z.array(subjectAttributeValueSchema).min(1),"
+
+looked_past: "caseRefSchema, citationSchema, referralSchema, resolvedOutcomeSchema, assessmentSchema and costSchema encode domain concepts (case reference, citation, referral, resolved outcome, assessment, cost) that this pack's node set does not name, so any conformance question about them belongs to a pass carrying those nodes."

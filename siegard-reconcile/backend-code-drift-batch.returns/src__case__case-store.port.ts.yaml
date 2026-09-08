@@ -1,0 +1,11 @@
+read:
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the HYPOTHESIS_REVISION_STATES const and HypothesisRevisionState type, lines 7-9"
+    evidence: "export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;\n\nexport type HypothesisRevisionState = (typeof HYPOTHESIS_REVISION_STATES)[number];"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the CaseVersionState type (line 5) and the release/discard method signatures on ICaseStore (lines 142 and 144) — the refusal semantics (409, CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError) are not stated here, consistent with this being a port that declares operation shape rather than enforcement"
+    evidence: "export type CaseVersionState = 'draft' | 'released';\n\n  release(slug: string, version: number): Promise<void>;\n\n  discard(slug: string, version: number): Promise<void>;"
+looked_past: "the other domain-fact-shaped fields in the file — AssembledCaseVersion, HypothesisRevisionContent, CreateDraftInput and the rest of the case/manifest shape — encode facts governed by nodes outside this pack (case, case-version, manifest, hypothesis-revision) and are another delegation's to judge."
+candidates_opened:
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - rules/knowledge/a-slug-identifies-one-case

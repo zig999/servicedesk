@@ -1,0 +1,18 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "export async function judgeHypotheses(options: JudgeHypothesesOptions): Promise<readonly Evaluation[]> {"
+
+findings:
+  - where: "the module's sole export, `judgeHypotheses` (line 26), and everything it calls down to `callRecordOf` (line 250)"
+    evidence: "export async function judgeHypotheses(options: JudgeHypothesesOptions): Promise<readonly Evaluation[]> {"
+    cost: "the trace still binds this file to the capability-registry contract (read-capability, read-capability-by-identity, list-capabilities, register-capability), so a reader following that binding to find where the registry's synchronous surface is implemented lands in a module about hypothesis-pool deadlines, citation retries and evaluation shaping instead, with no trace of any of the four operations to point them onward"
+    kind: contradicts
+    correction: "rebind contracts/integration/capability-registry to wherever its four operations are actually implemented, or drop the stale binding if this file no longer answers for any part of it"
+    node: contracts/integration/capability-registry
+
+looked_past: "the file's actual content — bounded-pool parallel judgment calls, deadline handling, citation-retry-then-judgment-failure, and the evaluation record's conditional usage/elapsed_ms/prompt — matches constraints/hypotheses-are-judged-in-isolated-parallel-calls, domain/investigation/evaluation, rules/investigation/a-citation-stays-within-the-hypothesis-collects, rules/investigation/a-judgment-failure-records-the-last-call-made, scenarios/investigation/a-foreign-citation-is-refused and scenarios/investigation/a-queued-judgment-is-deadline-exceeded, none of which are in this pack, so conformance of that logic to those nodes is a different pack's judgment, not this one's."
+
+candidates_opened:
+  - constraints/hypotheses-are-judged-in-isolated-parallel-calls
+  - domain/investigation/evaluation

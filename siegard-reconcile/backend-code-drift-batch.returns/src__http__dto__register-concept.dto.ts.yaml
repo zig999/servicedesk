@@ -1,0 +1,6 @@
+read:
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: nowhere
+    evidence: "description: z.string().optional(),"
+looked_past: >-
+  The decision-log entry for rules/knowledge/a-collected-concept-declares-a-ttl.md already resolved this same file's ttl field (z.number().int().positive().optional()) bound as a decided fact (positive integer required, distinct from the absent-ttl default) via a prior reconciliation, so that field is not this pass's to re-flag, and domain/glossary/concept (which types accepts and ttl as required) is outside this file's node set and not offered as a candidate, so its attributes are not mine to judge here.

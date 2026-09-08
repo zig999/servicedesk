@@ -1,0 +1,14 @@
+read:
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the assertion on manifest-entry states, in the it block \"seeds every hypothesis-revision the fixture case version's manifest references as released, once beforeAll has run\" (around line 358-371)"
+    evidence: "const states = await Promise.all(manifestEntries.map((entry) => store.readHypothesisRevisionOwnState(SLUG, entry.hypothesis_revision.hypothesis_name, entry.hypothesis_revision.revision))); ... expect(states).toEqual(manifestEntries.map(() => 'released'));"
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: "the assertions in the it block \"persists real, non-zero cost and durations for the judgment and consolidation calls...\" (around line 412-417)"
+    evidence: |-
+      expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+      expect(written?.durations_writing).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+      expect(written?.durations_collection).toBeGreaterThan(0);
+      expect(written?.durations_total).toBeGreaterThanOrEqual((written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0));
+looked_past: "the file's many other domain-shaped assertions — the diagnose response shape and outcome/referral values, the provider-call and token-count totals, the connector-configuration fixtures, the case-authoring fixture wiring, and the case-version state assertion at line 355 (which traces to domain/knowledge/case-version-state, a node outside this pack, and matches) — are fixture-consuming or governed by other nodes/other files' bindings, not by either node in this pack, and are another pass's or another file's judgment to make."
+candidates_opened:
+  - domain/investigation/durations

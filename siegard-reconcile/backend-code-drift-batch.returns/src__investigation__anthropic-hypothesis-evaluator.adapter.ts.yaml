@@ -1,0 +1,6 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the EvaluationOutcome literals built in noDataOutcome, judgmentFailureOutcome and outcomeFromModelText — verdict, reason, citations, and the call's own usage/elapsed_ms/prompt; the hypothesis attribute is not held here, it is added by the caller in judgment-stage.ts"
+    evidence: "return { verdict: 'inconclusive', reason: 'no-data', citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })) }; ... return { verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };"
+
+looked_past: the mapping of a model's own well-formed {"verdict":"inconclusive"} response into reason 'judgment-failure' in outcomeFromModelText sits uneasily beside evaluation-reason.md's claim that the three reasons are distinct causes, but the text is ambiguous on whether "a failed judgment call" covers a call that ran fine yet reached no decisive verdict, and judgment-stage.ts's cooperating retry logic treats this as deliberate — settling it needs more than this one file, so it is not reported as a finding.

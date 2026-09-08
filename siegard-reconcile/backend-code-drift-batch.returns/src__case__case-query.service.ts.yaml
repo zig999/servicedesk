@@ -1,0 +1,30 @@
+findings:
+  - where: readCaseInputRequirements(), lines 41-46
+    evidence: |-
+      const assembled = await heldVersion(this.caseStore, slug, version);
+      const theCase = structuralCase(assembled, slug, version);
+      const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+      return deriveCaseInputRequirements(theCase, registeredCapabilities);
+    cost: readCase, reading the same stored version, refuses with CaseVersionNotValidError whenever a coherence violation exists (a glossary term or concept the case names no longer resolves, a concept the subject type no longer accepts, a capability that stopped answering). readCaseInputRequirements runs structuralCase but never refuseIncoherence/caseCoherenceViolations on that same version, so it derives and returns input requirements for a version the specification treats as not currently readable as a case at all — a curator composing against, or any caller reading, a version whose glossary terms currently fail to resolve gets a computed answer instead of the refusal read-case gives for the identical content, and nothing in this file marks that the two reads diverge on this.
+    kind: contradicts
+    correction: readCaseInputRequirements would need to run the same coherence check readCase runs (refuseIncoherence or equivalent) before deriving input requirements, unless the specification is amended to state an explicit exception for this read.
+    node: rules/knowledge/validation-runs-at-every-read
+read:
+  - node: contracts/system/case-authoring
+    held_at: "readCase()'s refuseIncoherence and structuralCase's catch clause, which each aggregate every failing validator rule into one array/list before throwing CaseVersionNotValidError, rather than surfacing only the first failure"
+    evidence: |-
+      const violations = await caseCoherenceViolations(theCase, this.glossary, this.capabilities);
+          if (violations.length > 0) {
+            throw new CaseVersionNotValidError(theCase.slug, version, violations);
+          }
+      ...
+      if (error instanceof InvalidCaseDocumentError) {
+            throw new CaseVersionNotValidError(slug, version, error.context.problems);
+          }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: |-
+      async function heldVersion(store: ICaseStore, slug: string, version: number): Promise<AssembledCaseVersion> {
+        const assembled = await store.assembleVersion(slug, version);
+      — slug is the sole case-identifying parameter across readCase, readCaseInputRequirements, listCaseVersions, listHypotheses and listHypothesisRevisions alike, but this file neither checks nor asserts uniqueness; it presupposes the invariant rather than enforcing or restating it
+looked_past: the duplicated field-by-field mapping between trustedCaseOf/trustedManifestEntryOf/trustedHypothesisOf and assembledAsRawDocument, and replayCase currently having no production caller (only test callers), are code-shape observations rather than domain facts either node governs.

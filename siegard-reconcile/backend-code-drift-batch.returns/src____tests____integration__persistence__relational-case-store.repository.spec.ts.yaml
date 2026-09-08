@@ -1,0 +1,8 @@
+read:
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the it() block at line 2056, \"refuses an overwrite attempt against a revision whose own state is released...\""
+    evidence: |
+      await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+          const caught = await rejection.catch((error: unknown) => error);
+          expect(statusForError(caught)).toBe(409);
+looked_past: the node's clause that removing one of a released revision's collects is silently accepted with no effect is never exercised by a test in this file — every overwrite attempt against a released revision here also changes the criterion, so that scenario is a coverage gap rather than a stated contradiction, and coverage is another judgment's to make.
