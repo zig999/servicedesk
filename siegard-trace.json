@@ -1761,7 +1761,7 @@
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
-          "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
+          "digest": "sha256:fb61f917bad746adf29a25736cb789492fdf2d2819a5c83872f8419b4991b8af"
         },
         {
           "path": "src/src/glossary/glossary-query.port.ts",
@@ -1806,6 +1806,10 @@
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:6cb04ea0a73ac2a6920d8802aa2f673fd993ce05bdfb06fc0258d0e869cb57eb"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         }
       ]
     },
@@ -4506,6 +4510,10 @@
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
+        },
+        {
+          "path": "src/src/fixtures/glossary/concept.json",
+          "digest": "sha256:fb61f917bad746adf29a25736cb789492fdf2d2819a5c83872f8419b4991b8af"
         }
       ]
     },

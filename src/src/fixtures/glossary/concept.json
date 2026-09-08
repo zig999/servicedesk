@@ -1,4 +1,14 @@
 [
-  { "name": "equipment-status", "accepts": ["contract"], "ttl": 300 },
-  { "name": "network-outage-flag", "accepts": ["contract"], "ttl": 60 }
+  {
+    "name": "equipment-status",
+    "accepts": ["contract"],
+    "ttl": 300,
+    "description": "The operating status corporate systems currently report for the customer's registered equipment."
+  },
+  {
+    "name": "network-outage-flag",
+    "accepts": ["contract"],
+    "ttl": 60,
+    "description": "Whether an active network outage is currently registered for the contract's service area."
+  }
 ]

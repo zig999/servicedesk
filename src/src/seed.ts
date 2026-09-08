@@ -37,7 +37,12 @@ async function seedRemainingVocabularies(store: IGlossaryStore): Promise<void> {
   await store.insertMissingTerms('recipient', await fixtureTerms('recipient.json'));
 }
 
-type ConceptFixture = { readonly name: string; readonly accepts: readonly string[]; readonly ttl: number };
+type ConceptFixture = {
+  readonly name: string;
+  readonly accepts: readonly string[];
+  readonly ttl: number;
+  readonly description: string;
+};
 
 type CaseFixtureManifestEntry = {
   readonly position: number;
@@ -63,10 +68,11 @@ async function seedConcepts(connection: DatabaseConnection): Promise<void> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8');
   const concepts = JSON.parse(raw) as readonly ConceptFixture[];
   for (const concept of concepts) {
-    await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [
-      concept.name,
-      concept.ttl,
-    ]);
+    await connection.query(
+      `INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)
+       ON CONFLICT (name) DO UPDATE SET description = EXCLUDED.description`,
+      [concept.name, concept.ttl, concept.description],
+    );
     for (const subjectType of concept.accepts) {
       await connection.query(
         'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
