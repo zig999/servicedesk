@@ -32,8 +32,8 @@ const citationSchema = z.object({
 });
 
 const usageSchema = z.object({
-  input_tokens: z.number(),
-  output_tokens: z.number(),
+  input_tokens: z.int(),
+  output_tokens: z.int(),
 });
 
 const evaluationSchema = z.discriminatedUnion('verdict', [
@@ -42,7 +42,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     verdict: z.literal('confirmed'),
     citations: z.array(citationSchema).min(1).readonly(),
     usage: usageSchema.optional(),
-    elapsed_ms: z.number().optional(),
+    elapsed_ms: z.int().optional(),
     prompt: z.string().optional(),
   }),
   z.object({
@@ -50,7 +50,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     verdict: z.literal('refuted'),
     citations: z.array(citationSchema).min(1).readonly(),
     usage: usageSchema.optional(),
-    elapsed_ms: z.number().optional(),
+    elapsed_ms: z.int().optional(),
     prompt: z.string().optional(),
   }),
   z.object({
@@ -59,7 +59,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     reason: z.enum(EVALUATION_REASONS),
     citations: z.array(citationSchema).readonly(),
     usage: usageSchema.optional(),
-    elapsed_ms: z.number().optional(),
+    elapsed_ms: z.int().optional(),
     prompt: z.string().optional(),
   }),
 ]);
@@ -93,10 +93,10 @@ const costSchema = z.object({
 });
 
 const durationsSchema = z.object({
-  collection: z.number(),
-  judgment: z.number(),
-  writing: z.number().optional(),
-  total: z.number(),
+  collection: z.int(),
+  judgment: z.int(),
+  writing: z.int().optional(),
+  total: z.int(),
 });
 
 export const simulateCaseResponseSchema = z.object({

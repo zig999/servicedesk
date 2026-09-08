@@ -26,6 +26,14 @@
       "task": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies"
     },
     {
+      "id": "implementation/investigation-record-declared-types/simulation-response-integer-fields",
+      "kind": "implementation",
+      "file": "implementation/investigation-record-declared-types/simulation-response-integer-fields.md",
+      "title": "Integer-declared numeric fields of the simulation responses validate as integers",
+      "summary": "usageSchema, evaluationSchema.elapsed_ms and durationsSchema in both simulate-case and simulate-hypothesis response DTOs now require z.int() instead of bare z.number(), matching the integer domain fields they carry.",
+      "task": "task/investigation-record-declared-types/simulation-response-integer-fields"
+    },
+    {
       "id": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proof",
       "file": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
@@ -48,6 +56,14 @@
       "title": "Malformed-configuration vocabulary derivation, proven against the canonical lists",
       "summary": "Proves the six criteria of malformed-configuration-vocabularies against http-declarative-observation-source.adapter.ts's httpConfigurationProblems, using the existing test suite in http-declarative-observation-source.adapter.spec.ts, plus two new tests closing the responseMap gap the task's second UNDERDETERMINED note names.",
       "task": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies"
+    },
+    {
+      "id": "proof/investigation-record-declared-types/simulation-response-integer-fields",
+      "kind": "proof",
+      "file": "proof/investigation-record-declared-types/simulation-response-integer-fields.md",
+      "title": "Integer-declared numeric fields of the simulation responses validate as integers",
+      "summary": "Twenty tests over both simulate-case and simulate-hypothesis response schemas prove that usage tokens, evaluation elapsed_ms and durations fields refuse a fractional value, still accept zero and absence exactly as before, and every scope boundary the task declared stays untouched.",
+      "task": "task/investigation-record-declared-types/simulation-response-integer-fields"
     }
   ],
   "edges": [
@@ -106,6 +122,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "task/investigation-record-declared-types/simulation-response-integer-fields",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "to": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proves",
@@ -120,6 +160,12 @@
     {
       "from": "proof/connector-and-registry-fidelity/malformed-configuration-vocabularies",
       "to": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-record-declared-types/simulation-response-integer-fields",
+      "to": "implementation/investigation-record-declared-types/simulation-response-integer-fields",
       "kind": "proves",
       "at": "the path"
     }

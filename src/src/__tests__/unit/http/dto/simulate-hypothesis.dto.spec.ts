@@ -104,3 +104,83 @@ it('validates a production-shaped response with no field stripped from its evide
   expect(result.data?.evidence[0]).toEqual(evidenceItem);
   expect(result.data?.evaluation).toEqual(evaluation);
 });
+
+it('rejects a response whose evaluation usage carries a fractional input_tokens', () => {
+  const evaluation = { ...aConfirmedEvaluation(), usage: { input_tokens: 10.5, output_tokens: 5 } };
+  const response = { ...aValidResponse(), evaluation };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose evaluation usage carries a fractional output_tokens', () => {
+  const evaluation = { ...aConfirmedEvaluation(), usage: { input_tokens: 10, output_tokens: 5.5 } };
+  const response = { ...aValidResponse(), evaluation };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose evaluation elapsed_ms is fractional', () => {
+  const evaluation = { ...aConfirmedEvaluation(), elapsed_ms: 12.5 };
+  const response = { ...aValidResponse(), evaluation };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.collection is fractional', () => {
+  const response = { ...aValidResponse(), durations: { collection: 10.5, judgment: 20, total: 30 } };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.judgment is fractional', () => {
+  const response = { ...aValidResponse(), durations: { collection: 10, judgment: 20.5, total: 30 } };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.total is fractional', () => {
+  const response = { ...aValidResponse(), durations: { collection: 10, judgment: 20, total: 30.5 } };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('validates a response whose evaluation carries usage and elapsed_ms as integers, matching a completed simulation that made a model call', () => {
+  const evaluation = {
+    ...aConfirmedEvaluation(),
+    usage: { input_tokens: 10, output_tokens: 5 },
+    elapsed_ms: 120,
+  };
+  const response = { ...aValidResponse(), evaluation };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
+
+it('validates a response whose durations.collection is zero, matching a stage measured below one millisecond', () => {
+  const response = { ...aValidResponse(), durations: { collection: 0, judgment: 20, total: 30 } };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
+
+it('validates a response whose evaluation carries neither usage nor elapsed_ms, matching a run that made no model call', () => {
+  const response = { ...aValidResponse(), evaluation: aConfirmedEvaluation() };
+
+  const result = simulateHypothesisResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
