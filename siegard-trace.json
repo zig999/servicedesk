@@ -751,11 +751,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
-          "digest": "sha256:0b2f5b5a90938b404d73d436c34a76c4cf829572d0699c1fcfd47e50e4ecf7e4"
+          "digest": "sha256:0c6ced39bf83d7e4a175db6b469d1afb127b43a6e1f2d93c00b93625164caee5"
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+          "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
@@ -824,10 +824,6 @@
         {
           "path": "src/src/http/register-capability.routes.ts",
           "digest": "sha256:5f558308eab1cc4e9226813f5e30e259b23ee2c2039adba7b280159c1b11ebd2"
-        },
-        {
-          "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
