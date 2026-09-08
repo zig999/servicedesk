@@ -193,6 +193,18 @@ it('answers 400 for a negative offset, one below the nonnegative range the schem
   expect(built.listCapabilities).not.toHaveBeenCalled();
 });
 
+it('names VALIDATION_ERROR, the query as the part that failed, and a non-empty details list, on that same negative-offset refusal', async () => {
+  const built = buildTestApp();
+  app = built.app;
+
+  const response = await app.inject({ method: 'GET', url: '/v1/capabilities?offset=-1' });
+
+  const body = response.json() as { error: { code: string; message: string; details: unknown[] } };
+  expect(body.error.code).toBe('VALIDATION_ERROR');
+  expect(body.error.message).toContain('query');
+  expect(body.error.details.length).toBeGreaterThan(0);
+});
+
 it('answers 400 for a limit of zero, one below the positive range the schema declares, without ever reaching the capability query', async () => {
   const built = buildTestApp();
   app = built.app;

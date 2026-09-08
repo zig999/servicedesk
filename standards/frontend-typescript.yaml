@@ -1061,6 +1061,8 @@ commands:
     command: npm test
     timeout_seconds: 900
     role: suite
+    decides:
+      - constraints/no-route-enforces-authentication
 
 elsewhere:
 
