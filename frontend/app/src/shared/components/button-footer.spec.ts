@@ -74,14 +74,6 @@ describe("ButtonFooter", () => {
     expect(group.className).toMatch(/(^|\s)bg-surface(\s|$)/);
   });
 
-  it("pins itself to the bottom of its container through CSS sticky positioning", () => {
-    render(createElement(ButtonFooter, null, createElement("button", null, "Save")));
-
-    const group = screen.getByRole("group", { name: "Actions" });
-    expect(group.className).toMatch(/(^|\s)sticky(\s|$)/);
-    expect(group.className).toMatch(/(^|\s)bottom-0(\s|$)/);
-  });
-
   it("keeps to the normal document flow instead of fixed positioning, so it reserves its own space rather than covering content", () => {
     render(createElement(ButtonFooter, null, createElement("button", null, "Save")));
 
@@ -97,13 +89,29 @@ describe("ButtonFooter", () => {
   });
 
   describe("rendered by a screen inside the real AppShell", () => {
-    it("sits inside AppShell's own scrollable main region", async () => {
+    it("renders outside AppShell's own scrollable main region, so only main's own content scrolls", async () => {
       const router = buildFooterTestRouter("/cases");
       await router.load();
       render(createElement(RouterProvider, { router }));
 
       const mainRegion = screen.getByRole("main");
-      expect(within(mainRegion).getByRole("group", { name: "Actions" })).toBeTruthy();
+      expect(within(mainRegion).queryByRole("group", { name: "Actions" })).toBeNull();
+    });
+
+    it("sits directly above the app's own footer bar rather than inside the scrolling content", async () => {
+      const router = buildFooterTestRouter("/cases");
+      await router.load();
+      render(createElement(RouterProvider, { router }));
+
+      const group = screen.getByRole("group", { name: "Actions" });
+      const appFooter = document.querySelector("footer");
+      expect(appFooter).not.toBeNull();
+      expect(appFooter?.contains(group)).toBe(false);
+      expect(
+        Boolean(
+          group.compareDocumentPosition(appFooter as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
+        ),
+      ).toBe(true);
     });
 
     it("still shows AppShell's own no-authentication disclosure, present and outside the footer's own group", async () => {

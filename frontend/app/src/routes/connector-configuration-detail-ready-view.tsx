@@ -31,7 +31,7 @@ export function ConnectorConfigurationDetailReadyView({
   connector,
 }: ConnectorConfigurationDetailReadyViewProps): JSX.Element {
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {!state.configuration.isValid && (
         <p role="alert" className="text-sm text-destructive">
           {INVALID_CONFIGURATION_WARNING}

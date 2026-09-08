@@ -49,7 +49,7 @@ export function HypothesisRevisionScreen({
   }
 
   return (
-    <section className="flex flex-1 flex-col gap-4">
+    <section className="flex flex-col gap-4">
       <h1>{hypothesisName === null ? "New hypothesis" : `Revise hypothesis — ${hypothesisName}`}</h1>
       <Button type="button" onClick={state.onOpenManifest}>
         View Manifest

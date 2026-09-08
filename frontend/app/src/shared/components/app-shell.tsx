@@ -1,8 +1,9 @@
-import type { JSX } from "react";
+import { type JSX, useState } from "react";
 import { Link, Outlet, rootRouteId, useMatches } from "@tanstack/react-router";
 import { Breadcrumb, type BreadcrumbItem } from "@tui/ui/breadcrumb";
 import { StatusBar } from "@tui/ui/status-bar";
 import { Toaster } from "sonner";
+import { FooterSlotContext } from "./footer-slot-context";
 
 const SIDEBAR_ENTRIES: ReadonlyArray<{
   label: string;
@@ -90,15 +91,22 @@ function Footer(): JSX.Element {
 }
 
 export function AppShell(): JSX.Element {
+  const [footerSlotNode, setFooterSlotNode] = useState<HTMLDivElement | null>(null);
+
   return (
     <>
       <div className="flex h-screen flex-col">
         <Topbar />
         <div className="flex min-h-0 flex-1">
           <Sidebar />
-          <main className="relative flex flex-1 flex-col overflow-y-auto p-4">
-            <Outlet />
-          </main>
+          <FooterSlotContext.Provider value={footerSlotNode}>
+            <div className="flex min-h-0 flex-1 flex-col">
+              <main className="relative flex-1 overflow-y-auto p-4">
+                <Outlet />
+              </main>
+              <div ref={setFooterSlotNode} />
+            </div>
+          </FooterSlotContext.Provider>
         </div>
         <Footer />
       </div>
