@@ -1,0 +1,15 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext) — the only external call this file issues to produce a verdict uses the evaluator port and the evidence already collected; no import or call here reaches a capability-registry operation (read-capability, read-capability-by-identity, list-capabilities, register-capability), consistent with rules/investigation/judgment-reads-the-evidence-snapshot, which forbids judgment from re-reading it."
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: "citationsAreAcceptable / isStructurallyValid, lines 188-201, gating every call to asEvaluation"
+    evidence: |
+      function isStructurallyValid(context, citations) { if (citations.length === 0) { return false; } const accepted = acceptedCitations({ ...context, citations }); return accepted.length === citations.length; }
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "noDataEvaluation, deadlineExceededEvaluation, judgmentFailureEvaluation, lines 221-237, and the inconclusive branch of asEvaluation, line 247"
+    evidence: "return { hypothesis: name, verdict: 'inconclusive', reason: 'no-data', citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })) };"
+  - node: rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+    held_at: "line 30 and the Promise.all/map at lines 32-44"
+    evidence: "const requiredNames = requiresEvaluationOf(theCase); ... requiredNames.map((name) => judgeOneHypothesis({ name, hypothesis: hypothesisNamed(theCase, name), ... }))"
+looked_past: "The pool/deadline mechanics (CallPool, Promise.race, the DEADLINE_ELAPSED symbol) and the non-null assertions in hypothesisNamed/evidenceFor are implementation choices trusting an upstream invariant, not domain facts this pass judges."

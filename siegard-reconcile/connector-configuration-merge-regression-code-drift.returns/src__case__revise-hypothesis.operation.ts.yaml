@@ -1,0 +1,15 @@
+read:
+  - node: scenarios/knowledge/a-released-version-keeps-its-original-revision
+    held_at: "the branch in writeRevision(), lines 44-49"
+    evidence: |-
+      if (highest.revision !== undefined && highest.state === 'draft') {
+            await this.caseStore.overwriteHypothesisRevision(overwriteInputOf(input, highest.revision));
+            return highest.revision;
+          }
+          return this.caseStore.insertHypothesisRevision(input);
+looked_past: "Whether the same overwrite-vs-insert decision this file makes is independently re-derived inside relational-case-store.repository.ts is a question for whichever pass reads that file, not for this one alone."
+candidates_opened:
+  - rules/knowledge/a-case-version-is-written-once
+  - rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - scenarios/knowledge/revising-a-released-revision-creates-the-next

@@ -1,0 +1,42 @@
+findings:
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: "httpConfigurationProblems, line 259"
+    evidence: "problems.push('method is not one of GET, POST, PUT, PATCH, DELETE');"
+    cost: "The allowed-method list is hand-typed a second time here, separate from the HTTP_METHODS constant the same function actually validates against; if the specification's rule ever changes which methods a connector configuration may declare, this literal string can go stale and mislead an operator reading the resulting error about what the rule currently permits, while the check itself (driven by the import) would already have moved on."
+    kind: contradicts
+    correction: "Build the message from HTTP_METHODS rather than repeating the method list as a literal string."
+    node: rules/integration/an-http-connector-configuration-declares-its-call
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: "httpConfigurationProblems, line 265"
+    evidence: "problems.push('statusMap is not a plain object mapping a status to one of ok, unavailable, denied, timeout');"
+    cost: "The evidence-result enumeration (ok, unavailable, denied, timeout) is domain/investigation/evidence-result's own vocabulary; hand-typing it again here, rather than deriving the message from EVIDENCE_RESULTS, gives that vocabulary a second home that can silently drift from the node the next time an ending is added, renamed or removed."
+    kind: contradicts
+    correction: "Build the message from EVIDENCE_RESULTS rather than repeating the four ending names as a literal string."
+    node: domain/investigation/evidence-result
+
+read:
+  - node: contracts/system/corporate-records
+    held_at: "resolveConnectorConfiguration, which resolves the executing adapter purely by the capability's own connector name"
+    evidence: "const resolution = await this.connectorConfigurations.readConnectorConfiguration(connector);"
+  - node: domain/investigation/evidence-result
+    held_at: "outcomeFromResponse, lines 208-214"
+    evidence: |
+      const ending = endingForStatus(configuration.statusMap, response.status);
+      if (ending !== 'ok') {
+        return { result: ending };
+      }
+      const body = await parsedBodyOrUndefined(response);
+      const observation = observationOf(capability, configuration.responseMap, body);
+      return { result: 'ok', observation: JSON.stringify(observation) };
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: "httpConfigurationProblems (lines 256-268) and resolveAssembledRequest's catch (lines 168-176)"
+    evidence: "if (!isHttpMethod(configuration.method)) { problems.push(...) } ... if (problems.length > 0) { throw new MalformedHttpConnectorConfigurationError(connector, problems); } and if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) { return { ok: false, outcome: unavailableFor(error) }; }"
+
+looked_past: "The response-field filtering against capability.output_schema in observationOf, and the capability-timeout/remaining-budget combination in effectiveTimeoutMsFor, both track domain/integration/capability's and domain/investigation/evidence's own descriptions but are governed by nodes outside this file's covered set, so I did not treat them as findings here."
+
+candidates_opened:
+  - rules/integration/an-unclassified-status-ends-unavailable
+  - rules/integration/an-unresolvable-observation-ends-unavailable
+  - rules/integration/an-unreachable-connector-ends-unavailable
+  - domain/integration/capability
+  - domain/investigation/evidence

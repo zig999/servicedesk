@@ -1,0 +1,18 @@
+read:
+  - node: domain/investigation/assessment
+    held_at: "the ConsolidationOutcome type, lines 6-12"
+    evidence: |
+      export type ConsolidationOutcome = {
+        readonly text: string;
+        readonly register: ConsolidationRegister;
+        readonly usage: Usage;
+        readonly elapsed_ms: number;
+        readonly prompt: string;
+      };
+  - node: domain/investigation/evaluation
+    held_at: "the first parameter of consolidate(), line 17"
+    evidence: "evaluations: readonly Evaluation[],"
+  - node: domain/investigation/evidence
+    held_at: "the second parameter of consolidate(), line 18"
+    evidence: "evidence: readonly Evidence[],"
+looked_past: "the shape and required/optional status of Evaluation and Evidence themselves live in evaluation.ts and evidence.ts, not this file, so this port's own claims are limited to what it declares — its call-record fields on ConsolidationOutcome and its parameter types — and I did not extend judgment to those other files' contents."

@@ -1,0 +1,8 @@
+read:
+  - node: domain/investigation/assessment
+    held_at: "the return statement of consolidate(), line 46"
+    evidence: "return { text: textOf(response.content).trim(), register: consolidationRegister, usage: response.usage, elapsed_ms: elapsedMs, prompt };"
+looked_past: "the defensive throw in textOf() for a response with no text content block is implementation robustness with no corresponding specification node, a standard-conformance matter rather than this pass's."
+candidates_opened:
+  - constraints/the-consolidation-prompt-is-closed
+  - rules/investigation/the-writing-input-is-narrowed

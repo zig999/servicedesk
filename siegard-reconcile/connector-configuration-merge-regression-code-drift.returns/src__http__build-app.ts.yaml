@@ -1,0 +1,8 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the routePluginFactories array, lines 110-117"
+    evidence: "(dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),\n  (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),\n  (dependencies) => createReleaseRoutesPlugin(dependencies.release),\n  (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),\n  (dependencies) => createDiscardRoutesPlugin(dependencies.discard),\n  (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),\n  (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),\n  (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),"
+  - node: domain/integration/connector-configuration-registry
+    held_at: "line 129 of routePluginFactories"
+    evidence: "(dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),"
+looked_past: "the file also wires route plugins for many operations outside this pack's two nodes (diagnose, simulate-case/hypothesis, capability registry, vocabulary, concepts, test-connector) plus a generic setErrorHandler(handleUnexpectedError) — none of these state a domain fact of their own here, so they are left to whichever pass covers those nodes and files."

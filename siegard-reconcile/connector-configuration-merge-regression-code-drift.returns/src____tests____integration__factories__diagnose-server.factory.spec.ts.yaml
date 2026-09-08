@@ -1,0 +1,21 @@
+findings:
+  - file: src/__tests__/integration/factories/diagnose-server.factory.spec.ts
+    where: "the persisted-durations assertion, `expect(written?.durations_collection).toBeGreaterThan(0);` (around line 414)"
+    evidence: "expect(written?.durations_collection).toBeGreaterThan(0);"
+    cost: "The collection stage in this test runs through `fetchMock`, an async function with no artificial delay of its own (unlike `createMock`'s explicit 10ms `setTimeout`), so it can legitimately settle in under one millisecond. The invariant names that outcome honest and requires it be recorded as 0 rather than invented upward — yet this assertion forbids exactly that value. A future collection call that genuinely resolves under a millisecond would fail this test not because anything is broken, but because the assertion bakes in an assumption ('collection duration is never zero') the specification explicitly refuses to let anyone enforce, and a reader trusting the test would come away believing zero is never a legitimate collection duration."
+    kind: contradicts
+    node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    correction: "relax the assertion to tolerate zero (e.g. `toBeGreaterThanOrEqual(0)`), or otherwise stop requiring `durations_collection` to be strictly positive, consistent with the invariant's own statement that a sub-millisecond span is recorded as 0 and is never raised to avoid recording a zero."
+
+read:
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the two `state`/`states` assertions, lines 355 and 370"
+    evidence: "expect(assembled?.state).toBe('released'); ... expect(states).toEqual(manifestEntries.map(() => 'released'));"
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: nowhere
+    evidence: "expect(written?.durations_collection).toBeGreaterThan(0); — the file's only assertion that touches the zero-floor territory the invariant governs, and it forbids the value the invariant calls legitimate rather than exercising or preserving it; the neighbouring durations_judgment/durations_writing checks are grounded in the mock's own explicit 10ms delay and never approach the sub-millisecond case at all."
+
+looked_past: "The durations_total assertion (`toBeGreaterThanOrEqual` of the summed stage figures) is looser than domain/investigation/durations' own statement that total is never equal to the sum of the stages — but that is an under-constrained test rather than an affirmative contradiction, and weighing test strength/coverage is not this pass's judgment."
+
+candidates_opened:
+  - domain/investigation/durations

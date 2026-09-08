@@ -1,0 +1,9 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the ternary in durationsOf(), line 85: `evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]`"
+    evidence: "const judgment = maxElapsedMs(evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]);"
+looked_past: "the throw in onlyEvaluationOf() (\"expected exactly one evaluation for one named hypothesis, got ${evaluations.length}\") asserts an invariant already governed by rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses and constraints/hypotheses-are-judged-in-isolated-parallel-calls — a defensive runtime check rather than a fact this file states as its own, so it is another judgment's to weigh, not a domain-fact finding here."
+candidates_opened:
+  - rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+  - constraints/hypotheses-are-judged-in-isolated-parallel-calls
+  - contracts/investigation/case-simulation

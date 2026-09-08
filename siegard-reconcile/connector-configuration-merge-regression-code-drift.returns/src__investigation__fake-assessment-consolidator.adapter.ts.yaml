@@ -1,0 +1,11 @@
+read:
+  - node: domain/investigation/assessment
+    held_at: "consolidate()'s return statement"
+    evidence: "return { text, register: consolidationRegister, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };"
+  - node: domain/investigation/evaluation
+    held_at: nowhere
+    evidence: "evaluations: readonly Evaluation[]"
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: "evidence: readonly Evidence[]"
+looked_past: "The evaluations and evidence parameters are carried only as opaque cache-key material (via JSON.stringify inside fixtureKey) and never inspected for their own attributes, so nothing in this file asserts or contradicts a fact belonging to those two nodes; that is why their held_at reads nowhere rather than a finding."

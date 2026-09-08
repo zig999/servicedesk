@@ -1,0 +1,15 @@
+read:
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the `query.readCase(SLUG, VERSION)` calls and their assertions, e.g. lines 218-222, 249-253 and 404-407"
+    evidence: |
+      const result = await query.readCase(SLUG, VERSION);
+
+      expect(result.case.slug).toBe(SLUG);
+      expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+looked_past: "The test titles at lines 213, 226, 322-323, 349-351, 371-374 and 398-400 narrate specific error-class names and mechanisms (CaseVersionNotValidError, HypothesisRevisionNotDraftAtReleaseError, the DELETE-is-a-no-op guarantee, the seeding idempotency guard) as prose describing intent rather than as assertions this pass judges; the facts those names refer to are held by rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name, rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle, rules/knowledge/a-released-hypothesis-revision-is-never-altered and rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions, each checked and each consistent with what the source actually does, so I looked past whether the prose itself is good test-authoring style — that is another pass's judgment."
+candidates_opened:
+  - rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  - rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle

@@ -1,0 +1,4 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the call to dependencies.caseQuery.listCases(pagination) inside handleListCasesRequest, implementing the list-cases operation"
+    evidence: "return dependencies.caseQuery.listCases(pagination);"

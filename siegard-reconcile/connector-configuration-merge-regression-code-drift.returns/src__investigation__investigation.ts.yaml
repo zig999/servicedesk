@@ -1,0 +1,18 @@
+findings:
+  - file: src/investigation/investigation.ts
+    where: "the `Investigation` type, line 29"
+    evidence: "readonly written_at?: string;"
+    cost: "the type lets any Investigation value exist with no written_at at all — a caller building or consuming this shape gets no compile-time signal that the specification treats written_at as a mandatory attribute of the aggregate root, so the next reader checking the type learns the opposite of what the node states, and code elsewhere can construct or pass around a record the domain model says cannot exist without a settle instant"
+    kind: contradicts
+    node: domain/investigation/investigation
+    correction: "declare `written_at: string` without the `?`, matching the node's `required: true`; a pre-write construction step, if the factory needs one, belongs to a type of its own rather than to this required field"
+
+read:
+  - node: domain/investigation/investigation
+    held_at: "the `Investigation` type literal, lines 13-30, plus the `PinnedCase` type (lines 8-11) for the pinned-case relationship"
+    evidence: "readonly id: string; readonly requester: string; readonly ticket_ref?: string; readonly narrative: string; readonly subject: Subject; readonly pinned_case: PinnedCase; readonly prompt_version: string; readonly model: string; readonly evidence: readonly Evidence[]; readonly evaluations: readonly Evaluation[]; readonly assessment: Assessment; readonly cost: Cost; readonly durations: Durations;"
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "nowhere — this file only declares the `written_at?: string` field; nothing here states or enforces when it is set"
+    evidence: "readonly written_at?: string;"
+
+looked_past: "the type's `readonly` modifiers implementing the node's stated immutability (\"an immutable result... written once and never mutated\") are the node's own fact enforced in code, not a second, independent statement of it, so they are not reported as findings."

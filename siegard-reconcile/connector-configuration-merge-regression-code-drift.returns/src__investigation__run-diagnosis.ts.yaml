@@ -1,0 +1,32 @@
+read:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: nowhere
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: domain/investigation/investigation
+    held_at: "buildInvestigationOptions(), lines 56-73, and the buildInvestigation(...) call at line 30"
+    evidence: |
+      return {
+        id: options.id,
+        requester: options.requester,
+        ticket_ref: options.ticket_ref,
+        narrative: options.narrative,
+        subjectType: options.subjectType,
+        subjectAttributes: options.subjectAttributes,
+        case: options.case,
+        prompt_version: options.prompt_version,
+        model: options.model,
+        evidence,
+        evaluations,
+        assessment,
+        cost,
+        durations,
+        glossary: options.glossary,
+      };
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "raceWriteAttempt(), lines 114-119 — the outcome classification a retry relies on"
+    evidence: |
+      const settlement = write.then(
+        (): WriteAttemptOutcome => 'settled',
+        (error: unknown): WriteAttemptOutcome => (error instanceof InvestigationAlreadyStoredError ? 'settled' : 'failed'),
+      );
+looked_past: "The actual per-hypothesis isolated/parallel judging (runInvestigationPipeline) and the actual written_at value assignment (buildInvestigation, in investigation-factory.ts) are implemented in other files this delegation does not review; I verified the persistence-stage-budget constant (PERSISTENCE_STAGE_BUDGET_MS = 2_000) and the at-most-two-attempts retry/timeout arithmetic against rules/investigation/an-answer-arrives-within-the-declared-deadline, rules/investigation/no-stage-aborts-on-its-deadline, rules/investigation/an-investigation-is-written-once and constraints/the-deadline-is-an-absolute-propagated-instant (opened only to rule out misattribution, not part of the offered candidate tier) and found the code faithful to each, so no finding follows from them."

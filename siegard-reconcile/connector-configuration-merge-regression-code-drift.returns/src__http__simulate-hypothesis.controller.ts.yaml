@@ -1,0 +1,5 @@
+read:
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "const subject = buildSubject(body.subject.type, body.subject.attributes);\nawait refuseAttributesNotInGlossary(subject, dependencies.glossary);"
+looked_past: "TOTAL_DEADLINE_BUDGET_MS = 20_000 matches rules/investigation/an-answer-arrives-within-the-declared-deadline (\"twenty seconds\") and constraints/the-deadline-is-an-absolute-propagated-instant, both outside this file's node set — the value agrees with those nodes so there is nothing to report, and whether it is duplicated elsewhere is a judgment over files this delegation does not hold."

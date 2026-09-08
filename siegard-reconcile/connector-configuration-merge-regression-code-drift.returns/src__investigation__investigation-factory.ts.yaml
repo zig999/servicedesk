@@ -1,0 +1,40 @@
+findings:
+  - file: src/investigation/investigation-factory.ts
+    where: "BuildInvestigationOptions, line 35, and the return statement of buildInvestigation(), line 59"
+    evidence: "readonly written_at?: string;"
+    cost: "written_at is the one required attribute the domain model marks as a datetime an audit needs to recover the record's own creation instant, yet nothing here stops buildInvestigation from returning a built Investigation with written_at absent — unlike evidence and evaluations, whose totality the same factory actively refuses to build without (refuseTotalityViolations), a caller omitting written_at is never refused. A reader trusting the node's own description of this factory as one that \"cannot build an invalid instance\" will not expect the one required datetime attribute to be the sole field silently allowed to go missing."
+    kind: contradicts
+    node: domain/investigation/investigation
+    correction: "Either drop the `?` from written_at in BuildInvestigationOptions and require every call site to supply it, or have buildInvestigation itself refuse to return when written_at is absent, the same way refuseTotalityViolations already refuses an incomplete evidence or evaluation set."
+
+read:
+  - node: domain/investigation/investigation
+    held_at: "the object literal returned by buildInvestigation(), lines 45-60"
+    evidence: |
+      return {
+        id: options.id,
+        requester: options.requester,
+        ticket_ref: options.ticket_ref,
+        narrative: options.narrative,
+        subject,
+        pinned_case: pinnedCaseOf(theCase),
+        prompt_version: options.prompt_version,
+        model: options.model,
+        evidence: [...evidence],
+        evaluations: [...evaluations],
+        assessment: options.assessment,
+        cost: options.cost,
+        durations: options.durations,
+        written_at: options.written_at,
+      };
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the pass-through of options.written_at into the returned object, line 59"
+    evidence: "written_at: options.written_at,"
+
+looked_past: "The literal wording of the totality-violation and glossary-refusal error messages (e.g. \"the collection plan's concept ... has ${count} evidence entries\") is a code-review concern about message construction, not a domain fact the messages misstate, so it is not reported here."
+
+candidates_opened:
+  - rules/investigation/one-evidence-per-collected-concept
+  - rules/investigation/one-evaluation-per-required-hypothesis
+  - rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+  - rules/investigation/a-subject-attribute-is-drawn-from-the-glossary

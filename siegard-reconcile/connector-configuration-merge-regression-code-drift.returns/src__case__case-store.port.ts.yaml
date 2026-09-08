@@ -1,0 +1,113 @@
+findings:
+  - file: src/case/case-store.port.ts
+    where: "line 7, the module-level constant HYPOTHESIS_REVISION_STATES"
+    evidence: "export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;"
+    cost: "the hypothesis-revision-state enumeration now lives twice — once as the node's own declared values, once as this exported, runtime-visible array. Unlike the sibling CaseVersionState (a plain compile-time union with no runtime twin), this array is a second, executable home for the vocabulary: nothing forces it to change if the node's own enumeration ever does, and any code that imports it to validate or iterate states is reading this file's copy rather than the specification."
+    kind: contradicts
+    node: domain/knowledge/hypothesis-revision-state
+    correction: "derive HypothesisRevisionState as a plain compile-time union (`'draft' | 'released'`), the same way CaseVersionState is declared just above it, rather than restating the node's enumeration as an exported runtime constant."
+
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the return type of assembleVersion"
+    evidence: "assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the write-side methods of ICaseStore"
+    evidence: |
+      createDraft(input: CreateDraftInput): Promise<number>;
+
+      insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;
+
+      placeHypothesis(input: PlaceHypothesisInput): Promise<void>;
+
+      removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void>;
+
+      release(slug: string, version: number): Promise<void>;
+
+      discard(slug: string, version: number): Promise<void>;
+
+      updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void>;
+  - node: contracts/knowledge/case-query
+    held_at: "the read-side methods of ICaseStore"
+    evidence: |
+      assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+
+      findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
+
+      listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
+
+      listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
+
+      listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;
+
+      listHypothesisRevisions(
+        slug: string,
+        hypothesisName: string,
+        pagination: PaginationRequest,
+      ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;
+  - node: domain/knowledge/case
+    held_at: "the CaseIdentity type and createDraft's return"
+    evidence: |
+      export type CaseIdentity = {
+        readonly slug: string;
+      };
+  - node: domain/knowledge/case-summary
+    held_at: "the CaseSummary type"
+    evidence: |
+      export type CaseSummary = {
+        readonly current_state?: CaseVersionState;
+        readonly version_count: number;
+        readonly last_updated?: string;
+        readonly title?: string;
+        readonly when_to_use?: string;
+        readonly released_version?: number;
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: "the CaseVersionState type alias"
+    evidence: "export type CaseVersionState = 'draft' | 'released';"
+  - node: domain/knowledge/hypothesis
+    held_at: "the HypothesisIdentity type"
+    evidence: |
+      export type HypothesisIdentity = {
+        readonly name: string;
+      };
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the HypothesisRevisionListItem type"
+    evidence: |
+      export type HypothesisRevisionListItem = {
+        readonly revision: number;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: Resolution;
+        readonly state: HypothesisRevisionState;
+      };
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "the HYPOTHESIS_REVISION_STATES constant and the HypothesisRevisionState type derived from it"
+    evidence: |
+      export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;
+
+      export type HypothesisRevisionState = (typeof HYPOTHESIS_REVISION_STATES)[number];
+  - node: domain/knowledge/manifest-entry
+    held_at: "the ManifestEntry type"
+    evidence: |
+      export type ManifestEntry = {
+        readonly position: number;
+        readonly hypothesis_revision: HypothesisRevisionContent;
+      };
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "the release method together with the CaseVersionState alias"
+    evidence: "release(slug: string, version: number): Promise<void>;"
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: "the state field of HypothesisRevisionListItem and listHypothesisRevisions"
+    evidence: "readonly state: HypothesisRevisionState;"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "assembleVersion and listCaseVersions, which read by (slug, version) and list every version"
+    evidence: |
+      assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+
+      listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
+
+looked_past: "ICaseStore exposes no method taking a hypothesis-revision's own identity to release it independently of a case version, though contracts/knowledge/case-lifecycle enumerates release-hypothesis and domain/knowledge/hypothesis-revision lists release as an operation; without opening the other files this contract is bound to (release.operation.ts, relational-case-store.repository.ts — outside this file set), I cannot say whether that operation is realized elsewhere or genuinely absent, and a missing method is a coverage question rather than a fact this file states wrongly, so I leave it unreported here."
+
+candidates_opened:
+  - domain/knowledge/case-version

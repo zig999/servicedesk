@@ -1,0 +1,17 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the shape asserted on listHypothesisRevisions' page items (e.g. lines 489-492, 636, 655, 678, 703) and on the manifest entry's hypothesis_revision object (e.g. lines 202-205, 802-803), together with the revision-numbering test (lines 887-906) and the in-place-overwrite test (lines 1766-1791) and the release-independence tests (lines 1660-1738)"
+    evidence: |
+      expect(page.data).toEqual([
+        { revision: secondRevision, criterion: 'second criterion', collects: [conceptB], resolution: aResolution(glossary), state: 'draft' },
+        { revision: firstRevision, criterion: 'first criterion', collects: [conceptA], resolution: aResolution(glossary), state: 'draft' },
+      ]);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the overwrite-refusal test at lines 2056-2091"
+    evidence: |
+      await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+      const caught = await rejection.catch((error: unknown) => error);
+      expect(statusForError(caught)).toBe(409);
+looked_past: "this file exercises the repository directly and never asserts the rule's own second clause — that removing one of a released revision's collects is accepted and left with no effect while every prior collect still reads back — nor does any test here construct that exact scenario; whether that sub-clause is proven anywhere is a coverage question, not a conformance one, so I did not report an absence. I also opened rules/knowledge/a-hypothesis-collects-at-least-one-concept because this file repeatedly calls insertHypothesisRevision with collects:[] and asserts success (e.g. lines 366-369, 385-386, 450-451), which reads like a contradiction of \"a revision that would collect none is refused\"; but that refusal is enforced only in case/revise-hypothesis.operation.ts (HypothesisRevisionCollectsNoConceptError), never in relational-case-store.repository.ts, so this repository-integration file is legitimately exercising a lower layer that carries no such refusal — not a misstatement of the rule."
+candidates_opened:
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept

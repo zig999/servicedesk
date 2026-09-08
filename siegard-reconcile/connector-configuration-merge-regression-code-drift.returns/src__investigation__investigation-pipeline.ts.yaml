@@ -1,0 +1,17 @@
+read:
+  - node: domain/investigation/assessment
+    held_at: "the unconditional (unguarded) use of assessment.usage, assessment.elapsed_ms and assessment.prompt in costOf/durationsOf and the return statement (lines 76, 80, 83), and the register selection at line 73"
+    evidence: "const cost = costOf(evaluations, assessment.usage); ... writingElapsedMs: assessment.elapsed_ms ... prompts: { writing: assessment.prompt } ... consolidationRegister: options.case.consolidation_register ?? options.defaultConsolidationRegister"
+  - node: domain/investigation/evaluation
+    held_at: "the guarded (undefined-checked) use of evaluation.usage and evaluation.elapsed_ms in costOf and durationsOf, lines 87 and 106"
+    evidence: "evaluations.flatMap((evaluation): Usage[] => (evaluation.usage === undefined ? [] : [evaluation.usage])) ... evaluations.flatMap((evaluation) => (evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]))"
+  - node: domain/investigation/evidence
+    held_at: "the unguarded use of item.elapsed_ms in durationsOf (line 105) and item.concept in evidenceByHypothesisOf (line 148)"
+    evidence: "const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms)); ... evidence.filter((item) => hypothesis.collects.includes(item.concept))"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "const subject = buildSubject(options.subjectType, options.subjectAttributes); — this file passes subjectAttributes straight to buildSubject without itself checking length; the invariant's enforcement, if any, sits inside buildSubject (subject.ts), not in this file"
+candidates_opened:
+  - domain/investigation/cost
+  - domain/investigation/durations
+  - domain/investigation/usage

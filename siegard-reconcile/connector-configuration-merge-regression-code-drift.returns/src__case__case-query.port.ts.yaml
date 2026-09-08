@@ -1,0 +1,20 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the `ICaseQuery` interface's five methods"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;\n\n  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;\n\n  listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;\n\n  listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;\n\n  listHypothesisRevisions(\n    slug: string,\n    hypothesisName: string,\n    pagination: PaginationRequest,\n  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: domain/knowledge/case
+    held_at: "the `slug: string` parameter shared by readCase, listCaseVersions, listHypotheses and listHypothesisRevisions"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;"
+  - node: domain/knowledge/case-version
+    held_at: "the `version: number` parameter of readCase, and the `case: Case` field of ReadCaseResult"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;"
+  - node: domain/knowledge/hypothesis
+    held_at: "the `hypothesisName: string` parameter of listHypothesisRevisions"
+    evidence: "listHypothesisRevisions(\n    slug: string,\n    hypothesisName: string,\n    pagination: PaginationRequest,\n  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the listHypothesisRevisions method, which surfaces this aggregate's own listing"
+    evidence: "listHypothesisRevisions(\n    slug: string,\n    hypothesisName: string,\n    pagination: PaginationRequest,\n  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;"
+  - node: rules/investigation/replay-is-pinned
+    held_at: "readCase's `(slug: string, version: number)` signature, which is what lets a caller pin an investigation's replay to an exact case slug and version"
+    evidence: "readCase(slug: string, version: number): Promise<ReadCaseResult>;"
+looked_past: "CaseCatalogEntry, CaseVersionListItem, HypothesisIdentity and HypothesisRevisionListItem are only imported here — their own field shapes are declared in src/case/case-store.port.ts (not in this file set), so I did not judge them."

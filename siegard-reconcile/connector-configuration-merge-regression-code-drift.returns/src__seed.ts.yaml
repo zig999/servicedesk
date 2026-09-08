@@ -1,0 +1,16 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "the assembleVersion call in alreadySeeded, line 149, and the readCase call in verifySeededCase, line 154"
+    evidence: |
+      const stored = await createCaseStore(connection).assembleVersion(CASE_SLUG, CASE_VERSION);
+      ...
+      await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: entry.collects, — passed straight from the fixture into lifecycle.reviseHypothesis (line 104) with no local check of length; the refusal itself is not enacted in this file"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "the readCase call in verifySeededCase, line 154"
+    evidence: "await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);"
+looked_past: "seedConcepts and seedCapabilities take two different shapes for writing fixture data — raw SQL for concepts versus the registry factory for capabilities — which is a style/consistency question, not a domain-fact mismatch, since the raw-SQL path for concepts is the one the specification's own migration names as intentional."
+candidates_opened:
+  - rules/glossary/a-concept-declares-its-description

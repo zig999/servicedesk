@@ -1,0 +1,17 @@
+findings:
+  - file: src/http/dto/register-concept.dto.ts
+    where: "registerConceptBodySchema, line 12 (`description` field), and the exported `RegisterConceptBodyDto` type, lines 15-17"
+    evidence: "description: z.string().optional(),"
+    cost: "The schema that actually validates a register-concept request body lets a submission with no description (or an explicit empty string) parse successfully; nothing in this file refuses it. The exported `RegisterConceptBodyDto` type then asserts `description: string` as if it were guaranteed non-optional, so any handler trusting that type will treat an absent description as present instead of raising the refusal the specification requires — the 422 ConceptDescriptionRequiredError has no construct in this file that could ever produce it."
+    kind: contradicts
+    correction: "The schema itself should refuse a missing or empty description (e.g. require it, or add a check that surfaces ConceptDescriptionRequiredError) before the value is treated as `RegisterConceptBodyDto`, so the type's guarantee matches what the schema actually validates."
+    node: rules/glossary/a-concept-declares-its-description
+
+read:
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: nowhere
+    evidence: "description: z.string().optional(),"
+
+looked_past: "The `ttl` field's `.optional().int().positive()` and the `accepts` array's element-level `.min(1)` were checked against domain/glossary/concept.md and rules/knowledge/a-collected-concept-declares-a-ttl.md (opened to attribute, not to review) and match what those hold — an absent ttl defaults elsewhere, a stated one must be a positive integer, and nothing in the specification requires `accepts` to be non-empty — so neither is reported."
+
+candidates_opened: []

@@ -1,0 +1,117 @@
+findings:
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "the durationsSchema definition, lines 70-74"
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        total: z.number(),
+      });
+    cost: "collection, judgment and total are declared integer (whole milliseconds) by the specification; this schema accepts any finite number, so a fractional-millisecond value — say from a bug in a stage's elapsed-time computation — would pass response validation silently, and a load test reading the field against the declared total budget would be reading a value the specification never allowed to be non-integer."
+    kind: contradicts
+    correction: "type collection, judgment and total with an integer constraint (e.g. z.number().int()), matching the node's declared attribute type."
+    node: domain/investigation/durations
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "the usageSchema definition, lines 35-38"
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+    cost: "input_tokens and output_tokens are declared integer token counts by the specification; a fractional value still passes this schema, so a provider-usage parsing bug producing a non-integer count would go unnoticed at the one boundary meant to reject a malformed record."
+    kind: contradicts
+    correction: "type both fields with an integer constraint, matching the node's declared attribute type."
+    node: domain/investigation/usage
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "the elapsed_ms field repeated in each of the three evaluationSchema branches, lines 48, 56 and 65"
+    evidence: "elapsed_ms: z.number().optional(),"
+    cost: "elapsed_ms is declared an optional integer by the specification; the schema accepts any finite number, so the one boundary meant to reject a non-integer call duration does not."
+    kind: contradicts
+    correction: "type elapsed_ms with an integer constraint, matching the node's declared attribute type."
+    node: domain/investigation/evaluation
+
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "simulateHypothesisRequestSchema (lines 21-26) and simulateHypothesisResponseSchema (lines 76-80)"
+    evidence: |
+      export const simulateHypothesisRequestSchema = z.object({
+        case: caseRefSchema,
+        subject: subjectSchema,
+        requester: z.string().min(1),
+        hypothesis: z.string().min(1),
+      });
+      ...
+      export const simulateHypothesisResponseSchema = z.object({
+        evidence: z.array(evidenceSchema).readonly(),
+        evaluation: evaluationSchema,
+        durations: durationsSchema,
+      });
+  - node: domain/investigation/citation
+    held_at: "citationSchema, lines 30-33"
+    evidence: "concept: z.string().min(1), field: z.string().min(1).optional(),"
+  - node: domain/investigation/durations
+    held_at: "durationsSchema, lines 70-74"
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        total: z.number(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: "evaluationSchema, lines 42-68 (a discriminated union on verdict)"
+    evidence: |
+      z.object({
+        hypothesis: z.string().min(1),
+        verdict: z.literal(CONFIRMED_VERDICT),
+        citations: z.array(citationSchema).min(1).readonly(),
+        usage: usageSchema.optional(),
+        elapsed_ms: z.number().optional(),
+        prompt: z.string().optional(),
+      }),
+  - node: domain/investigation/evaluation-reason
+    held_at: "the inconclusive branch's reason field, line 62"
+    evidence: "reason: z.enum(EVALUATION_REASONS),"
+  - node: domain/investigation/evidence
+    held_at: "the response schema's evidence field, line 77, via the imported evidenceSchema (defined in evidence.dto.ts, outside this file)"
+    evidence: "evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/evidence-result
+    held_at: "not spelled out in this file; reached only through the imported evidenceSchema used at line 77"
+    evidence: "import { evidenceSchema } from './evidence.dto.js';"
+  - node: domain/investigation/subject
+    held_at: "subjectSchema, lines 11-14"
+    evidence: |
+      const subjectSchema = z.object({
+        type: z.string().min(1),
+        attributes: z.array(subjectAttributeValueSchema).min(1),
+      });
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueSchema, lines 6-9"
+    evidence: |
+      const subjectAttributeValueSchema = z.object({
+        attribute: z.string().min(1),
+        value: z.string().min(1),
+      });
+  - node: domain/investigation/usage
+    held_at: "usageSchema, lines 35-38"
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+  - node: domain/investigation/verdict
+    held_at: "the VERDICTS destructuring at line 40 and the z.literal(...) discriminants at lines 45, 53 and 61"
+    evidence: "const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS;"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "subjectSchema's attributes field, line 13"
+    evidence: "attributes: z.array(subjectAttributeValueSchema).min(1),"
+
+looked_past: "The contract's behavioral guarantees — that simulate-hypothesis writes no investigation, emits no event, and lets nothing reach a cache — are facts about runtime behavior a DTO shape cannot evidence either way, and the finer per-reason citation rule (a no-data verdict must cite the non-ok evidence, from rules/investigation/an-inconclusive-evaluation-declares-its-reason and rules/investigation/a-decided-evaluation-cites-evidence) is bound by the trace to src/investigation/judgment-stage.ts, not to this transport schema, so its enforcement there is a different file's finding."
+
+candidates_opened:
+  - rules/investigation/a-simulation-carries-its-requester
+  - scenarios/investigation/a-single-hypothesis-is-simulated
+  - rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  - rules/investigation/a-decided-evaluation-cites-evidence
+  - rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  - domain/investigation/assessment
+  - domain/investigation/investigation

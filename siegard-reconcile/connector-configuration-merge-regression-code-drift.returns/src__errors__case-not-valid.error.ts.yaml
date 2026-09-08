@@ -1,0 +1,5 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+looked_past: The file is a one-line re-export barrel with no logic, comment or status-code binding of its own; the HTTP 409 / CaseVersionNotValidError behavior that rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name governs lives in the file it re-exports from (case-version-not-valid.error.ts), which is outside this file set and not reviewed here.

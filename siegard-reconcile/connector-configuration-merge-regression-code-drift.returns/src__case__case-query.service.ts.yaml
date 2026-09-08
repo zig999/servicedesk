@@ -1,0 +1,32 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: "CaseQueryService.refuseIncoherence, called from readCase"
+    evidence: |
+      const violations = await caseCoherenceViolations(theCase, this.glossary, this.capabilities);
+      if (violations.length > 0) {
+        throw new CaseVersionNotValidError(theCase.slug, version, violations);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: "every public read method's signature and heldVersion's not-found path, which address a case by slug alone with no secondary qualifier"
+    evidence: |
+      public async readCase(slug: string, version: number): Promise<ReadCaseResult> {
+        const assembled = await heldVersion(this.caseStore, slug, version);
+      ...
+      if (assembled === undefined) {
+        throw new CaseNotFoundError(slug, version);
+      }
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "readCase's call to refuseIncoherence versus replayCase's direct trust of the assembled version"
+    evidence: |
+      await this.refuseIncoherence(theCase, version);
+      return { case: theCase };
+      ...
+      export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
+        const assembled = await heldVersion(caseStore, slug, version);
+        return trustedCaseOf(assembled);
+      }
+looked_past: "readCaseInputRequirements omits the coherence check refuseIncoherence performs, and trustedCaseOf/assembledAsRawDocument duplicate the same field-by-field mapping — the first resolves against rules/knowledge/a-case-versions-input-requirements-are-derived and contracts/knowledge/case-input-requirements (which explicitly allow deriving requirements over an incoherent or draft version), and the second is a code-shape concern rather than a domain fact, so neither is reported here."
+candidates_opened:
+  - contracts/knowledge/case-input-requirements
+  - domain/knowledge/case-input-requirement
+  - rules/knowledge/a-case-versions-input-requirements-are-derived

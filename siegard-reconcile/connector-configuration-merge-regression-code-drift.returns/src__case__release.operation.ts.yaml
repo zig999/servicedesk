@@ -1,0 +1,50 @@
+findings:
+  - file: src/case/release.operation.ts
+    where: "releaseViolations, the `if (structural.kind === 'invalid')` branch, lines 74-77"
+    evidence: |
+      const structural = structuralOutcome(assembled);
+      if (structural.kind === 'invalid') {
+        return structural.problems;
+      }
+      return [
+        ...(await caseCoherenceViolations(structural.theCase, sources.glossary, sources.capabilities)),
+        ...(await manifestOwnStateViolations(assembled, sources.hypothesisRevisions)),
+      ];
+    cost: "When a draft is both structurally invalid and manifests a hypothesis-revision that is still in draft state, a curator asking to release it is told only about the structural problems: manifestOwnStateViolations is never called on this path, even though it needs only `assembled.manifest` and not the parsed Case that structural validation produces. The manifest-hypothesis violation surfaces only on a second release attempt, after the structural one is fixed — no single refusal ever names both together."
+    kind: contradicts
+    correction: "manifestOwnStateViolations should be evaluated and its results merged into the violations list regardless of whether structuralOutcome succeeded, since it depends only on the raw assembled manifest, not on the parsed Case that a structural failure withholds."
+    node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the `release` method of ReleaseOperation, lines 27-39"
+    evidence: |
+      public async release(slug: string, version: number): Promise<void> {
+        const assembled = await heldAssembledVersion(this.caseStore, slug, version);
+        refuseNonDraft(assembled);
+        const violations = await releaseViolations(assembled, {
+          glossary: this.glossary,
+          capabilities: this.capabilities,
+          hypothesisRevisions: this.caseStore,
+        });
+        if (violations.length > 0) {
+          throw new CaseVersionNotReleasableError(slug, version, violations);
+        }
+        await this.caseStore.release(slug, version);
+      }
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "manifestOwnStateViolations, lines 84-101 — but only on the path where structural parsing succeeds; see the finding above"
+    evidence: |
+      if (ownState !== RELEASED_STATE) {
+        violations.push(`the hypothesis "${hypothesisName}" is manifested at a revision that is not released`);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: "the file only reads an existing case version by slug and version, `await caseStore.assembleVersion(slug, version)`, and never creates a case or asserts slug uniqueness — that fact belongs to whatever file handles case creation"
+
+looked_past: "The logic inside caseCoherenceViolations (validate-case-coherence.ts) and parseCaseDocument (parse-case-document.ts) is invoked here but defined elsewhere, outside this file set, so its own conformance to the coherence and structural rules it implements is another file's judgment."
+
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - domain/knowledge/hypothesis-revision-state
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered

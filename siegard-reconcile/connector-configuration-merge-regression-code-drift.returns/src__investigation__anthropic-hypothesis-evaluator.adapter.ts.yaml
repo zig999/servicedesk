@@ -1,0 +1,40 @@
+findings:
+  - file: src/investigation/anthropic-hypothesis-evaluator.adapter.ts
+    where: "evaluate() (lines 45-62) and requestJudgment() (lines 64-75), whose single call outcomeFromModelText() (lines 103-112) falls straight to judgmentFailureOutcome on any unparsed or model-inconclusive response"
+    evidence: |
+      private async requestJudgment(prompt: string): Promise<Anthropic.Message | undefined> {
+          try {
+            return await this.client.messages.create({ ... });
+          } catch {
+            return undefined;
+          }
+        }
+    cost: "A response the model returns that the code cannot accept — a foreign citation among them — is turned into judgment-failure on the very first and only call, even when the remaining deadline would still admit a second attempt; the specification's own retry never runs, so a hypothesis whose evaluation the business expects to sometimes recover through a retry instead reports failure every single time, and nothing in this file signals that a retry was ever meant to exist here."
+    kind: contradicts
+    node: scenarios/investigation/a-foreign-citation-is-refused
+    correction: "requestJudgment (or its caller within evaluate()) would need to retry once, when the remaining deadline still admits it, before falling back to judgmentFailureOutcome."
+  - file: src/investigation/anthropic-hypothesis-evaluator.adapter.ts
+    where: "isCitation() (lines 208-210), the sole gate parseJudgment() applies to a parsed citation's concept"
+    evidence: |
+      function isCitation(value: unknown): value is Citation {
+        return isPlainObject(value) && typeof value.concept === 'string' && typeof value.field === 'string';
+      }
+    cost: "A citation naming a concept the judged hypothesis's own evidence never carried — an invented reference the prompt gave the model no grounds for — is accepted as if it grounded a confirmed or refuted verdict, because nothing here compares a citation's concept against the evidence items passed into evaluate(); the containment the rule exists to guarantee is never checked at the one place ('the adapter') the specification names as responsible for checking it."
+    kind: contradicts
+    node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    correction: "isCitation or parseJudgment would need to check each citation's concept against the concepts named by the evidence array evaluate() received, refusing (routing toward the retry-then-judgment-failure path) where one doesn't match."
+  - file: src/investigation/anthropic-hypothesis-evaluator.adapter.ts
+    where: "isCitation() (lines 208-210), same gate applied to a citation's field"
+    evidence: "typeof value.field === 'string'"
+    cost: "A citation's field is accepted as any string without being checked against the cited evidence item's own snapshotted field names; the property the rule calls 'machine-checkable' — that a cited field actually exists among what that item's producing capability's output schema declared — is never machine-checked here, so an invented field name reaches the record indistinguishable from a real one."
+    kind: contradicts
+    node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    correction: "isCitation or parseJudgment would need to look up the evidence item the citation's concept names and check the field against that item's own fields, refusing where it isn't among them."
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the outcome objects assembled in noDataOutcome(), judgmentFailureOutcome() and outcomeFromModelText() inside evaluate() — verdict, reason and citations always, usage/elapsed_ms/prompt spread in from CallRecord exactly when a call was attempted, absent from noDataOutcome's no-data path"
+    evidence: |
+      function judgmentFailureOutcome(callRecord?: CallRecord): EvaluationOutcome {
+        return { verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
+      }
+looked_past: "The literal reason strings 'no-data' and 'judgment-failure' are used correctly against the evaluation-reason vocabulary but aren't type-checked through an imported enum, and DEFAULT_MAX_TOKENS/the whole SYSTEM_PROMPT text are hardcoded implementation choices — code-quality/standard concerns rather than a domain fact this pass judges."

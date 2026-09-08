@@ -1,0 +1,14 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the wiring of readConnectorConfiguration (via the OrThrow variant), listConnectorConfigurations and registerConnector into BuildAppDependencies, lines 75-77, 93, 107, 129"
+    evidence: "readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },' / listConnectorConfigurations: { listConnectorConfigurations: resources.listConnectorConfigurations, ...pagination }, / registerConnector: { registerConnector: resources.registerConnector },"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "lifecycleDependencies(), lines 111-123, wiring all eight operations"
+    evidence: "createDraft: { createDraft: caseLifecycle.createDraft }, updateDraft: { caseStore, caseQuery }, release: { release: caseLifecycle.release, caseQuery }, releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision }, discard: { discard: caseLifecycle.discard }, reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis }, placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis }, removeHypothesis: { removeHypothesis: caseLifecycle.removeHypothesis },"
+  - node: domain/integration/connector-configuration-registry
+    held_at: "composeResources(), line 74, and registrationDependencies(), line 129, delegating register-connector to the service"
+    evidence: "registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: "readDependencies(), line 93, which binds the read-connector-configuration operation to the throwing resolution"
+    evidence: "readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },"
+looked_past: "the file also wires capability-registry, glossary and testConnector dependencies (the latter governed by contracts/integration/connector-diagnostics, outside this node set) — pure composition wiring, with no domain fact of its own to weigh."

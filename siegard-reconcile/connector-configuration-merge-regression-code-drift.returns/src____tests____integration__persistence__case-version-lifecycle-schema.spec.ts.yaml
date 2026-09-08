@@ -1,0 +1,32 @@
+findings:
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: "the final `it` block, \"defaults a newly-inserted case_versions row that does not name its own state to 'released', since the column's own DEFAULT is kept permanently rather than dropped after backfill — every currently-shipped write path that inserts without naming state depends on this\" (lines 568-579)"
+    evidence: "expect(result.rows[0].state).toBe('released');"
+    cost: "The lifecycle rule names 'draft' as the one state a case version's own state machine starts in, and domain/knowledge/case-version restates that a version's declared attributes are still being composed \"while draft\" holds. A write path that creates a case version without naming state — which this same test says every currently-shipped write path does — comes back already 'released' under this schema, meaning a version can exist marked released without ever having taken the one transition (`release`) the lifecycle names as the only way there, and without ever having been reachable as a draft to compose a manifest against. A reader who trusts the lifecycle rule's initial state has no way to learn, from the specification, that ordinary case-version creation today actually lands released by default."
+    kind: contradicts
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    correction: "Either the state column's DEFAULT names 'draft' (matching the lifecycle's own initial state, as hypothesis_revisions already does in this same file), or every write path that creates a new case version is made to name state explicitly, so no row reaches 'released' except through the declared `release` transition."
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: "the `it` block \"backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column\" (lines 539-566)"
+    evidence: "expect(rows).toEqual([{ state: 'released', released_at: null }]);"
+    cost: "No node in the specification, and no entry in decision-log.md, says what a case_versions row written before the state column existed reads as once the column is added — unlike the parallel migration-backfill readings this same specification already decided and disclosed for domain/investigation/evidence's elapsed_ms and concept_description attributes (both recorded with their own `unstated`/`decided`/`why` entries). A reader who wants to know why every pre-existing case version is retroactively read as already released, rather than as draft or some other honest marker of pre-lifecycle data, has nowhere in the specification to find that reasoning; the choice lives only in this migration and the test asserting it."
+    kind: unstated
+    correction: "Decide and disclose, in decision-log.md (and the specification node it fills, if one is warranted), what a pre-existing case_versions row reads as once the lifecycle's state attribute is introduced — mirroring the elapsed_ms and concept_description migration-backfill entries already on record."
+read:
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "insertHypothesisRevision's own INSERT statement — 'INSERT INTO hypothesis_revisions (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient) VALUES ($1, $2, $3, $4, $5, $6, $7)' — never names a state, and no test in this file attempts to alter a released revision's criterion, resolution or state, nor to remove one of its collects and assert it reads back unchanged; the file's own immutability tests (lines 371-385, 428-471) exercise only case_versions rows and case_version_hypotheses manifest entries belonging to a released case version, never a hypothesis-revision's own released state."
+looked_past: "The migration-ordering and file-content assertions (\"arrives as the next-numbered script after 0008, with 0006's own file still holding its original, unconditional rule text\") and the drop of hypothesis_collects (migration 0004) are schema/project-arrangement facts — constraints/the-schema-replays-from-its-scripts itself says where scripts live and what form they take is the project's own arrangement, decided by its standard rather than this specification — so they are the standard-conformance pass's to weigh, not this one's."
+candidates_opened:
+  - rules/knowledge/a-case-has-at-most-one-draft
+  - rules/knowledge/a-case-version-number-is-never-reused
+  - rules/knowledge/a-case-version-is-written-once
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - rules/knowledge/a-hypothesis-name-is-unique-within-its-case
+  - rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  - rules/knowledge/a-hypothesis-revision-number-is-never-reused
+  - domain/knowledge/hypothesis
+  - domain/knowledge/manifest-entry
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version-state
+  - rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
