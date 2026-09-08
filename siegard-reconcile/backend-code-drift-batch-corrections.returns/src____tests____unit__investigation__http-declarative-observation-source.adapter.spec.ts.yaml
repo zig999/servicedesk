@@ -1,0 +1,72 @@
+findings:
+- file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+  where: the it() block at lines 854-865, "treats a response body that is not valid JSON as nothing extracted, rather than throwing, on the ok path"
+  evidence: 'expect(outcome).toEqual({ result: ''ok'', observation: JSON.stringify({}) });'
+  cost: The choice to answer an ok-status response whose body does not parse as JSON with an empty, usable-looking observation — rather than ending unavailable, or some other classification — is fixed only in this test. A reader checking what the specification says a malformed corporate-system payload does to an otherwise-successful call finds nothing, and anyone changing this behavior later (e.g. to end unavailable, matching how every other malformed-input case in this same file already degrades) has no node to update or be held to.
+  kind: unstated
+  correction: State, in a node governing the HTTP connector's own reading of its response (an-http-connector-configuration-declares-its-call or a sibling node), what an ok-classified status whose body does not parse as JSON yields.
+read:
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability {'
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: domain/investigation/evidence-result
+  held_at: the outcome assertions distinguishing the four endings throughout the file, and the accepted-endings list derived from EVIDENCE_RESULTS in the statusMap refusal test
+  evidence: expect(refusal.context.problems).toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: the whole span of malformed/incomplete/unresolved-configuration tests (lines ~598-778), e.g. the missing-address case
+  evidence: 'expect(outcome).toEqual({ result: ''unavailable'', result_detail: IncompleteConnectorCallDescriptorError.name });'
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: "import {\n  asHttpConnectorCallConfiguration,\n  HttpDeclarativeObservationSource,\n  type IConnectorConfigurationQuery,\n} from '../../../investigation/http-declarative-observation-source.adapter.js';"
+looked_past: The file's checks that the adapter imports no third-party HTTP client and defaults to the platform's own fetch, and that a non-string resolved body is JSON-encoded while a string body is sent verbatim, are transport-mechanics and tooling choices with no domain content once an HTTP body must leave as bytes — they read as a standard-conformance or architecture concern, not a specification-conformance one, and are not reported here.
+candidates_opened:
+- rules/integration/an-unclassified-status-ends-unavailable
+- rules/integration/an-unreachable-connector-ends-unavailable
+- rules/integration/an-unresolvable-observation-ends-unavailable
+- rules/integration/evidence-arrives-in-the-glossary-vocabulary
+- rules/investigation/collection-has-its-own-budget-within-the-total
+- rules/investigation/collection-runs-in-the-requester-scope
+- rules/investigation/no-stage-aborts-on-its-deadline
+- contracts/integration/concept-observation
+- contracts/integration/corporate-records-source
+- contracts/investigation/observation-source
+- contracts/system/corporate-records
+- constraints/evidence-normalization-is-an-anticorruption-layer
+- constraints/the-domain-depends-on-no-infrastructure
+- domain/integration/capability
+- scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+- scenarios/investigation/a-collection-timeout-degrades-to-no-data
+- scenarios/investigation/a-slow-capability-yields-to-the-collection-budget

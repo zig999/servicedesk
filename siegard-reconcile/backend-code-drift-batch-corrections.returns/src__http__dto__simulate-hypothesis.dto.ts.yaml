@@ -1,0 +1,79 @@
+findings:
+- file: src/http/dto/simulate-hypothesis.dto.ts
+  where: the third branch of the evaluationSchema discriminated union (lines 59-67), covering all three inconclusive reasons
+  evidence: "z.object({\n  hypothesis: z.string().min(1),\n  verdict: z.literal(INCONCLUSIVE_VERDICT),\n  reason: z.enum(EVALUATION_REASONS),\n  citations: z.array(citationSchema).readonly(),\n  usage: usageSchema.optional(),\n  elapsed_ms: z.int().optional(),\n  prompt: z.string().optional(),\n}),"
+  cost: citations carries no .min(1) here, so an evaluation with reason no-data and an empty citations array validates successfully through this response schema — the same branch already applies .min(1) to citations for the confirmed and refuted verdicts two blocks above, so the omission reads as a gap rather than a choice; a no-data verdict produced with nothing cited would pass this boundary instead of being caught, and a reader checking this schema for how a no-data reason is bound to its evidence finds no such constraint.
+  kind: contradicts
+  node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  correction: split the inconclusive branch by reason so citations carries .min(1) where reason is 'no-data' (mirroring the confirmed/refuted branches), while judgment-failure and deadline-exceeded keep citations as currently unconstrained.
+read:
+- node: contracts/investigation/case-simulation
+  held_at: the whole file — simulateHypothesisRequestSchema and simulateHypothesisResponseSchema
+  evidence: "export const simulateHypothesisRequestSchema = z.object({\n  case: caseRefSchema,\n  subject: subjectSchema,\n  requester: z.string().min(1),\n  hypothesis: z.string().min(1),\n});\n...\nexport const simulateHypothesisResponseSchema = z.object({\n  evidence: z.array(evidenceSchema).readonly(),\n  evaluation: evaluationSchema,\n  durations: durationsSchema,\n});"
+- node: domain/investigation/citation
+  held_at: citationSchema, lines 30-33
+  evidence: 'const citationSchema = z.object({ concept: z.string().min(1), field: z.string().min(1).optional() });'
+- node: domain/investigation/durations
+  held_at: durationsSchema, lines 70-74
+  evidence: 'const durationsSchema = z.object({ collection: z.int(), judgment: z.int(), total: z.int() });'
+- node: domain/investigation/evaluation
+  held_at: evaluationSchema, lines 42-68
+  evidence: 'z.object({ hypothesis: z.string().min(1), verdict: z.literal(CONFIRMED_VERDICT), citations: z.array(citationSchema).min(1).readonly(), usage: usageSchema.optional(), elapsed_ms: z.int().optional(), prompt: z.string().optional() })'
+- node: domain/investigation/evaluation-reason
+  held_at: the reason field of the inconclusive branch, line 62
+  evidence: 'reason: z.enum(EVALUATION_REASONS),'
+- node: domain/investigation/evidence
+  held_at: nowhere
+  evidence: 'evidence: z.array(evidenceSchema).readonly(), — the shape is declared in the imported ./evidence.dto.js, not in this file'
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: import { evidenceSchema } from './evidence.dto.js'; — this file never names an evidence-result value directly
+- node: domain/investigation/subject
+  held_at: subjectSchema, lines 11-14
+  evidence: 'const subjectSchema = z.object({ type: z.string().min(1), attributes: z.array(subjectAttributeValueSchema).min(1) });'
+- node: domain/investigation/subject-attribute-value
+  held_at: subjectAttributeValueSchema, lines 6-9
+  evidence: 'const subjectAttributeValueSchema = z.object({ attribute: z.string().min(1), value: z.string().min(1) });'
+- node: domain/investigation/usage
+  held_at: usageSchema, lines 35-38
+  evidence: 'const usageSchema = z.object({ input_tokens: z.int(), output_tokens: z.int() });'
+- node: domain/investigation/verdict
+  held_at: the VERDICTS import destructured and used as literals, lines 3 and 40-45
+  evidence: 'const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS; ... verdict: z.literal(CONFIRMED_VERDICT),'
+- node: rules/investigation/a-subject-carries-at-least-one-attribute
+  held_at: subjectSchema's attributes field, line 13
+  evidence: 'attributes: z.array(subjectAttributeValueSchema).min(1),'
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'concept: z.string().min(1), — concept is referenced only as a name string inside citationSchema; its own attributes (accepts, ttl, description) are not declared in this file'
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: 'export const simulateHypothesisResponseSchema = z.object({ evidence: ..., evaluation: ..., durations: ... }); — none of investigation''s own attributes (id, requester, ticket_ref, narrative, assessment, cost, written_at) appear'
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: 'const caseRefSchema = z.object({ slug: z.string().min(1), version: z.int().positive() }); — no state field appears anywhere in the file'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'concept: z.string().min(1), — this file neither registers nor validates a concept''s description'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'concept: z.string().min(1), — no description field appears anywhere in the file'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: the file's only exports are simulateHypothesisRequestSchema and simulateHypothesisResponseSchema — no method, responseMap, statusMap, address, query, headers or body field appears
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: 'export const simulateHypothesisResponseSchema = z.object({ evidence: ..., evaluation: ..., durations: ... }); — no written_at field appears, consistent with the operation never writing an investigation'
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: 'const caseRefSchema = z.object({ slug: z.string().min(1), version: z.int().positive() }); — the file shapes a payload and states no read-refusal handling'
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: 'const caseRefSchema = z.object({ slug: z.string().min(1), version: z.int().positive() }); — no lifecycle or transition appears'
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: 'const caseRefSchema = z.object({ slug: z.string().min(1), version: z.int().positive() }); — no input-requirement concept appears'
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: 'const caseRefSchema = z.object({ slug: z.string().min(1), version: z.int().positive() }); — no read-time validation of a stored case version is performed or referenced here'
+looked_past: the confirmed/refuted branches mark usage, elapsed_ms and prompt all .optional() even though a decided verdict always followed a judgment call per domain/investigation/evaluation's own conditional-presence description; the required/optional distinction across the five reason-and-verdict combinations is nuanced enough (judgment-failure vs. deadline-exceeded vs. no-data all differ) that I did not treat it as a clear, single-node contradiction the way the no-data citations gap is.

@@ -1,0 +1,66 @@
+read:
+- node: domain/knowledge/hypothesis-revision
+  held_at: the overwrite test (line 1766) — calls overwriteHypothesisRevision with new content while asserting the revision number is unchanged
+  evidence: 'await store.overwriteHypothesisRevision({ slug, hypothesis_name: ''a-hypothesis'', revision, criterion: ''the replaced criterion'', collects: [], resolution: aResolution(glossary) });
+
+    const page = await store.listHypothesisRevisions(slug, ''a-hypothesis'', { offset: 0, limit: 20 });
+
+    expect(page.data.map((item) => item.revision)).toEqual([revision]);'
+- node: domain/knowledge/hypothesis-revision-state
+  held_at: 'the assertions naming state: ''draft'' / state: ''released'' on listHypothesisRevisions results (e.g. line 636)'
+  evidence: 'expect(page.data).toEqual([{ revision, criterion: ''a criterion'', collects: [], resolution: aResolution(glossary), state: ''released'' }]);'
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: the overwrite-against-released-revision test (line 2056), asserting the typed error and its mapped status
+  evidence: 'await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+
+    const caught = await rejection.catch((error: unknown) => error);
+
+    expect(statusForError(caught)).toBe(409);'
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]); — a bare fixture insert; the concept's own attributes (accepts, description, ttl-as-strictest-tolerance) are never asserted
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — the file's whole import surface names no investigation type
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — no evaluation-related type or field appears anywhere in the file
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — no evidence-result value (ok/unavailable/denied/timeout) appears anywhere in the file
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — the investigation aggregate is never referenced; the suite exercises only the case-store
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — no usage/input_tokens/output_tokens reference anywhere in the file
+- node: domain/knowledge/case-version-state
+  held_at: 'the listCaseVersions assertions naming state: ''draft'' / state: ''released'' (e.g. lines 283-286)'
+  evidence: 'expect(page.data).toEqual([{ version: version1, state: ''released'' }, { version: version2, state: ''draft'' }]);'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]); — inserted with no description column and no assertion that one is required
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]); — no description text, meaning-versus-policy or field-semantics assertion appears in the file
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — no connector configuration, method, responseMap or statusMap reference anywhere in the file
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — the file's released_at assertions (e.g. line 970) concern domain/knowledge/case-version, not domain/investigation/investigation's written_at; no investigation write is exercised
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: the file's error imports (lines 6-13) name CaseAlreadyHasDraftError, CaseHoldsNoDraftError, CaseNotFoundError, CaseStoreError, CaseVersionNotDraftAtReleaseError, CaseVersionNotDraftError, ManifestPositionOccupiedError, ReleasedHypothesisRevisionNotAlterableError — CaseVersionNotValidError is absent
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the release/discard/removeManifestEntry/placeHypothesis refusal tests against a released version (e.g. lines 973-991, 993-1020, 1044-1072, 1074-1098)
+  evidence: 'await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftAtReleaseError);
+
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: ''released'' } });'
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — no capability, case-input-requirement or input-schema reference anywhere in the file
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: the file's error imports (lines 6-13) name no CaseVersionNotValidError, and no test drives a stored version through a structural or coherence validator
+looked_past: the file states and tests many domain facts about case-version and hypothesis-revision (draft-cap, version/revision numbering, manifest-position uniqueness, listing order, catalog derivation, manifest copy-on-draft) that are governed by nodes outside this pack (e.g. a-case-has-at-most-one-draft, a-case-version-number-is-never-reused, a-hypothesis-revision-number-is-never-reused, hypotheses-are-ordered-by-precedence, a-new-drafts-manifest-is-copied-from-an-existing-version) — not reported here since they sit outside this file's node set and I found no disagreement between what the source states and what those candidate identities (per candidates.txt) attribute them to.

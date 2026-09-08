@@ -96,6 +96,37 @@
       "title": "Seeded concepts declare a description, proven at the fixture, the source and the seeded row",
       "summary": "Property tests over the concept fixture, the seed script's own source, and a real Postgres run prove every seeded concept carries a non-empty, fixture-sourced description that restates neither the case's hypothesis criterion nor its resolution.",
       "task": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions"
+    },
+    {
+      "id": "review/backend-code-drift-batch-corrections",
+      "kind": "review",
+      "file": "review/backend-code-drift-batch-corrections.md",
+      "title": "Review of backend-code-drift-batch-corrections",
+      "summary": "Reviews the six delivered tasks of the backend-code-drift-batch-corrections initiative -- case-version-state-from-canonical-list, input-requirements-validates-at-read, malformed-configuration-vocabularies, simulation-response-integer-fields, written-at-is-required, and seeded-concepts-declare-descriptions -- against their criteria, the specification, the project's own standard, and one captured run over the whole change.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A configuration whose statusMap is not an object mapping an HTTP status to one evidence-result ending issues no call and ends unavailable with a result detail reporting a MalformedHttpConnectorConfigurationError.",
+        "A read naming a stored version every validator rule holds for still answers one case-input-requirement per subject attribute that a capability answering a concept in the version collection plan names in properties.",
+        "A read naming a stored version every validator rule holds for still names separately each resolved capability whose own stored input schema does not currently hold a well-formed shape.",
+        "Each of the two files continues to declare its own usage and durations schemas, with no shared schema module introduced.",
+        "Each seeded description states what the named observation means and names no decision a case own criterion or a specification rule governs.",
+        "Every path resolving a case version state through the guard -- assembleVersion, listCases, createDraftVersion, releaseVersion, discardDraft and updateDraftVersion -- resolves the same state it resolved before.",
+        "No literal draft or released string remains in isCaseVersionState own condition.",
+        "No producer of an Investigation acquires a written_at assignment it did not already make.",
+        "No string literal in src/src/investigation/http-declarative-observation-source.adapter.ts enumerates the HTTP methods or the evidence-result endings.",
+        "That refusal is an HTTP 409 response reporting a CaseVersionNotValidError.",
+        "That refusal is not the generic refusal a domain error the status map does not name receives.",
+        "The canonical array is declared in one place, with no second list of the same values introduced.",
+        "The description requirement of rules/glossary/a-concept-declares-its-description refuses none of the concepts the seed writes.",
+        "The name, accepts and ttl each seeded concept already carries are unchanged.",
+        "The refusals rules/knowledge/a-case-version-moves-through-its-declared-lifecycle states, CaseVersionNotDraftError and CaseVersionNotDraftAtReleaseError, keep their stated status and name.",
+        "isCaseVersionState decides membership against an exported canonical array of the case-version-state values, in the same form isHypothesisRevisionState already uses."
+      ],
+      "findings": 20
     }
   ],
   "edges": [
@@ -242,6 +273,42 @@
       "to": "implementation/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/backend-code-drift-batch-corrections",
+      "to": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/backend-code-drift-batch-corrections",
+      "to": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/backend-code-drift-batch-corrections",
+      "to": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/backend-code-drift-batch-corrections",
+      "to": "task/investigation-record-declared-types/simulation-response-integer-fields",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/backend-code-drift-batch-corrections",
+      "to": "task/investigation-record-declared-types/written-at-is-required",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/backend-code-drift-batch-corrections",
+      "to": "task/seeded-concept-vocabulary/seeded-concepts-declare-descriptions",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }

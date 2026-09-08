@@ -1,0 +1,90 @@
+read:
+- node: constraints/the-domain-depends-on-no-infrastructure
+  held_at: the file's own import list
+  evidence: 'import { collectionPlan, requiresEvaluationOf } from ''../case/case-resolution.js'';
+
+    import type { Case } from ''../case/case.js'';
+
+    import { InvestigationNotBuildableError } from ''../errors/investigation-not-buildable.error.js'';
+
+    import { SubjectAttributeNotInGlossaryError } from ''../errors/subject-attribute-not-in-glossary.error.js'';
+
+    import type { IGlossaryQuery } from ''../glossary/glossary-query.port.js'';'
+- node: contracts/investigation/glossary-source
+  held_at: refuseAttributesNotInGlossary's call into the glossary port
+  evidence: const resolution = await glossary.readVocabularyTerm('subject-attribute', name);
+- node: domain/glossary/subject-attribute
+  held_at: the attribute names read off subject.attributes and checked against the glossary
+  evidence: for (const name of new Set(subject.attributes.map((pair) => pair.attribute))) {
+- node: domain/investigation/investigation
+  held_at: the object literal buildInvestigation returns
+  evidence: "return {\n    id: options.id,\n    requester: options.requester,\n    ticket_ref: options.ticket_ref,\n    narrative: options.narrative,\n    subject,\n    pinned_case: pinnedCaseOf(theCase),\n    prompt_version: options.prompt_version,\n    model: options.model,\n    evidence: [...evidence],\n    evaluations: [...evaluations],\n    assessment: options.assessment,\n    cost: options.cost,\n    durations: options.durations,\n    written_at: options.written_at!,\n  };"
+- node: domain/investigation/subject
+  held_at: the call to buildSubject and the returned subject field
+  evidence: const subject = buildSubject(subjectType, subjectAttributes);
+- node: domain/investigation/subject-attribute-value
+  held_at: the .attribute field read off each pair in refuseAttributesNotInGlossary
+  evidence: subject.attributes.map((pair) => pair.attribute)
+- node: rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
+  held_at: refuseAttributesNotInGlossary, invoked before the record is assembled
+  evidence: "await refuseAttributesNotInGlossary(subject, glossary);\n...\nif (missing.length > 0) {\n    throw new SubjectAttributeNotInGlossaryError(subject.type, missing);\n  }"
+- node: rules/investigation/a-subject-carries-at-least-one-attribute
+  held_at: nowhere
+  evidence: const subject = buildSubject(subjectType, subjectAttributes); — this file passes subjectAttributes straight to buildSubject with no count check of its own
+- node: rules/investigation/one-evaluation-per-required-hypothesis
+  held_at: evaluationTotalityViolations
+  evidence: "for (const name of required) {\n    const count = counts.get(name) ?? 0;\n    if (count === 0) {\n      violations.push(`the required hypothesis \"${name}\" has no matching evaluation`);\n    } else if (count > 1) {\n      violations.push(...)"
+- node: rules/investigation/one-evidence-per-collected-concept
+  held_at: evidenceTotalityViolations
+  evidence: "for (const concept of plan) {\n    const count = counts.get(concept) ?? 0;\n    if (count === 0) {\n      violations.push(`the collection plan's concept \"${concept}\" has no matching evidence`);\n    } else if (count > 1) {\n      violations.push(...)"
+- node: rules/investigation/replay-is-pinned
+  held_at: the pinned_case, model, prompt_version and evidence fields of the returned literal
+  evidence: "pinned_case: pinnedCaseOf(theCase),\n    prompt_version: options.prompt_version,\n    model: options.model,\n    evidence: [...evidence],"
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: BuildInvestigationOptions.written_at (optional) carried through with a non-null assertion, rather than the factory itself requiring or deriving it
+  evidence: 'readonly written_at?: string;
+
+    ...
+
+    written_at: options.written_at!,'
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: concept is used only as a bare string key — item.concept, ${concept} in evidenceTotalityViolations; its own name/accepts/ttl/description shape is never read or asserted here
+- node: domain/investigation/durations
+  held_at: the durations field of the returned literal, forwarded unchanged
+  evidence: 'durations: options.durations,'
+- node: domain/investigation/evaluation
+  held_at: the .hypothesis field read off each Evaluation in evaluationTotalityViolations
+  evidence: evaluations.map((item) => item.hypothesis)
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: the file contains no reference to an evidence-result value (ok/unavailable/denied/timeout)
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: the file contains no reference to usage, input_tokens or output_tokens
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: the file contains no reference to a case version's draft/released state
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: the file contains no concept-registration or description logic
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: the file contains no description text of any kind
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: the file contains no connector-configuration logic
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: the file contains no case-version read logic
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: the file contains no case-version lifecycle logic
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: the file contains no case-input-requirement derivation
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: the file contains no case-version validation-at-read logic
+looked_past: the domain errors this file throws (SubjectAttributeNotInGlossaryError, InvestigationNotBuildableError) carry no HTTP status or code the way sibling glossary/case-version rules name one for their own refusals, which the specification search found named nowhere in the tree either — but mapping a domain error to a status is the concern of whatever status-map file answers for it, not this factory, so I did not report it against this file.
+candidates_opened: []

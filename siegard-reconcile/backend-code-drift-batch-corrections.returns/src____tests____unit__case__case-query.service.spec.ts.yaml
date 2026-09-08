@@ -1,0 +1,70 @@
+findings:
+- file: src/__tests__/unit/case/case-query.service.spec.ts
+  where: the expect(result.case).toEqual({...}) block, lines 428-447, and the identical expect(replayed).toEqual({...}) block, lines 648-667
+  evidence: "expect(result.case).toEqual({\n  slug: SLUG,\n  title: 'A case',\n  when_to_use: 'when a curator needs a case to test read-case composition over',\n  version,\n  authored_at: '2024-01-01T00:00:00.000Z',\n  subject: SUBJECT,\n  fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },\n  state: 'released',\n  released_at: expect.any(String),\n  manifest: expectedDefaultManifest(),\n  hypotheses: [ ... ],\n});"
+  cost: Both exact-match assertions fix the whole shape readCase and replayCase answer for a version, and neither carries any consolidation_register-related key — not a value, not an explicit "no register" marker. A reader of rules/knowledge/a-presented-case-version-states-its-own-declared-attributes goes to case-query.service's read-case expecting every reading to say explicitly whether a version declares a consolidation register, and this test locks in a response that says nothing about it at all — indistinguishable from the blank the rule's own text names and refuses ("never leaving a blank in place of the statement").
+  kind: contradicts
+  node: rules/knowledge/a-presented-case-version-states-its-own-declared-attributes
+  correction: The seeded version, the FakeCaseStore's returned shape, and both toEqual expectations would need a consolidation_register-bearing field (or the explicit "declares no consolidation register" statement the rule requires) for both the draft and the released case seeded here, which currently authors no register at all.
+read:
+- node: domain/glossary/concept
+  held_at: coherentGlossary(), line 393
+  evidence: 'glossary.holdConcept({ name: CONCEPT, accepts: [SUBJECT], ttl: 60, description: ''a fixture concept'' });'
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no domain/investigation type is imported or referenced anywhere in the file
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no domain/investigation type is imported or referenced anywhere in the file
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no domain/investigation type is imported or referenced anywhere in the file
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no domain/investigation type is imported or referenced anywhere in the file
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no domain/investigation type is imported or referenced anywhere in the file
+- node: domain/knowledge/case-version-state
+  held_at: FakeCaseStore's stored.state field (lines 60, 147, 208) and the assertions against it, e.g. line 700
+  evidence: expect(result.case.state).toBe('draft');
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'public holdConcept(concept: Concept): void { this.concepts.set(concept.name, concept); } — the fixture setter performs no description check, and no test in this file exercises registering or updating a concept at all'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'description: ''a fixture concept'' — an arbitrary fixture value; no test in this file asserts anything about what a description may or may not state'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no connector-configuration type is imported or referenced anywhere in the file
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: the file's only type imports (lines 1-37) are case-store, case, capability-registry, glossary-query, terms and pagination types; no domain/investigation type is imported or referenced anywhere in the file
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: e.g. the assertions at lines 486-493 and 517-524
+  evidence: "expect(refusal).toBeInstanceOf(CaseVersionNotValidError);\nexpect((refusal as CaseVersionNotValidError).context).toEqual({\n  slug: SLUG,\n  version,\n  violations: ['the case declares no hypothesis'],\n});"
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: 'public async release(slug: string, version: number): Promise<void> { ... if (stored === undefined || stored.state === ''released'') { return; } stored.state = ''released''; ... } — the fake never raises CaseVersionNotDraftError or CaseVersionNotDraftAtReleaseError, and no test in this file exercises a lifecycle-transition refusal'
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: e.g. lines 707-720
+  evidence: 'const draftResult = await service.readCaseInputRequirements(SLUG, version);
+
+    await store.release(SLUG, version);
+
+    const releasedResult = await service.readCaseInputRequirements(SLUG, version);
+
+
+    expect(draftResult.requirements.map((requirement) => requirement.attribute)).toEqual([''an-attribute'']);
+
+    expect(releasedResult).toEqual(draftResult);'
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: lines 575-586
+  evidence: 'await expect(service.readCase(SLUG, version)).resolves.toMatchObject({ case: { slug: SLUG } });
+
+    glossary.forgetConcept(CONCEPT);
+
+    const refusal = await readAsError(service.readCase(SLUG, version));
+
+    expect(refusal).toBeInstanceOf(CaseVersionNotValidError);'
+looked_past: 'The exact wording of structural and coherence violation strings asserted verbatim throughout the file (e.g. "the case declares no hypothesis", "title is empty", ''the concept "..." does not exist in the glossary'') is not reported: decision-log.md records that the specification deliberately leaves the enumeration of "every validator rule" and "any structural or coherence rule" unstated rather than itemized, so no node was found this vocabulary contradicts or restates.'

@@ -1,0 +1,79 @@
+read:
+- node: domain/glossary/action
+  held_at: the assertion at the 'holds exactly the fixture's own action names' test
+  evidence: "const { rows } = await connection.query<{ name: string }>('SELECT name FROM actions WHERE name = ANY($1)', [expected]);\n\n  expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());"
+- node: domain/glossary/concept
+  held_at: the concept-shape assertion and the description-column assertion
+  evidence: '''SELECT name, ttl FROM concepts WHERE name = ANY($1)'' ... ''SELECT concept_name, subject_type_name FROM concept_accepts WHERE concept_name = ANY($1)'' ... expect(stored?.description).toBe(concept.description);'
+- node: domain/glossary/outcome
+  held_at: the two outcomes tests ('holds both non-conclusion outcomes...' and 'holds exactly the fixture's own outcome names...')
+  evidence: "const { rows } = await connection.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [nonConclusionNames]);\n\n    expect(rows.map((row) => row.name).sort()).toEqual([...nonConclusionNames].sort());"
+- node: domain/glossary/recipient
+  held_at: the 'holds exactly the fixture's own recipient names' test
+  evidence: 'const { rows } = await connection.query<{ name: string }>(''SELECT name FROM recipients WHERE name = ANY($1)'', [expected]);'
+- node: domain/glossary/subject-type
+  held_at: the 'holds exactly the fixture's own subject-type name' test
+  evidence: 'const { rows } = await connection.query<{ name: string }>(''SELECT name FROM subject_types WHERE name = ANY($1)'', [expected]);'
+- node: domain/knowledge/case-version
+  held_at: the 'the case is stored...' test and the 'reads the seeded version back whole...' test
+  evidence: "expect(result.case.slug).toBe(fixture.slug);\n    expect(result.case.title).toBe(fixture.title);\n    ...\n    expect(result.case.fallback).toEqual(fixture.fallback);"
+- node: rules/knowledge/a-case-version-is-written-once
+  held_at: the 'holds no second case version...' test and the 'leaves every manifested hypothesis-revision...' test
+  evidence: "const secondVersion = await createCaseStore(connection).assembleVersion(SLUG, VERSION + 1);\n\n  expect(secondVersion).toBeUndefined();"
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: domain/knowledge/case-version-state
+  held_at: the 'released' literal used in assertGenuinelyEmpty, isPermanentlyReferencedByAReleasedCaseVersion and readBackManifestedRevisions
+  evidence: 'if (storedCase !== undefined && storedCase.state !== ''released'') { ... }
+
+    ... WHERE cv.fallback_outcome = $1 AND cv.state = ''released'' ...
+
+    ... WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = ''released'''
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: the 'writes the concepts.description column...' test
+  evidence: expect(concept.description.length).toBeGreaterThan(0);
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: expect(stored?.description).toBe(concept.description); — an equality check against the fixture text, never a check that the text states meaning rather than policy
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: the file only reads the resulting 'released' value (already accounted for under domain/knowledge/case-version-state) and never exercises a transition trigger or a refusal code
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: import { readFile } from 'node:fs/promises'; ... import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
+looked_past: the foreign-key-violation tolerance, the fixture-wipe and env-placeholder mechanics, and the postgres-specific error code '23503' are test-infrastructure/standard concerns, not domain facts, and are left to a different pass.
+candidates_opened:
+- domain/glossary/subject-attribute
+- domain/knowledge/hypothesis-revision-state
+- domain/knowledge/hypothesis-revision
+- rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+- domain/integration/capability
+- rules/knowledge/every-collected-concept-has-a-read-only-capability
+- rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+- rules/knowledge/a-case-has-at-most-one-draft
+- rules/knowledge/a-case-version-number-is-never-reused

@@ -101,7 +101,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -845,7 +845,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -983,7 +983,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -1069,11 +1069,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
+          "digest": "sha256:77474a68d4420da06bd692bccb1938f09a704c7e913bcced8243e952d0cfd69f"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -1143,7 +1143,7 @@
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         }
       ]
     },
@@ -1165,7 +1165,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -1179,7 +1179,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         }
       ]
     },
@@ -1415,7 +1415,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -1469,7 +1469,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
+          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -1541,7 +1541,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -1551,7 +1551,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         }
       ]
     },
@@ -1611,7 +1611,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -1667,7 +1667,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1753,7 +1753,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1847,7 +1847,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/fixtures/glossary/outcome.json",
@@ -1875,7 +1875,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         }
       ]
     },
@@ -1913,7 +1913,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1987,7 +1987,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         },
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
@@ -2037,7 +2037,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/case/case.ts",
@@ -2187,7 +2187,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -2473,7 +2473,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
@@ -2817,11 +2817,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
+          "digest": "sha256:77474a68d4420da06bd692bccb1938f09a704c7e913bcced8243e952d0cfd69f"
         },
         {
           "path": "src/src/investigation/evaluation-reason.ts",
@@ -3067,7 +3067,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:fc67cf6a17cbbd3c736c225e101f302714a05de688507245758069dfeee3977e"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         },
         {
           "path": "src/src/investigation/investigation.ts",
@@ -3109,11 +3109,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
+          "digest": "sha256:77474a68d4420da06bd692bccb1938f09a704c7e913bcced8243e952d0cfd69f"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -3133,7 +3133,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
@@ -3175,11 +3175,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
+          "digest": "sha256:77474a68d4420da06bd692bccb1938f09a704c7e913bcced8243e952d0cfd69f"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -3187,7 +3187,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         },
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
@@ -3513,7 +3513,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -3615,7 +3615,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -3651,7 +3651,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/http/discard.controller.ts",
@@ -3703,7 +3703,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -3897,7 +3897,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
+          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -3921,7 +3921,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -3945,7 +3945,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -4099,7 +4099,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/http/dto/place-hypothesis.dto.ts",
@@ -4135,11 +4135,11 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -4197,11 +4197,11 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         }
       ]
     },
@@ -4291,7 +4291,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -4361,7 +4361,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -4369,7 +4369,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         }
       ]
     },
@@ -4431,7 +4431,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -4447,7 +4447,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
+          "digest": "sha256:b54c32d7cb430ed73b0fdfaed7c37ba588dfa259043e8722b4900a8363b13b8a"
         },
         {
           "path": "src/src/http/dto/update-draft.dto.ts",
@@ -4563,7 +4563,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         }
       ]
     },
@@ -5125,7 +5125,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -5139,7 +5139,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -5153,7 +5153,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5171,7 +5171,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -5461,7 +5461,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         }
       ]
     },
@@ -5591,7 +5591,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5613,7 +5613,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5667,7 +5667,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -5685,7 +5685,7 @@
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -5703,7 +5703,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         }
       ]
     },
@@ -5741,15 +5741,15 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
+          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         },
         {
           "path": "src/src/investigation/investigation.ts",
-          "digest": "sha256:00a38839493e28e6a09ea6b4b7d88f8e4bf5bae8a7b488c239c38ce168f3c983"
+          "digest": "sha256:54e23a1125069acd221e3ce4c7eaa68dc51a07cb356b0ba878ea9da4b48906fc"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -5919,7 +5919,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -5943,7 +5943,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -5957,7 +5957,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6021,7 +6021,7 @@
         },
         {
           "path": "src/src/__tests__/integration/seed.spec.ts",
-          "digest": "sha256:684766eee872a2fdf87cbdba7c1096c4d1fd59fa4fd6d005791b556766c405e6"
+          "digest": "sha256:9d74cbad7aaa179ba35066ff22266a8a1f9c2489c6f04fcaa0ad3f8ad548cbb4"
         },
         {
           "path": "src/src/case/manifest-composition.operations.ts",
@@ -6053,11 +6053,11 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         }
       ]
     },
@@ -6099,7 +6099,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6113,7 +6113,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6151,11 +6151,11 @@
     },
     {
       "node": "rules/knowledge/a-collected-concept-declares-a-ttl",
-      "digest": "sha256:44ec933a59c405884955f1cc5f500fe84d7be567db638d3cdffca2e23c301172",
+      "digest": "sha256:456ee277c697e60aa417fb078c3183d13c18ff6bd13010d14f12c22e6e15cf7f",
       "files": [
         {
           "path": "src/src/fixtures/glossary/concept.json",
-          "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
+          "digest": "sha256:fb61f917bad746adf29a25736cb789492fdf2d2819a5c83872f8419b4991b8af"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -6185,7 +6185,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/errors/concept-refuses-subject-type.error.ts",
@@ -6201,7 +6201,7 @@
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
-          "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
+          "digest": "sha256:fb61f917bad746adf29a25736cb789492fdf2d2819a5c83872f8419b4991b8af"
         }
       ]
     },
@@ -6343,7 +6343,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6369,7 +6369,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6411,7 +6411,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6433,7 +6433,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6529,7 +6529,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6543,7 +6543,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6561,7 +6561,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6603,7 +6603,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6725,7 +6725,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
+          "digest": "sha256:d7db7c6dc858f965be4aa8b7b5f6980c0713063ca5a52c664203a278e0b95f13"
         }
       ]
     },
@@ -6759,7 +6759,7 @@
         },
         {
           "path": "src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
-          "digest": "sha256:f01b91c95a71a4e01a5426e72664bb5dd52b53b0346510e979390af3c532f44e"
+          "digest": "sha256:f25af795b52fe2da3246b7a645aabfc2e3dc949bb17e4dddb1fad5e423e53c43"
         },
         {
           "path": "src/src/__tests__/integration/persistence/revision-alteration-refused-only-when-released-schema.spec.ts",
@@ -6925,7 +6925,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/errors/concept-not-in-glossary.error.ts",
@@ -6967,7 +6967,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
+          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -6975,7 +6975,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -6985,7 +6985,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
@@ -7049,7 +7049,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -7123,7 +7123,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
+          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -7131,7 +7131,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
@@ -7229,7 +7229,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -7243,7 +7243,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -7481,7 +7481,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -7515,7 +7515,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -7563,7 +7563,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },
@@ -7605,7 +7605,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef"
+          "digest": "sha256:20949a75c711dfc7f465472feee759ed2ebe2a5671c9d2c492594deb314b9b41"
         }
       ]
     },
@@ -7657,7 +7657,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
         }
       ]
     },

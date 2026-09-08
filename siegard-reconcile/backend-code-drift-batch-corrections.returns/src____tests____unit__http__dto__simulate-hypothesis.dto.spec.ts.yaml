@@ -1,0 +1,66 @@
+findings:
+- file: src/__tests__/unit/http/dto/simulate-hypothesis.dto.spec.ts
+  where: the test titled "validates a response whose evaluation carries usage and elapsed_ms as integers, matching a completed simulation that made a model call" (lines 159-170) and the test titled "validates a response whose evaluation carries neither usage nor elapsed_ms, matching a run that made no model call" (lines 180-186)
+  evidence: it('validates a response whose evaluation carries usage and elapsed_ms as integers, matching a completed simulation that made a model call'
+  cost: domain/investigation/evaluation already states that usage, elapsed_ms and prompt are "present exactly when a call happened, absent when reason no-data means judgment was never called at all"; these two test titles restate that same conditional-presence rule in their own words as the reason the fixtures are shaped this way, rather than only asserting that the schema accepts or omits the fields. If that conditional-presence rule is later refined in the node, these titles keep asserting the old pairing without the specification changing, so a reader trusts the test's own wording for a fact the node, not the test, is supposed to be the one home for.
+  kind: contradicts
+  node: domain/investigation/evaluation
+  correction: title the two tests by what they check structurally — e.g. "validates a response whose evaluation carries both usage and elapsed_ms" / "carries neither usage nor elapsed_ms" — and leave why a call did or did not happen to the node.
+- file: src/__tests__/unit/http/dto/simulate-hypothesis.dto.spec.ts
+  where: the test titled "validates a response whose durations.collection is zero, matching a stage measured below one millisecond" (lines 172-178)
+  evidence: it('validates a response whose durations.collection is zero, matching a stage measured below one millisecond'
+  cost: rules/investigation/a-measured-duration-below-one-millisecond-is-zero is the node that states a millisecond duration is 0 exactly "where the span settled in under one millisecond," with the reasoning for why a floor of one millisecond would be wrong. The test title restates that specific business rule, almost verbatim, as its own explanation for why zero is a valid durations.collection, rather than only asserting that the schema accepts zero. That rule lives in a node this file's own set does not name, so a reader of this test who trusts its title has no reason to go open the rule that actually governs it, and if the rule's own reasoning is ever revised the title carries the old rationale forward untouched.
+  kind: contradicts
+  node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+  correction: title the test structurally — e.g. "validates a response whose durations.collection is zero" — and leave the sub-millisecond rationale solely in the rule node.
+read:
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'concept: ''a-concept'','
+- node: domain/investigation/durations
+  held_at: aValidDurations() and the fractional-rejection tests for collection, judgment and total (lines 47-49, 135-157)
+  evidence: "function aValidDurations(): Record<string, unknown> {\n  return { collection: 10, judgment: 20, total: 30 };\n}"
+- node: domain/investigation/evaluation
+  held_at: aConfirmedEvaluation/aRefutedEvaluation/anInconclusiveEvaluation and the usage/elapsed_ms rejection tests (lines 22-45, 108-133)
+  evidence: "function aConfirmedEvaluation(): Record<string, unknown> {\n  return {\n    hypothesis: 'a-hypothesis',\n    verdict: VERDICTS[0],\n    citations: [{ concept: 'a-concept' }],\n  };\n}"
+- node: domain/investigation/evidence-result
+  held_at: aValidEvidenceItem's result field (line 13)
+  evidence: 'result: ''ok'','
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: "function aValidResponse(): Record<string, unknown> {\n  return {\n    evidence: [],\n    evaluation: aConfirmedEvaluation(),\n    durations: aValidDurations(),\n  };\n}"
+- node: domain/investigation/usage
+  held_at: the usage fractional-rejection tests (lines 108-124)
+  evidence: 'const evaluation = { ...aConfirmedEvaluation(), usage: { input_tokens: 10.5, output_tokens: 5 } };'
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'concept: ''a-concept'','
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'concept_description: ''a description of the concept'','
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: "function aValidResponse(): Record<string, unknown> {\n  return {\n    evidence: [],\n    evaluation: aConfirmedEvaluation(),\n    durations: aValidDurations(),\n  };\n}"
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+looked_past: the 'validates a production-shaped response with no field stripped from its evidence or its evaluation' test checks schema pass-through fidelity (a zod/serialization concern), which states no domain fact of its own and is not this pass's to judge.
+candidates_opened:
+- domain/investigation/evidence
+- contracts/investigation/case-simulation
+- rules/investigation/a-measured-duration-below-one-millisecond-is-zero

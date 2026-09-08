@@ -1,0 +1,47 @@
+read:
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: "the file never constructs or references a glossary concept; its only fixtures are Investigation-shaped objects (validInvestigationAttributesExceptWrittenAt, lines 4-27)"
+  - node: domain/investigation/durations
+    held_at: "the durations field of the fixture, line 25"
+    evidence: "durations: { collection: 1, judgment: 1, total: 2 },"
+  - node: domain/investigation/evaluation
+    held_at: nowhere
+    evidence: "evaluations: [], — an empty array satisfies the required many:true attribute but no evaluation object's own attributes are exercised"
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "evidence: [], — no evidence-result value appears anywhere in the file"
+  - node: domain/investigation/investigation
+    held_at: "the fixture (lines 4-27) and the type assertions over written_at (lines 29-55)"
+    evidence: "expectTypeOf<Investigation['written_at']>().toEqualTypeOf<string>();"
+  - node: domain/investigation/usage
+    held_at: "the usage field nested in the assessment fixture, line 20"
+    evidence: "usage: { input_tokens: 1, output_tokens: 1 },"
+  - node: domain/knowledge/case-version-state
+    held_at: nowhere
+    evidence: "no case version, draft or released, is referenced anywhere in the file"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: nowhere
+    evidence: "no concept, description or registry refusal appears in the file"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: nowhere
+    evidence: "no description text is authored or asserted by this file"
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: "no connector configuration, call shape or placeholder appears in the file"
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: nowhere
+    evidence: "written_at: '2024-01-01T00:00:00.000Z', — a static literal used only to satisfy the type checker; nothing in the file exercises when the value is fixed relative to a settling write"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: "no case-version read or refusal is exercised in this file"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no lifecycle transition is exercised in this file"
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: nowhere
+    evidence: "no case version or capability input requirement is exercised in this file"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no case-version read or validation is exercised in this file"
+looked_past: the `@ts-expect-error` comments at lines 34 and 51 carry explanatory prose beyond the bare directive the compiler consumes, but whether that prose is permitted comment content is the standard-conformance pass's question, not this one, and neither comment states a fact the node set disagrees with.

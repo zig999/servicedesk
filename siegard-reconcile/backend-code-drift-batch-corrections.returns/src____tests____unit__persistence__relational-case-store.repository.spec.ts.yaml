@@ -1,0 +1,49 @@
+read:
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'return { hypothesis_name: ''a-hypothesis'', concept_name: ''a-concept'', ...overrides }; — concept_name is used only as an opaque string in fixtures and assertions; the file never touches a concept''s name/accepts/ttl/description.'
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js'; — the file's whole import surface (case-store port, case.js, errors, database-connection) carries no durations, stage timing or budget attribute anywhere in its 636 lines.
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: import type { Resolution } from '../../../case/case.js'; — no hypothesis evaluation, verdict, citation or reason is constructed or asserted anywhere in the file.
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: 'function collectRow(overrides: Row = {}): Row { return { hypothesis_name: ''a-hypothesis'', concept_name: ''a-concept'', ...overrides }; } — the only "collect" the file models is a manifest-hypothesis-to-concept join row, never a collection attempt''s own ok/unavailable/denied/timeout ending.'
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: the file's entire subject is RelationalCaseStore's assembleVersion/createDraft/insertHypothesisRevision/placeHypothesis/removeManifestEntry/release/discard/updateDraft/readHighestRevisionReleaseState — no investigation aggregate (narrative, evidence, evaluations, assessment, cost) is ever assembled or asserted.
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: no reference to input_tokens, output_tokens or a provider call appears anywhere in the file — the file's own rows (caseVersionRow, manifestRow, collectRow) carry none of usage's attributes.
+- node: domain/knowledge/case-version-state
+  held_at: 'the caseVersionRow() default (state: ''released'', line 70) and the guard tests at lines 204-221'
+  evidence: 'expect(answered?.state).toBe(''draft''); ... await expect(store.assembleVersion(''a-slug'', 1)).rejects.toBeInstanceOf(CaseStoreError); for state: ''archived'' — the file treats only draft/released as valid and rejects any other value.'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'concept_name: ''a-concept'' is the only concept-shaped data in the file; no description, its required-ness, or the ConceptDescriptionRequiredError refusal is stated or exercised.'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: no field-level description text is authored, asserted, or classified anywhere in the file.
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: no connector configuration, method, responseMap, statusMap, placeholder or MalformedHttpConnectorConfigurationError appears in the file at all.
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: expect(answered?.authored_at).toBe('2024-03-01T10:15:30.250Z'); and expect(recorded[2]?.params).toEqual(['a-slug', 1, 'released']); (release) — the file's timestamps are a case version's own authored_at and released_at, never an investigation's written_at, and no settle-instant semantics are asserted.
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no CaseVersionNotValidError, and no validator-rule-at-read concept, appears anywhere in the file; the only refusals it exercises are CaseAlreadyHasDraftError, CaseHoldsNoDraftError, CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError and ManifestPositionOccupiedError.
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the refusal assertions for placeHypothesis (lines 398-413), removeManifestEntry (465-480), discard (551-567), updateDraft (582-602), and release (501-516)
+  evidence: 'await expect(rejection).rejects.toMatchObject({ context: { slug: ''a-slug'', version: 1, state: ''released'' } }); for the four non-release operations, and the matching CaseVersionNotDraftAtReleaseError assertion for release — both error types and both context shapes match the rule''s own statement exactly.'
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: no case-input-requirement, capability, or input-schema derivation is read or asserted anywhere in the file.
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: no read-time structural/coherence validation, and no replay-is-pinned exception, is exercised anywhere in the file — the file's own reads are assembleVersion and readHighestRevisionReleaseState, neither validating a case version's coherence.
+looked_past: several facts the file states (draft-per-case uniqueness, manifest copy from a source version, hypothesis-revision numbering and position uniqueness, highest-revision-first ordering, a released hypothesis-revision never altered) are governed by nodes outside this delegation's set (rules/knowledge/a-case-has-at-most-one-draft, a-new-drafts-manifest-is-copied-from-an-existing-version, a-hypothesis-revision-number-is-never-reused, a-hypothesis-position-is-unique-within-its-case, a-hypothesis-revisions-listing-answers-highest-revision-first, a-released-hypothesis-revision-is-never-altered) and the source conforms to each on inspection, so none is reported; likewise the consolidation_register value 'formal' is grounded in domain/knowledge/consolidation-register, a node outside this set, and the transaction/deletion-ordering shape the tests assert is an implementation detail rather than a domain fact.
+candidates_opened:
+- domain/knowledge/hypothesis-revision-state

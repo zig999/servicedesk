@@ -1,0 +1,47 @@
+read:
+  - node: domain/glossary/concept
+    held_at: "the ConceptFixtureEntry type (lines 11-16) and the first test's per-attribute assertions (lines 41-44)"
+    evidence: "type ConceptFixtureEntry = {\n  readonly name: string;\n  readonly accepts: readonly string[];\n  readonly ttl: number;\n  readonly description: string;\n};"
+  - node: domain/investigation/durations
+    held_at: nowhere
+    evidence: "the file's only two tests are `it('declares a non-empty description for every concept it holds', ...)` and `it(\"states what each collected concept's named observation means without repeating...\", ...)` — neither reads a durations attribute"
+  - node: domain/investigation/evaluation
+    held_at: nowhere
+    evidence: "the file reads only `hypothesis.collects`, `hypothesis.criterion` and `hypothesis.resolution` off `theCase.hypotheses`; no evaluation attribute (verdict, citations, usage, elapsed_ms, prompt) is read"
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "no enumeration value (ok, unavailable, denied, timeout) appears anywhere in the file"
+  - node: domain/investigation/investigation
+    held_at: nowhere
+    evidence: "the file imports `Case` and `parseCaseDocument`, never an investigation record; no investigation attribute is read or asserted"
+  - node: domain/investigation/usage
+    held_at: nowhere
+    evidence: "input_tokens and output_tokens appear nowhere in the file"
+  - node: domain/knowledge/case-version-state
+    held_at: nowhere
+    evidence: "neither `draft` nor `released` appears anywhere in the file"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: "the first test, lines 37-45"
+    evidence: "expect(typeof concept.description).toBe('string');\nexpect(concept.description.length).toBeGreaterThan(0);"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: "the second test, lines 47-66"
+    evidence: "expect(description).not.toBe(hypothesis.criterion);\nexpect(description).not.toContain(hypothesis.criterion);\nexpect(description).not.toContain(hypothesis.resolution.outcome);\nexpect(description).not.toContain(hypothesis.resolution.referral.action);\nexpect(description).not.toContain(hypothesis.resolution.referral.recipient);"
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: "no connector configuration attribute (method, responseMap, statusMap, address, query, headers, body, placeholder) appears in the file"
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: nowhere
+    evidence: "written_at appears nowhere in the file"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: "no HTTP status, error name or read-refusal appears in the file; `loadFixtureCase` only parses a fixture document via `parseCaseDocument`"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "no lifecycle transition, trigger or state appears in the file"
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: nowhere
+    evidence: "no case-input-requirement, capability or input schema appears in the file"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "no read-time validation is asserted; `loadFixtureCase` only invokes `parseCaseDocument(raw, SLUG)` once, and validation of the parsed case is not exercised here"
+looked_past: "the redundant `expect(description).not.toBe(hypothesis.criterion)` alongside the stronger `expect(description).not.toContain(hypothesis.criterion)` on lines 58-59 is a test-design duplication, not a domain fact, so it is left to a code-review pass rather than reported here."

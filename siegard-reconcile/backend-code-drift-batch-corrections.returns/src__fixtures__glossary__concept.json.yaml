@@ -1,0 +1,55 @@
+read:
+  - node: domain/glossary/concept
+    held_at: "each array entry — name/accepts/ttl/description"
+    evidence: "{ \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"The operating status corporate systems currently report for the customer's registered equipment.\" }"
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: "the description field of each entry"
+    evidence: "\"description\": \"Whether an active network outage is currently registered for the contract's service area.\""
+  - node: rules/knowledge/a-collected-concept-declares-a-ttl
+    held_at: "the ttl field of each entry"
+    evidence: "\"ttl\": 300 ... \"ttl\": 60"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the accepts field of each entry"
+    evidence: "\"accepts\": [\"contract\"]"
+  - node: domain/investigation/durations
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: domain/investigation/evaluation
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: domain/investigation/investigation
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: domain/investigation/usage
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: domain/knowledge/case-version-state
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: "the description field of each entry, present and non-empty"
+    evidence: "\"description\": \"The operating status corporate systems currently report for the customer's registered equipment.\""
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: "[ { \"name\": \"equipment-status\", \"accepts\": [\"contract\"], \"ttl\": 300, \"description\": \"...\" }, { \"name\": \"network-outage-flag\", \"accepts\": [\"contract\"], \"ttl\": 60, \"description\": \"...\" } ]"
+looked_past: the trace binds this fixture to a broad set of nodes far outside the glossary context (investigation, case-version lifecycle, connector configuration); those bindings appear over-inclusive for a two-entry glossary fixture, and whether the binding itself is correct is the trace's own concern rather than this file's conformance.
+candidates_opened:
+  - domain/glossary/subject-type

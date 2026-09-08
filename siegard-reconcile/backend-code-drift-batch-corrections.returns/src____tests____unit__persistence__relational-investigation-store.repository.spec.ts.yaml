@@ -1,0 +1,54 @@
+read:
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'concept: ''a-concept'', — concept appears only as an opaque name on evidence and citation rows/fixtures; the file never exercises the concept value-object''s own declared shape (accepts, ttl, description).'
+- node: domain/investigation/durations
+  held_at: the writing-optional type check and the durations round-trip tests, lines 745-813
+  evidence: 'expectTypeOf<Durations>().toEqualTypeOf<{ readonly collection: number; readonly judgment: number; readonly writing?: number; readonly total: number; }>();'
+- node: domain/investigation/evaluation
+  held_at: the evaluation assembly and insert-param tests, lines 374-401 and 443-471
+  evidence: expect(answered.evaluations).toEqual([aDecidedEvaluation()]); expect(answered.evaluations[0]).not.toHaveProperty('reason');
+- node: domain/investigation/evidence-result
+  held_at: line 366-372
+  evidence: 'evidence: [evidenceRow({ result: ''not-a-result'' })] ... await expect(store.read(''an-investigation-id'')).rejects.toBeInstanceOf(InvestigationStoreError);'
+- node: domain/investigation/investigation
+  held_at: the root-insert attribute test, lines 180-196
+  evidence: expect(rootInsert?.params).toEqual(['an-investigation-id', 'a-requester', 'a-ticket-ref', 'a narrative', 'a-subject-type', 'a-prompt-version', 'a-model', 'a-case-slug', 1, ...]);
+- node: domain/investigation/usage
+  held_at: the evaluation call-record and assessment usage tests, lines 443-471 and 492-509
+  evidence: expect(evaluationInsert?.params).toEqual([investigation.id, 'a-hypothesis', 'inconclusive', 'judgment-failure', 12, 34, 567, 'the judgment-failure prompt']);
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: 'pinned_case: { slug: ''a-case-slug'', version: 1 }, — the file carries only a case version number as an opaque replay pin; no draft/released state is read, written or asserted anywhere.'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'concept_description: '''', in evidenceRow/anEvidence — a plain fixture string; no concept-registration path is exercised in this file at all.'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'concept_description: ''a real description'' and description: ''a field description'' are opaque round-tripped strings; the file never asserts what such text may or may not state.'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: 'origin: ''a-connector'', is the only connector-related token in the file, carried as opaque data; no connector configuration, call shape or malformed-key behavior appears.'
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: the root-insert param list (written_at absent), line 188-196, and the duplicate-write mapping test, lines 274-290
+  evidence: expect(rootInsert?.params).toEqual([... 10, 20, 5, 35]); (no written_at among the 26 params) and await expect(rejection).rejects.toBeInstanceOf(InvestigationAlreadyStoredError);
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no case-version read or refusal of any kind appears in the file; only an opaque pinned_case_slug/pinned_case_version pair is written and read back.
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: same as above — no lifecycle transition or state is referenced.
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: no capability, collection plan or input-requirement derivation appears in this file.
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: store.read in this file validates only the investigation's own evidence-result, verdict, evaluation-reason and citation shape (its own typed error tests); no case-version validation is exercised.
+looked_past: the file's own assertions about exact SQL column positions ("the evidence insert's own twelfth param", "ahead of fields and concept_description, which migrations/0013 added after it") and the filesystem-independence test (line 578-583) are implementation/architecture concerns rather than domain facts, so they are left to that judgment.
+candidates_opened:
+- domain/investigation/evidence
+- domain/investigation/evaluation-reason
+- domain/investigation/verdict
+- rules/investigation/a-decided-evaluation-cites-evidence
+- rules/investigation/an-investigation-is-written-once
+- rules/investigation/an-empty-ticket-reference-is-no-ticket-reference

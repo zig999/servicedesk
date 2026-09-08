@@ -1,0 +1,113 @@
+findings:
+- file: src/http/dto/simulate-case.dto.ts
+  where: the verdict literals inside evaluationSchema's discriminated union, lines 42, 50, 58
+  evidence: 'verdict: z.literal(''confirmed''), / verdict: z.literal(''refuted''), / verdict: z.literal(''inconclusive''),'
+  cost: the sibling src/http/dto/simulate-hypothesis.dto.ts imports the same vocabulary — import { VERDICTS } from '../../investigation/verdict.js'; and const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS; — so this file hardcodes a second copy of the same three strings; if a verdict value is ever added or renamed at its one declared source, this schema has no dependency on that source and can silently drift out of sync while still looking correct.
+  kind: contradicts
+  node: domain/investigation/verdict
+  correction: import VERDICTS from '../../investigation/verdict.js' and build the three literals from it, matching simulate-hypothesis.dto.ts's own pattern.
+- file: src/http/dto/simulate-case.dto.ts
+  where: citations on the confirmed and refuted branches of evaluationSchema, lines 43 and 51
+  evidence: 'citations: z.array(citationSchema).min(1).readonly(),'
+  cost: the "at least one citation" threshold is stated once, by rules/investigation/a-decided-evaluation-cites-evidence ("Every confirmed or refuted evaluation carries at least one citation"), which is not among the nodes domain/investigation/evaluation and domain/investigation/citation state as this file's own shape; re-deriving the number here as this schema's own .min(1) gives the rule a second home, and the day the business changes that threshold nobody can tell from this file alone which value is the decided one.
+  kind: contradicts
+  node: rules/investigation/a-decided-evaluation-cites-evidence
+- file: src/http/dto/simulate-case.dto.ts
+  where: usage, elapsed_ms and prompt on the confirmed and refuted branches of evaluationSchema, lines 44-46 and 52-54
+  evidence: "usage: usageSchema.optional(),\n    elapsed_ms: z.int().optional(),\n    prompt: z.string().optional(),"
+  cost: domain/investigation/evaluation states these three are "present exactly when a call happened, absent when reason no-data means judgment was never called at all" — a state only the inconclusive branch can reach, since deciding confirmed or refuted always required the judgment call to run; marking them optional here too means a response missing usage/elapsed_ms/prompt on a confirmed or refuted evaluation validates as if the specification allowed that combination, though it never does, and a consumer reading this schema alone would not learn that these are actually mandatory there.
+  kind: contradicts
+  node: domain/investigation/evaluation
+  correction: require usage, elapsed_ms and prompt in the confirmed and refuted branches; keep them optional only in the inconclusive branch where reason is no-data.
+- file: src/http/dto/simulate-case.dto.ts
+  where: costSchema, lines 89-93
+  evidence: "const costSchema = z.object({\n  calls: z.number(),\n  input_tokens: z.number(),\n  output_tokens: z.number(),\n});"
+  cost: domain/investigation/cost declares calls, input_tokens and output_tokens as integers; z.number() accepts any finite value including fractions, so a malformed cost (e.g. an averaged or miscomputed count) passes this response validation though the specification's own shape never allows a non-integer here — and usageSchema, four lines above in the same file, validates the identically-named input_tokens/output_tokens as z.int(), so the same fact is checked two different ways in one file.
+  kind: contradicts
+  node: domain/investigation/cost
+  correction: use z.int() for calls, input_tokens and output_tokens, matching usageSchema and durationsSchema's own convention in this file.
+read:
+- node: contracts/investigation/case-simulation
+  held_at: the whole file — simulateCaseRequestSchema and simulateCaseResponseSchema
+  evidence: "export const simulateCaseRequestSchema = z.object({\n  case: caseRefSchema,\n  subject: subjectSchema,\n  requester: z.string().min(1),\n});"
+- node: domain/investigation/assessment
+  held_at: assessmentSchema, lines 78-87
+  evidence: "const assessmentSchema = z.object({\n  outcome: z.string().min(1),\n  referral: referralSchema,\n  determining_hypothesis: z.string().min(1).optional(),\n  text: z.string().min(1),\n  register: z.enum(CONSOLIDATION_REGISTERS),\n  usage: usageSchema,\n  elapsed_ms: z.int(),\n  prompt: z.string(),\n});"
+- node: domain/investigation/citation
+  held_at: citationSchema, lines 29-32
+  evidence: "const citationSchema = z.object({\n  concept: z.string().min(1),\n  field: z.string().min(1).optional(),\n});"
+- node: domain/investigation/cost
+  held_at: costSchema, lines 89-93 (see finding — validates as z.number() rather than integer)
+  evidence: "const costSchema = z.object({\n  calls: z.number(),\n  input_tokens: z.number(),\n  output_tokens: z.number(),\n});"
+- node: domain/investigation/durations
+  held_at: durationsSchema, lines 95-100
+  evidence: "const durationsSchema = z.object({\n  collection: z.int(),\n  judgment: z.int(),\n  writing: z.int().optional(),\n  total: z.int(),\n});"
+- node: domain/investigation/evaluation
+  held_at: evaluationSchema, lines 39-65 (see finding — usage/elapsed_ms/prompt marked optional on confirmed/refuted)
+  evidence: "citations: z.array(citationSchema).min(1).readonly(),\n    usage: usageSchema.optional(),\n    elapsed_ms: z.int().optional(),\n    prompt: z.string().optional(),"
+- node: domain/investigation/evaluation-reason
+  held_at: the inconclusive branch of evaluationSchema, line 59
+  evidence: 'reason: z.enum(EVALUATION_REASONS),'
+- node: domain/investigation/evidence
+  held_at: the evidence field of simulateCaseResponseSchema, line 103, which composes the evidenceSchema imported from evidence.dto.ts rather than declaring the shape here
+  evidence: 'evidence: z.array(evidenceSchema).readonly(),'
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: import { evidenceSchema } from './evidence.dto.js';
+- node: domain/investigation/subject
+  held_at: subjectSchema, lines 11-14
+  evidence: "const subjectSchema = z.object({\n  type: z.string().min(1),\n  attributes: z.array(subjectAttributeValueSchema).min(1),\n});"
+- node: domain/investigation/subject-attribute-value
+  held_at: subjectAttributeValueSchema, lines 6-9
+  evidence: "const subjectAttributeValueSchema = z.object({\n  attribute: z.string().min(1),\n  value: z.string().min(1),\n});"
+- node: domain/investigation/usage
+  held_at: usageSchema, lines 34-37
+  evidence: "const usageSchema = z.object({\n  input_tokens: z.int(),\n  output_tokens: z.int(),\n});"
+- node: domain/investigation/verdict
+  held_at: the verdict literals inside evaluationSchema's discriminated union, lines 42, 50, 58 (see finding — hardcoded rather than imported)
+  evidence: 'verdict: z.literal(''confirmed''),'
+- node: domain/knowledge/referral
+  held_at: referralSchema, lines 67-70
+  evidence: "const referralSchema = z.object({\n  action: z.string().min(1),\n  recipient: z.string().min(1),\n});"
+- node: domain/knowledge/resolution
+  held_at: the outcome/referral pair of resolvedOutcomeSchema, lines 72-76
+  evidence: "const resolvedOutcomeSchema = z.object({\n  outcome: z.string().min(1),\n  referral: referralSchema,\n  determining: z.string().min(1).optional(),\n});"
+- node: rules/investigation/a-subject-carries-at-least-one-attribute
+  held_at: subjectSchema's attributes field, line 13
+  evidence: 'attributes: z.array(subjectAttributeValueSchema).min(1),'
+- node: domain/glossary/concept
+  held_at: nowhere as its own shape — referenced only by citationSchema's concept field, encoded as a plain string
+  evidence: 'concept: z.string().min(1),'
+- node: domain/investigation/investigation
+  held_at: nowhere — correctly, the response schema carries no id, narrative, ticket_ref or written_at
+  evidence: "export const simulateCaseResponseSchema = z.object({\n  evidence: z.array(evidenceSchema).readonly(),\n  evaluations: z.array(evaluationSchema).readonly(),\n  resolved: resolvedOutcomeSchema,\n  assessment: assessmentSchema,\n  cost: costSchema,\n  durations: durationsSchema,\n});"
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: "const caseRefSchema = z.object({\n  slug: z.string().min(1),\n  version: z.int().positive(),\n});"
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'concept: z.string().min(1),'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'concept: z.string().min(1),'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: import { z } from 'zod';
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere — consistent with simulate-case never persisting a record
+  evidence: "export const simulateCaseResponseSchema = z.object({\n  evidence: z.array(evidenceSchema).readonly(),\n  evaluations: z.array(evaluationSchema).readonly(),\n  resolved: resolvedOutcomeSchema,\n  assessment: assessmentSchema,\n  cost: costSchema,\n  durations: durationsSchema,\n});"
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: "const caseRefSchema = z.object({\n  slug: z.string().min(1),\n  version: z.int().positive(),\n});"
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: "const caseRefSchema = z.object({\n  slug: z.string().min(1),\n  version: z.int().positive(),\n});"
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: "const caseRefSchema = z.object({\n  slug: z.string().min(1),\n  version: z.int().positive(),\n});"
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: "const caseRefSchema = z.object({\n  slug: z.string().min(1),\n  version: z.int().positive(),\n});"
+looked_past: resolvedOutcomeSchema names its third field determining while assessmentSchema names the same underlying fact determining_hypothesis; no node in this set dictates wire-level field naming for the resolved-outcome object, so this is a naming-consistency question rather than a domain fact this pass judges.
+candidates_opened:
+- rules/investigation/a-decided-evaluation-cites-evidence

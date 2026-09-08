@@ -1,0 +1,65 @@
+read:
+- node: constraints/the-domain-depends-on-no-infrastructure
+  held_at: the import list, lines 1-6
+  evidence: 'import type { Assessment } from ''./assessment.js'';
+
+    import type { Cost } from ''./cost.js'';
+
+    import type { Durations } from ''./durations.js'';
+
+    import type { Evaluation } from ''./evaluation.js'';
+
+    import type { Evidence } from ''./evidence.js'';
+
+    import type { Subject } from ''./subject.js'';'
+- node: domain/investigation/investigation
+  held_at: the Investigation type declaration, lines 13-30
+  evidence: "export type Investigation = {\n  readonly id: string;\n  readonly requester: string;\n\n  readonly ticket_ref?: string;\n  readonly narrative: string;\n  readonly subject: Subject;\n  readonly pinned_case: PinnedCase;\n  readonly prompt_version: string;\n  readonly model: string;\n  readonly evidence: readonly Evidence[];\n  readonly evaluations: readonly Evaluation[];\n  readonly assessment: Assessment;\n  readonly cost: Cost;\n  readonly durations: Durations;\n\n  readonly written_at: string;\n};"
+- node: rules/investigation/replay-is-pinned
+  held_at: the pinned_case, prompt_version, model and evidence fields, lines 20-23
+  evidence: "readonly pinned_case: PinnedCase;\n  readonly prompt_version: string;\n  readonly model: string;\n  readonly evidence: readonly Evidence[];"
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: the single written_at field on the one Investigation type, line 29
+  evidence: 'readonly written_at: string;
+
+    };'
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: the file declares only PinnedCase and Investigation; no Concept type or field appears anywhere
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: 'readonly durations: Durations; — the file references the imported type name only; the shape (collection, judgment, writing, total) is not declared here'
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: 'readonly evaluations: readonly Evaluation[]; — only the imported type name is referenced, not the shape (hypothesis, verdict, reason, citations, usage, elapsed_ms, prompt)'
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: 'readonly evidence: readonly Evidence[]; — no reference to the ok/unavailable/denied/timeout enumeration appears in this file'
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: the file has no usage field or reference; Usage does not appear anywhere in this file's text
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: 'the file declares pinned_case: PinnedCase with slug and version only; no draft/released state field appears'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: no concept or description field appears in this file
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: no concept, field-semantics or description construct appears in this file
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: the file declares only PinnedCase and Investigation; no connector configuration, method, responseMap or statusMap appears
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no read, refusal or case-version validation construct appears in this file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no lifecycle, transition or case-version-state construct appears in this file
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: no case-input-requirement or derivation construct appears in this file
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: no read path or validator construct appears in this file
+looked_past: 'The type mismatch between the specification''s written_at: type datetime and this file''s written_at: string is the same string-for-datetime representation used throughout the codebase''s domain-layer types (e.g. authored_at, released_at, observed_at in case.ts and case-store.port.ts), with Date appearing only at the persistence layer — a serialization convention, not a domain-fact discrepancy, so it is not reported as a finding.'

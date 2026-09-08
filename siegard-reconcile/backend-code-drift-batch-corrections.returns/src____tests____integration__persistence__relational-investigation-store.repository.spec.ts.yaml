@@ -1,0 +1,59 @@
+findings:
+- file: src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts
+  where: the concurrent-writes test, lines 302-318 ('lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError')
+  evidence: "const results = await Promise.allSettled([store.write(investigation), store.write(investigation)]);\n\n    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);\n    const rejected = results.find((result) => result.status === 'rejected') as PromiseRejectedResult | undefined;\n    expect(rejected?.reason).toBeInstanceOf(InvestigationAlreadyStoredError);"
+  cost: written-at-records-when-the-write-settled's own text says a later attempt that finds the record already present 'settles by finding the record already present', unchanged by not being the one that persisted — the specification's own account of the losing side of a race is success, not an error. This test instead requires the store to reject the losing write with InvestigationAlreadyStoredError, and the sequential write-once test two blocks above (lines 281-300) enforces the same rejection for a repeat write under an existing id. Anyone implementing to this suite builds a store that raises a caller-visible failure for exactly the case the specification calls a settled write, and the next reader who trusts the passing suite over the node will reproduce that failure rather than the settling the specification actually asks for.
+  kind: contradicts
+  correction: the losing concurrent write should be asserted to settle (fulfill), not reject — e.g. both promises fulfilled, with the losing one answering from the record the other one persisted — matching written-at-records-when-the-write-settled's 'an attempt that settles by finding the record already present persists nothing and changes nothing'.
+  node: rules/investigation/written-at-records-when-the-write-settled
+read:
+- node: domain/glossary/concept
+  held_at: insertFixtureRows' concept insert, and anIntegrationEvidence's concept/concept_description fields
+  evidence: await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [names.concept]);
+- node: domain/investigation/durations
+  held_at: anIntegrationInvestigation's durations literal, and the no-writing-duration test
+  evidence: 'durations: { collection: 10, judgment: 20, writing: 5, total: 35 },'
+- node: domain/investigation/evaluation
+  held_at: anIntegrationInvestigation's evaluations literal and the judgment-failure/no-data-citation tests
+  evidence: 'evaluations: [{ hypothesis: ''a-hypothesis'', verdict: ''confirmed'', citations: [{ concept: fixtures.concept, field: ''a-field'' }] }],'
+- node: domain/investigation/evidence-result
+  held_at: anIntegrationEvidence's result field and the result-detail test
+  evidence: 'evidence: [{ ...base.evidence[0]!, result: ''timeout'', result_detail: ''the capability did not answer in time'' }],'
+- node: domain/investigation/investigation
+  held_at: anIntegrationInvestigation, the fixture builder assembling every attribute the roundtrip and its variants read back
+  evidence: 'id, requester: ''a-requester'', ticket_ref: ''a-ticket-ref'', narrative: ''a narrative'', subject: { type: fixtures.subjectType, attributes: [...] }, pinned_case: { slug: fixtures.caseSlug, version: fixtures.caseVersion }, prompt_version: ''a-prompt-version'', model: ''a-model'', evidence: [...], evaluations: [...], assessment: {...}, cost: {...}, durations: {...}, written_at: ''2024-01-01T00:00:00.000Z'','
+- node: domain/investigation/usage
+  held_at: assessment.usage and the judgment-failure evaluation's usage field
+  evidence: 'usage: { input_tokens: 77, output_tokens: 41 },'
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: INSERT INTO case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) -- no state column is named or read anywhere in this file
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [names.concept]); -- inserted directly, with no description supplied and no registry validation exercised
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [names.concept]); -- description is never referenced anywhere in this file
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: '''INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)'', [names.capabilityName, names.capabilityVersion, ''read-only'', ''an-input-schema'', ''an-output-schema'', 5000, ''a-connector'', names.concept], -- connector is an opaque fixture string, no configuration keys are exercised'
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: expectWrittenAtAssignedByTheStore and the roundtrip test's call to it (line 219), and the write-once test's unchanged-written_at assertion (line 297) -- but contradicted elsewhere in this same file, see findings
+  evidence: "expect(actual).not.toBe(literalTheFixtureSupplied);\n  const asMs = Date.parse(actual as string);\n  expect(Number.isNaN(asMs)).toBe(false);\n  expect(Math.abs(Date.now() - asMs)).toBeLessThan(60_000);"
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: the case_versions fixture row is inserted and never read back or validated in this file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: the case_versions fixture row carries no state and no transition is exercised in this file
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: the capabilities fixture row is inserted purely to satisfy investigation_evidence's foreign key; no input-requirement derivation is read in this file
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: store.read in this file reads an investigation record, never a case version; no case-version validation path is exercised
+looked_past: the register test's own title claims the migration's column carries a 'formal' DEFAULT clause, and the durations fixture's collection+judgment+writing happens to sum to its own total — neither is asserted here as a domain rule in its own right (the first guards against a schema default leaking into a read, the second is inert fixture data), so I left both to whichever judgment reads the migration and the standard for test hygiene.
+candidates_opened:
+- rules/investigation/an-investigation-is-written-once
+- rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+- domain/investigation/assessment

@@ -1,0 +1,78 @@
+findings:
+- file: src/__tests__/unit/http/dto/simulate-case.dto.spec.ts
+  where: the test at lines 52-63, "validates a confirmed evaluation's citation that carries no field key at all, since the shared citation schema now leaves field optional for every verdict branch, not narrowed to the inconclusive branch alone" (repeated at lines 274-293 and 303-314, each with a confirmed-verdict citation carrying only concept)
+  evidence: '{ hypothesis: ''a-hypothesis'', verdict: ''confirmed'', citations: [{ concept: ''a-concept'' }] } ... expect(result.success).toBe(true)'
+  cost: domain/investigation/citation ties field's presence to the verdict — required for confirmed or refuted, absent only for a no-data citation — but this suite asserts a confirmed citation with no field validates and titles the assertion as the schema's own current rule; the next reader who trusts the suite over the node ships a confirmed verdict with no traceable evidence field and the tests will not catch it.
+  kind: contradicts
+  node: domain/investigation/citation
+  correction: the confirmed/refuted fixtures would need to carry a field, and the field-optional claim narrowed back to the no-data citation the node actually describes
+- file: src/__tests__/unit/http/dto/simulate-case.dto.spec.ts
+  where: lines 303-314, "validates a response whose evaluation carries neither usage nor elapsed_ms and whose durations carries no writing, matching a run that made no model call and reached no consolidation"
+  evidence: '{ hypothesis: ''a-hypothesis'', verdict: ''confirmed'', citations: [{ concept: ''a-concept'' }] } ... expect(result.success).toBe(true)'
+  cost: domain/investigation/evaluation states usage, elapsed_ms and prompt are present exactly when a call happened and absent only when reason is no-data — a state only an inconclusive verdict carries — yet this test names a confirmed verdict as the case of "a run that made no model call"; a reader of the suite comes away believing a confirmed verdict can exist without a judgment call ever having run, which the node rules out.
+  kind: contradicts
+  node: domain/investigation/evaluation
+  correction: the no-call fixture would need an inconclusive verdict with reason no-data, not a confirmed one, to match what the node allows to lack usage/elapsed_ms/prompt
+- file: src/__tests__/unit/http/dto/simulate-case.dto.spec.ts
+  where: lines 316-322, "validates a response whose cost.calls is fractional, since domain/investigation/cost stays outside this task's scope"
+  evidence: 'cost: { calls: 1.5, input_tokens: 1, output_tokens: 1 } ... expect(result.success).toBe(true)'
+  cost: domain/investigation/cost types calls as a required integer; this test names that very node and then asserts a fractional calls value is valid, so anything downstream that compares call counts (billing, load analysis) can silently receive a fractional count the domain model was written to exclude, and the suite itself is the place recording that this is acceptable.
+  kind: contradicts
+  node: domain/investigation/cost
+  correction: the fixture's cost.calls would need to stay an integer, or the schema and this test both narrowed to reject a fractional value, matching the node's own type
+read:
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'concept: ''a-concept'''
+- node: domain/investigation/durations
+  held_at: the durations fixture in aValidResponse() (line 40) and the dedicated durations tests (lines 44-50, 239-301)
+  evidence: 'durations: { collection: 10, judgment: 20, total: 30 }'
+- node: domain/investigation/evaluation
+  held_at: the evaluations fixtures across lines 55-63, 226-237, 274-293 and 303-314 (see findings above for where the node's own rule is contradicted rather than held)
+  evidence: '{ hypothesis: ''a-hypothesis'', verdict: ''confirmed'', citations: [{ concept: ''a-concept'' }] }'
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: 'result: ''ok'''
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: 'evidence: [], evaluations: [], resolved: { outcome: ''an-outcome'', referral: { action: ''an-action'', recipient: ''a-recipient'' } }, assessment: aValidAssessment(), cost: { calls: 1, input_tokens: 1, output_tokens: 1 }, durations: { collection: 10, judgment: 20, total: 30 }'
+- node: domain/investigation/usage
+  held_at: the usage-focused rejection tests, lines 119-135 and 208-224
+  evidence: 'usage: { input_tokens: 10 }'
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+looked_past: the test asserting prompt carries no minimum length (lines 187-194) is a schema-strictness choice with no node stating a minimum either way, and the register/verdict enum-membership tests never restate the enums' own values, so neither is a domain-fact issue for this pass.
+candidates_opened:
+- domain/investigation/citation
+- domain/investigation/cost
+- domain/investigation/assessment
+- domain/investigation/evaluation-reason
+- domain/investigation/verdict
+- domain/knowledge/referral
+- domain/knowledge/resolution
+- domain/investigation/evidence

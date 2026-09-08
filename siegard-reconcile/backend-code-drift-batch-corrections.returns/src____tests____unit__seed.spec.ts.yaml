@@ -1,0 +1,117 @@
+read:
+- node: domain/glossary/concept
+  held_at: the concepts-INSERT assertion, lines 61-67
+  evidence: expect(source).toMatch(/INSERT INTO concepts[\s\S]*?\[concept\.name, concept\.ttl, concept\.description\]/);
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: "expect(source).not.toMatch(/namesNoDescription/);\n  expect(source).not.toMatch(/ConceptDescriptionRequiredError/);"
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: "for (const description of descriptions) {\n    expect(source).not.toContain(description);\n  }"
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: it("releases each manifested revision by calling lifecycle's own releaseHypothesisRevision operation", async () => {
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: 'import { readFile } from ''node:fs/promises'';
+
+    import { join } from ''node:path'';
+
+    import { fileURLToPath, pathToFileURL } from ''node:url'';
+
+    import { expect, it } from ''vitest'';'
+looked_past: The file's assertions all check literal regex/substring matches against seed.ts's raw source text rather than executing behavior — a testing-style concern, not a domain fact, so it is not reported here.
+candidates_opened:
+- rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+- domain/knowledge/hypothesis-revision
+- domain/knowledge/hypothesis-revision-state

@@ -1,0 +1,64 @@
+findings:
+- file: src/__tests__/unit/investigation/investigation-factory.spec.ts
+  where: the aDurations fixture, line 141-143 (its default is reused by validOptions() across nearly every test in the file)
+  evidence: 'return { collection: 10, judgment: 20, writing: 5, total: 35, ...overrides };'
+  cost: the one default durations value every test in the file draws on embodies total as exactly collection + judgment + writing (10+20+5=35); a reader treating this fixture as an example of a valid Durations value — the way test fixtures ordinarily are read — takes away that total is the sum of the stages, the opposite of what the specification states, and may carry that assumption into a load-test comparison or a new fixture that actually depends on the relationship
+  kind: contradicts
+  correction: give the fixture a total that is not the sum of its own collection, judgment and writing (e.g. one that includes overhead/gaps), so the default no longer models the relationship the node forbids
+  node: domain/investigation/durations
+read:
+- node: domain/glossary/concept
+  held_at: the aHypothesis/anEvidence fixtures, which carry a concept only as an opaque name (collects, concept) and never construct or assert its accepts, ttl or description
+  evidence: 'function aHypothesis(name: string, collects: readonly string[]): Hypothesis { ... } // used as aHypothesis(''h1'', [''concept-a''])'
+- node: domain/investigation/durations
+  held_at: the aDurations fixture (line 141-143) and the pass-through assertion at line 479
+  evidence: expect(investigation.durations).toEqual(durations);
+- node: domain/investigation/evaluation
+  held_at: the aConfirmedEvaluation fixture (line 119-121) and the evaluation pass-through assertions (e.g. line 476)
+  evidence: 'return { hypothesis, verdict: ''confirmed'', citations: [{ concept: ''concept-a'', field: ''a-field'' }] };'
+- node: domain/investigation/evidence-result
+  held_at: the anEvidence fixture's result field, line 109
+  evidence: 'result: ''ok'','
+- node: domain/investigation/investigation
+  held_at: the round-trip assertions over buildInvestigation's output across the file, e.g. lines 456-480
+  evidence: expect(investigation.id).toBe('investigation-42'); expect(investigation.requester).toBe('requester-42');
+- node: domain/investigation/usage
+  held_at: the anAssessment fixture's usage field, line 130
+  evidence: 'usage: { input_tokens: 1, output_tokens: 1 },'
+- node: domain/knowledge/case-version-state
+  held_at: the aCase fixture's state field, line 94
+  evidence: 'state: ''released'','
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'public async readConcept(name: string): Promise<ConceptResolution> { return { held: false, name }; } // the file''s only glossary-concept construct, and it carries no description at all'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'public async readConcept(name: string): Promise<ConceptResolution> { return { held: false, name }; }'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: import { expect, expectTypeOf, it } from 'vitest'; // the file's imports and fixtures carry no connector configuration, method, responseMap or statusMap construct anywhere
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: the written_at pass-through and optional-field tests, lines 407-421 and 532-534
+  evidence: expect(investigation.written_at).toBeUndefined();
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: 'function aCase(overrides: Partial<Case> = {}): Case { ... } // the fixture builds a case directly, in-memory; nothing in the file reads a stored case version or asserts a refusal over one'
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: 'state: ''released'', // a static fixture field; the file exercises no transition, no draft state and no lifecycle refusal'
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: 'function aCase(overrides: Partial<Case> = {}): Case { ... } // no case-input-requirement, capability or input schema appears anywhere in the file'
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: 'function aCase(overrides: Partial<Case> = {}): Case { ... } // the fixture is never read back through a store; nothing in the file exercises validation at a read'
+looked_past: the exact refusal-message wording thrown by SubjectCarriesNoAttributeError and SubjectAttributeNotInGlossaryError, and the file's general structure and style, name no domain fact the governing rules (a-subject-carries-at-least-one-attribute, a-subject-attribute-is-drawn-from-the-glossary) leave undecided, so they are left to a different pass.
+candidates_opened:
+- rules/investigation/a-subject-carries-at-least-one-attribute
+- rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
+- rules/investigation/one-evaluation-per-required-hypothesis
+- rules/investigation/one-evidence-per-collected-concept
+- rules/investigation/replay-is-pinned
+- domain/investigation/subject
+- domain/investigation/subject-attribute-value
+- domain/glossary/subject-attribute

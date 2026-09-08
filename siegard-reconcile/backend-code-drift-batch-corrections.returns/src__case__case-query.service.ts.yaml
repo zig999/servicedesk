@@ -1,0 +1,76 @@
+read:
+- node: constraints/a-case-is-read-whole
+  held_at: readCase (lines 34-38) and heldVersion/structuralCase
+  evidence: "const assembled = await heldVersion(this.caseStore, slug, version);\n    const theCase = structuralCase(assembled, slug, version);\n    await this.refuseIncoherence(theCase, version);\n    return { case: theCase };"
+- node: contracts/knowledge/case-query
+  held_at: the five public methods of CaseQueryService (readCase, listCases, listCaseVersions, listHypotheses, listHypothesisRevisions)
+  evidence: 'public async readCase(slug: string, version: number): Promise<ReadCaseResult> and public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> and the matching listCaseVersions/listHypotheses/listHypothesisRevisions signatures'
+- node: contracts/system/case-authoring
+  held_at: nowhere
+  evidence: export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery { — the class exposes only read operations (readCase, readCaseInputRequirements, the four listings); no compose/release/discard operation appears
+- node: domain/knowledge/case
+  held_at: nowhere
+  evidence: import type { Case, Hypothesis, ManifestEntry } from './case.js'; — the file only reads a Case's fields (slug, title, manifest, ...) already assembled by the store; no next_version counter or create-draft operation appears
+- node: domain/knowledge/hypothesis
+  held_at: trustedHypothesisOf / flatHypothesisOf-style projection (lines 131-139)
+  evidence: "function trustedHypothesisOf(entry: ManifestEntry): Hypothesis {\n  const revision = entry.hypothesis_revision;\n  return {\n    name: revision.hypothesis.name,\n    criterion: revision.criterion,\n    collects: revision.collects,\n    resolution: revision.resolution,\n  };\n}"
+- node: rules/investigation/replay-is-pinned
+  held_at: replayCase (lines 92-95)
+  evidence: "export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {\n  const assembled = await heldVersion(caseStore, slug, version);\n  return trustedCaseOf(assembled);\n}"
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: structuralCase's catch clause and refuseViolations
+  evidence: "if (error instanceof InvalidCaseDocumentError) {\n      throw new CaseVersionNotValidError(slug, version, error.context.problems);\n    } and if (violations.length > 0) {\n    throw new CaseVersionNotValidError(slug, version, violations);\n  }"
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: readCaseInputRequirements (lines 41-47)
+  evidence: "await this.refuseGlossaryIncoherence(theCase, version);\n    const registeredCapabilities = await everyRegisteredCapability(this.capabilities);\n    return deriveCaseInputRequirements(theCase, registeredCapabilities);"
+- node: rules/knowledge/a-slug-identifies-one-case
+  held_at: nowhere
+  evidence: 'public async readCase(slug: string, version: number): Promise<ReadCaseResult> { — slug is taken as a read parameter naming an already-unique case; no uniqueness check is performed here'
+- node: rules/knowledge/every-case-version-remains-readable
+  held_at: readCase's explicit version parameter and listCaseVersions delegation
+  evidence: "public async listCaseVersions(\n    slug: string,\n    pagination: PaginationRequest,\n  ): Promise<PaginatedResponse<CaseVersionListItem>> {\n    return this.caseStore.listCaseVersions(slug, pagination);\n  }"
+- node: rules/knowledge/the-contract-check-reads-the-current-registration
+  held_at: readCaseInputRequirements's fresh capability read
+  evidence: const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: readCase (validates every read) versus replayCase (skips revalidation)
+  evidence: "const theCase = structuralCase(assembled, slug, version);\n    await this.refuseIncoherence(theCase, version); contrasted with replayCase's return trustedCaseOf(assembled); which never calls structuralCase or refuseIncoherence"
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'private readonly glossary: IGlossaryQuery, — the file holds a reference to the glossary port but declares no concept shape itself'
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: 'import type { ICapabilityQuery } from ''../capability-registry/capability-query.port.js'';
+
+    import { CaseNotFoundError } from ''../errors/case-not-found.error.js''; (full import block, lines 1-25) — no investigation type is imported or referenced anywhere in the file'
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: same import block, lines 1-25 — no evaluation type appears
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: same import block, lines 1-25 — no evidence-result type appears
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: same import block, lines 1-25 — no investigation aggregate is constructed or read here
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: same import block, lines 1-25 — no usage type appears
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: 'state: assembled.state, (assembledAsRawDocument and trustedCaseOf) — the state value is passed through unexamined; the file never enumerates or branches on draft/released itself'
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: 'private readonly glossary: IGlossaryQuery, — no concept registration or description check is performed in this file'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: 'private readonly glossary: IGlossaryQuery, — no description text is authored or read in this file'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: full import block, lines 1-25 — no connector-configuration type or HTTP call declaration appears anywhere in the file
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: full import block, lines 1-25 — the file performs no investigation write and no written_at field appears
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: 'public async readCase(slug: string, version: number): Promise<ReadCaseResult> { and the surrounding class body — no release/discard/lifecycle-transition method is present; the file only reads'
+looked_past: the node pack for this file names several nodes (domain/investigation/durations, evaluation, evidence-result, investigation, usage; rules/glossary/a-concept-declares-its-description and a-description-states-meaning-never-policy; rules/integration/an-http-connector-configuration-declares-its-call; rules/investigation/written-at-records-when-the-write-settled; rules/knowledge/a-case-version-moves-through-its-declared-lifecycle; domain/knowledge/case-version-state) that the candidate index shows bound instead to other files entirely (dto files, the investigation factory, the relational case store, the glossary fixture) — whether that binding itself is sound is a trace/reconciliation question, not this conformance judgment, so I report only what the file states or omits against each and leave the binding's correctness to whoever reconciles it.

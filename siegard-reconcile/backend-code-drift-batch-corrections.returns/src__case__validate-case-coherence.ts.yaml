@@ -1,0 +1,91 @@
+read:
+- node: contracts/knowledge/capability-check
+  held_at: the loop in capabilityViolations, which calls the query for each collected concept
+  evidence: violations.push(...answerGaps(name, await capabilities.readCapability(name)));
+- node: contracts/knowledge/vocabulary-terms
+  held_at: vocabularyViolations' call to readVocabularyTerm and conceptViolations' call to readConcept
+  evidence: const resolution = await glossary.readVocabularyTerm(vocabulary, name); ... const resolution = await glossary.readConcept(name);
+- node: contracts/system/case-authoring
+  held_at: caseCoherenceViolations concatenating every category of violation into one array, and validateCaseCoherence throwing once over the whole set
+  evidence: return [...(await glossaryCoherenceViolations(theCase, glossary)), ...(await capabilityViolations(theCase, capabilities))]; ... const violations = await caseCoherenceViolations(theCase, glossary, capabilities); if (violations.length > 0) { throw new IncoherentCaseError(theCase.slug, violations); }
+- node: domain/knowledge/case
+  held_at: validateCaseCoherence's construction of the refusal against the case's own slug
+  evidence: throw new IncoherentCaseError(theCase.slug, violations);
+- node: domain/knowledge/case-version
+  held_at: namedVocabularyTerms reading the declared subject type, and declaredResolutions reading the fallback
+  evidence: '{ vocabulary: ''subject-type'', name: theCase.subject }, ... return [...theCase.hypotheses.map((hypothesis) => hypothesis.resolution), theCase.fallback];'
+- node: domain/knowledge/hypothesis
+  held_at: declaredResolutions mapping each of the case's hypotheses to its resolution
+  evidence: return [...theCase.hypotheses.map((hypothesis) => hypothesis.resolution), theCase.fallback];
+- node: domain/knowledge/hypothesis-revision
+  held_at: conceptViolations and capabilityViolations walking collectionPlan(theCase), the union of every manifested revision's collected concepts
+  evidence: for (const name of collectionPlan(theCase)) {
+- node: domain/knowledge/referral
+  held_at: namedVocabularyTerms reading each resolution's referral action and recipient
+  evidence: '...termsOf(''action'', resolutions.map((resolution) => resolution.referral.action)), ...termsOf(''recipient'', resolutions.map((resolution) => resolution.referral.recipient)),'
+- node: domain/knowledge/resolution
+  held_at: namedVocabularyTerms reading each resolution's outcome
+  evidence: '...termsOf(''outcome'', resolutions.map((resolution) => resolution.outcome)),'
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: 'caseCoherenceViolations composes only glossaryCoherenceViolations and capabilityViolations: return [...(await glossaryCoherenceViolations(theCase, glossary)), ...(await capabilityViolations(theCase, capabilities))]; — no derivation of a case-input-requirement set appears anywhere in this file'
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: conceptViolations' subject-type acceptance check
+  evidence: '} else if (!resolution.concept.accepts.includes(theCase.subject)) {'
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: vocabularyViolations' and conceptViolations' existence checks
+  evidence: if (!resolution.held) { violations.push(`the ${VOCABULARY_ROLES[vocabulary]} "${name}" does not exist in the glossary`); }
+- node: rules/knowledge/every-collected-concept-has-a-read-only-capability
+  held_at: answerGaps checking nature, output schema and timeout
+  evidence: if (capability.nature !== READ_ONLY_NATURE) { gaps.push(answeringGap(concept, 'is not read-only')); } if (!declaresText(capability.output_schema)) { ... } if (!declaresTimeout(capability.timeout)) { ... }
+- node: rules/knowledge/the-contract-check-reads-the-current-registration
+  held_at: capabilityViolations calling readCapability fresh for each concept inside the loop, with no memoization
+  evidence: for (const name of collectionPlan(theCase)) { violations.push(...answerGaps(name, await capabilities.readCapability(name))); }
+- node: scenarios/knowledge/a-subject-mismatch-refuses-the-case
+  held_at: conceptViolations' refusal message, naming both the concept and the subject type
+  evidence: '`the concept "${name}" does not accept the subject type "${theCase.subject}" the case declares`,'
+- node: domain/glossary/concept
+  held_at: conceptViolations reading the resolved concept's accepts list
+  evidence: '!resolution.concept.accepts.includes(theCase.subject)'
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: this file's whole export surface — caseCoherenceViolations, glossaryCoherenceViolations, validateCaseCoherence, vocabularyViolations, conceptViolations, capabilityViolations — never imports or reads an investigation record
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: no evaluation, verdict or citation type is imported or referenced anywhere in this file
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: no evidence-result value is imported or referenced anywhere in this file
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: no investigation aggregate is imported or referenced anywhere in this file
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: no usage value is imported or referenced anywhere in this file
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: theCase.state is never read; none of vocabularyViolations, conceptViolations or capabilityViolations branches on draft vs released
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: this file reads only resolution.concept.accepts; it never reads or checks a concept's description
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: this file contains no description text and states no policy about what a description may say
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: no connector configuration, method, address or placeholder is referenced anywhere in this file
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: no written_at attribute or persistence write is referenced anywhere in this file
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: 'this file throws only IncoherentCaseError; the 409 CaseVersionNotValidError naming is composed elsewhere (case-query.service.ts), not in this file: throw new IncoherentCaseError(theCase.slug, violations);'
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no lifecycle transition or state-transition refusal is expressed anywhere in this file
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: this file defines the coherence checks themselves but does not state when they run; validateCaseCoherence is a pure function called by its callers, with no read-scheduling logic of its own
+looked_past: two style-only observations belong to a different pass rather than this one — collectionPlan(theCase) is recomputed independently inside both conceptViolations and capabilityViolations, and VOCABULARY_ROLES declares a 'subject-attribute' entry that namedVocabularyTerms never emits — neither states a domain fact this file gets wrong.
+candidates_opened:
+- domain/integration/capability

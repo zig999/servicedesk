@@ -1,0 +1,74 @@
+read:
+- node: constraints/a-case-is-read-whole
+  held_at: nowhere
+  evidence: await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+- node: domain/glossary/concept
+  held_at: the ConceptFixture type and seedConcepts' insert, lines 40-45 and 67-83
+  evidence: "type ConceptFixture = {\n  readonly name: string;\n  readonly accepts: readonly string[];\n  readonly ttl: number;\n  readonly description: string;\n};"
+- node: domain/glossary/outcome
+  held_at: seedOutcomes, lines 26-31
+  evidence: const known = new Set(fixtureOutcomes.map((outcome) => outcome.name));
+- node: domain/knowledge/hypothesis-revision
+  held_at: the reviseHypothesis call in placeFixtureHypotheses, lines 106-113
+  evidence: "const revised = await lifecycle.reviseHypothesis({\n      slug: fixture.slug,\n      hypothesis_name: entry.hypothesis_name,\n      criterion: entry.criterion,\n      collects: entry.collects,\n      resolution: entry.resolution,\n      subject: fixture.subject,\n    });"
+- node: domain/knowledge/hypothesis-revision-state
+  held_at: the releaseHypothesisRevision call in releaseManifestedRevisions, line 132
+  evidence: await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
+- node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+  held_at: seedOutcomes, lines 26-31, called before seedCase in the main sequence
+  evidence: "const missing = NON_CONCLUSION_OUTCOMES.filter((outcome) => !known.has(outcome.name));\n  await store.insertMissingTerms('outcome', [...fixtureOutcomes, ...missing]);"
+- node: rules/knowledge/a-case-version-is-written-once
+  held_at: the alreadySeeded guard, lines 154-157 and 171-173
+  evidence: "if (!(await alreadySeeded(connection))) {\n    await seedCase(connection);\n  }"
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: 'collects: entry.collects,'
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: the releaseHypothesisRevision call in releaseManifestedRevisions, line 132
+  evidence: await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: the call ordering in seedCase, lines 149-151
+  evidence: "const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);\n  await releaseManifestedRevisions(lifecycle, fixture.slug, placed);\n  await lifecycle.release(fixture.slug, draft.version);"
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere
+  evidence: await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+- node: domain/investigation/durations
+  held_at: nowhere
+  evidence: import type { ConsolidationRegister } from './investigation/consolidation-register.js';
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: import type { ConsolidationRegister } from './investigation/consolidation-register.js';
+- node: domain/investigation/evidence-result
+  held_at: nowhere
+  evidence: import type { ConsolidationRegister } from './investigation/consolidation-register.js';
+- node: domain/investigation/investigation
+  held_at: nowhere
+  evidence: import type { ConsolidationRegister } from './investigation/consolidation-register.js';
+- node: domain/investigation/usage
+  held_at: nowhere
+  evidence: import type { ConsolidationRegister } from './investigation/consolidation-register.js';
+- node: domain/knowledge/case-version-state
+  held_at: nowhere
+  evidence: await lifecycle.release(fixture.slug, draft.version);
+- node: rules/glossary/a-concept-declares-its-description
+  held_at: nowhere
+  evidence: '[concept.name, concept.ttl, concept.description],'
+- node: rules/glossary/a-description-states-meaning-never-policy
+  held_at: nowhere
+  evidence: '[concept.name, concept.ttl, concept.description],'
+- node: rules/integration/an-http-connector-configuration-declares-its-call
+  held_at: nowhere
+  evidence: const registrations = JSON.parse(raw) as readonly CapabilityRegistration[];
+- node: rules/investigation/written-at-records-when-the-write-settled
+  held_at: nowhere
+  evidence: await lifecycle.release(fixture.slug, draft.version);
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: await lifecycle.release(fixture.slug, draft.version);
+- node: rules/knowledge/a-case-versions-input-requirements-are-derived
+  held_at: nowhere
+  evidence: await seedCapabilities(connection);
+looked_past: CaseFixture's shape (slug, title, when_to_use, version, authored_at, subject, consolidation_register, fallback, manifest) mirrors domain/knowledge/case-version's own attributes, and seedRemainingVocabularies touches subject-type, subject-attribute, action and recipient — none of these nodes are in this file's set, so any discrepancy there is another delegation's to judge.
