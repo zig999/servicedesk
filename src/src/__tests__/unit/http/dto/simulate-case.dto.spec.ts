@@ -204,3 +204,119 @@ it('validates a production-shaped response with no field stripped from its asses
   expect(result.data?.assessment).toEqual(assessment);
   expect(result.data?.evidence[0]).toEqual(evidenceItem);
 });
+
+it('rejects a response whose assessment usage carries a fractional input_tokens', () => {
+  const assessment = { ...aValidAssessment(), usage: { input_tokens: 10.5, output_tokens: 5 } };
+  const response = { ...aValidResponse(), assessment };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose assessment usage carries a fractional output_tokens', () => {
+  const assessment = { ...aValidAssessment(), usage: { input_tokens: 10, output_tokens: 5.5 } };
+  const response = { ...aValidResponse(), assessment };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose evaluation elapsed_ms is fractional, on the confirmed branch', () => {
+  const response = {
+    ...aValidResponse(),
+    evaluations: [
+      { hypothesis: 'a-hypothesis', verdict: 'confirmed', citations: [{ concept: 'a-concept' }], elapsed_ms: 12.5 },
+    ],
+  };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.collection is fractional', () => {
+  const response = { ...aValidResponse(), durations: { collection: 10.5, judgment: 20, total: 30 } };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.judgment is fractional', () => {
+  const response = { ...aValidResponse(), durations: { collection: 10, judgment: 20.5, total: 30 } };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.total is fractional', () => {
+  const response = { ...aValidResponse(), durations: { collection: 10, judgment: 20, total: 30.5 } };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('rejects a response whose durations.writing is present and fractional', () => {
+  const response = {
+    ...aValidResponse(),
+    durations: { collection: 10, judgment: 20, writing: 15.5, total: 30 },
+  };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
+
+it('validates a response whose evaluation carries usage and elapsed_ms and whose durations carries writing, all as integers, matching a completed simulation that made a model call and reached consolidation', () => {
+  const response = {
+    ...aValidResponse(),
+    evaluations: [
+      {
+        hypothesis: 'a-hypothesis',
+        verdict: 'confirmed',
+        citations: [{ concept: 'a-concept' }],
+        usage: { input_tokens: 10, output_tokens: 5 },
+        elapsed_ms: 120,
+        prompt: 'a prompt',
+      },
+    ],
+    durations: { collection: 10, judgment: 20, writing: 15, total: 45 },
+  };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
+
+it('validates a response whose durations.collection is zero, matching a stage measured below one millisecond', () => {
+  const response = { ...aValidResponse(), durations: { collection: 0, judgment: 20, total: 30 } };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
+
+it('validates a response whose evaluation carries neither usage nor elapsed_ms and whose durations carries no writing, matching a run that made no model call and reached no consolidation', () => {
+  const response = {
+    ...aValidResponse(),
+    evaluations: [
+      { hypothesis: 'a-hypothesis', verdict: 'confirmed', citations: [{ concept: 'a-concept' }] },
+    ],
+  };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
+
+it("validates a response whose cost.calls is fractional, since domain/investigation/cost stays outside this task's scope", () => {
+  const response = { ...aValidResponse(), cost: { calls: 1.5, input_tokens: 1, output_tokens: 1 } };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});

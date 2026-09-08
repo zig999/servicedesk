@@ -33,8 +33,8 @@ const citationSchema = z.object({
 });
 
 const usageSchema = z.object({
-  input_tokens: z.number(),
-  output_tokens: z.number(),
+  input_tokens: z.int(),
+  output_tokens: z.int(),
 });
 
 const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS;
@@ -45,7 +45,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     verdict: z.literal(CONFIRMED_VERDICT),
     citations: z.array(citationSchema).min(1).readonly(),
     usage: usageSchema.optional(),
-    elapsed_ms: z.number().optional(),
+    elapsed_ms: z.int().optional(),
     prompt: z.string().optional(),
   }),
   z.object({
@@ -53,7 +53,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     verdict: z.literal(REFUTED_VERDICT),
     citations: z.array(citationSchema).min(1).readonly(),
     usage: usageSchema.optional(),
-    elapsed_ms: z.number().optional(),
+    elapsed_ms: z.int().optional(),
     prompt: z.string().optional(),
   }),
   z.object({
@@ -62,15 +62,15 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     reason: z.enum(EVALUATION_REASONS),
     citations: z.array(citationSchema).readonly(),
     usage: usageSchema.optional(),
-    elapsed_ms: z.number().optional(),
+    elapsed_ms: z.int().optional(),
     prompt: z.string().optional(),
   }),
 ]);
 
 const durationsSchema = z.object({
-  collection: z.number(),
-  judgment: z.number(),
-  total: z.number(),
+  collection: z.int(),
+  judgment: z.int(),
+  total: z.int(),
 });
 
 export const simulateHypothesisResponseSchema = z.object({
