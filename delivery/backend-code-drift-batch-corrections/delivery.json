@@ -26,6 +26,14 @@
       "task": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies"
     },
     {
+      "id": "implementation/investigation-record-declared-types/written-at-is-required",
+      "kind": "implementation",
+      "file": "implementation/investigation-record-declared-types/written-at-is-required.md",
+      "title": "Investigation.written_at declared required",
+      "summary": "The Investigation type's written_at attribute loses its optional marker to match domain/investigation/investigation, with the one pre-settle producer carrying it through a non-null assertion rather than a second domain element.",
+      "task": "task/investigation-record-declared-types/written-at-is-required"
+    },
+    {
       "id": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proof",
       "file": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
@@ -48,6 +56,14 @@
       "title": "Malformed-configuration vocabulary derivation, proven against the canonical lists",
       "summary": "Proves the six criteria of malformed-configuration-vocabularies against http-declarative-observation-source.adapter.ts's httpConfigurationProblems, using the existing test suite in http-declarative-observation-source.adapter.spec.ts, plus two new tests closing the responseMap gap the task's second UNDERDETERMINED note names.",
       "task": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies"
+    },
+    {
+      "id": "proof/investigation-record-declared-types/written-at-is-required",
+      "kind": "proof",
+      "file": "proof/investigation-record-declared-types/written-at-is-required.md",
+      "title": "Investigation.written_at required — compile-time proof",
+      "summary": "New and added type-level tests prove Investigation.written_at is a required string rejected by the compiler when absent or mis-typed, while pre-existing runtime tests already prove no producer computes or invents a written_at value.",
+      "task": "task/investigation-record-declared-types/written-at-is-required"
     }
   ],
   "edges": [
@@ -106,6 +122,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-record-declared-types/written-at-is-required",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-record-declared-types/written-at-is-required",
+      "to": "task/investigation-record-declared-types/written-at-is-required",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "to": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proves",
@@ -120,6 +148,12 @@
     {
       "from": "proof/connector-and-registry-fidelity/malformed-configuration-vocabularies",
       "to": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-record-declared-types/written-at-is-required",
+      "to": "implementation/investigation-record-declared-types/written-at-is-required",
       "kind": "proves",
       "at": "the path"
     }

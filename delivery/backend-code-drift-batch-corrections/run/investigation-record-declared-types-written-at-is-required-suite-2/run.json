@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/investigation-record-declared-types-written-at-is-required-suite-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a3fcc6267be5cd5db/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-08T14:43:01.757+00:00",
+      "ended_at": "2026-09-08T14:43:05.020+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-08T14:43:05.020+00:00",
+      "ended_at": "2026-09-08T14:43:09.092+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-08T14:43:09.092+00:00",
+      "ended_at": "2026-09-08T14:43:13.241+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-08T14:43:13.241+00:00",
+      "ended_at": "2026-09-08T14:43:13.711+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-08T14:43:13.711+00:00",
+      "ended_at": "2026-09-08T14:45:23.754+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
