@@ -187,6 +187,20 @@ it('answers 400 for a body missing a required attribute, without ever reaching c
   expect(built.updateDraft).not.toHaveBeenCalled();
 });
 
+it('names VALIDATION_ERROR, the body as the part that failed, and a non-empty details list, on that same missing-attribute refusal', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const fullBody = validUpdateBody();
+  const bodyWithoutTitle = { when_to_use: fullBody.when_to_use, subject: fullBody.subject, fallback: fullBody.fallback };
+
+  const response = await app.inject({ method: 'PATCH', url: '/v1/cases/a-slug/versions/1', payload: bodyWithoutTitle });
+
+  const body = response.json() as { error: { code: string; message: string; details: unknown[] } };
+  expect(body.error.code).toBe('VALIDATION_ERROR');
+  expect(body.error.message).toContain('body');
+  expect(body.error.details.length).toBeGreaterThan(0);
+});
+
 it('answers 400 for a non-numeric version segment, without ever reaching caseStore.updateDraft', async () => {
   const built = buildTestApp();
   app = built.app;

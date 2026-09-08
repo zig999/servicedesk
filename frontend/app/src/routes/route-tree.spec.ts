@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
+import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { CapabilityCreateScreen } from "./capability-create-screen";
 import { CapabilityDetailScreen } from "./capability-detail-screen";
@@ -168,5 +169,17 @@ describe("the New Draft route's own 'sourceVersion' search field (task/cases-lis
   it("refuses a sourceVersion of zero or below", () => {
     expect(() => newDraftSearchSchema().parse({ sourceVersion: "0" })).toThrow();
     expect(() => newDraftSearchSchema().parse({ sourceVersion: "-1" })).toThrow();
+  });
+});
+
+describe("the no-authentication disclosure this build owes every screen", () => {
+  it("makes AppShell the component of the one root route, so the topbar carrying the disclosure is rendered by whichever route is current", () => {
+    expect(router.routesById[rootRouteId]?.options.component).toBe(AppShell);
+  });
+
+  it("parents every one of the registered routes directly on that root route, leaving no screen rendered outside the shell", () => {
+    const parentIds = leafRoutes().map((route) => route.parentRoute?.id);
+
+    expect(parentIds).toEqual(Array(leafRoutes().length).fill(rootRouteId));
   });
 });

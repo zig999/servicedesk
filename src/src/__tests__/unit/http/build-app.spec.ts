@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
@@ -681,3 +682,87 @@ it(
     expect(response.json()).toEqual({ requirements: [], capabilities_with_malformed_input_schema: [] });
   },
 );
+
+const HTTP_LAYER_DIRECTORY = fileURLToPath(new URL('../../../http/', import.meta.url));
+
+const AUTHENTICATION_PACKAGES = [
+  'jose', 'jsonwebtoken', 'passport', 'bcrypt', 'bcryptjs', 'argon2',
+  '@fastify/jwt', '@fastify/auth', '@fastify/basic-auth', '@fastify/bearer-auth',
+  '@fastify/oauth2', '@fastify/passport', '@fastify/session', '@fastify/secure-session',
+];
+
+const AUTHENTICATION_IDENTIFIER_PATTERN =
+  /\b(?:authenticate|requireAuth|verifyToken|verifyCredential|verifyBearer|authGuard|ensureAuthenticated|checkAuthentication)\b/;
+
+const UNAUTHENTICATED_REFUSAL_STATUSES = [401, 403];
+
+const A_PATH_PARAMETER_VALUE = 'a-value';
+
+type RouteUnderTest = { readonly method: string; readonly url: string };
+
+async function everyRegisteredRoute(app: FastifyInstance): Promise<readonly RouteUnderTest[]> {
+  const collected: RouteUnderTest[] = [];
+  app.addHook('onRoute', (route) => {
+    const methods = Array.isArray(route.method) ? route.method : [route.method];
+    for (const method of methods) {
+      collected.push({ method, url: route.path.replace(/:[^/]+/g, A_PATH_PARAMETER_VALUE) });
+    }
+  });
+  await app.ready();
+  return collected;
+}
+
+it('registers at least one route on the assembled app, so the sweep below is never vacuous', async () => {
+  const built = buildTestApp();
+  app = built.app;
+
+  const routes = await everyRegisteredRoute(app);
+
+  expect(routes.length).toBeGreaterThan(20);
+});
+
+it('dispatches every registered route for a request carrying no credential of any kind, refusing none of them for lacking one', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const routes = await everyRegisteredRoute(app);
+
+  const refusals: string[] = [];
+  for (const route of routes) {
+    const response = await app.inject({ method: route.method as 'GET', url: route.url, payload: {}, headers: {} });
+    if (UNAUTHENTICATED_REFUSAL_STATUSES.includes(response.statusCode)) {
+      refusals.push(`${route.method} ${route.url} answered ${response.statusCode}`);
+    }
+  }
+
+  expect(refusals).toEqual([]);
+});
+
+it('names no authentication package in any file of the API layer', async () => {
+  const offenders: string[] = [];
+  for (const file of (await readdir(HTTP_LAYER_DIRECTORY, { recursive: true })).filter(isTypeScriptFile)) {
+    const source = await readFile(join(HTTP_LAYER_DIRECTORY, String(file)), 'utf8');
+    for (const specifier of importSpecifiersOf(source)) {
+      if (AUTHENTICATION_PACKAGES.includes(specifier)) offenders.push(`${String(file)} imports ${specifier}`);
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+it('declares no authentication guard, middleware or credential check in any file of the API layer', async () => {
+  const offenders: string[] = [];
+  for (const file of (await readdir(HTTP_LAYER_DIRECTORY, { recursive: true })).filter(isTypeScriptFile)) {
+    const source = await readFile(join(HTTP_LAYER_DIRECTORY, String(file)), 'utf8');
+    if (AUTHENTICATION_IDENTIFIER_PATTERN.test(source)) offenders.push(String(file));
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+function isTypeScriptFile(file: unknown): boolean {
+  return String(file).endsWith('.ts');
+}
+
+function importSpecifiersOf(source: string): readonly string[] {
+  return [...source.matchAll(/(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g)].map((match) => match[1] ?? '');
+}

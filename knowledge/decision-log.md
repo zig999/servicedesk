@@ -4947,4 +4947,60 @@ entries:
     no difference in what the operator must do. Cookie segments are judged per cookie
     name because that key's value is a joined list of named segments the placement
     rule already builds, so two cookie-carried parts at two names collide over nothing.
+- location: constraints/every-screen-discloses-that-authentication-is-unenforced.md
+  field: statement
+  unstated: The material reports that constraints/no-route-enforces-authentication.statement held two
+    conditions -- no backend route guarded by authentication, and the frontend disclosing that posture
+    to every user on every screen -- while that node's fitness decided only the first, so the disclosure
+    clause was decided by nothing even though standards/frontend-typescript.yaml declared the constraint
+    in a step's commands[].decides. The material names three closures -- one fitness covering both clauses,
+    the disclosure as a constraint of its own, or the statement shrinking to what the fitness covers --
+    and chooses none of them.
+  decided: The disclosure becomes its own architecture constraint at this identity, carrying the clause
+    and its substance-not-wording reading whole and declaring its own fitness; constraints/no-route-enforces-authentication.statement
+    shrinks to the API-layer condition its fitness already decided.
+  why: 'commands[].decides binds a step to a whole constraint and never to a clause of one, so a single
+    fitness spanning the API layer and every frontend screen could be decided by no step this project
+    has or could write -- a backend suite sees no screen and a frontend suite sees no route handler, and
+    both registries would go on declaring one node whose fitness each of them half-decides, which is the
+    compensation the material found, authorized by the node instead of contradicted by it. Splitting gives
+    each condition one fitness that one step decides, and it brings both statements back to the single
+    falsifiable condition the constraint contract asks for. The clause does not become a Rule: a rule
+    requires constrains naming Domain Model elements and this binds none -- it is owed on every screen,
+    over no subject the domain names; a rule of the business outlives a build while this disclosure stands
+    only as long as the posture it discloses, which this node''s own earlier entry already said in those
+    words ("for as long as this constraint''s own backend half stands"); and commands[].decides admits
+    only constraints/<slug> identities, so a rule would take the frontend''s declaration away and leave
+    nothing in its place. Nor does the clause simply go: the delivered shell discloses the posture on
+    every screen, and three nodes rest on this reading of it.'
+- location: constraints/every-screen-discloses-that-authentication-is-unenforced.md
+  field: fitness
+  unstated: The material states that nothing decides the disclosure clause today, and does not state what
+    condition would decide it.
+  decided: Rendering the frontend at any route it can present yields the disclosure that this build enforces
+    no authentication, and its presence turns on nothing further -- not on which route is current, not
+    on what any read backing the screen answered, and not on who the user is.
+  why: 'A mechanical check for this property already exists in the delivered tree (frontend/app/src/shared/components/app-shell.spec.ts
+    asserts the disclosure is present whichever route is current), so this is a constraint a step decides
+    rather than one held by reading alone, and declaring a fitness is what lets the frontend registry
+    name it honestly. The condition is stated over what the frontend renders and over the totality of
+    routes, and names no component, no placement and no copy: how one frontend achieves the property is
+    a standard''s rule and never a second entry here, and the wording is the frontend''s own by this node''s
+    own statement. Presence-turns-on-nothing-further is the construction this specification already uses
+    wherever an obligation must not be readable as conditional -- rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    carries it for a route''s presence.'
+- location: constraints/no-route-enforces-authentication.md
+  field: statement
+  unstated: The material reports the defect against this node without saying which side of a split each
+    clause lands on -- whether the disclosure clause stays in this statement and the fitness grows to
+    reach it, or the statement shrinks to what this fitness already decides.
+  decided: This statement keeps only the API-layer condition -- no route guarded by an authentication
+    mechanism, every request accepted on the identity it claims, unverified -- and the disclosure clause
+    leaves for constraints/every-screen-discloses-that-authentication-is-unenforced.
+  why: 'This node''s fitness already decided exactly this clause and nothing beyond it, so shrinking the
+    statement to it costs no fact and leaves a node a step can be honestly held to whole. The entry located
+    here earlier decided that the specification holds the disclosure''s substance and states no wording;
+    what it decided is unchanged, and it now reads at the node that holds the disclosure. Leaving the
+    clause here beside a fitness that never named it is the state the material found: a frontend step
+    declaring this constraint on a clause its fitness does not authorize.'
 ---

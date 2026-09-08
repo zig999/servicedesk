@@ -993,10 +993,34 @@ commands:
     command: npm run secret-scan
     timeout_seconds: 120
 
+  - step: test-unit
+    command: node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit
+    timeout_seconds: 300
+    decides:
+      - constraints/a-case-is-read-whole
+      - constraints/a-domain-error-unmapped-by-status-is-refused-generically
+      - constraints/a-malformed-request-is-refused-with-a-validation-error
+      - constraints/consolidation-runs-behind-a-port
+      - constraints/hypotheses-are-judged-in-isolated-parallel-calls
+      - constraints/judgment-runs-behind-a-port
+      - constraints/listings-are-paged
+      - constraints/no-route-enforces-authentication
+      - constraints/the-capability-identity-read-is-rate-limited
+      - constraints/the-capability-identity-read-refuses-an-unregistered-identity
+      - constraints/the-concept-read-refuses-an-unanswered-concept
+      - constraints/the-consolidation-prompt-is-closed
+      - constraints/the-database-is-externally-provisioned
+      - constraints/the-domain-depends-on-no-infrastructure
+      - constraints/the-judgment-prompt-is-closed
+
   - step: test
     command: npm test
     timeout_seconds: 2400
     role: suite
+    decides:
+      - constraints/diagnosis-answers-synchronously
+      - constraints/the-schema-replays-from-its-scripts
+      - constraints/the-system-persists-to-one-relational-database
 
 elsewhere:
 
