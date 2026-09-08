@@ -2961,7 +2961,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5077,7 +5077,7 @@
     },
     {
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
-      "digest": "sha256:e2c781f4671798c37f7ffc0f01bb0441211ebadee6edfc56c5de1c9511a4b7c8",
+      "digest": "sha256:e6ff30654d5bf586d8c14a3693ee64b592fdf31c083bd4148e9ebed3df5cb4b2",
       "files": [
         {
           "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
@@ -5097,7 +5097,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },

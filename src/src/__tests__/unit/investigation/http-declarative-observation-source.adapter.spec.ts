@@ -12,6 +12,8 @@ import { ConnectorUnreachableError } from '../../../errors/connector-unreachable
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncompleteConnectorCallDescriptorError } from '../../../errors/incomplete-connector-call-descriptor.error.js';
 import { MalformedHttpConnectorConfigurationError } from '../../../errors/malformed-http-connector-configuration.error.js';
+import { HTTP_METHODS } from '../../../http-connector/http-connector-call-configuration.js';
+import { EVIDENCE_RESULTS } from '../../../investigation/evidence-result.js';
 import {
   asHttpConnectorCallConfiguration,
   HttpDeclarativeObservationSource,
@@ -131,6 +133,18 @@ function anAdapter(options: {
     connectorConfigurations,
     httpClient: options.httpClient as unknown as (typeof fetch | undefined),
   });
+}
+
+function refusalFrom(action: () => unknown): MalformedHttpConnectorConfigurationError {
+  try {
+    action();
+  } catch (error) {
+    if (error instanceof MalformedHttpConnectorConfigurationError) {
+      return error;
+    }
+    throw error;
+  }
+  throw new Error('expected a MalformedHttpConnectorConfigurationError refusal, got none');
 }
 
 it('imports no HTTP client package, reaching the network only through the platform global fetch', async () => {
@@ -614,6 +628,44 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
   const adapter = anAdapter({
     capability: aCapability({ concept: 'a-concept' }),
     connectorConfiguration: anHttpConfiguration({ statusMap: undefined }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('names the accepted methods, derived from HTTP_METHODS, in the refusal thrown for a method outside the accepted set', () => {
+  const refusal = refusalFrom(() => asHttpConnectorCallConfiguration('a-connector', anHttpConfiguration({ method: 'TRACE' })));
+
+  expect(refusal.context.problems).toContain(`method is not one of ${HTTP_METHODS.join(', ')}`);
+});
+
+it('names the accepted evidence-result endings, derived from EVIDENCE_RESULTS, in the refusal thrown for a statusMap not mapping to an accepted ending', () => {
+  const refusal = refusalFrom(() =>
+    asHttpConnectorCallConfiguration('a-connector', anHttpConfiguration({ statusMap: { '200': 'not-an-accepted-ending' } })),
+  );
+
+  expect(refusal.context.problems).toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
+});
+
+it('states neither the HTTP methods nor the evidence-result endings as literal enumerated text, naming each vocabulary only through the HTTP_METHODS and EVIDENCE_RESULTS it imports', async () => {
+  const source = await readFile(
+    fileURLToPath(new URL('../../../investigation/http-declarative-observation-source.adapter.ts', import.meta.url)),
+    'utf8',
+  );
+
+  expect(source).not.toContain(HTTP_METHODS.join(', '));
+  expect(source).not.toContain(EVIDENCE_RESULTS.join(', '));
+});
+
+it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration declares a responseMap holding a non-string value", async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ responseMap: { status: 7 } }),
     httpClient,
   });
 

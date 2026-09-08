@@ -18,6 +18,14 @@
       "task": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read"
     },
     {
+      "id": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "implementation",
+      "file": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies.md",
+      "title": "Malformed-configuration problem messages derive their vocabularies from the canonical lists",
+      "summary": "httpConfigurationProblems in the HTTP declarative observation source adapter now names the accepted HTTP methods and evidence-result endings by deriving them from HTTP_METHODS and EVIDENCE_RESULTS instead of restating each vocabulary as literal text.",
+      "task": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies"
+    },
+    {
       "id": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proof",
       "file": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
@@ -32,6 +40,14 @@
       "title": "readCaseInputRequirements revalidates at every read, excluding capability availability — proof",
       "summary": "Three tests over CaseQueryService prove the narrowed coherence gate refuses a stored version whose structural or glossary/concept rules fail, exactly as read-case does, while a concept whose answering capability disappears folds into no attribute rather than refusing, and replayCase's stated exception stays untouched.",
       "task": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read"
+    },
+    {
+      "id": "proof/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "proof",
+      "file": "proof/connector-and-registry-fidelity/malformed-configuration-vocabularies.md",
+      "title": "Malformed-configuration vocabulary derivation, proven against the canonical lists",
+      "summary": "Proves the six criteria of malformed-configuration-vocabularies against http-declarative-observation-source.adapter.ts's httpConfigurationProblems, using the existing test suite in http-declarative-observation-source.adapter.spec.ts, plus two new tests closing the responseMap gap the task's second UNDERDETERMINED note names.",
+      "task": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies"
     }
   ],
   "edges": [
@@ -72,6 +88,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "to": "task/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "to": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proves",
@@ -80,6 +114,12 @@
     {
       "from": "proof/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
       "to": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-and-registry-fidelity/malformed-configuration-vocabularies",
+      "to": "implementation/connector-and-registry-fidelity/malformed-configuration-vocabularies",
       "kind": "proves",
       "at": "the path"
     }
