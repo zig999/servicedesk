@@ -17,7 +17,7 @@ import {
   type PlaceHypothesisInput,
   type UpdateDraftInput,
 } from '../case/case-store.port.js';
-import type { Resolution } from '../case/case.js';
+import { CASE_VERSION_STATES, type Resolution } from '../case/case.js';
 import type { IHypothesisRevisionOverwrite } from '../case/hypothesis-revision-overwrite.port.js';
 import type { IHypothesisRevisionOwnStateQuery } from '../case/hypothesis-revision-own-state.port.js';
 import type { IHypothesisRevisionRelease } from '../case/hypothesis-revision-release.port.js';
@@ -88,6 +88,7 @@ interface ICollectRow {
   readonly concept_name: string;
 }
 
+const CASE_VERSION_STATE_VALUES: ReadonlySet<string> = new Set<string>(CASE_VERSION_STATES);
 const CONSOLIDATION_REGISTER_VALUES: ReadonlySet<string> = new Set<string>(CONSOLIDATION_REGISTERS);
 const HYPOTHESIS_REVISION_STATE_VALUES: ReadonlySet<string> = new Set<string>(HYPOTHESIS_REVISION_STATES);
 
@@ -944,7 +945,7 @@ function caseVersionStateOf(value: string): CaseVersionState {
 }
 
 function isCaseVersionState(value: string): value is CaseVersionState {
-  return value === DRAFT_STATE || value === RELEASED_STATE;
+  return CASE_VERSION_STATE_VALUES.has(value);
 }
 
 function isConstraintViolation(cause: unknown, constraintName: string): boolean {
