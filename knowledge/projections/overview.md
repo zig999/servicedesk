@@ -33,6 +33,7 @@ Derived by spec.py from the specification files; never edited.
 - a-malformed-request-is-refused-with-a-validation-error (system)
 - consolidation-runs-behind-a-port (investigation)
 - diagnosis-answers-synchronously (system)
+- every-screen-discloses-that-authentication-is-unenforced (system)
 - evidence-normalization-is-an-anticorruption-layer (integration)
 - hypotheses-are-judged-in-isolated-parallel-calls (investigation)
 - judgment-runs-behind-a-port (investigation)
@@ -51,4 +52,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-222 decision(s) disclosed in the decision log.
+225 decision(s) disclosed in the decision log.

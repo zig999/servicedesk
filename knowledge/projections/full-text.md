@@ -61,6 +61,19 @@ fitness: The diagnosis operation returns the assessment in its own response, ver
 
 The attendant waits on screen, which is what makes the absolute deadline and the degradation rules obligatory rather than refinements; a costly hypothesis fits the parallel or does not enter the case, because a second wave does not fit the budget.
 
+=== constraints/every-screen-discloses-that-authentication-is-unenforced
+---
+statement: Every screen the frontend presents discloses to the user that this build enforces no authentication; no screen is presented without that disclosure.
+scope: system
+fitness: Rendering the frontend at any route it can present yields the disclosure that this build enforces no authentication, and its presence turns on nothing further — not on which route is current, not on what any read backing the screen answered, and not on who the user is.
+---
+
+## Description
+
+The disclosure is the substance, not a fixed wording: what the frontend owes every user is being told, on every screen, that this build enforces no authentication — the exact copy is the frontend's own to choose and free to change without this statement moving.
+This constrains the solution and not the domain: what gets disclosed is `no-route-enforces-authentication`'s own posture — the current state of the solution's perimeter — so this statement stands exactly as long as that one does, and goes with it when a later build decides otherwise. That is also why it is not a rule of the business: a rule outlives a build and binds a Domain Model element, and this binds none — it is owed on every screen, over no subject the domain names.
+How the frontend achieves it — which component renders it, where on a screen it sits, what it says — is the frontend's own arrangement, and this states none of it.
+
 === constraints/evidence-normalization-is-an-anticorruption-layer
 ---
 statement: Observations are translated to the glossary's vocabulary at the integration edge, and no source-system field name crosses into domain elements.
@@ -110,7 +123,7 @@ A page count of zero is what a total of zero yields; no request with a non-posit
 
 === constraints/no-route-enforces-authentication
 ---
-statement: No route of the backend service is guarded by an authentication mechanism in this build; every request is accepted on the identity it claims, unverified, whoever the caller is; the frontend discloses this posture to every user, on every screen.
+statement: No route of the backend service is guarded by an authentication mechanism in this build; every request is accepted on the identity it claims, unverified, whoever the caller is.
 scope: system
 fitness: No route handler in the API layer declares or invokes an authentication middleware, guard or check; a request reaching any route is dispatched without one.
 ---
@@ -118,7 +131,7 @@ fitness: No route handler in the API layer declares or invokes an authentication
 ## Description
 
 The requester's identity travels as a claim the caller supplies, never as one the service verifies — consistent with collection running in the requester's own authorization scope rather than the service's, and with the requester being taken directly from the request's own payload with no further resolution inside the domain. Nothing here is a domain rule about who may see what: it is the current state of the solution's own perimeter, standing until a later build decides otherwise.
-The disclosure is the substance, not a fixed wording: what the frontend owes every user is being told, on every screen, that this build enforces no authentication — the exact copy is the frontend's own to choose and free to change without this statement moving.
+What the frontend owes every user about this posture is `every-screen-discloses-that-authentication-is-unenforced`'s own, and it stands only while this one does. It was carried in this statement until the statement held two conditions and this fitness decided one of them: a fitness is what a step declaring this constraint is held to, so a clause standing outside it is a clause standing outside every check, and the check the disclosure does have was declared against a fitness that never named it.
 
 === constraints/the-capability-identity-read-is-rate-limited
 ---
@@ -4224,6 +4237,62 @@ entries:
     -- stating it in an-investigation-is-written-once (which owns identity and the duplicate write) or
     in a new rule would put one fact in two houses. The store is named as ''the store'' because that is
     the term this rule and no-stage-aborts-on-its-deadline already use for it; no new identifier is minted.'
+- location: constraints/every-screen-discloses-that-authentication-is-unenforced.md
+  field: statement
+  unstated: The material reports that constraints/no-route-enforces-authentication.statement held two
+    conditions -- no backend route guarded by authentication, and the frontend disclosing that posture
+    to every user on every screen -- while that node's fitness decided only the first, so the disclosure
+    clause was decided by nothing even though standards/frontend-typescript.yaml declared the constraint
+    in a step's commands[].decides. The material names three closures -- one fitness covering both clauses,
+    the disclosure as a constraint of its own, or the statement shrinking to what the fitness covers --
+    and chooses none of them.
+  decided: The disclosure becomes its own architecture constraint at this identity, carrying the clause
+    and its substance-not-wording reading whole and declaring its own fitness; constraints/no-route-enforces-authentication.statement
+    shrinks to the API-layer condition its fitness already decided.
+  why: 'commands[].decides binds a step to a whole constraint and never to a clause of one, so a single
+    fitness spanning the API layer and every frontend screen could be decided by no step this project
+    has or could write -- a backend suite sees no screen and a frontend suite sees no route handler, and
+    both registries would go on declaring one node whose fitness each of them half-decides, which is the
+    compensation the material found, authorized by the node instead of contradicted by it. Splitting gives
+    each condition one fitness that one step decides, and it brings both statements back to the single
+    falsifiable condition the constraint contract asks for. The clause does not become a Rule: a rule
+    requires constrains naming Domain Model elements and this binds none -- it is owed on every screen,
+    over no subject the domain names; a rule of the business outlives a build while this disclosure stands
+    only as long as the posture it discloses, which this node''s own earlier entry already said in those
+    words ("for as long as this constraint''s own backend half stands"); and commands[].decides admits
+    only constraints/<slug> identities, so a rule would take the frontend''s declaration away and leave
+    nothing in its place. Nor does the clause simply go: the delivered shell discloses the posture on
+    every screen, and three nodes rest on this reading of it.'
+- location: constraints/every-screen-discloses-that-authentication-is-unenforced.md
+  field: fitness
+  unstated: The material states that nothing decides the disclosure clause today, and does not state what
+    condition would decide it.
+  decided: Rendering the frontend at any route it can present yields the disclosure that this build enforces
+    no authentication, and its presence turns on nothing further -- not on which route is current, not
+    on what any read backing the screen answered, and not on who the user is.
+  why: 'A mechanical check for this property already exists in the delivered tree (frontend/app/src/shared/components/app-shell.spec.ts
+    asserts the disclosure is present whichever route is current), so this is a constraint a step decides
+    rather than one held by reading alone, and declaring a fitness is what lets the frontend registry
+    name it honestly. The condition is stated over what the frontend renders and over the totality of
+    routes, and names no component, no placement and no copy: how one frontend achieves the property is
+    a standard''s rule and never a second entry here, and the wording is the frontend''s own by this node''s
+    own statement. Presence-turns-on-nothing-further is the construction this specification already uses
+    wherever an obligation must not be readable as conditional -- rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    carries it for a route''s presence.'
+- location: constraints/no-route-enforces-authentication.md
+  field: statement
+  unstated: The material reports the defect against this node without saying which side of a split each
+    clause lands on -- whether the disclosure clause stays in this statement and the fitness grows to
+    reach it, or the statement shrinks to what this fitness already decides.
+  decided: This statement keeps only the API-layer condition -- no route guarded by an authentication
+    mechanism, every request accepted on the identity it claims, unverified -- and the disclosure clause
+    leaves for constraints/every-screen-discloses-that-authentication-is-unenforced.
+  why: 'This node''s fitness already decided exactly this clause and nothing beyond it, so shrinking the
+    statement to it costs no fact and leaves a node a step can be honestly held to whole. The entry located
+    here earlier decided that the specification holds the disclosure''s substance and states no wording;
+    what it decided is unchanged, and it now reads at the node that holds the disclosure. Leaving the
+    clause here beside a fitness that never named it is the state the material found: a frontend step
+    declaring this constraint on a clause its fitness does not authorize.'
 ---
 
 === domain/glossary/_context
@@ -5840,7 +5909,7 @@ A connector configuration is opaque text an operator authors and edits, so a bla
 The two unsettled windows are told apart, rather than merged into one notice, because the operator's next act differs across them: an outstanding read settles on its own and is worth waiting for, while a failed one settles only if it is made again.
 That is why the failure is not merely stated but carries the read with it.
 Reporting a condition an operator can act on and then withholding the act would leave reloading the whole screen or leaving it as the only routes back, and the reader could not distinguish a far end that was briefly unavailable from one that is gone.
-The offer is a fact rather than form by this specification's own division — what a person using the system can learn or do is stated here; which control carries each of the three statements, its wording and its placement are the interface's own, exactly as `a-presented-manifest-entry-states-its-pinned-revisions-state` and `constraints/no-route-enforces-authentication` already leave them.
+The offer is a fact rather than form by this specification's own division — what a person using the system can learn or do is stated here; which control carries each of the three statements, its wording and its placement are the interface's own, exactly as `a-presented-manifest-entry-states-its-pinned-revisions-state` and `constraints/every-screen-discloses-that-authentication-is-unenforced` already leave them.
 
 The read is issued again only on the operator's act, so that a far end already failing is never called repeatedly by a screen nobody is watching, and so that what the operator sees after a failure stays what they last asked for.
 
@@ -5869,7 +5938,7 @@ This states the reverse direction over the registry's own subject: from the sing
 The two do not stand in each other's way, carrying different content over different elements.
 
 The affordance is not stated because it is form.
-`no-route-enforces-authentication` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface.
+`every-screen-discloses-that-authentication-is-unenforced` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface.
 Holding this route to a standalone navigation link above the surface's heading would make relocating or relabelling one control a change to the specification, while the whole of what an operator learns or does here — reaching the listing from the single capability — is exactly what the statement holds.
 A surface carrying the route among its own actions and a surface carrying it as a link above its heading are indistinguishable in what the operator can do, and this refuses to prefer either.
 
@@ -8830,7 +8899,7 @@ involves:
 
 Release is the one trigger the lifecycle holds and released is terminal, so a second release asked of the same revision is refused rather than repeated — and the refusal's own condition is entirely undramatic: nothing is broken, nothing was lost, and the revision already stands in exactly the state the curator was asking for.
 That is the whole reason the telling has to be distinguishable. A curator shown the frontend's notice for a failure whose reason it does not recognise learns that the request's outcome is unknown, and acts accordingly — retrying, reloading, escalating. A curator told the revision is already released learns the opposite, that there is nothing left to do, and the two readings are not interchangeable.
-What the specification holds is that substance: the condition named, and named apart from the unrecognised-failure notice. Which control carries it, where it sits and how it is worded are form and belong to the frontend, not here — the same reading `constraints/no-route-enforces-authentication` already takes over its own disclosure.
+What the specification holds is that substance: the condition named, and named apart from the unrecognised-failure notice. Which control carries it, where it sits and how it is worded are form and belong to the frontend, not here — the same reading `constraints/every-screen-discloses-that-authentication-is-unenforced` already takes over its own disclosure.
 
 === scenarios/knowledge/revising-a-released-revision-creates-the-next
 ---

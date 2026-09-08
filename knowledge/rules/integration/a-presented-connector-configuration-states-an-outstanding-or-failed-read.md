@@ -18,7 +18,7 @@ A connector configuration is opaque text an operator authors and edits, so a bla
 The two unsettled windows are told apart, rather than merged into one notice, because the operator's next act differs across them: an outstanding read settles on its own and is worth waiting for, while a failed one settles only if it is made again.
 That is why the failure is not merely stated but carries the read with it.
 Reporting a condition an operator can act on and then withholding the act would leave reloading the whole screen or leaving it as the only routes back, and the reader could not distinguish a far end that was briefly unavailable from one that is gone.
-The offer is a fact rather than form by this specification's own division — what a person using the system can learn or do is stated here; which control carries each of the three statements, its wording and its placement are the interface's own, exactly as `a-presented-manifest-entry-states-its-pinned-revisions-state` and `constraints/no-route-enforces-authentication` already leave them.
+The offer is a fact rather than form by this specification's own division — what a person using the system can learn or do is stated here; which control carries each of the three statements, its wording and its placement are the interface's own, exactly as `a-presented-manifest-entry-states-its-pinned-revisions-state` and `constraints/every-screen-discloses-that-authentication-is-unenforced` already leave them.
 
 The read is issued again only on the operator's act, so that a far end already failing is never called repeatedly by a screen nobody is watching, and so that what the operator sees after a failure stays what they last asked for.
 

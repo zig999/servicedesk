@@ -1062,7 +1062,7 @@ commands:
     timeout_seconds: 900
     role: suite
     decides:
-      - constraints/no-route-enforces-authentication
+      - constraints/every-screen-discloses-that-authentication-is-unenforced
 
 elsewhere:
 

@@ -19,7 +19,7 @@ This states the reverse direction over the registry's own subject: from the sing
 The two do not stand in each other's way, carrying different content over different elements.
 
 The affordance is not stated because it is form.
-`no-route-enforces-authentication` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface.
+`every-screen-discloses-that-authentication-is-unenforced` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface.
 Holding this route to a standalone navigation link above the surface's heading would make relocating or relabelling one control a change to the specification, while the whole of what an operator learns or does here — reaching the listing from the single capability — is exactly what the statement holds.
 A surface carrying the route among its own actions and a surface carrying it as a link above its heading are indistinguishable in what the operator can do, and this refuses to prefer either.
 
