@@ -29,9 +29,18 @@ export async function caseCoherenceViolations(
   capabilities: ICapabilityQuery,
 ): Promise<readonly string[]> {
   return [
+    ...(await glossaryCoherenceViolations(theCase, glossary)),
+    ...(await capabilityViolations(theCase, capabilities)),
+  ];
+}
+
+export async function glossaryCoherenceViolations(
+  theCase: Case,
+  glossary: IGlossaryQuery,
+): Promise<readonly string[]> {
+  return [
     ...(await vocabularyViolations(theCase, glossary)),
     ...(await conceptViolations(theCase, glossary)),
-    ...(await capabilityViolations(theCase, capabilities)),
   ];
 }
 

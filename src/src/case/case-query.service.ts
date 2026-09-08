@@ -22,7 +22,7 @@ import type {
   ManifestEntry as StoredManifestEntry,
 } from './case-store.port.js';
 import { parseCaseDocument } from './parse-case-document.js';
-import { caseCoherenceViolations } from './validate-case-coherence.js';
+import { caseCoherenceViolations, glossaryCoherenceViolations } from './validate-case-coherence.js';
 
 export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery {
   public constructor(
@@ -41,6 +41,7 @@ export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery
   public async readCaseInputRequirements(slug: string, version: number): Promise<CaseInputRequirementsResult> {
     const assembled = await heldVersion(this.caseStore, slug, version);
     const theCase = structuralCase(assembled, slug, version);
+    await this.refuseGlossaryIncoherence(theCase, version);
     const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
     return deriveCaseInputRequirements(theCase, registeredCapabilities);
   }
@@ -73,9 +74,18 @@ export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery
 
   private async refuseIncoherence(theCase: Case, version: number): Promise<void> {
     const violations = await caseCoherenceViolations(theCase, this.glossary, this.capabilities);
-    if (violations.length > 0) {
-      throw new CaseVersionNotValidError(theCase.slug, version, violations);
-    }
+    refuseViolations(theCase.slug, version, violations);
+  }
+
+  private async refuseGlossaryIncoherence(theCase: Case, version: number): Promise<void> {
+    const violations = await glossaryCoherenceViolations(theCase, this.glossary);
+    refuseViolations(theCase.slug, version, violations);
+  }
+}
+
+function refuseViolations(slug: string, version: number, violations: readonly string[]): void {
+  if (violations.length > 0) {
+    throw new CaseVersionNotValidError(slug, version, violations);
   }
 }
 

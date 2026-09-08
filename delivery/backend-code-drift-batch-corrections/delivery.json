@@ -10,12 +10,28 @@
       "task": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list"
     },
     {
+      "id": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "kind": "implementation",
+      "file": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read.md",
+      "title": "readCaseInputRequirements revalidates at every read, excluding capability availability",
+      "summary": "readCaseInputRequirements now refuses a stored version whose structural or glossary/concept coherence fails at that reading, the same way readCase does, while leaving a missing or duplicate capability answerer for the derivation to fold into \"contributes no attribute,\" exactly as rules/knowledge/a-case-versions-input-requirements-are-derived states.",
+      "task": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read"
+    },
+    {
       "id": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "kind": "proof",
       "file": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list.md",
       "title": "isCaseVersionState's canonical-array rewrite proven through the guard's boundary and the two refusals it feeds",
       "summary": "Proves the case-version-state guard still accepts exactly draft and released and rejects everything else, that all six named paths still resolve the same state, and that the two lifecycle refusals still carry the correct status, name and -- closing the one ground the task's own Notes flagged as reachable and unguarded -- the correct stored state in their payload, adding one new unit test for updateDraftVersion's refusal path where that ground previously had no unit-level test at all.",
       "task": "task/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list"
+    },
+    {
+      "id": "proof/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "kind": "proof",
+      "file": "proof/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read.md",
+      "title": "readCaseInputRequirements revalidates at every read, excluding capability availability — proof",
+      "summary": "Three tests over CaseQueryService prove the narrowed coherence gate refuses a stored version whose structural or glossary/concept rules fail, exactly as read-case does, while a concept whose answering capability disappears folds into no attribute rather than refusing, and replayCase's stated exception stays untouched.",
+      "task": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read"
     }
   ],
   "edges": [
@@ -32,8 +48,38 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "task/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
       "to": "implementation/case-version-read-and-lifecycle-fidelity/case-version-state-from-canonical-list",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
+      "to": "implementation/case-version-read-and-lifecycle-fidelity/input-requirements-validates-at-read",
       "kind": "proves",
       "at": "the path"
     }

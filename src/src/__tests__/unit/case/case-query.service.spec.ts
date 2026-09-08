@@ -719,26 +719,70 @@ it('answers identical input requirements for a draft version and the same versio
   expect(releasedResult).toEqual(draftResult);
 });
 
-it("answers a draft version's input requirements even though the same content currently fails read-case's own coherence check", async () => {
-  const store = new FakeCaseStore();
-  const version = await seedCase(store, { release: false });
-  const glossary = coherentGlossary();
-  glossary.forgetConcept(CONCEPT);
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(inputSchemaCapability());
-  const service = new CaseQueryService(store, glossary, capabilities);
-  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
+it(
+  "refuses a draft version's input requirements once a coherence rule stops holding for its collected " +
+    'concept, the same CaseVersionNotValidError read-case itself throws for the identical content',
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store, { release: false });
+    const glossary = coherentGlossary();
+    glossary.forgetConcept(CONCEPT);
+    const capabilities = new FakeCapabilityQuery();
+    capabilities.hold(inputSchemaCapability());
+    const service = new CaseQueryService(store, glossary, capabilities);
+    await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
 
-  const result = await service.readCaseInputRequirements(SLUG, version);
+    const refusal = await readAsError(service.readCaseInputRequirements(SLUG, version));
 
-  expect(result.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
-});
+    expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+    expect(refusal).not.toBeInstanceOf(CaseNotFoundError);
+    expect((refusal as CaseVersionNotValidError).context).toEqual({
+      slug: SLUG,
+      version,
+      violations: [`the concept "${CONCEPT}" does not exist in the glossary`],
+    });
+  },
+);
 
-it.todo(
-  'revalidates a coherence violation before answering readCaseInputRequirements, refusing with ' +
-    "CaseVersionNotValidError just as read-case does for the same content — this task's own Notes " +
-    'record this as UNDERDETERMINED: readCaseInputRequirements today calls only structuralCase and ' +
-    'never refuseIncoherence, so this stays a documented gap rather than a criterion this task owes',
+it(
+  'folds a concept whose answering capability is later forgotten into no attribute for that concept, ' +
+    "rather than refusing the read — the derivation node's own carve-out for capability availability, " +
+    "which this method's gate deliberately leaves to deriveCaseInputRequirements instead of refusing over",
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store);
+    const capabilities = new FakeCapabilityQuery();
+    capabilities.hold(inputSchemaCapability());
+    const service = new CaseQueryService(store, coherentGlossary(), capabilities);
+    await expect(service.readCaseInputRequirements(SLUG, version)).resolves.toMatchObject({
+      requirements: [{ attribute: 'an-attribute' }],
+    });
+
+    capabilities.forget(CONCEPT);
+
+    const result = await service.readCaseInputRequirements(SLUG, version);
+    expect(result.requirements).toEqual([]);
+  },
+);
+
+it(
+  "leaves replayCase unrevalidated by this change — a replay still answers the pinned version's content " +
+    "even though the same content now fails readCaseInputRequirements's coherence check, honoring the " +
+    "specification's own stated replay exception rather than extending validation onto it",
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store);
+    const glossary = coherentGlossary();
+    glossary.forgetConcept(CONCEPT);
+    const capabilities = new FakeCapabilityQuery();
+    capabilities.hold(inputSchemaCapability());
+    const service = new CaseQueryService(store, glossary, capabilities);
+    await expect(service.readCaseInputRequirements(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
+
+    const replayed = await replayCase(SLUG, version, store);
+
+    expect(replayed.slug).toBe(SLUG);
+  },
 );
 
 it('derives from the currently registered capabilities read fresh at every call, answering differently once a capability is registered between two calls for the same version', async () => {
