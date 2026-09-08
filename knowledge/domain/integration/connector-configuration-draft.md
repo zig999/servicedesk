@@ -20,14 +20,14 @@ attributes:
 relationships:
   - target: capability
     type: reference
-    cardinality: "0..1"
+    cardinality: "0..*"
 ---
 
 ## Description
 
 A candidate connector configuration, generated from one operation of an OpenAPI document for one connector name, offered for an operator to review and apply — never registered by its own generation.
-Its configuration holds the same address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name exactly matches a property the named capability's own input schema declares, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
-The capability reference is the one, if any, currently registered naming the connector the draft is generated for — absent where none is, since resolving a subject placeholder has nothing to check a name against without one.
+Its configuration holds the same method/address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name exactly matches a property every one of the named capabilities' own input schemas declares, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
+The capability reference is every capability, if any, currently registered naming the connector the draft is generated for — empty where none is, since resolving a subject placeholder has nothing to check a name against without one, and all of them where more than one is, since the draft reads none of them in preference to the others.
 
 ## Responsibility
 

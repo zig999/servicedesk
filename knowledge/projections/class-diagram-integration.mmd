@@ -55,6 +55,7 @@ classDiagram
         NO_CAPABILITY_REGISTERED
         NO_MATCHING_INPUT_SCHEMA_PROPERTY
         SECURITY_SCHEME_NOT_REDUCIBLE_TO_A_CREDENTIAL
+        DRAFTED_KEY_OCCUPIED_BY_ANOTHER_SECURITY_SCHEME
     }
     class ConnectorConfigurationRegistry {
         <<Service>>
@@ -63,4 +64,4 @@ classDiagram
     class Concept {
         <<external: glossary>>
     }
-    ConnectorConfigurationDraft "0..*" --> "0..1" Capability
+    ConnectorConfigurationDraft "0..*" --> "0..*" Capability

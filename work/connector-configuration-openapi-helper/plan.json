@@ -1,0 +1,673 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-configuration-openapi-draft-backend",
+      "kind": "epic",
+      "file": "epic/connector-configuration-openapi-draft-backend.md",
+      "title": "Connector configuration OpenAPI draft, backend half",
+      "summary": "The published draft-connector-configuration-from-openapi operation and everything behind it -- the document fetch and its refusal, the OpenAPI 3.x reading and its refusal, subject-placeholder resolution against a registered capability, credential-placeholder generation, the method comparison against what is registered, and the draft value the operation answers with."
+    },
+    {
+      "id": "inventory/connector-registry-openapi-draft-backend",
+      "kind": "inventory",
+      "file": "inventory/connector-registry-openapi-draft-backend.md",
+      "title": "Connector registry, http-connector and errors area for the OpenAPI draft-generation operation",
+      "summary": "The backend already has a connector-registry module, a capability-registry, an http-connector calling layer, thin fastify controllers/routes wired through factories, and a flat errors/ directory of one-class-per-file domain errors, but holds no HTTP-fetch or YAML-parsing dependency yet."
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
+      "title": "The connector configuration draft's domain shape",
+      "summary": "The draft value object, its unresolved item, its generated credential, its method mismatch and the closed unresolved-reason vocabulary, declared in the domain with no infrastructure import.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/draft-generation-service.md",
+      "title": "Generate one connector configuration draft",
+      "summary": "The service that composes the fetch, the document reading, the subject resolution, the credential generation and the method comparison into one draft -- configuration text, unresolved list, generated credentials, any mismatch -- and writes nothing.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface.md",
+      "title": "Publish draft-connector-configuration-from-openapi",
+      "summary": "The route, controller, validation envelope and factory wiring that expose the draft generation as the contract's one operation, answering the draft or the refusal that was raised.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders.md",
+      "title": "Generate a credential placeholder for a reducible security scheme",
+      "summary": "An API key (header, query or cookie), HTTP basic or HTTP bearer scheme becomes one ${credential:<name>} placeholder at its own position under the stated composed name and is disclosed in generated_credentials; any scheme not reducible to one credential value, and any scheme that would collide with another on the same drafted key, is named unresolved instead.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading.md",
+      "title": "Read a fetched document as OpenAPI 3.x, or refuse it",
+      "summary": "The version gate and the parse of the fetched text, refusing a document that does not parse or does not declare OpenAPI 3.x, and exposing the chosen operation's method, parameter names, request-body field names and security schemes exactly as the document gives them.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch.md",
+      "title": "Fetch the named OpenAPI document, or refuse before parsing",
+      "summary": "A backend-issued, timeout-bounded fetch of the operator-named document link, refusing the draft on a network failure, a timeout or a non-2xx answer, naming the fetch failure and attempting no parse.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/registered-method-comparison.md",
+      "title": "Compare the drafted method against what is currently registered",
+      "summary": "A method_mismatch naming both methods, each upper-cased, where a configuration registered under the same connector name declares a method differing (case-folded) from the chosen operation's, and no mismatch in the three cases the rule names.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    },
+    {
+      "id": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "task",
+      "file": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution.md",
+      "title": "Resolve subject placeholders against the registered capability",
+      "summary": "Each parameter and request-body field name either becomes a ${subject:<name>} placeholder at its own position, on byte-for-byte equality with a property every currently-registered capability naming the connector declares in its input schema, or is named unresolved with one of the two capability-side reasons.",
+      "epic": "connector-configuration-openapi-draft-backend"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-draft-registers-nothing",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/an-unreachable-openapi-link-refuses-the-draft",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/a-mismatched-parameter-name-stays-unresolved",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/an-api-key-scheme-becomes-a-generated-credential",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/a-drafts-method-mismatches-what-is-registered",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-draft",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-configuration-openapi-draft-backend",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "depends_on",
+      "at": "depends_on[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "depends_on",
+      "at": "depends_on[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-registers-nothing",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "scenarios/integration/an-api-key-scheme-becomes-a-generated-credential",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "scenarios/integration/an-unreachable-openapi-link-refuses-the-draft",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "scenarios/integration/a-drafts-method-mismatches-what-is-registered",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "scenarios/integration/a-mismatched-parameter-name-stays-unresolved",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "implements",
+      "at": "implements[7]"
+    }
+  ]
+}

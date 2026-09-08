@@ -4301,6 +4301,249 @@ entries:
     exactly one environment-read value; a multi-step scheme has no single value to substitute, so
     forcing one in would misstate what the draft can honestly resolve -- the same disclose-rather-than-guess
     reading the sibling rule over subject placeholders already holds a name to.
+- location: rules/integration/an-unfetchable-openapi-link-refuses-the-draft.md
+  field: statement
+  unstated: The rule already names a timeout as one of the three fetch failures that refuse a draft, but
+    no node states how long the named OpenAPI document link may go unanswered before the backend abandons
+    the fetch as a timeout, nor which unit it is counted in.
+  decided: 60000 milliseconds (sixty seconds) from the fetch beginning, after which the fetch is abandoned
+    as a timeout and the draft is refused naming the fetch failure.
+  why: Sixty seconds is the figure this specification already holds for abandoning an outward call to a
+    far end the system does not control and whose own bound nobody declared -- a-capability-declares-its-contract's
+    absent-timeout default, and a-collected-concept-declares-a-ttl's default beside it -- and the
+    application publishing an operator-supplied OpenAPI document is external in that same sense. Reusing
+    it leaves one figure for that wait instead of two, and milliseconds is the unit every duration here is
+    already counted in. The investigation's own deadlines were deliberately not reused -- they clamp
+    stages of one attendant-facing diagnosis, while drafting is a one-off authoring read that enters no
+    deadline chain and no investigation ever reads.
+- location: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft.md
+  field: statement
+  unstated: No node states what draft-connector-configuration-from-openapi answers when the fetched
+    document parses and declares OpenAPI 3.x but declares no operation at the path and HTTP method the
+    request names -- whether the request is refused, or answered with a draft resolving nothing.
+  decided: The request is refused, naming that path and that method as the pairing the fetched document
+    declares no operation for, and no draft is generated; a path the document does declare while
+    declaring nothing for the named method under it is that same one refusal rather than a condition of
+    its own. Recorded as a new invariant over domain/integration/connector-configuration-draft.
+  why: Every attribute a draft carries is read from one operation, so with no operation at the named
+    pairing there is nothing to draft from; an empty draft would misstate what the unresolved list's
+    closed vocabulary means, since each of its three reasons names something a chosen operation itself
+    declared. Refused on its own account rather than folded into the fetch or the parse/version refusal,
+    because the link answered and the document read cleanly here -- what was wrong was the operator's own
+    selection, not the link or the document.
+- location: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered.md
+  field: statement
+  unstated: The rule states a method_mismatch where the chosen operation's method differs from the
+    currently registered configuration's, without saying whether that difference is judged on the values
+    exactly as each source gives them or on values folded to one case first -- given that an OpenAPI
+    document names an operation's method as a lower-case path-item key while an HTTP connector
+    configuration declares its method as one of GET, POST, PUT, PATCH or DELETE.
+  decided: The comparison is made with each method upper-cased first, so a registered GET against an
+    operation keyed get is no mismatch; where the upper-cased values differ, the method_mismatch names
+    registered and operation each upper-cased.
+  why: Read exactly as given, the two conventions would make every draft over an already-configured
+    connector report a mismatch that does not exist. Folding is not the normalization the sibling rule
+    over subject placeholders refuses -- a parameter name has no closed vocabulary or case convention on
+    either side, so a case difference there is unexplained, whereas a method's case difference is fully
+    accounted for by both sources' own stated conventions. Upper case is the naming because it is the one
+    vocabulary an HTTP connector configuration admits for a declared method, and the draft's own generated
+    configuration already declares the operation's method that way.
+- location: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method.md
+  field: statement
+  unstated: No node stated whether the configuration text a connector configuration draft carries
+    declares a method key at all, or what value it would hold.
+  decided: The draft's configuration declares a method, beside the address, query, headers and body
+    derived from the same operation, whose value is the chosen operation's own HTTP method as the OpenAPI
+    document names it, upper-cased. The method a connector configuration currently registered under the
+    same connector name declares is never drafted in its place, whether the two agree or differ.
+  why: The document states this key on its own account, unlike responseMap and statusMap -- each
+    operation sits under the very verb its call would issue -- so drafting it invents nothing, and two
+    rules already on record presume it -- the method-comparison rule compares the operation's method
+    against a registration and names both without replacing either, which requires the draft to carry the
+    operation's method for the operator to submit, and the registers-nothing rule leaves that submission
+    the operator's own later act. Upper-cased because drafting the document's lower-case spelling verbatim
+    would generate a configuration that ends unavailable with a MalformedHttpConnectorConfigurationError
+    as soon as it were registered and observed.
+- location: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document.md
+  field: statement
+  unstated: No node states which HTTP status or which error value the draft operation answers a request
+    with when its named link cannot be fetched, or when the fetched document does not parse or does not
+    declare OpenAPI 3.x, nor whether the two answers differ.
+  decided: HTTP 422 reporting an OpenApiDocumentNotFetchedError for the fetch failure, and HTTP 422
+    reporting an OpenApiDocumentNotReadableError for the document that does not parse or does not declare
+    OpenAPI 3.x -- the same status for both, two error values that are never interchanged.
+  why: 422 is this specification's established answer for a well-formed request whose named content the
+    domain refuses, and both refusals are exactly that. 500 is reserved for a server-side condition the
+    requester neither caused nor can correct by changing the request, which a link the request itself
+    named is not. Two error values because telling a document that was never received from one that
+    cannot be read is the whole reason the two refusals are two rules; a single shared value would leave
+    the operator knowing only that something failed.
+- location: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft.md
+  field: statement
+  unstated: The fact decided immediately above this one settled the status and error value for the draft
+    operation's other two refusals (an unfetchable link, an unreadable document) but left this third
+    refusal -- a document that reads fine but declares no operation at the named path and method -- with
+    no HTTP status or error value of its own, a gap that fell out of deciding the two facts separately
+    rather than one the material or an isolated judge left open.
+  decided: HTTP 422 reporting an OpenApiOperationNotFoundError.
+  why: The same reasoning the neighbouring refusal-status decision already gives applies unchanged --
+    the request is well formed and the document was read successfully, so 422 is this specification's answer
+    for a well-formed request whose named content the domain refuses, not a server-side 500. The name
+    follows the same subject-plus-condition convention the other two decided names just took
+    (OpenApiDocumentNotFetchedError, OpenApiDocumentNotReadableError) -- a path-and-method pairing the
+    document does not answer for.
+- location: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability.md
+  field: statement
+  unstated: The rule and domain/integration/connector-configuration-draft both speak of "a capability
+    currently registered naming the connector" and "the one registered", and the draft's capability
+    reference was declared at cardinality 0..1, while nothing anywhere forbids two or more capabilities
+    from naming one connector -- each answering its own concept through that connector's single
+    configuration. No node stated which of several currently-registered capabilities a draft reads as its
+    registered capability, nor whether a parameter or request-body field name resolves against any one of
+    their input-schema properties or only against one read capability's.
+  decided: The draft reads every capability currently registered naming that connector, never one chosen
+    among them (the draft's capability reference becomes cardinality 0..*), and a parameter or
+    request-body field name becomes a placeholder only where every one of those capabilities declares
+    that exact name among its own input schema properties; where at least one is registered and any one
+    of them does not, the name is unresolved with reason no-matching-input-schema-property.
+  why: The specification already answers this for the registered state, and the new rule is held to that
+    answer rather than stating a second, disagreeing one -- a-connector-placeholder-is-declared-by-its-capability
+    refuses a capability registration naming a connector whose standing configuration embeds a subject
+    placeholder absent from that registration's own input schema properties, so a configuration's subject
+    placeholders can only ever be names every capability naming that connector declares; its own
+    Description states it forces no registration order, and admitting a placeholder only some of them
+    declare would make the permitted state depend on which of the two writes came first. Reading all the
+    registered capabilities and requiring all of them to declare the name is also the only reading that
+    keeps this rule's own claim true, that a draft built by it can never introduce the orphaned
+    placeholder the registration-time rule refuses -- a draft resolving against any one of them would
+    offer an operator a configuration the registry then refuses to register. (Watch item, not resolved
+    here -- a-connector-placeholder-is-declared-by-its-capability's own ConnectorPlaceholderOutsideInputSchemaError
+    text pairs each orphan with "the capability that fails to declare it" in the singular, and whether
+    that error names every currently-registered capability failing to declare an orphaned placeholder or
+    only one of them is an existing ambiguity in that rule this decision did not reach.)
+- location: domain/integration/connector-configuration-draft.md
+  field: relationships
+  unstated: Not a fact left unstated by the material -- two deciders, spawned in parallel and each blind
+    to the other, independently amended overlapping prose of this same file -- one added "method/" to the
+    shape sentence after deciding the draft states a method, the other changed the capability reference
+    to cardinality 0..* and its surrounding sentences after deciding a draft reads every capability
+    sharing a connector rather than one. Both decisions are logged separately above, at their own rule
+    files; this entry discloses only that applying both to one file required merging their prose by hand
+    rather than writing either verbatim over the other.
+  decided: The merged Description carries both -- "the same method/address/query/headers/body shape" and
+    the every-capability, cardinality-0..* reading of the capability reference.
+  why: Neither decision contradicts the other -- one is about whether a method key is drafted, the other
+    about how many capabilities the draft reads -- so the merge is a transcription of two already-decided
+    facts onto one file, not a third decision.
+- location: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it.md
+  field: statement
+  unstated: A binder judging a task against this rule found that it names "a declared parameter" and reads
+    a request-body schema, a security scheme and a parameter without ever saying whether a path item's own
+    parameters count among an operation's, what happens where a path-item parameter and an operation
+    parameter share a name and location, or whether a $ref an OpenAPI 3.x document uses in place of a
+    direct declaration is read through to its target.
+  decided: A path item's own parameters apply to every operation under it unless that operation declares
+    one of its own at the same name and location, in which case the operation's own stands; a $ref is
+    followed to the declaration it targets, recursively, before a name, a location, a schema or a scheme
+    kind is read from it.
+  why: This is not a business choice this specification is free to make either way -- it is what OpenAPI
+    3.x itself already defines a path item's parameters and a $ref to mean. Reading either differently
+    would not be a stricter or narrower reading of the same document; it would be reading a document other
+    than the one the operator named. Decided directly, without a blind judge, because the fact has exactly
+    one correct answer fixed by the format this reader parses, the same standing already given the accepted
+    HTTP methods and evidence-result vocabulary elsewhere in this specification.
+- location: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document.md
+  field: statement
+  unstated: This rule already decided that a draft refused for an unfetchable link answers HTTP 422
+    reporting an OpenApiDocumentNotFetchedError, and the sibling rule already names the three fetch
+    failures -- a network failure, a timeout, a response outside the 2xx range -- but no node stated
+    whether that refusal reports which of the three occurred, or the link the request named, to its
+    caller as structured fields beside its message, or holds either only server-side.
+  decided: The OpenApiDocumentNotFetchedError's details carry the link the request named, exactly as
+    it named it, and which of the three fetch failures occurred as one of network-failure, timeout or
+    status-outside-2xx, the last carrying with it the status code the link answered; the details carry
+    nothing else of the fetch -- no underlying network or client error's own message, and no part of
+    whatever the link answered with.
+  why: The refusal is unactionable without the failure kind -- naming another link and fixing the far
+    end are the operator's two possible next acts, and only which of the three happened tells them
+    apart, so held server-side that distinction would sit in a log the authoring operator cannot read.
+    The link is the caller's own input echoed back, disclosing nothing it did not send, and an answered
+    status is the far end's own public answer to a link the operator named, so neither field discloses
+    this system. The three values are exactly the three the sibling rule already enumerates, in this
+    specification's kebab-case vocabulary style. The disclosure stops at those because
+    a-domain-error-unmapped-by-status-is-refused-generically holds an error's own message and carried
+    context server-side as possible internal state, and the underlying client error's message and the
+    unsuccessful response's body are that same kind of unexamined text -- the honest-about-cause,
+    silent-about-internals reading an-unreachable-connector-ends-unavailable already takes when its
+    detail names the connector and no part of the call.
+- location: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme.md
+  field: statement
+  unstated: Two binders judging tasks against this rule found that it names "an operation's security
+    scheme" without saying which schemes an operation requires at all -- whether an operation declaring
+    no security field of its own inherits the document's top-level one, which of several alternative
+    requirement objects is read and whether one alternative's schemes or every alternative's are read,
+    and what is read where the field in effect is an empty array or is declared nowhere. No node
+    states, either, what the draft puts at the drafted headers key Authorization where more than one
+    scheme read would occupy that key's whole value -- an HTTP basic scheme, an HTTP bearer scheme, or
+    an API key located at the header Authorization -- although an-http-connector-configuration-declares-its-call
+    gives that key exactly one value and a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    sends all three to it.
+  decided: The security field in effect is the operation's own where it declares one and the document's
+    top-level otherwise, and an empty array at either level requires no scheme -- the format's own
+    definitions. Of a field declaring more than one alternative requirement object, the first object is
+    read, and every scheme that one object names is read, none of any other; no scheme at all is read
+    where the field in effect is an empty array, names no scheme, or is declared nowhere, and the draft
+    then names no security scheme unresolved. Where more than one scheme read would occupy the whole
+    value of the drafted headers key Authorization, only the first of them in the order the requirement
+    object names its schemes becomes a placeholder and holds that key; every other one is named in the
+    draft's unresolved list with a fourth reason value, drafted-key-occupied-by-another-security-scheme,
+    added to domain/integration/connector-configuration-draft-unresolved-reason, and generates no
+    placeholder and no generated_credentials entry.
+  why: The inheritance and empty-array readings have exactly one correct answer fixed by OpenAPI 3.x,
+    the standing this specification already gives a path item's parameters, $ref resolution and the
+    accepted HTTP methods vocabulary. The first alternative is read because the objects of a security
+    array are alternative ways to satisfy the same operation -- any one admits the call -- and the first
+    is the only one nameable without a preference the document never states, the identical reading
+    a-connector-configuration-draft-places-each-part-where-the-call-carries-it already gives the servers
+    array's first entry; the schemes inside one object are required together, not alternatively, so all
+    of that object's are read. The collision cannot be drafted away -- that rule sends basic, bearer and
+    an Authorization API key to one key an-http-connector-configuration-declares-its-call gives one
+    value, so a document requiring two declares something no HTTP call carries. Drafting the first and
+    disclosing the rest keeps a configuration that works for one scheme while naming the loss, which is
+    what the unresolved list is for; a fourth reason is needed because a displaced scheme reduces to one
+    credential value perfectly well, so security-scheme-not-reducible-to-a-credential would misstate why
+    it is absent. Refusing the draft was the alternative and is rejected because
+    a-malformed-or-unsupported-openapi-document-refuses-the-draft already fixes the draft's two refusals
+    as an unfetchable link and an unreadable or unsupported document, and this is neither.
+- location: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it.md
+  field: statement
+  unstated: The rule reads "its request-body schema" as though an operation had exactly one, while an
+    OpenAPI 3.x request body declares a content object keyed by media type, each key carrying a schema
+    of its own. No node said which of those schemas is read where a request body declares content under
+    more than one media type, nor what is read where none of them is a media type this reader names --
+    and OpenAPI 3.x itself mandates no preference among them, so the format does not answer it either.
+  decided: An operation's request-body schema is the schema declared under the media type
+    application/json and under no other, matched as that exact media type name and read that way
+    however many media types the request body's content declares; a request body declaring no content
+    under application/json declares no request-body field name at all and the draft states no body key
+    for it -- the same answer the rule already gives a body schema that is an array or another
+    non-object.
+  why: The body an-http-connector-configuration-declares-its-call admits is a value inside the connector
+    configuration's own JSON text, so a JSON object of top-level keys is the only body the executing
+    connector ever carries; a multipart, form-encoded or XML schema's field names would draft keys for a
+    body that connector never sends in the shape they were declared for, and
+    a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability would then
+    match those names byte for byte against a capability's input schema properties -- the silent
+    equation that rule refuses. Naming this one media type is also the only choice available without a
+    preference the document never states -- a content object's entries are alternative encodings of the
+    same call, keyed rather than ordered, so there is no first entry to read the way this same rule reads
+    the first entry of a servers array. It is matched exactly rather than by a JSON-suffix reading
+    because that reading reopens the same arbitrary choice wherever two suffixed media types are
+    declared, and because byte-for-byte matching is the discipline this rule and its sibling already
+    hold every name to. Reading nothing where application/json is absent follows the rule's own posture
+    for a body it cannot honestly read -- a stated gap the reviewing operator closes by hand, as with a
+    document declaring no server, rather than a refusal -- a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    names the draft's refusals and this is not among them.
 ---
 
 === domain/glossary/_context
@@ -4573,14 +4816,14 @@ attributes:
 relationships:
   - target: capability
     type: reference
-    cardinality: "0..1"
+    cardinality: "0..*"
 ---
 
 ## Description
 
 A candidate connector configuration, generated from one operation of an OpenAPI document for one connector name, offered for an operator to review and apply — never registered by its own generation.
-Its configuration holds the same address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name exactly matches a property the named capability's own input schema declares, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
-The capability reference is the one, if any, currently registered naming the connector the draft is generated for — absent where none is, since resolving a subject placeholder has nothing to check a name against without one.
+Its configuration holds the same method/address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name exactly matches a property every one of the named capabilities' own input schemas declares, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
+The capability reference is every capability, if any, currently registered naming the connector the draft is generated for — empty where none is, since resolving a subject placeholder has nothing to check a name against without one, and all of them where more than one is, since the draft reads none of them in preference to the others.
 
 ## Responsibility
 
@@ -4653,11 +4896,12 @@ values:
   - no-capability-registered
   - no-matching-input-schema-property
   - security-scheme-not-reducible-to-a-credential
+  - drafted-key-occupied-by-another-security-scheme
 ---
 
 ## Description
 
-The closed set of reasons a connector configuration draft names a parameter, a request-body field, or a security scheme apart from what it resolved: no capability is currently registered naming the connector the draft is generated for; one is registered but its input schema names no property matching that exact name; or the operation's security scheme is not one the connector configuration's own ${credential:<name>} mechanism can reduce to a single value.
+The closed set of reasons a connector configuration draft names a parameter, a request-body field, or a security scheme apart from what it resolved: no capability is currently registered naming the connector the draft is generated for; at least one is registered but at least one of those registered capabilities' input schemas names no property matching that exact name; the operation's security scheme is not one the connector configuration's own ${credential:<name>} mechanism can reduce to a single value; or another security scheme the same operation requires already holds the whole value of the drafted key this one would have occupied.
 
 ## Responsibility
 
@@ -5749,7 +5993,28 @@ The helper lives inside the one surface an operator already authors or edits a c
 === rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
 ---
 type: invariant
-statement: An operation's security scheme reducible to one credential value — an API key or an HTTP basic or bearer scheme — becomes a ${credential:<name>} placeholder in the draft's configuration, with the generated name naming the connector and that scheme together, upper-cased; the generated name is always disclosed in the draft's generated_credentials, never presented as a value already resolved. A security scheme not reducible to one credential value — OAuth2 and OpenID Connect among them — is named in the draft's unresolved list instead, with reason security-scheme-not-reducible-to-a-credential, and never becomes a placeholder.
+statement: >-
+  The security schemes an operation of a fetched OpenAPI 3.x document requires are the schemes
+  named by the first requirement object of the security field in effect for that operation —
+  the operation's own security field where it declares one, otherwise the document's top-level
+  security field — every scheme that one requirement object names and no scheme of any further
+  alternative object the same field declares, and no scheme at all where the field in effect is
+  an empty array, where that first object names no scheme, or where no security field is
+  declared at either level, the draft then generating no credential placeholder and naming no
+  security scheme unresolved. An operation's security scheme reducible to one credential value
+  — an API key or an HTTP basic or bearer scheme — becomes a ${credential:<name>} placeholder in
+  the draft's configuration, with the generated name naming the connector and that scheme
+  together, upper-cased; the generated name is always disclosed in the draft's
+  generated_credentials, never presented as a value already resolved. A security scheme not
+  reducible to one credential value — OAuth2 and OpenID Connect among them — is named in the
+  draft's unresolved list instead, with reason security-scheme-not-reducible-to-a-credential,
+  and never becomes a placeholder. Where more than one of the schemes required would occupy the
+  whole value of the drafted headers key Authorization — an HTTP basic scheme, an HTTP bearer
+  scheme, or an API key declaring the header Authorization, by that exact name, as its own
+  location — only the first of them in the order the requirement object in effect names its
+  schemes becomes a placeholder and holds that key, and every other one of them is named in the
+  draft's unresolved list with reason drafted-key-occupied-by-another-security-scheme,
+  generating no placeholder and appearing in no generated_credentials.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -5760,21 +6025,26 @@ The connector configuration's own placeholder mechanism resolves ${credential:<n
 
 The generated name is the connector's own name and the security scheme's own name from the OpenAPI document, each with every character outside A-Z0-9 replaced by an underscore, joined by an underscore, the whole upper-cased — connector erp-http and scheme apiKeyHeader generate ERP_HTTP_APIKEYHEADER. Disclosing it is never resolving it: the credential's real value still comes only from environment configuration, exactly as a-diagnostic-response-masks-a-resolved-credential already keeps a resolved credential out of what a diagnostic response shows.
 
+Which security field is in effect, and what an empty array means, is read the way OpenAPI 3.x itself already defines it and not as a preference of this specification's: an operation declaring no security field of its own is governed by the document's top-level field, and an empty array at either level declares that no security is required. Reading either differently would be reading a document other than the one the operator named, the same standing a-connector-configuration-draft-places-each-part-where-the-call-carries-it already gives a path item's parameters and a $ref. The first requirement object is the one read because the objects of a security array are alternative ways to satisfy the same operation — any one of them admits the call — and the first is the only one nameable without a preference the document never states, exactly the reading that same rule already gives the servers array's first entry. Within the object read, every scheme it names is required together rather than alternatively, so all of that object's schemes are read and none of another's. No scheme in effect leaves nothing unresolved: the operation asks for no credential, and naming a security scheme in the unresolved list there would disclose a failure that did not happen.
+
+Two schemes can collide on one drafted key because an-http-connector-configuration-declares-its-call fixes headers as one value per key, while a basic scheme, a bearer scheme and an API key located at the header Authorization each claim the whole of that key's value — so no single HTTP call carries two of them, and a document requiring two together declares something no call can satisfy. The draft neither refuses nor drops them in silence: the first scheme the requirement object names holds the key, so the operator keeps a configuration that works for one of them, and every displaced scheme is disclosed by name and by reason, which is what the unresolved list is for. The reason is its own rather than security-scheme-not-reducible-to-a-credential because a displaced basic, bearer or Authorization API key scheme reduces to one credential value perfectly well; reporting it as non-reducible would misstate why it is absent from the configuration. Refusing the whole draft was the alternative and is rejected on the ground a-malformed-or-unsupported-openapi-document-refuses-the-draft already fixes: the draft's refusals are an unfetchable link and an unreadable or unsupported document, and this is neither — it is exactly the kind of gap the reviewing operator closes by hand, with the drafted address, query, headers and body still worth reviewing.
+
 === rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
 ---
 type: policy
-statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration only where a capability is currently registered naming the connector the draft is generated for, and that capability's own input schema names that exact parameter or field name — matched case-sensitively and separator-sensitively, never normalized — among its properties; where no capability is currently registered for that connector, or where the one registered does not name that exact name among its properties, the parameter or field is named in the draft's unresolved list instead, with reason no-capability-registered or no-matching-input-schema-property respectively, and never becomes a placeholder.
+statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration only where at least one capability is currently registered naming the connector the draft is generated for and every capability currently registered naming that connector names that exact parameter or field name — matched case-sensitively and separator-sensitively, never normalized — among its own input schema properties; the draft reads every one of those capabilities together, and never one of them chosen over the others. Where no capability is currently registered for that connector, the parameter or field is named in the draft's unresolved list with reason no-capability-registered; where at least one is registered and any one of them does not name that exact name among its properties, the parameter or field is named in that list with reason no-matching-input-schema-property instead. In neither case does it become a placeholder.
 expression: >-
   For a connector name c a draft is generated for, and a parameter or request-body field
-  named n an operation of the fetched document declares: where no capability is currently
-  registered naming connector c, the draft's unresolved list holds an item naming n with
-  reason no-capability-registered. Where a capability is currently registered naming
-  connector c, and that capability's own input schema properties holds a key equal to n by
+  named n an operation of the fetched document declares: where the set of capabilities
+  currently registered naming connector c is empty, the draft's unresolved list holds an
+  item naming n with reason no-capability-registered. Where that set is non-empty and
+  every capability in it has an input schema whose properties holds a key equal to n by
   byte-for-byte comparison, the draft's configuration embeds ${subject:n} at n's own
-  position. Where such a capability is registered and its input schema properties holds no
-  key equal to n, the draft's unresolved list holds an item naming n with reason
-  no-matching-input-schema-property. No third outcome exists for n, and no placeholder is
-  ever generated from a name matched by anything short of byte-for-byte equality.
+  position. Where that set is non-empty and any capability in it has an input schema
+  whose properties holds no key equal to n, the draft's unresolved list holds an item
+  naming n with reason no-matching-input-schema-property. No third outcome exists for n;
+  no placeholder is ever generated from a name matched by anything short of byte-for-byte
+  equality, and none from a name fewer than every capability in that set declares.
 constrains:
   - domain/integration/connector-configuration-draft
   - domain/integration/capability
@@ -5783,9 +6053,11 @@ consistency: eventual
 
 ## Description
 
-A capability may be registered before its connector is ever configured, and a connector may be configured before any capability names it (domain/integration/connector-configuration); this rule reads only what already stands on the capability side at the moment the draft is generated, the same restraint a-connector-placeholder-is-declared-by-its-capability already holds for the registration write it protects. A draft built this way can never itself introduce the orphaned placeholder that rule refuses, because it never emits ${subject:name} for a name the registered capability's own input schema does not already declare.
+A capability may be registered before its connector is ever configured, and a connector may be configured before any capability names it (domain/integration/connector-configuration); this rule reads only what already stands on the capability side at the moment the draft is generated, the same restraint a-connector-placeholder-is-declared-by-its-capability already holds for the registration write it protects. A draft built this way can never itself introduce the orphaned placeholder that rule refuses, because it never emits ${subject:name} for a name every capability currently registered against that connector does not already declare in its own input schema.
 
 The match is exact rather than normalized on purpose: a name that merely resembles a declared property — a different case, a different separator — is not evidence of the same fact, and silently equating the two would risk resolving a placeholder against an attribute it was never declared for. An operator who judges two differently-spelled names to mean the same thing corrects the draft by hand; the draft itself never guesses.
+
+Several capabilities may name one connector — a connector holds one configuration, and each capability naming it answers its own concept through that same call descriptor — so the draft reads all of them and holds a name to all of them, rather than choosing one to read. That is the reading a-connector-placeholder-is-declared-by-its-capability already fixes for the registered state: it refuses a capability registration whose own input schema properties lack a subject placeholder the connector's standing configuration embeds, so a configuration's subject placeholders can only ever be names every capability naming that connector declares, in whichever order the two sides were written. A draft resolving a name only some of them declare would hand the operator a configuration the registry refuses to accept, which is the one thing a helper generating candidate configurations must not do.
 
 Where no capability is registered at all, every candidate name is unresolved for that one reason, and the draft still generates — capability registration order is not a precondition this rule imposes, the same reading domain/integration/connector-configuration already gives a configuration authored before its capability exists.
 
@@ -5801,6 +6073,99 @@ constrains:
 
 an-http-connector-configuration-declares-its-call holds statusMap to a mapping of an HTTP status to one evidence-result ending — ok, denied, timeout or unavailable — and holds responseMap to the field paths an evidence result reads a response by. Neither is a fact an OpenAPI document states: its response schemas describe shape, never which of this system's own outcomes a status means, and never which path this system's own evidence reads a field from. Inventing either from a guess would put a fact the business never decided into a drafted configuration silently; leaving both absent is the honest answer, and the drafted configuration still registers, address, query, headers, body and every generated placeholder intact, exactly as incomplete as an operator's own first hand-authored attempt would be.
 
+=== rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+---
+type: invariant
+statement: >-
+  A connector configuration draft places every part of the chosen operation at the position an
+  HTTP call itself carries that part, and at no other: the drafted address is the URL of the
+  first entry of the servers array in effect for that operation — the operation's own where it
+  declares one, otherwise its path item's, otherwise the document's top-level — exactly as the
+  document declares that URL and with any trailing slash removed, followed by the operation's
+  own path exactly as the document keys it, and is that path alone where no servers array is in
+  effect or the one in effect declares no entry. A path parameter stands inside that address at
+  the place the document's own path template holds it, a query parameter at a drafted query key
+  named exactly as the parameter declares it, a header parameter at a drafted headers key named
+  exactly as the parameter declares it, a cookie parameter — a location the shape
+  an-http-connector-configuration-declares-its-call fixes holds no key for — inside the value of
+  the one drafted headers key Cookie as its own name, an equals sign and its value, joined to
+  any further cookie-carried part of the same call by a semicolon and a space, and a
+  request-body field at a top-level key of the drafted body named exactly as the field declares
+  it. The parameters one operation declares are every parameter its own operation object declares
+  together with every parameter its path item declares that no parameter of the operation's own
+  names at the same location under the same name, the operation's own parameter standing where
+  the two would otherwise conflict; a $ref a parameter, a request-body schema, or a security
+  scheme declares in place of stating itself directly is read through to the declaration it
+  targets before this rule reads a name, a location, a schema or a scheme kind from it. One
+  operation's request-body schema is the schema its request body declares under the media type
+  application/json and under no other, matched as that exact media type name and read that way
+  however many media types that request body's content declares. The request-body field names
+  one operation declares are the keys of the properties object at the top level of that schema
+  and no others — a name nested inside a property's own subschema is never one of them, neither
+  by its leaf name nor by its path from the body root — and an operation declaring no request
+  body, one whose request body declares no content under application/json, or one whose
+  request-body schema is an array or any other non-object, declares no request-body field name
+  at all, the draft stating no body key for it. A parameter or field that resolves holds at its
+  position the placeholder it resolved to; one named in the draft's unresolved list still stands
+  at its position, holding its own name in the document's own brace form {name}, which names no
+  placeholder kind and is carried as plain text. A generated credential placeholder for a
+  security scheme declaring a location of its own stands at that location — an API key carried
+  in a header at a drafted headers key named by that header, an API key carried in a query
+  parameter at a drafted query key named by that parameter, each holding the bare placeholder —
+  and one for a scheme declaring no location of its own stands in the drafted headers: an API
+  key carried in a cookie inside the Cookie key's value as its own cookie name, an equals sign
+  and the placeholder; an HTTP basic scheme as the Authorization key's whole value
+  Basic ${credential:<name>}; and an HTTP bearer scheme as the Authorization key's whole value
+  Bearer ${credential:<name>} — the placeholder standing in each for the credential alone and
+  never for the text stated beside it.
+expression: |-
+  For a chosen operation o of a fetched OpenAPI 3.x document and a draft d generated for
+  connector c, where servers_in_effect(o) is o's own servers array where o declares one,
+  otherwise its path item's where that declares one, otherwise the document's top-level, and
+  ref(x) is x where x declares no $ref key and is the declaration $ref points to, followed
+  recursively, where it does:
+
+  - parameters(o) = ref(o).parameters union { p in ref(path_item(o)).parameters : no q in
+    ref(o).parameters has q.name = p.name and q.in = p.in }, every entry read through ref first.
+  - address(d) = strip_trailing_slash(url(first(servers_in_effect(o)))) + path(o), and
+    address(d) = path(o) where servers_in_effect(o) is absent or holds no entry.
+  - a declared parameter p occupies: p.in = path -> the substring {p.name} inside address(d);
+    p.in = query -> d.query[p.name]; p.in = header -> d.headers[p.name]; p.in = cookie -> the
+    segment beginning "p.name=" inside the single value d.headers["Cookie"].
+  - body_schema(o) = ref(ref(ref(o).requestBody).content["application/json"].schema) where
+    ref(ref(o).requestBody) declares a content object holding that exact key, and is absent
+    otherwise; no other key of that content object is ever read, whatever keys it holds and
+    however many.
+  - field_names(o) = keys(body_schema(o).properties) where body_schema(o) declares a
+    properties object, otherwise the empty set; a field f in field_names(o) occupies d.body[f];
+    d states no body key where field_names(o) is empty.
+  - the value at a parameter's or field's position n is "${subject:n}" where n resolved, and
+    "{n}" where d.unresolved holds an item naming n.
+  - a generated credential name g for security scheme s occupies: s apiKey in header ->
+    d.headers[s.name] = "${credential:g}"; s apiKey in query -> d.query[s.name] =
+    "${credential:g}"; s apiKey in cookie -> the segment "s.name=${credential:g}" inside
+    d.headers["Cookie"]; s http basic -> d.headers["Authorization"] = "Basic ${credential:g}";
+    s http bearer -> d.headers["Authorization"] = "Bearer ${credential:g}".
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Every part of an operation already has a place in the HTTP call a connector configuration describes, so the draft reads each position off that call rather than choosing one part by part: a path parameter is part of the path, a header parameter part of the headers, a request-body field part of the body. The shape itself is not the draft's to extend — an-http-connector-configuration-declares-its-call fixes address, query, headers and body for the connector that executes, and a draft an operator applies has to register as one of those, so a fifth key for the one location that shape holds no key for would draft text no connector reads. HTTP carries cookies in a single Cookie request header, so that location already has an honest position inside the stated shape, and a cookie-carried credential sits beside a cookie-carried parameter there for the same reason.
+
+The first entry of the servers array is read because the array's entries are alternative hosts serving the same document — any one of them yields the same call — and the first is the only one nameable without a preference the document never states. Reading the operation's own array before its path item's before the document's top-level is the precedence the document itself declares, not a preference of this specification's. A document declaring no server at all leaves the address as the path alone rather than refusing: a-malformed-or-unsupported-openapi-document-refuses-the-draft names the draft's two refusals and a missing host is neither, it is exactly the gap the reviewing operator closes by hand, and the address still stands as the non-empty string the executing connector requires.
+
+Only the top level of a request-body schema names fields because a-capability-input-schema-holds-a-well-formed-object declares a capability's own names at the top level of properties, one per Subject attribute, and a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability matches a field name against those keys byte for byte. A nested leaf name would equate two different fields wherever a body repeats a name at two depths, and a name rooted from the body would be matched against a key no capability ever declares that way; either produces a placeholder standing for something other than the field it was read from — the exact silent equation that rule refuses. A body schema that is an array or another non-object names nothing to match against, so it honestly declares no field, and the draft states no body rather than inventing a key.
+
+application/json is the one media type whose schema is read because the body an-http-connector-configuration-declares-its-call admits is a value inside the connector configuration's own JSON text, so a JSON object of top-level keys is the only body the executing connector ever carries; field names read off a multipart, form-encoded or XML schema would draft keys for a body that connector never sends in the shape the document declared them for. Where one request body declares content under several media types, naming this one is also the only choice available without a preference the document never states: the entries of a content object are alternative encodings of the same call, keyed rather than ordered, so there is no first entry to read the way a servers array has one. A request body declaring content under no such media type — a JSON-suffixed vendor media type alone among them — leaves the draft stating no body key rather than reading a schema at a name this reader does not recognize: the same honest gap a document declaring no server leaves in the address, and the same one a non-object body schema already leaves, closed by the reviewing operator by hand.
+
+An unresolved parameter or field keeps its position holding the document's own brace text because the unresolved list is the disclosure while the configuration is what the operator actually edits: dropping the key there would leave the edited artifact silently missing a part the operation requires, with nothing in the text to point at. The brace form is the document's own, names no placeholder kind this connector recognizes, and is carried as the plain text an-http-connector-configuration-declares-its-call already makes of anything that is not a ${kind} form, so leaving it in view misuses nothing in the executing connector's vocabulary.
+
+A path item's own parameters and a $ref in place of a direct declaration are read the way OpenAPI 3.x itself already defines them, not a preference this specification states: a path item's parameters apply to every operation under it unless that operation declares one of its own at the same name and location, and a $ref names a declaration to be read exactly as if it stood written where the reference sits. Reading either any other way would not be a narrower or a stricter reading of the same document — it would be reading a different document than the one the operator named, so both are read here as the format itself already fixes them.
+
+The scheme text beside a credential placeholder is drafted rather than configured because Basic and Bearer are the HTTP authentication scheme's own fixed text and no part of any secret, while the placeholder resolves to exactly one value read from environment configuration. Composing the text in the draft leaves the environment holding the credential alone and keeps the drafted header a value the scheme actually accepts. It is the same division the header-carried API key already stands by, whose header name the draft states while only its value comes from the environment: what the document states goes into the draft, and only the secret is left to be configured.
+
 === rules/integration/a-connector-configuration-draft-registers-nothing
 ---
 type: invariant
@@ -5813,15 +6178,33 @@ constrains:
 
 A draft exists only to be reviewed and, at the operator's own later act, applied to an authoring surface and submitted through register-connector — the one write the registry publishes. Generating one is a read, drawn from an OpenAPI document and whatever is currently registered, and reads change nothing.
 
+=== rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+---
+type: invariant
+statement: A connector configuration draft's configuration declares a method, beside the address, query, headers and body derived from the same operation, and its value is the chosen operation's own HTTP method as the OpenAPI document names it, upper-cased — an operation the document names under get is drafted as method GET. The method a connector configuration currently registered under the same connector name declares is never drafted in its place, whether the two agree or differ.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Method is the one key an-http-connector-configuration-declares-its-call requires that an OpenAPI document states on its own account: the document names each operation under the very verb the call would issue. That is why it is drafted where a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap leaves its two keys absent — no OpenAPI construct names an evidence-result ending for a status or a field path a response is read by, while the operation's verb is already there to read. A draft that omitted it would leave the operator to retype a fact the document had given, and would leave a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered comparing an operation's method against a registration on behalf of a draft carrying no method of its own to submit.
+
+The value is the operation's own method rather than the registered one because the draft states what the document says and the mismatch states the disagreement: the comparison rule names both methods side by side and replaces neither, which it can only do where the draft's own text holds the operation's. An operator reading both decides which to submit, and register-connector remains the one write that changes what is registered.
+
+The case is raised because upper-case is the vocabulary the executing connector holds a method to — GET, POST, PUT, PATCH or DELETE — while an OpenAPI 3.x document names its operations under lower-case path-item keys. Drafting the document's spelling verbatim would generate a configuration that issues no call and ends unavailable the moment it were registered and observed, reporting a MalformedHttpConnectorConfigurationError over a method the draft itself had miscased. Only the case is changed: the verb is never substituted, defaulted or dropped.
+
 === rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
 ---
 type: policy
-statement: Where a connector configuration is currently registered under the connector name a draft is generated for, and that registered configuration's own text declares a method, and the chosen operation's own HTTP method differs from it, the draft names both methods in a method_mismatch rather than silently replacing either; where no connector configuration is currently registered under that name, or the one registered declares no method, the draft states no method_mismatch.
+statement: Where a connector configuration is currently registered under the connector name a draft is generated for, and that registered configuration's own text declares a method, and the chosen operation's own HTTP method differs from it — the two compared with each upper-cased first, so that the lower-case path-item key an OpenAPI document names an operation's method by and the upper-case method an HTTP connector configuration declares are never read as a disagreement on that difference alone — the draft names both methods in a method_mismatch, each stated upper-cased, rather than silently replacing either; where no connector configuration is currently registered under that name, or the one registered declares no method, the draft states no method_mismatch.
 expression: >-
   For a connector name c a draft is generated for and an operation whose own HTTP method is
   m: where a connector configuration is currently registered under c, and that
-  configuration's own text declares a method value r, and r is not equal to m, the draft
-  carries a method_mismatch naming registered r and operation m. Where no connector
+  configuration's own text declares a method value r, and r upper-cased is not equal to m
+  upper-cased, the draft carries a method_mismatch naming registered r upper-cased and
+  operation m upper-cased. Where r upper-cased equals m upper-cased, the draft carries no
+  method_mismatch, whatever case either source gave its value in. Where no connector
   configuration is currently registered under c, or one is registered but its own text
   declares no method, the draft carries no method_mismatch, whatever m is.
 constrains:
@@ -5835,6 +6218,10 @@ consistency: eventual
 Method is the executing connector's own statement, declared inside a connector configuration's own text alongside address, query, headers and body (an-http-connector-configuration-declares-its-call) — it is not a fact a capability's own declared contract carries, so this comparison reads the connector configuration currently registered under the same name, live, the same way a-connector-configuration-is-tested-through-a-registered-capability already reads a registered configuration at the moment of a test rather than a stored copy.
 
 A draft never overwrites a currently registered method on its own account: register-connector is the one write that replaces a configuration, and it acts only on the operator's own later submission. Where the registered configuration declares no method at all — an incomplete configuration nothing has finished authoring — there is nothing yet to disagree with, and the draft states no mismatch rather than inventing one against an absence.
+
+The two sides spell one fact in two fixed conventions: an OpenAPI document names an operation's method as a lower-case path-item key, while an-http-connector-configuration-declares-its-call holds a declared method to one of GET, POST, PUT, PATCH or DELETE. Read exactly as each source gives it, a registered GET against an operation keyed get would report a disagreement that does not exist, and every draft over an already-configured connector would carry a mismatch — which is why the comparison folds case, and why folding here is not the normalization a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability deliberately refuses: a parameter name has no closed vocabulary and no stated convention on either side, so a difference in its case is unexplained and may be a different fact, whereas a method's difference in case is accounted for by both sources' own stated conventions and can be nothing else.
+
+Both methods are named upper-cased because that is the one vocabulary a method may be declared in, and because the draft's own configuration already declares the operation's method in it — naming the same value one way inside the configuration and another beside it in the method_mismatch would give one draft two spellings of one method for an operator to reconcile before reading the disagreement the mismatch exists to show.
 
 === rules/integration/a-connector-configuration-holds-a-well-formed-object
 ---
@@ -5955,6 +6342,39 @@ constrains:
 ## Description
 
 A connector configuration's call may name a credential the executing connector reads from environment configuration rather than from the configuration text itself, so nobody has to author a secret directly into an operator-editable field. The diagnostic operation exists to let an operator see the request a connector configuration would actually issue (contracts/integration/connector-diagnostics), and that same visibility would otherwise hand back the one thing the indirection was meant to keep out of an editable field and a response body alike. Masking is what keeps the diagnostic honest about shape without being honest about the secret.
+
+=== rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+---
+type: invariant
+statement: >-
+  A request to draft a connector configuration refused because its named OpenAPI document link
+  could not be fetched is answered with an HTTP 422 response reporting an
+  OpenApiDocumentNotFetchedError, whose details carry the link the request named, exactly as it
+  named it, together with which of the three fetch failures occurred as one of network-failure,
+  timeout or status-outside-2xx — that last carrying with it the status code the link answered —
+  and carry nothing else of that fetch: no underlying network or client error's own message, and
+  no part of whatever the link answered with. A request refused because the fetched document does
+  not parse as a well-formed OpenAPI document or does not declare OpenAPI 3.x is answered with an
+  HTTP 422 response reporting an OpenApiDocumentNotReadableError. Both answer under the same
+  status and never under the same error value, and neither is ever reported as the other or as a
+  refusal carrying no named condition.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The two refusals themselves are already stated: `an-unfetchable-openapi-link-refuses-the-draft` refuses a link nothing answered, or answered outside the 2xx range, before any parsing is attempted, and `a-malformed-or-unsupported-openapi-document-refuses-the-draft` refuses a fetched document that does not parse or declares a version other than OpenAPI 3.x. What the HTTP surface answers for each was stated by neither. Because `constraints/the-openapi-document-is-fetched-by-the-backend` puts the fetch inside the backend operation, both refusals are that operation's own answer to its caller and each has a status and an error value; this states them, once, for both.
+
+One fact, decided once and in one house. Which status and which error value each refusal answers under, and whether the two differ, is a single comparative question: answered half in each of the two rules, the comparative half gets two answers, which is exactly what `a-submitted-registration-states-its-outcome-to-the-operator` refuses by deciding one fact once for both registries rather than twice. The two rules keep stating what is refused and why; this states what the surface answers.
+
+HTTP 422 for both, because it is this specification's established answer for a well-formed request whose named content the domain refuses — `ConnectorConfigurationNotWellFormedError`, `IncompleteConnectorConfigurationError`, `CapabilitySchemaNotWellFormedError` and `ConnectorPlaceholderOutsideInputSchemaError` all answer it. Both refusals are that case: the request is well formed, and what it names — a link, or the document that link answered — cannot be drafted from. HTTP 500 is reserved here for a server-side condition the requester neither caused nor can correct by changing the request, and a link the request itself named is corrected by naming another, so neither refusal is that. A gateway or unavailable status would additionally assert an upstream fault, or a transience worth retrying, that no node holds: the one place this specification tells a caller when to come back is the capability-identity read's own rate limit.
+
+Two error values, because telling a document that was never received from one that cannot be read is the whole reason the two refusals are two rules. A single shared value would leave the operator where `constraints/a-domain-error-unmapped-by-status-is-refused-generically` leaves a caller — knowing only that something failed — and would make the surface distinction `a-submitted-registration-states-its-outcome-to-the-operator` requires for a refusal impossible to draw. The parse failure and the unsupported version share one value because one rule states them as one refusal for one reason: nothing partial is worth drafting from text the reader cannot take as OpenAPI 3.x. Both names follow this specification's subject-plus-condition convention (`ConnectorConfigurationNotFoundError`, `CapabilityNotReadOnlyError`): not fetched, and not readable — the second spanning both a document nobody can parse and a 2.0 document handed to a 3.x-only reader, where `NotWellFormed`, already this specification's word for a pure parse-shape refusal, would understate the version half.
+
+The fetch refusal reports the link and the failure to its caller because the refusal is otherwise unactionable: the operator's next act is either to name a different link or to go and fix the far end publishing the document, and which of the three failures happened is the whole of what tells those two apart — a link nothing answered, a link too slow to keep waiting for (`an-unfetchable-openapi-link-refuses-the-draft`'s sixty seconds), and a link that answered with a status. Held only server-side, that distinction would exist in a log the operator authoring the configuration cannot read. The link is echoed because it is the request's own input handed straight back, disclosing nothing the caller did not itself send, and the answered status is the far end's own public answer to a request the operator named, so neither field says anything about this system.
+
+The details stop there. `constraints/a-domain-error-unmapped-by-status-is-refused-generically` keeps an unanticipated error's own message and carried context server-side because they may describe internal state; this refusal is anticipated and named, but the underlying network or client error's own message is that same kind of text and is held to that same treatment, and the body an unsuccessful status arrived with is content this operation never read as a document and would be handing back unexamined. Three named failures and, for one of them, a status code, is the whole of what distinguishes the three causes, which is the whole job a detail has here — the reading `an-unreachable-connector-ends-unavailable` already takes when its detail names the connector and no part of the call.
 
 === rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
 ---
@@ -6482,6 +6902,33 @@ The detail states the vocabulary a malformed method or statusMap was held to for
 The address, query, headers and body, and their placeholder mechanism, are the same connector's statement of how its call reaches into a Subject, a requester and a credential without either living in the configuration's own text — `rules/integration/a-diagnostic-response-masks-a-resolved-credential` already presumes a credential placeholder exists and masks what it resolves to; this is the first node stating the mechanism itself.
 A configuration missing its address or naming an unrecognized or malformed placeholder never reaches a call at all — the same evidence-result ending the missing-key case above already declares, distinguished only by its own named cause. A configuration whose placeholder is well-formed but resolves to nothing is a different fact, about the data or the environment rather than about the configuration's own shape, and ends unavailable through an-unresolvable-observation-ends-unavailable's own condition for it instead.
 
+=== rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+---
+type: invariant
+statement: A request to draft a connector configuration whose fetched document parses and declares OpenAPI 3.x but declares no operation at the path and HTTP method the request names is refused with an HTTP 422 response reporting an OpenApiOperationNotFoundError, naming that path and that method as the pairing the fetched document declares no operation for; no draft is generated, and a path the document does declare while declaring nothing for the named method under it is that same one refusal rather than a condition of its own.
+expression: >-
+  For a request naming an OpenAPI document link l, a path p and an HTTP method m, where the
+  document fetched from l parses and declares OpenAPI 3.x: where that document's paths hold
+  no entry for p, or hold an entry for p that declares no operation for m, the request is
+  refused with an HTTP 422 response reporting an OpenApiOperationNotFoundError, the refusal
+  names p and m, and no connector-configuration-draft is produced — no configuration text, no
+  unresolved item, no generated credential and no method_mismatch. Where that document's paths
+  hold an entry for p declaring an operation for m, that operation is the one operation every
+  other draft rule reads.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Everything a draft holds is drawn from one operation: domain/integration/connector-configuration-draft is a candidate configuration generated from one operation of an OpenAPI document, a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability reads that operation's parameters and request-body fields, a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme reads its security schemes, and a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered compares its own HTTP method. Where the document declares no operation at the named pairing there is no such thing to read, so there is nothing to draft from and the request is refused rather than answered with a draft.
+
+Answering instead with a draft holding nothing resolved would misstate what the draft's own disclosure means: domain/integration/connector-configuration-draft-unresolved-reason's three reasons each name something a chosen operation itself declared and the draft could not honestly turn into a placeholder, so an empty unresolved list over an operation that was never found would read to an operator as an operation with nothing in it, the one misreading that has them apply a configuration drafted from nothing.
+
+The refusal names the path and the method it was given, on its own account, for the reason an-unfetchable-openapi-link-refuses-the-draft and a-malformed-or-unsupported-openapi-document-refuses-the-draft each name theirs: the document here was received and read successfully, so folding this into either of those would tell the operator their link or their document was at fault when what was wrong was the operation they selected. A path declared with the named method absent under it is the same refusal because it is the same thing the operator got wrong — the pairing selects the operation, and neither half of it selects one alone.
+
+HTTP 422 and the OpenApiOperationNotFoundError name follow the same reading a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already gives the draft operation's other two refusals: the request is well formed and the document was read; what it names — a path and method pairing — is what cannot be drafted from, the same class of refusal the other two already answer under 422, distinguished from them by its own named condition.
+
 === rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
 ---
 type: policy
@@ -6552,7 +6999,7 @@ Unavailable is the ending that claims the least: it asserts no denial and no tim
 === rules/integration/an-unfetchable-openapi-link-refuses-the-draft
 ---
 type: invariant
-statement: A request to draft a connector configuration whose named OpenAPI document link cannot be fetched — a network failure, a timeout, or a response outside the 2xx range — is refused before any parsing is attempted, naming the fetch failure; no draft is generated from a document that was never received.
+statement: A request to draft a connector configuration whose named OpenAPI document link cannot be fetched — a network failure, a timeout, or a response outside the 2xx range — is refused before any parsing is attempted, naming the fetch failure; the fetch is abandoned as a timeout where the named link has not answered within 60000 milliseconds of that fetch beginning; no draft is generated from a document that was never received.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -6560,6 +7007,7 @@ constrains:
 ## Description
 
 Fetching and parsing are two different acts that fail for two different reasons: a link nothing answered, or answered wrong, has no content yet to hold a parse failure against. Naming the fetch failure on its own account, rather than folding it into whatever a parser would say about an empty response, is what lets an operator tell a document that does not exist from one that is malformed.
+The timeout is the same sixty seconds a-capability-declares-its-contract already gives an outward call whose own budget nobody declared: the far end publishing the document is outside the system in exactly that sense, and one figure for that wait is what keeps a slow document distinguishable from an absent one rather than from a second, unrelated bound.
 
 === rules/integration/an-unreachable-connector-ends-unavailable
 ---
