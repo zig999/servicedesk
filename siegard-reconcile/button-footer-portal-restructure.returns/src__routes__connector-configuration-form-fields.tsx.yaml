@@ -1,0 +1,5 @@
+read:
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the Save button's disabled condition, `isSaveDisabled`"
+    evidence: "const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;"
+looked_past: the isEditingIdentity prop disabling the connector Input, the ButtonFooter portal behavior, and the JsonTextareaField's own rendering are all decided or implemented outside this file (in the parent screen and the shared components respectively) and are not this file's own claim to judge; the reverted <form> className is a surface-only layout change with no bearing on the one node in this file's pack.

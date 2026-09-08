@@ -1,0 +1,27 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the create-mode hook invocation and the post-success navigation"
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved);"
+  - node: domain/integration/connector-configuration
+    held_at: "handleSaved's read of the connector attribute"
+    evidence: 'const connector = formRef.current?.getValues("connector") ?? "";'
+  - node: domain/integration/connector-configuration-registry
+    held_at: "the create-mode hook invocation (register-connector's create branch)"
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved);"
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the unconditional Connectors link in trailingActions"
+    evidence: |
+      <Button variant="secondary" asChild>
+                    <Link to="/connectors">Connectors</Link>
+                  </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "trailingActions offers only a Cancel button and the Connectors link — no act that restores fields to a prior read registration, correct for an authoring surface where nothing is registered yet"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "handleSaved"
+    evidence: |
+      function handleSaved(): void {
+        const connector = formRef.current?.getValues("connector") ?? "";
+        void navigate({ to: "/connectors/$connector", params: { connector } });
+      }
+looked_past: "The className edit on the section wrapper (flex flex-col gap-4, reverted to its prior value) is a layout/surface matter with no domain-fact content, and state.onCancel's exact behavior belongs to an abandonment rule outside this file's node set and candidate list, so neither is reported here."

@@ -1,0 +1,31 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: nowhere — the file states no attribute of case-version as its own content; it only exposes navigation into the version's manifest
+    evidence: |
+      <Button type="button" onClick={state.onOpenManifest}>
+              View Manifest
+            </Button>
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: the phase-gated returns before any form content renders
+    evidence: |
+      if (state.phase === "loading") {
+          return <p>Loading…</p>;
+        }
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: the success-phase message
+    evidence: "Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: the conditional manifest-builder button in the success phase
+    evidence: |
+      {state.offerManifestBuilder && (
+                <Button type="button" onClick={state.onOpenManifestBuilder}>
+                  Open Manifest Builder
+                </Button>
+              )}
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: the Cancel control wired to state.onCancel
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+                Cancel
+              </Button>
+looked_past: the top-level section's className churn ("flex flex-1 flex-col gap-4" added then reverted to "flex flex-col gap-4") is a layout/surface concern with no bearing on any domain fact, so it is not reported here.

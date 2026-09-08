@@ -1,0 +1,14 @@
+read:
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the two conditional warnings gated on schema validity"
+    evidence: '{!state.inputSchema.isValid && (<p role="alert" className="text-sm text-destructive">{INVALID_INPUT_SCHEMA_WARNING}</p>)}'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the unconditional Capabilities link among the surface's trailing actions"
+    evidence: '<Button variant="secondary" asChild><Link to="/capabilities">Capabilities</Link></Button>'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the unconditional Cancel button among the surface's trailing actions"
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the same Cancel button — it issues no submit/register call and only invokes state.onCancel"
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+looked_past: the "Discard changes" dialog (state.onDiscard, gated on state.isDirty) realizes discarding a loaded edit without leaving the surface, which is a different node (a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface) not in this file's pack — not judged here; and the className edit itself is a layout-only matter this pass does not review.

@@ -1,0 +1,41 @@
+read:
+  - node: domain/glossary/action
+    held_at: the "Referral action" Select's options, line 200
+    evidence: "options={actionOptions.options}"
+  - node: domain/glossary/concept
+    held_at: the Collects checkbox list, lines 130-147
+    evidence: "{collectsOptions.map((concept) => {\" and \"{concept.name}"
+  - node: domain/glossary/outcome
+    held_at: the "Resolution outcome" Select's options, line 175
+    evidence: "options={outcomeOptions.options}"
+  - node: domain/glossary/recipient
+    held_at: the "Referral recipient" Select's options, line 227
+    evidence: "options={recipientOptions.options}"
+  - node: domain/glossary/subject-type
+    held_at: the read-only subject type Input, line 89
+    evidence: "<Input value={subjectType} disabled readOnly />"
+  - node: domain/knowledge/case-version
+    held_at: the subject type field's label, describing the value as inherited from the draft case version rather than owned by this form
+    evidence: 'label="Subject type (from draft, fixed)"'
+  - node: domain/knowledge/hypothesis
+    held_at: the hypothesis name Input's disabled condition, line 82
+    evidence: "disabled={!hypothesisNameEditable || isSubmitting}"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the criterion Textarea and the collects Controller, lines 94-95 and 125-152
+    evidence: "{...register(\"criterion\")} and name=\"collects\""
+  - node: domain/knowledge/referral
+    held_at: the two separate "Referral action" and "Referral recipient" fields, lines 194 and 221
+    evidence: "name=\"resolution.referral.action\" and name=\"resolution.referral.recipient\""
+  - node: domain/knowledge/resolution
+    held_at: the "Resolution outcome" field grouped alongside the two referral fields, lines 166-239
+    evidence: "name=\"resolution.outcome\" rendered in the same fieldset row as the referral action and recipient fields"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: the trailingActions slot rendered beside the submit button inside ButtonFooter, line 246
+    evidence: "{trailingActions}"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: every glossary-governed control sources its options exclusively from the glossary-derived option lists (collectsOptions, outcomeOptions, actionOptions, recipientOptions)
+    evidence: "{collectsOptions.map((concept) => {\" and \"options={outcomeOptions.options}"
+  - node: rules/knowledge/every-position-declares-a-resolution
+    held_at: the three resolution fields (outcome, referral.action, referral.recipient) rendered together, lines 160-240
+    evidence: "FormField label=\"Resolution outcome\" together with label=\"Referral action\" and label=\"Referral recipient\""
+looked_past: the two source comments explaining the fieldset/legend choice and the copied Label classes cite accessibility rule identifiers (ACC-01, ACC-03) and a styling-parity rationale — that is the comment-rule and standard-conformance passes' concern, not a domain fact against these nodes, so it is not reported here.

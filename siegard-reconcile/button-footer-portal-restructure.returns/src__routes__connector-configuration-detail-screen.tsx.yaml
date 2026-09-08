@@ -1,0 +1,31 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: "line 50, where the connector identity is handed to the child view: `<ConnectorConfigurationDetailReadyView state={state} connector={connector} />`"
+    evidence: |
+      const { connector } = useParams({ from: "/connectors/$connector" });
+        const state = useConnectorConfigurationDetailView(connector);
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the Connectors link inside ButtonFooter on both the loading branch (lines 20-22) and the load-error branch (lines 39-41)"
+    evidence: |
+      <Button variant="secondary" asChild>
+                <Link to="/connectors">Connectors</Link>
+              </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "neither the loading branch (lines 12-26) nor the load-error branch (lines 28-45) presents an editable field to discard; editing and its discard act are delegated to <ConnectorConfigurationDetailReadyView state={state} connector={connector} /> (line 50), which the candidate index binds separately for this rule"
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the loading branch's text (line 15) and the load-error branch's text and retry control (lines 31-35)"
+    evidence: |
+      <p>Loading connector configuration {connector}…</p>
+       ... <p>Unable to load this connector configuration right now.</p>
+              <ButtonFooter>
+                <Button type="button" onClick={state.retryLoad}>
+                  Retry
+                </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the Cancel button on the loading branch (line 17) and on the load-error branch (line 36)"
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+                Cancel
+              </Button>
+looked_past: the three <section> wrappers' className strings ("flex flex-col gap-4" throughout, after the temporary "flex flex-1 flex-col" stretch was added and reverted) are pure layout and carry no domain fact, so their churn is a code-review matter rather than this pass's.

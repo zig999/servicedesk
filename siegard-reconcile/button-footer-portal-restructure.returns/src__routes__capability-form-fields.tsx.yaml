@@ -1,0 +1,34 @@
+read:
+  - node: domain/integration/capability
+    held_at: "the field set of CapabilityFormFields — one FormField per required attribute (concept, name, version, nature, timeout, connector) plus the JsonTextareaField pair for input_schema and output_schema"
+    evidence: |
+      <FormField label="Concept" ...><Controller control={control} name="concept" .../></FormField>
+      <FormField label="Name" ...><Input {...register("name")} .../></FormField>
+      <FormField label="Version" ...><Input {...register("version")} .../></FormField>
+      <FormField label="Nature" ...><Controller control={control} name="nature" .../></FormField>
+      <FormField label="Timeout (ms)" ...><Input type="number" {...register("timeout", ...)} /></FormField>
+      <FormField label="Connector" ...><Input {...register("connector")} .../></FormField>
+      <JsonTextareaField id="input_schema" .../>
+      <JsonTextareaField id="output_schema" .../>
+  - node: domain/integration/capability-nature
+    held_at: "NATURE_OPTIONS, derived from the imported enumeration rather than restated"
+    evidence: "const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({\n  value: nature,\n  label: nature,\n}));"
+  - node: domain/investigation/field-semantics
+    held_at: "the paragraph beside the output-schema entry"
+    evidence: "Os nomes de campo lidos a partir dele são as chaves do próprio objeto <code>properties</code> de nível superior deste schema. O <code>type</code> e a <code>description</code>{\" \"} declarados por cada uma dessas chaves, onde o schema os declara, são lidos como a semântica declarada desse campo."
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: "the same paragraph's closing sentence"
+    evidence: "Uma <code>description</code> aqui declara o que seu valor significa e não nomeia nenhuma decisão."
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: nowhere
+    evidence: "const isSaveDisabled = isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false; — the file consumes an externally computed `isValid` to gate the Save button; it states no refusal, no HTTP 422 and no CapabilitySchemaNotWellFormedError itself"
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "the Nature Select is built from the full NATURE_OPTIONS (both enumeration values) with no refusal path in this file; the invariant's HTTP 422/CapabilityNotReadOnlyError refusal is not stated here"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: "the paragraph beside the output-schema JsonTextareaField, stating exactly the five claims the rule allows and no more"
+    evidence: "O que é inserido aqui é <code>JSON</code>. ... Nenhum outro conteúdo deste schema é lido ou validado. Uma <code>description</code> aqui declara o que seu valor significa e não nomeia nenhuma decisão."
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: "the Concept field is a plain Select bound to conceptOptions with no duplicate-answer check or refusal in this file — the ConceptAlreadyAnsweredError/DuplicateConceptAnswerError handling is not stated here"
+looked_past: the save-button's isDirty/isValid gating logic and the ButtonFooter portal placement are layout/interaction concerns outside this pack's nodes, and the className edit under review (`flex flex-1 flex-col gap-4` reverted to `flex flex-col gap-4`) is exactly that kind of surface change with no domain fact attached.

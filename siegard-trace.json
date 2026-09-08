@@ -173,7 +173,7 @@
       "files": [
         {
           "path": "frontend/app/src/shared/components/app-shell.tsx",
-          "digest": "sha256:9b52a1d971c76d84de09ecde36db3864be61bdb54aa9bcaf93ecc58908737532"
+          "digest": "sha256:42fb57070ee862832472dc6b291ff24c988ae7ba249222ff91b71d1fcf46e795"
         },
         {
           "path": "src/src/http/list-connector-configurations.routes.ts",
@@ -759,7 +759,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
+          "digest": "sha256:1018336f4ea034f5d02aa3b9217e576dbb21c8358f9dd9be793b7aeacab669d0"
         },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
@@ -883,11 +883,11 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:86643fe2f06b80e9692f6e97d1831e19c0c4963312027b275e7294fcc7824368"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:950897895b2ec9fb68c49f4335d9c95f36ebcdcdbdb7710ec5a833bd5f3d116a"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
@@ -1053,7 +1053,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
-          "digest": "sha256:da96f577287a794bdacc828c778d4075937c8506f5734a9f18cb889bb4f70e7f"
+          "digest": "sha256:88750e0a43c1c39def729a07f250376d809424d16a3a3fa3d388684e89e23f38"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -1663,7 +1663,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -1741,7 +1741,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/services/concept-form-schema.ts",
@@ -1839,7 +1839,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -1905,7 +1905,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -2029,7 +2029,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -2099,15 +2099,15 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
+          "digest": "sha256:1018336f4ea034f5d02aa3b9217e576dbb21c8358f9dd9be793b7aeacab669d0"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -2205,7 +2205,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -2239,7 +2239,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
+          "digest": "sha256:1018336f4ea034f5d02aa3b9217e576dbb21c8358f9dd9be793b7aeacab669d0"
         },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
@@ -2301,15 +2301,15 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:659192d72eaec241ec69dee21e8d438516049b0bc799538d3ceaefa44805798a"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
+          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
@@ -2395,7 +2395,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:86643fe2f06b80e9692f6e97d1831e19c0c4963312027b275e7294fcc7824368"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         },
         {
           "path": "src/src/connector-registry/capabilities-reader.port.ts",
@@ -2991,7 +2991,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -3579,11 +3579,11 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
@@ -3869,7 +3869,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/new-hypothesis-screen.tsx",
@@ -3999,7 +3999,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
@@ -4329,7 +4329,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -4403,7 +4403,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -4509,7 +4509,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         }
       ]
     },
@@ -4689,7 +4689,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         }
       ]
     },
@@ -4729,11 +4729,11 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
-          "digest": "sha256:33cbfcd42fe8318ce5e455deded8484e3292ffd60370654105ed741ebe8aa2da"
+          "digest": "sha256:9ff193e329d586acc0e91f194d785bacfad1a522b76e3e38842e22135a183b64"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -4771,7 +4771,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
@@ -4837,15 +4837,15 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:659192d72eaec241ec69dee21e8d438516049b0bc799538d3ceaefa44805798a"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
+          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
         }
       ]
     },
@@ -4939,7 +4939,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
+          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
         }
       ]
     },
@@ -4949,15 +4949,15 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
+          "digest": "sha256:1018336f4ea034f5d02aa3b9217e576dbb21c8358f9dd9be793b7aeacab669d0"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
+          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         }
       ]
     },
@@ -4975,19 +4975,19 @@
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
+          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
+          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
+          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
         }
       ]
     },
@@ -5031,7 +5031,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:659192d72eaec241ec69dee21e8d438516049b0bc799538d3ceaefa44805798a"
+          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
         }
       ]
     },
@@ -5049,11 +5049,11 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
+          "digest": "sha256:1018336f4ea034f5d02aa3b9217e576dbb21c8358f9dd9be793b7aeacab669d0"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
+          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
         }
       ]
     },
@@ -5111,7 +5111,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
+          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
         }
       ]
     },
@@ -6215,7 +6215,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         },
         {
           "path": "frontend/app/src/routes/new-case-draft-screen.tsx",
@@ -6773,7 +6773,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -6791,7 +6791,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         }
       ]
     },
@@ -6871,11 +6871,11 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
+          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
         }
       ]
     },
@@ -6909,7 +6909,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -6991,7 +6991,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
+          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
         },
         {
           "path": "frontend/app/src/services/hypothesis-revision-form-schema.ts",

@@ -1,0 +1,5 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: "Topbar's `<StatusBar ... right={<span>No auth in this build</span>} />`"
+    evidence: "right={<span>No auth in this build</span>}"
+looked_past: The pre-existing SIDEBAR_ENTRIES/ROUTE_LABELS route-naming tables and the new footer-slot/portal mechanism itself (in ./footer-slot-context, outside this file set) are layout/navigation-surface concerns this edit did not touch or introduce as domain fact, and are not this pass's to weigh.

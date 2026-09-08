@@ -1,0 +1,5 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "the <Link> element offering the entry to the simulate route, lines 33-35"
+    evidence: '<Link to="/cases/$slug/versions/$version/simulate" params={{ slug, version }}>\n        Simulate\n      </Link>'
+looked_past: the load-error phase's undifferentiated "Unable to load this version right now." / Retry presentation is a value this screen only renders — the phase it switches on is computed by use-edit-draft-version-form.ts, which is outside this file set, so whether that hook's error-kind collapsing conforms to the refusal-presentation rules is that file's judgment, not this one's.

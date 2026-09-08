@@ -1,0 +1,28 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: handleSaved, lines 15-20
+    evidence: |
+      function handleSaved(): void {
+        const values = formRef.current?.getValues();
+        const name = values?.name ?? "";
+        const version = values?.version ?? "";
+        void navigate({ to: "/capabilities/$name/$version", params: { name, version } });
+      }
+  - node: domain/integration/capability
+    held_at: handleSaved, lines 17-18
+    evidence: |
+      const name = values?.name ?? "";
+      const version = values?.version ?? "";
+  - node: domain/integration/capability-registry
+    held_at: "nowhere in this file"
+    evidence: "const state = useCapabilityForm(null, handleSaved); — resolve-concept and register-capability are delegated to the hook, not implemented here"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: the Capabilities link, present in all three phase branches (loading, load-error, ready)
+    evidence: |
+      <Button variant="secondary" asChild>
+        <Link to="/capabilities">Capabilities</Link>
+      </Button>
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: the Cancel control, wired to state.onCancel in all three phase branches
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+looked_past: the className edits on the section wrappers (line 28 "flex flex-col gap-4", line 44 same) are layout only and state no domain fact any node in this pack governs, so they are not reported here.

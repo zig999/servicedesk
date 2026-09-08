@@ -1,0 +1,17 @@
+read:
+  - node: domain/integration/capability
+    held_at: the heading and phase texts that key the surface by the capability's identity
+    evidence: "Capability {name} {version}"
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: the loading and load-error branches
+    evidence: "Loading capability {name} {version}… and Unable to load this capability right now. with <Button type=\"button\" onClick={state.retryLoad}>Retry</Button> present only in the load-error branch"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: the loading, load-error and not-registered branches, by omission
+    evidence: "<ButtonFooter><Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>Cancel</Button><Button variant=\"secondary\" asChild><Link to=\"/capabilities\">Capabilities</Link></Button></ButtonFooter> carries no discard control in any of the three phases holding no read registration"
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: the Capabilities link inside each of the three early-return ButtonFooters
+    evidence: '<Link to="/capabilities">Capabilities</Link>'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: the Cancel button inside each of the three early-return ButtonFooters
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+looked_past: "the load-error and not-registered branches render the identical text \"Unable to load this capability right now.\" even though the registry's own refusal of an unregistered identity is explicitly excepted from the failed-read window by rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed — the wording that should distinguish the two lives in a different rule (constraints/the-capability-identity-read-refuses-an-unregistered-identity, which is itself only about the registry's HTTP response, not a UI-facing text rule) that is neither in this file's node set nor offered as a candidate, so I leave it for whichever judgment does hold that node."
