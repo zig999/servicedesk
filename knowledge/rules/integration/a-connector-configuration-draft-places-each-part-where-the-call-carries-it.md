@@ -32,7 +32,11 @@ statement: >-
   at all, the draft stating no body key for it. A parameter or field that resolves holds at its
   position the placeholder it resolved to; one named in the draft's unresolved list still stands
   at its position, holding its own name in the document's own brace form {name}, which names no
-  placeholder kind and is carried as plain text. A generated credential placeholder for a
+  placeholder kind and is carried as plain text — except a parameter named unresolved with
+  reason drafted-key-occupied-by-another-security-scheme, which stands at no position at all,
+  the drafted key it would have occupied being held instead by the security scheme
+  a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+  sends there. A generated credential placeholder for a
   security scheme declaring a location of its own stands at that location — an API key carried
   in a header at a drafted headers key named by that header, an API key carried in a query
   parameter at a drafted query key named by that parameter, each holding the bare placeholder —
@@ -64,7 +68,10 @@ expression: |-
     properties object, otherwise the empty set; a field f in field_names(o) occupies d.body[f];
     d states no body key where field_names(o) is empty.
   - the value at a parameter's or field's position n is "${subject:n}" where n resolved, and
-    "{n}" where d.unresolved holds an item naming n.
+    "{n}" where d.unresolved holds an item naming n — except where that item's reason is
+    drafted-key-occupied-by-another-security-scheme, n then occupying no position of d at all,
+    the key it would have occupied holding the credential placeholder of the security scheme
+    that displaced it.
   - a generated credential name g for security scheme s occupies: s apiKey in header ->
     d.headers[s.name] = "${credential:g}"; s apiKey in query -> d.query[s.name] =
     "${credential:g}"; s apiKey in cookie -> the segment "s.name=${credential:g}" inside
@@ -84,7 +91,7 @@ Only the top level of a request-body schema names fields because a-capability-in
 
 application/json is the one media type whose schema is read because the body an-http-connector-configuration-declares-its-call admits is a value inside the connector configuration's own JSON text, so a JSON object of top-level keys is the only body the executing connector ever carries; field names read off a multipart, form-encoded or XML schema would draft keys for a body that connector never sends in the shape the document declared them for. Where one request body declares content under several media types, naming this one is also the only choice available without a preference the document never states: the entries of a content object are alternative encodings of the same call, keyed rather than ordered, so there is no first entry to read the way a servers array has one. A request body declaring content under no such media type — a JSON-suffixed vendor media type alone among them — leaves the draft stating no body key rather than reading a schema at a name this reader does not recognize: the same honest gap a document declaring no server leaves in the address, and the same one a non-object body schema already leaves, closed by the reviewing operator by hand.
 
-An unresolved parameter or field keeps its position holding the document's own brace text because the unresolved list is the disclosure while the configuration is what the operator actually edits: dropping the key there would leave the edited artifact silently missing a part the operation requires, with nothing in the text to point at. The brace form is the document's own, names no placeholder kind this connector recognizes, and is carried as the plain text an-http-connector-configuration-declares-its-call already makes of anything that is not a ${kind} form, so leaving it in view misuses nothing in the executing connector's vocabulary.
+An unresolved parameter or field keeps its position holding the document's own brace text because the unresolved list is the disclosure while the configuration is what the operator actually edits: dropping the key there would leave the edited artifact silently missing a part the operation requires, with nothing in the text to point at. The brace form is the document's own, names no placeholder kind this connector recognizes, and is carried as the plain text an-http-connector-configuration-declares-its-call already makes of anything that is not a ${kind} form, so leaving it in view misuses nothing in the executing connector's vocabulary. The one parameter this cannot hold for is one displaced from its own key by a security scheme the same operation requires: that key is not free to carry the brace text, since a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme puts the scheme's credential placeholder there, so the parameter is left no position and its unresolved item carries the whole of the disclosure.
 
 A path item's own parameters and a $ref in place of a direct declaration are read the way OpenAPI 3.x itself already defines them, not a preference this specification states: a path item's parameters apply to every operation under it unless that operation declares one of its own at the same name and location, and a $ref names a declaration to be read exactly as if it stood written where the reference sits. Reading either any other way would not be a narrower or a stricter reading of the same document — it would be reading a different document than the one the operator named, so both are read here as the format itself already fixes them.
 
