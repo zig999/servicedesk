@@ -10,6 +10,14 @@
       "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading.md",
+      "title": "OpenAPI 3.x operation reading -- the version gate and the anti-corruption reader",
+      "summary": "A pure reading module parses a fetched OpenAPI document as JSON or YAML, gates its declared version, locates the named path-and-method operation, and exposes its method, merged parameters, application/json request-body field names and first-in-effect security schemes, refusing through two new distinct domain errors mapped to HTTP 422.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading"
+    },
+    {
       "id": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
       "kind": "implementation",
       "file": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch.md",
@@ -24,6 +32,14 @@
       "title": "The connector configuration draft's domain shape, proven at the type",
       "summary": "One new spec file proves the draft's five domain elements -- the closed unresolved-reason vocabulary, the draft value object with its two required-but-possibly-empty lists and optional method mismatch, the unresolved item, the generated credential and the method mismatch -- through exact-shape type assertions, @ts-expect-error refusals, and a source-text scan proving the module imports nothing.",
       "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading.md",
+      "title": "OpenAPI 3.x operation reading -- version gate, refusal shapes, and the anti-corruption reader's output",
+      "summary": "Proves the version-gate refusals, the operation-not-found refusal, their distinctness and 422 mapping, and that the reader exposes method, parameters, request-body field names and security schemes exactly as an OpenAPI 3.x (or equivalent YAML) document spells them, for both its stated criteria and the notes' underdetermined and inferred decisions.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading"
     },
     {
       "id": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch",
@@ -78,6 +94,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
       "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-draft",
       "kind": "encodes",
@@ -110,6 +168,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
       "kind": "proves",
       "at": "the path"
     },

@@ -4784,6 +4784,26 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "digest": "sha256:9d975789850d537821de9e658130ff77303beffab93cb9b8892e320c40c64788",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "digest": "sha256:cb495e8ea7009e2b8fe763f2654bbcb914252694c1a154f2cc3fc4b0be03e7fd",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "digest": "sha256:14c9d155cb700b26c65f867e450d6d377c4bf54a7018a5ae2661ebb6807c3f01",
       "files": [
@@ -4974,8 +4994,16 @@
           "digest": "sha256:55233dae94148d3f2266a7009479fa3c33c895c9f6bd65de3fc575a7e4c452f4"
         },
         {
+          "path": "src/src/errors/openapi-document-not-readable.error.ts",
+          "digest": "sha256:ca8d1e222bfdf1c7b3ff96ccddd11ced838288ba3ab960f686d86563cdfe7103"
+        },
+        {
+          "path": "src/src/errors/openapi-operation-not-found.error.ts",
+          "digest": "sha256:dbe17233faa201ba515fb20d4e7b6bb1638d9566ccd7f7138e827a240f8201c5"
+        },
+        {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:cd5d304568e9484fffaa3c5cea0791831414136d84385e82d3f20fa6374d2d0f"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -4998,6 +5026,32 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
+      "digest": "sha256:5e86117882d9dd35d2468c80b0c580ff545e090f75bbecdcc49dfde219c5036d",
+      "files": [
+        {
+          "path": "src/package.json",
+          "digest": "sha256:332cd0fafe3be4705db8d45e2a275686e10c7ac815e03d5ec528d4a7f1b9f878"
+        },
+        {
+          "path": "src/src/connector-registry/js-yaml.d.ts",
+          "digest": "sha256:08c3652c60ef31ee56cbc967480b0020097f456e21ccf4d6611aac5f7a061179"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        },
+        {
+          "path": "src/src/errors/openapi-document-not-readable.error.ts",
+          "digest": "sha256:ca8d1e222bfdf1c7b3ff96ccddd11ced838288ba3ab960f686d86563cdfe7103"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -5184,6 +5238,24 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
+      "digest": "sha256:ce620facbf97d0330a11de5836ae9554c4fe4ad419fce7384bf978c080600801",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        },
+        {
+          "path": "src/src/errors/openapi-operation-not-found.error.ts",
+          "digest": "sha256:dbe17233faa201ba515fb20d4e7b6bb1638d9566ccd7f7138e827a240f8201c5"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -7312,6 +7384,20 @@
         {
           "path": "src/src/case/case-input-requirements.ts",
           "digest": "sha256:3a62a5e1e9b0ff663c0c21c9e7e4286e57044680cecb6dd61dd3b7a7e13465c5"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
+      "digest": "sha256:5b158a45715f9e124eac8475e0276130bcd54ce3fa0fe8cf6999f77b078e363f",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        },
+        {
+          "path": "src/src/errors/openapi-document-not-readable.error.ts",
+          "digest": "sha256:ca8d1e222bfdf1c7b3ff96ccddd11ced838288ba3ab960f686d86563cdfe7103"
         }
       ]
     },

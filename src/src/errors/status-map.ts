@@ -30,6 +30,8 @@ import { MalformedCapabilityInputSchemaError } from './malformed-capability-inpu
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
 import { OpenApiDocumentNotFetchedError } from './openapi-document-not-fetched.error.js';
+import { OpenApiDocumentNotReadableError } from './openapi-document-not-readable.error.js';
+import { OpenApiOperationNotFoundError } from './openapi-operation-not-found.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from './released-hypothesis-revision-not-alterable.error.js';
 import { SubjectDoesNotCoverCaseInputsError } from './subject-does-not-cover-case-inputs.error.js';
 import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
@@ -71,6 +73,8 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConceptRefusesSubjectTypeError, 422],
   [ConceptDescriptionRequiredError, 422],
   [OpenApiDocumentNotFetchedError, 422],
+  [OpenApiDocumentNotReadableError, 422],
+  [OpenApiOperationNotFoundError, 422],
   [InvestigationWriteDeadlineExceededError, 500],
 ]);
 
