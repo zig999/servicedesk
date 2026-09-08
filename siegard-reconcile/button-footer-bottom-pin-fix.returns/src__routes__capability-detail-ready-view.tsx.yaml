@@ -1,0 +1,31 @@
+read:
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the two alert paragraphs guarding on schema validity, lines 34-43"
+    evidence: |
+      {!state.inputSchema.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_INPUT_SCHEMA_WARNING}
+        </p>
+      )}
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the unconditional Capabilities link among the trailing actions, lines 92-94"
+    evidence: |
+      <Button variant="secondary" asChild>
+        <Link to="/capabilities">Capabilities</Link>
+      </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the unconditional Cancel button, lines 89-91"
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the same Cancel button, lines 89-91, backed by onCancel's navigate-away with no register call (use-capability-detail.ts)"
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+looked_past: "The \"Saved.\" status text (line 84-88) and the submission-failure toast (raised in use-capability-detail.ts, outside this file) are the substance rules/integration/a-submitted-registration-states-its-outcome-to-the-operator governs; that node is bound in this batch to connector-configuration-detail-ready-view.tsx rather than to this file, and judging that attribution is not this file's own pack."
+candidates_opened:
+  - rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator

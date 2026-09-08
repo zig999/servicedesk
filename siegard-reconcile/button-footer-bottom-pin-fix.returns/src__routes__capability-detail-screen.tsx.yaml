@@ -1,0 +1,36 @@
+read:
+  - node: domain/integration/capability
+    held_at: "the heading and phase messages that identify the capability by name and version"
+    evidence: |
+      <h1 className="text-lg font-semibold text-foreground">
+              Capability {name} {version}
+            </h1>
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: "the loading and load-error branches"
+    evidence: |
+      <p>
+              Loading capability {name} {version}…
+            </p>
+      ...
+      <p>Unable to load this capability right now.</p>
+      <ButtonFooter>
+              <Button type="button" onClick={state.retryLoad}>
+                Retry
+              </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "delegated to CapabilityDetailReadyView in the ready branch; absent from the loading, load-error and not-registered branches"
+    evidence: |
+      <CapabilityDetailReadyView state={state} />
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the Capabilities link present in every early-return branch"
+    evidence: |
+      <Button variant="secondary" asChild>
+              <Link to="/capabilities">Capabilities</Link>
+            </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the Cancel button present in the loading, load-error and not-registered branches, wired to state.onCancel"
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+              Cancel
+            </Button>
+looked_past: "The load-error and not-registered branches render the identical string \"Unable to load this capability right now.\" — the rule that governs the failed-read window explicitly excepts the not-registered case from its own scope and leaves wording to the interface, so this is a styling/copy matter for another pass, not a domain-fact departure; likewise the four className edits themselves are pure layout and outside this judgment."

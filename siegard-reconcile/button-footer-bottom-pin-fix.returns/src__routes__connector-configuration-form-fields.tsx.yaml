@@ -1,0 +1,5 @@
+read:
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the isSaveDisabled expression gating the Save button"
+    evidence: "const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;"
+looked_past: the isEditingIdentity connector-field lock and the isDirty-gated save button are form-state/UI conventions the file expresses, not a restatement or contradiction of the one node in this pack, so they are left to a different pass.

@@ -1,0 +1,41 @@
+read:
+  - node: domain/glossary/action
+    held_at: the "Referral action" Select bound to resolution.referral.action
+    evidence: 'name="resolution.referral.action" ... options={actionOptions.options}'
+  - node: domain/glossary/concept
+    held_at: the "Collects" fieldset's Checkbox list, one per collectsOptions entry
+    evidence: 'key={concept.name} ... {concept.name}'
+  - node: domain/glossary/outcome
+    held_at: the "Resolution outcome" Select bound to resolution.outcome
+    evidence: 'name="resolution.outcome" ... options={outcomeOptions.options}'
+  - node: domain/glossary/recipient
+    held_at: the "Referral recipient" Select bound to resolution.referral.recipient
+    evidence: 'name="resolution.referral.recipient" ... options={recipientOptions.options}'
+  - node: domain/glossary/subject-type
+    held_at: the read-only "Subject type (from draft, fixed)" field
+    evidence: '<Input value={subjectType} disabled readOnly />'
+  - node: domain/knowledge/case-version
+    held_at: nowhere — only its subject attribute's value is displayed, opaquely
+    evidence: "'readonly subjectType: string' consumed only as '<Input value={subjectType} disabled readOnly />'"
+  - node: domain/knowledge/hypothesis
+    held_at: the hypothesis-name Input's conditional editability
+    evidence: 'disabled={!hypothesisNameEditable || isSubmitting}'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the criterion, collects and resolution field groups
+    evidence: '{...register("criterion")} and the collects Controller/fieldset and the resolution Controllers'
+  - node: domain/knowledge/referral
+    held_at: the paired "Referral action" and "Referral recipient" fields under resolution.referral
+    evidence: 'name="resolution.referral.action" and name="resolution.referral.recipient"'
+  - node: domain/knowledge/resolution
+    held_at: the outcome field plus the referral group, all under the resolution.* path prefix
+    evidence: 'name="resolution.outcome" alongside name="resolution.referral.action"'
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere — the file only renders a passed-in slot
+    evidence: '{trailingActions}'
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: nowhere — no existence/refusal check is performed here
+    evidence: 'collectsOptions.map((concept) => { ... }) iterates given options with no glossary check'
+  - node: rules/knowledge/every-position-declares-a-resolution
+    held_at: nowhere — the three fields are rendered and wired to errors, but no requiredness is enforced in this file
+    evidence: 'error={errors.resolution?.outcome?.message} shown without any required attribute or check here'
+looked_past: the comment block explaining the fieldset/legend choice cites ACC-01/ACC-03 and the project's own comment convention, which is a standard-conformance and code-review matter rather than a specification-conformance one, so I did not report it here.

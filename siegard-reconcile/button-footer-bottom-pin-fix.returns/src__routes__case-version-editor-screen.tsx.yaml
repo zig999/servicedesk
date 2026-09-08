@@ -1,0 +1,5 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "the Link offering the route into the simulate flow, lines 33-35"
+    evidence: '<Link to="/cases/$slug/versions/$version/simulate" params={{ slug, version }}>\n        Simulate\n      </Link>'
+looked_past: "the className change itself (flex flex-col gap-4 → flex flex-1 flex-col gap-4) and its effect on ButtonFooter placement are a layout/standard concern, not a domain fact, so I did not report them"

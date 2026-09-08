@@ -1,0 +1,17 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: "the `connector` route param carried as the identity and passed through to the child view; the configuration attribute itself is not held in this file"
+    evidence: 'const { connector } = useParams({ from: "/connectors/$connector" }); ... <ConnectorConfigurationDetailReadyView state={state} connector={connector} />'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the `Link to=\"/connectors\"` control in the loading and load-error footers (lines 21 and 40); the ready reading's route is carried by ConnectorConfigurationDetailReadyView"
+    evidence: '<Link to="/connectors">Connectors</Link>'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: '<ConnectorConfigurationDetailReadyView state={state} connector={connector} /> — this screen renders no discard act itself for the ready reading, delegating the whole ready presentation (where the act applies) to the child view'
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the `state.phase` branches, lines 12 and 28"
+    evidence: 'if (state.phase === "loading") { ... <p>Loading connector configuration {connector}…</p> ... } if (state.phase === "load-error") { ... <p>Unable to load this connector configuration right now.</p> ... <Button type="button" onClick={state.retryLoad}>Retry</Button> ... }'
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the Cancel button's `onClick={state.onCancel}` in the loading and load-error footers, lines 17 and 36"
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>Cancel</Button>'
+looked_past: "The three className edits (\"flex flex-col gap-4\" to \"flex flex-1 flex-col gap-4\") are layout/CSS only, stating no domain fact, so they are not reported as findings."

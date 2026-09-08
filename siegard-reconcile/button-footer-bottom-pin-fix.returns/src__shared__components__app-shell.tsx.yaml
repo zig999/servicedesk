@@ -1,0 +1,5 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: "the `right` prop of the `StatusBar` inside `Topbar`, rendered by `AppShell` around every route's `Outlet`"
+    evidence: "right={<span>No auth in this build</span>}"
+looked_past: the <main> className change from a plain flex-1 block to a flex column (`flex flex-1 flex-col`) is a layout-only edit with no bearing on the disclosure constraint or any other domain fact, so it is not reported as a finding.

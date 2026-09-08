@@ -1,0 +1,23 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved);"
+  - node: domain/integration/connector-configuration
+    held_at: "the `configuration` prop forwarded to ConnectorConfigurationFormFields and the `connector` field read in handleSaved"
+    evidence: "configuration={state.configuration}"
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved);"
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: nowhere
+    evidence: '<Button type="button" variant="secondary" onClick={state.onCancel}>'
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the trailingActions Link rendered beside the form"
+    evidence: '<Link to="/connectors">Connectors</Link>'
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: "const state = useConnectorConfigurationForm(null, handleSaved);"
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "handleSaved, lines 14-17"
+    evidence: 'void navigate({ to: "/connectors/$connector", params: { connector } });'
+looked_past: the section wrapper's className change ("flex flex-col gap-4" to "flex flex-1 flex-col gap-4") is a layout-only edit with no bearing on any node's fact, so it is not reported.

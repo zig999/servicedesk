@@ -1,0 +1,17 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "handleSaved's post-submit navigation to the capability's own identity route"
+    evidence: 'void navigate({ to: "/capabilities/$name/$version", params: { name, version } });'
+  - node: domain/integration/capability
+    held_at: "handleSaved's extraction of the aggregate's identity fields from the submitted form"
+    evidence: 'const name = values?.name ?? ""; const version = values?.version ?? "";'
+  - node: domain/integration/capability-registry
+    held_at: "the submission delegated to useCapabilityForm's onSubmit"
+    evidence: 'onSubmit={state.onSubmit}'
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: "the Capabilities link rendered in every phase's action set (loading, load-error, ready)"
+    evidence: '<Link to="/capabilities">Capabilities</Link>'
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "the Cancel button delegating to state.onCancel in every phase"
+    evidence: 'onClick={state.onCancel}'
+looked_past: "the section wrapper's className change from \"flex flex-col gap-4\" to \"flex flex-1 flex-col gap-4\" (line 28) is a layout/CSS detail with no domain-fact content — form the rules explicitly leave to the interface — so it produced no finding."

@@ -1,0 +1,17 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: "the version prop threaded into the form hook"
+    evidence: "readonly version: number;\n...\nconst state = useHypothesisRevisionForm(slug, version, hypothesisName);"
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "the loading-phase branch, lines 20-22"
+    evidence: "if (state.phase === \"loading\") {\n    return <p>Loading…</p>;\n  }"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the success-phase message, lines 39-41"
+    evidence: "Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}."
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the conditional manifest-builder button, lines 42-46"
+    evidence: "{state.offerManifestBuilder && (\n          <Button type=\"button\" onClick={state.onOpenManifestBuilder}>\n            Open Manifest Builder\n          </Button>\n        )}"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: "the Cancel button passed as trailingActions, lines 68-70"
+    evidence: "<Button type=\"button\" variant=\"secondary\" onClick={state.onCancel}>\n            Cancel\n          </Button>"
+looked_past: "the load-error phase's retry affordance and the unconditional \"View Manifest\" button are UI/navigation form with no node in this pack governing their wording or presence, so they were not reported."

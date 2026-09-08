@@ -1,0 +1,84 @@
+findings:
+  - where: "the `state.justSaved` block, lines 82-87, and the trailingActions block as a whole (lines 51-95)"
+    evidence: |
+      {state.justSaved && (
+
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+    cost: "The registered outcome is stated as a bare \"Saved.\", never naming the connector name that now stands registered, and no branch of this file ever states a refused outcome or which refusal answered it — the only submission-outcome prop this component reads is `state.justSaved`. An operator whose edit the registry refused sees nothing distinguishing that from an edit still in flight or one never submitted, and the next reader auditing this view for where a refusal is told to the operator finds no such construct here at all."
+    kind: contradicts
+    correction: "Render a distinguishable message for a refused submission (naming the condition the registry answered, or stating the condition is unrecognised where it named none), and name the connector configuration that now stands registered in the success message, per the rule's own expression."
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the wiring of `state.onSubmit` (register-connector), `state.registeredConfigurationText` (read-connector-configuration) and the `Link to=\"/connectors\"` (list-connector-configurations), lines 44-49 and 91-93"
+    evidence: |
+      <ConnectorConfigurationFormFields
+        form={state.form}
+        configuration={state.configuration}
+        isEditingIdentity
+        isSubmitting={state.isSubmitting}
+        onSubmit={state.onSubmit}
+        isDirty={state.isDirty}
+  - node: domain/integration/connector-configuration
+    held_at: "the `state.configuration.isValid` guard, lines 35-39, and `state.registeredConfigurationText`, line 42"
+    evidence: |
+      {!state.configuration.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_CONFIGURATION_WARNING}
+        </p>
+      )}
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "the Cancel button, lines 88-90"
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the invalid-configuration warning, lines 18-19 and 35-39"
+    evidence: |
+      const INVALID_CONFIGURATION_WARNING =
+        "This connector configuration's stored value must be a JSON object. Correct it before Save can succeed.";
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: "the `configurationText` prop passed to ConnectorTestPanel, lines 40-43"
+    evidence: |
+      <ConnectorTestPanel
+        connector={connector}
+        configurationText={state.registeredConfigurationText}
+      />
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: "the Connectors link, lines 91-93"
+    evidence: |
+      <Button variant="secondary" asChild>
+        <Link to="/connectors">Connectors</Link>
+      </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "the Discard changes dialog, lines 53-81"
+    evidence: |
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={!state.isDirty || state.isSubmitting}
+      >
+        Discard changes
+      </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "the Cancel button, lines 88-90"
+    evidence: |
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |
+      {state.justSaved && (
+
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+
+looked_past: "The wrapping div's className change (`flex flex-col gap-4` to `flex flex-1 flex-col gap-4`) is a pure CSS layout adjustment with no bearing on any domain fact, as is the absence of a `disabled` state on the Cancel/Connectors buttons during submission — both are form, not this pass's concern."

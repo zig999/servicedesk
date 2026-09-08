@@ -15,15 +15,15 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
         }
       ]
     },
@@ -173,7 +173,7 @@
       "files": [
         {
           "path": "frontend/app/src/shared/components/app-shell.tsx",
-          "digest": "sha256:9b68143bbfeee6dd975e576f4a3948ba950fa998d4398d5a85dc4c7f05d62f1f"
+          "digest": "sha256:9b52a1d971c76d84de09ecde36db3864be61bdb54aa9bcaf93ecc58908737532"
         },
         {
           "path": "src/src/http/list-connector-configurations.routes.ts",
@@ -759,7 +759,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:6346a5a17c9117ce8687c0ea22996b285561dc2e6e4fbb387aa57fa4dcf99b29"
+          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
         },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
@@ -903,7 +903,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:9568ff1e0f1713bd15475585f58723fbba51dd7c2815547b579af8221ce2fca4"
+          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
         },
         {
           "path": "src/src/http/dto/list-connector-configurations.dto.ts",
@@ -1053,7 +1053,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
-          "digest": "sha256:88750e0a43c1c39def729a07f250376d809424d16a3a3fa3d388684e89e23f38"
+          "digest": "sha256:da96f577287a794bdacc828c778d4075937c8506f5734a9f18cb889bb4f70e7f"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -1073,11 +1073,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:da01d57677067830e5f0559580daf62d3b3866e9696a21026613c13fe27dc655"
+          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -1275,7 +1275,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/create-draft.operation.ts",
@@ -1295,7 +1295,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:fd53e698f6bdf6a2a1f92162172529929c7de5bc50a61e4641f434cf54444675"
+          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -1419,7 +1419,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -1469,7 +1469,7 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
+          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -1477,7 +1477,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
@@ -1513,7 +1513,7 @@
         },
         {
           "path": "src/src/http/list-cases.controller.ts",
-          "digest": "sha256:3ad506c276f40b7b0eb7e3a01c46bcc9cf5de54b2674538c8355fe3f1cfe2ee7"
+          "digest": "sha256:3ac1244bb8fb4cd3cc502e64059c2e22ae33f974988a01422614562a6929c583"
         },
         {
           "path": "src/src/http/list-cases.routes.ts",
@@ -1545,7 +1545,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -1615,7 +1615,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035"
+          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         }
       ]
     },
@@ -1663,7 +1663,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -1741,7 +1741,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/services/concept-form-schema.ts",
@@ -1839,7 +1839,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -1905,7 +1905,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -2029,7 +2029,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -2099,15 +2099,15 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:27e1dbb4539218ae855f493670aa0ff6771a6e240d69f7586c317d480bf8c067"
+          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:b2f5654793f1364ffad892e00d9f4d0326e4b7e3576bfc3e4c4aec2cc732eba7"
+          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
+          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -2205,7 +2205,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
+          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -2239,7 +2239,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:6346a5a17c9117ce8687c0ea22996b285561dc2e6e4fbb387aa57fa4dcf99b29"
+          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
         },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
@@ -2301,15 +2301,15 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:86643fe2f06b80e9692f6e97d1831e19c0c4963312027b275e7294fcc7824368"
+          "digest": "sha256:659192d72eaec241ec69dee21e8d438516049b0bc799538d3ceaefa44805798a"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:950897895b2ec9fb68c49f4335d9c95f36ebcdcdbdb7710ec5a833bd5f3d116a"
+          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:b2f26fdc173e3137f3b7fcd6de9bfef1787dc3a54a3d60a5a4535f2a16d27653"
+          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
@@ -2407,7 +2407,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:9568ff1e0f1713bd15475585f58723fbba51dd7c2815547b579af8221ce2fca4"
+          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
         },
         {
           "path": "src/src/factories/connector-configuration-registry.factory.ts",
@@ -2415,7 +2415,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:dd1b4978ece2c6523ec675812ebff9b3d12fac0b7a8042296b2d6aa20807649d"
+          "digest": "sha256:621c1bfa619b7799b9bfdea2dad2daa3fcd2d85a36003e04c0d81e8dfbf236ab"
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
@@ -2473,15 +2473,15 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2"
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
-          "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
         },
         {
           "path": "src/src/investigation/assessment.ts",
@@ -2493,11 +2493,11 @@
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+          "digest": "sha256:f17b158e4b788ec81e756f1b9f1cc0800cd2e38e09e93d609b92dca7d4941cb0"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -2561,11 +2561,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:da01d57677067830e5f0559580daf62d3b3866e9696a21026613c13fe27dc655"
+          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -2607,7 +2607,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/investigation/cost.ts",
@@ -2817,11 +2817,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:da01d57677067830e5f0559580daf62d3b3866e9696a21026613c13fe27dc655"
+          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
         },
         {
           "path": "src/src/investigation/evaluation-reason.ts",
@@ -2991,7 +2991,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
+          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -3109,11 +3109,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:da01d57677067830e5f0559580daf62d3b3866e9696a21026613c13fe27dc655"
+          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -3175,11 +3175,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:da01d57677067830e5f0559580daf62d3b3866e9696a21026613c13fe27dc655"
+          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -3315,11 +3315,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:da01d57677067830e5f0559580daf62d3b3866e9696a21026613c13fe27dc655"
+          "digest": "sha256:a7834f8c0702955cf4b0f94de39ce10fd73e8648b1a601d715253bcc5620423e"
         },
         {
           "path": "src/src/investigation/evaluation.ts",
@@ -3385,7 +3385,7 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
+          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -3397,7 +3397,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3465,7 +3465,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -3509,11 +3509,11 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -3579,11 +3579,11 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
@@ -3619,7 +3619,7 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
+          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -3737,7 +3737,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3777,7 +3777,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -3869,7 +3869,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/routes/new-hypothesis-screen.tsx",
@@ -3893,7 +3893,7 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
+          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -3905,7 +3905,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3945,7 +3945,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -3999,7 +3999,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
@@ -4055,11 +4055,11 @@
         },
         {
           "path": "src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
-          "digest": "sha256:f01b91c95a71a4e01a5426e72664bb5dd52b53b0346510e979390af3c532f44e"
+          "digest": "sha256:f25af795b52fe2da3246b7a645aabfc2e3dc949bb17e4dddb1fad5e423e53c43"
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
+          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -4067,7 +4067,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/case.ts",
@@ -4135,7 +4135,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         },
         {
           "path": "src/src/seed.ts",
@@ -4259,7 +4259,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/case/case.ts",
@@ -4291,7 +4291,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -4329,7 +4329,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -4369,7 +4369,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         }
       ]
     },
@@ -4403,7 +4403,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -4447,7 +4447,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
+          "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
         {
           "path": "src/src/http/dto/update-draft.dto.ts",
@@ -4509,7 +4509,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
+          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
         }
       ]
     },
@@ -4603,11 +4603,11 @@
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
+          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
+          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -4689,7 +4689,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
+          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
         }
       ]
     },
@@ -4729,11 +4729,11 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
+          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
-          "digest": "sha256:0ea4ed8dd1c38335c63a440d0bf8ea57ee9f5d60058397f18eb9fb5c162e3f7c"
+          "digest": "sha256:33cbfcd42fe8318ce5e455deded8484e3292ffd60370654105ed741ebe8aa2da"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -4771,7 +4771,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
+          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
@@ -4819,7 +4819,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:9568ff1e0f1713bd15475585f58723fbba51dd7c2815547b579af8221ce2fca4"
+          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
@@ -4837,15 +4837,15 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
+          "digest": "sha256:659192d72eaec241ec69dee21e8d438516049b0bc799538d3ceaefa44805798a"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
+          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
         }
       ]
     },
@@ -4939,7 +4939,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:9ebf0cd5864afe051a3b8ac238361aa99836fe7fcf6000915bb0a5ae823924d2"
+          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
         }
       ]
     },
@@ -4949,15 +4949,15 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:34f54bd51a4dc60ab105281bbef9bcaa9ca3878bee692c5de9815f2679f923c3"
+          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
+          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
+          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
         }
       ]
     },
@@ -4975,19 +4975,19 @@
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
+          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
-          "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
+          "digest": "sha256:4a78e7159cd3591a58b447d0c1b0b5705dfa654eb3ea8690a86e765c95d08d65"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
+          "digest": "sha256:3304776ee577f3e50aab18ab2f8caae2b5f47afac0652d7961c6b86fdf66b1d0"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
-          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+          "digest": "sha256:805b128bb42780262b6601f6a560133dc1e2ee9e4ff5405de81973cab4a09a93"
         }
       ]
     },
@@ -5031,7 +5031,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
-          "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
+          "digest": "sha256:659192d72eaec241ec69dee21e8d438516049b0bc799538d3ceaefa44805798a"
         }
       ]
     },
@@ -5049,11 +5049,11 @@
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
-          "digest": "sha256:34f54bd51a4dc60ab105281bbef9bcaa9ca3878bee692c5de9815f2679f923c3"
+          "digest": "sha256:2b7a01eee58114e609750f851ae5e80a8dd2d58e3f76a21b1c881413f0646ef3"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
-          "digest": "sha256:11eb06eb59bb8bb7d95209a09d4852e01aafd39d9b51926a009d2d3f384a533c"
+          "digest": "sha256:717a81381397139f054611180d23daf31ef6338ba544b6c520c0ea4696631155"
         }
       ]
     },
@@ -5111,7 +5111,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:e54eef81181945fa5c159b67af90ea37adb008a52fcd72d433d56d7b142e6ee5"
+          "digest": "sha256:a1dc55a89f495d5db92580aead1e5c969e64fa879eba7b72e78571cdd5c43b95"
         }
       ]
     },
@@ -5279,7 +5279,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
+          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
         }
       ]
     },
@@ -5551,7 +5551,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
+          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
         }
       ]
     },
@@ -5733,7 +5733,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e"
+          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -5915,7 +5915,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -5939,7 +5939,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -5953,7 +5953,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6049,7 +6049,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         },
         {
           "path": "src/src/seed.ts",
@@ -6109,7 +6109,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6215,7 +6215,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
         },
         {
           "path": "frontend/app/src/routes/new-case-draft-screen.tsx",
@@ -6361,7 +6361,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6403,7 +6403,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6425,7 +6425,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6495,7 +6495,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         },
         {
           "path": "src/src/seed.ts",
@@ -6521,7 +6521,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:83cbc653c6773b3a44a7691668ec48117224b7200de81d43e034ef1023796e51"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6535,7 +6535,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6549,11 +6549,11 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6595,7 +6595,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6773,7 +6773,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -6791,7 +6791,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
         }
       ]
     },
@@ -6871,11 +6871,11 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
-          "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+          "digest": "sha256:93383e9803509aa080a50c6639639c0967dc950a03d472772099893f738e2b97"
         }
       ]
     },
@@ -6909,7 +6909,7 @@
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -6963,11 +6963,11 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:b2020bc934ff9810eb3bb58d3e6b3e5a600b43530878ae12b6d4d022c8e0c824"
+          "digest": "sha256:d2e752c3be2d9ae306959a0a55f47c874e76e9b52ab747eac6adcfa37c6b4f61"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -6991,7 +6991,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
-          "digest": "sha256:ea43f44eb5fc420aaaa0fc002632e7f88b3ec8a1821daaed0eed39be72afcd65"
+          "digest": "sha256:c5d20113fa85498f2e7e1756f5eb934e2079d8489d3f8dabb46304df5b4f5929"
         },
         {
           "path": "frontend/app/src/services/hypothesis-revision-form-schema.ts",
@@ -7041,7 +7041,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -7101,7 +7101,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:6f294f82a8d439d05e2ad3cd9d0c529e5e3f817e2e955fdf51ab2a6f53855ea5"
+          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
         }
       ]
     },
@@ -7137,15 +7137,15 @@
     },
     {
       "node": "rules/knowledge/validation-runs-at-every-read",
-      "digest": "sha256:d23c3ea3ac2b08f3c477641ff601f37f513c678160e0078cee69d95633eda8b7",
+      "digest": "sha256:75aefb23cfc9e3d67bebcbb3289a2d99e47d7216efd6c93afb8b501baba6e24e",
       "files": [
         {
           "path": "src/src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
-          "digest": "sha256:48b68277f681c90cc89452a88d44888b5290af14432635d0e09eac3342c64abb"
+          "digest": "sha256:62985e19b3a736452f80cea92704ada94e5e46c773a0ef0a62ea0d974f167876"
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:5122c55344d2d8f8bb2d508462e1ccd12076be25689426635a7f65ea4fa862a3"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -7157,7 +7157,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:1057704a8cd166b02a97d220bb99162e95d57c887a733382d0f7200262c0a97c"
+          "digest": "sha256:6818703ee8feaf7ee15f4d5d7d77fbd726be5f5879ae7fd6d815f3f60cd7cced"
         }
       ]
     },
@@ -7507,7 +7507,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -7555,7 +7555,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:8f21eee1ea7baf4749cfa864ade9dcd93f6d204abed68992a142230ec3f61ba7"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },
@@ -7587,7 +7587,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:8510964bbb86ecd9fa38dc91789d695d09ef4b8f959b41bf037e2ec7faa444e7"
+          "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         }
       ]
     },
@@ -7649,7 +7649,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b030ea0b74b03b15aa4a861c3caf2fbf337cb8308d0ea23430767c4ebc2da1f1"
+          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
         }
       ]
     },

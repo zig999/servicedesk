@@ -1,0 +1,25 @@
+read:
+  - node: domain/integration/capability
+    held_at: "the field set the form renders — Concept, Name, Version, Nature, Timeout (ms), Connector, Input schema, Output schema"
+    evidence: 'name="concept" ... {...register("name")} ... {...register("version")} ... name="nature" ... {...register("timeout", { setValueAs: (value: string) => (value === "" ? undefined : Number(value)), })} ... {...register("connector")} ... id="input_schema" ... id="output_schema"'
+  - node: domain/integration/capability-nature
+    held_at: "the Nature Select field, built from an imported vocabulary rather than one this file states"
+    evidence: 'const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({\n  value: nature,\n  label: nature,\n}));'
+  - node: domain/investigation/field-semantics
+    held_at: "the paragraph beside the Output schema field"
+    evidence: 'Os nomes de campo lidos a partir dele são as chaves do próprio objeto <code>properties</code> de nível superior deste schema. O <code>type</code> e a <code>description</code>{" "} declarados por cada uma dessas chaves, onde o schema os declara, são lidos como a semântica declarada desse campo.'
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: "the closing sentence of the same paragraph"
+    evidence: 'Uma <code>description</code> aqui declara o que seu valor significa e não nomeia nenhuma decisão.'
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "the save-disable guard"
+    evidence: 'isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: "NATURE_OPTIONS presents every value CAPABILITY_NATURES holds, without restricting the Nature Select to read-only — the refusal this node states is the registry's, not this component's"
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: "the paragraph beside the Output schema field"
+    evidence: 'O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir dele são as chaves do próprio objeto <code>properties</code> de nível superior deste schema. ... Nenhum outro conteúdo deste schema é lido ou validado.'
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: "the Concept Controller only lets an operator pick a value from conceptSelectOptions; no duplicate-answer refusal is rendered here, which is the registry's own concern"
