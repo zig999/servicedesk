@@ -11,7 +11,7 @@ export function ConnectorConfigurationDetailScreen(): JSX.Element {
 
   if (state.phase === "loading") {
     return (
-      <section className="flex flex-col gap-4">
+      <section className="flex flex-1 flex-col gap-4">
         <p>Loading connector configuration {connector}…</p>
         <ButtonFooter>
           <Button type="button" variant="secondary" onClick={state.onCancel}>
@@ -27,7 +27,7 @@ export function ConnectorConfigurationDetailScreen(): JSX.Element {
 
   if (state.phase === "load-error") {
     return (
-      <section className="flex flex-col gap-4">
+      <section className="flex flex-1 flex-col gap-4">
         <p>Unable to load this connector configuration right now.</p>
         <ButtonFooter>
           <Button type="button" onClick={state.retryLoad}>
@@ -45,7 +45,7 @@ export function ConnectorConfigurationDetailScreen(): JSX.Element {
   }
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-1 flex-col gap-4">
       <h1 className="text-lg font-semibold text-foreground">Connector {connector}</h1>
       <ConnectorConfigurationDetailReadyView state={state} connector={connector} />
     </section>

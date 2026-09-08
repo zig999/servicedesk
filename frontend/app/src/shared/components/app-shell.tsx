@@ -96,7 +96,7 @@ export function AppShell(): JSX.Element {
         <Topbar />
         <div className="flex min-h-0 flex-1">
           <Sidebar />
-          <main className="relative flex-1 overflow-y-auto p-4">
+          <main className="relative flex flex-1 flex-col overflow-y-auto p-4">
             <Outlet />
           </main>
         </div>

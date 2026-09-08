@@ -20,7 +20,7 @@ export function ConnectorConfigurationCreateScreen(): JSX.Element {
   formRef.current = state.form;
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-1 flex-col gap-4">
       <h1 className="text-lg font-semibold text-foreground">New connector configuration</h1>
       <ConnectorConfigurationFormFields
         form={state.form}

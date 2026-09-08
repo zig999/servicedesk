@@ -64,7 +64,7 @@ export function ConnectorConfigurationFormFields({
   const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form onSubmit={onSubmit} noValidate className="flex flex-1 flex-col gap-4">
       <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
         <Input
           {...register("connector")}

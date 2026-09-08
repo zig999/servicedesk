@@ -30,7 +30,7 @@ export function CapabilityDetailReadyView({
   state,
 }: CapabilityDetailReadyViewProps): JSX.Element {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-1 flex-col gap-4">
       {!state.inputSchema.isValid && (
         <p role="alert" className="text-sm text-destructive">
           {INVALID_INPUT_SCHEMA_WARNING}

@@ -82,7 +82,7 @@ export function CapabilityFormFields({
     isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form onSubmit={onSubmit} noValidate className="flex flex-1 flex-col gap-4">
       <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
         <Controller
           control={control}
