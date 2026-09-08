@@ -256,13 +256,13 @@ function refuseHttpConfigurationDepartures(
 function httpConfigurationProblems(configuration: Readonly<Record<string, unknown>>): string[] {
   const problems: string[] = [];
   if (!isHttpMethod(configuration.method)) {
-    problems.push('method is not one of GET, POST, PUT, PATCH, DELETE');
+    problems.push(`method is not one of ${HTTP_METHODS.join(', ')}`);
   }
   if (!isStringRecord(configuration.responseMap)) {
     problems.push('responseMap is not a plain object of string values');
   }
   if (!isStatusEndingMap(configuration.statusMap)) {
-    problems.push('statusMap is not a plain object mapping a status to one of ok, unavailable, denied, timeout');
+    problems.push(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
   }
   return problems;
 }
