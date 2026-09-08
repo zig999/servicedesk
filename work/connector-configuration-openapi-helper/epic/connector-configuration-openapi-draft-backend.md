@@ -21,6 +21,8 @@ covers:
 - domain/integration/connector-configuration-draft-method-mismatch
 - domain/integration/capability
 - domain/integration/connector-configuration
+- rules/integration/a-connector-configuration-draft-response-carries-no-capability
+- rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
 - rules/integration/an-unfetchable-openapi-link-refuses-the-draft
 - rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
 - rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability

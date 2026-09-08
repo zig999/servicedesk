@@ -3946,4 +3946,126 @@ entries:
     for a body it cannot honestly read -- a stated gap the reviewing operator closes by hand, as with a
     document declaring no server, rather than a refusal -- a-malformed-or-unsupported-openapi-document-refuses-the-draft
     names the draft's refusals and this is not among them.
+- location: rules/integration/a-connector-configuration-draft-response-carries-no-capability.md
+  field: statement
+  unstated: domain/integration/connector-configuration-draft declares a reference to
+    domain/integration/capability at cardinality 0..*, and its Description states which capabilities that
+    reference holds, while contracts/integration/connector-configuration-draft publishes
+    draft-connector-configuration-from-openapi as an api, which can declare no payload or answer shape at
+    all. No node states whether the operation's answer hands that reference back to its caller -- the names
+    and versions of the capabilities currently registered naming the draft's connector -- or carries the
+    draft's own declared attributes alone (connector, configuration, unresolved, generated_credentials,
+    method_mismatch).
+  decided: The answer carries the draft's own declared attributes and nothing besides; the capability
+    reference is read to resolve the draft and never handed back -- no capability name, version or count
+    appears in the answer, whether none, one or several are registered naming that connector, and a name
+    unresolved for want of a registered capability reaches the answer only as an unresolved item with reason
+    no-capability-registered.
+  why: This specification already discloses every other input generating a draft reads as the derived fact
+    the operator acts on rather than as the record read -- the currently registered connector configuration
+    reaches the answer only as connector-configuration-draft-method-mismatch's two method names, and a
+    security scheme only as connector-configuration-draft-generated-credential's generated name and scheme
+    name, never the value it resolves to -- the same restraint a-diagnostic-response-masks-a-resolved-credential
+    holds over the other diagnostic read this context publishes. The capability set has the identical
+    standing -- it is read by a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    to decide placeholders, and nothing in this specification has an operator act on it, since applying a
+    draft touches only the Configuration field's local edit. Everything an operator can learn from it is
+    already carried by the unresolved reasons no-capability-registered and no-matching-input-schema-property,
+    which is exactly what the element's own Responsibility bounds the draft's disclosure to. Carrying it
+    would additionally answer for the capability registry from a route contracts/integration/capability-registry
+    and its own read constraints do not govern, and would let a reader infer registration state from the
+    answer's shape instead of from the reason that states it.
+- location: rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator.md
+  field: statement
+  unstated: What an operator-facing surface states to the operator when
+    draft-connector-configuration-from-openapi refuses the connector configuration draft it requested, and
+    whether any part of a draft stands beside that statement.
+    a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document and
+    an-openapi-document-declaring-no-such-operation-refuses-the-draft state what each refusal answers its
+    caller; a-connector-configuration-authoring-surface-offers-a-configuration-helper states that the helper
+    exists and that requesting a draft registers nothing, and says nothing of an answer;
+    a-submitted-registration-states-its-outcome-to-the-operator governs a submitted registration's outcome
+    and a-presented-connector-configuration-states-an-outstanding-or-failed-read a registration read, and a
+    draft request is neither.
+  decided: Stated, and stated in three distinguishable conditions -- where the draft request is refused the
+    surface states that no draft was generated and which refusal answered it (a named link that could not be
+    fetched, together with which of network-failure, timeout or status-outside-2xx and the status where
+    applicable; a fetched document that could not be read as OpenAPI 3.x; a path and method pairing the
+    document declares no operation for), each apart from the others, and where the answer names none of the
+    three, that the request failed for a reason the surface does not recognise, never as one of them and
+    never as a draft. No part of a draft stands beside that statement, and the Configuration field's own
+    content stands exactly as it stood. No refusal is stated of a request the operation has not answered.
+  why: Stated at all, because the operator asked for the draft and a refusal is otherwise invisible to them
+    -- unstated, a refusal reads exactly like a helper that did nothing. Distinguished by condition, because
+    the operator's next act differs across the three, and a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    and an-openapi-document-declaring-no-such-operation-refuses-the-draft already decided distinct error
+    values for exactly that reason -- a surface that merges them puts the distinction back in a log the
+    operator cannot read. The unrecognised branch is stated as unrecognised on
+    a-submitted-registration-states-its-outcome-to-the-operator's own recorded reasoning, that a named
+    condition and an unknown outcome teach opposite things. That rule's shape and not its reason, since a
+    draft request registers nothing (a-connector-configuration-draft-registers-nothing), so no write hazard
+    and no re-issue act is owed. No drafted part beside it, because the refused request produced none, so
+    anything standing there would be an earlier request's draft read as this one's answer -- the
+    reads-alike-in-different-situations presentation this specification has refused every time it has met
+    it. The Configuration field is untouched because applying-a-drafted-configuration-changes-only-the-local-edit
+    and an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation make that field's content
+    the operator's own, held nowhere else, so a refusal that cleared it would destroy an edit by failing.
+- location: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator.md
+  field: statement
+  unstated: What an operator-facing surface states to the operator when
+    draft-connector-configuration-from-openapi answers its request with a connector configuration draft,
+    and what becomes of the Configuration field when that answer arrives.
+    a-refused-draft-request-states-its-refusal-to-the-operator decided the refusal side of the same call;
+    a-connector-configuration-authoring-surface-offers-a-configuration-helper states that the helper exists
+    and that requesting a draft registers nothing, and says nothing of an answer;
+    applying-a-drafted-configuration-changes-only-the-local-edit and
+    an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation state what applying a draft
+    does, and neither states what the surface shows of the draft before the operator applies it nor that the
+    arrival of a draft writes nothing into that field.
+  decided: Stated, and stated part by part -- the drafted configuration text; every unresolved item by the
+    name and the reason the answer gave it, each of the four reasons apart from the others; every generated
+    credential by its generated name and its security scheme's own name; and, where the answer carries a
+    method mismatch, the registered method together with the drafted operation's, with no mismatch stated
+    where the answer carries none. Nothing is stated for any of them that the answer did not carry. The
+    Configuration field's content is identical before and after the answer arrives and changes only where
+    the operator applies the draft.
+  why: Stated at all, because the operator asked for the draft and the element's own Responsibility is to
+    hold everything one operation could resolve and disclose by name and by reason everything it could not
+    -- a disclosure a surface that states none of it destroys. Part by part rather than the configuration
+    text alone, because the subject-placeholder, credential-generation and never-responseMap-or-statusMap
+    rules make that text deliberately incomplete, so text alone reads as finished while being unfinished.
+    Name and reason for each unresolved item, because the four reasons send the operator to four different
+    corrections -- the identical reasoning the fetch-refusal-distinguishes rule and the refused-draft-request
+    rule already recorded for holding conditions apart rather than merging them. Both credential names,
+    because the generated name is a folded composition an operator cannot read a scheme back out of where an
+    operation requires more than one, and no value, the answer carrying none. The method mismatch, because
+    the chosen-operation's-method rule drafts the method whether or not it agrees, so applying a draft can
+    change a registered method the operator was never shown -- the silent replacement the method-mismatch
+    element exists to refuse; and nothing where the answer carries none, on the standing refusal to state a
+    value an answer did not carry. The field untouched until applied, because the two apply rules make
+    applying the operator's own act over content held nowhere else, so a helper that wrote the field on
+    arrival would perform that act itself, before the review it is for -- the same bound the refusal side of
+    this call already holds over the same field.
+- location: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read.md
+  field: statement
+  unstated: No node states which HTTP status draft-connector-configuration-from-openapi answers with when
+    it generates a draft. This operation's three refusals each state their status and error value;
+    contracts/integration/connector-configuration-draft, being an api, can declare no answer at all;
+    a-connector-configuration-draft-response-carries-no-capability states what the successful answer's body
+    holds and nothing of its status; and no node anywhere in this specification states a success status for
+    any operation.
+  decided: HTTP 200 for the answer carrying a generated draft, never HTTP 201, HTTP 204 or HTTP 202.
+  why: Read as a genuine gap for this one operation and not as the first entry of a class this specification
+    has been leaving to ordinary REST convention. The distinction is that here one conventional candidate
+    would state on the wire what a standing invariant denies -- 201 asserts the request created something,
+    while a-connector-configuration-draft-registers-nothing states that generating a draft creates no
+    connector configuration and leaves every registered one as it stood, and nothing stores a draft or
+    publishes a read of one, so left to convention the wire answer is free to contradict a node. That is
+    untrue of every operation whose success status is also unstated -- 200 or 201 over register-connector,
+    200 over the identity reads and the listings, contradicts no node either way -- so those stay
+    convention's and this decision reaches none of them. 204 is refused because the response-carries-no-capability
+    rule holds the answer to one field per attribute the draft declares, and an answer with no body could
+    carry neither the unresolved items nor the generated credentials the draft's own Responsibility exists to
+    disclose; 202 because it would state the answer is not yet the draft, while the refused-draft-request
+    rule reads every request as either answered with a draft or answered with a named refusal.
 ---
