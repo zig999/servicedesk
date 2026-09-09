@@ -26,6 +26,14 @@
       "task": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison.md",
+      "title": "Registered-method comparison for a connector configuration draft",
+      "summary": "A pure comparison function reads the connector configuration currently registered under a name live through an injected reader, folds case to compare its declared method against the drafted operation's method, and returns a method_mismatch naming both upper-cased only where the two genuinely disagree.",
+      "task": "task/connector-configuration-openapi-draft-backend/registered-method-comparison"
+    },
+    {
       "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proof",
       "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
@@ -48,6 +56,14 @@
       "title": "OpenAPI document fetch -- unit proof of fetch-failure refusal, timeout bound, unparsed success and 422 mapping",
       "summary": "Unit tests over OpenApiDocumentFetcher, OpenApiDocumentNotFetchedError and the status-map/error-handler pair prove every stated criterion -- 404, any non-2xx status, network failure, the 60000ms timeout boundary, no body parse on any refusal, exact error-context shape, unparsed 2xx body text, and the 422 envelope the shared handler answers with -- leaving the frontend-placement half of the placement criterion and the redirect inference unproven for stated reasons.",
       "task": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison.md",
+      "title": "Registered-method comparison against the currently registered connector configuration",
+      "summary": "Confirms registeredMethodMismatch names both methods upper-cased exactly where a live-read registered configuration's declared method disagrees (case-folded) with the operation's, states no mismatch in the three named absence/agreement cases, reads only from the registered text through a narrow injected reader with no capability parameter, leaves the registered configuration unchanged, and propagates rather than swallows a failing or malformed dependency read.",
+      "task": "task/connector-configuration-openapi-draft-backend/registered-method-comparison"
     }
   ],
   "edges": [
@@ -166,6 +182,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "scenarios/integration/a-drafts-method-mismatches-what-is-registered",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proves",
@@ -180,6 +220,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch",
       "to": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
       "kind": "proves",
       "at": "the path"
     }

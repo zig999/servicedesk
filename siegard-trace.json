@@ -2426,6 +2426,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
+          "path": "src/src/connector-registry/registered-method-comparison.ts",
+          "digest": "sha256:4192f715d05de2d8f4947b93ac4044fdad6ae3441ad5df72a80ccb84492c89d6"
         }
       ]
     },
@@ -4800,6 +4804,16 @@
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
+      "digest": "sha256:0353873fc45dcf685ceed2b18cdb958c0cb4a16e9e1c76733da3fcf48d6afbff",
+      "files": [
+        {
+          "path": "src/src/connector-registry/registered-method-comparison.ts",
+          "digest": "sha256:4192f715d05de2d8f4947b93ac4044fdad6ae3441ad5df72a80ccb84492c89d6"
         }
       ]
     },
@@ -7374,6 +7388,16 @@
         {
           "path": "src/src/errors/connector-placeholder-outside-input-schema.error.ts",
           "digest": "sha256:3d5386fbcfca6a633fd873eb363c5ffeff6d5f233f92314fa6b7a87fa1e69b05"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-drafts-method-mismatches-what-is-registered",
+      "digest": "sha256:83b6f29c431130171297beb43d4dabd9006b8da950e0cc59bd53a6e34944029e",
+      "files": [
+        {
+          "path": "src/src/connector-registry/registered-method-comparison.ts",
+          "digest": "sha256:4192f715d05de2d8f4947b93ac4044fdad6ae3441ad5df72a80ccb84492c89d6"
         }
       ]
     },
