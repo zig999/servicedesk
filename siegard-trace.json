@@ -2454,6 +2454,10 @@
           "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
         },
         {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:bab4337ee57ce07e1c12bcc0399ec3fbb8ab4cbb83c4e9b42d151410271198d8"
+        },
+        {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
           "digest": "sha256:4a965bbd01c02cfdf789ca4c79932ce9ccfa1ed2986b9f7bf7a9ef9c77d421fa"
         },
@@ -5586,6 +5590,24 @@
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:38f071ffa063e01559319a2be36bc37f66114bf497ae13f230d186a9e6ff45ec"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
+      "digest": "sha256:8a0f3e4940243c93c8ef777266dbbcb07489714424333d6ae3269f840c1a6398",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:2b6ad2736270ec497c8fd4143651baa11aa93f76240d5046e770e0f485d0742f"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:bab4337ee57ce07e1c12bcc0399ec3fbb8ab4cbb83c4e9b42d151410271198d8"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper.tsx",
+          "digest": "sha256:ca3d50ae6f639152044d2378dea89605328ead59a3dfec9d10779acaacc48f11"
         }
       ]
     },

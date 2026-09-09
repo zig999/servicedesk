@@ -10,10 +10,12 @@ import {
 
 export type ConnectorConfigurationHelperFieldsProps = {
   readonly state: ConnectorConfigurationHelperState;
+  readonly onApply: (configurationText: string) => void;
 };
 
 export function ConnectorConfigurationHelperFields({
   state,
+  onApply,
 }: ConnectorConfigurationHelperFieldsProps): JSX.Element {
   const disclosure = disclosureStateForOutcome(state.outcome);
 
@@ -61,7 +63,9 @@ export function ConnectorConfigurationHelperFields({
             {disclosure.message}
           </p>
         )}
-        {disclosure.kind === "drafted" && <ConnectorConfigurationDraftDisclosure draft={disclosure.draft} />}
+        {disclosure.kind === "drafted" && (
+          <ConnectorConfigurationDraftDisclosure draft={disclosure.draft} onApply={onApply} />
+        )}
       </div>
     </div>
   );
@@ -69,13 +73,20 @@ export function ConnectorConfigurationHelperFields({
 
 function ConnectorConfigurationDraftDisclosure({
   draft,
+  onApply,
 }: {
   readonly draft: DraftDisclosure;
+  readonly onApply: (configurationText: string) => void;
 }): JSX.Element {
   return (
     <div className="flex flex-col gap-4">
       <section className="flex flex-col gap-1">
-        <p className="text-sm text-muted-foreground">Drafted configuration</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm text-muted-foreground">Drafted configuration</p>
+          <Button type="button" onClick={() => onApply(draft.configuration)}>
+            Apply
+          </Button>
+        </div>
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
           {draft.configuration}
         </pre>

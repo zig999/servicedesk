@@ -27,7 +27,9 @@ function baseState(outcome: DraftConnectorConfigurationRequestOutcome): Connecto
 }
 
 function renderHelperFields(outcome: DraftConnectorConfigurationRequestOutcome) {
-  return render(createElement(ConnectorConfigurationHelperFields, { state: baseState(outcome) }));
+  return render(
+    createElement(ConnectorConfigurationHelperFields, { state: baseState(outcome), onApply: () => {} }),
+  );
 }
 
 const BASE_DRAFT: ConnectorConfigurationDraft = {
@@ -231,7 +233,7 @@ function ConfigurationFieldAndHelper({
       readOnly: true,
       value: configurationFieldText,
     }),
-    createElement(ConnectorConfigurationHelperFields, { state: baseState(outcome) }),
+    createElement(ConnectorConfigurationHelperFields, { state: baseState(outcome), onApply: () => {} }),
   );
 }
 
@@ -263,7 +265,12 @@ describe("ConnectorConfigurationHelperFields -- a stale drafted disclosure clear
     });
     expect(screen.getByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeTruthy();
 
-    rerender(createElement(ConnectorConfigurationHelperFields, { state: baseState({ kind: "pending" }) }));
+    rerender(
+      createElement(ConnectorConfigurationHelperFields, {
+        state: baseState({ kind: "pending" }),
+        onApply: () => {},
+      }),
+    );
 
     expect(screen.queryByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeNull();
     expect(screen.getByText("Drafting the connector configuration…")).toBeTruthy();
@@ -276,7 +283,12 @@ describe("ConnectorConfigurationHelperFields -- a stale refusal clears the momen
     const { rerender } = renderHelperFields(FETCH_REFUSAL);
     expect(screen.getByRole("alert")).toBeTruthy();
 
-    rerender(createElement(ConnectorConfigurationHelperFields, { state: baseState({ kind: "pending" }) }));
+    rerender(
+      createElement(ConnectorConfigurationHelperFields, {
+        state: baseState({ kind: "pending" }),
+        onApply: () => {},
+      }),
+    );
 
     expect(screen.queryByRole("alert")).toBeNull();
     expect(screen.getByText("Drafting the connector configuration…")).toBeTruthy();

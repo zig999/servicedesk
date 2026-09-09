@@ -74,6 +74,14 @@
       "task": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit.md",
+      "title": "Apply a drafted configuration to the Configuration field's local edit",
+      "summary": "Wires an Apply button, offered only against an answered draft, that writes the drafted configuration text through the Configuration field's own onChange and touches nothing else.",
+      "task": "task/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit"
+    },
+    {
       "id": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
       "kind": "implementation",
       "file": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure.md",
@@ -160,6 +168,14 @@
       "title": "Configuration Helper section beneath the Configuration field",
       "summary": "Proves the Configuration Helper section renders beneath Configuration on both authoring surfaces, offers its three named controls plus a non-submitting Request Draft control that dispatches the draft request and never reaches the operator-supplied document link or the save path, while every existing field and the Actions footer stay reachable.",
       "task": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit.md",
+      "title": "Proof that applying a drafted configuration writes only the Configuration field's local edit",
+      "summary": "Two spec files -- one isolated at ConnectorConfigurationHelperFields proving the Apply affordance's own presence rule and callback, one end-to-end through ConnectorConfigurationCreateScreen with a real router, query client and fetch stub -- together establish all seven criteria.",
+      "task": "task/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit"
     },
     {
       "id": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
@@ -522,6 +538,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "task/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
       "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
       "kind": "encodes",
@@ -674,6 +708,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-frontend/configuration-helper-section",
       "to": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
       "kind": "proves",
       "at": "the path"
     },

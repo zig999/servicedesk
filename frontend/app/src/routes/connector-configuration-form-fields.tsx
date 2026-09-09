@@ -84,7 +84,10 @@ export function ConnectorConfigurationFormFields({
         disabled={isSubmitting}
       />
 
-      <ConnectorConfigurationHelper connector={watch("connector")} />
+      <ConnectorConfigurationHelper
+        connector={watch("connector")}
+        onApply={(configurationText) => configuration.onChange(configurationText, true)}
+      />
 
       <ButtonFooter>
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
