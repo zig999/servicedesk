@@ -1,0 +1,197 @@
+read:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: "unresolvedItems(), lines 84-94, the item pushed into the returned array"
+    evidence: "items.push({ name, reason: outcome.reason });"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: "the NO_CAPABILITY_REGISTERED and NO_MATCHING_INPUT_SCHEMA_PROPERTY constants, lines 10-12, and their use in outcomeFor()"
+    evidence: |-
+      const NO_CAPABILITY_REGISTERED: ConnectorConfigurationDraftUnresolvedReason = 'no-capability-registered';
+      const NO_MATCHING_INPUT_SCHEMA_PROPERTY: ConnectorConfigurationDraftUnresolvedReason =
+        'no-matching-input-schema-property';
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: "outcomeFor(), lines 67-77"
+    evidence: |-
+      const everyCapabilityDeclaresIt = registered.every((capability) =>
+        declaredInputSchemaShape(capability.input_schema).properties.includes(name),
+      );
+      return everyCapabilityDeclaresIt
+        ? { resolved: true, value: `\${${SUBJECT_PLACEHOLDER_KIND}:${name}}` }
+        : { resolved: false, reason: NO_MATCHING_INPUT_SCHEMA_PROPERTY };
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "substitutedPath() (96-107), recordFor()/recordForNames() (109-125) and headersWithCookie()/cookieHeaderValue() (127-147), together with positionValue() (79-82)"
+    evidence: |-
+      return cookieParameters
+        .map((parameter) => `${parameter.name}=${positionValue(parameter.name, outcomes)}`)
+        .join(COOKIE_SEGMENT_SEPARATOR);
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: "outcomeFor()'s no-matching branch (74-76) together with positionValue()'s brace fallback (79-82)"
+    evidence: |-
+      function positionValue(name: string, outcomes: ReadonlyMap<string, NameOutcome>): string {
+        const outcome = outcomes.get(name);
+        return outcome !== undefined && outcome.resolved ? outcome.value : `{${name}}`;
+      }
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: "outcomeFor()'s registered.length === 0 branch, lines 68-70"
+    evidence: |-
+      if (registered.length === 0) {
+        return { resolved: false, reason: NO_CAPABILITY_REGISTERED };
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export async function resolveSubjectPlaceholders(
+        options: ResolveSubjectPlaceholdersOptions,
+      ): Promise<SubjectPlaceholderPlacement> {
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import block, lines 1-7"
+    evidence: |-
+      import { declaredInputSchemaShape } from '../capability-registry/capability-input-schema-shape.js';
+      import type { ICapabilitiesReader, RegisteredCapabilityForPlaceholderCheck } from './capabilities-reader.port.js';
+      import type {
+        ConnectorConfigurationDraftUnresolvedItem,
+        ConnectorConfigurationDraftUnresolvedReason,
+      } from './connector-configuration-draft.js';
+      import type { OpenApiOperationParameter, OpenApiParameterLocation } from './openapi-operation-reader.js';
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "readonly capabilitiesReader: ICapabilitiesReader;"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      export async function resolveSubjectPlaceholders(
+        options: ResolveSubjectPlaceholdersOptions,
+      ): Promise<SubjectPlaceholderPlacement> {
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "import type { ICapabilitiesReader, RegisteredCapabilityForPlaceholderCheck } from './capabilities-reader.port.js';"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      export type ResolveSubjectPlaceholdersOptions = {
+        readonly connector: string;
+        readonly path: string;
+        readonly parameters: readonly OpenApiOperationParameter[];
+        readonly requestBodyFieldNames: readonly string[];
+        readonly capabilitiesReader: ICapabilitiesReader;
+      };
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "import type { OpenApiOperationParameter, OpenApiParameterLocation } from './openapi-operation-reader.js';"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: |-
+      const registered = (await capabilitiesReader.readCapabilities()).filter(
+        (capability) => capability.connector === connector,
+      );
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: |-
+      export async function resolveSubjectPlaceholders(
+        options: ResolveSubjectPlaceholdersOptions,
+      ): Promise<SubjectPlaceholderPlacement> {
+        const { connector, path, parameters, requestBodyFieldNames, capabilitiesReader } = options;
+        const registered = (await capabilitiesReader.readCapabilities()).filter(
+          (capability) => capability.connector === connector,
+        );
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "export async function resolveSubjectPlaceholders("
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "import type { OpenApiOperationParameter, OpenApiParameterLocation } from './openapi-operation-reader.js';"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "import type { OpenApiOperationParameter, OpenApiParameterLocation } from './openapi-operation-reader.js';"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "readonly capabilitiesReader: ICapabilitiesReader;"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: |-
+      export type SubjectPlaceholderPlacement = {
+        readonly path: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body: Readonly<Record<string, string>>;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+      };
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "import type { OpenApiOperationParameter, OpenApiParameterLocation } from './openapi-operation-reader.js';"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "import type { OpenApiOperationParameter, OpenApiParameterLocation } from './openapi-operation-reader.js';"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "readonly capabilitiesReader: ICapabilitiesReader;"
+looked_past: "The overlap between recordFor() and recordForNames(), and the reduce-based replaceAll chain in substitutedPath(), are code-shape choices carrying no domain fact of their own -- a standard-conformance question, not this pass's."

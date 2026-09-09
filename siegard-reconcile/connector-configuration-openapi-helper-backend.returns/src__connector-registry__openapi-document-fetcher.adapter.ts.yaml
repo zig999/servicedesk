@@ -1,0 +1,100 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: "the class OpenApiDocumentFetcher and its fetchOpenApiDocument method, lines 13-26 — the one place in this codebase that issues the request for an OpenAPI document link"
+    evidence: |-
+      public async fetchOpenApiDocument(link: string): Promise<string> {
+          const response = await this.issuedResponse(link);
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: "the timeout constant (line 7), issuedResponse (lines 28-38) and the !response.ok branch of fetchOpenApiDocument (lines 21-24)"
+    evidence: |-
+      const OPENAPI_DOCUMENT_FETCH_TIMEOUT_MS = 60_000;
+      ...
+      const timer = setTimeout(() => controller.abort(), OPENAPI_DOCUMENT_FETCH_TIMEOUT_MS);
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: "the !response.ok branch of fetchOpenApiDocument, lines 22-24"
+    evidence: |-
+      if (!response.ok) {
+            throw new OpenApiDocumentNotFetchedError(link, { kind: 'status-outside-2xx', status: response.status });
+          }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export class OpenApiDocumentFetcher implements IOpenApiDocumentFetcher — the file holds no request-shape validation of any kind, only a document fetch"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import type { IOpenApiDocumentFetcher } from './openapi-document-fetcher.port.js'; — this file is itself the infrastructure adapter behind the port, not a domain module the constraint governs"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "export type OpenApiDocumentFetcherOptions = { readonly httpClient?: typeof fetch; }; — the file declares no operation, request or response shape of that contract"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "export class OpenApiDocumentFetcher implements IOpenApiDocumentFetcher — no capability attribute appears anywhere in the file"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "export class OpenApiDocumentFetcher implements IOpenApiDocumentFetcher — no connector-configuration attribute appears anywhere in the file"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "export class OpenApiDocumentFetcher implements IOpenApiDocumentFetcher — the file returns only fetched text, never a draft or any of its attributes"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no credential or security-scheme construct appears in the file"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no method or method-comparison construct appears in the file"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no unresolved-item construct appears in the file"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no unresolved-reason value appears in the file"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "return await response.text(); — the file hands back raw text; no security scheme is ever read here"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "return await response.text(); — no parameter, field or placeholder logic appears in the file"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "return await response.text(); — the file never builds a drafted configuration of any kind"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "return await response.text(); — no address, query, headers or body assembly occurs in the file"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — the file issues no register-connector call and touches no registration state"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — the file returns fetched text, never an answer shape"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no operation or method is read from the fetched text here"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no comparison against a registered configuration occurs in the file"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "throw new OpenApiDocumentNotFetchedError(link, { kind: 'status-outside-2xx', status: response.status }); — the file states the fetch outcome kind, never an HTTP status or an error-value mapping"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no HTTP answer or status is stated in this file"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "return await response.text(); — the file returns raw text without parsing it, so no version or well-formedness check is made here"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "return await response.text(); — no path, method or operation lookup occurs in the file"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no method comparison scenario is enacted in the file"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no parameter-name matching occurs in the file"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "return await response.text(); — no version declaration is read from the fetched text in this file"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no security scheme is read in this file"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "public async fetchOpenApiDocument(link: string): Promise<string> — no capability-registration read occurs in the file"
+looked_past: "the httpClient injection option (OpenApiDocumentFetcherOptions.httpClient) and the private issuedResponse helper are implementation structure carrying no domain fact of their own, so they are not reported as findings."

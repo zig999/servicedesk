@@ -33,7 +33,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -241,7 +241,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
@@ -649,7 +649,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
@@ -661,7 +661,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:621c1bfa619b7799b9bfdea2dad2daa3fcd2d85a36003e04c0d81e8dfbf236ab"
+          "digest": "sha256:e8eb3a17432b922a90fa70e32293a15a3237d842ee43eaec26ab7b1e8712294f"
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
@@ -801,11 +801,11 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:621c1bfa619b7799b9bfdea2dad2daa3fcd2d85a36003e04c0d81e8dfbf236ab"
+          "digest": "sha256:e8eb3a17432b922a90fa70e32293a15a3237d842ee43eaec26ab7b1e8712294f"
         },
         {
           "path": "src/src/http/dto/list-capabilities.dto.ts",
@@ -951,11 +951,11 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/http/dto/list-connector-configurations.dto.ts",
@@ -1169,7 +1169,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
@@ -1257,7 +1257,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/factories/case-input-requirements.factory.ts",
@@ -1269,7 +1269,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:621c1bfa619b7799b9bfdea2dad2daa3fcd2d85a36003e04c0d81e8dfbf236ab"
+          "digest": "sha256:e8eb3a17432b922a90fa70e32293a15a3237d842ee43eaec26ab7b1e8712294f"
         },
         {
           "path": "src/src/http/case-input-requirements.controller.ts",
@@ -1359,11 +1359,11 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
@@ -1375,7 +1375,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:621c1bfa619b7799b9bfdea2dad2daa3fcd2d85a36003e04c0d81e8dfbf236ab"
+          "digest": "sha256:e8eb3a17432b922a90fa70e32293a15a3237d842ee43eaec26ab7b1e8712294f"
         },
         {
           "path": "src/src/http/create-draft.controller.ts",
@@ -2605,7 +2605,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/factories/connector-configuration-registry.factory.ts",
@@ -2613,7 +2613,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:621c1bfa619b7799b9bfdea2dad2daa3fcd2d85a36003e04c0d81e8dfbf236ab"
+          "digest": "sha256:e8eb3a17432b922a90fa70e32293a15a3237d842ee43eaec26ab7b1e8712294f"
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
@@ -4679,7 +4679,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -4847,7 +4847,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -5015,7 +5015,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+          "digest": "sha256:044ca3b9d7ba4844b1c1450e72fa10c9733a96f1d1da25f0282a7e2ea686613b"
         }
       ]
     },
@@ -5067,7 +5067,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -5115,7 +5115,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -5129,11 +5129,11 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:a522cdb3c75478472f2244567ac7284fab1fc7131839f9a38719e7ed74bd91e8"
+          "digest": "sha256:2b216a19606094b415c934dd2a2fc85fe53a187a19bed90f1ce705ef18c1be7d"
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
@@ -5185,7 +5185,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
@@ -5515,7 +5515,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+          "digest": "sha256:044ca3b9d7ba4844b1c1450e72fa10c9733a96f1d1da25f0282a7e2ea686613b"
         },
         {
           "path": "src/src/errors/openapi-operation-not-found.error.ts",
@@ -5753,7 +5753,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
@@ -5807,7 +5807,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -6119,7 +6119,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -6439,7 +6439,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -6653,7 +6653,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -6725,7 +6725,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -6799,7 +6799,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -6947,7 +6947,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
@@ -7231,7 +7231,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         }
       ]
     },
@@ -7393,7 +7393,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -7647,7 +7647,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -7709,7 +7709,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+          "digest": "sha256:044ca3b9d7ba4844b1c1450e72fa10c9733a96f1d1da25f0282a7e2ea686613b"
         },
         {
           "path": "src/src/errors/openapi-document-not-readable.error.ts",
@@ -7795,7 +7795,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:c46698c5377afe5791cc5eefe61ce90758b53f9eb066071094d6dca8ada03938"
+          "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",

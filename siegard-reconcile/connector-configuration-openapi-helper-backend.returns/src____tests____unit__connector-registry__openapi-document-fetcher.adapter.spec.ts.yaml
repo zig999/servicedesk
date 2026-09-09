@@ -1,0 +1,100 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentFetcher } from '../../../connector-registry/openapi-document-fetcher.adapter.js';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "export class OpenApiDocumentFetcher implements IOpenApiDocumentFetcher"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: "the whole file, exercising OpenApiDocumentFetcher.fetchOpenApiDocument as the sole point that issues the outbound call"
+    evidence: "const body = await fetcher.fetchOpenApiDocument(A_LINK);"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the four fetch-failure assertions, lines 40-88"
+    evidence: "expect(fetcher.fetchOpenApiDocument(A_LINK)).rejects.toMatchObject({ name: 'OpenApiDocumentNotFetchedError', context: { link: A_LINK, kind: 'status-outside-2xx', status: 404 } });"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: |-
+      const body = await fetcher.fetchOpenApiDocument(A_LINK);
+
+        expect(body).toBe(rawBody);
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: "the six tests over status-outside-2xx, network-failure and the 60000ms timeout, lines 36-109"
+    evidence: |-
+      await vi.advanceTimersByTimeAsync(60_000);
+        const refusal = await refusalPromise;
+
+        expect(refusal).toBeInstanceOf(OpenApiDocumentNotFetchedError);
+        expect((refusal as OpenApiDocumentNotFetchedError).context).toEqual({ link: A_LINK, kind: 'timeout' });
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "const A_LINK = 'https://api.example.com/openapi.json';"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: "the HTTP-404 test and the body-not-read test, lines 36-65"
+    evidence: "expect(fetcher.fetchOpenApiDocument(A_LINK)).rejects.toMatchObject({ name: 'OpenApiDocumentNotFetchedError', context: { link: A_LINK, kind: 'status-outside-2xx', status: 404 } });"
+looked_past: "the two tests asserting the adapter uses no third-party HTTP client and defaults to the platform's global fetch (lines 130-153) test an implementation/architecture choice rather than a business fact the specification states or omits — that class of concern belongs to the project's own standard (a standard-conformance reading), not to this specification-conformance pass."

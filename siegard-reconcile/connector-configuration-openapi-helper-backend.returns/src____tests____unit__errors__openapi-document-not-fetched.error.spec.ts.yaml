@@ -1,0 +1,92 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the context equality assertions across the three it blocks (lines 6-23) and the message assertions in the final it block (lines 39-46)"
+    evidence: "expect(error.context).toEqual({ link: A_LINK, kind: 'status-outside-2xx', status: 404 });"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: "the three fetch-failure kind literals passed to the constructor across the it blocks (lines 7, 14, 20) — the enumeration alone; the sixty-second timeout and the 'refused before any parsing is attempted' behavior are not exercised in this file"
+    evidence: "new OpenApiDocumentNotFetchedError(A_LINK, { kind: 'network-failure' })"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "expect(error.context).toEqual({ link: A_LINK, kind: 'status-outside-2xx', status: 404 });"
+looked_past: "The two it blocks asserting error.cause preserves or omits the underlying rejection (lines 25-37) exercise the JS Error cause-chaining mechanism rather than a domain fact any node states or forbids -- the nodes constrain only the disclosed context/message text, never a cause property, so this is left unreported as outside this pass's scope."

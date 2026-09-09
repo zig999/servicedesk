@@ -1,0 +1,102 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "app.get('/throw', () => Promise.reject(thrown)); -- every test in the file rejects a pre-built error object directly; none sends a request with a malformed path, query or body for a route's declared shape to refuse"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify'; -- the file is an HTTP-layer test importing Fastify; it makes no claim about the domain layer's own imports"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "the file never fetches an OpenAPI document or asserts where such a fetch runs; it only rejects an already-constructed OpenApiDocumentNotFetchedError"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "app.get('/throw', () => Promise.reject(thrown)); -- the only route registered is the synthetic /throw; the file never exercises draft-connector-configuration-from-openapi"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "no test constructs or asserts a capability's attributes"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "no test constructs or asserts a connector configuration's attributes"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "no test asserts a drafted configuration, an unresolved list, generated_credentials or a method_mismatch"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "no test names a generated credential or a security scheme"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "no test names a method_mismatch or its registered/operation fields"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "no test names an unresolved item's name/reason"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "no test names any of the four unresolved reasons"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "no test names a security scheme or a ${credential:<name>} placeholder"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "no test names a ${subject:<name>} placeholder or a capability's input schema"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "no test asserts a drafted configuration's fields at all"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "no test asserts a drafted address, query, headers or body"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "no test asserts anything about a register-connector call"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "no test asserts the draft answer's field set"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "no test asserts a drafted method value"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "no test asserts a method comparison against a currently registered configuration"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the OpenApiDocumentNotFetchedError test, lines 89-104"
+    evidence: |-
+      expect(response.statusCode).toBe(422);
+      expect(response.json()).toEqual({
+        error: {
+          code: 'OpenApiDocumentNotFetchedError',
+          message: 'the OpenAPI document link "https://api.example.com/openapi.json" could not be fetched: the link answered HTTP 404',
+          details: { link: 'https://api.example.com/openapi.json', kind: 'status-outside-2xx', status: 404 },
+        },
+      });
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "no test asserts an HTTP 200 answer carrying a generated draft"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test rejects an OpenApiDocumentNotReadableError or asserts its status/code"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test rejects an OpenApiOperationNotFoundError or asserts its status/code"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "the file rejects an already-constructed OpenApiDocumentNotFetchedError rather than exercising a fetch that times out or fails at the network"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "no test registers a connector configuration or asserts a method_mismatch"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "no test registers a capability or asserts an unresolved parameter"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test rejects a document declaring an unsupported OpenAPI version"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "no test asserts a generated credential placeholder in headers"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "no test asserts an unresolved list produced by an unconfigured connector"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test exercises an actual unreachable link; it rejects an already-constructed error object instead"
+looked_past: "several tests in this file (CaseNotFoundError, CaseVersionNotReleasableError, HypothesisRevisionNotDraftAtReleaseError, IncoherentCaseError, InvestigationWriteDeadlineExceededError, and the non-Error-rejection case) assert status-map behavior for domain errors outside the connector-configuration-openapi-draft-backend epic's own node set and outside the offered candidates, so their conformance is another delegation's to judge."
+candidates_opened:
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

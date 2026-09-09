@@ -1,0 +1,122 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "the exported zod object schema that the route validates the request body against"
+    evidence: |-
+      export const draftConnectorConfigurationFromOpenApiRequestSchema = z.object({
+        connector: z.string().min(1),
+        link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+      });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { z } from 'zod';"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "link: z.string().min(1),"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: "the exported request type for the draft-connector-configuration-from-openapi operation"
+    evidence: |-
+      export type DraftConnectorConfigurationFromOpenApiRequestDto = z.infer<
+        typeof draftConnectorConfigurationFromOpenApiRequestSchema
+      >;
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      connector: z.string().min(1),
+        link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "method: z.string().min(1),"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "path: z.string().min(1),"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "path: z.string().min(1),"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: |-
+      connector: z.string().min(1),
+        link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "path: z.string().min(1),"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: |-
+      export const draftConnectorConfigurationFromOpenApiRequestSchema = z.object({
+        connector: z.string().min(1),
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      connector: z.string().min(1),
+        link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "method: z.string().min(1),"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "method: z.string().min(1),"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "link: z.string().min(1),"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: |-
+      connector: z.string().min(1),
+        link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "link: z.string().min(1),"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: |-
+      link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "link: z.string().min(1),"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "method: z.string().min(1),"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "link: z.string().min(1),"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "connector: z.string().min(1),"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "link: z.string().min(1),"
+looked_past: "the file is a 13-line Zod request-validation schema declaring exactly the four fields the specification's own request nodes name (connector, an OpenAPI document link, a path, and a method), each required and non-empty, with no format, enum or vocabulary constraint layered on top. Every other node in the set describes the draft's generation logic, its response shape, or its refusal behavior -- none of which this file touches; those facts are properly held in the other files this batch binds them to."

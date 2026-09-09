@@ -1,0 +1,101 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "the safeParse guard in draftConnectorConfigurationFromOpenApiHandler"
+    evidence: |-
+      if (!parsed.success) {
+        const issues = parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+        return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request body failed validation', details: issues } });
+      }
+  - node: contracts/integration/connector-configuration-draft
+    held_at: "the route registration inside createDraftConnectorConfigurationFromOpenApiRoutesPlugin"
+    evidence: |-
+      app.post(`${API_PREFIX}/draft-connector-configuration-from-openapi`, (request, reply) =>
+        draftConnectorConfigurationFromOpenApiHandler(dependencies, request, reply),
+      );
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: "the handler's success return"
+    evidence: "return reply.code(200).send(draft);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify'; -- this file is the HTTP adapter layer, not domain code"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- the route only delegates; it issues no fetch of its own"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "import { draftConnectorConfigurationFromOpenApiRequestSchema } from './dto/draft-connector-configuration-from-openapi.dto.js'; -- no capability construct appears anywhere in this file"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- no connector-configuration value is read or built here"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data);
+      return reply.code(200).send(draft); -- the draft's own shape is produced by the controller and merely forwarded
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- no generated-credential shape is composed in this file"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- no method comparison or method_mismatch shape appears in this file"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- no unresolved-item shape is composed in this file"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- the enumeration of unresolved reasons is never read or written here"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- security-scheme reduction logic is not present in this file"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- subject-placeholder matching logic is not present in this file"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- no responseMap or statusMap handling appears in this file"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- placement of address, query, headers and body is not performed in this file"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- no register-connector call, or any write, is issued in this file"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- the answer's field shape is fixed by whatever draft already holds; this file forwards it unshaped rather than composing it"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- the drafted method is not derived in this file"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- no comparison against a currently registered connector configuration occurs in this file"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- this file declares no catch and no 422 response"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- document-parsing and version checking are not present in this file"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- path/method pairing lookup is not present in this file"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- no fetch, timeout, or fetch-failure handling appears in this file"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- this scenario's method comparison is not exercised by anything in this file"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- parameter-name matching is not exercised by anything in this file"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- version checking is not present in this file"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- credential-placeholder generation is not present in this file"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "return reply.code(200).send(draft); -- unresolved-parameter handling for an unconfigured connector is not present in this file"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "const draft = await handleDraftConnectorConfigurationFromOpenApiRequest(dependencies, parsed.data); -- link-unreachable handling is not present in this file"
+looked_past: "The domain and rule facts about draft generation itself -- placeholder resolution, credential generation, method comparison, document-fetch and parse refusals -- are implemented in the controller and domain modules this file only delegates to, and are those files' own judgment, not this thin route file's."

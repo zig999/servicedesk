@@ -1,0 +1,162 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: "the routePluginFactories entry registering register-concept, line 131"
+    evidence: "(dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),"
+  - node: contracts/integration/capability-registry
+    held_at: "the routePluginFactories entries registering read-capability, read-capability-by-identity, list-capabilities and register-capability, lines 107-112"
+    evidence: |-
+      (dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability),
+      (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
+      ...
+      (dependencies) => createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
+      ...
+      (dependencies) => createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
+  - node: contracts/integration/connector-configuration-draft
+    held_at: "the routePluginFactories entry registering draft-connector-configuration-from-openapi, lines 133-134"
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: contracts/knowledge/case-input-requirements
+    held_at: "the routePluginFactories entry registering read-case-input-requirements, line 122"
+    evidence: "(dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the routePluginFactories entries registering create-draft, revise-hypothesis, release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release and discard, lines 113-120"
+    evidence: |-
+      (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+      (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
+      (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+      (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
+      (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
+      (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
+      (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
+      (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
+  - node: domain/integration/connector-configuration-registry
+    held_at: "the routePluginFactories entry registering register-connector, line 132"
+    evidence: "(dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      for (const plugin of routePlugins(dependencies)) {
+        app.register(plugin);
+      }
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance, type FastifyPluginAsync } from 'fastify';"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from './draft-connector-configuration-from-openapi.controller.js';"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "import type { RegisterConnectorControllerDependencies } from './register-connector.controller.js';"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "import { createDraftConnectorConfigurationFromOpenApiRoutesPlugin } from './draft-connector-configuration-from-openapi.routes.js';"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+        createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "app.setErrorHandler(handleUnexpectedError);"
+looked_past: "The file wires many further route plugins (diagnose, simulate-case, simulate-hypothesis, test-connector, read-case, list-cases, list-case-versions, list-hypotheses, list-hypothesis-revisions, read/list-vocabulary-term, read/list-concept, read-connector-configuration, list-connector-configurations) belonging to epics outside connector-configuration-openapi-draft-backend; left unexamined against nodes outside this set, as directed."

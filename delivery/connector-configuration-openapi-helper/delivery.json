@@ -208,6 +208,34 @@
       "title": "Proof that an apply over an unsaved edit is confirmed before anything is replaced",
       "summary": "One spec file mounting both the ready detail view and the create screen through their real hook chains and a fetch stub proves all seven criteria -- the confirmation dialog's appearance, the field's untouched content until a further explicit confirm, the immediate apply where nothing is unsaved, and the absence of any register-connector call through the whole sequence.",
       "task": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation"
+    },
+    {
+      "id": "review/connector-configuration-openapi-helper-backend",
+      "kind": "review",
+      "file": "review/connector-configuration-openapi-helper-backend.md",
+      "title": "connector-configuration-openapi-draft-backend review",
+      "summary": "Coverage, specification-conformance, standard-conformance and failures passes over the 8-task connector-configuration-openapi-draft-backend epic's 33 files -- the backend half of the connector-configuration-openapi-helper initiative.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "An OpenAPI 3.x document declaring the named operation yields the chosen operation's parameter names, their own declared location (path, query, header or cookie) and their positions exactly as the document spells them, merging a path item's own parameters with the operation's own by name and location and following any $ref to its target first.",
+        "An unresolved parameter or field still stands at its own position, holding its own name in the document's brace form {name}.",
+        "An unresolved parameter or field still stands at its own position, holding its own name in the document's brace form.",
+        "No parse of a response body is attempted on any of those four refusals.",
+        "The document fetch is issued only inside the backend, and no frontend module requests an OpenAPI document's own URL.",
+        "The draft's configuration embeds every credential placeholder the generation produced, each at the position the security scheme declared or, for a scheme with no location of its own, in the headers as that rule fixes.",
+        "The placeholder text emitted is the existing ${credential:<name>} form, produced through the existing placeholder token vocabulary rather than a second one.",
+        "The placeholder text emitted is the existing ${subject:<name>} form, produced through the existing placeholder token vocabulary rather than a second one.",
+        "The resolution names every capability currently registered for the connector it read, and names none where none is registered.",
+        "The resolution reads the registered capabilities through the existing capability read and the existing declared-input-schema-shape reader, introducing no second lookup or second schema reader.",
+        "The response never carries a credential value.",
+        "Where the security field in effect for the operation is an empty array, names no scheme, or is declared at neither the operation nor the document's top level, no placeholder is generated and no security scheme is named unresolved."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -768,6 +796,54 @@
       "to": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "reviews",
+      "at": "tasks[7]"
     }
   ]
 }

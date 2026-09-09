@@ -1,0 +1,92 @@
+read:
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: "the constructor and the context property, lines 1-8"
+    evidence: "public readonly context: Readonly<{ path: string; method: string }>; ... this.context = { path, method };"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "export class OpenApiOperationNotFoundError extends Error {"
+looked_past: "the file consists entirely of the one error class rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft names, so the other 28 nodes of this task's set -- drafting logic, placeholder resolution, method comparison, response shape and the two other draft refusals -- are held nowhere in this file because their code lives in the other files of the same task, not because anything here contradicts or restates them."

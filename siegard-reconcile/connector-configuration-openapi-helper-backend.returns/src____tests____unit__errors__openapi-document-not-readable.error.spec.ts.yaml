@@ -1,0 +1,109 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the assertion on the error's own name in the first test, line 7"
+    evidence: "expect(error.name).toBe('OpenApiDocumentNotReadableError');"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: "the context assertions of the first two tests, lines 8 and 14"
+    evidence: |-
+      expect(error.context).toEqual({ kind: 'unparseable', detail: 'the fetched document text' }); ...
+      expect(error.context).toEqual({ kind: 'unsupported-version', declaredVersion: '2.0' });
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: "the context assertion of the second test, line 14"
+    evidence: "expect(error.context).toEqual({ kind: 'unsupported-version', declaredVersion: '2.0' });"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';"
+
+findings:
+  - file: src/__tests__/unit/errors/openapi-document-not-readable.error.spec.ts
+    where: "the third test, lines 17-21, 'carries only the kind in context for a no-version-declared outcome, naming no other field'"
+    evidence: |-
+      const error = new OpenApiDocumentNotReadableError({ kind: 'no-version-declared' });
+
+        expect(error.context).toEqual({ kind: 'no-version-declared' });
+    cost: "The node requires this refusal to name what failed to parse or which version was declared; this test locks in a third outcome that names neither, so an operator who gets a document declaring no version at all is told less than the node promises every reader of this refusal, and the gap is discoverable only by reading this test rather than the specification."
+    kind: contradicts
+    correction: "Either carry a field naming what is missing (e.g. that no version was declared, as the fact actually named) so the case satisfies the node's disjunctive disclosure, or fold this case into 'unsupported-version'/'unparseable' with the field that disjunction already requires — decided in the specification, not left to this test alone."
+    node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+
+looked_past: "The test asserting the built message never embeds the underlying parse exception's own text (lines 40-49) mirrors the non-disclosure treatment the specification states elsewhere for a sibling error's underlying failure text; it is folded into the finding above rather than raised separately since it names no fact beyond what that finding already covers."
+candidates_opened:
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

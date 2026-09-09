@@ -1,0 +1,145 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's own import list, lines 1-18"
+    evidence: |-
+      import type { IOpenApiDocumentFetcher } from './openapi-document-fetcher.port.js';
+      import type { ICapabilitiesReader } from './capabilities-reader.port.js';
+  - node: contracts/integration/connector-configuration-draft
+    held_at: "the exported function generateConnectorConfigurationDraft, lines 53-56"
+    evidence: |-
+      export async function generateConnectorConfigurationDraft(
+        options: GenerateConnectorConfigurationDraftOptions,
+      ): Promise<ConnectorConfigurationDraft> {
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "const methodMismatch = await registeredMethodMismatch(registry, connector, reading.method); -- the registered connector configuration is read inside that call, not accessed directly in this file"
+  - node: domain/integration/connector-configuration-draft
+    held_at: "the return statement of generateConnectorConfigurationDraft, lines 72-78"
+    evidence: |-
+      return {
+          connector,
+          configuration: draftedConfigurationText({ reading, subjectPlacement, credentialPlacement, displaced }),
+          unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
+          generated_credentials: credentialPlacement.generatedCredentials,
+          ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
+        };
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: "reconciledUnresolved, line 158"
+    evidence: "const displacedItems = [...displacedNames].map((name) => ({ name, reason: OCCUPIED_REASON }));"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: "draftedConfigurationText, lines 85-91"
+    evidence: |-
+      const configuration: Record<string, unknown> = {
+        method: reading.method.toUpperCase(),
+        address: draftedAddress(subjectPlacement.path, reading.serversInEffect),
+        ...(Object.keys(query).length > 0 ? { query } : {}),
+        ...(Object.keys(headers).length > 0 ? { headers } : {}),
+        ...(Object.keys(subjectPlacement.body).length > 0 ? { body: subjectPlacement.body } : {}),
+      };
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "draftedAddress, draftedHeaders, finalCookieValue and the query merge, lines 83-138"
+    evidence: |-
+      function draftedAddress(path: string, serversInEffect: readonly string[]): string {
+        const first = serversInEffect[0];
+        return first === undefined ? path : `${withoutTrailingSlash(first)}${path}`;
+      }
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: "the body of generateConnectorConfigurationDraft, lines 53-79"
+    evidence: |-
+      const documentText = await documentFetcher.fetchOpenApiDocument(link);
+        const reading = readOpenApiOperation(documentText, path, method); -- only fetch, capability and registry reads are called; no register-connector or write call appears anywhere in the function
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: "draftedConfigurationText, line 86"
+    evidence: "method: reading.method.toUpperCase(),"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: "the call to resolveSubjectPlaceholders, lines 59-65"
+    evidence: |-
+      const subjectPlacement = await resolveSubjectPlaceholders({
+        connector,
+        path,
+        parameters: reading.parameters,
+        requestBodyFieldNames: reading.requestBodyFieldNames,
+        capabilitiesReader,
+      });
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export async function generateConnectorConfigurationDraft( -- the file's only export and its private helpers touch no request, response or status code anywhere"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: "line 57"
+    evidence: "const documentText = await documentFetcher.fetchOpenApiDocument(link);"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "capabilitiesReader, passed straight into resolveSubjectPlaceholders's options object without this file itself reading any capability attribute"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "generated_credentials: credentialPlacement.generatedCredentials, -- the name/security_scheme shape is built by generateCredentialPlaceholders; this file only forwards the already-built array"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }), -- the registered/operation shape is built by registeredMethodMismatch; this file only conditionally includes the already-built value"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: "line 22 and its use in reconciledUnresolved"
+    evidence: "const OCCUPIED_REASON: ConnectorConfigurationDraftUnresolvedReason = 'drafted-key-occupied-by-another-security-scheme';"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: "displacedParameters and reconciledUnresolved, lines 140-160"
+    evidence: |-
+      function displacedParameters(
+        parameters: readonly OpenApiOperationParameter[],
+        credentialPlacement: GeneratedCredentialPlacement,
+      ): readonly OpenApiOperationParameter[] {
+        return parameters.filter((parameter) => parameterDisplacedByCredential(parameter, credentialPlacement) !== undefined);
+      }
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: "the call to resolveSubjectPlaceholders, lines 59-65 (wiring only)"
+    evidence: |-
+      const subjectPlacement = await resolveSubjectPlaceholders({
+        connector,
+        path,
+        parameters: reading.parameters,
+        requestBodyFieldNames: reading.requestBodyFieldNames,
+        capabilitiesReader,
+      });
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: "the return statement, lines 72-78"
+    evidence: |-
+      return {
+        connector,
+        configuration: draftedConfigurationText(...),
+        unresolved: reconciledUnresolved(...),
+        generated_credentials: credentialPlacement.generatedCredentials,
+        ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
+      }; -- no capability name, version or count field appears
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: "line 71 (wiring only)"
+    evidence: "const methodMismatch = await registeredMethodMismatch(registry, connector, reading.method);"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "const documentText = await documentFetcher.fetchOpenApiDocument(link); -- the call is awaited with no surrounding try/catch or status handling in this file"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "return { connector, -- the function returns a plain ConnectorConfigurationDraft object; no HTTP status is set anywhere in this file"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const reading = readOpenApiOperation(documentText, path, method); -- parsing and version checking happen inside that reader, not in this file"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "const reading = readOpenApiOperation(documentText, path, method);"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "const documentText = await documentFetcher.fetchOpenApiDocument(link); -- fetch failure handling lives behind IOpenApiDocumentFetcher, not in this file"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "const methodMismatch = await registeredMethodMismatch(registry, connector, reading.method); -- the comparison producing the mismatch is registered-method-comparison.ts's own logic"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "const subjectPlacement = await resolveSubjectPlaceholders({...}); -- the name-matching that leaves a parameter unresolved is subject-placeholder-resolution.ts's own logic"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const reading = readOpenApiOperation(documentText, path, method); -- version checking is openapi-operation-reader.ts's own logic"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: "draftedHeaders, line 103"
+    evidence: "const merged: Record<string, string> = { ...ownHeaders, ...credentialPlacement.headers }; -- the generated credential's header entry, built elsewhere, is merged into the drafted headers here"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "const documentText = await documentFetcher.fetchOpenApiDocument(link); -- the 404/network handling is the adapter's own logic"
+
+looked_past: "the file's decomposition into many small pure helper functions and its object-spread-based conditional key inclusion are style choices with no domain fact riding on them, so they are left unreported."
