@@ -1,0 +1,128 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the file calls generateConnectorConfigurationDraft directly; no route, no HTTP request/response, no VALIDATION_ERROR path appears anywhere in the file"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the direct construction of options() and invocation of generateConnectorConfigurationDraft with plain in-memory fakes, e.g. lines 92-93"
+    evidence: "const draft = await generateConnectorConfigurationDraft(options());"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: "fetcherFor(), lines 30-32, and its use as the documentFetcher option throughout the file"
+    evidence: |-
+      function fetcherFor(document: unknown): { fetchOpenApiDocument: (link: string) => Promise<string> } {
+        return { fetchOpenApiDocument: async () => JSON.stringify(document) };
+      }
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "the file's only import from the connector-registry module is generateConnectorConfigurationDraft itself; no route module, operation id, or published-surface reference appears"
+  - node: domain/integration/capability
+    held_at: "capabilityGranting(), lines 34-37"
+    evidence: |-
+      function capabilityGranting(names: readonly string[]): RegisteredCapabilityForPlaceholderCheck {
+        const properties = Object.fromEntries(names.map((name) => [name, {}]));
+        return { connector: 'erp-http', input_schema: JSON.stringify({ properties }) };
+      }
+  - node: domain/integration/connector-configuration
+    held_at: "line 434 and lines 383-386"
+    evidence: "await registry.registerConnector({ connector: 'erp-http', configuration: JSON.stringify({ method: 'GET' }) });"
+  - node: domain/integration/connector-configuration-draft
+    held_at: "the draft assertions throughout the file, e.g. line 405"
+    evidence: "expect(draft.connector).toBe('a-different-connector');"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: "lines 371-374"
+    evidence: |-
+      expect(draft.generated_credentials).toEqual([
+        { name: 'ERP_HTTP_HEADERAUTH', security_scheme: 'HeaderAuth' },
+        { name: 'ERP_HTTP_QUERYAUTH', security_scheme: 'QueryAuth' },
+      ]);
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: "line 391"
+    evidence: "expect(draft.method_mismatch).toEqual({ registered: 'GET', operation: 'POST' });"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: "line 300"
+    evidence: "const byName = new Map(draft.unresolved.map((item) => [item.name, item.reason]));"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: "lines 303-305, 424-425, 544-545"
+    evidence: |-
+      ['unresolved_param', 'no-matching-input-schema-property'],
+            ['unresolved_field', 'no-matching-input-schema-property'],
+            ['NotReducible', 'security-scheme-not-reducible-to-a-credential'],
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: "lines 311-375 and 297-309"
+    evidence: "expect(headers['X-Api-Key']).toBe('${credential:ERP_HTTP_APIKEYAUTH}');"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: "lines 217-241 and 408-429"
+    evidence: "expect(configurationOf(draft).query).toEqual({ limit: '${subject:limit}' });"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: "lines 243-249"
+    evidence: |-
+      expect('responseMap' in configuration).toBe(false);
+        expect('statusMap' in configuration).toBe(false);
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "lines 113-241, 260-271, 492-506"
+    evidence: "expect(configurationOf(draft).address).toBe('https://op.example.test/widgets');"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: "lines 431-456"
+    evidence: "expect(store.writeCallCount).toBe(writeCallsBeforeDraft);"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "expect(draft.connector).toBe('a-different-connector'); ... expect('method_mismatch' in draft).toBe(false); -- the fields the file asserts on are connector, configuration, unresolved, generated_credentials and method_mismatch; no assertion anywhere names, versions or counts a capability"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: "lines 102-111"
+    evidence: "expect(configurationOf(draft)).toMatchObject({ method: 'POST' });"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: "lines 377-398"
+    evidence: "expect('method_mismatch' in draft).toBe(false);"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "lines 458-482"
+    evidence: |-
+      expect(outcome).toBe(failure);
+       ... expect(outcome).toBeInstanceOf(OpenApiDocumentNotReadableError);
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "the file asserts only on the returned draft object's own fields, never on an HTTP status; no status code appears anywhere in the file"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: "lines 476-482"
+    evidence: |-
+      options({ documentFetcher: { fetchOpenApiDocument: async () => 'not a document at all' } })
+        ).catch((error: unknown) => error);
+
+        expect(outcome).toBeInstanceOf(OpenApiDocumentNotReadableError);
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: "lines 484-490"
+    evidence: |-
+      options({ path: '/absent', documentFetcher: fetcherFor({ openapi: '3.0.0', paths: {} }) })
+        ).catch((error: unknown) => error);
+
+        expect(outcome).toBeInstanceOf(OpenApiOperationNotFoundError);
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: "lines 458-474"
+    evidence: |-
+      const failure = new OpenApiDocumentNotFetchedError('https://docs.example.test/openapi.json', {
+        kind: 'network-failure',
+      });
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: "lines 377-392"
+    evidence: "expect(draft.method_mismatch).toEqual({ registered: 'GET', operation: 'POST' });"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: "lines 297-309 (the general no-matching-input-schema-property behavior, not the scenario's own literal customerId/customer_id example)"
+    evidence: |-
+      ['unresolved_param', 'no-matching-input-schema-property'],
+            ['unresolved_field', 'no-matching-input-schema-property'],
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "options({ documentFetcher: { fetchOpenApiDocument: async () => 'not a document at all' } }) -- the only unreadable-document case in the file is unparseable text, not a document declaring swagger 2.0"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: "lines 311-324 (the general apiKey-in-header behavior, with scheme name ApiKeyAuth rather than the scenario's own apiKeyHeader)"
+    evidence: "expect(headers['X-Api-Key']).toBe('${credential:ERP_HTTP_APIKEYAUTH}');"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: "lines 408-429"
+    evidence: |-
+      ['limit', 'no-capability-registered'],
+            ['OAuthFlow', 'security-scheme-not-reducible-to-a-credential'],
+          ]),
+        );
+        expect(draft.generated_credentials).toEqual([]);
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "the only fetch-failure case in the file is kind: 'network-failure' (lines 459-461); no HTTP 404 or status-outside-2xx case is exercised"
+looked_past: "Several nodes and scenarios have no test in this file at all — a literal Swagger 2.0 document, an HTTP 404 fetch failure, the sixty-second fetch timeout, and case-sensitive/separator-sensitive parameter-name matching — which is a coverage question for the coverage-auditor pass, not a conformance question over what this file does state."

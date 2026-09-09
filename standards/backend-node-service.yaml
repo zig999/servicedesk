@@ -970,6 +970,15 @@ dependencies:
     why: the `secret-scan` step is it, and it decides the two rules about credentials in source.
     rules: [SEC-02, SEC-03]
 
+  - package: js-yaml
+    why: >-
+      knowledge/rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+      decides that an OpenAPI document fetched for a connector configuration draft is read in
+      either of the two serializations the format itself defines -- JSON and YAML -- so the
+      OpenAPI 3.x reader needs a YAML parser and the project's runtime holds none natively.
+      Human-approved: already present as a transitive dependency (pulled in by eslint and
+      secretlint), widely used, MIT-licensed.
+
 commands:
 
   - step: install

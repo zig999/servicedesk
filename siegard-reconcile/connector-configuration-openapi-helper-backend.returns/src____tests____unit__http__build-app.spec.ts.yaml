@@ -1,0 +1,98 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "the draft route's own entry in it.each(REGISTERED_ROUTE_REQUESTS) (lines 555-561, 563-573) only asserts expect(response.statusCode).not.toBe(404); -- no malformed-path, malformed-offset or missing-required-field case is sent to /v1/draft-connector-configuration-from-openapi"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "const HTTP_LAYER_RELATIVE_PATHS = ['../../../http/build-app.ts', '../../../http/diagnose.routes.ts', ...] -- the file's own import/dependency audits are scoped to the HTTP layer, never the domain modules"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: "the draftConnectorConfigurationFromOpenApi dependency block, lines 282-286"
+    evidence: "documentFetcher: { fetchOpenApiDocument: async () => '{}' },"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: "the REGISTERED_ROUTE_REQUESTS entry and its it.each assertion, lines 555-561 and 563-573"
+    evidence: |-
+      { description: 'draft-connector-configuration-from-openapi', method: 'POST', url: '/v1/draft-connector-configuration-from-openapi', payload: { connector: 'a-connector', link: 'a-link', path: '/a-path', method: 'GET' } }
+      ... expect(response.statusCode).not.toBe(404);
+  - node: domain/integration/capability
+    held_at: "stubCapabilityQuery(), line 94"
+    evidence: "capability: { name: concept, version: '1.0.0', nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept },"
+  - node: domain/integration/connector-configuration
+    held_at: "stubRegisterConnector() and stubReadConnectorConfiguration(), lines 143-156"
+    evidence: "connector: 'a-connector', configuration: JSON.stringify({}),"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      the draft route's own test asserts only expect(response.statusCode).not.toBe(404); (line 571)
+      -- no assertion reads a returned configuration, unresolved list, generated_credentials or method_mismatch
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "the draftConnectorConfigurationFromOpenApi stub (lines 282-286) never constructs or asserts a generated-credential shape"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "the draftConnectorConfigurationFromOpenApi stub (lines 282-286) never constructs or asserts a method_mismatch shape"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "the draftConnectorConfigurationFromOpenApi stub (lines 282-286) never constructs or asserts an unresolved-item shape"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "no unresolved reason value appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "registry: { readConnectorConfiguration: async (connector) => ({ held: false, connector }) }, -- no security scheme, credential name or placeholder is stated or asserted"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "capabilitiesReader: { readCapabilities: async () => [] }, -- no subject placeholder or capability-matching behavior is stated or asserted"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "no responseMap or statusMap value appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "the draft request payload { connector: 'a-connector', link: 'a-link', path: '/a-path', method: 'GET' } (line 559) is never used to assert any drafted address, query, headers or body placement"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "no assertion in the file checks that register-connector was not called following a draft request"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      the draft route's own test asserts only expect(response.statusCode).not.toBe(404); (line 571)
+      -- no assertion reads the response body's field set at all
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "no assertion reads a drafted method value from the draft route's response"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "registry: { readConnectorConfiguration: async (connector) => ({ held: false, connector }) }, -- held: false, so no registered method is stated for a comparison to be read from this file"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "no test in the file sends a request to the draft route expecting an OpenApiDocumentNotFetchedError or OpenApiDocumentNotReadableError"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "expect(response.statusCode).not.toBe(404); -- the draft route's only assertion, never expect(response.statusCode).toBe(200)"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "documentFetcher: { fetchOpenApiDocument: async () => '{}' }, -- no test asserts a refusal over a document that fails to parse or names an unsupported version"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test asserts a refusal for a path/method pairing the fetched document declares no operation for"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "documentFetcher: { fetchOpenApiDocument: async () => '{}' }, -- the stub always resolves; no test drives a fetch failure"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "no test in the file reproduces the scenario's given/when/then over a registered GET and a drafted POST"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "no test in the file reproduces the scenario's capability/parameter mismatch"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test in the file sends a Swagger 2.0 document to the draft route"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "no test in the file exercises an apiKeyHeader security scheme against the draft route"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "capabilitiesReader: { readCapabilities: async () => [] }, -- no test asserts the unresolved-list outcome this stub would produce"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test in the file drives an HTTP 404 (or any) fetch failure against the draft route"
+looked_past: "this file exercises only wiring — that a route reaches its controller — for draft-connector-configuration-from-openapi, and never the generation logic (placeholders, credentials, method comparison, refusals) the rest of its bound node set states; whether that behavior is covered elsewhere is coverage-auditor's question, not this pass's."

@@ -1,0 +1,189 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: "nowhere -- the file only signals absence of a mapping"
+    evidence: |-
+      if (!(error instanceof Error)) {
+        return undefined;
+      }
+      for (const [errorClass, status] of STATUS_BY_ERROR_CLASS) {
+        if (error instanceof errorClass) {
+          return status;
+        }
+      }
+      return undefined;
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: "the map entry, line 48"
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the registry's own refusal entries, lines 46, 68, 69, 71"
+    evidence: |-
+      [ConnectorConfigurationNotFoundError, 404],
+      ... [ConnectorConfigurationNotWellFormedError, 422],
+        [IncompleteConnectorConfigurationError, 422],
+      ... [ConnectorPlaceholderOutsideInputSchemaError, 422],
+  - node: contracts/investigation/diagnosis
+    held_at: "the map entry, line 70"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the lifecycle's refusal entries, lines 50, 55, 59, 60, 61, 72, 73"
+    evidence: |-
+      [ConceptNotInGlossaryError, 404],
+        [CaseAlreadyHasDraftError, 409],
+      ... [CaseVersionNotValidError, 409],
+      ... [CaseHoldsNoDraftError, 409],
+        [ReleasedHypothesisRevisionNotAlterableError, 409],
+        [HypothesisRevisionNotDraftAtReleaseError, 409],
+      ... [HypothesisRevisionCollectsNoConceptError, 422],
+        [ConceptRefusesSubjectTypeError, 422],
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: "the map entry, line 74"
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: "the map entry, line 67"
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the map entries, lines 68-69"
+    evidence: |-
+      [ConnectorConfigurationNotWellFormedError, 422],
+        [IncompleteConnectorConfigurationError, 422],
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: "the map entry, line 69"
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: "the map entry, line 46"
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: "the map entry, line 71"
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the map entries, lines 75-76"
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+        [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: "the map entry, line 76"
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: "the map entry, line 77"
+    evidence: "[OpenApiOperationNotFoundError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: "the map entry, line 70"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: "the map entry, line 49"
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "the map entry, line 78"
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "the map entry, line 55, distinct from the CaseNotFoundError entry at line 42"
+    evidence: "[CaseVersionNotValidError, 409],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the map entry, line 73"
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: "the map entry, line 72"
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the map entry, line 59"
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the map entry, line 61"
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: "the map entry, line 60"
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the map entry, line 50"
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: "the map entry, line 74"
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: "the map entry, line 70"
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "nowhere -- this file maps domain errors only, never a request-shape validation refusal"
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "nowhere -- this constraint governs the domain layer's own modules, which this mapping file is not"
+    evidence: "import { CapabilityConnectorMismatchError } from './capability-connector-mismatch.error.js';"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "export function statusForError(error: unknown): number | undefined {"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: "nowhere -- the draft operation's own shape and answer are not stated here, only the status for its refusal error classes"
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+        [OpenApiDocumentNotReadableError, 422],
+        [OpenApiOperationNotFoundError, 422],
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: "nowhere -- its own facts (the 60000ms bound, the three fetch-failure kinds) are absent; only the error class this refusal reports is mapped, at line 75"
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: "nowhere -- only the error class its refusal reports is mapped, at line 76"
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: "nowhere -- only the error class its refusal reports is mapped, at line 75"
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+looked_past: "The file also maps CaseNotFoundError, ConceptNotAnsweredError, ConceptNotHeldError, VocabularyTermNotHeldError, CapabilityNotRegisteredForTestError, CaseAlreadyHasDraftError, ManifestPositionOccupiedError, CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError, ConceptAlreadyAnsweredError, CapabilityConnectorMismatchError, CaseVersionNotReleasedError, CaseVersionNotReleasableError, ManifestWouldHoldNoHypothesisError, IncompleteCapabilityContractError, CapabilityNotReadOnlyError and CapabilitySchemaNotWellFormedError to their statuses, none of which any node of this set constrains, so those mappings belong to another epic's own conformance pass rather than this one."

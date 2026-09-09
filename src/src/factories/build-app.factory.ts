@@ -8,10 +8,13 @@ import type {
   ConnectorConfigurationRegistryService,
   ConnectorConfigurationResolution,
 } from '../connector-registry/connector-configuration-registry.service.js';
+import type { ICapabilitiesReader } from '../connector-registry/capabilities-reader.port.js';
+import { OpenApiDocumentFetcher } from '../connector-registry/openapi-document-fetcher.adapter.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
+import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from '../http/draft-connector-configuration-from-openapi.controller.js';
 import type { SimulateCaseControllerDependencies } from '../http/simulate-case.controller.js';
 import type { SimulateHypothesisControllerDependencies } from '../http/simulate-hypothesis.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
@@ -52,15 +55,14 @@ type ComposedResources = {
   readonly listConnectorConfigurations: ConnectorConfigurationRegistryService['listConnectorConfigurations'];
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
+  readonly capabilitiesReader: ICapabilitiesReader;
 };
 
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
+  const capabilitiesReader = createCapabilitiesReader(connection);
   const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
   const glossary = createGlossary(connection);
-  const connectorConfigurationRegistry = createConnectorConfigurationRegistry(
-    connection,
-    createCapabilitiesReader(connection),
-  );
+  const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
   return {
     caseQuery,
     caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),
@@ -77,6 +79,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     listConnectorConfigurations: (pagination) => connectorConfigurationRegistry.listConnectorConfigurations(pagination),
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
+    capabilitiesReader,
   };
 }
 
@@ -140,6 +143,17 @@ function testConnectorDependencies(resources: ComposedResources): Pick<BuildAppD
   };
 }
 
+function draftConnectorConfigurationFromOpenApiDependencies(
+  resources: ComposedResources,
+): Pick<BuildAppDependencies, 'draftConnectorConfigurationFromOpenApi'> {
+  const dependencies: DraftConnectorConfigurationFromOpenApiControllerDependencies = {
+    documentFetcher: new OpenApiDocumentFetcher(),
+    capabilitiesReader: resources.capabilitiesReader,
+    registry: { readConnectorConfiguration: resources.readConnectorConfiguration },
+  };
+  return { draftConnectorConfigurationFromOpenApi: dependencies };
+}
+
 export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
   const { env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis } = inputs;
   const resources = composeResources(env, connection, caseQuery);
@@ -152,5 +166,6 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...lifecycleDependencies(resources),
     ...registrationDependencies(resources),
     ...testConnectorDependencies(resources),
+    ...draftConnectorConfigurationFromOpenApiDependencies(resources),
   };
 }

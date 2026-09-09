@@ -1,0 +1,14 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/connector-configuration-openapi-helper/frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.spec.ts
+  352:1  error  File has too many lines (353). Maximum allowed is 300  max-lines
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/connector-configuration-openapi-helper/frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts
+  96:49  error  Variable name `generated_credentials` must match one of the following formats: camelCase, PascalCase, UPPER_CASE  @typescript-eslint/naming-convention
+  96:72  error  Variable name `method_mismatch` must match one of the following formats: camelCase, PascalCase, UPPER_CASE        @typescript-eslint/naming-convention
+
+✖ 3 problems (3 errors, 0 warnings)
+

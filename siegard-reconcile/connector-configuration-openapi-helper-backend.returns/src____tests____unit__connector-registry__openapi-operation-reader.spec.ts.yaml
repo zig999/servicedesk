@@ -1,0 +1,110 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { readOpenApiOperation } from '../../../connector-registry/openapi-operation-reader.js'; -- the suite exercises the reader function directly with in-memory strings; no HTTP route, request shape or validation-error path is ever touched."
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest'; -- the file's whole import surface is vitest and the reader/error modules under test; it asserts nothing about any module's own dependency graph."
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "const documentText = JSON.stringify({ swagger: '2.0', paths: {} }); -- every test supplies documentText as an in-memory literal; no fetch, adapter or frontend/backend boundary is exercised."
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      import { readOpenApiOperation } from '../../../connector-registry/openapi-operation-reader.js';
+      import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';
+      import { OpenApiOperationNotFoundError } from '../../../errors/openapi-operation-not-found.error.js';
+      the published operation, its controller and its route are never imported or invoked.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "no test in the file constructs or references a capability; every fixture is an OpenAPI document object literal (e.g. line 31, { swagger: '2.0', paths: {} })."
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "no test in the file constructs or references a registered connector configuration; the suite's only inputs are documentText, path and method."
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "const reading = readOpenApiOperation(documentText, '/widgets', 'GET'); -- every assertion is against an OpenApiOperationReading, never against a drafted connector configuration's own attributes."
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "expect(reading.requiredSecuritySchemes).toEqual([{ schemeName: 'Api_Key-Scheme', kind: 'apiKey', name: 'X-Api-Key', location: 'header' }]); -- the suite asserts the raw scheme reading only; no generated credential name or generated_credentials list is ever produced or asserted."
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "expect(reading.method).toBe('get'); -- the suite asserts only the operation's own method key; no comparison against a registered configuration's method, and no method_mismatch shape, appears anywhere."
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "no test constructs or asserts an unresolved-item shape ({ name, reason }); the suite's parameter and request-body assertions stop at reading.parameters and reading.requestBodyFieldNames."
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "none of the four enumerated reasons (no-capability-registered, no-matching-input-schema-property, security-scheme-not-reducible-to-a-credential, drafted-key-occupied-by-another-security-scheme) appears anywhere in the file."
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: "the required-security-scheme tests, lines 278-337 (first-requirement-object selection, document-level fallback, and the empty-array case)"
+    evidence: "it(\"treats the operation's own empty security array as declared and in effect, requiring no scheme rather than falling back to the document's top level\", () => { ... expect(reading.requiredSecuritySchemes).toEqual([]); });"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "expect(reading.parameters).toEqual([{ name: 'q', location: 'query' }]); -- the suite reads parameter names and locations only; no capability, no input-schema match and no ${subject:...} placeholder decision is ever asserted."
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "neither responseMap nor statusMap appears anywhere in the file; OpenApiOperationReading as asserted throughout carries only method, parameters, requestBodyFieldNames, requiredSecuritySchemes."
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "the parameter-merging, $ref-following and request-body field-name tests, lines 112-276"
+    evidence: |-
+      const parameterKeys = new Set(reading.parameters.map((parameter) => `${parameter.name}|${parameter.location}`));
+      expect(parameterKeys).toEqual(new Set(['Widget_Id|path', 'Limit-Count|query']));
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "no test asserts anything about a register-connector call or about a registry's state before and after generation; the reader takes no registry dependency."
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "no HTTP answer or response body is constructed or asserted anywhere in the file; every assertion is against error.context or reading, an in-process value."
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: "lines 104-110"
+    evidence: "it(\"returns the operation's own method key exactly as the document spells it, regardless of the requested method's own casing\", () => { ... expect(reading.method).toBe('get'); });"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "no test names a currently-registered connector configuration or compares its method against the operation's; reading.method is asserted standalone (line 109)."
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: |-
+      expect(notReadable).not.toBeInstanceOf(OpenApiOperationNotFoundError);
+      expect(notFound).not.toBeInstanceOf(OpenApiDocumentNotReadableError);
+      this distinguishes NotReadable from NotFound; OpenApiDocumentNotFetchedError, the fetch-failure side this node states, is never imported or asserted.
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "no HTTP status is asserted anywhere in the file; every assertion targets error.context, error.cause or reading's own fields."
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: "the version and parse-refusal tests, lines 30-77"
+    evidence: |-
+      const error = readableErrorThrownBy(() => readOpenApiOperation(documentText, '/widgets', 'GET'));
+      expect(error.context).toEqual({ kind: 'unsupported-version', declaredVersion: '2.0' });
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: "lines 79-93"
+    evidence: |-
+      it('refuses when the path exists but declares no operation under the requested method', () => { ... const error = operationNotFoundThrownBy(() => readOpenApiOperation(documentText, '/widgets', 'DELETE'));
+      expect(error.context).toEqual({ path: '/widgets', method: 'DELETE' }); });
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "no test names a network failure, a timeout or a non-2xx response; documentText is always a ready-made literal, never the result of a fetch."
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "no registered connector configuration, no method_mismatch and no comparison of two methods appears anywhere in the file."
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "no capability, no input-schema property and no unresolved item with reason no-matching-input-schema-property appears anywhere in the file."
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: "lines 30-36"
+    evidence: |-
+      it('refuses a document declaring swagger 2.0, naming the declared version', () => {
+        const documentText = JSON.stringify({ swagger: '2.0', paths: {} });
+        const error = readableErrorThrownBy(() => readOpenApiOperation(documentText, '/widgets', 'GET'));
+        expect(error.context).toEqual({ kind: 'unsupported-version', declaredVersion: '2.0' });
+      });
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "expect(reading.requiredSecuritySchemes).toEqual([{ schemeName: 'Api_Key-Scheme', kind: 'apiKey', name: 'X-Api-Key', location: 'header' }]); -- the reader's own raw scheme reading is asserted, but no ${credential:...} placeholder and no generated_credentials entry (this scenario's own then) is ever produced or checked."
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "no test names an unregistered connector, and no unresolved item with reason no-capability-registered appears anywhere in the file."
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "no HTTP 404, no fetch failure and no an-unfetchable-openapi-link-refuses-the-draft condition is exercised; the closest test (lines 46-52) refuses on documentText content that already exists in-memory, never on a link that failed to answer."
+looked_past: "the error-context vocabulary the tests pin (kind: 'unsupported-version' | 'no-version-declared' | 'unparseable', declaredVersion, detail, and the httpScheme/schemeName field names) is an internal representation choice for how the reader names its refusal and reading data, not a business fact any node states a shape for; whether that shape is a reasonable one is the standard-conformance pass's question, not this one's."

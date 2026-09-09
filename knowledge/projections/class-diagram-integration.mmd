@@ -27,6 +27,36 @@ classDiagram
         +string connector
         +string configuration
     }
+    class ConnectorConfigurationDraft {
+        <<ValueObject>>
+        +string connector
+        +string configuration
+        +ConnectorConfigurationDraftUnresolvedItem[] unresolved
+        +ConnectorConfigurationDraftGeneratedCredential[] generatedCredentials
+        +ConnectorConfigurationDraftMethodMismatch methodMismatch
+    }
+    class ConnectorConfigurationDraftGeneratedCredential {
+        <<ValueObject>>
+        +string name
+        +string securityScheme
+    }
+    class ConnectorConfigurationDraftMethodMismatch {
+        <<ValueObject>>
+        +string registered
+        +string operation
+    }
+    class ConnectorConfigurationDraftUnresolvedItem {
+        <<ValueObject>>
+        +string name
+        +ConnectorConfigurationDraftUnresolvedReason reason
+    }
+    class ConnectorConfigurationDraftUnresolvedReason {
+        <<Enumeration>>
+        NO_CAPABILITY_REGISTERED
+        NO_MATCHING_INPUT_SCHEMA_PROPERTY
+        SECURITY_SCHEME_NOT_REDUCIBLE_TO_A_CREDENTIAL
+        DRAFTED_KEY_OCCUPIED_BY_ANOTHER_SECURITY_SCHEME
+    }
     class ConnectorConfigurationRegistry {
         <<Service>>
         +registerConnector()
@@ -34,3 +64,4 @@ classDiagram
     class Concept {
         <<external: glossary>>
     }
+    ConnectorConfigurationDraft "0..*" --> "0..*" Capability

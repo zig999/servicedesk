@@ -1,0 +1,108 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { expect, it } from 'vitest';"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "function options(overrides: Partial<ResolveSubjectPlaceholdersOptions> = {}): ResolveSubjectPlaceholdersOptions { ... }"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "function capability(overrides: Partial<RegisteredCapabilityForPlaceholderCheck> = {}): RegisteredCapabilityForPlaceholderCheck { return { connector: 'erp-http', input_schema: JSON.stringify({ properties: {} }), ...overrides }; }"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "connector: 'erp-http',"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "const placement = await resolveSubjectPlaceholders(options({...}));"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "capabilitiesReader: { readCapabilities: async () => [] },"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "function options(overrides: Partial<ResolveSubjectPlaceholdersOptions> = {}): ResolveSubjectPlaceholdersOptions { ... }"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: "the assertion on placement.unresolved, line 182"
+    evidence: "expect(placement.unresolved).toEqual([{ name: 'order_id', reason: 'no-matching-input-schema-property' }]);"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: "the byName map assertion, lines 38-44"
+    evidence: |-
+      new Map([
+        ['order_id', 'no-capability-registered'],
+        ['contract_number', 'no-capability-registered'],
+        ['billing_address', 'no-capability-registered'],
+      ]),
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "function capability(overrides: Partial<RegisteredCapabilityForPlaceholderCheck> = {}): RegisteredCapabilityForPlaceholderCheck { ... }"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: "the resolution-outcome assertions, lines 182-183"
+    evidence: |-
+      expect(placement.unresolved).toEqual([{ name: 'order_id', reason: 'no-matching-input-schema-property' }]);
+      expect(placement.query).toEqual({ order_id: '{order_id}' });
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "expect(placement).toEqual({ path: '/ping', query: {}, headers: {}, body: {}, unresolved: [] });"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "the cookie-join assertion, line 169"
+    evidence: "expect(placement.headers.Cookie).toBe('session_id=${subject:session_id}; tenant_id=${subject:tenant_id}');"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "const placement = await resolveSubjectPlaceholders(options({...}));"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "expect(Object.keys(placement).sort()).toEqual(['body', 'headers', 'path', 'query', 'unresolved']);"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "function options(overrides: Partial<ResolveSubjectPlaceholdersOptions> = {}): ResolveSubjectPlaceholdersOptions { ... }"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "function options(overrides: Partial<ResolveSubjectPlaceholdersOptions> = {}): ResolveSubjectPlaceholdersOptions { ... }"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "await expect(resolveSubjectPlaceholders(options({...}))).rejects.toThrow('the capability store is unavailable');"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "const placement = await resolveSubjectPlaceholders(options({...}));"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "function options(overrides: Partial<ResolveSubjectPlaceholdersOptions> = {}): ResolveSubjectPlaceholdersOptions { ... }"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: "the customerId/customer_id test, lines 200-212"
+    evidence: |-
+      expect(placement.unresolved).toEqual([{ name: 'customerId', reason: 'no-matching-input-schema-property' }]);
+      expect(placement.query.customerId).toBe('{customerId}');
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "function capability(overrides: Partial<RegisteredCapabilityForPlaceholderCheck> = {}): RegisteredCapabilityForPlaceholderCheck { ... }"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: "the no-capability-registered test, lines 25-45"
+    evidence: |-
+      expect(byName).toEqual(
+        new Map([
+          ['order_id', 'no-capability-registered'],
+          ['contract_number', 'no-capability-registered'],
+          ['billing_address', 'no-capability-registered'],
+        ]),
+      );
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "import { resolveSubjectPlaceholders, type ResolveSubjectPlaceholdersOptions } from '../../../connector-registry/subject-placeholder-resolution.js';"
+looked_past: "the test asserting that a capabilities-reader failure propagates rather than is swallowed (lines 277-289) is an implementation-reliability property with no domain node stating it, so it is left for whichever pass judges test quality rather than reported here as a spec gap."

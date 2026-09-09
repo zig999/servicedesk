@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-openapi-draft-backend-registered-method-comparison-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/connector-configuration-openapi-helper/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-09T00:00:49.874+00:00",
+      "ended_at": "2026-09-09T00:00:53.651+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

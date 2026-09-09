@@ -1,0 +1,132 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "import { expect, expectTypeOf, it } from 'vitest'; -- this file exercises no HTTP route or request validation; it unit-tests registeredMethodMismatch alone"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { ConnectorConfigurationNotWellFormedError } from '../../../errors/connector-configuration-not-well-formed.error.js'; -- imports only vitest and internal connector-registry/errors modules; no framework, driver or provider client import appears"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "import { registeredMethodMismatch, type RegisteredConnectorConfigurationReader } from '../../../connector-registry/registered-method-comparison.js'; -- no OpenAPI document, fetch or adapter is referenced anywhere in this file"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "import { registeredMethodMismatch, type RegisteredConnectorConfigurationReader } from '../../../connector-registry/registered-method-comparison.js'; -- no draft-connector-configuration-from-openapi operation is invoked; only the isolated comparison function is tested"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "capability is never constructed or referenced in this file"
+  - node: domain/integration/connector-configuration
+    held_at: "the registeredWithText helper (lines 30-32) and the final assertion of the 'leaves the configuration registered under the connector name unchanged' test (lines 116-119)"
+    evidence: |-
+      function registeredWithText(connector: string, configurationText: string): ConnectorConfigurationResolution {
+        return { held: true, configuration: { connector, configuration: configurationText } };
+      }
+      ...
+      expect(stillRegistered).toEqual({
+        held: true,
+        configuration: { connector: 'erp-http', configuration: JSON.stringify({ method: 'GET' }) },
+      });
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "no connector-configuration-draft value is ever assembled in this file"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "generated credentials are outside this file's subject"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: "the toEqual assertions naming registered and operation, e.g. line 39 and line 79"
+    evidence: "expect(mismatch).toEqual({ registered: 'GET', operation: 'POST' });"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "unresolved items are outside this file's subject"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "unresolved reasons are outside this file's subject"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "it('leaves the configuration registered under the connector name unchanged after computing the comparison', async () => { -- this file tests only the comparison's own non-mutating read, not the whole draft-generation operation this rule constrains"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "this file never asserts what the draft's own configuration declares for method; only the comparison against what is registered"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: "the six it blocks at lines 34-80, plus the live-read test at lines 94-106"
+    evidence: |-
+      expect(mismatch).toEqual({ registered: 'GET', operation: 'POST' });
+      ...
+      expect(mismatch).toBeUndefined();
+      ...
+      const beforeRegistration = await registeredMethodMismatch(registry, 'erp-http', 'POST');
+      currentlyRegistered = registeredWithText('erp-http', JSON.stringify({ method: 'GET' }));
+      const afterRegistration = await registeredMethodMismatch(registry, 'erp-http', 'POST');
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: "the first test (lines 34-40, registered GET vs. operation POST) together with the unchanged-registration test (lines 108-120)"
+    evidence: |-
+      expect(mismatch).toEqual({ registered: 'GET', operation: 'POST' });
+      ...
+      expect(stillRegistered).toEqual({
+        held: true,
+        configuration: { connector: 'erp-http', configuration: JSON.stringify({ method: 'GET' }) },
+      });
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "not referenced in this file"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "not referenced in this file"
+
+findings:
+  - file: src/__tests__/unit/connector-registry/registered-method-comparison.spec.ts
+    where: "the test at lines 122-128, \"treats a method key present in the registered text but holding a non-string value the same as no method being declared\""
+    evidence: |-
+      it('treats a method key present in the registered text but holding a non-string value the same as no method being declared', async () => {
+        const registry = readerAnswering(registeredWithText('erp-http', JSON.stringify({ method: 123 })));
+
+        const mismatch = await registeredMethodMismatch(registry, 'erp-http', 'POST');
+
+        expect(mismatch).toBeUndefined();
+      });
+    cost: "The rule this test proves states only two conditions for \"the registered configuration's own text declares a method\" versus \"declares no method\" — present or absent. Whether a method key present but holding a non-string JSON value (a number here) counts as declaring one is answered nowhere in the rule's statement, its expression, or its decision-log entries for this node; this test settles it by itself, silently choosing the same outcome as absence. A reader who wants to know what a connector configuration is allowed to declare for method, or why a non-string value is safe to ignore rather than refuse, finds the answer only in this test and the code it drives, not in the specification the rule claims to be proving."
+    kind: unstated
+    node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    correction: "State, in the rule's statement or expression, what counts as \"the registered configuration's own text declares a method\" when the method key is present but not a string — whether that counts as declaring one, as declaring none, or refuses some other way — so this test proves an outcome the specification itself decided rather than one decided in the test."
+
+looked_past: "The two expectTypeOf assertions (lines 82-92) pin registeredMethodMismatch's parameter list and the RegisteredConnectorConfigurationReader shape; these are type-shape/implementation-signature checks with no domain fact behind them, which is a standard-conformance concern rather than this pass's. Likewise the test asserting error propagation for a malformed-JSON registered configuration (lines 143-149) reuses the specification's own ConnectorConfigurationNotWellFormedError vocabulary for a genuine not-well-formed-JSON-object condition, so it is left unflagged as a faithful application of an already-named domain concept rather than an invented one."
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object

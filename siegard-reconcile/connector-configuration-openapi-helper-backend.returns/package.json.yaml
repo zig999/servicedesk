@@ -1,0 +1,92 @@
+read:
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: "the dependencies object — the js-yaml package the document reader needs to parse the YAML serialization this rule requires be read exactly as JSON is"
+    evidence: '"js-yaml": "^4.3.0"'
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: '"scripts": { "typecheck": "tsc --noEmit", "lint": "eslint .", "secret-scan": "secretlint \"**/*\"", "test": "node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests", "build": "tsc -p tsconfig.build.json", "migrate": "node --env-file=.env dist/migrate.js", "seed": "node --env-file=.env dist/seed.js", "start": "node --env-file=.env dist/index.js", "dev": "npm run build && npm run start" }'
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: '"dependencies": { "@anthropic-ai/sdk": "^0.32.0", "fastify": "^5.0.0", "js-yaml": "^4.3.0", "pg": "^8.13.0", "zod": "^4.0.0" }'
+looked_past: the pre-existing "description", "name", "private", "type" fields and the pg/@anthropic-ai/sdk dependencies name facts of other parts of the system (case resolution, persistence, hypothesis judgment) outside this epic's node set, and any dependency-version or script-shape convention is a standard-conformance concern rather than a domain fact.

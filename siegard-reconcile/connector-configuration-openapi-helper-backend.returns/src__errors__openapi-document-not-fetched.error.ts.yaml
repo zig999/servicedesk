@@ -1,0 +1,96 @@
+read:
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the context property and its assignment in the constructor of OpenApiDocumentNotFetchedError"
+    evidence: "public readonly context: Readonly<{ link: string }> & OpenApiDocumentFetchOutcome; ... this.context = { link, ...outcome };"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: "the OpenApiDocumentFetchOutcome type union naming the three fetch failures"
+    evidence: |-
+      export type OpenApiDocumentFetchOutcome =
+        | { readonly kind: 'network-failure' }
+        | { readonly kind: 'timeout' }
+        | { readonly kind: 'status-outside-2xx'; readonly status: number };
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export class OpenApiDocumentNotFetchedError extends Error { ... } -- the file declares only a fetch-failure error type"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "the file opens directly with export type OpenApiDocumentFetchOutcome = -- no import statement of any kind appears anywhere in the file"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "the file defines only the error shape reported when a fetch fails; it contains no fetch call"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "the file declares an error type and a describe function; it names no operation and publishes nothing"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "the file's only declarations are OpenApiDocumentFetchOutcome and OpenApiDocumentNotFetchedError; capability is not referenced"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "the file's only declarations are OpenApiDocumentFetchOutcome and OpenApiDocumentNotFetchedError; connector configuration is not referenced"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "the file's only declarations are OpenApiDocumentFetchOutcome and OpenApiDocumentNotFetchedError; the draft's own attributes are not referenced"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "no credential, security scheme or generated_credentials reference appears anywhere in the file"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "no method or method_mismatch reference appears anywhere in the file"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "no unresolved item, name or reason reference appears anywhere in the file"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "the only enumerated values in the file are 'network-failure', 'timeout' and 'status-outside-2xx' -- none of the four unresolved-reason values appears"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: nowhere
+    evidence: "no security scheme or credential placeholder logic appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "no parameter, request-body field or subject placeholder logic appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "no responseMap or statusMap reference appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: nowhere
+    evidence: "no address, query, headers or body placement logic appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "no register-connector call or registration logic appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "the file defines an error and its context shape only"
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: nowhere
+    evidence: "no HTTP method or operation-method logic appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "no comparison against a currently registered configuration appears anywhere in the file"
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "the file states no HTTP status for a successful draft answer"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "the file's error concerns a link that could not be fetched, not a fetched document that fails to parse"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: nowhere
+    evidence: "no path, method pairing or operation-lookup refusal appears anywhere in the file"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "no method or registered-configuration comparison appears anywhere in the file"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "no parameter-name matching logic appears anywhere in the file"
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "the file's error concerns a link that could not be fetched, not a fetched document's declared version"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "no API key, security scheme or generated-credential logic appears anywhere in the file"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "no capability-registration or unresolved-parameter logic appears anywhere in the file"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: "the status-outside-2xx branch of OpenApiDocumentFetchOutcome and its description"
+    evidence: "{ readonly kind: 'status-outside-2xx'; readonly status: number } ... case 'status-outside-2xx': return `the link answered HTTP ${outcome.status}`;"
+looked_past: "the file's ErrorOptions parameter (a standard Error cause chain) is passed through to super() without inspection here -- whether any downstream serialization of this error ever exposes an underlying error's own message or response body is a fact about status-map.ts, not about this file."

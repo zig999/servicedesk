@@ -1,0 +1,132 @@
+read:
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "the return statement of readOpenApiOperation (lines 49-55), and the helper functions it composes -- serversInEffectOf/declaredServerUrls for server precedence, parametersOf/resolvedParameterList for the operation-plus-path-item parameter merge, requestBodyFieldNamesOf for the application/json top-level field names"
+    evidence: |-
+      return {
+          method: operationKey,
+          parameters: parametersOf(document, pathItem, operation),
+          requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
+          requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
+          serversInEffect: serversInEffectOf(pathItem, operation, document),
+        };
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: "operationEntry's operationKey, carried into readOpenApiOperation's returned method field"
+    evidence: |-
+      const operationKey = method.toLowerCase();
+      const rawOperation = isPlainObject(pathItem) ? pathItem[operationKey] : undefined;
+      if (!isPlainObject(rawOperation)) {
+        throw new OpenApiOperationNotFoundError(path, method);
+      }
+      return { pathItem, operation: rawOperation, operationKey };
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: "parsedOpenApiDocument/parsedAsJsonOrYaml/parsedAsYaml (JSON tried first, YAML on failure) and refuseUnsupportedVersion (openapi 3.x check, swagger check, else no-version-declared)"
+    evidence: |-
+      function refuseUnsupportedVersion(document: PlainObject): void {
+        if (typeof document.openapi === 'string') {
+          if (!document.openapi.startsWith('3.')) {
+            throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.openapi });
+          }
+          return;
+        }
+        if (typeof document.swagger === 'string') {
+          throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.swagger });
+        }
+        throw new OpenApiDocumentNotReadableError({ kind: 'no-version-declared' });
+      }
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: "operationEntry, throwing OpenApiOperationNotFoundError with the requested path and method"
+    evidence: |-
+      if (!isPlainObject(rawOperation)) {
+        throw new OpenApiOperationNotFoundError(path, method);
+      }
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: "the swagger branch of refuseUnsupportedVersion"
+    evidence: |-
+      if (typeof document.swagger === 'string') {
+        throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.swagger });
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- a pure reader over already-extracted strings"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { load as loadYamlDocument } from 'js-yaml'; -- this file is a connector-registry adapter, not one of the domain modules the constraint scopes"
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- the document text arrives already fetched"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- no HTTP operation is declared or answered here"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "export type OpenApiOperationReading = { readonly method: string; ... }; -- no capability reference anywhere in the file"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "export type OpenApiOperationReading = { ... }; -- no connector configuration is read or referenced in this file"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: "export type OpenApiOperationReading = { ... }; -- raw reading materials only; the draft's own attributes are built elsewhere"
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: nowhere
+    evidence: "return { schemeName, kind: 'apiKey', name: scheme.name, location: scheme.in }; -- no generated credential name or generated_credentials entry is produced in this file"
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: nowhere
+    evidence: "return { method: operationKey, ... }; -- only the operation's own method is read; no comparison against a registered configuration's method occurs in this file"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "requestBodyFieldNamesOf/parametersOf return raw names and locations; no unresolved item is constructed in this file"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "the file declares no reason value of any kind"
+  - node: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+    held_at: "requiredSecuritySchemesOf/requiredSecurityScheme -- reads the first requirement object of the security field in effect and classifies each named scheme's kind"
+    evidence: |-
+      const securityInEffect = operation.security !== undefined ? operation.security : document.security;
+      if (!Array.isArray(securityInEffect) || securityInEffect.length === 0) {
+        return [];
+      }
+      const firstRequirement = securityInEffect[0];
+      const schemeNames = isPlainObject(firstRequirement) ? Object.keys(firstRequirement) : [];
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: "parametersOf and requestBodyFieldNamesOf return bare names and locations; no comparison against any capability's input schema properties occurs in this file"
+  - node: rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+    held_at: nowhere
+    evidence: "export type OpenApiOperationReading = { ... }; -- no responseMap or statusMap field appears anywhere in the file"
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- a pure computation with no import of a registry client and no write call"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: "export type OpenApiOperationReading = { ... }; -- no HTTP answer is shaped in this file"
+  - node: rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
+    held_at: nowhere
+    evidence: "return { method: operationKey, ... }; -- the file never reads a currently registered connector configuration"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: "the notReadable helper and refuseUnsupportedVersion, which throw OpenApiDocumentNotReadableError (never OpenApiDocumentNotFetchedError) for every parse or version failure this file detects"
+    evidence: |-
+      function notReadable(kind: 'unparseable', detail: string, cause?: unknown): OpenApiDocumentNotReadableError {
+        return new OpenApiDocumentNotReadableError({ kind, detail }, cause === undefined ? undefined : { cause });
+      }
+  - node: rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- no HTTP status is stated anywhere in the file"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- documentText arrives already fetched"
+  - node: scenarios/integration/a-drafts-method-mismatches-what-is-registered
+    held_at: nowhere
+    evidence: "return { method: operationKey, ... }; -- the file never reads a currently registered connector configuration to compare against"
+  - node: scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+    held_at: nowhere
+    evidence: "return { name: entry.name, location: entry.in }; -- a parameter's raw name is returned; no capability-schema match or unresolved-list placement happens here"
+  - node: scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
+    held_at: nowhere
+    evidence: "return { schemeName, kind: 'apiKey', name: scheme.name, location: scheme.in }; -- the apiKey scheme's own name and location are read, but no ${credential:<name>} placeholder or generated_credentials entry is produced in this file"
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: "parametersOf/requestBodyFieldNamesOf return raw names regardless of any capability; no unresolved-list placement happens in this file"
+  - node: scenarios/integration/an-unreachable-openapi-link-refuses-the-draft
+    held_at: nowhere
+    evidence: "export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading { -- no fetch is attempted in this file"
+looked_past: "the silent filtering of malformed sub-entries (isOpenApiParameter dropping a parameter lacking a string name or valid in; hasStringUrl dropping a server entry lacking a string url) rather than refusing the document outright touches on the malformed-document rule but does not cleanly quote as a domain-fact departure from any one node, so it is left unreported rather than guessed at."

@@ -279,6 +279,11 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     readConnectorConfiguration: stubReadConnectorConfiguration(),
     listConnectorConfigurations: stubListConnectorConfigurations(),
     testConnector: stubTestConnector(),
+    draftConnectorConfigurationFromOpenApi: {
+      documentFetcher: { fetchOpenApiDocument: async () => '{}' },
+      capabilitiesReader: { readCapabilities: async () => [] },
+      registry: { readConnectorConfiguration: async (connector) => ({ held: false, connector }) },
+    },
   };
 }
 
@@ -547,6 +552,12 @@ const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
   { description: 'list-vocabulary-terms', method: 'GET', url: '/v1/glossary/outcome' },
   { description: 'read-concept', method: 'GET', url: '/v1/glossary/concepts/a-concept' },
   { description: 'list-concepts', method: 'GET', url: '/v1/glossary/concepts' },
+  {
+    description: 'draft-connector-configuration-from-openapi',
+    method: 'POST',
+    url: '/v1/draft-connector-configuration-from-openapi',
+    payload: { connector: 'a-connector', link: 'a-link', path: '/a-path', method: 'GET' },
+  },
 ];
 
 it.each(REGISTERED_ROUTE_REQUESTS)(

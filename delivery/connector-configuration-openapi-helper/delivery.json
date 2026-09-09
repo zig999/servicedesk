@@ -1,0 +1,849 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
+      "title": "The connector configuration draft's domain shape",
+      "summary": "One new domain module declares the draft value object, its unresolved item, its closed unresolved-reason vocabulary, its generated-credential and its method-mismatch, all as plain readonly TypeScript types with no infrastructure import.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service.md",
+      "title": "Connector configuration draft generation service",
+      "summary": "A pure composing function that fetches an OpenAPI document, reads the chosen operation through the existing reader, resolves subject and credential placeholders, reconciles their positional collisions, compares the operation's method against what is registered, and returns one ConnectorConfigurationDraft, writing nothing.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-generation-service"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface.md",
+      "title": "Publish draft-connector-configuration-from-openapi as an HTTP operation",
+      "summary": "Adds the POST /v1/draft-connector-configuration-from-openapi route, its zod DTO, its thin controller over generateConnectorConfigurationDraft, and its factory wiring, so the draft or one of its three named refusals answers through the existing composed dependencies and the shared error-handler/status-map mechanism.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders.md",
+      "title": "Generated-credential placeholder generation for reducible security schemes",
+      "summary": "Adds a pure connector-registry module that turns an operation's required security schemes into ${credential:<name>} placeholders (or unresolved items), resolving same-key collisions by requirement-object order and exposing a helper for a later task to detect a parameter displaced by one of those placeholders.",
+      "task": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading.md",
+      "title": "OpenAPI 3.x operation reading -- the version gate and the anti-corruption reader",
+      "summary": "A pure reading module parses a fetched OpenAPI document as JSON or YAML, gates its declared version, locates the named path-and-method operation, and exposes its method, merged parameters, application/json request-body field names and first-in-effect security schemes, refusing through two new distinct domain errors mapped to HTTP 422.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch.md",
+      "title": "OpenAPI document fetch -- its own port, adapter and fetch-failure error",
+      "summary": "A dependency-injected, 60-second-bounded fetch of an operator-named OpenAPI document link, behind its own port, refusing with a new OpenApiDocumentNotFetchedError (mapped to HTTP 422) on any network failure, timeout or non-2xx status and attempting no parse, and handing back unparsed body text on a 2xx answer.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison.md",
+      "title": "Registered-method comparison for a connector configuration draft",
+      "summary": "A pure comparison function reads the connector configuration currently registered under a name live through an injected reader, folds case to compare its declared method against the drafted operation's method, and returns a method_mismatch naming both upper-cased only where the two genuinely disagree.",
+      "task": "task/connector-configuration-openapi-draft-backend/registered-method-comparison"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution.md",
+      "title": "Subject-placeholder resolution for the OpenAPI connector-configuration draft",
+      "summary": "Adds a connector-registry module that resolves each parameter and request-body field name of a chosen OpenAPI operation to a ${subject:<name>} placeholder or an unresolved item, reading the registered capabilities and their input-schema shape through the two existing reuse points and placing every resolved or unresolved value at its own position (path, query, headers, Cookie, body).",
+      "task": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section.md",
+      "title": "Configuration Helper section beneath the Configuration field",
+      "summary": "Adds an inline Configuration Helper offer (document-link, path and method controls, and a non-submitting Request Draft control) to the shared ConnectorConfigurationFormFields component, reused unchanged by both the create screen and the ready detail view.",
+      "task": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit.md",
+      "title": "Apply a drafted configuration to the Configuration field's local edit",
+      "summary": "Wires an Apply button, offered only against an answered draft, that writes the drafted configuration text through the Configuration field's own onChange and touches nothing else.",
+      "task": "task/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure.md",
+      "title": "Disclose the answered draft's every part, and a refusal on its own terms",
+      "summary": "ConnectorConfigurationHelperFields now renders the drafted configuration text, every unresolved item by name and reason, every generated credential by name and security scheme, a method mismatch where one stands, or a refusal statement distinguishable across its three named conditions plus an unrecognised-failure fallback -- all derived by a new pure mapping service, with the Configuration field never touched.",
+      "task": "task/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request.md",
+      "title": "Draft request hook for draft-connector-configuration-from-openapi",
+      "summary": "A new apiFetch-backed useMutation hook that dispatches a connector configuration draft request to the published draft-connector-configuration-from-openapi route and exposes either the answered draft (rebuilt from only its five declared fields) or one of four distinguishable classified failures, with no fact of a draft ever standing beside a refusal.",
+      "task": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request"
+    },
+    {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation.md",
+      "title": "Confirm before an apply overwrites an unsubmitted edit",
+      "summary": "Gates the Configuration Helper's onApply behind a per-screen unsubmitted-edit reading and a controlled confirmation dialog, so a draft only replaces the Configuration field's content after a further explicit confirm.",
+      "task": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
+      "title": "The connector configuration draft's domain shape -- proof",
+      "summary": "Nine Vitest tests over connector-configuration-draft.ts prove the closed unresolved-reason vocabulary, the draft's required-possibly-empty lists, its optional method mismatch, the absent capability field, the three sibling value objects' exact shapes, and the module's zero imports and single runtime export, dropping the prior directory-totality test that claimed ground this task's criteria never owned.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/draft-generation-service.md",
+      "title": "Connector configuration draft generation service -- proof",
+      "summary": "Thirty-seven Vitest cases at src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts exercise generateConnectorConfigurationDraft end to end through fake ports, covering every stated criterion, the four inferences the implementation record names, and the one UNDERDETERMINED entry that names a candidate implementation the specification refuses.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-generation-service"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/draft-operation-http-surface.md",
+      "title": "HTTP surface for draft-connector-configuration-from-openapi",
+      "summary": "Proves the POST /v1/draft-connector-configuration-from-openapi operation dispatches through its composed dependencies, refuses malformed bodies and each of the three named document/operation failures with their own code and exact details, and answers a success body carrying exactly the five allowed fields with no capability or credential-value leak.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/generated-credential-placeholders.md",
+      "title": "Generated-credential placeholder generation proof",
+      "summary": "Every credential-reduction, placement, collision, name-composition, non-reducible and empty-input path of generateCredentialPlaceholders is exercised against observed output, alongside parameterDisplacedByCredential's scheme-versus-parameter collision helper.",
+      "task": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading.md",
+      "title": "OpenAPI 3.x operation reading -- version gate, refusal shapes, and the anti-corruption reader's output",
+      "summary": "Proves the version-gate refusals, the operation-not-found refusal, their distinctness and 422 mapping, and that the reader exposes method, parameters, request-body field names and security schemes exactly as an OpenAPI 3.x (or equivalent YAML) document spells them, for both its stated criteria and the notes' underdetermined and inferred decisions.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch.md",
+      "title": "OpenAPI document fetch -- unit proof of fetch-failure refusal, timeout bound, unparsed success and 422 mapping",
+      "summary": "Unit tests over OpenApiDocumentFetcher, OpenApiDocumentNotFetchedError and the status-map/error-handler pair prove every stated criterion -- 404, any non-2xx status, network failure, the 60000ms timeout boundary, no body parse on any refusal, exact error-context shape, unparsed 2xx body text, and the 422 envelope the shared handler answers with -- leaving the frontend-placement half of the placement criterion and the redirect inference unproven for stated reasons.",
+      "task": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison.md",
+      "title": "Registered-method comparison against the currently registered connector configuration",
+      "summary": "Confirms registeredMethodMismatch names both methods upper-cased exactly where a live-read registered configuration's declared method disagrees (case-folded) with the operation's, states no mismatch in the three named absence/agreement cases, reads only from the registered text through a narrow injected reader with no capability parameter, leaves the registered configuration unchanged, and propagates rather than swallows a failing or malformed dependency read.",
+      "task": "task/connector-configuration-openapi-draft-backend/registered-method-comparison"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution.md",
+      "title": "Subject-placeholder resolution proof",
+      "summary": "Vitest tests over resolveSubjectPlaceholders exercise every criterion, both UNDERDETERMINED entries and the recorded inferences by supplying a stand-in ICapabilitiesReader and asserting the returned SubjectPlaceholderPlacement's path/query/headers/body/unresolved fields.",
+      "task": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/configuration-helper-section.md",
+      "title": "Configuration Helper section beneath the Configuration field",
+      "summary": "Proves the Configuration Helper section renders beneath Configuration on both authoring surfaces, offers its three named controls plus a non-submitting Request Draft control that dispatches the draft request and never reaches the operator-supplied document link or the save path, while every existing field and the Actions footer stay reachable.",
+      "task": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit.md",
+      "title": "Proof that applying a drafted configuration writes only the Configuration field's local edit",
+      "summary": "Two spec files -- one isolated at ConnectorConfigurationHelperFields proving the Apply affordance's own presence rule and callback, one end-to-end through ConnectorConfigurationCreateScreen with a real router, query client and fetch stub -- together establish all seven criteria.",
+      "task": "task/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure.md",
+      "title": "Disclosure of the answered draft and of a refused request",
+      "summary": "Unit tests over the pure disclosureStateForOutcome mapping and component tests over ConnectorConfigurationHelperFields together prove every disclosure criterion, the three UNDERDETERMINED implementation choices, and that the Configuration field is never touched by either a draft or a refusal.",
+      "task": "task/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request.md",
+      "title": "Proof for the draft-connector-configuration-from-openapi request hook",
+      "summary": "Vitest/renderHook coverage over useDraftConnectorConfigurationFromOpenApi proving the request body and route, the pass-through of an answered draft (including its empty-list, no-mismatch and no-capability-leak shapes), each of the four distinguishable refusal outcomes, the three UNDERDETERMINED resolutions the implementation record names, and the concurrent-dispatch guard.",
+      "task": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation.md",
+      "title": "Proof that an apply over an unsaved edit is confirmed before anything is replaced",
+      "summary": "One spec file mounting both the ready detail view and the create screen through their real hook chains and a fetch stub proves all seven criteria -- the confirmation dialog's appearance, the field's untouched content until a further explicit confirm, the immediate apply where nothing is unsaved, and the absence of any register-connector call through the whole sequence.",
+      "task": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation"
+    },
+    {
+      "id": "review/connector-configuration-openapi-helper-backend",
+      "kind": "review",
+      "file": "review/connector-configuration-openapi-helper-backend.md",
+      "title": "connector-configuration-openapi-draft-backend review",
+      "summary": "Coverage, specification-conformance, standard-conformance and failures passes over the 8-task connector-configuration-openapi-draft-backend epic's 33 files -- the backend half of the connector-configuration-openapi-helper initiative.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "An OpenAPI 3.x document declaring the named operation yields the chosen operation's parameter names, their own declared location (path, query, header or cookie) and their positions exactly as the document spells them, merging a path item's own parameters with the operation's own by name and location and following any $ref to its target first.",
+        "An unresolved parameter or field still stands at its own position, holding its own name in the document's brace form {name}.",
+        "An unresolved parameter or field still stands at its own position, holding its own name in the document's brace form.",
+        "No parse of a response body is attempted on any of those four refusals.",
+        "The document fetch is issued only inside the backend, and no frontend module requests an OpenAPI document's own URL.",
+        "The draft's configuration embeds every credential placeholder the generation produced, each at the position the security scheme declared or, for a scheme with no location of its own, in the headers as that rule fixes.",
+        "The placeholder text emitted is the existing ${credential:<name>} form, produced through the existing placeholder token vocabulary rather than a second one.",
+        "The placeholder text emitted is the existing ${subject:<name>} form, produced through the existing placeholder token vocabulary rather than a second one.",
+        "The resolution names every capability currently registered for the connector it read, and names none where none is registered.",
+        "The resolution reads the registered capabilities through the existing capability read and the existing declared-input-schema-shape reader, introducing no second lookup or second schema reader.",
+        "The response never carries a credential value.",
+        "Where the security field in effect for the operation is an empty array, names no scheme, or is declared at neither the operation nor the document's top level, no placeholder is generated and no security scheme is named unresolved."
+      ],
+      "findings": 10
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "rules/integration/a-drafted-connector-configuration-is-answered-as-a-read",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "scenarios/integration/an-api-key-scheme-becomes-a-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "scenarios/integration/an-unreachable-openapi-link-refuses-the-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "scenarios/integration/a-drafts-method-mismatches-what-is-registered",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "scenarios/integration/a-mismatched-parameter-name-stays-unresolved",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "to": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "task/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "task/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "to": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "to": "implementation/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "to": "implementation/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "to": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/draft-apply-to-local-edit",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-document-fetch",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/openapi-3x-operation-reading",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/connector-configuration-openapi-helper-backend",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    }
+  ]
+}

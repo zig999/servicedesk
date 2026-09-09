@@ -5,6 +5,8 @@ import type { CreateDraftControllerDependencies } from './create-draft.controlle
 import { createCreateDraftRoutesPlugin } from './create-draft.routes.js';
 import { createDiagnoseRoutesPlugin } from './diagnose.routes.js';
 import type { DiagnoseControllerDependencies } from './diagnose.controller.js';
+import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from './draft-connector-configuration-from-openapi.controller.js';
+import { createDraftConnectorConfigurationFromOpenApiRoutesPlugin } from './draft-connector-configuration-from-openapi.routes.js';
 import { createSimulateCaseRoutesPlugin } from './simulate-case.routes.js';
 import type { SimulateCaseControllerDependencies } from './simulate-case.controller.js';
 import { createSimulateHypothesisRoutesPlugin } from './simulate-hypothesis.routes.js';
@@ -92,6 +94,7 @@ export type BuildAppDependencies = {
   readonly listConcepts: ListConceptsControllerDependencies;
   readonly registerConcept: RegisterConceptControllerDependencies;
   readonly registerConnector: RegisterConnectorControllerDependencies;
+  readonly draftConnectorConfigurationFromOpenApi: DraftConnectorConfigurationFromOpenApiControllerDependencies;
 };
 
 const routePluginFactories: ReadonlyArray<
@@ -127,6 +130,8 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createListConceptsRoutesPlugin(dependencies.listConcepts),
   (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
   (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+  (dependencies) =>
+    createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
 ];
 
 function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] {

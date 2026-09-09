@@ -21,6 +21,9 @@ import { InvestigationWriteDeadlineExceededError } from '../../../errors/investi
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
+import { OpenApiDocumentNotFetchedError } from '../../../errors/openapi-document-not-fetched.error.js';
+import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-document-not-readable.error.js';
+import { OpenApiOperationNotFoundError } from '../../../errors/openapi-operation-not-found.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { statusForError } from '../../../errors/status-map.js';
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
@@ -218,6 +221,40 @@ it('resolves ConceptDescriptionRequiredError to 422', () => {
   const status = statusForError(error);
 
   expect(status).toBe(422);
+});
+
+it('resolves OpenApiDocumentNotFetchedError to 422', () => {
+  const error = new OpenApiDocumentNotFetchedError('https://api.example.com/openapi.json', { kind: 'network-failure' });
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+it('resolves OpenApiDocumentNotReadableError to 422', () => {
+  const error = new OpenApiDocumentNotReadableError({ kind: 'no-version-declared' });
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+it('resolves OpenApiOperationNotFoundError to 422', () => {
+  const error = new OpenApiOperationNotFoundError('/widgets', 'GET');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+it('maps OpenApiDocumentNotFetchedError, OpenApiDocumentNotReadableError and OpenApiOperationNotFoundError all to 422, pinning "distinct" as specific rather than mutually exclusive across all three', () => {
+  const fetchError = new OpenApiDocumentNotFetchedError('https://api.example.com/openapi.json', { kind: 'network-failure' });
+  const readableError = new OpenApiDocumentNotReadableError({ kind: 'no-version-declared' });
+  const notFoundError = new OpenApiOperationNotFoundError('/widgets', 'GET');
+
+  expect(statusForError(fetchError)).toBe(422);
+  expect(statusForError(readableError)).toBe(422);
+  expect(statusForError(notFoundError)).toBe(422);
 });
 
 it('resolves InvestigationWriteDeadlineExceededError to 500', () => {

@@ -1,0 +1,32 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (3 moderate, 2 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(262,3): error TS2741: Property 'draftConnectorConfigurationFromOpenApi' is missing in type '{ readCapability: { capabilityQuery: ICapabilityQuery; }; readCapabilityByIdentity: ReadCapabilityByIdentityControllerDependencies; ... 27 more ...; simulateHypothesis: SimulateHypothesisControllerDependencies; }' but required in type 'BuildAppDependencies'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test-unit :: node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit :: not_run =====
+
