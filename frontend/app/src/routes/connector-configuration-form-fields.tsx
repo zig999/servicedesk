@@ -1,13 +1,26 @@
-import type { BaseSyntheticEvent, JSX, ReactNode } from "react";
+import { useState, type BaseSyntheticEvent, type JSX, type ReactNode } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@tui/ui/dialog";
 import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import type { ConfigurationFieldState } from "../hooks/use-connector-configuration-form";
+
+const APPLY_OVER_UNSAVED_EDIT_DESCRIPTION =
+  "Applying this drafted configuration will replace the edit you have not saved in the " +
+  "Configuration field. This cannot be undone.";
 
 export type ConnectorConfigurationFormFieldsProps = {
   readonly form: UseFormReturn<ConnectorConfigurationFormValues>;
@@ -65,6 +78,24 @@ export function ConnectorConfigurationFormFields({
 
   const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;
 
+  const hasUnsavedEdit = isDirty ?? configuration.value !== "";
+  const [pendingApplyText, setPendingApplyText] = useState<string | null>(null);
+
+  function handleApply(configurationText: string): void {
+    if (!hasUnsavedEdit) {
+      configuration.onChange(configurationText, true);
+      return;
+    }
+    setPendingApplyText(configurationText);
+  }
+
+  function handleConfirmApply(): void {
+    if (pendingApplyText !== null) {
+      configuration.onChange(pendingApplyText, true);
+    }
+    setPendingApplyText(null);
+  }
+
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
       <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
@@ -84,10 +115,35 @@ export function ConnectorConfigurationFormFields({
         disabled={isSubmitting}
       />
 
-      <ConnectorConfigurationHelper
-        connector={watch("connector")}
-        onApply={(configurationText) => configuration.onChange(configurationText, true)}
-      />
+      <ConnectorConfigurationHelper connector={watch("connector")} onApply={handleApply} />
+
+      <Dialog
+        open={pendingApplyText !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingApplyText(null);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Apply drafted configuration?</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>{APPLY_OVER_UNSAVED_EDIT_DESCRIPTION}</DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Keep editing
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button type="button" variant="destructive" onClick={handleConfirmApply}>
+                Apply
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <ButtonFooter>
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>

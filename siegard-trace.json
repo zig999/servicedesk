@@ -5594,6 +5594,16 @@
       ]
     },
     {
+      "node": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "digest": "sha256:661c4d67798ad2014116104afb885d628e6e9449392a9255b558c7229b23aa97",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:72c4955afe079d5c7e262c12a5dcec4b55dbcc3b2b0c35ed61a2847d0496673e"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
       "digest": "sha256:8a0f3e4940243c93c8ef777266dbbcb07489714424333d6ae3269f840c1a6398",
       "files": [
@@ -7748,6 +7758,16 @@
         {
           "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
           "digest": "sha256:98d3ace9545fa289d1a104671a171ee9ae44e643103e1c2f96d3271470e70786"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation",
+      "digest": "sha256:0eeb2a3029beef55eb3bce0985a2e1b52bb3c6797f0e34cb6d6ac0f5348236b2",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:72c4955afe079d5c7e262c12a5dcec4b55dbcc3b2b0c35ed61a2847d0496673e"
         }
       ]
     },

@@ -98,6 +98,14 @@
       "task": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation.md",
+      "title": "Confirm before an apply overwrites an unsubmitted edit",
+      "summary": "Gates the Configuration Helper's onApply behind a per-screen unsubmitted-edit reading and a controlled confirmation dialog, so a draft only replaces the Configuration field's content after a further explicit confirm.",
+      "task": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation"
+    },
+    {
       "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proof",
       "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
@@ -192,6 +200,14 @@
       "title": "Proof for the draft-connector-configuration-from-openapi request hook",
       "summary": "Vitest/renderHook coverage over useDraftConnectorConfigurationFromOpenApi proving the request body and route, the pass-through of an answered draft (including its empty-list, no-mismatch and no-capability-leak shapes), each of the four distinguishable refusal outcomes, the three UNDERDETERMINED resolutions the implementation record names, and the concurrent-dispatch guard.",
       "task": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation.md",
+      "title": "Proof that an apply over an unsaved edit is confirmed before anything is replaced",
+      "summary": "One spec file mounting both the ready detail view and the create screen through their real hook chains and a fetch stub proves all seven criteria -- the confirmation dialog's appearance, the field's untouched content until a further explicit confirm, the immediate apply where nothing is unsaved, and the absence of any register-connector call through the whole sequence.",
+      "task": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation"
     }
   ],
   "edges": [
@@ -658,6 +674,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "task/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proves",
@@ -726,6 +760,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request",
       "to": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/unsaved-edit-apply-confirmation",
       "kind": "proves",
       "at": "the path"
     }
