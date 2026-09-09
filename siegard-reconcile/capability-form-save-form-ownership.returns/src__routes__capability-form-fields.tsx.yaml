@@ -1,0 +1,92 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the form fields rendering each of the aggregate's declared attributes: the Concept
+      selector (lines 88-105), the Name/Version/Nature/Timeout inputs (lines 108-154), the
+      Connector input (157-164), and the Input schema / Output schema textareas (166-195)
+    evidence: |
+      <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
+        <Controller
+          control={control}
+          name="concept"
+          render={({ field }) => (
+            <Select
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              options={conceptSelectOptions}
+              disabled={isSubmitting}
+              placeholder="Select a concept"
+              aria-invalid={errors.concept != null}
+              aria-describedby={errors.concept != null ? "concept-error" : undefined}
+            />
+          )}
+        />
+      </FormField>
+  - node: domain/integration/capability-nature
+    held_at: >-
+      nowhere — the enumeration's own values are not declared in this file; it only maps
+      whatever the imported constant already holds
+    evidence: |
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+  - node: domain/investigation/field-semantics
+    held_at: the paragraph beside the Output schema field, lines 185-193
+    evidence: |
+      <p className="text-sm text-muted-foreground">
+        O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir
+        dele são as chaves do próprio objeto <code>properties</code> de nível
+        superior deste schema. O <code>type</code> e a <code>description</code>{" "}
+        declarados por cada uma dessas chaves, onde o schema os declara, são lidos
+        como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é
+        lido ou validado. Uma <code>description</code> aqui declara o que seu valor
+        significa e não nomeia nenhuma decisão.
+      </p>
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: the closing sentence of the same paragraph, lines 190-192
+    evidence: >-
+      Uma <code>description</code> aqui declara o que seu valor significa e não nomeia
+      nenhuma decisão.
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: >-
+      nowhere — this file consumes a precomputed validity flag rather than checking the
+      schema's own syntax
+    evidence: >-
+      isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere — the Nature control offers every value the imported constant lists, unrestricted
+    evidence: |
+      <Select
+        value={field.value}
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        options={NATURE_OPTIONS}
+        disabled={isSubmitting}
+        aria-invalid={errors.nature != null}
+        aria-describedby={errors.nature != null ? "nature-error" : undefined}
+      />
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: the paragraph beside the Output schema field, lines 185-193
+    evidence: |
+      <p className="text-sm text-muted-foreground">
+        O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir
+        dele são as chaves do próprio objeto <code>properties</code> de nível
+        superior deste schema. O <code>type</code> e a <code>description</code>{" "}
+        declarados por cada uma dessas chaves, onde o schema os declara, são lidos
+        como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é
+        lido ou validado. Uma <code>description</code> aqui declara o que seu valor
+        significa e não nomeia nenhuma decisão.
+      </p>
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere — the concept options are listed plainly with no uniqueness check
+    evidence: |
+      const conceptSelectOptions: SelectOption[] = conceptOptions.map((concept) => ({
+        value: concept.name,
+        label: concept.name,
+      }));
+looked_past: >-
+  The exported CAPABILITY_FORM_ID constant and the submit button's form={CAPABILITY_FORM_ID}
+  wiring, and the isDirty-gated isSaveDisabled guard, are DOM-ownership and UX-convenience
+  mechanics that state no domain fact and are outside this pass's judgment.
