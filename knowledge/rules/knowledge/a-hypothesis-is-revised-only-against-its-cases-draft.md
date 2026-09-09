@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: A hypothesis is revised only while its case holds a draft version, and the concept-acceptance check the new revision undergoes uses that draft version's declared subject type; a revision requested while the case holds no draft version is refused with an HTTP 409 response reporting a CaseHoldsNoDraftError. A revise-hypothesis request declares no subject type of its own — the check reads the subject type from the case's draft version and from nowhere else, and a subject type carried on such a request is accepted and left without effect, never read, never compared against the draft version's declared subject type, and never a ground for refusal.
+statement: A hypothesis is revised only while its case holds a draft version, and the concept-acceptance check the new revision undergoes uses that draft version's declared subject type; a revision requested while the case holds no draft version is refused with an HTTP 409 response reporting a CaseHoldsNoDraftError.
 constrains:
 - domain/knowledge/case
 - domain/knowledge/case-version

@@ -11,10 +11,9 @@ statement: >-
   answered; a fetched document that could not be read as OpenAPI 3.x; and a path and method pairing
   the fetched document declares no operation for — and where the answer names none of those
   conditions, the surface states that the request failed for a reason it does not recognise, never as
-  one of them and never as a draft. No part of a draft stands beside that statement: no configuration
-  text, no unresolved item, no generated credential and no method mismatch is stated as that
-  request's answer, and the Configuration field's own content stands exactly as it stood. No refusal
-  is stated of a draft request the operation has not answered.
+  one of them and never as a draft, no part of a draft standing beside that statement: no
+  configuration text, no unresolved item, no generated credential and no method mismatch stated as
+  that request's answer.
 expression: >-
   For an operator requesting a draft through draft-connector-configuration-from-openapi of
   contracts/integration/connector-configuration-draft, from the surface s carrying the Configuration
@@ -61,10 +60,9 @@ The link the fetch refusal echoes back is the operator's own input, standing in 
 No part of a draft stands beside the refusal.
 For the request just refused there is nothing of the kind to state — `an-openapi-document-declaring-no-such-operation-refuses-the-draft` states that no `connector-configuration-draft` is produced at all, no configuration text, no unresolved item, no generated credential and no `method_mismatch` — so what could stand there is an earlier request's draft, and standing beside this refusal it would read as this request's answer.
 This specification has refused a presentation that reads alike in materially different situations every time it has met one, `a-presented-connector-configuration-states-an-outstanding-or-failed-read` over three windows of one read and `a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under` over a fourth, and the misreading is worse here than a blank: `domain/integration/connector-configuration-draft-unresolved-reason`'s reasons each name something the chosen operation itself declared, so an unresolved list drawn from another operation is a disclosure about an operation the operator did not select, and applying the configuration text beside it applies text drafted from nothing.
-The Configuration field is untouched because a refusal applies nothing: `applying-a-drafted-configuration-changes-only-the-local-edit` makes applying a draft the operator's own act over that field's local, unsubmitted content, and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation` refuses even a successful draft that content without a further explicit act, so a refusal that cleared or rewrote the field would destroy an edit held nowhere else by failing.
+Whether the Configuration field's own content stands untouched by this refusal's arrival is `the-configuration-field-is-untouched-by-a-drafts-arrival`'s own.
 
-Nothing is stated of a request the operation has not answered, the same bound `a-submitted-registration-states-its-outcome-to-the-operator` puts on its own two outcomes: a refusal stated before an answer arrives is a refusal invented by the surface.
-What that surface states while a draft request is outstanding is not decided here.
+Whether a refusal is ever stated of a request the operation has not answered is `no-draft-refusal-is-stated-before-the-operation-answers`'s own.
 
 Home is a new invariant over `domain/integration/connector-configuration-draft`: the api contract cannot declare a presentation, and the element declares what a draft is rather than what a surface states about requesting one, which is the placement every presentation fact of this specification has taken.
 It adds no attribute to that element, publishes no operation and refuses no call — what each of the three routes answers its caller stays `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document`'s and `an-openapi-document-declaring-no-such-operation-refuses-the-draft`'s own, and `a-connector-configuration-authoring-surface-offers-a-configuration-helper` keeps stating what the helper is and where it sits.

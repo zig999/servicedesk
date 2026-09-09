@@ -1,13 +1,12 @@
 ---
 type: invariant
 statement: >-
-  An operator whose submitted connector configuration registration succeeds is taken to
-  the surface addressed by that configuration's own connector name — the surface
-  read-connector-configuration answers — and neither to the listing of registered
-  connector configurations nor left on the authoring surface the registration was
-  submitted from. This holds alike where the submission created a configuration under a
-  connector name nothing was registered under and where it replaced the configuration
-  that already answered to that name.
+  An operator whose submitted connector configuration registration succeeds — whether the
+  submission created a configuration under a connector name nothing was registered under or
+  replaced the configuration that already answered to that name — is taken to the surface
+  addressed by that configuration's own connector name, the surface
+  read-connector-configuration answers, and neither to the listing of registered connector
+  configurations nor left on the authoring surface the registration was submitted from.
 expression: >-
   For an operator submitting a connector configuration registration r naming connector
   name c, where the register-connector call carrying r succeeds: what that operator is

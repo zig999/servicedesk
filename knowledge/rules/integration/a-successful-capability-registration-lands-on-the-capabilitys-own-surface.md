@@ -1,13 +1,12 @@
 ---
 type: invariant
 statement: >-
-  An operator whose submitted capability registration succeeds is taken to the surface
-  addressed by that capability's own name and version — the surface
-  read-capability-by-identity answers — and neither to the listing of registered
-  capabilities nor left on the authoring surface the registration was submitted from.
-  This holds alike where the submission created a capability at a name and version
-  nothing was registered at and where it replaced the capability that already stood at
-  that identity.
+  An operator whose submitted capability registration succeeds — whether the submission
+  created a capability at a name and version nothing was registered at or replaced the
+  capability that already stood at that identity — is taken to the surface addressed by that
+  capability's own name and version, the surface read-capability-by-identity answers, and
+  neither to the listing of registered capabilities nor left on the authoring surface the
+  registration was submitted from.
 expression: >-
   For an operator submitting a capability registration entry e naming name n and version
   v, where the register-capability call carrying e succeeds: what that operator is taken

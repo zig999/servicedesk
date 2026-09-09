@@ -5,10 +5,7 @@ statement: >-
   having asked for that act, states in a further, explicit act that it is to be performed;
   neither is performed on the asking alone, and where the curator does not so state the
   version stands in draft exactly as it stood, its own declared attributes and every entry of
-  its manifest untouched. The discard's further act carries more than the statement: it is
-  performed only where the curator reproduces the case's own slug, so that the act which
-  destroys a version is one no curator reaches without naming what they are destroying. The
-  release's further act carries the statement alone.
+  its manifest untouched.
 expression: >-
   For a draft case version v of case c and a curator on a surface offering v's release or v's
   discard: the curator's asking for either act issues neither. A release of v is issued only
@@ -41,11 +38,7 @@ The further act is owed because this specification already reads an act it canno
 Both acts here meet that ground more squarely than the act it was decided for, because what they freeze or destroy is not an edit a surface was holding but the stored version itself, with its declared attributes and its whole manifest.
 The contrast holds here too, and this specification has already drawn it: `an-abandoned-case-version-edit-writes-nothing` and `an-abandoned-revision-composition-writes-nothing` each give a way out that writes nothing and shows itself by returning the curator to the surface the editing was reached from, and each is available for as long as nothing has been submitted; release and discard are issued from the surface the curator stays on and they write, so nothing about them announces itself as a leaving does, and the act after a mis-triggered one is taken on a version that can no longer be corrected at all.
 
-The two acts are not protected identically, because what they destroy is not the same kind of thing.
-A release ends a draft by turning it into something that answers for investigations forever, and everything it produced remains readable: the version stands, its attributes stand, its manifest stands, and `only-a-released-case-version-is-diagnosed` makes it the thing diagnosis runs against.
-A discard ends a draft by removing it, taking its own manifest entries with it and spending its number for good (`a-case-version-number-is-never-reused`); what the curator composed is not frozen but gone, and no reading of any surface recovers it.
-So the discard's further act carries the case's own slug reproduced by the curator, and the release's does not: reproducing the slug is what makes the act one a curator cannot complete without naming the thing being destroyed, and a curator who cannot name it is a curator who did not mean to destroy it.
-That the case holds at most one draft (`a-case-has-at-most-one-draft`) settles which version a discard would take, and settles nothing about whether the curator meant to take it — the slug answers intent, not ambiguity.
+The two acts are not protected identically, because what they destroy is not the same kind of thing, and what the discard's own further act additionally requires of the curator is `a-draft-case-versions-discard-reproduces-the-cases-own-slug`'s own.
 
 Nothing here moves what either act evaluates or what it owes.
 A release attempted is still refused once, naming every violated rule together (`a-release-refusal-with-no-named-violation-says-so`), still requires every manifest entry to pin a released revision (`a-released-case-version-manifests-only-released-hypothesis-revisions`), and is still refused over a version not in draft by `a-case-version-moves-through-its-declared-lifecycle`; a discard is still refused over anything but a draft by `only-a-draft-case-version-may-be-discarded`.

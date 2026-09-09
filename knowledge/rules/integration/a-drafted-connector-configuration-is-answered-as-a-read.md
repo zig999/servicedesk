@@ -3,7 +3,7 @@ type: invariant
 statement: >-
   Where draft-connector-configuration-from-openapi answers a request with a generated
   connector configuration draft rather than with one of the refusals its own rules state,
-  that answer carries an HTTP 200 status. It is never HTTP 201, generating a draft creating
+  that answer carries an HTTP 200 status and never HTTP 201, generating a draft creating
   no connector configuration and no record of any kind; never HTTP 204, the draft being the
   whole of what the request asked for; and never HTTP 202, the draft standing in the answer
   to the request that asked for it.

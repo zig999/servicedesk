@@ -8,8 +8,7 @@ statement: >-
   connector name submitted; where the registry refused the submission, that nothing was
   registered and which refusal answered it, the condition the registry's answer named stated
   apart from every other condition that route can name and apart from a refusal whose
-  condition the surface does not recognise. Neither outcome is stated of a submission the
-  registry has not answered, and the two never read alike.
+  condition the surface does not recognise.
 expression: >-
   For an operator submitting a registration r through register-capability of
   contracts/integration/capability-registry or register-connector of
@@ -44,6 +43,6 @@ One fact, decided once for both registries. The two are the same shape in every 
 
 This is about a write, and the sibling rules about a read stay where they are. `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` state what a surface says while it is loading a registration it did not write and what it says when that load fails; neither says anything about a submission the operator made. A read that failed is worth issuing again and those rules offer that act; a submission is not re-issued by anything stated here, because a write repeated is a second write and never a recovery of the first.
 
-What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here, and neither is what it presents in the interval before the registry answers at all. Which control carries either statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
+What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here. Whether either outcome is ever stated before the registry answers, or the two are ever presented alike, is `a-registration-outcome-is-never-stated-before-the-registry-answers`'s own. Which control carries either statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
 
 Consistency is eventual because the surface performs no registration itself: what it states is the answer to a call issued separately to a registry that holds the registration, and the statement settles only when that call settles.

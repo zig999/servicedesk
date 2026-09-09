@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: A case version's input requirements are one case-input-requirement per subject attribute that the input schema of a capability answering a concept in its collection plan names in properties; that entry's required is true where any such capability's own input schema names the attribute in required, and its capabilities are every capability currently answering such a concept and naming the attribute in properties. A concept the collection plan holds that no registered capability currently answers, or that more than one currently answers, contributes no attribute to this set, and neither does a capability whose own stored input schema does not currently hold a well-formed shape; the read naming these requirements names such a capability separately, since it never appears among any entry's own capabilities.
+statement: A case version's input requirements are one case-input-requirement per subject attribute that the input schema of a capability answering a concept in its collection plan names in properties; that entry's required is true where any such capability's own input schema names the attribute in required, and its capabilities are every capability currently answering such a concept and naming the attribute in properties.
 constrains:
   - domain/knowledge/case-version
   - domain/integration/capability

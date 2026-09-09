@@ -7029,6 +7029,25 @@ Which control carries each statement, its wording, and where on the surface it s
 
 Consistency is eventual because the surface never holds the registration it presents: what it states is drawn from a read of the capability issued separately, and the two windows this rule states are precisely the interval in which that read has not settled.
 
+=== rules/integration/a-capability-listing-routes-presence-turns-on-nothing-further
+---
+type: policy
+statement: >-
+  The route a-single-capability-surface-offers-a-route-to-the-capabilities-listing owes turns on
+  nothing further — not on whether the read backing the surface has completed, failed or answered
+  no capability at that identity, and not on whether the capability being authored is registered
+  yet.
+constrains:
+  - domain/integration/capability
+consistency: immediate
+---
+
+## Description
+
+`a-listed-case-version-offers-a-route-to-its-own-manifest` states the route from a listing to the single thing listed, carrying the same clause that its presence turns on nothing further — not on the presented thing's state, not on what preceded the reading. This states the reverse direction over the registry's own subject: from the single capability back to the set of them, owed unconditionally for the same reason.
+
+Consistency is immediate because the route's presence follows from the surface's own subject alone, one capability, and from nothing read elsewhere; no fact here spans two reads.
+
 === rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
 ---
 type: invariant
@@ -7065,38 +7084,13 @@ The helper lives inside the one surface an operator already authors or edits a c
 ---
 type: invariant
 statement: >-
-  The security schemes an operation of a fetched OpenAPI 3.x document requires are the schemes
-  named by the first requirement object of the security field in effect for that operation —
-  the operation's own security field where it declares one, otherwise the document's top-level
-  security field — every scheme that one requirement object names and no scheme of any further
-  alternative object the same field declares, and no scheme at all where the field in effect is
-  an empty array, where that first object names no scheme, or where no security field is
-  declared at either level, the draft then generating no credential placeholder and naming no
-  security scheme unresolved. An operation's security scheme reducible to one credential value
-  — an API key or an HTTP basic or bearer scheme — becomes a ${credential:<name>} placeholder in
-  the draft's configuration, with the generated name naming the connector and that scheme
-  together, upper-cased; the generated name is always disclosed in the draft's
-  generated_credentials, never presented as a value already resolved. A security scheme not
-  reducible to one credential value — OAuth2 and OpenID Connect among them — is named in the
-  draft's unresolved list instead, with reason security-scheme-not-reducible-to-a-credential,
-  and never becomes a placeholder. Two parts of one chosen operation occupy one and the same
-  drafted key where both would stand at one drafted query key, or at one drafted headers key,
-  the two key names equal byte for byte, and, within the drafted headers key Cookie, where both
-  would stand at one cookie name — an HTTP basic scheme, an HTTP bearer scheme, and an API key
-  declaring the header Authorization, by that exact name, as its own location each occupying
-  the whole value of the drafted headers key Authorization and so standing at that one key
-  together wherever more than one of them is required. Where two of the security schemes
-  required occupy one drafted key that way, only the first of them in the order the requirement
-  object in effect names its schemes becomes a placeholder and holds that key, and every other
-  one of them is named in the draft's unresolved list with reason
-  drafted-key-occupied-by-another-security-scheme, generating no placeholder and appearing in
-  no generated_credentials. Where one of the security schemes required and one parameter the
-  operation declares occupy one drafted key that way, the scheme's generated credential
-  placeholder holds that key, whichever of the two the document declares first, and the
-  parameter is named in the draft's unresolved list with that same reason, becoming no
-  placeholder and standing at no position of its own in the draft — the brace form
-  a-connector-configuration-draft-places-each-part-where-the-call-carries-it otherwise leaves
-  at an unresolved parameter's position never standing at a key a security scheme holds.
+  An operation's security scheme reducible to one credential value — an API key or an HTTP basic
+  or bearer scheme — becomes a ${credential:<name>} placeholder in the draft's configuration,
+  with the generated name naming the connector and that scheme together, upper-cased, always
+  disclosed in the draft's generated_credentials and never presented as a value already resolved;
+  a security scheme not reducible to one credential value — OAuth2 and OpenID Connect among them
+  — is named in the draft's unresolved list instead, with reason
+  security-scheme-not-reducible-to-a-credential, and never becomes a placeholder.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -7107,16 +7101,12 @@ The connector configuration's own placeholder mechanism resolves ${credential:<n
 
 The generated name is the connector's own name and the security scheme's own name from the OpenAPI document, each with every character outside A-Z0-9 replaced by an underscore, joined by an underscore, the whole upper-cased — connector erp-http and scheme apiKeyHeader generate ERP_HTTP_APIKEYHEADER. Disclosing it is never resolving it: the credential's real value still comes only from environment configuration, exactly as a-diagnostic-response-masks-a-resolved-credential already keeps a resolved credential out of what a diagnostic response shows.
 
-Which security field is in effect, and what an empty array means, is read the way OpenAPI 3.x itself already defines it and not as a preference of this specification's: an operation declaring no security field of its own is governed by the document's top-level field, and an empty array at either level declares that no security is required. Reading either differently would be reading a document other than the one the operator named, the same standing a-connector-configuration-draft-places-each-part-where-the-call-carries-it already gives a path item's parameters and a $ref. The first requirement object is the one read because the objects of a security array are alternative ways to satisfy the same operation — any one of them admits the call — and the first is the only one nameable without a preference the document never states, exactly the reading that same rule already gives the servers array's first entry. Within the object read, every scheme it names is required together rather than alternatively, so all of that object's schemes are read and none of another's. No scheme in effect leaves nothing unresolved: the operation asks for no credential, and naming a security scheme in the unresolved list there would disclose a failure that did not happen.
-
-Two schemes can collide on one drafted key because an-http-connector-configuration-declares-its-call fixes headers as one value per key, while a basic scheme, a bearer scheme and an API key located at the header Authorization each claim the whole of that key's value — so no single HTTP call carries two of them, and a document requiring two together declares something no call can satisfy. The draft neither refuses nor drops them in silence: the first scheme the requirement object names holds the key, so the operator keeps a configuration that works for one of them, and every displaced scheme is disclosed by name and by reason, which is what the unresolved list is for. The reason is its own rather than security-scheme-not-reducible-to-a-credential because a displaced basic, bearer or Authorization API key scheme reduces to one credential value perfectly well; reporting it as non-reducible would misstate why it is absent from the configuration. Refusing the whole draft was the alternative and is rejected on the ground a-malformed-or-unsupported-openapi-document-refuses-the-draft already fixes: the draft's refusals are an unfetchable link and an unreadable or unsupported document, and this is neither — it is exactly the kind of gap the reviewing operator closes by hand, with the drafted address, query, headers and body still worth reviewing.
-
-Authorization is only the loudest instance of that collision, not a special case of it: an-http-connector-configuration-declares-its-call declares query and headers each as an object of string values, one value per key, so any two parts of one operation sent to one key claim the whole of that same single value, whether the key is Authorization, a second API key scheme's own header, a query key two schemes both name, or a key a scheme and a parameter both name. Two schemes are separated there exactly as the Authorization case already separates them, by the requirement object's own order, which remains the only order either side of that collision has. A scheme colliding with a parameter has no such order to read — a requirement object and a parameters array are two lists nothing in the document relates — so the precedence is stated by what each part is rather than by where it sits, which is the only answer nameable without inventing an order across two lists. The scheme holds the key for two reasons. A document that both requires an API key scheme at a key and declares a parameter of that same name and location is, in the common case, naming one part of the call twice, and the credential placeholder is the honest value for that part; and where the two really are different parts, the credential is the one whose loss costs the entire call — a key holding ${subject:<name>} or the plain brace text where the API expects the credential yields a configuration no call of which is ever authorized, while a key holding the credential yields one an operator completes by hand for the parameter the unresolved item names. That displaced parameter stands at no position rather than at a second key, because the only key it ever had is the one the scheme now holds: this is the single case where the position-keeping a-connector-configuration-draft-places-each-part-where-the-call-carries-it states for an unresolved parameter cannot be honored, and the unresolved item is the whole of the disclosure there. Inside the drafted headers key Cookie the collision is judged per cookie name, because that key's value is a joined list of named segments and that rule already joins every cookie-carried part of one call into it — two cookie-carried parts at two cookie names sit side by side there and collide over nothing.
+Which schemes an operation requires, and in which order, is `a-connector-configuration-draft-reads-an-operations-required-security-schemes`'s own; what becomes of two of them colliding at one drafted key is `a-security-scheme-collision-at-one-drafted-key-favors-declared-order`'s own. This states only what one required scheme, read alone, resolves to.
 
 === rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
 ---
 type: policy
-statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration only where at least one capability is currently registered naming the connector the draft is generated for and every capability currently registered naming that connector names that exact parameter or field name — matched case-sensitively and separator-sensitively, never normalized — among its own input schema properties; the draft reads every one of those capabilities together, and never one of them chosen over the others. Where no capability is currently registered for that connector, the parameter or field is named in the draft's unresolved list with reason no-capability-registered; where at least one is registered and any one of them does not name that exact name among its properties, the parameter or field is named in that list with reason no-matching-input-schema-property instead. In neither case does it become a placeholder.
+statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration only where at least one capability is currently registered naming the connector the draft is generated for and every capability currently registered naming that connector names that exact parameter or field name — matched case-sensitively and separator-sensitively, never normalized — among its own input schema properties, the draft reading every one of those capabilities together and never one of them chosen over the others; where no capability is currently registered for that connector, the parameter or field is instead named in the draft's unresolved list with reason no-capability-registered, and where at least one is registered and any one of them does not name that exact name among its properties, the parameter or field is instead named in that list with reason no-matching-input-schema-property.
 expression: >-
   For a connector name c a draft is generated for, and a parameter or request-body field
   named n an operation of the fetched document declares: where the set of capabilities
@@ -7167,7 +7157,7 @@ statement: >-
   declares one, otherwise its path item's, otherwise the document's top-level — exactly as the
   document declares that URL and with any trailing slash removed, followed by the operation's
   own path exactly as the document keys it, and is that path alone where no servers array is in
-  effect or the one in effect declares no entry. A path parameter stands inside that address at
+  effect or the one in effect declares no entry; a path parameter stands inside that address at
   the place the document's own path template holds it, a query parameter at a drafted query key
   named exactly as the parameter declares it, a header parameter at a drafted headers key named
   exactly as the parameter declares it, a cookie parameter — a location the shape
@@ -7175,68 +7165,19 @@ statement: >-
   the one drafted headers key Cookie as its own name, an equals sign and its value, joined to
   any further cookie-carried part of the same call by a semicolon and a space, and a
   request-body field at a top-level key of the drafted body named exactly as the field declares
-  it. The parameters one operation declares are every parameter its own operation object declares
-  together with every parameter its path item declares that no parameter of the operation's own
-  names at the same location under the same name, the operation's own parameter standing where
-  the two would otherwise conflict; a $ref a parameter, a request-body schema, or a security
-  scheme declares in place of stating itself directly is read through to the declaration it
-  targets before this rule reads a name, a location, a schema or a scheme kind from it. One
-  operation's request-body schema is the schema its request body declares under the media type
-  application/json and under no other, matched as that exact media type name and read that way
-  however many media types that request body's content declares. The request-body field names
-  one operation declares are the keys of the properties object at the top level of that schema
-  and no others — a name nested inside a property's own subschema is never one of them, neither
-  by its leaf name nor by its path from the body root — and an operation declaring no request
-  body, one whose request body declares no content under application/json, or one whose
-  request-body schema is an array or any other non-object, declares no request-body field name
-  at all, the draft stating no body key for it. A parameter or field that resolves holds at its
-  position the placeholder it resolved to; one named in the draft's unresolved list still stands
-  at its position, holding its own name in the document's own brace form {name}, which names no
-  placeholder kind and is carried as plain text — except a parameter named unresolved with
-  reason drafted-key-occupied-by-another-security-scheme, which stands at no position at all,
-  the drafted key it would have occupied being held instead by the security scheme
-  a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
-  sends there. A generated credential placeholder for a
-  security scheme declaring a location of its own stands at that location — an API key carried
-  in a header at a drafted headers key named by that header, an API key carried in a query
-  parameter at a drafted query key named by that parameter, each holding the bare placeholder —
-  and one for a scheme declaring no location of its own stands in the drafted headers: an API
-  key carried in a cookie inside the Cookie key's value as its own cookie name, an equals sign
-  and the placeholder; an HTTP basic scheme as the Authorization key's whole value
-  Basic ${credential:<name>}; and an HTTP bearer scheme as the Authorization key's whole value
-  Bearer ${credential:<name>} — the placeholder standing in each for the credential alone and
-  never for the text stated beside it.
+  it.
 expression: |-
   For a chosen operation o of a fetched OpenAPI 3.x document and a draft d generated for
   connector c, where servers_in_effect(o) is o's own servers array where o declares one,
-  otherwise its path item's where that declares one, otherwise the document's top-level, and
-  ref(x) is x where x declares no $ref key and is the declaration $ref points to, followed
-  recursively, where it does:
+  otherwise its path item's where that declares one, otherwise the document's top-level:
 
-  - parameters(o) = ref(o).parameters union { p in ref(path_item(o)).parameters : no q in
-    ref(o).parameters has q.name = p.name and q.in = p.in }, every entry read through ref first.
   - address(d) = strip_trailing_slash(url(first(servers_in_effect(o)))) + path(o), and
     address(d) = path(o) where servers_in_effect(o) is absent or holds no entry.
   - a declared parameter p occupies: p.in = path -> the substring {p.name} inside address(d);
     p.in = query -> d.query[p.name]; p.in = header -> d.headers[p.name]; p.in = cookie -> the
     segment beginning "p.name=" inside the single value d.headers["Cookie"].
-  - body_schema(o) = ref(ref(ref(o).requestBody).content["application/json"].schema) where
-    ref(ref(o).requestBody) declares a content object holding that exact key, and is absent
-    otherwise; no other key of that content object is ever read, whatever keys it holds and
-    however many.
-  - field_names(o) = keys(body_schema(o).properties) where body_schema(o) declares a
-    properties object, otherwise the empty set; a field f in field_names(o) occupies d.body[f];
-    d states no body key where field_names(o) is empty.
-  - the value at a parameter's or field's position n is "${subject:n}" where n resolved, and
-    "{n}" where d.unresolved holds an item naming n — except where that item's reason is
-    drafted-key-occupied-by-another-security-scheme, n then occupying no position of d at all,
-    the key it would have occupied holding the credential placeholder of the security scheme
-    that displaced it.
-  - a generated credential name g for security scheme s occupies: s apiKey in header ->
-    d.headers[s.name] = "${credential:g}"; s apiKey in query -> d.query[s.name] =
-    "${credential:g}"; s apiKey in cookie -> the segment "s.name=${credential:g}" inside
-    d.headers["Cookie"]; s http basic -> d.headers["Authorization"] = "Basic ${credential:g}";
-    s http bearer -> d.headers["Authorization"] = "Bearer ${credential:g}".
+  - a field f in field_names(o) occupies d.body[f]; d states no body key where field_names(o)
+    is empty.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -7247,15 +7188,29 @@ Every part of an operation already has a place in the HTTP call a connector conf
 
 The first entry of the servers array is read because the array's entries are alternative hosts serving the same document — any one of them yields the same call — and the first is the only one nameable without a preference the document never states. Reading the operation's own array before its path item's before the document's top-level is the precedence the document itself declares, not a preference of this specification's. A document declaring no server at all leaves the address as the path alone rather than refusing: a-malformed-or-unsupported-openapi-document-refuses-the-draft names the draft's two refusals and a missing host is neither, it is exactly the gap the reviewing operator closes by hand, and the address still stands as the non-empty string the executing connector requires.
 
-Only the top level of a request-body schema names fields because a-capability-input-schema-holds-a-well-formed-object declares a capability's own names at the top level of properties, one per Subject attribute, and a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability matches a field name against those keys byte for byte. A nested leaf name would equate two different fields wherever a body repeats a name at two depths, and a name rooted from the body would be matched against a key no capability ever declares that way; either produces a placeholder standing for something other than the field it was read from — the exact silent equation that rule refuses. A body schema that is an array or another non-object names nothing to match against, so it honestly declares no field, and the draft states no body rather than inventing a key.
+Which parameters an operation declares, and what a $ref resolves to, is `a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs`'s own. Which schema and which field names a request body declares is `a-connector-configuration-drafts-request-body-fields-are-its-json-schemas-top-level-properties`'s own. What value stands at a resolved or an unresolved position is `a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text`'s own, and where a security scheme's own generated credential stands is `a-generated-credential-placeholder-stands-at-its-security-schemes-own-location`'s own. This states only where each part sits once its value is known.
 
-application/json is the one media type whose schema is read because the body an-http-connector-configuration-declares-its-call admits is a value inside the connector configuration's own JSON text, so a JSON object of top-level keys is the only body the executing connector ever carries; field names read off a multipart, form-encoded or XML schema would draft keys for a body that connector never sends in the shape the document declared them for. Where one request body declares content under several media types, naming this one is also the only choice available without a preference the document never states: the entries of a content object are alternative encodings of the same call, keyed rather than ordered, so there is no first entry to read the way a servers array has one. A request body declaring content under no such media type — a JSON-suffixed vendor media type alone among them — leaves the draft stating no body key rather than reading a schema at a name this reader does not recognize: the same honest gap a document declaring no server leaves in the address, and the same one a non-object body schema already leaves, closed by the reviewing operator by hand.
+=== rules/integration/a-connector-configuration-draft-reads-an-operations-required-security-schemes
+---
+type: invariant
+statement: >-
+  The security schemes an operation of a fetched OpenAPI 3.x document requires are the schemes
+  named by the first requirement object of the security field in effect for that operation —
+  the operation's own security field where it declares one, otherwise the document's top-level
+  security field — every scheme that one requirement object names and no scheme of any further
+  alternative object the same field declares, and no scheme at all where the field in effect is
+  an empty array, where that first object names no scheme, or where no security field is
+  declared at either level, the draft then generating no credential placeholder and naming no
+  security scheme unresolved.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
 
-An unresolved parameter or field keeps its position holding the document's own brace text because the unresolved list is the disclosure while the configuration is what the operator actually edits: dropping the key there would leave the edited artifact silently missing a part the operation requires, with nothing in the text to point at. The brace form is the document's own, names no placeholder kind this connector recognizes, and is carried as the plain text an-http-connector-configuration-declares-its-call already makes of anything that is not a ${kind} form, so leaving it in view misuses nothing in the executing connector's vocabulary. The one parameter this cannot hold for is one displaced from its own key by a security scheme the same operation requires: that key is not free to carry the brace text, since a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme puts the scheme's credential placeholder there, so the parameter is left no position and its unresolved item carries the whole of the disclosure.
+## Description
 
-A path item's own parameters and a $ref in place of a direct declaration are read the way OpenAPI 3.x itself already defines them, not a preference this specification states: a path item's parameters apply to every operation under it unless that operation declares one of its own at the same name and location, and a $ref names a declaration to be read exactly as if it stood written where the reference sits. Reading either any other way would not be a narrower or a stricter reading of the same document — it would be reading a different document than the one the operator named, so both are read here as the format itself already fixes them.
+Which security field is in effect, and what an empty array means, is read the way OpenAPI 3.x itself already defines it and not as a preference of this specification's: an operation declaring no security field of its own is governed by the document's top-level field, and an empty array at either level declares that no security is required. Reading either differently would be reading a document other than the one the operator named, the same standing a-connector-configuration-draft-places-each-part-where-the-call-carries-it already gives a path item's parameters and a $ref. The first requirement object is the one read because the objects of a security array are alternative ways to satisfy the same operation — any one of them admits the call — and the first is the only one nameable without a preference the document never states, exactly the reading that same rule already gives the servers array's first entry. Within the object read, every scheme it names is required together rather than alternatively, so all of that object's schemes are read and none of another's. No scheme in effect leaves nothing unresolved: the operation asks for no credential, and naming a security scheme in the unresolved list there would disclose a failure that did not happen.
 
-The scheme text beside a credential placeholder is drafted rather than configured because Basic and Bearer are the HTTP authentication scheme's own fixed text and no part of any secret, while the placeholder resolves to exactly one value read from environment configuration. Composing the text in the draft leaves the environment holding the credential alone and keeps the drafted header a value the scheme actually accepts. It is the same division the header-carried API key already stands by, whose header name the draft states while only its value comes from the environment: what the document states goes into the draft, and only the secret is left to be configured.
+This is the premise `a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme` and `a-security-scheme-collision-at-one-drafted-key-favors-declared-order` both read from: which schemes are required, and in which order, before either asks what becomes of them.
 
 === rules/integration/a-connector-configuration-draft-registers-nothing
 ---
@@ -7316,7 +7271,7 @@ It decides nothing about how many capabilities the draft reads, nothing about ho
 === rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
 ---
 type: invariant
-statement: A connector configuration draft's configuration declares a method, beside the address, query, headers and body derived from the same operation, and its value is the chosen operation's own HTTP method as the OpenAPI document names it, upper-cased — an operation the document names under get is drafted as method GET. The method a connector configuration currently registered under the same connector name declares is never drafted in its place, whether the two agree or differ.
+statement: A connector configuration draft's configuration declares a method, beside the address, query, headers and body derived from the same operation, and its value is the chosen operation's own HTTP method as the OpenAPI document names it, upper-cased — an operation the document names under get is drafted as method GET.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -7325,7 +7280,7 @@ constrains:
 
 Method is the one key an-http-connector-configuration-declares-its-call requires that an OpenAPI document states on its own account: the document names each operation under the very verb the call would issue. That is why it is drafted where a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap leaves its two keys absent — no OpenAPI construct names an evidence-result ending for a status or a field path a response is read by, while the operation's verb is already there to read. A draft that omitted it would leave the operator to retype a fact the document had given, and would leave a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered comparing an operation's method against a registration on behalf of a draft carrying no method of its own to submit.
 
-The value is the operation's own method rather than the registered one because the draft states what the document says and the mismatch states the disagreement: the comparison rule names both methods side by side and replaces neither, which it can only do where the draft's own text holds the operation's. An operator reading both decides which to submit, and register-connector remains the one write that changes what is registered.
+Whether that value is ever taken from what is currently registered instead is `a-drafted-method-is-never-taken-from-the-registered-configuration`'s own.
 
 The case is raised because upper-case is the vocabulary the executing connector holds a method to — GET, POST, PUT, PATCH or DELETE — while an OpenAPI 3.x document names its operations under lower-case path-item keys. Drafting the document's spelling verbatim would generate a configuration that issues no call and ends unavailable the moment it were registered and observed, reporting a MalformedHttpConnectorConfigurationError over a method the draft itself had miscased. Only the case is changed: the verb is never substituted, defaulted or dropped.
 
@@ -7357,6 +7312,49 @@ A draft never overwrites a currently registered method on its own account: regis
 The two sides spell one fact in two fixed conventions: an OpenAPI document names an operation's method as a lower-case path-item key, while an-http-connector-configuration-declares-its-call holds a declared method to one of GET, POST, PUT, PATCH or DELETE. Read exactly as each source gives it, a registered GET against an operation keyed get would report a disagreement that does not exist, and every draft over an already-configured connector would carry a mismatch — which is why the comparison folds case, and why folding here is not the normalization a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability deliberately refuses: a parameter name has no closed vocabulary and no stated convention on either side, so a difference in its case is unexplained and may be a different fact, whereas a method's difference in case is accounted for by both sources' own stated conventions and can be nothing else.
 
 Both methods are named upper-cased because that is the one vocabulary a method may be declared in, and because the draft's own configuration already declares the operation's method in it — naming the same value one way inside the configuration and another beside it in the method_mismatch would give one draft two spellings of one method for an operator to reconcile before reading the disagreement the mismatch exists to show.
+
+=== rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+---
+type: invariant
+statement: >-
+  The parameters one operation declares are every parameter its own operation object declares
+  together with every parameter its path item declares that no parameter of the operation's own
+  names at the same location under the same name, the operation's own parameter standing where
+  the two would otherwise conflict, and a $ref a parameter, a request-body schema, or a security
+  scheme declares in place of stating itself directly is read through to the declaration it
+  targets before a name, a location, a schema or a scheme kind is read from it.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+A path item's own parameters and a $ref in place of a direct declaration are read the way OpenAPI 3.x itself already defines them, not a preference this specification states: a path item's parameters apply to every operation under it unless that operation declares one of its own at the same name and location, and a $ref names a declaration to be read exactly as if it stood written where the reference sits. Reading either any other way would not be a narrower or a stricter reading of the same document — it would be reading a different document than the one the operator named, so both are read here as the format itself already fixes them.
+
+This is the premise `a-connector-configuration-draft-places-each-part-where-the-call-carries-it` reads a parameter's own name, location and schema from.
+
+=== rules/integration/a-connector-configuration-drafts-request-body-fields-are-its-json-schemas-top-level-properties
+---
+type: invariant
+statement: >-
+  One operation's request-body schema is the schema its request body declares under the media
+  type application/json and under no other, matched as that exact media type name and read that
+  way however many media types that request body's content declares, and the request-body field
+  names one operation declares are the keys of the properties object at the top level of that
+  schema and no others — a name nested inside a property's own subschema never one of them,
+  neither by its leaf name nor by its path from the body root — an operation declaring no
+  request body, one whose request body declares no content under application/json, or one whose
+  request-body schema is an array or any other non-object, declaring no request-body field name
+  at all.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Only the top level of a request-body schema names fields because a-capability-input-schema-holds-a-well-formed-object declares a capability's own names at the top level of properties, one per Subject attribute, and a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability matches a field name against those keys byte for byte. A nested leaf name would equate two different fields wherever a body repeats a name at two depths, and a name rooted from the body would be matched against a key no capability ever declares that way; either produces a placeholder standing for something other than the field it was read from — the exact silent equation that rule refuses. A body schema that is an array or another non-object names nothing to match against, so it honestly declares no field, and the draft states no body rather than inventing a key.
+
+application/json is the one media type whose schema is read because the body an-http-connector-configuration-declares-its-call admits is a value inside the connector configuration's own JSON text, so a JSON object of top-level keys is the only body the executing connector ever carries; field names read off a multipart, form-encoded or XML schema would draft keys for a body that connector never sends in the shape the document declared them for. Where one request body declares content under several media types, naming this one is also the only choice available without a preference the document never states: the entries of a content object are alternative encodings of the same call, keyed rather than ordered, so there is no first entry to read the way a servers array has one. A request body declaring content under no such media type — a JSON-suffixed vendor media type alone among them — leaves the draft stating no body key rather than reading a schema at a name this reader does not recognize: the same honest gap a document declaring no server leaves in the address, and the same one a non-object body schema already leaves, closed by the reviewing operator by hand.
 
 === rules/integration/a-connector-configuration-holds-a-well-formed-object
 ---
@@ -7391,6 +7389,21 @@ The configuration under test is the registered one for the same reason the capab
 
 Which attributes the operator supplies values for follows from that same registered configuration rather than from any case: a test names no case version, so the case-derived requirement governing an ordinary diagnose (a-diagnosed-subject-covers-its-cases-required-attributes, which this test is already exempt from) has nothing to say about it, and the configuration's own ${subject:<attribute-name>} placeholders (an-http-connector-configuration-declares-its-call) are the only statement anywhere of which Subject attributes this call actually reads. Each such name is already governed twice over — held inside the paired capability's input schema properties by a-connector-placeholder-is-declared-by-its-capability, and drawn from the glossary by a-subject-attribute-is-drawn-from-the-glossary — so it is a name the operator reads rather than authors; what the operator contributes is the value, the other half of the attribute-value pair domain/investigation/subject-attribute-value declares, which is what identifies the instance the test call reaches. Two placeholders naming the same attribute name one attribute, so the test collects one value for it, not two.
 
+=== rules/integration/a-connector-configuration-listing-routes-presence-turns-on-nothing-further
+---
+type: invariant
+statement: >-
+  The route a-connector-configuration-surface-offers-a-route-to-the-listing owes turns on nothing
+  further — not on whether the surface reads a configuration or authors one, not on the read of
+  that configuration having answered, and not on how the operator reached the surface.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+`rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest` already decided this shape once, in the other direction, carrying the same clause that its own route's presence turns on nothing further. The route is owed unconditionally here for the same reason it is unconditional there — a route present on only some readings is one the operator cannot rely on, and the conditions that would narrow it (a read still outstanding, a read refused, a configuration not yet authored) are exactly the readings the operator has least reason to stay on. How the surface was reached does not narrow it either: a route that returns only whoever arrived from the listing leaves the operator who arrived any other way exactly where this rule refuses to leave them.
+
 === rules/integration/a-connector-configuration-names-its-connector
 ---
 type: invariant
@@ -7403,6 +7416,23 @@ constrains:
 
 The connector name is the one identity a connector configuration has, so a registration without one names nothing the registry could hold or a capability could later reference.
 An empty string is treated as no name at all, the same reading a-capability-declares-its-contract gives an empty capability attribute.
+
+=== rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+---
+type: invariant
+statement: >-
+  A placeholder an-http-connector-configuration-declares-its-call admits is written as the
+  literal text form ${kind} or ${kind:argument}, a placeholder naming a Subject attribute
+  written ${subject:<attribute-name>} with the attribute name as its argument, a placeholder
+  naming the requester written ${requester} with no argument, and a placeholder naming a
+  credential written ${credential:<name>} with the credential name as its argument.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The address, query, headers and body, and their placeholder mechanism, are the connector's statement of how its call reaches into a Subject, a requester and a credential without either living in the configuration's own text — `rules/integration/a-diagnostic-response-masks-a-resolved-credential` already presumes a credential placeholder exists and masks what it resolves to; this is the node stating the mechanism's own literal forms.
 
 === rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
 ---
@@ -7422,10 +7452,7 @@ type: invariant
 statement: >-
   A surface presenting one registered connector configuration, or authoring one, offers
   the operator a route to the listing of registered connector configurations, and taking
-  that route registers nothing and alters no registered configuration. The route's
-  presence turns on nothing further — not on whether the surface reads a configuration or
-  authors one, not on the read of that configuration having answered, and not on how the
-  operator reached the surface.
+  that route registers nothing and alters no registered configuration.
 expression: >-
   For a surface s presenting or authoring a single connector configuration: s carries a
   route to the listing answered by list-connector-configurations of
@@ -7443,7 +7470,7 @@ constrains:
 
 `contracts/integration/connector-configuration-registry` publishes both the listing of every configuration currently registered and the read of the one registered under a name, so the listing is where an operator surveys what exists and a single-configuration surface is one step off it. Nothing said whether that step is offered back. Left unsaid, an operator standing at one configuration — having opened it, having begun authoring a new one, or having loaded its address directly — would keep a way to the listing only where the interface happened to leave one, and otherwise would have to construct an address to reach the read the registry publishes for exactly that purpose.
 
-`rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest` already decided this shape once, in the other direction: where one operator surface is one step from the only place a neighbouring reading is answered, the step is offered rather than left to whatever address a reader could construct. The route is owed here for the same reason, and owed unconditionally for the same reason it is unconditional there — a route present on only some readings is one the operator cannot rely on, and the conditions that would narrow it (a read still outstanding, a read refused, a configuration not yet authored) are exactly the readings the operator has least reason to stay on. How the surface was reached does not narrow it either: a route that returns only whoever arrived from the listing leaves the operator who arrived any other way exactly where this rule refuses to leave them.
+`rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest` already decided this shape once, in the other direction: where one operator surface is one step from the only place a neighbouring reading is answered, the step is offered rather than left to whatever address a reader could construct. Whether the route is owed unconditionally, whatever the surface's own reading, is `a-connector-configuration-listing-routes-presence-turns-on-nothing-further`'s own.
 
 Taking it registers nothing. `register-connector` is the one operation that creates a configuration or replaces whatever answered to its name, and `domain/integration/connector-configuration` is replaced whole on every edit; a route away that wrote what the surface was holding would make leaving indistinguishable from registering, on a value object where the write is total. What becomes of content an authoring surface was holding when the operator leaves it is no part of this: the route says where the operator lands, never what happens to content never registered.
 
@@ -7452,7 +7479,7 @@ Which control carries the route, whether it stands apart from the controls that 
 === rules/integration/a-connector-placeholder-is-declared-by-its-capability
 ---
 type: policy
-statement: A connector configuration registration or edit is refused if a placeholder naming a Subject attribute, in its own text, names an attribute absent from the properties the input schema of a capability currently registered against that connector's name declares; a capability registration is refused likewise if the connector it names already holds a registered configuration whose own text embeds a placeholder naming a Subject attribute absent from this registration's own input schema properties. Either refusal is an HTTP 422 response reporting a ConnectorPlaceholderOutsideInputSchemaError naming every orphaned placeholder together with the capability that fails to declare it.
+statement: A connector configuration registration or edit is refused if a placeholder naming a Subject attribute, in its own text, names an attribute absent from the properties the input schema of a capability currently registered against that connector's name declares; a capability registration is refused likewise if the connector it names already holds a registered configuration whose own text embeds a placeholder naming a Subject attribute absent from this registration's own input schema properties.
 constrains:
   - domain/integration/capability
   - domain/integration/connector-configuration
@@ -7465,6 +7492,24 @@ a-capability-input-schema-holds-a-well-formed-object fixes what properties decla
 Registering a capability before its connector is ever configured stays possible, and so does configuring a connector before any capability names it — this rule reconciles only what already exists on both sides at the moment of a write, never forcing an order. The two registrations can still transiently disagree between one write and the next, in an order the specification permits; an-unresolvable-observation-ends-unavailable's own degrade, not a fault, is what an observation reaching that gap answers with meanwhile.
 Only a placeholder naming a Subject attribute is held to this — a placeholder naming the requester or a credential names no subject attribute, so properties has nothing to check it against.
 Testing a connector configuration through its capability (a-connector-configuration-is-tested-through-a-registered-capability) reports this same check for the pairing under test, since that diagnostic exists exactly to expose this seam to an operator.
+What either refusal reports is `a-connector-placeholder-refusal-reports-every-orphaned-placeholder`'s own.
+
+=== rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder
+---
+type: policy
+statement: >-
+  A refusal a-connector-placeholder-is-declared-by-its-capability states is an HTTP 422 response
+  reporting a ConnectorPlaceholderOutsideInputSchemaError naming every orphaned placeholder
+  together with the capability that fails to declare it.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+`a-connector-placeholder-is-declared-by-its-capability` reconciles a connector configuration's own placeholders against whatever capability schema stands registered against it, checked at both writes that could put them out of step; this states what either refusal reports rather than when it fires.
 
 === rules/integration/a-diagnostic-response-masks-a-resolved-credential
 ---
@@ -7478,6 +7523,23 @@ constrains:
 
 A connector configuration's call may name a credential the executing connector reads from environment configuration rather than from the configuration text itself, so nobody has to author a secret directly into an operator-editable field. The diagnostic operation exists to let an operator see the request a connector configuration would actually issue (contracts/integration/connector-diagnostics), and that same visibility would otherwise hand back the one thing the indirection was meant to keep out of an editable field and a response body alike. Masking is what keeps the diagnostic honest about shape without being honest about the secret.
 
+=== rules/integration/a-draft-fetch-and-readability-refusals-never-read-alike
+---
+type: invariant
+statement: >-
+  The two refusals a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  states answer under the same HTTP status and never under the same error value, and neither is
+  ever reported as the other or as a refusal carrying no named condition.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Two error values, because telling a document that was never received from one that cannot be read is the whole reason the two refusals are two rules. A single shared value would leave the operator where `constraints/a-domain-error-unmapped-by-status-is-refused-generically` leaves a caller — knowing only that something failed — and would make the surface distinction `a-submitted-registration-states-its-outcome-to-the-operator` requires for a refusal impossible to draw. The parse failure and the unsupported version share one value because one rule states them as one refusal for one reason: nothing partial is worth drafting from text the reader cannot take as OpenAPI 3.x. Both names follow this specification's subject-plus-condition convention (`ConnectorConfigurationNotFoundError`, `CapabilityNotReadOnlyError`): not fetched, and not readable — the second spanning both a document nobody can parse and a 2.0 document handed to a 3.x-only reader, where `NotWellFormed`, already this specification's word for a pure parse-shape refusal, would understate the version half.
+
+One HTTP status for both, because it is this specification's established answer for a well-formed request whose named content the domain refuses — `ConnectorConfigurationNotWellFormedError`, `IncompleteConnectorConfigurationError`, `CapabilitySchemaNotWellFormedError` and `ConnectorPlaceholderOutsideInputSchemaError` all answer it. Both refusals are that case: the request is well formed, and what it names — a link, or the document that link answered — cannot be drafted from.
+
 === rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
 ---
 type: invariant
@@ -7488,11 +7550,9 @@ statement: >-
   named it, together with which of the three fetch failures occurred as one of network-failure,
   timeout or status-outside-2xx — that last carrying with it the status code the link answered —
   and carry nothing else of that fetch: no underlying network or client error's own message, and
-  no part of whatever the link answered with. A request refused because the fetched document does
+  no part of whatever the link answered with; a request refused because the fetched document does
   not parse as a well-formed OpenAPI document or does not declare OpenAPI 3.x is answered with an
-  HTTP 422 response reporting an OpenApiDocumentNotReadableError. Both answer under the same
-  status and never under the same error value, and neither is ever reported as the other or as a
-  refusal carrying no named condition.
+  HTTP 422 response reporting an OpenApiDocumentNotReadableError instead.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -7503,9 +7563,7 @@ The two refusals themselves are already stated: `an-unfetchable-openapi-link-ref
 
 One fact, decided once and in one house. Which status and which error value each refusal answers under, and whether the two differ, is a single comparative question: answered half in each of the two rules, the comparative half gets two answers, which is exactly what `a-submitted-registration-states-its-outcome-to-the-operator` refuses by deciding one fact once for both registries rather than twice. The two rules keep stating what is refused and why; this states what the surface answers.
 
-HTTP 422 for both, because it is this specification's established answer for a well-formed request whose named content the domain refuses — `ConnectorConfigurationNotWellFormedError`, `IncompleteConnectorConfigurationError`, `CapabilitySchemaNotWellFormedError` and `ConnectorPlaceholderOutsideInputSchemaError` all answer it. Both refusals are that case: the request is well formed, and what it names — a link, or the document that link answered — cannot be drafted from. HTTP 500 is reserved here for a server-side condition the requester neither caused nor can correct by changing the request, and a link the request itself named is corrected by naming another, so neither refusal is that. A gateway or unavailable status would additionally assert an upstream fault, or a transience worth retrying, that no node holds: the one place this specification tells a caller when to come back is the capability-identity read's own rate limit.
-
-Two error values, because telling a document that was never received from one that cannot be read is the whole reason the two refusals are two rules. A single shared value would leave the operator where `constraints/a-domain-error-unmapped-by-status-is-refused-generically` leaves a caller — knowing only that something failed — and would make the surface distinction `a-submitted-registration-states-its-outcome-to-the-operator` requires for a refusal impossible to draw. The parse failure and the unsupported version share one value because one rule states them as one refusal for one reason: nothing partial is worth drafting from text the reader cannot take as OpenAPI 3.x. Both names follow this specification's subject-plus-condition convention (`ConnectorConfigurationNotFoundError`, `CapabilityNotReadOnlyError`): not fetched, and not readable — the second spanning both a document nobody can parse and a 2.0 document handed to a 3.x-only reader, where `NotWellFormed`, already this specification's word for a pure parse-shape refusal, would understate the version half.
+HTTP 500 is reserved here for a server-side condition the requester neither caused nor can correct by changing the request, and a link the request itself named is corrected by naming another, so neither refusal is that. A gateway or unavailable status would additionally assert an upstream fault, or a transience worth retrying, that no node holds: the one place this specification tells a caller when to come back is the capability-identity read's own rate limit. Whether the two refusals ever share a status or an error value, or read as one another, is `a-draft-fetch-and-readability-refusals-never-read-alike`'s own.
 
 The fetch refusal reports the link and the failure to its caller because the refusal is otherwise unactionable: the operator's next act is either to name a different link or to go and fix the far end publishing the document, and which of the three failures happened is the whole of what tells those two apart — a link nothing answered, a link too slow to keep waiting for (`an-unfetchable-openapi-link-refuses-the-draft`'s sixty seconds), and a link that answered with a status. Held only server-side, that distinction would exist in a log the operator authoring the configuration cannot read. The link is echoed because it is the request's own input handed straight back, disclosing nothing the caller did not itself send, and the answered status is the far end's own public answer to a request the operator named, so neither field says anything about this system.
 
@@ -7517,7 +7575,7 @@ type: invariant
 statement: >-
   Where draft-connector-configuration-from-openapi answers a request with a generated
   connector configuration draft rather than with one of the refusals its own rules state,
-  that answer carries an HTTP 200 status. It is never HTTP 201, generating a draft creating
+  that answer carries an HTTP 200 status and never HTTP 201, generating a draft creating
   no connector configuration and no record of any kind; never HTTP 204, the draft being the
   whole of what the request asked for; and never HTTP 202, the draft standing in the answer
   to the request that asked for it.
@@ -7544,6 +7602,77 @@ Reach. This states the status of this operation's own successful answer and noth
 
 Home. A new rule rather than `contracts/integration/connector-configuration-draft`, which as an api declares the operations it publishes and can declare no answer at all, and rather than `a-connector-configuration-draft-response-carries-no-capability`, whose identity is what the answer's body may not carry and whose own Description holds this operation's other surface answers to their own rules — the same split `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` already made in taking the refusal statuses into one house of their own. An invariant over `domain/integration/connector-configuration-draft`, immediate and inside that one element: the condition is decidable from one answer alone.
 
+=== rules/integration/a-drafted-method-is-never-taken-from-the-registered-configuration
+---
+type: invariant
+statement: >-
+  The method a connector configuration currently registered under the same connector name
+  declares is never drafted in place of the chosen operation's own method, whether the two
+  agree or differ.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The value is the operation's own method rather than the registered one because the draft states what the document says and the mismatch states the disagreement: `a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered` names both methods side by side and replaces neither, which it can only do where the draft's own text holds the operation's. An operator reading both decides which to submit, and register-connector remains the one write that changes what is registered.
+
+=== rules/integration/a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text
+---
+type: invariant
+statement: >-
+  A parameter or field that resolves holds at its position the placeholder it resolved to, and
+  one named in the draft's unresolved list still stands at its position, holding its own name in
+  the document's own brace form {name}, which names no placeholder kind and is carried as plain
+  text — except a parameter named unresolved with reason
+  drafted-key-occupied-by-another-security-scheme, which stands at no position at all, the
+  drafted key it would have occupied being held instead by the security scheme
+  a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
+  sends there.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+An unresolved parameter or field keeps its position holding the document's own brace text because the unresolved list is the disclosure while the configuration is what the operator actually edits: dropping the key there would leave the edited artifact silently missing a part the operation requires, with nothing in the text to point at. The brace form is the document's own, names no placeholder kind this connector recognizes, and is carried as the plain text an-http-connector-configuration-declares-its-call already makes of anything that is not a ${kind} form, so leaving it in view misuses nothing in the executing connector's vocabulary. The one parameter this cannot hold for is one displaced from its own key by a security scheme the same operation requires: that key is not free to carry the brace text, since a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme puts the scheme's credential placeholder there, so the parameter is left no position and its unresolved item carries the whole of the disclosure.
+
+=== rules/integration/a-failed-connector-configuration-read-is-reissued-only-on-the-operators-act
+---
+type: invariant
+statement: >-
+  The read a-presented-connector-configuration-states-an-outstanding-or-failed-read offers again
+  on a failed window is the operator's own act: the screen re-issues a failed read on no
+  initiative of its own.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The read is issued again only on the operator's act, so that a far end already failing is never called repeatedly by a screen nobody is watching, and so that what the operator sees after a failure stays what they last asked for.
+
+=== rules/integration/a-generated-credential-placeholder-stands-at-its-security-schemes-own-location
+---
+type: invariant
+statement: >-
+  A generated credential placeholder for a security scheme declaring a location of its own
+  stands at that location — an API key carried in a header at a drafted headers key named by
+  that header, an API key carried in a query parameter at a drafted query key named by that
+  parameter, each holding the bare placeholder — and one for a scheme declaring no location of
+  its own stands in the drafted headers: an API key carried in a cookie inside the Cookie key's
+  value as its own cookie name, an equals sign and the placeholder; an HTTP basic scheme as the
+  Authorization key's whole value Basic ${credential:<name>}; and an HTTP bearer scheme as the
+  Authorization key's whole value Bearer ${credential:<name>} — the placeholder standing in each
+  for the credential alone and never for the text stated beside it.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The scheme text beside a credential placeholder is drafted rather than configured because Basic and Bearer are the HTTP authentication scheme's own fixed text and no part of any secret, while the placeholder resolves to exactly one value read from environment configuration. Composing the text in the draft leaves the environment holding the credential alone and keeps the drafted header a value the scheme actually accepts. It is the same division the header-carried API key already stands by, whose header name the draft states while only its value comes from the environment: what the document states goes into the draft, and only the secret is left to be configured.
+
 === rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
 ---
 type: policy
@@ -7551,12 +7680,9 @@ statement: >-
   An operator editing, on the surface that read it, the capability registered at a name and
   version or the connector configuration registered under a connector name is offered an act
   that returns every field of that surface to the content of the registration the surface
-  last read, registering nothing and leaving the operator on that same surface; that act
+  last read, registering nothing and leaving the operator on that same surface, and that act
   takes effect only where the operator states in a further, explicit act that it is to be
-  performed, and where the operator does not so state the edit stands untouched. A surface
-  holding no read registration — one authoring at an identity nothing is registered at, one
-  whose read has not answered, one whose read failed — is offered no such act, having no
-  content to return its fields to.
+  performed, the edit standing untouched where the operator does not so state.
 expression: >-
   For an operator on a surface s presenting the capability registered at a name and version
   that read-capability-by-identity of contracts/integration/capability-registry answered, or
@@ -7587,7 +7713,7 @@ Each of these two registries publishes exactly one write — `register-capabilit
 
 The act is owed where a registration was read, because the way out this specification has already stated is a leaving and not a putting-down. `an-abandoned-capability-registration-entry-registers-nothing` and `a-connector-configuration-authoring-may-be-abandoned-without-registering` each give a way out that costs nothing, and each of them ends the operator's work at that surface by returning them to the surface the authoring was reached from. An operator who wants the read content back and wants to go on working at it is asking for something neither of those answers: leaving and coming back is the only route left them, and coming back directly is not owed — what `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` and `a-connector-configuration-surface-offers-a-route-to-the-listing` owe from these surfaces is a route to the listing, so the return runs through the set to arrive at exactly the content the read already answered. The surface is holding that content already, so the recovery costs the registry nothing and its absence charges the operator navigation for it. What is recovered is real rather than nominal: a connector configuration is opaque text whose keys are the executing connector's own statement (`domain/integration/connector-configuration`), and a capability's declared contract carries an input schema and an output schema, none of which an operator who has edited over them can retype from memory.
 
-A surface authoring at an identity nothing is registered at is offered nothing here, because it read nothing there is to go back to. Emptying such a surface's fields recovers no content — it is indistinguishable from the operator clearing them — and the identity itself is one `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has the identity-keyed read refuse, which is the same reason `an-abandoned-capability-registration-entry-registers-nothing` refuses that identity as an abandonment's destination. The surfaces whose read has not answered or has failed are excluded for the same reason and by an existing statement: `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` hold that no attribute of any registration is presented as the content standing at that identity in either window, so there is no read content in hand for this act to restore.
+Which surfaces are offered no such act at all — one authoring at an identity nothing is registered at, one whose read has not answered, one whose read failed — is `a-surface-holding-no-read-registration-offers-no-discard`'s own.
 
 The further, explicit act is owed because the discard destroys content held nowhere else and the specification publishes nothing that recovers it. An edit never submitted has entered no registry — `an-abandoned-capability-registration-entry-registers-nothing` states that the registry holds registrations and never entries, and `a-connector-configuration-is-tested-through-a-registered-capability` states that even a diagnostic exercises the configuration currently registered, never text an operator holds unsaved — so an edit discarded is an edit gone, with no operation of either contract able to answer it back. What distinguishes this from the abandonment, which takes no such act, is what follows it: an abandonment ends the operator's engagement with the content and shows itself by landing them somewhere they were not, while this leaves the operator exactly where they were and expecting to continue. The next act after a discard is another edit, made on top of content that silently went back to what was read, and where the lost edit was a partial change inside a long opaque configuration or a schema an operator may go on and submit content they did not intend over a write both registries make total — `domain/integration/connector-configuration` is replaced whole on every edit, and `register-capability` replaces whatever stood at the identity with the whole declared contract submitted. A second act by the operator is the least that separates the discard asked for from the discard mis-triggered, and this specification already reads a costly act as the operator's own to state rather than something a surface infers: `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` has the reattempt issued only on the operator's own act and never on the surface's.
 
@@ -7604,15 +7730,13 @@ statement: >-
   The document fetched for a connector configuration draft is read as OpenAPI 3.x in either of
   the two serializations the OpenAPI format itself defines -- JSON and YAML -- with the
   serialization decided by parsing the fetched text itself and never by any content type the
-  response declared, and a document served as YAML read exactly as one served as JSON, holding
-  the same version check, the same refusals and the same draft resolved from it. A request to
+  response declared, a document served as YAML read exactly as one served as JSON holding the
+  same version check, the same refusals and the same draft resolved from it; and a request to
   draft a connector configuration whose fetched document parses as neither of those two
   serializations, or parses as one of them but is not a well-formed OpenAPI document, or whose
   declared version is not OpenAPI 3.x -- a Swagger 2.0 document among them -- is refused, naming
-  what failed to parse or which version was declared; no draft is generated from an unparseable
-  or unsupported document. A fetched text in neither serialization is that same unreadable
-  document refusal, answered as a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
-  states it, never as a fetch failure and never as a condition of its own.
+  what failed to parse or which version was declared, no draft generated from an unparseable or
+  unsupported document.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -7621,7 +7745,7 @@ constrains:
 
 Only OpenAPI 3.x is read: an earlier Swagger 2.0 document names its operations, parameters and security schemes differently, and reading one as though it were 3.x would misname what the draft resolves rather than refuse honestly. A document that does not parse at all is the same refusal for the same reason a-connector-configuration-holds-a-well-formed-object already gives a registration that does not parse: nothing partial is worth drafting from text nobody can read.
 
-Both serializations are read because they are the two the OpenAPI format defines for one and the same document, and every construct the draft rules read -- an operation at a path and method, its parameters, its request body's media types, its security schemes -- is the same object model whichever of the two carried it, so the serialization decides nothing about what a draft resolves. Refusing a document because it arrived as YAML would refuse most of what an operator can name while nothing about the text was in fact unreadable. The serialization is decided by parsing the text rather than by a declared content type because the only thing an-unfetchable-openapi-link-refuses-the-draft reads of the response is its status; reading a content type instead would add a refusal this rule does not hold, for a document that parses perfectly and was merely served under a type whatever publishes it chose. Text that parses as neither serialization is text nobody can read as OpenAPI, which is the refusal this rule already gives, so it takes no third condition and no third error value.
+Both serializations are read because they are the two the OpenAPI format defines for one and the same document, and every construct the draft rules read -- an operation at a path and method, its parameters, its request body's media types, its security schemes -- is the same object model whichever of the two carried it, so the serialization decides nothing about what a draft resolves. Refusing a document because it arrived as YAML would refuse most of what an operator can name while nothing about the text was in fact unreadable. The serialization is decided by parsing the text rather than by a declared content type because the only thing an-unfetchable-openapi-link-refuses-the-draft reads of the response is its status; reading a content type instead would add a refusal this rule does not hold, for a document that parses perfectly and was merely served under a type whatever publishes it chose. Text that parses as neither serialization is text nobody can read as OpenAPI, which is the refusal this rule already gives — the same unreadable-document refusal `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` states, never a fetch failure and never a condition of its own — so it takes no third condition and no third error value.
 
 === rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
 ---
@@ -7689,7 +7813,7 @@ Consistency is eventual for the reason its neighbour over this same surface alre
 === rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
 ---
 type: invariant
-statement: 'Where the read of the connector configuration registered under one named connector is refused because nothing is registered under that connector name, the operator-facing screen presenting that configuration stands in a reading of its own and not in the reading a read that failed stands in: it states explicitly that nothing is registered under that connector name, presents no connector or configuration value, states nothing to the effect that the configuration could not be read, and offers no re-issue of that read. That reading and the three a-presented-connector-configuration-states-an-outstanding-or-failed-read states are four presentations the operator tells apart, and none of them is presented as another.'
+statement: 'Where the read of the connector configuration registered under one named connector is refused because nothing is registered under that connector name, the operator-facing screen presenting that configuration stands in a reading of its own and not in the reading a read that failed stands in: it states explicitly that nothing is registered under that connector name, presents no connector or configuration value, states nothing to the effect that the configuration could not be read, and offers no re-issue of that read.'
 expression: 'For a connector name n and a screen presenting the connector configuration registered under n through read-connector-configuration of contracts/integration/connector-configuration-registry: where that read is refused because nothing is registered under n — the refusal a-connector-configuration-read-by-an-unregistered-name-is-refused states — the screen states that nothing is registered under n, states no value of connector or configuration, states nothing to the effect that the configuration could not be read, and carries no action that re-issues that read. This presentation is distinguishable to the operator from the presentation of a read that has not returned, from that of a read that failed, and from that of a read that returned, each as a-presented-connector-configuration-states-an-outstanding-or-failed-read states it, and none of those four presentations is presented as another.'
 constrains:
 - domain/integration/connector-configuration
@@ -7721,6 +7845,7 @@ What the route answers a caller stays `a-connector-configuration-read-by-an-unre
 The acts the screen owes on a reading that shows no registration are neither extended nor narrowed: `a-connector-configuration-surface-offers-a-route-to-the-listing` owes the route to the listing on the reading whose read was refused by its own unconditional terms, `a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading` owes the return to the surface this screen was reached from on this very reading, and `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface` already offers its act on no reading that read no registration.
 Whether the operator may author a configuration under that name from this reading is no part of this.
 Which control carries the statement, its wording and where it sits are form and belong to the interface, exactly as every surface rule of this specification leaves them.
+Whether this reading and the three the neighbouring rule states are distinguishable to the operator is `a-presented-connector-configurations-four-readings-are-mutually-distinguishable`'s own.
 
 An invariant over `domain/integration/connector-configuration`, immediate and inside that one aggregate — the shape and home `a-presented-connector-configuration-states-an-outstanding-or-failed-read` already takes for the three readings this fourth one is told apart from.
 A new rule rather than the api contract, which cannot declare a presentation at all, and rather than the domain element, which declares what a configuration is and not what a screen states about reading one.
@@ -7728,7 +7853,7 @@ A new rule rather than the api contract, which cannot declare a presentation at 
 === rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
 ---
 type: invariant
-statement: 'An operator-facing screen presenting the connector configuration registered under one named connector states which of three windows it stands in, and never leaves two of them reading alike: while the read of that configuration has not returned, the screen states that the configuration is still being read and presents no connector or configuration value; where that read fails — the read refused because nothing is registered under that connector name excepted, that refusal being the registry''s own answer and a reading of its own — the screen states explicitly that the configuration could not be read and offers the operator that same read again; and where the read returns, the screen presents the connector name and the configuration exactly as the read answered them. The offered read is the operator''s own act: the screen re-issues a failed read on no initiative of its own.'
+statement: 'An operator-facing screen presenting the connector configuration registered under one named connector states which of three windows it stands in, and never leaves two of them reading alike: while the read of that configuration has not returned, the screen states that the configuration is still being read and presents no connector or configuration value; where that read fails — the read refused because nothing is registered under that connector name excepted, that refusal being the registry''s own answer and a reading of its own — the screen states explicitly that the configuration could not be read and offers the operator that same read again; and where the read returns, the screen presents the connector name and the configuration exactly as the read answered them.'
 expression: 'For a connector name n and a screen presenting the connector configuration registered under n through read-connector-configuration: where that read has not returned, the screen states that the configuration is still being read and states no value of connector or configuration; where that read failed — a read refused because nothing is registered under n excepted, which stands in the reading a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under states — the screen states that the configuration could not be read, states no value of connector or configuration, and carries an action that re-issues that same read; where that read returned, the screen states connector and configuration as that answer carries them, and states no value that answer did not carry. The three presentations are distinguishable from one another to the operator, and none of them is presented as either of the other two. No read is issued again except by the operator taking that action.'
 constrains:
 - domain/integration/connector-configuration
@@ -7748,10 +7873,26 @@ That is why the failure is not merely stated but carries the read with it.
 Reporting a condition an operator can act on and then withholding the act would leave reloading the whole screen or leaving it as the only routes back, and the reader could not distinguish a far end that was briefly unavailable from one that is gone.
 The offer is a fact rather than form by this specification's own division — what a person using the system can learn or do is stated here; which control carries each of the three statements, its wording and its placement are the interface's own, exactly as `a-presented-manifest-entry-states-its-pinned-revisions-state` and `constraints/every-screen-discloses-that-authentication-is-unenforced` already leave them.
 
-The read is issued again only on the operator's act, so that a far end already failing is never called repeatedly by a screen nobody is watching, and so that what the operator sees after a failure stays what they last asked for.
+Whether the offered read is ever issued again on the screen's own initiative is `a-failed-connector-configuration-read-is-reissued-only-on-the-operators-act`'s own.
 
 This decides what the screen states in each window and nothing beyond it.
 It adds no attribute to `domain/integration/connector-configuration`, publishes no operation, and refuses no call: the refusal a read by an unregistered connector name is answered with stays `a-connector-configuration-read-by-an-unregistered-name-is-refused`'s own, what the screen states in that reading stays `a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under`'s own — a reading of this screen told apart from the failed window stated here rather than merged into it, which is why the failed window excepts that refusal — and what the registry answers is untouched.
+
+=== rules/integration/a-presented-connector-configurations-four-readings-are-mutually-distinguishable
+---
+type: invariant
+statement: >-
+  The reading a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+  states and the three a-presented-connector-configuration-states-an-outstanding-or-failed-read
+  states are four presentations the operator tells apart, and none of them is presented as
+  another.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+`read-connector-configuration` of `contracts/integration/connector-configuration-registry` reaches the presenting screen in four situations: a read that has not returned, a read that failed, a read refused because nothing is registered under the connector name, and a read that returned. The neighbouring rules state what the screen states in each; this states that the four never read alike to the operator, the same distinguishability `a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading` already holds these same four readings apart by name and by act owed.
 
 === rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
 ---
@@ -7767,10 +7908,9 @@ statement: >-
   answered; a fetched document that could not be read as OpenAPI 3.x; and a path and method pairing
   the fetched document declares no operation for — and where the answer names none of those
   conditions, the surface states that the request failed for a reason it does not recognise, never as
-  one of them and never as a draft. No part of a draft stands beside that statement: no configuration
-  text, no unresolved item, no generated credential and no method mismatch is stated as that
-  request's answer, and the Configuration field's own content stands exactly as it stood. No refusal
-  is stated of a draft request the operation has not answered.
+  one of them and never as a draft, no part of a draft standing beside that statement: no
+  configuration text, no unresolved item, no generated credential and no method mismatch stated as
+  that request's answer.
 expression: >-
   For an operator requesting a draft through draft-connector-configuration-from-openapi of
   contracts/integration/connector-configuration-draft, from the surface s carrying the Configuration
@@ -7817,19 +7957,115 @@ The link the fetch refusal echoes back is the operator's own input, standing in 
 No part of a draft stands beside the refusal.
 For the request just refused there is nothing of the kind to state — `an-openapi-document-declaring-no-such-operation-refuses-the-draft` states that no `connector-configuration-draft` is produced at all, no configuration text, no unresolved item, no generated credential and no `method_mismatch` — so what could stand there is an earlier request's draft, and standing beside this refusal it would read as this request's answer.
 This specification has refused a presentation that reads alike in materially different situations every time it has met one, `a-presented-connector-configuration-states-an-outstanding-or-failed-read` over three windows of one read and `a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under` over a fourth, and the misreading is worse here than a blank: `domain/integration/connector-configuration-draft-unresolved-reason`'s reasons each name something the chosen operation itself declared, so an unresolved list drawn from another operation is a disclosure about an operation the operator did not select, and applying the configuration text beside it applies text drafted from nothing.
-The Configuration field is untouched because a refusal applies nothing: `applying-a-drafted-configuration-changes-only-the-local-edit` makes applying a draft the operator's own act over that field's local, unsubmitted content, and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation` refuses even a successful draft that content without a further explicit act, so a refusal that cleared or rewrote the field would destroy an edit held nowhere else by failing.
+Whether the Configuration field's own content stands untouched by this refusal's arrival is `the-configuration-field-is-untouched-by-a-drafts-arrival`'s own.
 
-Nothing is stated of a request the operation has not answered, the same bound `a-submitted-registration-states-its-outcome-to-the-operator` puts on its own two outcomes: a refusal stated before an answer arrives is a refusal invented by the surface.
-What that surface states while a draft request is outstanding is not decided here.
+Whether a refusal is ever stated of a request the operation has not answered is `no-draft-refusal-is-stated-before-the-operation-answers`'s own.
 
 Home is a new invariant over `domain/integration/connector-configuration-draft`: the api contract cannot declare a presentation, and the element declares what a draft is rather than what a surface states about requesting one, which is the placement every presentation fact of this specification has taken.
 It adds no attribute to that element, publishes no operation and refuses no call — what each of the three routes answers its caller stays `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document`'s and `an-openapi-document-declaring-no-such-operation-refuses-the-draft`'s own, and `a-connector-configuration-authoring-surface-offers-a-configuration-helper` keeps stating what the helper is and where it sits.
 It is a fact rather than form on this project's own line, changing what a person can learn and do rather than how it looks; which control carries each statement, its wording, its placement and how long it stands are the interface's own, exactly as every other surface rule here leaves them.
 
+=== rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
+---
+type: policy
+statement: >-
+  Neither outcome a-submitted-registration-states-its-outcome-to-the-operator states is stated of
+  a submission the registry has not answered, and the two never read alike.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+A write repeated is a second write and never a recovery of the first, so a submission is not re-issued by anything stated here, and nothing about an outstanding submission is stated before the registry answers it — the same bound `a-refused-draft-request-states-its-refusal-to-the-operator` puts on its own two outcomes.
+
+=== rules/integration/a-return-to-origin-routes-presence-turns-on-nothing-further
+---
+type: policy
+statement: >-
+  The act a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading states is
+  offered on every reading of the surface — one whose read has not answered, one whose read
+  failed, one whose read answered that nothing is registered at that name and version or under
+  that connector name, and one presenting the registration that read answered — and its presence
+  turns on nothing further: not on the state of that read, not on whether the operator has
+  changed anything on the surface, and not on which surface they reached it from.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+The act is owed on every reading, and this specification has already read the same interval the same way. `a-newly-created-draft-offers-no-act-before-its-own-record-arrives` withholds the release, the discard and the correction of a draft case version while no answer for that version's own record has arrived, and its own decision closes by stating that the withholding touches neither the leaving `an-abandoned-case-version-edit-writes-nothing` states nor any route the specification owes: what is withheld while a read has not settled is the act that writes, and the leaving that writes nothing stays available, nothing being lost by waiting precisely because the operator may still go. That division is the whole of this. The two route rules over these very surfaces reason the same way about the same readings, in the other direction: `a-connector-configuration-surface-offers-a-route-to-the-listing` holds its route unconditional because a route present on only some readings is one the operator cannot rely on, and because the readings a condition would drop it from — a read still outstanding, a read refused — are exactly the readings the operator has least reason to stay on, and `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` carries the same turns-on-nothing-further clause. An operator on a surface stating that a capability could not be read has nothing there to act on but the reattempt, and confining their way back to the reading that shows them a registration leaves them stranded on exactly the three readings that show them none.
+
+Nothing about a read that has not answered makes this act unsafe, which is why the one restriction the specification already places on these readings does not transfer. `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface` is offered on no surface whose read has not answered and on none whose read failed, and the reason it gives is its own: that act restores the fields to the content of a registration the surface read, and a surface that read nothing holds no content to restore, so performing it there would be indistinguishable from the operator clearing the fields. This act restores nothing and needs no content. It carries the operator away from the surface rather than leaving them on it, so the further explicit act that rule requires is not owed here either, on that rule's own distinction: an act that ends the operator's engagement and shows itself by landing them somewhere they were not cannot be built upon unnoticed, while a discard that leaves them in place can.
+
+The reading in which the read answered that nothing is registered at that identity or under that name is included for the same reason and one more. That answer is the registry's own — `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has `read-capability-by-identity` refuse such a name and version, and `a-connector-configuration-read-by-an-unregistered-name-is-refused` states the sibling refusal — and it is the one reading on which the surface's own address will never answer anything, so an operator left there without a way back is left at an address they cannot make useful. `an-abandoned-capability-registration-entry-registers-nothing` already refuses a destination keyed on an identity nothing is registered at for exactly that hazard, and reasons that the surface the operator was reached from carries no such hazard, having answered once already: the same reasoning that rules out landing there rules in leaving there.
+
+=== rules/integration/a-return-to-origin-with-no-surface-to-return-to-lands-on-the-registrys-listing
+---
+type: policy
+statement: >-
+  Where no surface the act a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  states was reached from exists — its own address having been opened directly, or reloaded at
+  that address — and the surface holds no entry the operator has composed and not submitted,
+  that act lands the operator on the listing of the registry whose registration the surface
+  presents: the listing of registered capabilities from a surface keyed on a name and version,
+  and the listing of registered connector configurations from a surface keyed on a connector
+  name, leaving them neither on that surface nor on a read keyed on the name and version or the
+  connector name the surface presents, and registering nothing there either.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+This states one act, not a second one beside the abandonment. Where the operator holds an entry on such a surface, `an-abandoned-capability-registration-entry-registers-nothing` and `a-connector-configuration-authoring-may-be-abandoned-without-registering` already state that leaving it registers nothing and lands the operator on the surface the authoring was reached from; this is that act, with that destination, extended to the readings on which there is no entry to abandon.
+
+The destination this act names is the surface the operator was reached from, and on a surface reached from nothing that phrase names nothing at all. That is the silence `an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing` closed for an authoring surface left without registering, met again on the readings stated here, where there is no entry to leave without registering and that rule's own predicate binds nothing. It is not an edge of these registries: `read-capability-by-identity` and `read-connector-configuration` were published for surfaces addressed by an identity and by a connector name, which load on first navigation and on a page refresh, so an operator opens one of these surfaces at its own address or reloads it as a matter of course, and on exactly those readings there is no surface to be landed on.
+
+The listing answers, which is the property this destination has to have: `list-capabilities` and `list-connector-configurations` answer from what is currently registered and, under `constraints/listings-are-paged`, answer a page carrying a total — zero where nothing is registered — rather than refusing, while a destination keyed on the name and version or the connector name the surface presents is refused by `constraints/the-capability-identity-read-refuses-an-unregistered-identity` and `a-connector-configuration-read-by-an-unregistered-name-is-refused` on one of the very readings stated here, the reading whose read answered that nothing is registered there. Landing the operator back on the surface is refused for the reason the sibling rule already gives — no operator is left on a surface the act was supposed to take them off, and staying is already a different act, `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface`, which owes a further explicit act this does not — and because an act whose whole effect is to land the operator somewhere would, on these readings, have no effect at all. Nothing is lost by the listing: `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` and `a-connector-configuration-surface-offers-a-route-to-the-listing` owe a route to that same listing on every reading of this surface regardless, and the paging objection `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` and `a-successful-connector-registration-lands-on-the-configurations-own-surface` raise against the listing does not reach an act that registers nothing and leaves no registration that has to be in view.
+
+=== rules/integration/a-security-scheme-collision-at-one-drafted-key-favors-declared-order
+---
+type: invariant
+statement: >-
+  Two parts of one chosen operation occupy one and the same drafted key where both would stand
+  at one drafted query key, or at one drafted headers key, the two key names equal byte for
+  byte, and, within the drafted headers key Cookie, where both would stand at one cookie name —
+  an HTTP basic scheme, an HTTP bearer scheme, and an API key declaring the header Authorization,
+  by that exact name, as its own location each occupying the whole value of the drafted headers
+  key Authorization and so standing at that one key together wherever more than one of them is
+  required: where two of the security schemes required occupy one drafted key that way, only the
+  first of them in the order the requirement object in effect names its schemes becomes a
+  placeholder and holds that key, and every other one of them is named in the draft's unresolved
+  list with reason drafted-key-occupied-by-another-security-scheme, generating no placeholder and
+  appearing in no generated_credentials; and where one of the security schemes required and one
+  parameter the operation declares occupy one drafted key that way, the scheme's generated
+  credential placeholder holds that key, whichever of the two the document declares first, and
+  the parameter is named in the draft's unresolved list with that same reason, becoming no
+  placeholder and standing at no position of its own in the draft — the brace form
+  a-connector-configuration-draft-places-each-part-where-the-call-carries-it otherwise leaves at
+  an unresolved parameter's position never standing at a key a security scheme holds.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Two schemes can collide on one drafted key because an-http-connector-configuration-declares-its-call fixes headers as one value per key, while a basic scheme, a bearer scheme and an API key located at the header Authorization each claim the whole of that key's value — so no single HTTP call carries two of them, and a document requiring two together declares something no call can satisfy. The draft neither refuses nor drops them in silence: the first scheme the requirement object names holds the key, so the operator keeps a configuration that works for one of them, and every displaced scheme is disclosed by name and by reason, which is what the unresolved list is for. The reason is its own rather than security-scheme-not-reducible-to-a-credential because a displaced basic, bearer or Authorization API key scheme reduces to one credential value perfectly well; reporting it as non-reducible would misstate why it is absent from the configuration. Refusing the whole draft was the alternative and is rejected on the ground a-malformed-or-unsupported-openapi-document-refuses-the-draft already fixes: the draft's refusals are an unfetchable link and an unreadable or unsupported document, and this is neither — it is exactly the kind of gap the reviewing operator closes by hand, with the drafted address, query, headers and body still worth reviewing.
+
+Authorization is only the loudest instance of that collision, not a special case of it: an-http-connector-configuration-declares-its-call declares query and headers each as an object of string values, one value per key, so any two parts of one operation sent to one key claim the whole of that same single value, whether the key is Authorization, a second API key scheme's own header, a query key two schemes both name, or a key a scheme and a parameter both name. Two schemes are separated there exactly as the Authorization case already separates them, by the requirement object's own order, which remains the only order either side of that collision has. A scheme colliding with a parameter has no such order to read — a requirement object and a parameters array are two lists nothing in the document relates — so the precedence is stated by what each part is rather than by where it sits, which is the only answer nameable without inventing an order across two lists. The scheme holds the key for two reasons: a document that both requires an API key scheme at a key and declares a parameter of that same name and location is, in the common case, naming one part of the call twice, and the credential placeholder is the honest value for that part; and where the two really are different parts, the credential is the one whose loss costs the entire call — a key holding ${subject:<name>} or the plain brace text where the API expects the credential yields a configuration no call of which is ever authorized, while a key holding the credential yields one an operator completes by hand for the parameter the unresolved item names. That displaced parameter stands at no position rather than at a second key, because the only key it ever had is the one the scheme now holds: this is the single case where the position-keeping a-connector-configuration-draft-places-each-part-where-the-call-carries-it states for an unresolved parameter cannot be honored, and the unresolved item is the whole of the disclosure there. Inside the drafted headers key Cookie the collision is judged per cookie name, because that key's value is a joined list of named segments and that rule already joins every cookie-carried part of one call into it — two cookie-carried parts at two cookie names sit side by side there and collide over nothing.
+
 === rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
 ---
 type: policy
-statement: 'An operator on a surface that presents one registered capability, or that authors one for registration, is offered a route to the listing of registered capabilities, on every reading of that surface, and taking that route registers nothing: no capability is registered or replaced by it, and every capability currently registered stands exactly as it stood. The route''s presence turns on nothing further — not on whether the read backing the surface has completed, failed or answered no capability at that identity, and not on whether the capability being authored is registered yet. The specification states no affordance carrying it: a standalone navigation link above the surface''s heading and a control among the surface''s own actions answer it alike, and neither is owed.'
+statement: 'An operator on a surface that presents one registered capability, or that authors one for registration, is offered a route to the listing of registered capabilities, on every reading of that surface, and taking that route registers nothing: no capability is registered or replaced by it, and every capability currently registered stands exactly as it stood.'
 expression: 'For an operator and a surface s presenting exactly one capability — one read by its own identity, name and version together, or one being authored for registration: the presentation of s carries a route whose destination is the listing of registered capabilities that contracts/integration/capability-registry''s list-capabilities answers. The route is present at every reading of s, and its presence is conditioned on nothing else: not on the state of the read backing s, whether that read completed, failed or answered no capability at that identity, and not on whether the capability s authors is already registered. Taking that route from s issues no register-capability call, so the set of capabilities currently registered is identical before and after, in membership and in every registration''s own declared contract. No property of the control carrying the route is evaluated — which control it is, its wording and where on s it sits are each unconstrained, and any affordance from which the operator reaches that listing satisfies this.'
 constrains:
 - domain/integration/capability
@@ -7842,15 +8078,9 @@ An operator authors capabilities directly — `domain/integration/_context` stat
 The set those surfaces are reached from is the listing `list-capabilities` answers, one page at a time (`constraints/listings-are-paged`).
 A surface addressed by one capability, or authoring one that no registration yet holds, is otherwise a terminus: no node said the operator gets back to the set from it, so whether an operator could return at all fell to whatever a surface happened to render.
 
-That a route is owed where a reader stands one step from what they need is already this specification's own reading.
-`a-listed-case-version-offers-a-route-to-its-own-manifest` states the route from a listing to the single thing listed, carrying the same clause that its presence turns on nothing further — not on the presented thing's state, not on what preceded the reading.
-This states the reverse direction over the registry's own subject: from the single capability back to the set of them.
-The two do not stand in each other's way, carrying different content over different elements.
+That a route is owed where a reader stands one step from what they need is already this specification's own reading, and whether it is owed unconditionally, whatever the surface's own reading, is `a-capability-listing-routes-presence-turns-on-nothing-further`'s own.
 
-The affordance is not stated because it is form.
-`every-screen-discloses-that-authentication-is-unenforced` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface.
-Holding this route to a standalone navigation link above the surface's heading would make relocating or relabelling one control a change to the specification, while the whole of what an operator learns or does here — reaching the listing from the single capability — is exactly what the statement holds.
-A surface carrying the route among its own actions and a surface carrying it as a link above its heading are indistinguishable in what the operator can do, and this refuses to prefer either.
+Which control carries the route is form, not stated here: `every-screen-discloses-that-authentication-is-unenforced` already decided that the frontend owes the substance of what it tells every user and never a wording, on this project's own reading that a control's label or a screen's exact copy is surface while what a person can learn or do is not; `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-presented-case-version-states-its-own-declared-attributes` each close by putting which control carries a reading, its wording and where it sits with the interface. A surface carrying the route among its own actions and a surface carrying it as a standalone link above its heading are indistinguishable in what the operator can do, and this refuses to prefer either.
 
 Taking it registers nothing.
 `register-capability` is the one operation of `contracts/integration/capability-registry` that writes — creating a capability at a new name and version, or replacing whatever already stood at that identity with the whole declared contract submitted — so a route away that wrote what the surface was holding would make leaving indistinguishable from registering, over a write that is total.
@@ -7867,8 +8097,8 @@ Consistency is immediate because the route's presence follows from the surface's
 === rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
 ---
 type: policy
-statement: 'A surface presenting the one capability registered at a name and version, or the one connector configuration registered under a connector name, offers the operator an act that registers nothing and lands them on the surface it was reached from. That act is offered on every reading of the surface — one whose read has not answered, one whose read failed, one whose read answered that nothing is registered at that name and version or under that connector name, and one presenting the registration that read answered — and its presence turns on nothing further: not on the state of that read, not on whether the operator has changed anything on the surface, and not on which surface they reached it from. Where no surface it was reached from exists — its own address having been opened directly, or reloaded at that address — and the surface holds no entry the operator has composed and not submitted, that act lands the operator on the listing of the registry whose registration the surface presents: the listing of registered capabilities from a surface keyed on a name and version, and the listing of registered connector configurations from a surface keyed on a connector name. It leaves them neither on that surface nor on a read keyed on the name and version or the connector name the surface presents, and it registers nothing there either.'
-expression: 'For an operator on a surface s presenting a single registration — the capability that read-capability-by-identity of contracts/integration/capability-registry answers for a name and version, or the connector configuration that read-connector-configuration of contracts/integration/connector-configuration-registry answers for a connector name — s carries an act b whose whole effect is to land the operator on the surface s was reached from. Performing b issues no register-capability call and no register-connector call, so every capability and every connector configuration currently registered stands exactly as it stood, in membership and in every registration''s own content. b is present at every reading of s: one whose read of that identity or that connector name has not answered, one whose read failed, one whose read answered that no capability is registered at that name and version or that nothing is registered under that connector name, and one stating the registration that read answered. Its presence is conditioned on nothing else — not on that read''s state, not on whether the operator has changed any field of s, and not on which surface s was reached from. Where the operator holds on s an entry not yet submitted, b is the act an-abandoned-capability-registration-entry-registers-nothing and a-connector-configuration-authoring-may-be-abandoned-without-registering already state, with the destination they already fix, and not a second act beside it. Where there exists no surface s was reached from, s having been opened at its own address or reloaded at it, and s holds no entry the operator has composed and not submitted: what performing b lands the operator on is the listing list-capabilities of contracts/integration/capability-registry answers where s presents the capability at a name and version, and the listing list-connector-configurations of contracts/integration/connector-configuration-registry answers where s presents the configuration under a connector name. Performing b there carries no register-capability call and no register-connector call either, so every registration stands exactly as it stood; the operator is left neither on s nor on a read keyed on the name and version or the connector name s presents; and no page of the listing is named, which page opens being constraints/listings-are-paged''s own answer. That destination holds on each reading of s stated above alike — the read that has not answered, the read that failed, the read that answered that nothing is registered there, and the read that answered a registration. Where a surface s was reached from does exist, the destination stated above stands and this adds nothing to it; where s holds an entry the operator has composed and not submitted, this states nothing.'
+statement: 'A surface presenting the one capability registered at a name and version, or the one connector configuration registered under a connector name, offers the operator an act that registers nothing and lands them on the surface it was reached from.'
+expression: 'For an operator on a surface s presenting a single registration — the capability that read-capability-by-identity of contracts/integration/capability-registry answers for a name and version, or the connector configuration that read-connector-configuration of contracts/integration/connector-configuration-registry answers for a connector name — s carries an act b whose whole effect is to land the operator on the surface s was reached from. Performing b issues no register-capability call and no register-connector call, so every capability and every connector configuration currently registered stands exactly as it stood, in membership and in every registration''s own content. Where the operator holds on s an entry not yet submitted, b is the act an-abandoned-capability-registration-entry-registers-nothing and a-connector-configuration-authoring-may-be-abandoned-without-registering already state, with the destination they already fix, and not a second act beside it.'
 constrains:
 - domain/integration/capability
 - domain/integration/connector-configuration
@@ -7883,36 +8113,14 @@ What no node stated is whether the operator can get off such a surface the way t
 The four abandonment rules of this specification are each written over an operator authoring or editing — an entry composed and not submitted — so on a reading that holds no entry, because nothing has been read yet, because the read failed, or because the read answered that nothing is registered there, none of them reaches.
 Left unstated, whether an operator standing on a surface that has nothing to show them could return to where they were fell to whatever control an interface happened to render on that reading.
 
-The act is owed on every reading, and this specification has already read the same interval the same way.
-`a-newly-created-draft-offers-no-act-before-its-own-record-arrives` withholds the release, the discard and the correction of a draft case version while no answer for that version's own record has arrived, and its own decision closes by stating that the withholding touches neither the leaving `an-abandoned-case-version-edit-writes-nothing` states nor any route the specification owes: what is withheld while a read has not settled is the act that writes, and the leaving that writes nothing stays available, nothing being lost by waiting precisely because the operator may still go.
-That division is the whole of this.
-The two route rules over these very surfaces reason the same way about the same readings, in the other direction: `a-connector-configuration-surface-offers-a-route-to-the-listing` holds its route unconditional because a route present on only some readings is one the operator cannot rely on, and because the readings a condition would drop it from — a read still outstanding, a read refused — are exactly the readings the operator has least reason to stay on, and `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` carries the same turns-on-nothing-further clause.
-An operator on a surface stating that a capability could not be read has nothing there to act on but the reattempt, and confining their way back to the reading that shows them a registration leaves them stranded on exactly the three readings that show them none.
-
-Nothing about a read that has not answered makes this act unsafe, which is why the one restriction the specification already places on these readings does not transfer.
-`a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface` is offered on no surface whose read has not answered and on none whose read failed, and the reason it gives is its own: that act restores the fields to the content of a registration the surface read, and a surface that read nothing holds no content to restore, so performing it there would be indistinguishable from the operator clearing the fields.
-This act restores nothing and needs no content.
-It carries the operator away from the surface rather than leaving them on it, so the further explicit act that rule requires is not owed here either, on that rule's own distinction: an act that ends the operator's engagement and shows itself by landing them somewhere they were not cannot be built upon unnoticed, while a discard that leaves them in place can.
-
-The reading in which the read answered that nothing is registered at that identity or under that name is included for the same reason and one more.
-That answer is the registry's own — `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has `read-capability-by-identity` refuse such a name and version, and `a-connector-configuration-read-by-an-unregistered-name-is-refused` states the sibling refusal — and it is the one reading on which the surface's own address will never answer anything, so an operator left there without a way back is left at an address they cannot make useful.
-`an-abandoned-capability-registration-entry-registers-nothing` already refuses a destination keyed on an identity nothing is registered at for exactly that hazard, and reasons that the surface the operator was reached from carries no such hazard, having answered once already: the same reasoning that rules out landing there rules in leaving there.
+Whether this act is offered on every reading of the surface, unconditionally, is `a-return-to-origin-routes-presence-turns-on-nothing-further`'s own.
 
 It registers nothing, because `register-capability` and `register-connector` are the only writes the two registries publish and both are total — `domain/integration/connector-configuration` is replaced whole on every edit, and a capability registration replaces whatever stood at its identity with its own whole declared contract — so an act away that wrote what the surface was holding would make leaving indistinguishable from registering, the clause `a-connector-configuration-surface-offers-a-route-to-the-listing` already carries for its own route.
 What becomes of content an authoring surface was holding unwritten when the operator leaves is no part of this, exactly as both route rules leave it.
 
-This states one act, not a second one beside the abandonment.
-Where the operator holds an entry on such a surface, `an-abandoned-capability-registration-entry-registers-nothing` and `a-connector-configuration-authoring-may-be-abandoned-without-registering` already state that leaving it registers nothing and lands the operator on the surface the authoring was reached from; this is that act, with that destination, extended to the readings on which there is no entry to abandon.
 Nothing here moves where any other act lands: `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` and `a-successful-connector-registration-lands-on-the-configurations-own-surface` still decide where a submission that succeeded takes the operator.
 
-The destination this act names is the surface the operator was reached from, and on a surface reached from nothing that phrase names nothing at all.
-That is the silence `an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing` closed for an authoring surface left without registering, met again on the readings stated here, where there is no entry to leave without registering and that rule's own predicate binds nothing.
-It is not an edge of these registries: `read-capability-by-identity` and `read-connector-configuration` were published for surfaces addressed by an identity and by a connector name, which load on first navigation and on a page refresh, so an operator opens one of these surfaces at its own address or reloads it as a matter of course, and on exactly those readings there is no surface to be landed on.
-On such a reading, where the surface holds no entry the operator has composed and not submitted, the operator is landed on the listing of the registry whose registration the surface presents.
-The listing answers, which is the property this destination has to have: `list-capabilities` and `list-connector-configurations` answer from what is currently registered and, under `constraints/listings-are-paged`, answer a page carrying a total — zero where nothing is registered — rather than refusing, while a destination keyed on the name and version or the connector name the surface presents is refused by `constraints/the-capability-identity-read-refuses-an-unregistered-identity` and `a-connector-configuration-read-by-an-unregistered-name-is-refused` on one of the very readings stated here, the reading whose read answered that nothing is registered there.
-Landing the operator back on the surface is refused for the reason the sibling rule already gives — no operator is left on a surface the act was supposed to take them off, and staying is already a different act, `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface`, which owes a further explicit act this does not — and because an act whose whole effect is to land the operator somewhere would, on these readings, have no effect at all.
-Nothing is lost by the listing: `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` and `a-connector-configuration-surface-offers-a-route-to-the-listing` owe a route to that same listing on every reading of this surface regardless, and the paging objection `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` and `a-successful-connector-registration-lands-on-the-configurations-own-surface` raise against the listing does not reach an act that registers nothing and leaves no registration that has to be in view.
-Where a surface the operator was reached from does exist, the answer above stands exactly as it stands, so one gesture keeps one answer; and where the surface holds an entry the operator composed and did not submit, this adds nothing to what the abandonment rules already fix.
+What this act lands the operator on where no surface it was reached from exists is `a-return-to-origin-with-no-surface-to-return-to-lands-on-the-registrys-listing`'s own. Where a surface the operator was reached from does exist, the answer above stands exactly as it stands, so one gesture keeps one answer.
 
 This is neither of the two acts these surfaces already owe, and it is not told apart from them by any property of a control.
 The route both listing rules owe has the listing as its destination and this has the surface the operator came from, so wherever those two are not the same place the two acts are two acts, and the reattempt `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` stands in the failed window alone issues a read rather than going anywhere.
@@ -7933,8 +8141,7 @@ statement: >-
   connector name submitted; where the registry refused the submission, that nothing was
   registered and which refusal answered it, the condition the registry's answer named stated
   apart from every other condition that route can name and apart from a refusal whose
-  condition the surface does not recognise. Neither outcome is stated of a submission the
-  registry has not answered, and the two never read alike.
+  condition the surface does not recognise.
 expression: >-
   For an operator submitting a registration r through register-capability of
   contracts/integration/capability-registry or register-connector of
@@ -7969,7 +8176,7 @@ One fact, decided once for both registries. The two are the same shape in every 
 
 This is about a write, and the sibling rules about a read stay where they are. `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` state what a surface says while it is loading a registration it did not write and what it says when that load fails; neither says anything about a submission the operator made. A read that failed is worth issuing again and those rules offer that act; a submission is not re-issued by anything stated here, because a write repeated is a second write and never a recovery of the first.
 
-What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here, and neither is what it presents in the interval before the registry answers at all. Which control carries either statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
+What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here. Whether either outcome is ever stated before the registry answers, or the two are ever presented alike, is `a-registration-outcome-is-never-stated-before-the-registry-answers`'s own. Which control carries either statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
 
 Consistency is eventual because the surface performs no registration itself: what it states is the answer to a call issued separately to a registry that holds the registration, and the statement settles only when that call settles.
 
@@ -7977,13 +8184,12 @@ Consistency is eventual because the surface performs no registration itself: wha
 ---
 type: invariant
 statement: >-
-  An operator whose submitted capability registration succeeds is taken to the surface
-  addressed by that capability's own name and version — the surface
-  read-capability-by-identity answers — and neither to the listing of registered
-  capabilities nor left on the authoring surface the registration was submitted from.
-  This holds alike where the submission created a capability at a name and version
-  nothing was registered at and where it replaced the capability that already stood at
-  that identity.
+  An operator whose submitted capability registration succeeds — whether the submission
+  created a capability at a name and version nothing was registered at or replaced the
+  capability that already stood at that identity — is taken to the surface addressed by that
+  capability's own name and version, the surface read-capability-by-identity answers, and
+  neither to the listing of registered capabilities nor left on the authoring surface the
+  registration was submitted from.
 expression: >-
   For an operator submitting a capability registration entry e naming name n and version
   v, where the register-capability call carrying e succeeds: what that operator is taken
@@ -8017,13 +8223,12 @@ Both facts this rests on are that one aggregate's own — that the submission su
 ---
 type: invariant
 statement: >-
-  An operator whose submitted connector configuration registration succeeds is taken to
-  the surface addressed by that configuration's own connector name — the surface
-  read-connector-configuration answers — and neither to the listing of registered
-  connector configurations nor left on the authoring surface the registration was
-  submitted from. This holds alike where the submission created a configuration under a
-  connector name nothing was registered under and where it replaced the configuration
-  that already answered to that name.
+  An operator whose submitted connector configuration registration succeeds — whether the
+  submission created a configuration under a connector name nothing was registered under or
+  replaced the configuration that already answered to that name — is taken to the surface
+  addressed by that configuration's own connector name, the surface
+  read-connector-configuration answers, and neither to the listing of registered connector
+  configurations nor left on the authoring surface the registration was submitted from.
 expression: >-
   For an operator submitting a connector configuration registration r naming connector
   name c, where the register-connector call carrying r succeeds: what that operator is
@@ -8055,6 +8260,24 @@ This states where the operator lands and nothing further. What that surface then
 Which control carries the submission, its wording and where it sits are form and belong to the interface, not here, the same reading `a-connector-configuration-authoring-may-be-abandoned-without-registering` and `a-connector-configuration-surface-offers-a-route-to-the-listing` already take over their own controls.
 
 Both facts this rests on are that one element's own — that the submission succeeded and the connector name it succeeded under — so it constrains `domain/integration/connector-configuration` and holds immediately, inside one boundary, the shape `a-connector-configuration-authoring-may-be-abandoned-without-registering` already took for the other end of the same act.
+
+=== rules/integration/a-surface-holding-no-read-registration-offers-no-discard
+---
+type: policy
+statement: >-
+  A surface holding no read registration — one authoring at an identity nothing is registered
+  at, one whose read has not answered, one whose read failed — is offered no act of the kind
+  a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface states, having no
+  content to return its fields to.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+A surface authoring at an identity nothing is registered at is offered nothing here, because it read nothing there is to go back to. Emptying such a surface's fields recovers no content — it is indistinguishable from the operator clearing them — and the identity itself is one `constraints/the-capability-identity-read-refuses-an-unregistered-identity` has the identity-keyed read refuse, which is the same reason `an-abandoned-capability-registration-entry-registers-nothing` refuses that identity as an abandonment's destination. The surfaces whose read has not answered or has failed are excluded for the same reason and by an existing statement: `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` hold that no attribute of any registration is presented as the content standing at that identity in either window, so there is no read content in hand for this act to restore.
 
 === rules/integration/an-abandoned-capability-registration-entry-registers-nothing
 ---
@@ -8096,7 +8319,7 @@ Which control carries the abandonment, its wording and where it sits are form an
 === rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
 ---
 type: policy
-statement: 'Where an operator leaves an authoring surface of either integration registry without registering, and that authoring surface was reached from no surface — its own address opened directly, or reloaded at that address, so that no surface it was reached from exists — the operator is landed on the listing of the registry that surface authors into: the listing of registered capabilities from a capability authoring surface, and the listing of registered connector configurations from a connector configuration authoring surface. An authoring surface here is any surface from which a registration is composed for submission, and it includes a surface presenting the one capability registered at a name and version, or the one connector configuration registered under a connector name, on which the operator holds an edit of that registration they have composed and not submitted: leaving such a surface without registering, where no surface it was reached from exists, lands the operator on the listing of the registry whose registration that surface presents — the listing of registered capabilities where it is keyed on a name and version, and the listing of registered connector configurations where it is keyed on a connector name. The leaving registers nothing and leaves every registration exactly as it stood, and the operator is left neither on the surface they left nor on a read keyed on the identity being authored or presented.'
+statement: 'Where an operator leaves an authoring surface of either integration registry without registering, and that authoring surface was reached from no surface — its own address opened directly, or reloaded at that address, so that no surface it was reached from exists — the operator is landed on the listing of the registry that surface authors into: the listing of registered capabilities from a capability authoring surface, and the listing of registered connector configurations from a connector configuration authoring surface.'
 expression: 'For an operator on an authoring surface s — one composing a capability registration for register-capability of contracts/integration/capability-registry, or one authoring a connector configuration for register-connector of contracts/integration/connector-configuration-registry — who leaves s without submitting, where there exists no surface s was reached from, s having been opened at its own address or reloaded at it: what the operator is landed on is the listing list-capabilities answers where s composes a capability registration, and the listing list-connector-configurations answers where s authors a connector configuration. s ranges over every surface from which such a registration is composed for submission, including a surface presenting the single registration that read-capability-by-identity answered for a name and version, or that read-connector-configuration answered for a connector name, on which the operator holds an edit of that registration composed and not submitted; on such a surface, the act whose whole effect is to land the operator on the surface s was reached from — the act a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading states, which in that branch is the abandonment an-abandoned-capability-registration-entry-registers-nothing and a-connector-configuration-authoring-may-be-abandoned-without-registering state — is a leaving of s without submitting, and where no surface s was reached from exists it lands the operator on the listing list-capabilities answers where s presents or composes at a name and version and on the listing list-connector-configurations answers where s presents or authors under a connector name, leaving them neither on s nor on a read keyed on the name and version or the connector name s presents. No register-capability call and no register-connector call carries what s held, so the set of capabilities currently registered and the set of connector configurations currently registered are identical before and after the leaving, in membership and in every registration''s own content. This holds whether s authors at an identity nothing is currently registered at or at the identity of a registration that stands, and it names no page of the listing: which page opens is constraints/listings-are-paged''s own answer. Where a surface s was reached from does exist, this states nothing.'
 constrains:
 - domain/integration/capability
@@ -8110,12 +8333,7 @@ consistency: eventual
 That reading is not an edge of these registries but an ordinary one: `read-capability-by-identity` was published for a surface that loads on first navigation or a page refresh, `read-connector-configuration` serves the same shape under a connector name, and both authoring surfaces are addressed the same way, so an operator opens one at its address or reloads it as a matter of course.
 On that reading the stated destination names nothing at all, and where the operator lands would fall to whatever an interface happened to do — including doing nothing, which leaves the operator exactly where the abandonment is supposed to take them out of.
 
-Which surfaces this reaches is the second half of that same silence, and it is stated here with the first.
-`a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading` states, over a surface presenting the one capability registered at a name and version or the one connector configuration registered under a connector name, an act whose whole effect is to land the operator on the surface it was reached from, and it closes that where such a surface holds an entry the operator has composed and not submitted, that act is the abandonment the two rules above already state, with their destination and not a second act beside it.
-So an operator holding an unsubmitted edit of a standing registration and taking that act is leaving an authoring surface without registering, whatever else that surface is also presenting to them.
-`register-capability` and `register-connector` are each create-or-replace and are the only writes either registry publishes, so an edit of a standing registration is composed for the very operation a creation is composed for, and `an-abandoned-capability-registration-entry-registers-nothing` already states itself over an entry composed at the identity of one that is registered.
-This rule's `s` is therefore any surface a registration is composed for submission from, the surface presenting that registration while holding an unsubmitted edit of it included.
-Where such a surface holds no entry composed and not submitted, the destination is the one `a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading` fixes in its own clause, and it is this same listing — so a single control carrying that act on every reading of such a surface lands in one place, and the two readings of one gesture do not answer one question two ways.
+Which surfaces this reaches, including an authoring surface widened to a standing registration's own unsubmitted edit, is `an-authoring-surface-includes-an-unsubmitted-edit-of-a-standing-registration`'s own — the second half of that same silence, stated there with this one.
 
 The listing answers, and answering is what the destination has to do.
 `list-capabilities` and `list-connector-configurations` answer from what is currently registered, and `constraints/listings-are-paged` makes each answer a page carrying its data and the total currently held — a total of zero where nothing is registered yet — so neither read refuses on any reading.
@@ -8137,8 +8355,27 @@ The objection `a-successful-capability-registration-lands-on-the-capabilitys-own
 
 One fact decided once for both registries, on the reading `a-submitted-registration-states-its-outcome-to-the-operator` and `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface` already took over this same pair.
 Consistency is eventual because the statement holds over both aggregate roots at once and because what the operator lands on is the answer of a listing read issued separately to a registry, which the abandoned surface never held.
-Which control carries the abandonment, its wording and where it sits are form and belong to the interface, not here, exactly as both abandonment rules close, and what becomes of content the surface was holding unwritten when the operator leaves stays where both route rules leave it.
+Which control carries the abandonment, its wording and where it sits are form and belong to the interface, not here, exactly as both abandonment rules close.
+Whether the leaving registers anything, or leaves the operator on the surface or on a read keyed on the identity, is `an-abandonment-with-no-surface-to-return-to-registers-nothing`'s own.
 Surfaces over any other subject are untouched: the same silence over a case version's editing or a hypothesis revision's composition would be its own fact about its own element.
+
+=== rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing
+---
+type: policy
+statement: >-
+  The leaving an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing states
+  registers nothing and leaves every registration exactly as it stood, and the operator is left
+  neither on the surface they left nor on a read keyed on the identity being authored or
+  presented.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+It registers nothing, because `register-capability` and `register-connector` are the only writes either registry publishes and both are total — `domain/integration/connector-configuration` is replaced whole on every edit, and a capability registration replaces whatever stood at its identity with its own whole declared contract — so an act away that wrote what the surface was holding would make leaving indistinguishable from registering, the clause `a-connector-configuration-surface-offers-a-route-to-the-listing` already carries for its own route. What becomes of content an authoring surface was holding unwritten when the operator leaves is no part of this, exactly as both route rules leave it.
 
 === rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
 ---
@@ -8154,10 +8391,8 @@ statement: >-
   name and by the security scheme's own name that answer gave it; and, where that answer carries a
   method mismatch, the method it names as currently registered together with the method it names as
   the drafted operation's, neither of the two standing for the other — and where that answer
-  carries no method mismatch, no mismatch is stated at all. No name, no reason, no generated name,
-  no security scheme name and no method the answer did not carry is stated for any of them. The
-  content of the Configuration field stands exactly as it stood: the draft's arrival writes nothing
-  into that field, whose content changes only where the operator themselves applies the draft.
+  carries no method mismatch, no mismatch is stated at all — stating no name, no reason, no
+  generated name, no security scheme name and no method the answer did not carry, for any of them.
 expression: >-
   For an operator requesting a draft through draft-connector-configuration-from-openapi of
   contracts/integration/connector-configuration-draft, from the surface s carrying the
@@ -8202,10 +8437,7 @@ The method mismatch is stated where the answer carries one because applying the 
 A surface holding that back lets the operator apply and submit a change of method they were never shown, which is precisely the silent replacement the element refuses.
 Where the answer carries no mismatch nothing is stated, on this specification's standing refusal to state a value an answer did not carry — `a-presented-connector-configuration-states-an-outstanding-or-failed-read` and `a-presented-capability-states-its-declared-attributes-as-the-read-answered-them` each hold a presentation to its own answer — and a mismatch shown where none was answered would report a disagreement with a registration that need not even exist.
 
-The Configuration field is untouched by the answer's arrival because applying is the operator's own act and nothing else.
-`applying-a-drafted-configuration-changes-only-the-local-edit` makes applying the operator carrying their own review into the field they are already editing, and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation` refuses even that act over an unsubmitted edit absent a further explicit confirmation, which `scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation` records.
-A helper writing the drafted text into the field the moment the answer arrived would perform, on its own initiative, the act those two rules hold to the operator: it would destroy an edit held nowhere else, and it would do it before the operator had read the unresolved items and the mismatch the review exists for.
-`a-refused-draft-request-states-its-refusal-to-the-operator` already put this same bound on this same field for this same reason on its own side of the answer.
+Whether the Configuration field's own content stands untouched by this answer's arrival is `the-configuration-field-is-untouched-by-a-drafts-arrival`'s own, the same bound `a-refused-draft-request-states-its-refusal-to-the-operator` reads on its own side of the answer.
 
 Home is a new invariant over `domain/integration/connector-configuration-draft`, the placement its refusal-side sibling took: the api contract cannot declare a presentation, and the element declares what a draft is rather than what a surface states about requesting one, which is where every presentation fact of this specification sits.
 It adds no attribute to that element, publishes no operation and refuses no call — what the answer carries stays the drafting rules' own, and the capabilities read to resolve the placeholders reach neither the answer nor this statement, `a-connector-configuration-draft-response-carries-no-capability` having already decided that.
@@ -8213,22 +8445,78 @@ Nothing here owes the operator a second copy of what they typed: the link, the o
 What that surface states while a draft request is outstanding is not decided here, exactly as `a-refused-draft-request-states-its-refusal-to-the-operator` left it, and what applying a draft does stays `applying-a-drafted-configuration-changes-only-the-local-edit`'s and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation`'s.
 It is a fact rather than form on this project's own line, changing what a person can learn and do; which control carries each statement, its wording, its order, its placement and how long it stands are the interface's own, exactly as every other surface rule here leaves them.
 
+=== rules/integration/an-authoring-surface-includes-an-unsubmitted-edit-of-a-standing-registration
+---
+type: policy
+statement: >-
+  An authoring surface, for
+  an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing, is any surface from
+  which a registration is composed for submission, and it includes a surface presenting the one
+  capability registered at a name and version, or the one connector configuration registered
+  under a connector name, on which the operator holds an edit of that registration they have
+  composed and not submitted, leaving such a surface without registering, where no surface it was
+  reached from exists, landing the operator on the listing of the registry whose registration
+  that surface presents — the listing of registered capabilities where it is keyed on a name and
+  version, and the listing of registered connector configurations where it is keyed on a
+  connector name.
+constrains:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+Which surfaces this reaches is the second half of the silence `an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing` closes. `a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading` states, over a surface presenting the one capability registered at a name and version or the one connector configuration registered under a connector name, an act whose whole effect is to land the operator on the surface it was reached from, and it closes that where such a surface holds an entry the operator has composed and not submitted, that act is the abandonment the two rules above already state, with their destination and not a second act beside it. So an operator holding an unsubmitted edit of a standing registration and taking that act is leaving an authoring surface without registering, whatever else that surface is also presenting to them. `register-capability` and `register-connector` are each create-or-replace and are the only writes either registry publishes, so an edit of a standing registration is composed for the very operation a creation is composed for, and `an-abandoned-capability-registration-entry-registers-nothing` already states itself over an entry composed at the identity of one that is registered. This rule's surface is therefore any surface a registration is composed for submission from, the surface presenting that registration while holding an unsubmitted edit of it included.
+
+Where such a surface holds no entry composed and not submitted, the destination is the one `a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading` fixes in its own clause, and it is this same listing — so a single control carrying that act on every reading of such a surface lands in one place, and the two readings of one gesture do not answer one question two ways.
+
 === rules/integration/an-http-connector-configuration-declares-its-call
 ---
 type: invariant
-statement: A connector configuration executed by the HTTP connector declares a method that is one of GET, POST, PUT, PATCH or DELETE, a responseMap that is an object of string paths, and a statusMap that is an object mapping an HTTP status to one evidence-result ending; an observation reaching a configuration that lacks any of the three issues no call and ends unavailable, with a result detail reporting a MalformedHttpConnectorConfigurationError, and that result detail states beside that error the vocabulary the malformed key is held to — where the method is not one of the five, the methods an HTTP connector configuration may declare, and where the statusMap is not such an object, the evidence-result endings a statusMap may map a status to. The same configuration declares an address, a non-empty string, and may declare a query and headers, each an object of string values, and a body of any shape; any of the four may embed one or more placeholders naming a Subject attribute, the requester, or a credential read from environment configuration at resolution time, substituted as plain text and never evaluated as code. Such a placeholder is written as the literal text form ${kind} or ${kind:argument}; a placeholder naming a Subject attribute is written ${subject:<attribute-name>}, with the attribute name as its argument; a placeholder naming the requester is written ${requester}, with no argument; and a placeholder naming a credential is written ${credential:<name>}, with the credential name as its argument. A configuration missing its address, declaring query or headers as anything but an object of string values, naming a placeholder kind this connector does not recognize, or naming a placeholder with no argument where one is required, issues no call and ends unavailable, with a result detail reporting an IncompleteConnectorCallDescriptorError; a configuration naming a Subject attribute or a credential that resolves to nothing issues no call and ends unavailable the same way, with the result detail an-unresolvable-observation-ends-unavailable itself names for that condition.
+statement: The same configuration declares an address, a non-empty string, and may declare a query and headers, each an object of string values, and a body of any shape; any of the four may embed one or more placeholders naming a Subject attribute, the requester, or a credential read from environment configuration at resolution time, substituted as plain text and never evaluated as code.
 constrains:
   - domain/integration/connector-configuration
 ---
 
 ## Description
 
-The registry still holds a connector configuration to nothing but well-formedness (a-connector-configuration-holds-a-well-formed-object), because what its keys mean is the executing connector's own business.
-This rule is that connector's statement of what it needs, for the one connector kind this build ships, so an operator learns the required keys from the specification rather than from a failed collection.
-The absence is answered as an ending rather than a fault because collection records how an attempt ended and never raises (domain/investigation/evidence).
+What a connector configuration must additionally declare, and what refuses it when a required key is malformed, is `an-http-connector-configuration-declares-its-method-and-status-vocabulary`'s own.
+
+The address, query, headers and body, and their placeholder mechanism, are the same connector's statement of how its call reaches into a Subject, a requester and a credential without either living in the configuration's own text — `rules/integration/a-diagnostic-response-masks-a-resolved-credential` already presumes a credential placeholder exists and masks what it resolves to; this is the first node stating the mechanism itself. Which literal text forms a placeholder is written in is `a-connector-configuration-placeholder-is-written-in-one-of-three-forms`'s own, and what ends a call unavailable over an incomplete or unresolvable one is `an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable`'s own.
+
+=== rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+---
+type: invariant
+statement: A connector configuration executed by the HTTP connector declares a method that is one of GET, POST, PUT, PATCH or DELETE, a responseMap that is an object of string paths, and a statusMap that is an object mapping an HTTP status to one evidence-result ending; an observation reaching a configuration that lacks any of the three issues no call and ends unavailable, with a result detail reporting a MalformedHttpConnectorConfigurationError, and that result detail states beside that error the vocabulary the malformed key is held to — where the method is not one of the five, the methods an HTTP connector configuration may declare, and where the statusMap is not such an object, the evidence-result endings a statusMap may map a status to.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The registry still holds a connector configuration to nothing but well-formedness (a-connector-configuration-holds-a-well-formed-object), because what its keys mean is the executing connector's own business. This rule is that connector's statement of what it needs, for the one connector kind this build ships, so an operator learns the required keys from the specification rather than from a failed collection. The absence is answered as an ending rather than a fault because collection records how an attempt ended and never raises (domain/investigation/evidence).
+
 The detail states the vocabulary a malformed method or statusMap was held to for the same reason the rule states the keys at all: the configuration is authored directly and opaquely (domain/integration/connector-configuration), so the accepted values are what an operator has to learn to correct the one that failed. Those values are this rule's own text and domain/investigation/evidence-result's own values, so stating them carries nothing out of the failed call — unlike the assembled address, query, headers and body, which an-unreachable-connector-ends-unavailable keeps out of a detail because a credential placeholder may have resolved into them.
-The address, query, headers and body, and their placeholder mechanism, are the same connector's statement of how its call reaches into a Subject, a requester and a credential without either living in the configuration's own text — `rules/integration/a-diagnostic-response-masks-a-resolved-credential` already presumes a credential placeholder exists and masks what it resolves to; this is the first node stating the mechanism itself.
-A configuration missing its address or naming an unrecognized or malformed placeholder never reaches a call at all — the same evidence-result ending the missing-key case above already declares, distinguished only by its own named cause. A configuration whose placeholder is well-formed but resolves to nothing is a different fact, about the data or the environment rather than about the configuration's own shape, and ends unavailable through an-unresolvable-observation-ends-unavailable's own condition for it instead.
+
+=== rules/integration/an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable
+---
+type: invariant
+statement: >-
+  A configuration missing its address, declaring query or headers as anything but an object of
+  string values, naming a placeholder kind this connector does not recognize, or naming a
+  placeholder with no argument where one is required, issues no call and ends unavailable, with
+  a result detail reporting an IncompleteConnectorCallDescriptorError; a configuration naming a
+  Subject attribute or a credential that resolves to nothing issues no call and ends unavailable
+  the same way, with the result detail an-unresolvable-observation-ends-unavailable itself names
+  for that condition.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A configuration missing its address or naming an unrecognized or malformed placeholder never reaches a call at all — the same evidence-result ending `an-http-connector-configuration-declares-its-method-and-status-vocabulary`'s own malformed-key case already declares, distinguished only by its own named cause. A configuration whose placeholder is well-formed but resolves to nothing is a different fact, about the data or the environment rather than about the configuration's own shape, and ends unavailable through an-unresolvable-observation-ends-unavailable's own condition for it instead.
 
 === rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
 ---
@@ -8267,11 +8555,7 @@ statement: >-
   top-level `properties` object; that each such key's own `type` and `description`, where
   the schema states them, are read as that field's declared semantics; that no other
   content of the schema is read or validated; and that a `description` entered there
-  states what a value means and names no decision. Every claim that statement makes is one
-  domain/investigation/field-semantics or
-  rules/glossary/a-description-states-meaning-never-policy already holds — the surface
-  states no further fact about how the schema is read, carries no worked example of its
-  own, and refuses nothing on any of these grounds.
+  states what a value means and names no decision.
 expression: >-
   For an operator on a surface s offering entry of the output_schema a capability
   registration declares — an authoring at an identity nothing is registered at, or an edit
@@ -8301,13 +8585,33 @@ An output schema is the one attribute of a capability registration whose content
 
 The statement is owed at the entry rather than left out, because nothing else in the system tells the operator this and nothing refuses them for getting it wrong. `a-capability-declares-well-formed-schemas` asks only whether the text parses, and `a-capability-input-schema-holds-a-well-formed-object` records that the output schema's `properties` convention holds "only by an inference this specification discloses, never checked at registration" — so a schema declaring its fields somewhere other than a top-level `properties` object is accepted whole and reads, downstream, as no fields at all. That is silence at a surface, which this specification has refused wherever it has met it: `a-composed-subject-presents-every-case-input-requirement` states an empty requirements read to the composer explicitly rather than leaving an unexplained absence, and `a-submitted-registration-states-its-outcome-to-the-operator` states an outcome the operator could not otherwise infer from the surface they stand on. Here the unstated thing is upstream of both — not what happened, but what the entry is for.
 
-What the statement says is bounded by the two nodes that already hold it, and adds nothing. The distinction between meaning and decision is part of what to enter, not a separate lesson: a `description` is published vocabulary, and `a-description-states-meaning-never-policy` holds that one naming a decision is a second home for a fact the specification places elsewhere — an operator typing it into a schema is exactly how that second home gets made, and the entry is the one place where saying so prevents it rather than reporting it. The surface stating those facts is not itself a home for them: it states them as guidance drawn from the nodes that hold them, which is why it carries no worked example of its own and states no sixth claim — the example illustrating meaning against decision belongs to the node that draws the distinction, and a surface carrying its own would be a fact of the business living in a screen.
+Whether what this surface states is bounded to what the two nodes above already hold, adding nothing, is `an-output-schema-entrys-statement-carries-no-sixth-claim`'s own.
 
 Nothing about any element changes and no hint comes into the specification. `domain/knowledge/case-input-requirement`'s standing decision keeps a property's own declared `type` and `description` outside what any element carries — presentation guidance for whoever displays an entry, never part of what the entry states — and this decides only what a surface says to the person doing the entering, carrying no schema content anywhere.
 
 Which control carries the statement, its wording, where it sits beside the entry and how it is presented are form and belong to the interface, exactly as this specification's other surface rules leave them.
 
 Consistency is eventual because the surface holds nothing this statement is true of: it states what is read out of an output schema by a reading that happens elsewhere and later — at collection, into `domain/investigation/field-semantics` — and never at the moment of the entry it stands beside.
+
+=== rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim
+---
+type: policy
+statement: >-
+  Every claim an-output-schema-entry-states-what-the-system-reads-from-it makes is one
+  domain/investigation/field-semantics or rules/glossary/a-description-states-meaning-never-policy
+  already holds — the surface states no further fact about how the schema is read, carries no
+  worked example of its own, and refuses nothing on any of these grounds.
+constrains:
+  - domain/integration/capability
+  - domain/investigation/field-semantics
+consistency: eventual
+---
+
+## Description
+
+What the statement says is bounded by the two nodes that already hold it, and adds nothing. The distinction between meaning and decision is part of what to enter, not a separate lesson: a `description` is published vocabulary, and `a-description-states-meaning-never-policy` holds that one naming a decision is a second home for a fact the specification places elsewhere — an operator typing it into a schema is exactly how that second home gets made, and the entry is the one place where saying so prevents it rather than reporting it. The surface stating those facts is not itself a home for them: it states them as guidance drawn from the nodes that hold them, which is why it carries no worked example of its own and states no sixth claim — the example illustrating meaning against decision belongs to the node that draws the distinction, and a surface carrying its own would be a fact of the business living in a screen.
+
+Refusing nothing here is the same reading: what a registration is refused for stays `a-capability-declares-its-contract`'s and `a-capability-declares-well-formed-schemas`' own, and this surface promises no check neither of them performs.
 
 === rules/integration/an-unclassified-status-ends-unavailable
 ---
@@ -8411,6 +8715,20 @@ consistency: eventual
 
 The normalization is the one thing standing between the source systems' vocabulary and the domain's; technological leakage happens in the response, not in the call.
 
+=== rules/integration/no-draft-refusal-is-stated-before-the-operation-answers
+---
+type: invariant
+statement: >-
+  No refusal a-refused-draft-request-states-its-refusal-to-the-operator states is stated of a
+  draft request the operation has not answered.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The same bound `a-submitted-registration-states-its-outcome-to-the-operator` puts on its own two outcomes: a refusal stated before an answer arrives is a refusal invented by the surface. What that surface states while a draft request is outstanding is not decided here.
+
 === rules/integration/one-capability-answers-one-concept
 ---
 type: policy
@@ -8424,6 +8742,22 @@ consistency: eventual
 ## Description
 
 One to one until a second source of the same concept appears; the fallback resolution plan was cut and stays cut until it hurts.
+
+=== rules/integration/the-configuration-field-is-untouched-by-a-drafts-arrival
+---
+type: invariant
+statement: >-
+  The content of the Configuration field a-connector-configuration-authoring-surface-offers-a-configuration-helper
+  states stands exactly as it stood when a draft's answer arrives, whether that answer is a draft
+  or a refusal: its arrival writes nothing into that field, whose content changes only where the
+  operator themselves applies the draft.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The Configuration field is untouched by the answer's arrival because applying is the operator's own act and nothing else. `applying-a-drafted-configuration-changes-only-the-local-edit` makes applying the operator carrying their own review into the field they are already editing, and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation` refuses even that act over an unsubmitted edit absent a further explicit confirmation, which `scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation` records. A helper writing the drafted text into the field the moment the answer arrived would perform, on its own initiative, the act those two rules hold to the operator: it would destroy an edit held nowhere else, and it would do it before the operator had read the unresolved items and the mismatch the review exists for.
 
 === rules/investigation/a-citation-stays-within-the-hypothesis-collects
 ---
@@ -8457,7 +8791,7 @@ The vocabulary a citation is held to is the cited evidence item's own snapshot, 
 === rules/investigation/a-composed-subject-presents-every-case-input-requirement
 ---
 type: policy
-statement: Before a diagnose, simulate-case, or simulate-hypothesis call, the interface assembling the subject presents one attribute input per the pinned case version's own case-input-requirements, required and optional alike, each carrying that requirement's own required flag through unchanged; only a required flag, never an attribute's mere presence in this set, gates whether its own input blocks the call from proceeding. Alongside each such input the interface names every capability that requirement holds — each by its own name and version, together with that capability's own connector — never only one of them where more than one currently-registered capability asks for the same attribute. Where that read names no requirement at all, the interface states that emptiness explicitly to the person composing the subject — that the pinned case version's own case-input-requirements name no attribute — rather than leaving them an unexplained absence of inputs.
+statement: Before a diagnose, simulate-case, or simulate-hypothesis call, the interface assembling the subject presents one attribute input per the pinned case version's own case-input-requirements, required and optional alike, each carrying that requirement's own required flag through unchanged; only a required flag, never an attribute's mere presence in this set, gates whether its own input blocks the call from proceeding.
 constrains:
   - domain/investigation/subject
   - domain/knowledge/case-input-requirement
@@ -8469,10 +8803,29 @@ consistency: eventual
 
 The case-input-requirements read already computes the authoritative set once, for a diagnose's own door refusal (a-diagnosed-subject-covers-its-cases-required-attributes) to hold a subject to; this rule is the same set reaching the person composing that subject in the first place, before either call, so what blocks a diagnose was already visible rather than discovered at the door.
 An optional requirement is presented the same as a required one because the case-input-requirements read already names it as something a currently-registered capability asks for — the composer benefits from knowing that without first learning the attribute's name from the glossary on their own.
-Each input names its own askers because the requirement already holds every one of them (domain/knowledge/case-input-requirement, at cardinality 1..*, derived by a-case-versions-input-requirements-are-derived), and because a value the composer leaves empty degrades exactly those capabilities' own observations rather than the call (a-simulated-subject-missing-a-requirement-degrades-not-refuses, an-unresolvable-observation-ends-unavailable): a composer who can see which observations depend on an input can weigh leaving it empty, and one asker named among several would hide the rest. Two capabilities ask for one attribute whenever they answer two different concepts the collection plan reaches, since a concept more than one capability answers contributes no attribute at all.
-A capability's name, version and connector are each that capability's own declared fact, reached through the requirement's reference to it and restated nowhere here — the same restraint domain/knowledge/case-input-requirement already holds by declaring neither.
 Nothing here forbids the composer from adding an attribute-value the requirements set does not name; a-subject-attribute-is-drawn-from-the-glossary already governs what any added attribute must be.
-A set naming no requirement at all is a real state rather than a degenerate one, and reachable with nothing wrong anywhere: a-capability-input-schema-holds-a-well-formed-object admits an empty properties object as a valid declaration — a capability whose connector reads nothing from the subject, only a credential or the requester — and a-case-versions-input-requirements-are-derived contributes nothing for a concept no registered capability currently answers, or that more than one answers. Shown as a bare absence of inputs, that state is indistinguishable from a read that failed, a mispinned case version, or a panel still loading, while the composer still owes the call a subject carrying at least one attribute-value (a-subject-carries-at-least-one-attribute) and would be left to reach for one without ever being told why nothing was offered. The sibling a-composed-subjects-interface-discloses-a-malformed-capability states the narrower half of the same care — the concept a malformed capability answers asks the composer for nothing, and without disclosure nothing would tell them why — and covers only that one reason, which an empty set does not require.
+Which capabilities are named alongside each input is `a-composed-subjects-input-names-every-capability-that-asks-for-it`'s own; what the interface discloses where the set names no requirement at all is `a-composed-subjects-interface-discloses-an-empty-requirement-set`'s own.
+
+=== rules/investigation/a-composed-subjects-input-names-every-capability-that-asks-for-it
+---
+type: policy
+statement: >-
+  Alongside each input a-composed-subject-presents-every-case-input-requirement presents, the
+  interface names every capability that requirement holds — each by its own name and version,
+  together with that capability's own connector — never only one of them where more than one
+  currently-registered capability asks for the same attribute.
+constrains:
+  - domain/investigation/subject
+  - domain/knowledge/case-input-requirement
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+Each input names its own askers because the requirement already holds every one of them (`domain/knowledge/case-input-requirement`, at cardinality 1..*, derived by `a-case-versions-input-requirements-are-derived`), and because a value the composer leaves empty degrades exactly those capabilities' own observations rather than the call (`a-simulated-subject-missing-a-requirement-degrades-not-refuses`, `an-unresolvable-observation-ends-unavailable`): a composer who can see which observations depend on an input can weigh leaving it empty, and one asker named among several would hide the rest. Two capabilities ask for one attribute whenever they answer two different concepts the collection plan reaches, since a concept more than one capability answers contributes no attribute at all.
+
+A capability's name, version and connector are each that capability's own declared fact, reached through the requirement's reference to it and restated nowhere here — the same restraint `domain/knowledge/case-input-requirement` already holds by declaring neither.
 
 === rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability
 ---
@@ -8488,6 +8841,25 @@ consistency: eventual
 
 The case-input-requirements read already names such a capability separately exactly so an operator can find and re-register it; withholding that same fact from the person actually composing the subject would waste the one read that already computed it, and the composer is ordinarily the same person who could act on it.
 This is a disclosure, not a refusal: nothing about the call or the composed subject is blocked by a malformed capability's presence, the same restraint a-simulated-subject-missing-a-requirement-degrades-not-refuses and an-unresolvable-observation-ends-unavailable already hold elsewhere in this specification.
+
+=== rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+---
+type: policy
+statement: >-
+  Where the read a-composed-subject-presents-every-case-input-requirement states names no
+  requirement at all, the interface states that emptiness explicitly to the person composing the
+  subject — that the pinned case version's own case-input-requirements name no attribute —
+  rather than leaving them an unexplained absence of inputs.
+constrains:
+  - domain/investigation/subject
+  - domain/knowledge/case-input-requirement
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+A set naming no requirement at all is a real state rather than a degenerate one, and reachable with nothing wrong anywhere: `a-capability-input-schema-holds-a-well-formed-object` admits an empty properties object as a valid declaration — a capability whose connector reads nothing from the subject, only a credential or the requester — and `a-case-versions-input-requirements-are-derived` contributes nothing for a concept no registered capability currently answers, or that more than one answers. Shown as a bare absence of inputs, that state is indistinguishable from a read that failed, a mispinned case version, or a panel still loading, while the composer still owes the call a subject carrying at least one attribute-value (`a-subject-carries-at-least-one-attribute`) and would be left to reach for one without ever being told why nothing was offered. The sibling `a-composed-subjects-interface-discloses-a-malformed-capability` states the narrower half of the same care — the concept a malformed capability answers asks the composer for nothing, and without disclosure nothing would tell them why — and covers only that one reason, which an empty set does not require.
 
 === rules/investigation/a-decided-evaluation-cites-evidence
 ---
@@ -8967,7 +9339,7 @@ Declaring a second element for it would put every attribute of the record in two
 === rules/knowledge/a-case-has-at-least-one-hypothesis
 ---
 type: invariant
-statement: A case version's manifest declares at least one entry; remove-hypothesis that would leave the manifest holding none is refused with an HTTP 422 response reporting a ManifestWouldHoldNoHypothesisError. Remove-hypothesis asked for a hypothesis name the manifest does not currently hold succeeds with no effect, never refused for the name's absence.
+statement: A case version's manifest declares at least one entry; remove-hypothesis that would leave the manifest holding none is refused with an HTTP 422 response reporting a ManifestWouldHoldNoHypothesisError.
 constrains:
   - domain/knowledge/case-version
   - domain/knowledge/manifest-entry
@@ -9168,7 +9540,7 @@ Reverting to an earlier version's content is therefore always a new, higher vers
 === rules/knowledge/a-case-versions-input-requirements-are-derived
 ---
 type: policy
-statement: A case version's input requirements are one case-input-requirement per subject attribute that the input schema of a capability answering a concept in its collection plan names in properties; that entry's required is true where any such capability's own input schema names the attribute in required, and its capabilities are every capability currently answering such a concept and naming the attribute in properties. A concept the collection plan holds that no registered capability currently answers, or that more than one currently answers, contributes no attribute to this set, and neither does a capability whose own stored input schema does not currently hold a well-formed shape; the read naming these requirements names such a capability separately, since it never appears among any entry's own capabilities.
+statement: A case version's input requirements are one case-input-requirement per subject attribute that the input schema of a capability answering a concept in its collection plan names in properties; that entry's required is true where any such capability's own input schema names the attribute in required, and its capabilities are every capability currently answering such a concept and naming the attribute in properties.
 constrains:
   - domain/knowledge/case-version
   - domain/integration/capability
@@ -9260,6 +9632,45 @@ consistency: eventual
 ## Description
 
 It is what stops a case version with subject type customer from requesting equipment state.
+
+=== rules/knowledge/a-concept-answered-by-none-or-several-capabilities-contributes-no-input-requirement
+---
+type: policy
+statement: >-
+  A concept the collection plan holds that no registered capability currently answers, or that
+  more than one currently answers, contributes no attribute to the set
+  a-case-versions-input-requirements-are-derived states, and neither does a capability whose own
+  stored input schema does not currently hold a well-formed shape, the read naming these
+  requirements naming such a capability separately, since it never appears among any entry's own
+  capabilities.
+constrains:
+  - domain/knowledge/case-version
+  - domain/integration/capability
+  - domain/knowledge/case-input-requirement
+consistency: eventual
+---
+
+## Description
+
+A concept the collection plan reaches that no registered capability currently answers, or that more than one currently answers, is already a fact an observation of it degrades on its own (`an-unresolvable-observation-ends-unavailable`); this derivation reads the same absence the same way, contributing nothing rather than guessing.
+
+=== rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+---
+type: invariant
+statement: >-
+  The discard's further act
+  releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act states carries more
+  than the statement: it is performed only where the curator reproduces the case's own slug, so
+  that the act which destroys a version is one no curator reaches without naming what they are
+  destroying.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+The two acts are not protected identically, because what they destroy is not the same kind of thing. A release ends a draft by turning it into something that answers for investigations forever, and everything it produced remains readable: the version stands, its attributes stand, its manifest stands, and `only-a-released-case-version-is-diagnosed` makes it the thing diagnosis runs against. A discard ends a draft by removing it, taking its own manifest entries with it and spending its number for good (`a-case-version-number-is-never-reused`); what the curator composed is not frozen but gone, and no reading of any surface recovers it. So the discard's further act carries the case's own slug reproduced by the curator, and the release's does not: reproducing the slug is what makes the act one a curator cannot complete without naming the thing being destroyed, and a curator who cannot name it is a curator who did not mean to destroy it. That the case holds at most one draft (`a-case-has-at-most-one-draft`) settles which version a discard would take, and settles nothing about whether the curator meant to take it — the slug answers intent, not ambiguity.
 
 === rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
 ---
@@ -9365,7 +9776,7 @@ This rule states what a manifest may hold, and nothing about what `place-hypothe
 === rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
 ---
 type: policy
-statement: A hypothesis is revised only while its case holds a draft version, and the concept-acceptance check the new revision undergoes uses that draft version's declared subject type; a revision requested while the case holds no draft version is refused with an HTTP 409 response reporting a CaseHoldsNoDraftError. A revise-hypothesis request declares no subject type of its own — the check reads the subject type from the case's draft version and from nowhere else, and a subject type carried on such a request is accepted and left without effect, never read, never compared against the draft version's declared subject type, and never a ground for refusal.
+statement: A hypothesis is revised only while its case holds a draft version, and the concept-acceptance check the new revision undergoes uses that draft version's declared subject type; a revision requested while the case holds no draft version is refused with an HTTP 409 response reporting a CaseHoldsNoDraftError.
 constrains:
 - domain/knowledge/case
 - domain/knowledge/case-version
@@ -9877,12 +10288,10 @@ This is a policy rather than an invariant because it reads a fact of a third agg
 === rules/knowledge/a-released-hypothesis-revision-is-never-altered
 ---
 type: invariant
-statement: A hypothesis-revision in released state is never altered again. An attempt to alter
-  its criterion, resolution or state is refused at the point of the attempt with an HTTP 409
-  response reporting a ReleasedHypothesisRevisionNotAlterableError, rather than being accepted
-  and left with no effect. An attempt to remove one of its collects is not refused with an
-  error; it is accepted and left with no effect, so every collect this revision held before the
-  attempt still reads back unchanged after it.
+statement: An attempt to alter a hypothesis-revision in released state's criterion, resolution or
+  state is refused at the point of the attempt with an HTTP 409 response reporting a
+  ReleasedHypothesisRevisionNotAlterableError, rather than being accepted and left with no
+  effect.
 constrains:
   - domain/knowledge/hypothesis-revision
 ---
@@ -9892,6 +10301,22 @@ constrains:
 A revision's own content is what its own release promises to keep answering forever, and what every case version's manifest that comes to reference it then relies on in turn.
 A hypothesis may still gain a new revision at any time — that revision simply is not the one released.
 The refusal is what an attempt meets on arrival rather than a silence it disappears into. `a-hypothesis-revision-is-overwritten-while-unreleased` routes revising away from a released revision before any write is aimed at one, so an attempt that reaches one at all arrives from a state read that no longer held by the time it wrote — and a curator answered with nothing would read an edit that never landed exactly as one that did, against content this rule exists to guarantee never moved.
+What an attempt to remove one of the revision's own collects meets instead is `a-released-revisions-collect-removal-is-accepted-with-no-effect`'s own.
+
+=== rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect
+---
+type: invariant
+statement: >-
+  An attempt to remove one of a-released-hypothesis-revision-is-never-altered's collects is not
+  refused with an error; it is accepted and left with no effect, so every collect this revision
+  held before the attempt still reads back unchanged after it.
+constrains:
+  - domain/knowledge/hypothesis-revision
+---
+
+## Description
+
+A revision's own content is what its own release promises to keep answering forever, and what every case version's manifest that comes to reference it then relies on in turn — a collect included, so a removal attempted against one leaves every collect the revision held unchanged, exactly as `a-released-hypothesis-revision-is-never-altered` leaves the criterion, the resolution and the state.
 
 === rules/knowledge/a-revise-answers-the-revision-number-it-saved
 ---
@@ -9926,6 +10351,27 @@ Nor is the branch the revision's own fact: it is read from whether a released ca
 Both facts this rests on are the revision's own — the number it is identified by and the hypothesis it references — so this constrains that one aggregate and holds immediately, the reading `a-hypothesis-revisions-listing-answers-highest-revision-first` already took for what a read of these revisions answers.
 The rule states that the number reaches the curator and nothing about form: which control carries it, its wording, and what a surface then does with it belong to the interface.
 It states nothing about which revisions a pin may be moved to, which stays case-version's own.
+
+=== rules/knowledge/a-revise-hypothesis-requests-own-subject-type-is-never-read
+---
+type: policy
+statement: >-
+  A revise-hypothesis request declares no subject type of its own — the concept-acceptance check
+  a-hypothesis-is-revised-only-against-its-cases-draft states reads the subject type from the
+  case's draft version and from nowhere else, and a subject type carried on such a request is
+  accepted and left without effect, never read, never compared against the draft version's
+  declared subject type, and never a ground for refusal.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+The subject type is the case version's own declared attribute, corrected only through update-draft while that version is draft; a hypothesis-revision declares none. A revise request that carried an authoritative subject type would make the curator a second source of a fact the case version already owns, and would let the acceptance check run against a subject type no case version ever declared. Leaving a supplied value without effect rather than refusing it keeps the check's one source intact without making the request's acceptance depend on a value that changes nothing about what is written or what is checked.
 
 === rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
 ---
@@ -10233,10 +10679,7 @@ statement: >-
   having asked for that act, states in a further, explicit act that it is to be performed;
   neither is performed on the asking alone, and where the curator does not so state the
   version stands in draft exactly as it stood, its own declared attributes and every entry of
-  its manifest untouched. The discard's further act carries more than the statement: it is
-  performed only where the curator reproduces the case's own slug, so that the act which
-  destroys a version is one no curator reaches without naming what they are destroying. The
-  release's further act carries the statement alone.
+  its manifest untouched.
 expression: >-
   For a draft case version v of case c and a curator on a surface offering v's release or v's
   discard: the curator's asking for either act issues neither. A release of v is issued only
@@ -10269,17 +10712,28 @@ The further act is owed because this specification already reads an act it canno
 Both acts here meet that ground more squarely than the act it was decided for, because what they freeze or destroy is not an edit a surface was holding but the stored version itself, with its declared attributes and its whole manifest.
 The contrast holds here too, and this specification has already drawn it: `an-abandoned-case-version-edit-writes-nothing` and `an-abandoned-revision-composition-writes-nothing` each give a way out that writes nothing and shows itself by returning the curator to the surface the editing was reached from, and each is available for as long as nothing has been submitted; release and discard are issued from the surface the curator stays on and they write, so nothing about them announces itself as a leaving does, and the act after a mis-triggered one is taken on a version that can no longer be corrected at all.
 
-The two acts are not protected identically, because what they destroy is not the same kind of thing.
-A release ends a draft by turning it into something that answers for investigations forever, and everything it produced remains readable: the version stands, its attributes stand, its manifest stands, and `only-a-released-case-version-is-diagnosed` makes it the thing diagnosis runs against.
-A discard ends a draft by removing it, taking its own manifest entries with it and spending its number for good (`a-case-version-number-is-never-reused`); what the curator composed is not frozen but gone, and no reading of any surface recovers it.
-So the discard's further act carries the case's own slug reproduced by the curator, and the release's does not: reproducing the slug is what makes the act one a curator cannot complete without naming the thing being destroyed, and a curator who cannot name it is a curator who did not mean to destroy it.
-That the case holds at most one draft (`a-case-has-at-most-one-draft`) settles which version a discard would take, and settles nothing about whether the curator meant to take it — the slug answers intent, not ambiguity.
+The two acts are not protected identically, because what they destroy is not the same kind of thing, and what the discard's own further act additionally requires of the curator is `a-draft-case-versions-discard-reproduces-the-cases-own-slug`'s own.
 
 Nothing here moves what either act evaluates or what it owes.
 A release attempted is still refused once, naming every violated rule together (`a-release-refusal-with-no-named-violation-says-so`), still requires every manifest entry to pin a released revision (`a-released-case-version-manifests-only-released-hypothesis-revisions`), and is still refused over a version not in draft by `a-case-version-moves-through-its-declared-lifecycle`; a discard is still refused over anything but a draft by `only-a-draft-case-version-may-be-discarded`.
 What a surface offering release must disclose stays exactly where `a-surface-offering-release-states-which-release-conditions-the-draft-meets` put it — stated before any release is attempted and without the curator opening any further control, so the further act this rule states is never where that disclosure lands.
 The leaving keeps its own shape and takes no further act: `an-abandoned-case-version-edit-writes-nothing` still writes nothing and still returns the curator to the surface the editing was reached from.
 Which control carries each act, which carries the further act, their wording, where they sit and how the second is presented to the curator are form and belong to the interface, not here; that the discard's further act carries the slug is what it requires of the curator, never how a surface asks for it.
+
+=== rules/knowledge/remove-hypothesis-for-an-absent-name-succeeds-with-no-effect
+---
+type: invariant
+statement: >-
+  Remove-hypothesis asked for a hypothesis name the manifest does not currently hold succeeds
+  with no effect, never refused for the name's absence.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+The refusal `a-case-has-at-least-one-hypothesis` states is over a manifest a removal would leave holding none; a name never held removes nothing to begin with, so no removal is attempted and no floor is threatened.
 
 === rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
 ---

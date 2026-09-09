@@ -11,10 +11,8 @@ statement: >-
   name and by the security scheme's own name that answer gave it; and, where that answer carries a
   method mismatch, the method it names as currently registered together with the method it names as
   the drafted operation's, neither of the two standing for the other — and where that answer
-  carries no method mismatch, no mismatch is stated at all. No name, no reason, no generated name,
-  no security scheme name and no method the answer did not carry is stated for any of them. The
-  content of the Configuration field stands exactly as it stood: the draft's arrival writes nothing
-  into that field, whose content changes only where the operator themselves applies the draft.
+  carries no method mismatch, no mismatch is stated at all — stating no name, no reason, no
+  generated name, no security scheme name and no method the answer did not carry, for any of them.
 expression: >-
   For an operator requesting a draft through draft-connector-configuration-from-openapi of
   contracts/integration/connector-configuration-draft, from the surface s carrying the
@@ -59,10 +57,7 @@ The method mismatch is stated where the answer carries one because applying the 
 A surface holding that back lets the operator apply and submit a change of method they were never shown, which is precisely the silent replacement the element refuses.
 Where the answer carries no mismatch nothing is stated, on this specification's standing refusal to state a value an answer did not carry — `a-presented-connector-configuration-states-an-outstanding-or-failed-read` and `a-presented-capability-states-its-declared-attributes-as-the-read-answered-them` each hold a presentation to its own answer — and a mismatch shown where none was answered would report a disagreement with a registration that need not even exist.
 
-The Configuration field is untouched by the answer's arrival because applying is the operator's own act and nothing else.
-`applying-a-drafted-configuration-changes-only-the-local-edit` makes applying the operator carrying their own review into the field they are already editing, and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation` refuses even that act over an unsubmitted edit absent a further explicit confirmation, which `scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation` records.
-A helper writing the drafted text into the field the moment the answer arrived would perform, on its own initiative, the act those two rules hold to the operator: it would destroy an edit held nowhere else, and it would do it before the operator had read the unresolved items and the mismatch the review exists for.
-`a-refused-draft-request-states-its-refusal-to-the-operator` already put this same bound on this same field for this same reason on its own side of the answer.
+Whether the Configuration field's own content stands untouched by this answer's arrival is `the-configuration-field-is-untouched-by-a-drafts-arrival`'s own, the same bound `a-refused-draft-request-states-its-refusal-to-the-operator` reads on its own side of the answer.
 
 Home is a new invariant over `domain/integration/connector-configuration-draft`, the placement its refusal-side sibling took: the api contract cannot declare a presentation, and the element declares what a draft is rather than what a surface states about requesting one, which is where every presentation fact of this specification sits.
 It adds no attribute to that element, publishes no operation and refuses no call — what the answer carries stays the drafting rules' own, and the capabilities read to resolve the placeholders reach neither the answer nor this statement, `a-connector-configuration-draft-response-carries-no-capability` having already decided that.
