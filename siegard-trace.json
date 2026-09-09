@@ -2406,6 +2406,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
         }
       ]
     },
@@ -2416,6 +2420,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
         }
       ]
     },
@@ -2442,6 +2450,10 @@
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
         },
         {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
+        },
+        {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
           "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
         }
@@ -2454,6 +2466,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
         },
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
@@ -4796,6 +4812,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme",
+      "digest": "sha256:1c63802251988176c3a65897562817570a936d8c6937415aca650fabd9dde442",
+      "files": [
+        {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
       "digest": "sha256:d1cbdfccfd56bcbe8dd5f5008e0c57b9f5e8050fac25b6f40a7cf1a38b680bfd",
       "files": [
@@ -4809,6 +4835,10 @@
       "node": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
       "digest": "sha256:9d975789850d537821de9e658130ff77303beffab93cb9b8892e320c40c64788",
       "files": [
+        {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
+        },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
@@ -7454,6 +7484,16 @@
         {
           "path": "src/src/errors/openapi-document-not-readable.error.ts",
           "digest": "sha256:ca8d1e222bfdf1c7b3ff96ccddd11ced838288ba3ab960f686d86563cdfe7103"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/an-api-key-scheme-becomes-a-generated-credential",
+      "digest": "sha256:2ce9bdda5d486114909d968096c579f72c618b61ee73bd7720335a7070087e28",
+      "files": [
+        {
+          "path": "src/src/connector-registry/generated-credential-placeholders.ts",
+          "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
         }
       ]
     },
