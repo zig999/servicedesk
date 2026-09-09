@@ -10,6 +10,14 @@
       "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service.md",
+      "title": "Connector configuration draft generation service",
+      "summary": "A pure composing function that fetches an OpenAPI document, reads the chosen operation through the existing reader, resolves subject and credential placeholders, reconciles their positional collisions, compares the operation's method against what is registered, and returns one ConnectorConfigurationDraft, writing nothing.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-generation-service"
+    },
+    {
       "id": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
       "kind": "implementation",
       "file": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders.md",
@@ -53,9 +61,17 @@
       "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proof",
       "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
-      "title": "The connector configuration draft's domain shape, proven at the type",
-      "summary": "One new spec file proves the draft's five domain elements -- the closed unresolved-reason vocabulary, the draft value object with its two required-but-possibly-empty lists and optional method mismatch, the unresolved item, the generated credential and the method mismatch -- through exact-shape type assertions, @ts-expect-error refusals, and a source-text scan proving the module imports nothing.",
+      "title": "The connector configuration draft's domain shape -- proof",
+      "summary": "Nine Vitest tests over connector-configuration-draft.ts prove the closed unresolved-reason vocabulary, the draft's required-possibly-empty lists, its optional method mismatch, the absent capability field, the three sibling value objects' exact shapes, and the module's zero imports and single runtime export, dropping the prior directory-totality test that claimed ground this task's criteria never owned.",
       "task": "task/connector-configuration-openapi-draft-backend/draft-domain-shape"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/draft-generation-service.md",
+      "title": "Connector configuration draft generation service -- proof",
+      "summary": "Thirty-seven Vitest cases at src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts exercise generateConnectorConfigurationDraft end to end through fake ports, covering every stated criterion, the four inferences the implementation record names, and the one UNDERDETERMINED entry that names a candidate implementation the specification refuses.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-generation-service"
     },
     {
       "id": "proof/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
@@ -138,6 +154,72 @@
     {
       "from": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "task/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
       "kind": "implements",
       "at": "the path"
     },
@@ -330,6 +412,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "to": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
       "kind": "proves",
       "at": "the path"
     },

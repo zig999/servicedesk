@@ -28,6 +28,7 @@ export type OpenApiOperationReading = {
   readonly parameters: readonly OpenApiOperationParameter[];
   readonly requestBodyFieldNames: readonly string[];
   readonly requiredSecuritySchemes: readonly OpenApiRequiredSecurityScheme[];
+  readonly serversInEffect: readonly string[];
 };
 
 type OperationEntry = {
@@ -50,7 +51,31 @@ export function readOpenApiOperation(documentText: string, path: string, method:
     parameters: parametersOf(document, pathItem, operation),
     requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
     requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
+    serversInEffect: serversInEffectOf(pathItem, operation, document),
   };
+}
+
+function serversInEffectOf(pathItem: unknown, operation: PlainObject, document: PlainObject): readonly string[] {
+  const ownServers = declaredServerUrls(operation.servers);
+  if (ownServers !== undefined) {
+    return ownServers;
+  }
+  const pathItemServers = isPlainObject(pathItem) ? declaredServerUrls(pathItem.servers) : undefined;
+  if (pathItemServers !== undefined) {
+    return pathItemServers;
+  }
+  return declaredServerUrls(document.servers) ?? [];
+}
+
+function declaredServerUrls(value: unknown): readonly string[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  return value.filter(isPlainObject).filter(hasStringUrl).map((entry) => entry.url);
+}
+
+function hasStringUrl(value: PlainObject): value is PlainObject & { readonly url: string } {
+  return typeof value.url === 'string';
 }
 
 function operationEntry(document: PlainObject, path: string, method: string): OperationEntry {

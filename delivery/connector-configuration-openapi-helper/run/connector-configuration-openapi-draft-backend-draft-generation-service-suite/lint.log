@@ -1,0 +1,11 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/connector-configuration-openapi-helper/src/src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+  273:137  error  Async arrow function has too many lines (34). Maximum allowed is 30  max-lines-per-function
+  506:272  error  Async arrow function has too many lines (39). Maximum allowed is 30  max-lines-per-function
+
+✖ 2 problems (2 errors, 0 warnings)
+
