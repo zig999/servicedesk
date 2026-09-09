@@ -1,5 +1,6 @@
 ---
-implementation: sha256:b1b6c0ce59b9e29be5f2010ae95499bd7f9c44e4ac522fc214c9d358ae6e0140
+target: backend
+implementation: sha256:6dfdf9a2579218751eeca65185130eeb00ed690c95f0dd56433580cae986feb3
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

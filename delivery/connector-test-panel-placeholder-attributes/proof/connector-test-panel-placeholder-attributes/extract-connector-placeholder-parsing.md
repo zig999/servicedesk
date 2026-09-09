@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Placeholder-token grammar primitives proven at their new module
 summary: Proves the three grammar primitives extracted into shared/services/connector-placeholder-token.ts
   (the regex, the kind/argument split at the first ':', and the subject-kind filter) directly against
   their own exports, covering the token-grammar edge cases the extraction's own criterion raises, while
   leaving simulation-subject-derivation.ts's two pre-existing spec files untouched as the proof that its
   own observable behavior did not change.
-implementation: sha256:b19ceb9e0dc5aed6849e40778bc780772579e76019c2db3fe263e42b7a26a9cd
+implementation: sha256:cd23e766c07b469fc94239284deec7043b20dba9272b352b3bfcfe9112fcade6
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Empty Versions list and empty violations list each render an explicit sentence
 summary: Case Detail's Versions tab and the Release Dialog's violations view each gain an explicit empty-state
   branch, matching CaseHypothesesTab's existing pattern, so an empty collection is never rendered as a

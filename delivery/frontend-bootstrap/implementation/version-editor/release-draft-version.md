@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Release a draft case version
 summary: Adds a "Release…" control and its in-place confirmation Dialog to the Version Editor, with a
   client-computed pre-release checklist, a single POST .../release on confirm, and rendering for its 200/409/422

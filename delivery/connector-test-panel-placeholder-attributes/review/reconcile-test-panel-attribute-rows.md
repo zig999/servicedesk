@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Reconcile test panel attribute rows, review
 summary: What four passes found over the third task's reconciliation of Add attribute
   against Configuration's placeholders.

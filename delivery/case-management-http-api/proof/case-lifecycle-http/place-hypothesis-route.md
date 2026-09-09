@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createPlaceHypothesisRoutesPlugin plus the
   shared error handler, that a valid placement answers a wholly empty 204, that both named refusals resolve to the status
   status-map assigns, and that path/body validation boundaries and the generic-500 fallback behave as disclosed.
-implementation: sha256:53c143df77b10b087d77d1bb7c9d5953a496400683118d36e89ac5672555de9e
+implementation: sha256:5471b0ad7cd22b7438d9ebdb11866250b30bc73e7d5e92d3ef807a5f698ed2ef
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

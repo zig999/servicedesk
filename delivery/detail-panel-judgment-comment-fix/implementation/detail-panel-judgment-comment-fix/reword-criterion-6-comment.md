@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Reword the Detail panel's Criterion 6 comment to separate the per-hypothesis fact from the investigation-wide
   fact
 summary: Corrects case-simulation-detail-panel.tsx's own header comment, which grouped model, prompt version,

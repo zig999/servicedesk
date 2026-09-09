@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Add-attribute reconciliation coverage in the capability-picker spec
 summary: Adds one test to connector-test-panel-capability-picker.spec.ts proving Add attribute reconciles
   a row already named for a Configuration placeholder in this file's own context, closing this task's
   criterion 2; criterion 1 is a pure internal deduplication needing no new test.
-implementation: sha256:c13a00ffa44d37ee49bf9346637f99e73a447404f256110743051e77d754ff13
+implementation: sha256:3fff1d8a7a8d13704a669b18cb4905096d1ed4d96ddd1397ca0231a510c64ed5
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

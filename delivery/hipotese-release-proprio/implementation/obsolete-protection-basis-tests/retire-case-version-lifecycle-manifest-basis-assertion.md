@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Retire the case-version-lifecycle spec's manifest-basis immutability assertion
 summary: Removed the one test in case-version-lifecycle-schema.spec.ts that asserted a hypothesis-revision's
   immutability on the basis of a released case version's manifest reference, leaving the file's tests

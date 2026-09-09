@@ -1,12 +1,13 @@
 ---
+target: frontend
 title: Disclosure of the answered draft and of a refused request
 summary: Unit tests over the pure disclosureStateForOutcome mapping and component
   tests over ConnectorConfigurationHelperFields together prove every disclosure criterion,
   the three UNDERDETERMINED implementation choices, and that the Configuration field
   is never touched by either a draft or a refusal.
-implementation: sha256:96f1631e2c26ee69c4d893b2d72575c14c13c65751ee811c33b9102365a7fc3a
+implementation: sha256:5e9ad712ecf3d439f550069832407769fa12208dd0c379cbbc85370d854b3996
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-drafted-answer-disclosure-suite-2
 tests:

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Hypotheses table (case simulation cockpit)
 summary: A presentational, props-driven React component rendering the case-simulation screen's Hypotheses
   region — the precedence-ordered StatusTable, its per-row simulate/edit actions, and the determining/outcome/referral

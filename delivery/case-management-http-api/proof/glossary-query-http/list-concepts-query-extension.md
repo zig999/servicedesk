@@ -1,8 +1,9 @@
 ---
+target: backend
 title: GlossaryService.listConcepts pagination
 summary: Seven tests in glossary.service.list-concepts.spec.ts prove both of the task's criteria and every
   implementation-record inference the sibling operations established for this pagination shape.
-implementation: sha256:886f2431e6f810270e4796076d7d9717fcec9d731f8fde4771286669e6015efc
+implementation: sha256:c84d2ee866ca837af081ad02a3e4335e4244a9ecdab83d3e3dce9a5ef32f55b8
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

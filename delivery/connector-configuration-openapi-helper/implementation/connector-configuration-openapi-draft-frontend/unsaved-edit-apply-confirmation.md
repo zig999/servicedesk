@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Confirm before an apply overwrites an unsubmitted edit
 summary: Gates the Configuration Helper's onApply behind a per-screen unsubmitted-edit reading and a controlled
   confirmation dialog, so a draft only replaces the Configuration field's content after a further explicit
   confirm.
 task: sha256:4cad1cc15b339d4471c5698b51651857610d78f63649b1b03ea9324b652c4575
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-unsaved-edit-apply-confirmation-build
 files:

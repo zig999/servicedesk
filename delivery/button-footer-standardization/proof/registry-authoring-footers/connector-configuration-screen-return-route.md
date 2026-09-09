@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Connector configuration screen return route proof
 summary: The four specs that queried the removed Back to connector configurations link are rewritten against the footer's Cancel control, keeping every phase's route assertion, and three of the task's four underdetermined notes gain a test that would fail over the implementation each names.
-implementation: sha256:e639fc2b26e05046e8eb805c281937b64b1749aa18cb4f3d6db18a2ed9b77623
+implementation: sha256:34cc71b5d9f842a419be0bf8974f3e5774face56b63929b0c50e633a8bd91f2a
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

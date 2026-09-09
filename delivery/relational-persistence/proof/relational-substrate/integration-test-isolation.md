@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for per-test transactional isolation over one shared Postgres pool
 summary: Proves checkOutIsolatedConnection's own isolation — a write vanishes once its connection is released,
   two tests writing the same case slug or investigation id in one run both pass, a test observes none
   of another test's rows, and no test obtains any of that by creating, dropping or altering a table —
   plus a type-regression fix this task's own pg.d.ts extension caused in a sibling task's already-delivered
   proof file.
-implementation: sha256:f3dfe0b8d69f264cf23bfcf25766c707491c89f095d24872c517baea68b3a9f4
+implementation: sha256:664a1b5d123bf844e725b7d11ee58e0b6cc8f5b922ecf1eddc19609519e1a7c2
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

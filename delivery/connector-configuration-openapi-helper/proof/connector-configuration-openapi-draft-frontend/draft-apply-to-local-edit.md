@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Proof that applying a drafted configuration writes only the Configuration field's local edit
 summary: Two spec files -- one isolated at ConnectorConfigurationHelperFields proving the Apply
   affordance's own presence rule and callback, one end-to-end through ConnectorConfigurationCreateScreen
   with a real router, query client and fetch stub -- together establish all seven criteria.
-implementation: sha256:de294a597ed241f506ec93aba4e231cfaab481f39d3e1199c566550662961096
+implementation: sha256:d0131b01dbf7a718302b583ba95fb13359f5674e5d8a5a9ff7d839dc7a08e6b4
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-draft-apply-to-local-edit-suite
 tests:

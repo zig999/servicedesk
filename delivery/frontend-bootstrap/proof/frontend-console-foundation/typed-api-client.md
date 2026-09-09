@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the typed fetch client over the backend's error envelope
 summary: Tests apiFetch()'s 2xx pass-through and its parsing of a non-2xx response into a typed ApiError, including the malformed-body case the implementation record infers.
-implementation: sha256:27e5b28e5d5374e2f0ff1b26d63e7362ed0309267decb4ad7d050525baf76168
+implementation: sha256:9ef0f2b007688a1a49c2484d025c85798dc591e93bf91def59095b7c0a500448
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Hypothesis-evaluator port and its fake adapter
 summary: The IHypothesisEvaluator port and a fixture-driven FakeHypothesisEvaluator that judges one hypothesis's criterion against its own evidence, plus the verdict, evaluation-reason and citation vocabulary the port's answer is built from.
 task: sha256:4538988e80203f9a3631c196378d00bdff3aef16074175748cc0d2f9608f4130

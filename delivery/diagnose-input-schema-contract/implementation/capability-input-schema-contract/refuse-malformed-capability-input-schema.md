@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Refuse a malformed capability input schema, and read a legacy one as empty
 summary: registerCapability now refuses an input_schema that parses but does not hold the declared shape,
   and a new shared reader answers a shape-departing input_schema (new or pre-existing) as declaring properties

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Resolve a manifest entry's pinned-revision state even when it is off the default page
 summary: Both the version-manifest builder screen's RevisionSelect badge and the case-version editor's released-view manifest table now resolve a pinned hypothesis-revision's own state across every page of its hypothesis's revisions listing, and explicitly present the still-pending and could-not-be-read windows on the same terms whether the pin sits on the default page or is resolved by this task's own off-page path.
 task: sha256:c89694f3910d0ee8ea76f7554db6b4a595ad9f8c137cd0b576da2fd78ac71495

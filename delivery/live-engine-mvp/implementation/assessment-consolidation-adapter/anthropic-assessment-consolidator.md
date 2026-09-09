@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Production Anthropic assessment-consolidator adapter
 summary: A new AnthropicAssessmentConsolidator class implements IAssessmentConsolidator by calling @anthropic-ai/sdk
   with a closed, delimited prompt assembled purely from the given evaluations, evidence and consolidation

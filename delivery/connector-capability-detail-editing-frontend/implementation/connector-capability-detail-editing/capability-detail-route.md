@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability detail/edit route
 summary: Adds a routed /capabilities/$name/$version detail-and-edit screen that replaces
   the popup dialog's edit path for an existing capability, with dirty-gated Save,

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: anthropic-hypothesis-evaluator.adapter.ts imports citation-validation.ts's isPlainObject in place
   of its own isRecord
 summary: anthropic-hypothesis-evaluator.adapter.ts's own isRecord function is removed and both of its

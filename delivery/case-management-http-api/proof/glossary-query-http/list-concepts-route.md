@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for glossary-query-http/list-concepts-route
 summary: Fastify-level tests proving GET /v1/glossary/concepts answers 200 with the resolved PaginatedResponse<Concept>,
   resolves pagination bounds the way list-cases.routes.ts's own inference does, and refuses malformed
   offset/limit with 400 before ever reaching the glossary query.
-implementation: sha256:2d91a160f5f55d5e6fe0f93c64ded76d0d266eb4828b8a28139e7e65cd6ba75f
+implementation: sha256:a84f3effc1973d87b2c8145213c4718fe0c551e62823ea56b2f1c1dcd26d7ed3
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

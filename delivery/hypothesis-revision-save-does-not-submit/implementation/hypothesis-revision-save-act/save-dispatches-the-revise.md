@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Save owns its form again under the footer portal
 summary: The hypothesis revision screen's submit control keeps the screen's own form as its DOM form owner even when ButtonFooter
   portals it into the app shell's footer slot, restoring the save-to-revise dispatch the portal broke.

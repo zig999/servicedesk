@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Build frontend app substrate
 summary: The manifest, compiler, lint, build, style and end-to-end test configuration standards/frontend-typescript.yaml
   presupposes and the empty frontend/app tree did not hold, plus a minimal shell proving the @tui/ui/*

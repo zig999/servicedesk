@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for repinning a manifest entry through the existing place-hypothesis mutation
 summary: Twelve tests drive useManifestBuilder's new onRepin action directly through renderHook, proving
   the exact PUT it sends, the state a successful and a refused repin leave behind, and that its telemetry
   and failure reporting never read as a move.
-implementation: sha256:975205f404ee73779780a3b781a295e9386cef0345acaf3f27c4295350a4d2a2
+implementation: sha256:0eb45858840eef6851fa76eee933982dd1b21edd2f3917590576082f9c41371d
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: discard operation
 summary: Adds the case-lifecycle 'discard' operation, which checks a version's own state through assembleVersion
   and refuses explicitly before ever calling the store's own discard() primitive.

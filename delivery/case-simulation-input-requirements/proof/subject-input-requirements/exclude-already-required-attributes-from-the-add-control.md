@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for excluding already-required attributes from the "+ attribute" control
 summary: New and one corrected spec in case-simulation-subject-panel-attributes.spec.ts proving the five
   criteria of exclude-already-required-attributes-from-the-add-control and its own UNDERDETERMINED note
   over state.addedAttributes.
-implementation: sha256:0095a0520453e60cfb15a78278c7a7c99f6371773e8226fdf266fae611c0b75a
+implementation: sha256:42401c8b1d159c636631eb940a9726f43d742ee5e3bb4e4b2d8b78d1a7ad4dd9
 run: run/subject-input-requirements-exclude-required-suite-3
 tests:
 - file: src/routes/case-simulation-subject-panel-attributes.spec.ts

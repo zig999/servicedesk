@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Glossary Browser screen
 summary: Replaces GlossaryPlaceholder with a six-tab, read-only Glossary Browser at /glossary -- Concepts
   (via a new ttl-preserving sibling hook) plus the five term vocabularies, each composing an existing

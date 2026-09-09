@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Status-map resolves seven typed domain errors to non-500 statuses
 summary: statusForError() maps each of seven typed domain errors to its assigned status and returns undefined
   for anything else, and error-handler.middleware.ts consults it before its unchanged 500 fallback.
-implementation: sha256:2ee724e21321114db7d06dc70653542e1c22d46289b37f456196f8942db4517c
+implementation: sha256:171692c854404c3f4a9c9c33ca25e2a06bdf3f9896b4d4eb1bcfc9409e7f7aca
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: The error-code mapping keys on CaseVersionNotValidError
 summary: The frontend's error-code mapping table keys the case-not-valid UI state on the wire code the
   backend actually sends, CaseVersionNotValidError, instead of the stale CaseNotValidError name.

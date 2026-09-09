@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Precedence-from-position — proof, and a fix to a superseded pre-existing test
 summary: New tests proving that resolve-outcome and collection-plan now read each hypothesis's own declared
   position rather than array arrangement, plus an in-place fix to the one pre-existing test that pinned
   the opposite, now-superseded behavior.
-implementation: sha256:4d221e046603956accca6e7a71e4c6a15c4a97268c8ef1478f9fc5e0870fa05f
+implementation: sha256:0a54752c2e99767b32e7ce5651239ef108b8db54d3030a566cb3b9b48d58f66e
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

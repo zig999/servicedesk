@@ -1,8 +1,9 @@
 ---
+target: backend
 title: GET /v1/glossary/{vocabulary} — proof
 summary: Proves the list-vocabulary-terms route answers a paginated page for a recognized vocabulary and
   refuses an unrecognized one with a 400 validation envelope, never reaching the glossary query.
-implementation: sha256:53c1aca9f50baa9e9c1657e3d440659d04e783bd8686df0404a7b29f35ccd509
+implementation: sha256:9a2ee1ce1493e702182707ee404cc4345795d169ed24ea1655c6071adf67e232
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

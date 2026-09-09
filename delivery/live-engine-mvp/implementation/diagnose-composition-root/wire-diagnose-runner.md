@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Wire the production diagnose runner from the real Anthropic adapters
 summary: One new factory always wires AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator
   behind createDiagnoseRunner, stamps the twenty-second absolute deadline once per call, and calls the

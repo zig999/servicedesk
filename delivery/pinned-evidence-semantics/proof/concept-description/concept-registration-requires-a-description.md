@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for register-concept refusing a description-less submission
 summary: Confirms this task's three criteria and its three disclosed inferences are
   each covered by an existing, already-passing test, and adds the one test that was
   missing — that the DTO's own optional description field lets a description-less
   request reach GlossaryService.registerConcept rather than refusing it at 400.
-implementation: sha256:7412705dac21704f3727ea504899481b76bf19494d6e355cba399e5c465f494f
+implementation: sha256:90bc7c255fa954202c1d292370468a4785da1ecd06e42217d25f0e6d54cdbc80
 run: run/pinned-evidence-semantics-full-suite-post-evidence-snapshot-4
 tests:
   - file: src/__tests__/unit/glossary/glossary.service.spec.ts

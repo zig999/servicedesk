@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Report orphaned placeholders in the connector test response
 summary: test-connector's response now names, for the pair under test, every Subject-attribute placeholder
   the connector configuration's call text embeds that the tested capability's input_schema does not declare,

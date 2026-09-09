@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Thread the registered configuration into the connector Test Panel
 summary: useConnectorConfigurationDetailView's "ready" phase now exposes registeredConfigurationText (the
   most recently loaded-or-saved configuration text), and ConnectorConfigurationDetailReadyView passes

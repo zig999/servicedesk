@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Degrade-unresolved-connector-call-to-unavailable — proof
 summary: Tests proving http-declarative-observation-source.adapter.ts's own resolveAssembledRequest degrades
   both typed connector-assembly failures to an unavailable evidence outcome naming the failing class,
   that every other concurrently-collected concept settles unaffected, and that test-connector.controller.ts's
   own two direct resolveConnectorRequest calls still propagate either failure uncaught.
-implementation: sha256:e3b156bfc2b0a3c21344c1eaa49ee3a528aa33b91071b14381e2530d62bdf22a
+implementation: sha256:22cd823e98aa91d88c2bd308325d4091f9c8c9f6c4fbcdc80e1985be11a08b84
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: writeConnectorConfigurations upserts by identity instead of deleting the whole table
 summary: RelationalConnectorConfigurationStore.writeConnectorConfigurations now upserts each given configuration
   by its own connector identity through INSERT ... ON CONFLICT (connector) DO UPDATE, issuing no DELETE

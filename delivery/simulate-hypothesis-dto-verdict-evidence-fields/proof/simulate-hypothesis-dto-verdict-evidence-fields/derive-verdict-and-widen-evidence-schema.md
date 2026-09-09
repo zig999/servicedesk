@@ -1,10 +1,11 @@
 ---
+target: backend
 title: simulate-hypothesis DTO derives verdict from VERDICTS and widens evidenceSchema
 summary: Proves the discriminated-union verdict branches still validate each of the three VERDICTS entries
   and reject an unknown one, and that the widened evidenceSchema requires fields and concept_description
   while admitting the honest-empty readings and the field-semantics shape domain/investigation/field-semantics
   actually declares.
-implementation: sha256:c43f0efbdd962a4c3bdd02a8005f037ad16566e36d3738de7675206523b2dc51
+implementation: sha256:34be13c5c0c2a2621e374679c96cc3d6dbe3b9f2ce9f3b33a26b689f09967ed0
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for the capability single-record edit hook (useCapabilityDetail)
 summary: Renders useCapabilityDetail directly through renderHook against a stubbed
   global fetch, proving all seven criteria, all three recorded inferences, and the
   double-submit edge case, split across three .spec.ts files plus one shared test-support.ts
   to stay under this project's own max-lines rule from the start.
-implementation: sha256:f5cc1c4cbeb20e90f28896fcd894e6f54af7d06ac48c3092f684e90443d81f8b
+implementation: sha256:7e689e9a4be6e0b77248cbead293b13297202e001e6b61490c6f3e3428a334b2
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

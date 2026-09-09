@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Every load-error state offers a retry control — proof
 summary: Twelve tests across three spec files prove that Cases List, Case Detail's Versions tab and the
   Capabilities Browser each render a retry control on load error that re-issues that same screen's own
   read, issues no other request, fires exactly once per click, and survives a repeated failure without
   getting the screen stuck.
-implementation: sha256:da1b53a0a2a2abdd18d0cf6b8cb032515c2b27fc068b3ab6c3d9ca9b7550bce9
+implementation: sha256:45fbbffd24ebba14a9bd824a684677437e65cfd2c0df6a2ca600dc9caba29688
 run: run/ux-consistency-sweep-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

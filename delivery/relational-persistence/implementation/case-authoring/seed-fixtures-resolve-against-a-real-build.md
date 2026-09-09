@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Seed resolves its fixtures against the source tree instead of the compiled output
 summary: seed.ts's FIXTURES_ROOT now steps up from its own module URL into the package's src/fixtures
   directory, so a compiled dist/seed.js finds the fixtures a real npm run build never copies there.

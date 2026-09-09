@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Generated-credential placeholder generation for reducible security schemes
 summary: Adds a pure connector-registry module that turns an operation's required
   security schemes into ${credential:<name>} placeholders (or unresolved items), resolving

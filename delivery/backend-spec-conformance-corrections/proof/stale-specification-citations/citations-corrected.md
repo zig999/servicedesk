@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Stale specification citations corrected — nine locations
 summary: Each of the nine touched files is read from disk and its comment text is asserted to no longer
   carry the superseded reading and to carry the corrected specification citation instead.
-implementation: sha256:59865167c18a63e2bf291d5749e2f78953522769563a558640c3c89d29152e98
+implementation: sha256:02c2ea493e0f0920aeffa9fa3d7b3d0e88f84b791ad9dc746a0fb38a535fd436
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

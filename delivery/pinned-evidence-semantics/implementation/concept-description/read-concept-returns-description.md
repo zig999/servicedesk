@@ -1,4 +1,5 @@
 ---
+target: backend
 title: read-concept returns a concept's description
 summary: GET /v1/glossary/concepts/{name} now answers a held concept's description
   alongside its name, accepts and ttl, empty for a legacy concept holding none.

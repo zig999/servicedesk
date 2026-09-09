@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Collection stage copies an unavailable observation's result_detail into evidence
 summary: settledEvidence now carries ObservationOutcome's own result_detail into the Evidence entry for
   an unavailable ending, leaving ok, denied and timeout untouched.

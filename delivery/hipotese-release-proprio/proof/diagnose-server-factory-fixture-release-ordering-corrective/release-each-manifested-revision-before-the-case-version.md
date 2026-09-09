@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Diagnose-server fixture reads back released state after the release-ordering fix
 summary: Two new integration assertions in diagnose-server.factory.spec.ts read the seeded fixture's case version and each of its manifested hypothesis-revisions back through the declared store API and confirm both land in the released state that the reordered insertFixtureCase now produces.
-implementation: sha256:82dda49aad303fbafec0b0f94b5fd9d00793b29853599f909d080c37487a8a0c
+implementation: sha256:21348ae3f6467ca5b5d3b49fd0a7c3157aafff6e7dbf1f516daff30d9311de95
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

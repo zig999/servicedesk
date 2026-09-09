@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for the routed capability create screen
 summary: Vitest coverage for capability-create-screen.tsx's own thirteen criteria, its create-mode reuse
   of useCapabilityForm/CapabilityFormFields, and the task's own UNDERDETERMINED note over the dispatched
   registration's completeness, through a self-contained test router and a stubbed fetch/sonner boundary.
-implementation: sha256:3091f51437a475819ca5d26e2b85b5955ce3a4d9a2805a7a9e9ba91b0bc15252
+implementation: sha256:4244a47f3a23d1fed8c37bc3d3863c63a55ee6f20f37a4d20f7cfebd7496dd06
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for viewing a released case version read-only
 summary: Tests the Versions tab's new "View" action on a released row, its absence-preserving behavior
   on a draft row, and the Version Editor's control-free read-only render of a released version's fields
   and manifest.
-implementation: sha256:acb2448288651e046961f625588da125fe414c581ec2fddf869673ec612574ab
+implementation: sha256:45a44cc9e94f00956ef9a5dec26e4376a30a6a244c7d5aa0ad849654bfa41e9c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

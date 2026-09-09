@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: The newer-revision-available marker on a pinned manifest row
 summary: RevisionSelect now renders a text-only marker as a sibling of its own Label (not inside it) whenever
   the row's pinned revision is below the highest revision useManifestRowRevisions answered for that hypothesis,

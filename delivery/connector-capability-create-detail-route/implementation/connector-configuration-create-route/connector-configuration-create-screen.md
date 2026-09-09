@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Routed connector configuration create screen
 summary: A new "/connectors/new" route and screen let an operator register a connector configuration on
   a full page, reusing the existing create/edit form hook and field markup, and land on the created record's

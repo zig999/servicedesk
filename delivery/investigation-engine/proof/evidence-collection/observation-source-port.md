@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the observation-source port and its fake adapter
 summary: Drives FakeObservationSource, the only concrete IObservationSource this task ships, through each of the four evidence-result endings and its one throwing fault, and audits src/investigation's own modules for import purity and for shipping exactly one adapter.
-implementation: sha256:e9c168e7f976563c9ca9b32f23a86e0a1322c1c5125816d71f8d648ea654ea0b
+implementation: sha256:4712edf8cad26e20b34918f59545e273ffc45eb203a23baebed16aeb2f11745a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

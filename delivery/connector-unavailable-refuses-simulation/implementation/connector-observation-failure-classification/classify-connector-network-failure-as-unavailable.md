@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Classify a connector network failure as unavailable
 summary: HttpDeclarativeObservationSource now catches a transport-layer connector
   rejection and resolves it to an unavailable observation naming ConnectorUnreachableError

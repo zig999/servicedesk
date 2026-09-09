@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Proof for the response path extractor
 summary: What proves task/http-observation-runtime/response-path-extractor, judged against its implementation
   record over the tests already on disk, all of which stand.
-implementation: sha256:74e83a7bba4e77dfeccd36947386ea4dafffb8ea0598968e842cf4eb27baa293
+implementation: sha256:5cc70cce7a1677e11baf0f34c8bfa0e191abc2d8bf7ed12e512038de483df81a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

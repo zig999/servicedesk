@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The connector configuration draft's domain shape
 summary: One new domain module declares the draft value object, its unresolved item,
   its closed unresolved-reason vocabulary, its generated-credential and its method-mismatch,

@@ -1,7 +1,8 @@
 ---
+target: backend
 title: "Proof for concept persistence carries a description, tolerant of a legacy row"
 summary: "Existing, unmodified tests over the migration and RelationalGlossaryStore already prove all three criteria; the implementation record's own deferred item — that the RelationalGlossaryStore spec files disagree with the new behavior — no longer holds, since both files already assert description correctly."
-implementation: "sha256:0af795a7306cf51b74f4abbf4a87b3376819c08851fa4108bb9a38be765100f5"
+implementation: "sha256:7a24985d30d2052be80f2537506e0d291556bbe90167886659c4fc80e205e24c"
 standard:
   at: "../standards/backend-node-service.yaml"
   pin: "sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3"

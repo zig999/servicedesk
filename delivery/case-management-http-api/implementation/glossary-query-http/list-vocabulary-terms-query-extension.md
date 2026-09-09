@@ -1,4 +1,5 @@
 ---
+target: backend
 title: IGlossaryQuery gains listVocabularyTerms
 summary: IGlossaryQuery and GlossaryService gain a paginated listVocabularyTerms operation that windows
   one vocabulary's whole in-memory holding by offset and limit, typed over the same closed TermVocabulary

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Wire the six case-lifecycle operations and retire author-case-version
 summary: Adds the case-lifecycle composition root, rewires case-query.service.ts and seed.ts off the retired
   ICaseStore.readVersion/writeVersion shape and the retired author-case-version command, and deletes the

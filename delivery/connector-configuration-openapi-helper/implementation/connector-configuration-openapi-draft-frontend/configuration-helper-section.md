@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Configuration Helper section beneath the Configuration field
 summary: Adds an inline Configuration Helper offer (document-link, path and method
   controls, and a non-submitting Request Draft control) to the shared ConnectorConfigurationFormFields
   component, reused unchanged by both the create screen and the ready detail view.
 task: sha256:df6b3df8ecbfaf94757262bf6702b9dfd303233b5da134f60f1da6c90d5e5e56
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-configuration-helper-section-build
 files:

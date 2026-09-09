@@ -1,7 +1,8 @@
 ---
+target: backend
 title: "Proof for field-semantics.ts importing citation-validation.ts's shared JSON guards"
 summary: "Corrects the one pre-existing test that asserted field-semantics.ts imports nothing from citation-validation.ts — the opposite of this task's own third criterion — splitting it into tests that prove the intentional import and tests that keep proving the design fact it used to protect."
-implementation: sha256:0958269bc44d29daed8878b6990ff58146d0277f510fabeebe88fc76c1678703
+implementation: sha256:600599e36760803f40e1cb91adbdf51e6188f2a8cd3161a73063d57c45af010b
 run: run/arc01-mnt03-suite
 tests:
   - file: src/__tests__/unit/investigation/field-semantics.spec.ts

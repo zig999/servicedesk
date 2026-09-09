@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Case-version lifecycle schema migration
 summary: A new, next-numbered SQL migration that gives cases a durable version counter, case_versions
   a state/released_at lifecycle with a corrected release-conditioned immutability rule, and splits hypothesis

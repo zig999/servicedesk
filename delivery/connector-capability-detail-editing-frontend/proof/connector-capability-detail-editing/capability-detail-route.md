@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Capability detail/edit route, proven directly against the routed screen and its composing
   hooks
 summary: 31 tests over the routed /capabilities/$name/$version screen, its ready-phase view,
   capability-form-fields.tsx's widened isDirty prop, the capabilities list's row-click navigation,
   and the use-capability-detail-view composition hook -- proving all nine of this task's criteria,
   split across five spec files to respect this project's own max-lines rule from the start.
-implementation: sha256:9f68d6d68d07949635726ee13ff8fbae19140d905c4ef9807c0e01bf26a123a1
+implementation: sha256:9c88d7155abd006d51897820141b1f86918fdf4b2b3af948d37b57c897eed974
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

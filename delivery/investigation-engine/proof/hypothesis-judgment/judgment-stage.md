@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Judgment stage proof — one evaluation per required hypothesis under a pooled, deadline-bounded retry policy
 summary: Tests judgeHypotheses against all six task criteria and the requested concurrency/retry/keying/throw edge cases.
-implementation: sha256:0706efa6259389348fafd5327bafa016585cecd0d5fcbdd0591b91abafbabdcd
+implementation: sha256:a2d3cf06af8efd150e183464bf2722e4f69136445d204c30fc859de415a63f0e
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

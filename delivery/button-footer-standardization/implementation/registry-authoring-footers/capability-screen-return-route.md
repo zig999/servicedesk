@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability screen return route
 summary: The standalone Back to capabilities links are removed from both capability screens, and every phase of both — including the loading and load-error phases that had no footer at all — now offers the route to the listing through the shared ButtonFooter instead.
 task: sha256:2ba66cdbe6050789812939ea454049c3fa0c87d070e856ed7431f530ee38413c

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Manifest action on every Versions-panel row in case-detail-screen
 summary: actionsForRow now renders a third per-row Link to that row's own manifest route, built from the
   same shared params object, for both draft and released rows.

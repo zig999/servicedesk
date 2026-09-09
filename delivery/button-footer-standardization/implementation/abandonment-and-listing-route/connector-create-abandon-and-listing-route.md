@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector-configuration creation surface's abandonment split from its listing route
 summary: The creation surface now carries two separate controls — an abandonment that returns to the surface the authoring was reached from, or the connector-configurations listing where none exists, and an unconditional route to that same listing.
 task: sha256:30e61dfc04f0d5d8b22622af8530879baecf06e42238363f9f60560f49f8a31f

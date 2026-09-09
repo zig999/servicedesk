@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof that the connector configuration popup form dialog is retired
 summary: One new filesystem test closes the one criterion a running test can state directly; the
   remaining structural criteria stand on the cited run's passing typecheck/build steps and two
   existing, untouched specs, cited rather than duplicated.
-implementation: sha256:e37406fcd21b0417cb2dd0a7700e438007fd0896c1bfe385341a2e5831f6f85c
+implementation: sha256:372317eb2828c15344068a375dd366e7384087b10d534bfc1a4fe4e9505c79b9
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

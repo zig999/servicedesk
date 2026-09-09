@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Proof for GET /v1/glossary/{vocabulary}/{name}
 summary: Ten Fastify-injected tests over GET /v1/glossary/{vocabulary}/{name}, proving both criteria,
   all five term vocabularies, and the closed-enum validation boundary.
-implementation: sha256:816b9d58ad3efafb71d198f0fa86f318af718ade2f3c8078b2909595d9e2da51
+implementation: sha256:eaf7e00de0eb3cabf3390c7b358fc4e474ecb952c92cbed3fdcd0a4451e2fd28
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

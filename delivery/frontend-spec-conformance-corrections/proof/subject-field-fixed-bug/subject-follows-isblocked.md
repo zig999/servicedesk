@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Subject field disables through isBlocked, not unconditionally
 summary: Proof that case-version-editor-form-fields.tsx's subject field is enabled on an unblocked draft,
   disabled for each of isBlocked's four stated reasons, and no longer labeled as fixed.
-implementation: sha256:144872136621d44611945c0795612236838be54755ba6dc172fe4a8cf4307e44
+implementation: sha256:391585c6aa77fafee632555544506c670b4e3cea072e8633c090f02d78ddfebd
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

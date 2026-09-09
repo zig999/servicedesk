@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Generic HTTP adapter for IObservationSource
 summary: HttpDeclarativeObservationSource, a data-driven adapter behind the unchanged IObservationSource port that resolves a concept's capability and its connector's own opaque HTTP configuration, issues exactly one fetch call bounded by the capability's own declared timeout, and classifies the result into one of the four evidence-result endings with the ok observation keyed by the capability's own output_schema.
 task: sha256:9df3c330e8f45aae88d68c95c47085b5d73759841cc3cb0768a0a56fee263ee1

@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Loosened real-timer assertions cited as their own proof
 summary: Cites the two already-modified assertions in diagnose-server.factory.spec.ts and anthropic-hypothesis-evaluator.adapter.spec.ts
   as what proves each criterion, since the task's entire deliverable is those two assertion edits and
   no new production or test code exists to test independently.
-implementation: sha256:ded5dd38fa1882748c6f18a66a72ce85fced4a25c113631ae1b6c18d76e73b4f
+implementation: sha256:8dfecbc37eea32ab35ee6701d2747e25006cfc5a4bab4cf34ec7875976e2450a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

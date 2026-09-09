@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Glossary browser description column and legacy marker — proof
 summary: Six new tests across three spec files establish that the concept shape carries description, the Concepts tab renders it, an empty description gets a visible non-invented marker, its column placement, and use-concept-options' continued omission of description.
-implementation: sha256:acb7399405a94faf8c9fe4116a4701b32f12951a577aaf3b5a81ad43dc9bf3b3
+implementation: sha256:b56401856281684c4c893e734458e2eb6bf2583a839357067c1837f90bc80aa6
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

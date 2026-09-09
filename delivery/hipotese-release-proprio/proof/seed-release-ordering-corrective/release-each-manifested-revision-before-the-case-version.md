@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Seed script releases manifested revisions before the case version
 summary: Tests over seed.ts (integration) and its source (unit) prove the corrected release order no longer throws CaseVersionNotReleasableError, that every manifested revision and the case version itself read back released, that no raw SQL writes hypothesis_revisions.state, and that a further run leaves the already-released manifest untouched.
-implementation: sha256:5dcf16c108d841f480a0cc89957c480be3e8902557ff821349a10ee24f1dd5c3
+implementation: sha256:6b3b1c5e2d945c4d89f8587f7c0eb7a5b6ee10c9b4e884c146629c0ac0fd0c95
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

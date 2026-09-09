@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Write-once investigation store
 summary: A file-backed IInvestigationStore/FileInvestigationStore pair persists a built Investigation as one JSON file per id, refusing a write over an already-stored identity and reusing the shared JSON-file helpers for both the refusal check and the write itself.
 task: sha256:379e9ed0db8a061831413100bcbb3e932d14e49b58522f810056064ed9187f1e

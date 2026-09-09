@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Named UiErrorState kind for ConceptDescriptionRequiredError
 summary: The central error-ui-state table gains a distinct concept-description-required kind for the backend's ConceptDescriptionRequiredError, carrying no wording, with every existing mapping left untouched.
 task: sha256:617cb0701c82f2a395387408777ac0ad9ace80da9b0f17a02b1dc449c92b6cac

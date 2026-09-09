@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Non-integer capability timeout is refused at the route, not the service
 summary: Proves that a decimal or numeric-string timeout is refused by register-capability's own 400 VALIDATION_ERROR,
   identically for both forms and distinctly from the absent-timeout default, and corrects the one pre-existing
   test that asserted the service-level refusal this task deliberately removed.
-implementation: sha256:163dfc6a1a6fd06097d30b30e490273479e1b09d0f1ff661fbd79a182ec58eca
+implementation: sha256:ea864bb806ef2fb3ae2577b1a766088fe911efb6405d6c706aba77f45ec53eb9
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

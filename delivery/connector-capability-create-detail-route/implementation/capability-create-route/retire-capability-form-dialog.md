@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Retire the capability popup form dialog
 summary: The capability form dialog component and its nullable-identity form-target type are
   emptied out of the tree and no longer declared, leaving the routed create screen's form hook

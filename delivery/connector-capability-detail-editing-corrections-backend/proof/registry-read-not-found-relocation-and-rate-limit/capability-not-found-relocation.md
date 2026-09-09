@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Capability-by-identity not-found relocation into a service-level wrapper
 summary: Proves the not-found refusal now originates from CapabilityRegistryService.readCapabilityByIdentityOrThrow rather than the controller, that the controller's handler is now a trivial pass-through, and that the raw readCapabilityByIdentity and test-connector's own refusal are unaffected.
-implementation: sha256:0a271b3ef0dd0f02b92c067858d5e06c1470066566202826d3c04302d9c41a24
+implementation: sha256:d59cdb7dff7651b0f16747ee6cfefe891a4218428ac2f6d508f2d3c9aaaf1369
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

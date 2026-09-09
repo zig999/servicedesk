@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Typed fetch client over the backend's error envelope
 summary: apiFetch() wraps fetch(), parsing a non-2xx response's {error:{code,message,details?}} envelope into a typed ApiError, and passing a 2xx JSON body through unwrapped.
 task: sha256:8590700002c26ceb2c3cae7daa39abb78adba03e34fa39bfbbcd82179c6fa6a8

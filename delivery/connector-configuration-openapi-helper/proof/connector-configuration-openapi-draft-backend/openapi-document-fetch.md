@@ -1,4 +1,5 @@
 ---
+target: backend
 title: OpenAPI document fetch -- unit proof of fetch-failure refusal, timeout bound,
   unparsed success and 422 mapping
 summary: Unit tests over OpenApiDocumentFetcher, OpenApiDocumentNotFetchedError and
@@ -7,7 +8,7 @@ summary: Unit tests over OpenApiDocumentFetcher, OpenApiDocumentNotFetchedError 
   exact error-context shape, unparsed 2xx body text, and the 422 envelope the shared
   handler answers with -- leaving the frontend-placement half of the placement criterion
   and the redirect inference unproven for stated reasons.
-implementation: sha256:4afeded5789c2833f9a46f919297d58d653e609261e208b9e524994f1f579ec9
+implementation: sha256:aa1f3f96949e03afa8cbc65a18a0ba7020a9f10a924495ce4fbbcd779edaf3b0
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:247b750872a938cbf46d5981405859e9690866d43cf9e858cc8b31d62428ac47

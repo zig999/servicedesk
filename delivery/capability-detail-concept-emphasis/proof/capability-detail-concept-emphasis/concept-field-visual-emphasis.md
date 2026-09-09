@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Concept field visual emphasis -- proof, lint-conformant revision
 summary: Proves the capability form's Concept field carries a visually distinguishing
   container (border-accent-alt/bg-surface, no raw values), that Timeout and Connector
@@ -7,7 +8,7 @@ summary: Proves the capability form's Concept field carries a visually distingui
   level 2 without recreating the duplicate-accessible-name collision -- with the file's
   two lint findings (an unnecessary type assertion and a stale eslint-disable) resolved
   without weakening any assertion.
-implementation: sha256:4da1f1f503787f0ff502452fb1a3fc053a2095d4b841c37f05471a730231b224
+implementation: sha256:b5f029de1259a25dcf0b9d796669959d0fd4e670f4694605a86dd4894f668847
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

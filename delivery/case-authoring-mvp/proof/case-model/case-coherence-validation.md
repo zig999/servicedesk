@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for case coherence validation
 summary: Unit tests over caseCoherenceViolations and validateCaseCoherence against in-memory port fakes, proving every coherence rule, the current-registration read, the one-refusal collection, and both UNDERDETERMINED notes as far as this module's seam allows; extends the shared src/case import audit to sweep the new error module alongside the document-model task's.
-implementation: sha256:8cffda5f2616306396afb267d7a3cb90abb7aa12b0af529705ce1265275391dd
+implementation: sha256:f3c207a2bfc6d966cccb6ec0f7ec899fe9ea7d4b90b7e9613aaa4e7fea711a17
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

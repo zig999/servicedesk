@@ -1,4 +1,5 @@
 ---
+target: backend
 title: No-cache simulation composition/factory
 summary: A new simulate.factory.ts wires runInvestigationPipeline as a distinct, unconditional assembly
   whose own observation source is a freshly constructed HttpDeclarativeObservationSource, never a caller-supplied

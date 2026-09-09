@@ -1,4 +1,5 @@
 ---
+target: backend
 title: field-semantics.ts imports citation-validation.ts's parseJsonOrUndefined and isPlainObject
 summary: field-semantics.ts's own byte-identical parseJsonOrUndefined and isPlainObject declarations are
   removed; its two call sites now import citation-validation.ts's own exported versions instead, and the

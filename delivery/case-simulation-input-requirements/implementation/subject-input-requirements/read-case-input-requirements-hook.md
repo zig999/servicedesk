@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Read a case version's input requirements
 summary: A new hook, useCaseInputRequirements(slug, version), reads GET /v1/cases/{slug}/versions/{version}/input-requirements
   through apiFetch and returns the requirements list and the malformed-input-schema capabilities list

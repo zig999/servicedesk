@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of manifest-shortcuts
 summary: Four-pass evidence over the two delivered tasks of the epic manifest-shortcuts — coverage, specification conformance (via reconciliation), standard conformance, and a captured run that passed cleanly.
 reviewed:

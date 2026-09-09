@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Test-connector debug panel on the Connector Configuration editor
 summary: A new Test section, rendered only in edit mode of the Connector Configuration dialog, that assembles
   a subject by hand through a registered capability naming the connector and shows the raw request sent

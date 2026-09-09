@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability detail surface's return to origin split from its listing route, with the unregistered-identity refusal told apart from a failed read
 summary: The detail surface's single Cancel link is split into an origin-aware return act and an unconditional route to the capabilities listing, both present on every reading, and the registry's own refusal of an identity nothing is registered at is carved out of the failed-read reading into a reading of its own that withholds the reattempt.
 task: sha256:50b8fddba2a7c9d4dd4fa30168fb86e1ce9b2ddd965ec763e613e204b848f525

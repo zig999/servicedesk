@@ -1,7 +1,8 @@
 ---
+target: backend
 title: investigation-factory assembles and validates the subject — rewritten proof
 summary: Rewrites investigation-factory.spec.ts whole to prove the new async buildInvestigation, which assembles a Subject from raw subjectType/subjectAttributes and checks it against the glossary before constructing anything, while keeping the pre-existing totality/pinning/plain-value proof intact.
-implementation: sha256:85f97b3e439da0a105506a26aba243155320c9b3fe12213f1a09c691a36f512f
+implementation: sha256:d1280e496750e78cc6e614a43c5ac1f6a8e6beaf02c0ee69e6af11b81002a2a7
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

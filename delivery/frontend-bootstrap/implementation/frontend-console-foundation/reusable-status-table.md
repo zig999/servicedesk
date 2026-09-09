@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Reusable clickable-row status table
 summary: StatusTable, composed over TUI's compound Table primitives, generic over columns/rows, rendering any {color,label} cell as both together and wiring a caller-supplied onRowClick to click and keyboard activation alike.
 task: sha256:5adbf582f20f739c191f1778af1d427506d47661172e6f8e0068699895764ff6

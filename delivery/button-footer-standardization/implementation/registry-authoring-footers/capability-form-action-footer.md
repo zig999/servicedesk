@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability form action footer
 summary: The capability create and detail-ready surfaces render Save, Discard, Cancel and trailingActions through the shared ButtonFooter, and both surfaces state a registered or refused outcome only once the registry has answered.
 task: sha256:534e7b4d0175e359ef670d0e9ab0e1521a07173f13b8f2967acf282f479dd606

@@ -1,8 +1,9 @@
 ---
+target: backend
 title: The two stale manifest-script assertions now match package.json's actual text
 summary: migrate.spec.ts and seed.spec.ts each assert their script's full current --env-file text exactly,
   byte for byte, closing the reconciliation the manifest-side implementation record left open.
-implementation: sha256:4daf82723f3a649b720cd05e70621b5f6cd3f10f0093140d57c142891b2ecd5d
+implementation: sha256:f02bad0db46bf395106041b518a329029b82e1b59e73966ff3382f58cfba1233
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

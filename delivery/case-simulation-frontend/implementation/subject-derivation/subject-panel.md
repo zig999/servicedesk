@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case-simulation Subject panel
 summary: A props-driven Subject region (subject type, requester, derived required fields with connector/capability
   annotations and input_schema hints, a glossary-restricted add-attribute control, and a raw-JSON view)

@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: The newer-revision marker on a manifest row's pinned revision
 summary: Tests that RevisionSelect's newer-revision marker appears exactly when a row's pinned revision
   trails the highest revision its own hypothesis's revisions listing answered, stays readable with the
   Select closed, tracks each row's own comparison basis, and never becomes an adoption control.
-implementation: sha256:5e5de0663edb07d48d5d389fd45f6a7e6da83253476598a3c6bd3c3d3329389e
+implementation: sha256:1240012eebf2b2406072e6e6222483880fa627612fa53d6ef91503d6d2833fee
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

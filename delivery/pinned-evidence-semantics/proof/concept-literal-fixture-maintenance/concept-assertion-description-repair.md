@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Concept assertion description repair — pre-existing assertions confirmed passing
 summary: >-
   Verifies, by independently reading all four named test files and a full,
@@ -6,7 +7,7 @@ summary: >-
   description-less registration's read-back already carries the matching
   description value GlossaryService now answers, with no other assertion in
   those files disturbed.
-implementation: sha256:6c54b39da194841c45fecaf24e3231a719956f147db8d7262ad6dc55b6d5b743
+implementation: sha256:07f30d38c872744066d9d8e66fcf19e1c52978ec82d28e41c70f260fe2821a4a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

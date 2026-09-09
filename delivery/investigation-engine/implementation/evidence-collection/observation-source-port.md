@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Observation-source port and its fake adapter
 summary: IObservationSource, the port the collection stage will call to observe one concept for one subject, and FakeObservationSource, the only concrete implementation this task ships — a fixture-driven double answering all four evidence-result endings with no real connector.
 task: sha256:494485e0e0bb6b2807656db1cb14a834eb11fa4dded5e5f82782f4f36b68fac2

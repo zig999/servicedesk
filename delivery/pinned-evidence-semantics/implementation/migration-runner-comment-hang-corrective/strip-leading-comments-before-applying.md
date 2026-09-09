@@ -1,4 +1,5 @@
 ---
+target: backend
 title: applyMigrationFile strips comments before sending SQL, and vitest's testTimeout
   is raised for a full replay
 summary: migration-runner.ts's applyMigrationFile strips every -- comment line and

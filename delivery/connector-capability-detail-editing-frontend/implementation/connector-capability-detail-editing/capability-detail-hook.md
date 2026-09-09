@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability single-record edit hook (useCapabilityDetail)
 summary: A new hook, use-capability-detail.ts, loading one capability by its (name,
   version) identity through its own GET, tracking dirty/save state across every field

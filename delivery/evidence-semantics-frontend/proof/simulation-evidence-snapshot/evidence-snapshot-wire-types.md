@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Snapshot wire types and adapter — proof
 summary: New tests prove both wire types accept the optional snapshot fields and toDetailEvidence carries them through unchanged in all three states (present-and-populated, present-but-empty, absent).
-implementation: sha256:57233aabac282d8e27d87ad9b68e5b52b531afdcf83508c33aa75072e61087bb
+implementation: sha256:6d1992782acc1a34cf4758c0bb15ad58d7b2dace4b1bcdb3c49e7b6aca966683
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

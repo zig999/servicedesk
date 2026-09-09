@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Requirement inputs carry their own required standing and every asking capability
 summary: Rewrites the Subject panel's requirement-rendering block to read the array-of-capabilities shape
   derive-subject-fields-from-input-requirements now exposes, marking required inputs, listing every asking

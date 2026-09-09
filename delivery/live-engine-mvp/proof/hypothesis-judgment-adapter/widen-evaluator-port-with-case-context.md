@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof that judgeHypotheses threads one unchanged CaseContext through every evaluate() call
 summary: Extends judgment-stage.spec.ts's existing ScriptedHypothesisEvaluator to record the caseContext
   each evaluate() call received, and adds two tests proving the pinned case's own title/when_to_use reach
   both a hypothesis's first call and its retry unchanged, and reach every hypothesis judged in one call
   identically.
-implementation: sha256:e5f7d718ee364fc08207234af1f9e0c9ed0bc60eb2422ee6b51a419dad630265
+implementation: sha256:0f51dbeb6bf360038ce24e20d7fac2242edc9aafda47b3342f8f9c531d670abf
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

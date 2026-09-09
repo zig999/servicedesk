@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the telemetry event catalog hook
 summary: Tests over useTelemetry() proving the eight cataloged events are exposed, each sinks exactly once to a correctly-namespaced console.info call carrying its own payload, calling one never fires any of the other seven, and no callable ever reaches the network.
-implementation: sha256:baa25628e9a31bbe59cf33f0dac2cce540f5a0a91e3097db47718f6e1bf834de
+implementation: sha256:ff776375242e22e23601b41810692da98dfb2bcfad69ab6f750005249028dc22
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

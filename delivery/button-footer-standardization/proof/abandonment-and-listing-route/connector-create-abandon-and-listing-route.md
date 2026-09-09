@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Connector-configuration creation surface's abandonment and listing route
 summary: Proves the create screen's split abandonment — a button going back through history or falling back to the listing — and its separate listing-route link against all seven criteria, correcting three pre-existing specs the delivered split falsified.
-implementation: sha256:e412267e1e92c96a614711a5f8e8bfd965f2f500a7202ccb0a12afccbca51202
+implementation: sha256:c879138385c816ea53c79742b0576769fad2838c585b91ad20d73aaa0e2e7e40
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The four stores wired from one shared connection, and the environment cut to it alone
 summary: The case, glossary, capability-registry and investigation factories, plus the diagnose composition
   root, now build every store from one DatabaseConnection made from DATABASE_URL instead of a data-directory

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Investigation.written_at declared required
 summary: The Investigation type's written_at attribute loses its optional marker to match domain/investigation/investigation,
   with the one pre-settle producer carrying it through a non-null assertion rather than a second domain

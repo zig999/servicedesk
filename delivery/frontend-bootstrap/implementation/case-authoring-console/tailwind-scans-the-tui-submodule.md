@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Tailwind content-detection extended to TUI's own submodule source
 summary: Adds a Tailwind v4 @source directive to tokens.css so frontend/app's compiled stylesheet generates
   CSS rules for utility classes TUI's own component source uses internally, closing the submodule content-scanning

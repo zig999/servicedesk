@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for the Manifest Builder's reorder and remove screen
 summary: Nineteen tests over VersionManifestScreen, split across four spec files sharing one test-support
   module, plus one targeted addition to api-client.spec.ts, proving all ten criteria, the isBusy/confirmation-dialog
   inferences the implementation discloses, and the load/error and generic-failure edges those criteria
   do not name.
-implementation: sha256:c6f1fa3d57d5299f36dd1fcdaff660750f39f72a93571c5502c73914a9ecb4e3
+implementation: sha256:7430139ffb8bfb902636cdd4e02bb5627f77fcb570340acee070ccf8ed684ba1
 run: run/manifest-hypothesis-authoring-onda-4-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

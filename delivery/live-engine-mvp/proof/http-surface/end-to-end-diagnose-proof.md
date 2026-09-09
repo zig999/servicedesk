@@ -1,9 +1,10 @@
 ---
+target: backend
 title: End-to-end proof of the diagnose flow with faked LLM ports — test cases
 summary: 'The two test cases inside diagnose-e2e.spec.ts, individually: the ordered write-then-respond
   assertion, and the static no-Anthropic-import scan paired with the deliberately-unset credential across
   the whole suite run.'
-implementation: sha256:17b5aad928f7c03ba47aadd2bcb20455c054f0a6c84301b3799f13290b0c7bc7
+implementation: sha256:7f01cb18e9fa486b113a1c44488d151bf22138a64ca43f4e79b367a08133aeda
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

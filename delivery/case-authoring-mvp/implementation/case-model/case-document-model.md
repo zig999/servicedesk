@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Case document model with one-pass structural refusal
 summary: One case JSON document parses into the whole aggregate — case, hypotheses, resolutions, referrals, in declared order — and any structural violation refuses it once through a typed error naming every violation at the same time.
 task: sha256:6d51da49abe191c5ad2dca01193d0255549a75f72707f54e502d0703fff7fe25

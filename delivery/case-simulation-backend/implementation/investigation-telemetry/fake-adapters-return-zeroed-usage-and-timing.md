@@ -1,4 +1,5 @@
 ---
+target: backend
 task: sha256:bf83004f10cf09e1567fd624df43bd23a67e024fbdd5d08c9d624c418b04b21a
 standard:
   at: ../standards/backend-node-service.yaml

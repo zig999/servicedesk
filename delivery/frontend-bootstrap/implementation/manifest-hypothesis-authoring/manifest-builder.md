@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Manifest Builder screen — reorder and remove over the real manifest endpoints
 summary: Replaces VersionManifestPlaceholder with a screen and a hook that render a draft version's manifest
   in declared order and drive isolated PUT/DELETE mutations for reorder and removal, adding the one apiFetch

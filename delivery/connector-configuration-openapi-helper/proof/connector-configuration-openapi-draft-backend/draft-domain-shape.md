@@ -1,11 +1,12 @@
 ---
+target: backend
 title: The connector configuration draft's domain shape -- proof
 summary: Nine Vitest tests over connector-configuration-draft.ts prove the closed
   unresolved-reason vocabulary, the draft's required-possibly-empty lists, its optional
   method mismatch, the absent capability field, the three sibling value objects' exact
   shapes, and the module's zero imports and single runtime export, dropping the prior
   directory-totality test that claimed ground this task's criteria never owned.
-implementation: sha256:8f817221f6ba1369fb642714e1e497bcc8f1d1d4153d24a402359b4ea77b4628
+implementation: sha256:3e97328c53d18c1035847e4c88fb784097e4f43badeac39f69f36b465bb56a75
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

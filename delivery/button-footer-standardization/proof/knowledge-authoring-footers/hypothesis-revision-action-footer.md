@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Hypothesis revision action footer proof
 summary: Proves the footer composition, the Cancel's write-nothing and return-to-origin behaviour, its fill-state-invariant offer, and the revision-release gate the task's own note names, leaving the unchanged submit, validation, subject, loading and manifest-offer behaviour to the pre-existing suite that already proves it.
-implementation: sha256:3182b8f9e1a2204305ee8294b8f4326cb2909d6a130969e7d4e3f237f8a8bfbf
+implementation: sha256:2683ae63b96266e75af9ea03d577febc091fe242e3ac1f0ddaf15ebeac18be0b
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

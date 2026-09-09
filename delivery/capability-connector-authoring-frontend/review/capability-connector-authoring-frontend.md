@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability, concept and connector authoring — frontend
 summary: 'What four passes found over the 5 delivered frontend tasks: the shared JSON beautify/minify
   textarea, capability create/edit, concept create/edit, the new Connector Configurations screen, and

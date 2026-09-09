@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Description-required DTO widening — compile-time proof plus the runtime gap it left uncovered
 summary: A new compile-time type-test file falsifies criterion 1 (and the ttl half of criterion 5) directly
   against RegisterConceptBodyDto, one new HTTP-level test closes the one runtime gap (an explicit empty-string
   description) no existing test exercised, and the rest of criteria 2-5 are already fully proven by pre-existing
   tests this delivery did not need to duplicate.
-implementation: sha256:f00fa49b3a62056f4f6db4a64ba48de5500898d4d59bbc20e4b669d451ec2148
+implementation: sha256:26610abe71fa85cb40b86011346d1102b9f36ff7d0c5b53aa64c57f8d429f1d1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

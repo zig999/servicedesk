@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Case admits an optional consolidation register
 summary: The Case aggregate and its parser admit an optional consolidation_register (formal or plain), reusing the vocabulary type already declared for assessment-consolidator rather than redeclaring it.
 task: sha256:8cf6cb79ca9b36c16b1465a61cfd3296f24a0b9de7b9da8fbadba49869da90db

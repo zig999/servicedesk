@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for collection stage propagates its remaining budget into observe-concept
 summary: Three tests on evidence-collection-stage.spec.ts assert the exact remainingBudgetMs value the
   stage sends across the observation-source port on every call, reproducing the propagation failure the
   sibling task's local race alone cannot surface.
-implementation: sha256:0d037266e683312a51a454906fcdec6c4c55f86ed22f97241d6472bbeae37ac4
+implementation: sha256:f557588aa9688eb5311acff1126775b085efced1d44674f1412190fbf75e026d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

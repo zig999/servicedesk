@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of case-authoring-mvp
 summary: Four-pass evidence over all ten delivered tasks of the case-authoring-mvp initiative — coverage, specification conformance, standard conformance, and a captured run that passed cleanly.
 reviewed:

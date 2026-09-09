@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Fix case-fixture-reads-clean.spec.ts's own release ordering and its destructive collects-survive-DELETE test
 summary: insertFixtureCase now releases every manifested hypothesis-revision through the declared lifecycle operation before releasing the case version, and the collects-survive-DELETE test now exercises the DELETE against a case this test owns exclusively so the shared canonical fixture is never touched.
 task: sha256:625ac842bbe778ec87fc65dbd436458ae3ac0125ef1b91807ead5d8afee41843

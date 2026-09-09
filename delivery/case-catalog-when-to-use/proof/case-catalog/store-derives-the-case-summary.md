@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the relational case store deriving the six-attribute case-catalog summary
 summary: Twelve integration tests against a real Postgres instance prove RelationalCaseStore.listCases
   derives current_state, version_count, last_updated, title, when_to_use and released_version per the
   task criteria; two pre-existing unit-test files were repaired to the widened CaseCatalogEntry interface
   so the target source root typechecks.
-implementation: sha256:56705316e126b8a1b91521dfdabf67be208a1b57a76a39554ccff3840d24cde7
+implementation: sha256:b98993fe369ad8510427fa306148738d19a66038b75a4eac764267f69d54479b
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

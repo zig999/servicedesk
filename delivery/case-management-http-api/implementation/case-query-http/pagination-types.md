@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Shared pagination request and response types
 summary: Adds src/types/pagination.ts, exporting PaginationRequest (offset, limit) and the generic PaginatedResponse<T>
   envelope every listing operation and route will share.

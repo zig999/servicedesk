@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Response path extractor
 summary: A pure extraction function that reads a field-name-to-path mapping over an arbitrary parsed HTTP response body and returns a flat object keyed exactly by that mapping's own field names, supporting a nested object key and an array index in one path.
 task: sha256:840dba17b4633dc692c865e91bef945e956e0adb05dfbace01224af6bd8972d3

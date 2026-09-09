@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Versions panel discloses a current version that does not read back as a case
 summary: The Versions panel on Case Detail now reads the case's highest-numbered version and states, distinctly
   from a load failure and from a case holding no version, when that version does not read back as a case.

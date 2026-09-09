@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ICaseStore gains listCases
 summary: ICaseStore and RelationalCaseStore gain a paginated listCases operation answering every case's
   bare identity, empty stores answering an empty page rather than an error.

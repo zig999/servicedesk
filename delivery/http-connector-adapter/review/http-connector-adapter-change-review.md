@@ -1,4 +1,5 @@
 ---
+target: backend
 title: http-connector-adapter, first review
 summary: 'What four passes found over the 5-task HTTP declarative observation-source adapter change: coverage, specification conformance, standard conformance, and the 2 pre-existing, out-of-scope failures the captured suite still shows.'
 reviewed:

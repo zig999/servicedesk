@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Retire the case's file-medium slug convention
 summary: Removes the fileName-based slug-equals-file-name structural check and the CASE_DOCUMENT_ENDING
   JSON-document-medium constant from parse-case-document.ts, case.ts, case-query.service.ts and release.operation.ts,

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Concept create and edit form on the Glossary screen's Concepts tab
 summary: Adds a shared create/edit Dialog for a concept's name, accepts and ttl to the Glossary screen's
   Concepts tab, dispatching PUT /v1/glossary/concepts/{name} for both modes and invalidating the tab's

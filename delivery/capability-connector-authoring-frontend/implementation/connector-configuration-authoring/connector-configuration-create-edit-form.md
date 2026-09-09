@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector Configuration create/edit screen
 summary: Adds a new Connectors screen (route /connectors, reachable from the sidebar) listing every registered
   connector configuration by name, with a New action and per-row Edit action sharing one create/edit Dialog

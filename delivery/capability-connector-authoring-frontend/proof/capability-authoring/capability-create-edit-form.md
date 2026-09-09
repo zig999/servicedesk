@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for the capability create/edit form on the Capabilities Browser screen
 summary: Two new spec files plus three realigned pre-existing ones and an extended error-ui-state.spec.ts
   prove all six of capability-create-edit-form's criteria, the new Edit-button screen shape, coverage
   for the four new error codes, and the implementation's own disclosed inferences.
-implementation: sha256:8d558ab293f216ddb9c82389307b8eebf66f95791f747626e1647e4d932cc29a
+implementation: sha256:6919667ebd249d947d806a9ca51f8a68e5a6ab7af17919e8102de8fa07d4b7c6
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

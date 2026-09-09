@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Seeded concepts declare a description
 summary: The seed reads and publishes a required description for every concept it writes, sourced from
   the concept fixture rather than a literal, even when a stale description-less row from another setup

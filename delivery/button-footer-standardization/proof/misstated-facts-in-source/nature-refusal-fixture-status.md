@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Nature-refusal fixture status proof
 summary: Tests confirming the capability detail outcome proof's stand-in refusal for a not-read-only nature carries HTTP 422, that no other stand-in under the frontend suite pairs CapabilityNotReadOnlyError with a different status, and that the two pre-existing refusal-message tests still hold the operator-facing distinction unchanged.
-implementation: sha256:dee060e518fc0a22bb167f09434521223da7e476e213fff53be867f265283721
+implementation: sha256:165ec5b75917652888c60f468d393da9547d96044a78f04d3e6ddfd8be579c0a
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

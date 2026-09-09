@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/glossary/concepts/{name}
 summary: A thin Fastify plugin, controller and Zod DTO exposing the existing read-concept glossary-query
   operation over HTTP, with a new typed error for the concept-not-held refusal.

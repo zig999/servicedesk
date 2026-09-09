@@ -1,4 +1,5 @@
 ---
+target: backend
 title: draft-assessment-text consumes the assessment-consolidator port
 summary: draftAssessment now assembles its Assessment by awaiting the assessment-consolidator port's consolidate() call for its text, keeping outcome/referral/determining_hypothesis a verbatim copy of resolved and receiving the consolidation register as an explicit input rather than through any case import.
 task: sha256:d520172ff0b0ff05fd14050c0517ee29695ff6e9d505a370aba6710e53c0c734

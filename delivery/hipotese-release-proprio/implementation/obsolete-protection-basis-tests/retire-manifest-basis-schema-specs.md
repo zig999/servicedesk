@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Retire the manifest-basis assertions from the two obsolete persistence schema specs
 summary: Removed the two obsolete assertions (rejection and content-survival in revision-alteration-refused-only-when-released-schema.spec.ts,
   and collects-survival in protect-released-hypothesis-revision-collects-schema.spec.ts) that attributed

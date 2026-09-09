@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of version-editor onda 5 (2 delivered tasks)
 summary: 'Four-pass review of the 2 delivered version-editor tasks -- release-draft-version and discard-draft-version:
   coverage over their 15 criteria, specification conformance, standard conformance, and the failures pass

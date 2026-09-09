@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ICaseStore gains listHypothesisRevisions
 summary: RelationalCaseStore and its ICaseStore port now expose listHypothesisRevisions, paginating a
   named hypothesis's own revisions read directly from hypothesis_revisions and refusing an unknown slug

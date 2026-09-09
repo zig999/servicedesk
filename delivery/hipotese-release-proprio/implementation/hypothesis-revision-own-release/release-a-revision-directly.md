@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Release a hypothesis-revision directly against its own state
 summary: A new domain operation moves a hypothesis-revision from draft to released by its own identity
   alone, refusing with HypothesisRevisionNotDraftAtReleaseError — an error carrying no context at all —

@@ -1,7 +1,8 @@
 ---
+target: backend
 title: "Proof that RelationalInvestigationStore's own constructor and its unit spec's fake connection are both typed to IConnectableQueryable"
 summary: "The unit spec's own fakeTransactionConnection is retyped from a cast to DatabaseConnection to a cast to IConnectableQueryable with no assertion, expected value or test name changed, and the existing 32-test unit suite is cited as what proves the retyped constructor's own behavior is unchanged."
-implementation: "sha256:dbee648e41fdfe58927b3cdac358cc6763c103643091b8de8e404820cfcd5530"
+implementation: "sha256:bc81599e49ecc7d50733ef4afb312d508ac73e1bb8b2182bcd0ab69047ad1a47"
 run: "run/arc01-mnt03-suite"
 tests:
   - file: "src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts"

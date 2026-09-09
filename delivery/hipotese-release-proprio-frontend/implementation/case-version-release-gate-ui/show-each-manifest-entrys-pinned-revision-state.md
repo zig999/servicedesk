@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Show each manifest entry's pinned revision state on both manifest-presentation surfaces
 summary: The version-manifest screen and the case-version editor's ready-view manifest table both now state, per entry, the draft-or-released state of the hypothesis-revision that entry pins, read from the hypothesis-revisions listing endpoint rather than from the case version's own state; the release checklist's collects check was also hardened against a manifest entry missing that field, a pre-existing defect this task's own test surfaced.
 task: sha256:af15761df460771752836b169ad570d39bf85d0600ca1785a3600e8fa0ea9ebc

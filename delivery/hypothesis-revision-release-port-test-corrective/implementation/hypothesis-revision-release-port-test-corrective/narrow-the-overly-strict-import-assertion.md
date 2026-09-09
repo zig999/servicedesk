@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Narrow hypothesis-revision-release.port.spec.ts's import assertion to the denylist pattern
 summary: Replaced the port test's overly strict "no import at all" assertion with the sibling port test's two denylist-based assertions (no driver/framework, no LLM provider client), mirrored verbatim except for the source path.
 task: sha256:5912baceb0e4584179969d1c2dc099f454e349f2f79fb9539acc25bbead5ea1b

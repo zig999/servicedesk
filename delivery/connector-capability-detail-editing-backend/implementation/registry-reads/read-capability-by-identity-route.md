@@ -1,4 +1,5 @@
 ---
+target: backend
 title: A capability can be read directly by its own (name, version) identity over
   HTTP
 summary: Adds GET /v1/capabilities/{name}/{version}, calling CapabilityRegistryService

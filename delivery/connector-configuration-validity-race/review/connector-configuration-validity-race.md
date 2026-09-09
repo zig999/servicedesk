@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review — the detail hook knows a configuration's validity before it reports ready
 summary: Coverage, specification-conformance, standard-conformance and failures passes over the connector-configuration-validity-race
   initiative's one delivered task.

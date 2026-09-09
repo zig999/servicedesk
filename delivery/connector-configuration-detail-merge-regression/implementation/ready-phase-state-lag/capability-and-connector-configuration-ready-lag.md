@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Fix the ready-phase render lag in the capability and connector configuration detail hooks
 summary: use-capability-detail.ts, use-connector-configuration-detail.ts and use-connector-configuration-detail-view.ts
   now populate every field their ready phase exposes synchronously in the same render where phase first

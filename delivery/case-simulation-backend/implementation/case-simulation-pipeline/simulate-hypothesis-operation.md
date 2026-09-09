@@ -1,4 +1,5 @@
 ---
+target: backend
 title: POST /v1/simulate/hypothesis narrows the shared engine to one named hypothesis
 summary: A new simulate-hypothesis DTO, route, controller, narrower pipeline and production
   factory restrict collection and judgment to one named hypothesis's own manifest entry and return

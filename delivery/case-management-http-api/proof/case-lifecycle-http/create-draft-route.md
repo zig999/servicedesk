@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for POST /v1/cases
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createCreateDraftRoutesPlugin plus the shared
   error handler, that a valid request originates a draft and answers 201, that the UNDERDETERMINED reading is excluded, that
   an already-drafted case is refused, and that body validation runs before createDraft.
-implementation: sha256:04fd9e79489b69ee05376004a0c7754d334020fc959438dba212fdb26f032832
+implementation: sha256:87027540ffb2fcbf9dbbd10cfe387dac798aaccc95f34c24926f41fcf7c1c5ca
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

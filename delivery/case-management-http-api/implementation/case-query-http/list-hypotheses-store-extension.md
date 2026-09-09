@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ICaseStore gains listHypotheses
 summary: Adds a read-only listHypotheses operation to ICaseStore and RelationalCaseStore, returning every
   hypothesis a named case has ever originated, queried directly against the identity-only hypotheses table

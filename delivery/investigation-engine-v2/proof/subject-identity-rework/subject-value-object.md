@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the canonical Subject value object
 summary: buildSubject() is proved to assemble the governed-type-plus-attribute-set shape, to refuse an empty attribute-value set, to preserve each pair's own attribute and value exactly, and to produce a value that flows unmodified through observation-source.port.ts's own re-exported Subject type.
-implementation: sha256:d1c428517c9e4fa4ece8c9565989e55f2d6643bd08cd558b712aaf6dd47ef0f7
+implementation: sha256:4f006b4bdb10a60b2d28ec3f458473969bfe62f32f7dbbd85888e0a098588eb7
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

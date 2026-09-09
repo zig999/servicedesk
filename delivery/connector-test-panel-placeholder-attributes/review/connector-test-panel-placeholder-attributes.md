@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector test panel placeholder attributes, first review
 summary: What four passes found over the parallel-delivered extraction of placeholder-parsing
   primitives and the configurationText prop route.

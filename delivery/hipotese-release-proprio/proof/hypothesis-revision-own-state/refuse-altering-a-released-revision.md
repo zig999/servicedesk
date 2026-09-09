@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Refuse altering a released hypothesis-revision's own state — proof
 summary: Six schema-level integration tests exercise every criterion of the task directly against the
   trigger and rule 0021 replaces, and two repository-level integration tests exercise the same refusal
   through the TypeScript write path, one of them proving the domain-error/HTTP-409 translation the schema
   alone cannot establish.
-implementation: sha256:099051ef6ac12a9cf8ec1f6038ddb941776785d8c7fe3a8289593b0b583853d9
+implementation: sha256:d42cc87e13ac7abb4ffc9396105b176e11d92442ba26c2695a7152754de2b4ad
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

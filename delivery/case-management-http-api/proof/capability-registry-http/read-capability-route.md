@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for GET /v1/capabilities/{concept}
 summary: HTTP-layer tests exercising read-capability.routes.ts, read-capability.controller.ts, dto/read-capability.dto.ts
   and the new ConceptNotAnsweredError status-map entry through a locally-assembled Fastify instance (build-app.ts
   does not yet register this route), proving both stated criteria and the pass-through, error-mapping
   and generic-failure behavior the implementation states.
-implementation: sha256:96032a47b2222e8422278490cbf2948dfb49801c5c28f3431647acf6770630ba
+implementation: sha256:d5d09afc785caeab2625977ddceb1957071e53d2e88fbbaaa3cb0b111be7a007
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

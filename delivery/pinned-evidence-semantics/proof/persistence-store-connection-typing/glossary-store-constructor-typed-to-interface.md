@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof that relational-glossary-store.repository.ts's constructor is typed to IConnectableQueryable
 summary: Confirms RelationalGlossaryStore's constructor and its unit spec's two fake-connection helpers
   carry only IConnectableQueryable, that DatabaseConnection is gone from both files' imports and type
   positions, and that the existing suite's own assertions were left untouched by the retyping.
-implementation: sha256:bc48d14a31f4acd334d9892cd9c9f7ce86cd89b1edffec408084eba079992ca5
+implementation: sha256:1a73bce04ccac13db48cf231fbb5a77b65b524f56537b539e51b80b855dc4a75
 run: run/arc01-mnt03-suite
 tests:
 - file: src/persistence/relational-glossary-store.repository.ts

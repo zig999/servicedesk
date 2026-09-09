@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Connector configuration create/edit screen proof
 summary: Three new spec files plus a shared test-support module, and targeted extensions to three pre-existing
   spec files (error-ui-state.spec.ts, app-shell.spec.ts, route-tree.spec.ts), prove all five of connector-configuration-create-edit-form's
   criteria and the implementation's own disclosed inferences; the row-Edit no-second-fetch test is now
   scoped to the connector-configurations list path itself, so it stays true once a sibling Test-panel
   section reads its own unrelated paths inside the same dialog.
-implementation: sha256:8eccafdc5253a79349ce8f520b6540ff7ff1eac6a6900f91caabf4d3106fe38b
+implementation: sha256:ede05f42c2fa6d216427af62607c66199a0a3d87222905ac93a6e211e0afd7a3
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

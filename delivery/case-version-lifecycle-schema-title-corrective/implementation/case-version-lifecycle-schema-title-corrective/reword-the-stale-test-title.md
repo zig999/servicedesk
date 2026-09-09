@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Reword case-version-lifecycle-schema.spec.ts's stale test title
 summary: Renamed the mutability test's own title to name the revision's own draft state as the governing condition, dropping the retired case-version-reference framing, with arrange/act/assert byte-for-byte unchanged.
 task: sha256:4dd1e532e887c518df82ee7ec5b455cde9089942237b116f9f71a7cb36152152

@@ -1,10 +1,11 @@
 ---
+target: backend
 title: readCaseInputRequirements revalidates at every read, excluding capability availability — proof
 summary: Three tests over CaseQueryService prove the narrowed coherence gate refuses a stored version
   whose structural or glossary/concept rules fail, exactly as read-case does, while a concept whose answering
   capability disappears folds into no attribute rather than refusing, and replayCase's stated exception
   stays untouched.
-implementation: sha256:bb3c3d458efbe427db1dbe7feef4cd6cfcba97385b25ed496d81648dd5d9f222
+implementation: sha256:70755bf7f2b037f2c0393e67beafd1896e35e6a07741b4a0f7145b8fb2d2491f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:4050ccb93004dfd5a71749b73d5d0a5e09de427ccddf202095ecbd7e6db18898

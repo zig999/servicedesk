@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Every empty collection states so — proof
 summary: Proves that Case Detail's Versions tab renders an explicit empty-state sentence rather than a
   header-only table when the version list is empty, and that the Release Dialog's violations view renders
   an explicit sentence rather than a blank alert when a 422's own violations array is empty; two stale
   tests asserting the superseded header-only-table behavior were updated to match the new, specification-backed
   behavior.
-implementation: sha256:1dfe058e9387ba5c9ba10e84f35f376e52049d4fd156c25c41f48195da02ac77
+implementation: sha256:5fd447504e99ea1e2a3790303b31c00df608588f33e81824a8f9efabd8fda824
 run: run/ux-consistency-sweep-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

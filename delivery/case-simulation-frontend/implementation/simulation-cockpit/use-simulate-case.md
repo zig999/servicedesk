@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: use-simulate-case mutation hook
 summary: A new hook, apiFetch + useMutation over POST /v1/simulate, dispatching the simulate-case operation
   for a given case version and subject and exposing its complete typed record -- evidence, evaluations,

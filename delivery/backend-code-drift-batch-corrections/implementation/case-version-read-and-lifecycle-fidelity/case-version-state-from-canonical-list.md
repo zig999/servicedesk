@@ -1,4 +1,5 @@
 ---
+target: backend
 title: isCaseVersionState derives membership from the exported canonical CaseVersionState array
 summary: The relational case store's isCaseVersionState guard now checks membership against the pre-existing
   exported CASE_VERSION_STATES canonical array from src/case/case.ts, mirroring the Set-based form isHypothesisRevisionState

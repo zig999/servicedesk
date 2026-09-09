@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: The error-code mapping keys CaseVersionNotValidError to the case-not-valid state — proof
 summary: Tests over error-ui-state.ts, use-case-current-version-validity.ts and case-detail-screen.tsx
   establish that a CaseVersionNotValidError refusal resolves to the case-not-valid state and its own distinct
   statement, that an unmapped code discloses no code, message, carried value or attribute of the case
   or its version including one left over from an earlier cached read, and that the three case-facing statements
   stay mutually exclusive.
-implementation: sha256:353aee5aa059f12c806069e597e674aa1875f2fa91dc48a86293ddb921daacc7
+implementation: sha256:da4c1c081d090b36ca193f3b99a2c7f4e425e55bb35e9ad6e26214bf80c13281
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

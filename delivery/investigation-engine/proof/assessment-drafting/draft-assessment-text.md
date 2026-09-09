@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for drafting the assessment's text from the narrowed input
 summary: Tests that draftAssessment copies resolved's outcome/referral/determining verbatim, sets determining_hypothesis present exactly when a hypothesis confirmed and structurally absent when the fallback answered, can statically reach neither Case nor Hypothesis nor any framework/driver/provider client, and drafts non-empty, input-driven, synchronous text across the confirmed and fallback branches.
-implementation: sha256:6084080c0107410f2a689d0757556bd020421bd65ecb6a56286c03df755fc6e9
+implementation: sha256:05a06145c760d687f4fa7ee0c6afd134ab1abf611703652fb837bd5167cae499
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

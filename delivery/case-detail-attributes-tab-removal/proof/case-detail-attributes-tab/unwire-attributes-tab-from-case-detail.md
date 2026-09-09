@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for unwiring the Attributes tab from Case Detail's tab strip
 summary: Tests establishing that Case Detail's tab strip now offers exactly Versions and Hypotheses, that
   case-detail-screen.tsx imports nothing from routes/case-attributes-tab, and that no spec anywhere in
   the tree still asserts an Attributes tab on Case Detail.
-implementation: sha256:145c551a52de05427c422e20ae185a3183496d7a797e5c20c1508c12584eb0b6
+implementation: sha256:5ba723467b69282ddc430f309a7f78fbf82e0854376ea5bcd38327a864a0b85e
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

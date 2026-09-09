@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Hypotheses tab on Case Detail — list, per-hypothesis revision history, Revise entry point
 summary: Adds a "Hypotheses" tab beside "Versions" on Case Detail, listing every hypothesis with its total
   revision count and, on selection, that hypothesis's own current/frozen revision history with a Revise->

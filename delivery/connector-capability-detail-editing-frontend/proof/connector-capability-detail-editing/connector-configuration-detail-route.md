@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for the connector-configuration detail/edit route
 summary: Tests over the new routed screen, its ready view, its composition hook, and
   the list screen's row-click navigation, proving all nine of this task's criteria
   and its disclosed inferences.
-implementation: sha256:1c89811f0ac6953e16441a213037a7e9fb094bde61a365da599fe8e8a8a37780
+implementation: sha256:c7782a0403d7a1c3a191562ff02fc23888c7c473374e5903f620a9827fa66c82
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

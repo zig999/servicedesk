@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Discard a draft case version
 summary: Adds the client-gated "Discard draft" control and its slug-typed confirmation Dialog to the Version
   Editor, issuing DELETE /v1/cases/{slug}/versions/{version} on confirm and landing the curator on Case

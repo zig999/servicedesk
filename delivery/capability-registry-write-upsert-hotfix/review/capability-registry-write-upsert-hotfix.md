@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Capability registry write upsert hotfix, first review
 summary: What four passes found over the writeCapabilities upsert-by-identity fix, its port doc, and the
   two capability-store spec files it touched or reconciled.

@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the connector-configuration persistence boundary
 summary: What proves task/connector-registration/connector-configuration-persistence — the relational
   read/write path against a stand-in and a real database, the never-a-file scan, the domain-layer import
   sweep, and the tests pinning every inference the implementation recorded — composed over tests that
   already existed and pass.
-implementation: sha256:1b47fbb032324bdd7dd4d74e2ce24f154247c71475cf98771fa2e320b7eb65fd
+implementation: sha256:40157cd0e7730cc7f703d97184d157ac965cad3c30f2f882a01830adce17cd68
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

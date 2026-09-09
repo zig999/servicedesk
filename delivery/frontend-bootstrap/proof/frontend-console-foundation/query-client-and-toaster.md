@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the global QueryClient and single Toaster mount
 summary: The QueryClient's shape, its onError toast handler, and the single Toaster mount are proved by query-client.spec.ts and toaster-mount.spec.ts.
-implementation: sha256:4e603cac5a23a894a3b0689577f7228808455ed81fa420bd647a224ca67ac02e
+implementation: sha256:e0fa01bc9763f4353225cee76ff5e165a8d6a908f75fd4c1bc47c902b82e823b
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for the routed connector configuration create screen
 summary: Tests over ConnectorConfigurationCreateScreen prove its routing, its reuse of the shared form-fields
   component and create/edit hook, its dispatch/refusal guards, its post-save navigation, and its Back
   link and absent test panel -- including the well-formed-object guard, corrected after this proof's own
   tests first caught the gap.
-implementation: sha256:38969e4da77f0805021649e50698ad9a6e460b9779966717c45fd9e2d2f7cb56
+implementation: sha256:b1c5b64dbee03b15f46d39054a3e3747d76f9e78b640b44134bf352a4095424d
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

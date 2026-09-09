@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case-simulation Detail panel
 summary: A fixture/props-driven Detail region (verdict, citations, criterion, Evidence/Prompt/JSON tabs,
   judgment metadata) for the simulation cockpit's selected hypothesis, built as five new files under frontend/app/src/routes,

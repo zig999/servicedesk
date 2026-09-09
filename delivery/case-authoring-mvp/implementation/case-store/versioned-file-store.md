@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Versioned file store for case versions
 summary: A file-backed ICaseStore that persists every version of every case as its own JSON document under <slug>/<version>.json, and answers a read pinned by the sha256 content identity of the exact bytes it just read.
 task: sha256:c2fc225e4b1c674c8afebc07569b091ef893db39dfd9842f363a9d15c9b456ea

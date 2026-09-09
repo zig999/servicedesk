@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for RelationalCapabilityStore, plus the sibling regressions its migration caused
 summary: Unit tests mocking DatabaseConnection and integration tests against a real database prove RelationalCapabilityStore's
   read/write mechanics, the criteria this task states, and the UNDERDETERMINED exclusion of an incomplete
   registration; three sibling proof files broken by migrations/0007-capability-concept.sql's new NOT NULL/count
   are fixed in this same delivery, disclosed.
-implementation: sha256:6dee780b7a5a9545bca7aeaa77a432fab52e7356b0f965c0fd71a0472bf69921
+implementation: sha256:91a80af100e013f5c43dba711f4ba461f086752602f3497febf85bbba65c3890
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

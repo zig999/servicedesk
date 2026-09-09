@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Refuse a case version's release over a draft revision
 summary: ReleaseOperation's existing violation aggregation now also checks every manifest entry's
   referenced hypothesis-revision own state through IHypothesisRevisionOwnStateQuery, naming every

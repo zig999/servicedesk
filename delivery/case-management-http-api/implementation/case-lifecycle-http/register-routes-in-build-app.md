@@ -1,4 +1,5 @@
 ---
+target: backend
 title: build-app.ts registers all nineteen HTTP routes through one convention
 summary: build-app.ts now declares a single BuildAppDependencies aggregate and a one-loop registration
   convention covering the pre-existing diagnose route plus this initiative's eighteen new routes, wired

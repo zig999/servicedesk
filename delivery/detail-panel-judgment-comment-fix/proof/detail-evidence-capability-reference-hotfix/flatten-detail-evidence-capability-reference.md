@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for flatten-detail-evidence-capability-reference
 summary: New tests proving the Detail evidence's capability reference is read as two
   flat fields at every layer this task touched (the wire type, the adapter, the Detail
   region's own type and its Evidence tab), plus the human-authorized correction of
   seven pre-existing test files this task's own type correction broke.
-implementation: sha256:498c1c7176b711027687405b23ed20116df85710c03f123aad74cc7af4404ed9
+implementation: sha256:da248166cb1bc16bfdda87967af91e6860a14ad680011c26bf7a272caffc9d05
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

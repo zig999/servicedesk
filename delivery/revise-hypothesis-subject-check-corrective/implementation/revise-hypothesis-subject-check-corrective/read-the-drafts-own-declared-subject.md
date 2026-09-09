@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Revise-hypothesis reads the draft version's own declared subject for its concept-acceptance check
 summary: revise-hypothesis.operation.ts now anchors its concept-acceptance check on the case's draft version's own declared subject type, fetched through an enhanced findDraftVersion, and never reads or reacts to the caller-supplied input.subject; the widened ICaseStore.findDraftVersion signature is now honored by every fake implementing that port in the unit suite.
 task: sha256:15096903d922f861f493307b0b9eaba997b1440185309d042096ccf3a5b12782

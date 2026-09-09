@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for grouping Name, Version and Nature into one row
 summary: Adds the one structural test criterion 1 needs -- that Name, Version and Nature share one row
   container a later field (Timeout) sits outside of -- leaving criteria 2-4 to the existing, unmodified
   capability-detail-screen.spec.ts and capability-detail-screen-save.spec.ts suites that already prove
   them.
-implementation: sha256:517048468f8b22f34da0ab94c9aa07cc1a30d75795fa3ea9261ce41e7cf220b3
+implementation: sha256:8e97e8a6519286f2173938936a68fa1d5c5e6ce8919b3495d8ad1f9a3b423fdb
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

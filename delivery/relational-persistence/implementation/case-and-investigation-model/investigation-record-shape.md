@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Investigation carries written_at and pins its case by slug and version alone
 summary: The investigation aggregate and its one factory now declare a required written_at attribute,
   enforced at runtime, and materialize the pinned-case relationship as exactly slug and version, reading

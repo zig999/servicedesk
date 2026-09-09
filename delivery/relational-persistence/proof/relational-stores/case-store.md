@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for the relational case store
 summary: Unit-level tests over a fake DatabaseConnection prove RelationalCaseStore's own read/write mechanics,
   mapping and error-wrapping; integration-level tests against a real PostgreSQL database prove the whole-aggregate
   read, write-once refusal, version-list completeness, and — directly excluding this task's own UNDERDETERMINED
   non-atomic-write candidate — that a write that fails partway through leaves no case_versions row, no
   hypothesis row and no collect row behind.
-implementation: sha256:6dd0f66c48c25a14f21e3d44083a99f62420af422dc189fe123f47acbab2f8ed
+implementation: sha256:0c4e8b02da6df7db87262355b9d6415962d081c626d17b835d53a2f5a52cd9c1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

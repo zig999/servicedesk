@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Anthropic adapters read the provider's own usage, measure elapsed time and report the materialized prompt
 summary: anthropic-hypothesis-evaluator.adapter.ts's evaluate() and anthropic-assessment-consolidator.adapter.ts's consolidate() each measure their own provider call with Date.now(), read the response's own message.usage, and return the exact prompt they already assembled, instead of discarding all three or answering a placeholder.
 task: sha256:dfbb0603d942b2c5ccc755d62fbf15cc79b59dd8806b061d069422f50464282b

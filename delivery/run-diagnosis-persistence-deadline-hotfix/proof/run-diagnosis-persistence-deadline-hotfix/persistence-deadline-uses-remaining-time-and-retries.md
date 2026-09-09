@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Persistence deadline uses remaining time and retries — proof
 summary: Tests for run-diagnosis.ts's fixed persistence bound/retry/id-keyed-settlement behavior and status-map.ts's
   new InvestigationWriteDeadlineExceededError mapping, reconciling pre-existing tests that asserted the
   exact old behavior this task deliberately replaced.
-implementation: sha256:46339bb357876fc6f4479afafc9e4009d78a66979fcb7da18f4fe1d26880df6a
+implementation: sha256:6b1490e4d634562488e78430b02c9f05e161cf428ed21d450b9cbdd1894beac5
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

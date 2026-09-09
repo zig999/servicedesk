@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Show each revision's own state on the hypothesis-revisions listing
 summary: Widens the listing hook's item type with the revision's own draft/released state and renders it as an independent StatusTable column on the revision-history screen, beside the existing current/frozen pin badge.
 task: sha256:9500e8ee50f5c6b5576680687c9129878b814cc5534ec1dd57376f5df418aa9c

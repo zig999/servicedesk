@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configuration detail hook, proven directly through renderHook
 summary: 14 tests over useConnectorConfigurationDetail proving its own GET independence
   from the list cache, its loading/load-error/ready phase union, isDirty against a
@@ -7,7 +8,7 @@ summary: 14 tests over useConnectorConfigurationDetail proving its own GET indep
   and a typed retry action on load failure -- with shared fixtures and helpers extracted
   to use-connector-configuration-detail.test-support.ts so the spec file stays under
   this project own max-lines rule.
-implementation: sha256:1efb69ca0fd98aec38fd8cc0ab40b99c7b59d59a96824b7a7caea61054d94e0e
+implementation: sha256:10f63a39c101098d7482a8cdc3f101a7f9731bd4b6f74c4f3a28d40c3b1e4b6c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

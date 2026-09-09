@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Disclose the answered draft's every part, and a refusal on its own terms
 summary: ConnectorConfigurationHelperFields now renders the drafted configuration
   text, every unresolved item by name and reason, every generated credential by name
@@ -8,7 +9,7 @@ summary: ConnectorConfigurationHelperFields now renders the drafted configuratio
   touched.
 task: sha256:2959768956e5f08734d1c92536ecf6ec7e04681e8f5e8855f77297f4b6d41761
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-drafted-answer-disclosure-build
 files:

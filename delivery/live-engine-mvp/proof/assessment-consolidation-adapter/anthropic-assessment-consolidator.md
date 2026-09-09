@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the production Anthropic-backed assessment-consolidator adapter
 summary: New tests exercise AnthropicAssessmentConsolidator against a mocked @anthropic-ai/sdk client,
   proving the no-tools request, the pure and delimited prompt assembly, the trimmed-text-only return,
   the credential and import boundary, and two pre-existing spec files updated to keep the suite green
   now that a second concrete IAssessmentConsolidator legitimately exists.
-implementation: sha256:0a848e8aa504f34d24dcb2aa362b0a17ad93d229a7dc5c582ca6205c316ab200
+implementation: sha256:fa456345bb0e3ed03957a1b56d305eccbf8958ae8d4e143315b729fd1e54ee51
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

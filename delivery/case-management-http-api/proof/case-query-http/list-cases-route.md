@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for GET /v1/cases
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createListCasesRoutesPlugin plus
   the shared error handler, that a valid request returns the paginated page of every case's identity unchanged,
   and that the controller's own pagination-bound resolution behaves as this task's delivery record discloses it
   inferred.
-implementation: sha256:da1a5a92eab237e3bc4958de9796e63b0507766ff7be51cedb8995f276642924
+implementation: sha256:c67f8b8ee6c686f0e5f26fea6d88939c1a8416a49df7cfa29c469ac88a03d614
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

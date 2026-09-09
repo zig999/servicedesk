@@ -1,4 +1,5 @@
 ---
+target: backend
 title: relational-glossary-store.repository.ts's constructor retyped to IConnectableQueryable
 summary: RelationalGlossaryStore's own constructor parameter is retyped from the concrete DatabaseConnection
   to IConnectableQueryable, the connect()-capable interface database-access.ts already declares, with

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Concept assertion description repair — no change required
 summary: Verification that the four named test files' .toEqual assertions already carry the description
   value GlossaryService's read-back now answers, so this task's scope resolves to test-file maintenance

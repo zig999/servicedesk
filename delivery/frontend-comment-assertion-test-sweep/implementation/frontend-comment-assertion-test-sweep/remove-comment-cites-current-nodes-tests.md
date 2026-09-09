@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Empty and remove the two frontend tests asserting a source comment's literal prose
 summary: Deletes cases-list-screen-comment-cites-the-current-nodes.spec.ts and case-simulation-detail-panel-comment-cites-the-current-nodes.spec.ts
   in full, written for task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests.

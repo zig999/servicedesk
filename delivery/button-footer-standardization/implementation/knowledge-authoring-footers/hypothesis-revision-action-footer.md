@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Hypothesis revision action footer, with its first Cancel
 summary: hypothesis-revision-form-fields renders Save hypothesis and a new Cancel through the shared ButtonFooter, with Cancel returning the curator to whichever screen actually opened the composition and never gating on submission progress or revision state.
 task: sha256:a5497dd65fb2bb6a1b55dfb189359ab26e1c3e80ab33c4f82805f46dd08996b0

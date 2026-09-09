@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Revise decides overwrite-vs-create from a hypothesis-revision's own state — reconciled proof
 summary: Proves, via reconciled and new tests over ReviseHypothesisOperation and RelationalCaseStore,
   that the revise branch now decides overwrite-vs-create strictly from a hypothesis-revision's own
   state column, and reconciles the pre-existing tests the manifest-join shape's removal turned red.
-implementation: sha256:2803932253d72163847f4adb8ef204565ca44fb4e636de9071ee615309319782
+implementation: sha256:f983a37e11202a1bc5723ac366eef540304ce6cc6bfd0fef035227a6bc45d18f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for naming the not-draft release refusal in the error vocabulary
 summary: Two new tests prove HypothesisRevisionNotDraftAtReleaseError resolves to its own exclusive UI-state kind, and twenty-one pre-existing tests already in the file establish that every previously-listed code and the unrecognized-code fallback are unchanged.
-implementation: sha256:8ef88bcde46c1a29179e40929e59ffd0d98c65c63f36c1121ede846d85b98d32
+implementation: sha256:740b36ed5200b4eb82f20710025e0f0d131fcf71a8d379f0c075dddce1f57d00
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

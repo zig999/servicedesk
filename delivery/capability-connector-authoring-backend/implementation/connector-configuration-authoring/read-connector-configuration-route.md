@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose read-connector-configuration as a read HTTP route
 summary: Adds GET /v1/connectors/{connector}, backed by the existing ConnectorConfigurationRegistryService,
   completing the build-app wiring a prior task left incomplete.

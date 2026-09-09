@@ -1,4 +1,5 @@
 ---
+target: backend
 title: runInTransaction and openTransaction retyped to a connect()-capable interface
 summary: database-access.ts declares IConnectableQueryable, capturing exactly the connect()-then-query()-then-release()
   shape runInTransaction and openTransaction actually use, and both functions' own connection parameter

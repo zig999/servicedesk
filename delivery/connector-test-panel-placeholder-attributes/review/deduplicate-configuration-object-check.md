@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Deduplicate configuration object check, review
 summary: 'What four passes found over the corrective task fixing two prior review
   findings: the duplicated well-formed-JSON-object check and the vacuous criterion-7

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: End-to-end proof of the diagnose flow with faked LLM ports
 summary: 'This task''s own deliverable is the test itself, not new production wiring: a task-implementer
   investigated first and found every piece already exported (createDiagnoseRunner already accepts arbitrary

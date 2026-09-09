@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for marking per-hypothesis evaluations stale on a detected return
 summary: Extends the pure-adapter and rendering test suites for CockpitEvaluation, SimulationHypothesisEvaluation
   and SimulationEvaluation's own `stale` field, proving the field's always-false default, its unchanged
   carry-through, and the Stale indicator's rendering in both consuming regions from a passed-in fixture.
-implementation: sha256:afd8a2466218d9103e612ec7ed48364d4e55f60ecda2ce2c0824d5c4cdc85b74
+implementation: sha256:74c4de60ca9dbe5bbdc790b2327f4d02af61f27ed8a82f21b7caff13daa32f9c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

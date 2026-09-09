@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Output_schema field-semantics guidance — proof
 summary: Three new tests prove the guidance renders in both compositions of CapabilityFormFields and states meaning-versus-decision; criteria 5 and 6 are not independently tested, with why recorded.
-implementation: sha256:66a0776a654dfb8bc86a2a38eef78dae0c25b5d17422e391bec3e11b6448d5db
+implementation: sha256:b5db100566bbd3652fc51e192bc6f971fbd6c1705755e6762415c03b96174a85
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

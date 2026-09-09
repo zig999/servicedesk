@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Simulation cockpit screen assembly
 summary: Composes the header, subject, hypotheses, detail and case-result regions into one working
   simulation cockpit sharing one subject, one dispatch-at-a-time gate, and a return-from-editing

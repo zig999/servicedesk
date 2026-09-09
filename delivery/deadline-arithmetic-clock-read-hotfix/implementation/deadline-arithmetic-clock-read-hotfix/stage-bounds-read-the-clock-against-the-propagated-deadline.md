@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Stage bounds read the clock against the propagated deadline
 summary: run-diagnosis.ts's persistence stage and simulate-hypothesis-pipeline.ts's judgment stage now
   compute their own bound from a fresh clock read at the moment each stage begins, via a shared readClockMs()

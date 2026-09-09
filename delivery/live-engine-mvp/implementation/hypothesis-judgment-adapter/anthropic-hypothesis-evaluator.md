@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Production hypothesis-evaluator adapter backed by the Anthropic API
 summary: A new AnthropicHypothesisEvaluator class implements IHypothesisEvaluator over @anthropic-ai/sdk,
   assembling a closed, delimited prompt from exactly one hypothesis's criterion, its own evidence and

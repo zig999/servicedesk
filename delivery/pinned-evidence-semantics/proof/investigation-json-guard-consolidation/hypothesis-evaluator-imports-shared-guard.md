@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Adapter's isRecord-to-isPlainObject substitution proven behavior-preserved
 summary: The pre-existing unit suite is left unmodified, and two new tests confirm parseJudgment's and
   isCitation's own narrowing still rejects a top-level array and a non-object citation entry the same
   way after the substitution — a case neither pre-existing test isolated.
-implementation: sha256:6ccfcf20f15f34921849850fab018c072bb0272ebce7ae843fcee3d313178f55
+implementation: sha256:d370b55b971375b821ea068123522bf99ff4edb3ab57f45487701a67135f3be5
 run: run/arc01-mnt03-suite
 tests:
 - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts

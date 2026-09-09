@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Integer-declared numeric fields of the simulation responses validate as integers
 summary: Twenty tests over both simulate-case and simulate-hypothesis response schemas prove that usage
   tokens, evaluation elapsed_ms and durations fields refuse a fractional value, still accept zero and
   absence exactly as before, and every scope boundary the task declared stays untouched.
-implementation: sha256:160dcbfceab9bfc5e26a312d075a7a609a7d4be5e5fcfb85f6b042f7219155b2
+implementation: sha256:1250e744693b9755731fa6a08009d210b5e3fd2866d073d841dbccf3caf65f72
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:4050ccb93004dfd5a71749b73d5d0a5e09de427ccddf202095ecbd7e6db18898

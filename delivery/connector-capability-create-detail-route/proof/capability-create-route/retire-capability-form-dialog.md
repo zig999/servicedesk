@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Retiring the capability popup form dialog
 summary: Structural absence tests for the deleted dialog module and its retired form-target
   type, plus the one route-wiring fact the task's own UNDERDETERMINED note left unpinned.
-implementation: sha256:04aa1b9b777ae11cd129c2324d98c6811468166b66ec13248abcb02f25d9ef64
+implementation: sha256:16301279bb4af4f932c7a840d6e4ac569c324e26172610714d769fe2a04df622
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

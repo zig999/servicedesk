@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for ICapabilityQuery.listCapabilities
 summary: Tests establishing that listCapabilities returns every registered capability with its full contract,
   paginated, and answers an empty page rather than an error when the registry holds nothing, plus the
   pagination-envelope edge cases the criteria's pagination clause implies.
-implementation: sha256:767aff0bc94cba085879939997abbfd36b01c355d4cb37376561613f97015729
+implementation: sha256:b45bea7d6625bfb5778c0c98d87cd05725c9c715a7892f713eef7b1a349e67ff
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

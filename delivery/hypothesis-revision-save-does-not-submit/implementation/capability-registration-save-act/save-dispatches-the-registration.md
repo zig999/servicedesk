@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Save owns its form again on the capability registration screen
 summary: The capability authoring screen's submit control keeps the screen's own form as its DOM form owner even when ButtonFooter
   portals it into the app shell's footer slot, restoring the register-capability dispatch the portal broke.

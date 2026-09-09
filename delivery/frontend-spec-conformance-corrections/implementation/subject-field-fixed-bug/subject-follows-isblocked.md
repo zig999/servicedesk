@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Subject field honors isBlocked like every other declared attribute
 summary: case-version-editor-form-fields.tsx's subject field now disables through isBlocked instead of
   unconditionally, and its label no longer claims the field is fixed.

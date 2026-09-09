@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the hypothesis-evaluator port and its fake adapter
 summary: Drives FakeHypothesisEvaluator, the only concrete IHypothesisEvaluator this task ships, through each of the three verdicts and its one throwing fault, exercises the task's own UNDERDETERMINED no-data/empty-citations fixture, and audits this task's own five modules for import purity and for shipping exactly one adapter.
-implementation: sha256:8f1969937716f71e02fdca7a4d78b54e195842437ab909ce57f9655d484aeceb
+implementation: sha256:49811221b3bd1df8d8052ecee6fbe9f0cf9b1696cadba95a55a948fa371db8f8
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

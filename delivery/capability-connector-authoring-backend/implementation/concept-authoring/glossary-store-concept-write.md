@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Concept write path on the glossary store
 summary: Adds a whole-replace concept write method to IGlossaryStore, its RelationalGlossaryStore implementation,
   and a GlossaryService.registerConcept that authors a concept by name.

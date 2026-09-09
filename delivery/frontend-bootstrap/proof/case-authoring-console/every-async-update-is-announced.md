@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for every-async-update-is-announced
 summary: Five tests prove that a screen's own in-place update -- the Cases List filtered count, the Version
   Editor save-status text, the Manifest Builder reorder-error message, and the Capabilities Browser detail
   panel -- is exposed through an aria-live region or role="alert" and reflects the change once it happens.
-implementation: sha256:74d958a5693fa5f1dcddbc84c806a0785c720b552eaa627b913804d82a42759c
+implementation: sha256:87a25c3fb288d4631b7c0af72ecd73dc4e74567e487983dbfb741614a9076597
 run: run/ux-consistency-sweep-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

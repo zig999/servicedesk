@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for derive-case-input-requirements
 summary: Tests the pure input-requirements fold, its composition into CaseQueryService's read-case-input-requirements,
   and the HTTP surface that carries it, over all seven stated criteria and the implementation's three
   disclosed inferences.
-implementation: sha256:a3d97c6b4a5b82eaa846f72db7e874de10374e5a4d7f025550c247f0c387536f
+implementation: sha256:eebe3c30a8b895b799ace0cce1c5a2bead992471068953b2b39790ae43e4ece1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

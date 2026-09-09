@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The schema built by numbered scripts under migrations/
 summary: "Six ordered SQL scripts that create every relation this system records into, one column per\n\
   \  declared attribute, one key per stated invariant, and one rule enforcing a case version's full\n\

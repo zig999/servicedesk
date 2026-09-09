@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Glossary browser reads and shows a concept's description, marking legacy concepts awaiting one
 summary: use-glossary-concepts.ts now narrows description off the concepts listing, the Concepts tab renders it per concept with a status-dot marker for an empty (legacy) description, and use-concept-options.ts's deliberate omission of description is disclosed as a departure from its sibling's shape.
 task: sha256:e63b1b75ef7a0c9f1e879dcca503e012e081e9c0502ba95de342097512c24d94

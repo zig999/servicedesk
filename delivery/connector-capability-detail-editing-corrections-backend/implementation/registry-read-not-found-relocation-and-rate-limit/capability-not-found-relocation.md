@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Capability-by-identity not-found relocated into a service-level wrapper
 summary: read-capability-by-identity's controller no longer performs its own held-check-and-throw; CapabilityRegistryService now offers a wrapper method it alone calls, while the raw readCapabilityByIdentity and every other consumer of it are unchanged.
 task: sha256:354cb8d4621e354960fcc179583c6f89c2b10c514e6974a3c5216bcbb2630cfc

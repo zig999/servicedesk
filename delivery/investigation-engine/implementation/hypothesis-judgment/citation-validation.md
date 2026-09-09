@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Citation structural validation
 summary: A pure, synchronous check, isCitationValid, acceptedCitations and their helpers, that accepts a proposed citation only when its concept belongs to the judged hypothesis's own collects and its field exists in the output schema of the capability that produced the cited evidence, refusing every other citation without ever throwing.
 task: sha256:c92d0161860188e4b5eabfb5a2c25b8624dc6db16723fba8a8d5c67227170f4e

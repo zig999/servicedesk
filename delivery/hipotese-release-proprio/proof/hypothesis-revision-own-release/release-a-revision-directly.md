@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Release a hypothesis-revision directly against its own state — proof
 summary: Integration tests over ReleaseHypothesisRevisionOperation and RelationalCaseStore's two
   new methods prove the draft-to-released transition, its refusal, the refusal's empty envelope,
   manifest/case-version independence, and terminality; unit tests pin the error class's shape and
   the two new ports' import discipline.
-implementation: sha256:dfe9d3337e61e0b0287ad902cd0d0f7a9154a626200956aa35e514877fcf9386
+implementation: sha256:2ac359e9f37270250155b30ffb0ddc94e00e542de4dd4fe057f91aed90c92212
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

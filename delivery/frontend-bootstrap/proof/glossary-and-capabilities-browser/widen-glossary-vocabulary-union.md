@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Proof for widening GlossaryVocabulary's union
 summary: Direct renderHook tests against useGlossaryVocabularyOptions proving the subject-attribute request/mapping,
   the four pre-existing vocabularies' unchanged behavior, and the edge cases the widening raises.
-implementation: sha256:c092286a74dd73c26b00e8762389569840f471e46caf49201ab6a56e087db94f
+implementation: sha256:c5fba49f467867c8b061347d84c36a2c06e5abd5cbe397c65e19ced9c2599141
 run: run/glossary-and-capabilities-browser-onda-6-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case result panel
 summary: A presentational Case-result region plus its own in-memory run-history hook -- the outcome/referral/determining
   line and customer-facing text box of the last full-case run, this session's run history with a

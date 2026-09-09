@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Judgment-failure evaluations carry their call record, in memory and through the store
 summary: Proves judgmentFailureEvaluation folds the retry's own call record (never the discarded first
   call's, never summed) when a retry ran and also failed, proves the store's INSERT/SELECT round trip
@@ -9,7 +10,7 @@ summary: Proves judgmentFailureEvaluation folds the retry's own call record (nev
   default row was widened with explicit nulls for the four new columns so pre-existing read-back tests
   keep asserting what they always asserted rather than picking up a fixture artifact the new reconstruction
   logic would otherwise expose.
-implementation: sha256:4f01907584f5def3972dcc2d57db530916c27926140f9a9210439982bdaf78ee
+implementation: sha256:bb014e08994bac2828333dcfaecc3b8290cabafbc1942e9829e50afb8165f198
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

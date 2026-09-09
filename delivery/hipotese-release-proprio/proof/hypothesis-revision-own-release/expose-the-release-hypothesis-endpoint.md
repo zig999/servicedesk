@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Release-hypothesis HTTP surface proof
 summary: Integration tests dispatching real HTTP requests through the release-hypothesis route (standalone
   and via the built app) proving all six task criteria, its stated inferences, and the pre-existing
   build-app fixture repaired to compile again.
-implementation: sha256:a1068fff041beca7a6b4b7b084c73f3678b2ee7ecb52455e8bf187ebfc2824fb
+implementation: sha256:13c7b11a38b75daab86da91e71fa7c778420f8a96a4849c3b065848f74d49d48
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Simulation route and header
 summary: Registers the /cases/$slug/versions/$version/simulate route with a breadcrumb label and renders its header (identity, state pill, when_to_use, Edit version/Manifest links, and a caller-gated Simulate case control) over a new screen/ready-view/hook triad.
 task: sha256:95277c511f8a9ce8a1a44b53b3b41010a5f1c996f778d89f360539971e30f184

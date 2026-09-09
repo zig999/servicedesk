@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Additional release-ordering and cross-file-corruption proof for case-fixture-reads-clean.spec.ts
 summary: New tests in case-fixture-reads-clean.spec.ts independently exercise the release-ordering fix (criteria 1, 2, 5) and the underdetermined second-invocation guard, distinct from the task-implementer's own rewritten collects-survive-DELETE test.
-implementation: sha256:8f9189e0133aedeb6a4c03f973c78b7dd1714d6dfa83ebc7cc5bcf98ceacdc89
+implementation: sha256:56c21261b6bf8d1b5207a909e93295dd3875420383bff698d2bdbd95f1624f55
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

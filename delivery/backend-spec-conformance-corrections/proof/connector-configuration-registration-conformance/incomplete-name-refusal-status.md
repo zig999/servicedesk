@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Register-connector's IncompleteConnectorConfigurationError resolves to 422, proof
 summary: Existing tests across status-map.spec.ts, register-connector.routes.spec.ts and connector-configuration-registry.service.spec.ts
   jointly prove that an absent or empty-string connector name is refused with HTTP 422 reporting IncompleteConnectorConfigurationError,
   not the registry's unmapped default.
-implementation: sha256:536fb95d092888308f11001c932bfc86c47027256f16a42d7b02d86b550e9726
+implementation: sha256:5c552b7843f41ae53d79eaf47e7f5706f00a0fe413989f93653ff6a8e18c3b38
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

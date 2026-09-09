@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Draft-hypothesis release refusal renders every named hypothesis and preserves the release control
 summary: New tests over the case-version editor's release dialog prove all eight criteria for the backend's draft-hypothesis release refusal against realistic hypothesis-shaped violation strings, closing the gap the pre-existing generic-payload coverage left open.
-implementation: sha256:f213632a85208c975217bfcc30a629330664a0396c931e3db3f33e41235cc943
+implementation: sha256:323dfe8ab846439b1224b6167b01b11d7cf0f9fe5706d0310ef43598c40654a0
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

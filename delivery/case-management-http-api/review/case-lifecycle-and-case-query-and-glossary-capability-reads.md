@@ -1,4 +1,5 @@
 ---
+target: backend
 title: case-management-http-api — case-lifecycle, case-query and glossary/capability read routes
 summary: Reviews the twenty-two tasks delivered before this session (status-map, the case-lifecycle mutation
   routes, the case-query read/store-extension pairs, pagination-types, and the read-capability/read-concept/read-vocabulary-term

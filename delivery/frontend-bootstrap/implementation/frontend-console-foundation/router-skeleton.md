@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Route tree skeleton for the ten proposal screens
 summary: A flat @tanstack/react-router route tree with one placeholder route per proposal screen 2.1 through 2.10, wired as the single RouterProvider at the app's entry point, with no layout composed around any of them yet.
 task: sha256:f09bda77c9b999ce13428fb74285d7a15d13ab34184a1a34476d2cb43f83857f

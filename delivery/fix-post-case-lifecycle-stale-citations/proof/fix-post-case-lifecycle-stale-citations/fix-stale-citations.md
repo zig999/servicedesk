@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for fix-post-case-lifecycle-stale-citations/fix-stale-citations
 summary: Tests that read each of the four corrected files' own raw source text and assert that the named
   doc comment now cites domain/knowledge/case-version and domain/knowledge/hypothesis-revision exactly
   where the criteria require, and no longer cites domain/knowledge/case or domain/knowledge/hypothesis
   for those facts; criterion 5's "no runtime behavior changed" rests on the four files' own pre-existing,
   unmodified behavioral suites rather than on a new test.
-implementation: sha256:c5893b40b8499e72fc1f422ef6c39fb583da27dbdadace167e0ab80310033466
+implementation: sha256:8a2432b9edeecc36bc3326f0031b5f6985dc5f765428b37b888f402b5ff44ffc
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:20acdee5acacafd214df11f468ff2cd7230209da84a65f7883a30698c000a28d

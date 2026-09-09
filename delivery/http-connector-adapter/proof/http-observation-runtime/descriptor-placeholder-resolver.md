@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for the connector request-assembly translation
 summary: What proves task/http-observation-runtime/descriptor-placeholder-resolver — each of the five
   criteria and all eight recorded inferences held by tests that fail when the behavior stops holding,
   with one test added to close the multiple-placeholders-per-template gap.
-implementation: sha256:7f2c024471d9385ff350937119fccc1827f11b5ff4d33b24ddb41cc12c976dc7
+implementation: sha256:bb4729d6587c5482c5516bae800bca96df83fe58099beefc36c56b365e6011d5
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

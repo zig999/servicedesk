@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability create/edit form on the Capabilities Browser screen
 summary: Adds a New capability action, a per-row Edit action, and a shared create/edit form (name, version,
   nature, both JSON schemas, timeout, connector, concept) over PUT /v1/capabilities/{name}/{version},

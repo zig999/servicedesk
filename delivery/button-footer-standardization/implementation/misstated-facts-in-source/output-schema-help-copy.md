@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Output-schema entry guidance rewritten to the specification's five claims
 summary: The Portuguese help paragraph beside the capability form's output-schema field now states exactly what the system reads from an entered schema, sourced only from the nodes that hold those claims, with no worked example.
 task: sha256:863e73fa64beeaa0e58f611c08861567f6e6264b30d9cdc4e4d3e77fdd74be8c

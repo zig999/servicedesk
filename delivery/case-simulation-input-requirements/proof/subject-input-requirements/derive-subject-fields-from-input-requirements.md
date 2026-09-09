@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for deriving the Subject region's fields from case-input-requirements
 summary: deriveSubjectFields and useSimulationSubject are proved directly against the pure derivation,
   the pinned slug/version threading, and the two composed registry reads, with subjectPlaceholderNamesInConfiguration's
   own pre-existing tests confirmed unchanged.
-implementation: sha256:98cf2423ce4d233b012f2ace1abdce931942ee228811bd40d0867fb43b46009a
+implementation: sha256:46e5067d33544f28a0b90d3bb11bca40d35e67e058a89021b7d9156b01502500
 run: run/subject-input-requirements-derive-and-present-suite-2
 tests:
 - file: src/services/simulation-subject-derivation.spec.ts

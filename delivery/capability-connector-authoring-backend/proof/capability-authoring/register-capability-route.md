@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for register-capability exposed as a write HTTP route
 summary: HTTP-level tests for PUT /v1/capabilities/{name}/{version} (wiring, status mapping, DTO boundary,
   no-auth) plus new service-level tests for the schema-well-formedness refusal this task added, together
   proving the task's seven criteria and excluding the omitted-schema-attribute reading the task's own
   Notes rules out.
-implementation: sha256:c79fee801d1548e94f2b2aa388b43f974e31ce1ea1ce97fd5bb563746fc1d8a2
+implementation: sha256:eade05fea14b3540182f9618571f9d861ada53c3c814b1107f957f93d2268c7b
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

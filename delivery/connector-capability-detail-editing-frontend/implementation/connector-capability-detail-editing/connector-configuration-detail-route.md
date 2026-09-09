@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configuration detail/edit route
 summary: A routed /connectors/$connector screen that loads, edits, discards, and saves
   one connector configuration in place of the popup dialog edit path, with list-row

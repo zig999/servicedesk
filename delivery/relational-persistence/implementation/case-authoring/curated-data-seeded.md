@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The curated fixture data is seeded into the database through the authoring command
 summary: A new seed.ts script writes the fixture-era glossary vocabularies, concepts and capability registrations,
   then authors the one curated case version exclusively through the published author-case-version command

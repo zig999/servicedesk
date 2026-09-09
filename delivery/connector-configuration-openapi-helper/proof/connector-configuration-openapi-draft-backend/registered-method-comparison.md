@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Registered-method comparison against the currently registered connector configuration
 summary: Confirms registeredMethodMismatch names both methods upper-cased exactly
   where a live-read registered configuration's declared method disagrees (case-folded)
@@ -6,7 +7,7 @@ summary: Confirms registeredMethodMismatch names both methods upper-cased exactl
   reads only from the registered text through a narrow injected reader with no capability
   parameter, leaves the registered configuration unchanged, and propagates rather
   than swallows a failing or malformed dependency read.
-implementation: sha256:9a6e1ef9b81565ef0e663b32769601ffa270fa59b6fbab8028553b2ec3f3dc25
+implementation: sha256:ea7a81bbad7c3507fb4a29437e695cdad07c48573ec9b4c4bf08c978785b775e
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

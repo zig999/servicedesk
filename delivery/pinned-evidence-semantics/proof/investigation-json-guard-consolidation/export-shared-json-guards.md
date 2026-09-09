@@ -1,9 +1,10 @@
 ---
+target: backend
 title: parseJsonOrUndefined and isPlainObject proven importable and behavior-preserved
 summary: New tests import parseJsonOrUndefined and isPlainObject directly from citation-validation.ts
   and show each still behaves exactly as its pre-existing internal behavior did, while the file's existing
   assertions are left untouched.
-implementation: sha256:541a4f27839610f8868ecaea28d2453d0b4cb01cf3da1dc694696fca9bd408b4
+implementation: sha256:c961760663eee244772307535373159886e77b26fe439ccf3fb10ef07bbc2e97
 run: run/persistence-store-connection-typing-widen-interface-suite-2
 tests:
 - file: src/__tests__/unit/investigation/citation-validation.spec.ts

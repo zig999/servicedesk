@@ -1,11 +1,12 @@
 ---
+target: backend
 title: written_at stamped at settle, not at issue -- run-diagnosis, the factory, the relational store,
   and store-wiring
 summary: Proves run-diagnosis.ts never assigns written_at before or after a write settles, that the relational
   store alone decides the value at settle for both the first attempt and a retry, and that every collateral
   pre-fix test this change broke (investigation-factory, the unit and integration relational store specs,
   and store-wiring) now asserts the corrected contract.
-implementation: sha256:fddf5de54b7a7b49d8e7220adbb865277c427eca09f7cb6274f688dfa3e9c191
+implementation: sha256:5563135b25b41fb2dc070fff7d745a7671840f43d2264ca338c350fab0d66d13
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

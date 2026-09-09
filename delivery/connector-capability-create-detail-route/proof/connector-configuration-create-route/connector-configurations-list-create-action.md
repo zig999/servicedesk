@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: |-
   Proof for the connector configurations list's create-action navigation
 summary: |-
@@ -8,7 +9,7 @@ summary: |-
   states, and leaves row-click navigation to a connector's own detail route unchanged -- through
   small, self-contained test routers mirroring this project's own established "row click navigates"
   convention.
-implementation: sha256:f699297b823bfa8cd612a8a9b659476d6dd6dbb26f57ed252860a473fc22f923
+implementation: sha256:38152faf6ba7792f337f3dbdaeace1506dfe278e53e4b3cc9d51abff4fbdc758
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

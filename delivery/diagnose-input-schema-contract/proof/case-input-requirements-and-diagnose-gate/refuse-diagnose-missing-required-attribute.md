@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for refuse-diagnose-missing-required-attribute
 summary: Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its
   wire route, its 422 status mapping, and test-connector's exclusion from it — now including a genuine
   behavioral test, not only a source scan, for the exclusion itself.
-implementation: sha256:ab28302993dc125efd6ed9f22481bdcb79d6ca56a0b344a858174d975995dd38
+implementation: sha256:2730875ef3e1edfde9621b391a74397771e8edb863dfda454ca480733449b854
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

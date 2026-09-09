@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Concept form authors and validates the description, and its refusal reaches the operator by name
 summary: The existing concept create/edit form gains a required description field through create and edit, submits it in the registration body, and its failure path renders the concept-description-required UiErrorState with its own wording while every other failure still falls through to the generic toast.
 task: sha256:50d9839d3d091b0afb425d0850a90b88712b16bc6381b111491a16bd134bc4ff

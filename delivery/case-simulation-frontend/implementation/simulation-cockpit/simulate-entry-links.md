@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Simulate entry links
 summary: "Adds a 'Simulate' navigation Link to the version screen and to the Versions tab of the case screen, each targeting that exact version's own simulation cockpit route, unconditional of the version's draft or released state."
 task: sha256:ffd8482b23aea50a7ae8ecff6d8e1f4dd53f02ef2e21a5e7aa47dbc6edfea0c5

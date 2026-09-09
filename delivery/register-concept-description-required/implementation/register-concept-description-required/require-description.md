@@ -1,4 +1,5 @@
 ---
+target: backend
 title: RegisterConceptBodyDto's exported type requires description
 summary: Widens RegisterConceptBodyDto's exported TypeScript type to state description as a required string,
   matching domain/glossary/concept, while leaving registerConceptBodySchema's runtime parsing of description

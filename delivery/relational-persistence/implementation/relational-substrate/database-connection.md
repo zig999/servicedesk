@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The database connection module and the connection URL in the environment schema
 summary: A persistence-only module that builds one pg connection pool from a URL the single environment
   schema now requires, with the driver declared in the manifest and nothing else in the tree touching

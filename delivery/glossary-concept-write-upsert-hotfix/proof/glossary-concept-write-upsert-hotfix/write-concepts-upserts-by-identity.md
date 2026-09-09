@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for write-concepts-upserts-by-identity
 summary: Tests proving RelationalGlossaryStore.writeConcepts now upserts by identity instead of deleting concepts/concept_accepts whole, at both the statement-mechanics level (stand-in connection) and the real-foreign-key level (real database), plus the wire-level no-description refusal on both the create and replace paths.
-implementation: sha256:c563f3a150ab175ce7ccd758e1128ed6622c68492471cccaa2cad116ac0eafcf
+implementation: sha256:8c3ed75623e8562c9860d28e421c1cdee50801febb7164af76bada6cadace0c2
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

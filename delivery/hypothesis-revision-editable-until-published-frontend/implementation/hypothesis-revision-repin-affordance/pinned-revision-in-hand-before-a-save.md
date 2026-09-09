@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Hypothesis-editing form holds the draft manifest entry's pinned revision
 summary: use-hypothesis-revision-form.ts widens its existing case-version read to type the manifest and
   exposes, in its ready phase, the revision the draft manifest entry pins for the hypothesis being revised,

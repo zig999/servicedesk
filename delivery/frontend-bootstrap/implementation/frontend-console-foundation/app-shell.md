@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: AppShell sidebar, topbar breadcrumb and no-auth indicator
 summary: AppShell composes a three-entry sidebar (Cases, Glossary, Capabilities), a topbar over TUI's StatusBar carrying a route-derived Breadcrumb and a fixed no-auth indicator, and wraps every route by becoming the root route's own component.
 task: sha256:232f9002fb0af95fff6156235939cf707ec85ae49f9c0e0fb1862026490e0d08

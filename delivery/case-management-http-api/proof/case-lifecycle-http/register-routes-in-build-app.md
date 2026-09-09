@@ -1,10 +1,11 @@
 ---
+target: backend
 title: build-app.ts registers every route this initiative delivers — proof
 summary: Proves build-app.ts's one registration convention and that all eighteen non-diagnose route plugins
   are reachable through it, fixes the six pre-existing test files buildApp()'s widened BuildAppDependencies
   parameter and env.ts's two new required fields broke, and confirms every pre-existing diagnose test
   keeps proving criterion 3 unmodified.
-implementation: sha256:19339625394c62b3bdb6fdb4728c47e5bc8f53917ce54f11cc87203ad0679b13
+implementation: sha256:8b45d6eb1f714477285f2fab57a8e48bfbf4a4d57f0a81fa7560d3b428983864
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

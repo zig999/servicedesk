@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Manifest composition operations — place-hypothesis and remove-hypothesis
 summary: Adds a new operations module composing a draft case version's own manifest through the persisted
   store, plus the two typed errors it needed that no existing class already covered.

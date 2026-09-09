@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Proof for JsonTextareaField's load-time pretty-print behavior
 summary: Unit tests over JsonTextareaField prove mount-time pretty-printing of a valid
   value, the unchanged as-is display of an invalid one, and the disclosed generic-load
   inference; the connector-configuration and capability dialogs' own specs gain dedicated
   tests plus corrected pre-existing assertions proving each dialog's own field shows
   its loaded value pretty-printed.
-implementation: sha256:38962976e234668696b7bb96d40662ad67e9741c5332f23d98126daef57add66
+implementation: sha256:fbd2fc500e1f634c738d25dd9f6aa441535d4584096d0128b9caa71e450ac638
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

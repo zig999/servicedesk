@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Scope the schema-editor height increase to the capability screen via an opt-in JsonTextareaField
   prop
 summary: JsonTextareaField grows a `tall` prop that raises its Textarea's minimum height from 10rem/160px

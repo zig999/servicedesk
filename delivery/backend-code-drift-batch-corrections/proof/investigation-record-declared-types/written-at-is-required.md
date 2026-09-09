@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Investigation.written_at required — compile-time proof
 summary: New and added type-level tests prove Investigation.written_at is a required string rejected by
   the compiler when absent or mis-typed, while pre-existing runtime tests already prove no producer computes
   or invents a written_at value.
-implementation: sha256:c2f02e9fdf1d86dbf2689169785ce94a9de0229e2b3067cb7205bcb1edd513ae
+implementation: sha256:4814e4cab0770ccbdc891f86f8e04cc9623726d754c4cdcb693ea4e247778a2a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:4050ccb93004dfd5a71749b73d5d0a5e09de427ccddf202095ecbd7e6db18898

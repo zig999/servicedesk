@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the production Anthropic hypothesis-evaluator adapter
 summary: Mocks @anthropic-ai/sdk as a boundary to prove the no-data short-circuit, prompt purity and content,
   the no-tools request, response parsing across all three verdicts and every failure path, and the apiKey/maxTokens/model
   inferences the implementation recorded — and updates two sibling module-audit specs (single-implementer
   count, and the shared forbidden-package sweep) for a second, legitimate infrastructure adapter.
-implementation: sha256:0c8860b76a360ef805fe5c8b573b2b9a3c5f3b784b289e735424ed3990aba572
+implementation: sha256:302ff144cff56081a885945f083bc1fa351fa03195c949b6d03cd09317777619
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

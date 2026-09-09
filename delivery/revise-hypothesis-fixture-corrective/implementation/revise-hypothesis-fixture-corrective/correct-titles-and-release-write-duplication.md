@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Correct revise-hypothesis.operation.spec.ts's two stale titles and its release-write duplication
 summary: Retitles two it() blocks in revise-hypothesis.operation.spec.ts to name the condition their bodies actually exercise, and replaces the local releaseHypothesisRevisionOwnState helper's raw SQL UPDATE with a call to the case lifecycle's guarded releaseHypothesisRevision operation.
 task: sha256:0fa167594e3bbbffa1e498cb6930f174616aaf71c65291394d1bf9d8e4015ce1

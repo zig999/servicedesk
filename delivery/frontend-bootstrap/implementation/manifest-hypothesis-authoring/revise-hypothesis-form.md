@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Revise/New-hypothesis form, over the real POST body shape
 summary: A shared form for both a blank "New hypothesis" route and a pre-loaded "Revise" route, filtering
   Collects client-side by the draft's own subject type, dispatching the real POST /v1/cases/{slug}/hypotheses,

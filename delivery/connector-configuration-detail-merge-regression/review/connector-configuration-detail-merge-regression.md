@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: connector-configuration-detail-merge-regression review
 summary: What four passes found over the ready-phase render-lag fix in useCapabilityDetail, useConnectorConfigurationDetail
   and useConnectorConfigurationDetailView, and their tests.

@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Replay by slug and version proves its answer whole, unvalidated and digest-free
 summary: Rewrites the two pre-existing assertions that held replayCase to its former ReadCaseResult-with-hash
   contract and the structural-failure-through-replay path, and adds new tests proving each of this task's
   six criteria against the bare-Case, no-revalidation, no-digest contract replayCase now answers.
-implementation: sha256:10c0742298e18808026491fc44fc151c86dfae486155c23a812d87ca2913d49d
+implementation: sha256:6ef37c106745114696fec52189832d2d5dee95e14862d3cbfc7e538e23ae83c2
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

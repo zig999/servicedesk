@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: A manifest row's own revisions and highest revision, read once
 summary: A new hook composes the already-shared hypothesis-revisions cache entry and the existing latest-revision
   reduction so a manifest row can read its own hypothesis's revisions and their highest number without

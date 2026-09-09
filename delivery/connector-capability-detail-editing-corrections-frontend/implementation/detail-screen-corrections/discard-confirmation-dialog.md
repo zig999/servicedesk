@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Confirm before Discard resets form state on both detail screens
 summary: Both connector-configuration-detail-ready-view.tsx and capability-detail-ready-view.tsx now require an explicit confirm step, via an uncontrolled Dialog composed from @tui/ui/dialog's own primitives, before Discard resets form state.
 task: sha256:be238ab64e3d2a80c1b8dc1d926e5693c3c366f397bcabe7a320d2b9b3957da4

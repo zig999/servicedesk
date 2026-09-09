@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configuration form action footer
 summary: The connector-configuration create screen and detail ready view route their action row through the shared ButtonFooter, carrying Save, a Cancel that abandons authoring without registering, the pre-existing detail Discard, and both outcomes of a submission.
 task: sha256:3eacf712c15d69667d5cfca3f89b12f5e904902d338a81ed0a6c25df675eff5f

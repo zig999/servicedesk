@@ -1,9 +1,10 @@
 ---
+target: backend
 title: List-connector-configurations route proof
 summary: Fourteen tests exercising GET /v1/connectors through Fastify's app.inject() with an injected
   mock listConnectorConfigurations dependency, proving both stated criteria and the pagination/edge-case
   behavior list-capabilities.routes.spec.ts's own precedent settled for.
-implementation: sha256:4365c9ad480b933394b6757b5a6b449bd2bf86611e90a21c3d5b99f8a545d319
+implementation: sha256:66975f4ac621354a5214bd8e4d5da62d1cefc5d97ab31c6f33e6493e888072de
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

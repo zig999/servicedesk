@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Rate limit for read-capability-by-identity
 summary: The read-capability-by-identity route now refuses a source IP's 61st request within a one-minute window with HTTP 429 and a Retry-After value, through an onRequest hook scoped to that route's own plugin registration alone.
 task: sha256:529c3b09812abb3e42f9d6a82764125dcc7e6a95783bdeef8158c979c8603896

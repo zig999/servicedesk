@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof that both Anthropic adapters report the provider's own usage, timing and prompt
 summary: Rewrites the three now-obsolete placeholder/no-usage unit tests across both adapters' own suites, updates nine further pre-existing hypothesis-evaluator parsing/judgment-failure tests whose own expected-value literals were never widened for the new telemetry fields, fixes the diagnose-server.factory.spec.ts integration suite's mocked provider response to carry real usage and a real measured delay, fixes production-diagnose.factory.spec.ts's own sibling mock (a different task's fixture, broken by this task's own legitimate removal of the consolidator's placeholder usage) to carry a realistic usage field, and adds unit tests proving usage/elapsed_ms/prompt are genuinely read from the provider's own response — including the judgment call's own throw-before-response boundary.
-implementation: sha256:3af306af9e8f6f4a22a057595d987d450efafef3a7d237e67e5b5ce9c37de0da
+implementation: sha256:e845c29df7aa4a67a24ea5b294a5cd619f05fb0bde679b41b67e04c1816236e6
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

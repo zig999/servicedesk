@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Seed's FIXTURES_ROOT resolves against what a real build actually produces
 summary: Two new unit tests read seed.ts's own currently-declared FIXTURES_ROOT segment and apply Node's
   real URL/fileURLToPath resolution from the fixed path a real npm run build always places its compiled
   entry point at, proving the fix removes the ENOENT the pre-fix constant produced there -- without spawning
   tsc or a shell -- while the task's rerun criterion is left to the pre-existing, unmodified integration
   test that already proves it.
-implementation: sha256:224dac5534652983b0316b1abe4da9b193166be82c820129c16d73d8790bb131
+implementation: sha256:05cf4e8a1ccdaf23b38abc5663bb60c4b50c19f2f42b4e54f27ab41feecf329c
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

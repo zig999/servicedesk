@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Concept form description field — proof
 summary: New tests prove the description field populates on edit, is required, and its own missing-description refusal reaches the operator by name; three sibling spec files from a closed initiative's own delivery are corrected (with the human's explicit authorization) since this task's own required description field legitimately widens the PUT body and the validation surface they exercise.
-implementation: sha256:5a3d97781ef12c789cdb47c938d6e65530cde7bd921399ced250962d95f5eb17
+implementation: sha256:8401576378d1bf2ea2ebb1772d524ddf8111651b5d583285ad8fd926353e32cf
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Manifest placement, repin and removal stay unaffected by a revision's own draft/released state
 summary: Adds the missing fixtures -- a hypothesis-revisions listing that actually carries a state field -- needed to prove this task's five criteria, since every existing suite covering the manifest composition surface (revision-select, reorder, remove, use-manifest-builder-repin) exercises revisions with no state concept at all.
-implementation: sha256:b9fdf72e40e98afa538599056e4621405166bbf5ffe94bdbd6ae45c2780b6301
+implementation: sha256:837eae9f8f191dc32c7491e3a28b90dddd0f4783215802ce838e3159affd9d9d
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

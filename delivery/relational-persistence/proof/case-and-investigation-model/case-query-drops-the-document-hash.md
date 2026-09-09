@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof that read-case's answer carries no document hash
 summary: Two new/rewritten unit tests prove ReadCaseResult carries no hash and that read-case still distinguishes
   each stored version by its own content; the existing suite for diagnose.controller.ts and seed.ts continuing
   to pass, unedited, is the proof for real callers; run-diagnosis.ts's header-comment criterion is prose
   with no runtime effect and is left untested, disclosed rather than invented against.
-implementation: sha256:024475dd0011589f2fbce7cbb13c14fd4a48b09ce4120f10d7852395e861b28f
+implementation: sha256:c5c2faf1020248568eb2434b352e8c0112e35a33e279db57fdf64c8ccc05711f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

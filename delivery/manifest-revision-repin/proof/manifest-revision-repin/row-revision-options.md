@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: A manifest row's own revisions and highest revision, proven over useManifestRowRevisions
 summary: Behavioral tests over useManifestRowRevisions establish that a row obtains exactly its own hypothesis's
   revisions verbatim from the shared cache entry, isolated per hypothesis, each carrying its own revision
   number, its highest answered by the existing reduction, and empty before the listing has actually answered
   — whether pending or failed.
-implementation: sha256:3c318930703f402072b8c40075b5007c451debb4aa81dbc1703b8249e118bc67
+implementation: sha256:0f315fc88d18932a34bfeb0cc149b33447772212a69748cb5feaeb9a74657fb6
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,11 +1,12 @@
 ---
+target: backend
 title: HTTP surface for draft-connector-configuration-from-openapi
 summary: Proves the POST /v1/draft-connector-configuration-from-openapi operation
   dispatches through its composed dependencies, refuses malformed bodies and each
   of the three named document/operation failures with their own code and exact details,
   and answers a success body carrying exactly the five allowed fields with no capability
   or credential-value leak.
-implementation: sha256:0015804484b8108aa25623b2406c190a1e078fb4512bb684e80eceec92ab9fec
+implementation: sha256:2bfe57bdf65f5aac51581a9c782431d663ee950fbba095d96814b7930bc5d7cb
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

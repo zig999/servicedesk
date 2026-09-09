@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The shared relational access helper
 summary: A new persistence module giving every future relational store adapter one way to run a statement,
   answer absence as data, raise the caller's own typed error, and run a unit of work as a transaction

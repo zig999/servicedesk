@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Judgment-failure evaluations carry their own call record, in memory and in the store
 summary: judgmentFailureEvaluation now folds the outcome that produced it into usage/elapsed_ms/prompt
   exactly as asEvaluation does, and the investigation_evaluations table plus its write/read mapping carry

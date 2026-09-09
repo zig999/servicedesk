@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for investigation carrying written_at and pinning its case by slug and version
 summary: Five tests proving the pinned case is narrowed to exactly slug and version with no digest ever
   read, that a built investigation carries written_at and refuses its absence at runtime, and excluding
   both UNDERDETERMINED candidates the task's Notes name — plus three pre-existing test files, from now-closed
   initiatives, brought into agreement with this legitimate shape change.
-implementation: sha256:8942fa0e29fec3695e0665abf2b0a6e80df2e1024b18530fa7dd671825c5fbfe
+implementation: sha256:983f4018ab04564bba2d6106fe1b97eb6cd6c25cf3b595c892e67c3ba747c283
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

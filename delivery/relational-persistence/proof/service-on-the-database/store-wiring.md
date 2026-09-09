@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Store wiring cut to one connection, and the ten sibling test files that signature change broke
 summary: Structural audits and one real-database integration test prove the four stores are built from
   one connection and no data-directory path anywhere in the wiring chain, the environment schema and the
   file tree are cut accordingly, and ten sibling integration/unit specs broken by this task's own signature
   change are rewritten against the real database and disclosed.
-implementation: sha256:f99cd541ff68fc15e2ee0ded07798998fc5c3f93e74255fcbcd09c61fe37999a
+implementation: sha256:48e1090b3670c820414c33a7d75beaf37bbecc696f04de9b00d0a4a865d05d01
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

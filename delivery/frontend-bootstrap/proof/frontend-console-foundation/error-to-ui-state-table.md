@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the error class to UI-state mapping table
 summary: Sixteen tests prove each of the ten mapped error classes resolves to its own distinct UI-state kind, the four unmapped classes and any unrecognized code collapse onto the shared generic-error fallback, and uiStateForApiError never throws.
-implementation: sha256:8d75800fcdc9e89e684385090d4e4bea41dcd1c3c496916d54cd5809e58e3e15
+implementation: sha256:b5b4c26b8798c8dae0650e9cec5aa1ead1605caa27d891321ddd6c98295ee01e
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

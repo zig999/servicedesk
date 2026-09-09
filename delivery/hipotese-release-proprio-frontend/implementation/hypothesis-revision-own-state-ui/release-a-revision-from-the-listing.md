@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Direct release control for a hypothesis-revision on the revisions listing
 summary: Adds a per-row release confirmation control to the hypothesis-revisions listing, backed by a new mutation hook that releases a revision directly, updates the listing's own cache on success, and re-reads it from the server on the one named refusal.
 task: sha256:41d7d8afb68103b67a0fc979a1fd072d69a16ae02825f3de22296b8210a73114

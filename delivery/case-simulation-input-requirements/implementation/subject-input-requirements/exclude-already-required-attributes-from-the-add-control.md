@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Filter the "+ attribute" control's Select against the requirement set
 summary: The curator's "+ attribute" glossary Select in case-simulation-subject-panel.tsx now excludes
   every attribute name state.requiredFields already names, leaving the shared useGlossaryVocabularyOptions

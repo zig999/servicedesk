@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof that both fakes answer deterministic zero-valued usage and timing
 summary: Rewrites the eight pre-existing FakeHypothesisEvaluator tests the implementation record named as stale, fixes the two integration e2e fixtures (diagnose-e2e.spec.ts, diagnose-persistence-deadline-e2e.spec.ts) whose seeded evaluations arrays no longer match what judgment-stage.ts's asEvaluation genuinely attaches, and verifies the pre-existing FakeAssessmentConsolidator coverage for criteria 2 and 3 is still accurate rather than rewriting it.
-implementation: sha256:db2973b4360879089638ba751238b89d166931bfc76722a09d1948efb958aac2
+implementation: sha256:541ae52cc6bef52d76b54836ad2e5fbc663b7bd051e49662e805a18a15999682
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

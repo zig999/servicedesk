@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of hypothesis-revision-editable-until-published (frontend)
 summary: Four-pass evidence over the two delivered tasks of the epic hypothesis-revision-repin-affordance — coverage, specification conformance (via reconciliation), standard conformance, and a captured run that passed cleanly.
 reviewed:

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Relational store adapter rebuilt for the case-version lifecycle
 summary: ICaseStore and its relational adapter are rewritten against the new schema — one whole-version
   assembly and seven storage primitives, each refusal mapped from a schema constraint the sibling migration

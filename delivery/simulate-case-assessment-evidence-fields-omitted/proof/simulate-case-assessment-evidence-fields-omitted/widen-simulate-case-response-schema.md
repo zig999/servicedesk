@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Widened simulate-case response schema — assessment call-record and evidence snapshot
 summary: Proves assessmentSchema now requires register, usage, elapsed_ms and prompt and evidenceSchema
   now requires fields and concept_description, each typed as stated, while both admit the honest-empty
   evidence readings the specification's Description states, and that a production-shaped value validates
   intact.
-implementation: sha256:4f0cdfec0926a87f9a5e9c4b48cd95a84c6088d4c493f6f24dda2d6c3a13b476
+implementation: sha256:26b74a6544e9af05d865c254702868beaa433edb9a6b84891be0e78a5a724f19
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

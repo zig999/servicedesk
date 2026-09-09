@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Widen the hypothesis-evaluator port to carry the pinned case's title and when_to_use
 summary: IHypothesisEvaluator.evaluate() takes a third CaseContext parameter (title, whenToUse), judgment-stage.ts
   forwards the pinned case's own values unchanged on both the first call and the retry, and the fake adapter

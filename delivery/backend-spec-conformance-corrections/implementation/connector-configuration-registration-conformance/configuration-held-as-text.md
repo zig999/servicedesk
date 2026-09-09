@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector-configuration registry holds configuration as text
 summary: ConnectorConfiguration.configuration is now typed and held as JSON object text throughout registration,
   storage, single read and listing, with every consumer that derives an HTTP call parsing it back through

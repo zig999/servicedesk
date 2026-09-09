@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: The ButtonFooter standardization, all seven tasks
 summary: What four passes found over the twenty-one source files and twenty-eight specs the seven tasks of button-footer-standardization delivered, with the failures pass not run because the captured run passed whole.
 reviewed:

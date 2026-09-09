@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: 'Review: simulate-hypothesis-endpoint-hotfix'
 summary: What four passes found over the corrective fix wiring use-simulate-hypothesis.ts to the delivered
   POST /v1/simulate/hypothesis route.

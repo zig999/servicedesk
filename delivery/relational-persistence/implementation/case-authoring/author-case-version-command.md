@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The curator's authoring command, backed by a distinguished write-once refusal
 summary: IAuthorCaseVersion/AuthorCaseVersionService submit one case version whole, answering every structural
   and coherence rule at that write before storing anything, and RelationalCaseStore now refuses a duplicate

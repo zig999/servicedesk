@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Release each manifested hypothesis-revision before the case version in diagnose-server.factory.spec.ts's own fixture seeding
 summary: insertFixtureCase now releases every manifested hypothesis-revision through the lifecycle's own releaseHypothesisRevision before releasing the case version, so beforeAll no longer throws CaseVersionNotReleasableError against an empty database.
 task: sha256:77cdd7161e2ab01d962304e12f6abc7c9edf7a78f8020af9869e91f949931cd7

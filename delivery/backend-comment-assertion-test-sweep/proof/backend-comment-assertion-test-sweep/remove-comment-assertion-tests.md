@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Existing behavioral tests continuing to pass over the comment-assertion removals
 summary: Cites, per edited-in-place file with at least one surviving test, one pre-existing behavioral
   test that already runs unmodified and would fail on any regression the removal could have caused; this
   removal-only task authorizes no new test.
-implementation: sha256:7a52cd8b04deb923bcb05215eb3d06ee9ef582ad51d8c2783721b175e2c84188
+implementation: sha256:627a564ebb706808341a46579bb3f07524081e452d9c725670aabb9bc08b104a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

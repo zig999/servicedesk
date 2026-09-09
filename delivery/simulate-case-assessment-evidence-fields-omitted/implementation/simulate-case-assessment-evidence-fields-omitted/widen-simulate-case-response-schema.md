@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Widen simulate-case response schema for assessment and evidence
 summary: Adds register, usage, elapsed_ms and prompt to assessmentSchema and fields, concept_description
   to evidenceSchema in simulate-case.dto.ts, reusing existing shared shapes for the enum, the usage record

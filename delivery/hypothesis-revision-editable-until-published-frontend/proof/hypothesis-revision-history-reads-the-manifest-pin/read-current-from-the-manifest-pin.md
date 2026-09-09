@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Revision history's "current" row proved against the highest-numbered version's manifest pin
 summary: A new spec file exercises all four criteria of this corrective task directly against the manifest
   pin (not the hypothesis's own highest revision), proves the explicit no-entry statement the task's own
   Notes disclosed as a gap and this delivery closed, covers the manifest-read failure edge case the new
   fetch introduces, and repairs the pre-existing suite's fixtures so it keeps passing against the corrected
   dependency.
-implementation: sha256:2a7043f032732d447316e840616bc66f5789916cbcf5814a9d4cbaba08dad050
+implementation: sha256:2f94353fd173157587085c9feccd9a728d55dc99b640230d2c42de9bd47d2eaf
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

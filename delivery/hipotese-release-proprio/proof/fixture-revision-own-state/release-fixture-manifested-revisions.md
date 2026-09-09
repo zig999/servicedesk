@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Fixture and seed setup writes each manifested hypothesis-revision's own released state
 summary: New integration tests query hypothesis_revisions and hypothesis_revision_collects directly after
   the canonical fixture builder, the seed script and release.operation.ts run, proving the own-state write
   lands where the objective requires it and nowhere else.
-implementation: sha256:a4c257773bc92e0d23f79b539c4e622196fd9169b3523d68d9116a1257a7b8b8
+implementation: sha256:57697c8f9929a3fdd63e9d24eb3c20fe9f96c159b6ebc0800e19bef2509c7190
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

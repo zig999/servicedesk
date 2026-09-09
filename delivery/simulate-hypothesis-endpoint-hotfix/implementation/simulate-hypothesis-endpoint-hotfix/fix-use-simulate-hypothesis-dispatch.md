@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Fix use-simulate-hypothesis dispatch to the delivered backend route
 summary: Rewires the simulate-hypothesis dispatch hook and its cockpit call site to POST /v1/simulate/hypothesis
   with the case/subject/requester/hypothesis body and the evidence/evaluation/durations response shape

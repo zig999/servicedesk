@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for read-case, the knowledge context's composed publication-gate-free read
 summary: Unit tests against port fakes for CaseQueryService.readCase and the standalone replayCase, plus integration tests through createCaseQuery over real file-backed stores, proving content-pinned answers, per-half-joint refusal, later-read refusal on dependency drift, revalidation-free replay, and the absence of any publication gate.
-implementation: sha256:8a755a23eee8c05540202dc48fa765b8e41e01f833750d450e8a101ffd52a59e
+implementation: sha256:fbaf9cf4f5cbbadbf24073e0d6b3f37e71d4da4965017f49cbd96dd47aa6d5cd
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

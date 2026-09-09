@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Apply a drafted configuration to the Configuration field's local edit
 summary: Wires an Apply button, offered only against an answered draft, that writes the drafted configuration
   text through the Configuration field's own onChange and touches nothing else.
 task: sha256:88c24b77e5e9e0059a635509d72e1ef19e659b81ce6ede50ded7a891af524894
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-draft-apply-to-local-edit-build-2
 files:

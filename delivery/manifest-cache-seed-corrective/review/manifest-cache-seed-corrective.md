@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review — fix the new-draft cache-seed crash on the Manifest screen
 summary: Coverage, specification-conformance, standard-conformance and failures passes
   over the manifest-cache-seed-corrective initiative's one delivered task.

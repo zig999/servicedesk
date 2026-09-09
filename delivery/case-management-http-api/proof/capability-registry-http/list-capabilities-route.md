@@ -1,8 +1,9 @@
 ---
+target: backend
 title: GET /v1/capabilities route proof
 summary: Fastify-injection tests over createListCapabilitiesRoutesPlugin proving both criteria and the
   controller's disclosed pagination-bound inferences.
-implementation: sha256:c4b1ea18ca7b11c432f09783db1181c38d679cd3599419be22ea0f7ebb4ca14a
+implementation: sha256:38b60edb6d9bb9b32d5f0a7e6be1f5f6c7180779a057049ed18d594d35c8e422
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

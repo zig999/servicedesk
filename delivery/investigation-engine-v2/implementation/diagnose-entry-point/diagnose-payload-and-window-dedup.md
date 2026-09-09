@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Diagnose payload shape and window dedup
 summary: A new diagnose(payload, dependencies) entry point requires a requester, treats ticket_ref as optional, and applies the idempotency-window dedup (return completed, join in-progress, always fresh with no ticket) only when a ticket reference travels, wrapping the already-delivered run-diagnosis.ts pipeline without modifying it.
 task: sha256:5c30c22a81bcbddcef7ad25c90f1502a22ed9913fd3581b91b340bf508b0b2b1

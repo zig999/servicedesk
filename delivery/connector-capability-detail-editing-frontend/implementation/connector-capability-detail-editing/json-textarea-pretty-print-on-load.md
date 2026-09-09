@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: JsonTextareaField pretty-prints a loaded value on mount and on load
 summary: JsonTextareaField now reformats a syntactically valid JSON value as indented
   text the moment it is mounted or replaced from outside, leaving typing, Beautify,

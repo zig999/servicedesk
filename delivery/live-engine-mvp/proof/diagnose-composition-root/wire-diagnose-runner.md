@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Wire the production diagnose runner from the real Anthropic adapters — proof
 summary: Two spec files prove createProductionDiagnoseRunner's own composition — pass-through wiring,
   the absolute deadline it stamps, requester passthrough, no caching across calls, and that it reaches
   the real, Anthropic-backed adapters rather than a swappable fake.
-implementation: sha256:caaaf57c5fe936e8cf8b4413ef5fb2b118de7a1a5ba7b6ac9acea37e8038a5b7
+implementation: sha256:c4728a8f853118ae651b3cafdf9d7acc9653b8fc45663e7235e9e1136cd14dc1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

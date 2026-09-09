@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Protects a released hypothesis-revision's own collects from deletion, and restores the fixture's
   own two collects the gap already destroyed
 summary: Adds a migration (0010) protecting hypothesis_revision_collects from UPDATE and from DELETE once

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose register-connector as a write HTTP route
 summary: A PUT route, controller and DTO pair for register-connector, plus a new JSON-object well-formedness
   check in ConnectorConfigurationRegistryService.registerConnector, before any write.

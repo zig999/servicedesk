@@ -1,9 +1,10 @@
 ---
+target: backend
 title: RelationalCaseStore.listCaseVersions proof, plus the FakeCaseStore compile fix
 summary: Integration tests over a real PostgreSQL database proving listCaseVersions returns every version
   a named case holds, paginated, and refuses only an unknown slug while answering an empty page for a
   known case currently holding none.
-implementation: sha256:09544b5adb452af20632b546268d041f1a4811e2789d9e12e558186ae30eaf88
+implementation: sha256:0e994a90dc0ec70e36ac5e3b2474b5b1084aad41309f9e2ed3eb7d27aa0ba210
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

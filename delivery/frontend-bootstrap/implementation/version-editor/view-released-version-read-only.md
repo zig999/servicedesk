@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: View a released case version read-only
 summary: Adds a "View" action to a released row on Case Detail's Versions tab and a distinct, control-free
   read-only render (fields plus manifest) to the Version Editor for a released version, reusing the exact

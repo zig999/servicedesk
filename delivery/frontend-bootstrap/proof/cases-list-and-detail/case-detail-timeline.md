@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the Case Detail version timeline
 summary: Eight tests prove case-detail-timeline's four criteria plus two of its own disclosed inferences (URL-encoding the slug, the loading/failure placeholders), rendering CaseDetailScreen inside a self-contained test router and QueryClientProvider with a stubbed fetch.
-implementation: sha256:33a44e31afaf59ac31ac0709dc01fc2a3cafcdecf4d5b1ec2c43fa74d4019f15
+implementation: sha256:ed475d6606dc0c192349cef62b651585badd89bb758a728c98a8c3abd07aa47d
 run: run/cases-list-and-detail-onda-2-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

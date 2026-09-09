@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for observation-port-unavailable-endings
 summary: HttpDeclarativeObservationSource answers an unavailable ending naming its cause via result_detail
   for each of the four presently-unresolvable conditions, issuing no HTTP call, verified by rewriting
   the three pre-existing tests that asserted the old throwing behavior for these same conditions and adding
   what those tests did not cover.
-implementation: sha256:0f21eb99ba0b1c1a71a43eaa469311189173b92d632db63d47805ccac2f5db78
+implementation: sha256:89752b49af193551fbf47e04847324065f6b5e23f76061f4149b252656034179
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,13 +1,14 @@
 ---
+target: frontend
 title: Configuration Helper section beneath the Configuration field
 summary: Proves the Configuration Helper section renders beneath Configuration on
   both authoring surfaces, offers its three named controls plus a non-submitting Request
   Draft control that dispatches the draft request and never reaches the operator-supplied
   document link or the save path, while every existing field and the Actions footer
   stay reachable.
-implementation: sha256:5006f1b6a2ea62293114a5d0a2ca7d66bc1b619c44d9b109ceac71b5320c840b
+implementation: sha256:cd8c126668855fc073552c0025a29eff3325b4becc8967d604673e4fbf70c98f
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-configuration-helper-section-suite-2
 tests:

@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Proof for rewriting the reconciliation tie-break test's collision setup
 summary: Confirms the rewritten tie-break test proves criteria 1-3 through Configuration-text edits rather
   than an Attribute-field rename, and that every other test in the file is unchanged; the full suite passes.
-implementation: sha256:2bb01728ad45e379fb916c1ee59ae6adf1df9c707c4d4f53c1d43ff48a948d53
+implementation: sha256:05629c12f96a12e71a885719cc7c3b2ead12c23f125fe71e6866502bc61687d0
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

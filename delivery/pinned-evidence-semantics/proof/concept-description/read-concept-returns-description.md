@@ -1,9 +1,10 @@
 ---
+target: backend
 title: read-concept returns a concept's description
 summary: Proves that GET /v1/glossary/concepts/{name} carries a held concept's description
   alongside its name, accepts and ttl, and answers the empty string for a legacy concept
   holding none rather than refusing the read.
-implementation: sha256:e759560ef22dde4a97fb3b991e9b719e016d1a98c32cac3bf9249a7262d952b1
+implementation: sha256:5486c5f3c18de5c28543d7ef35a493379f392b32ecb53e8509586e5737de3d27
 run: run/pinned-evidence-semantics-full-suite-post-evidence-snapshot-4
 standard:
   at: ../standards/backend-node-service.yaml

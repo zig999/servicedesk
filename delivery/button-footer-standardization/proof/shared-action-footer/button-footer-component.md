@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: ButtonFooter component proof
 summary: Tests that ButtonFooter renders whatever children it is given in an accessible, end-aligned sticky group, mounted both in isolation and inside the real AppShell, where its containment inside main and the shell's disclosure staying present and structurally outside it are proven against app-shell.tsx itself rather than a fixture.
-implementation: sha256:1a54f967eda3bf583ca5ba66753de8f0581010aa0115c93303d2d689f722646c
+implementation: sha256:726a86d3a700417cad4752fec5b0498ae430b523f4fac8ce690ddb86dee8b458
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

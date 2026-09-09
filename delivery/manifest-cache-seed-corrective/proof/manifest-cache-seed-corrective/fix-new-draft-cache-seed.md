@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Fix for the new-draft cache-seed crash on the Manifest screen
 summary: Proves that removing the partial case-version cache seed at draft creation
   stops the Manifest screen from crashing on an undefined manifest, keeps every consumer
   of that shared cache key from ever observing a resolved value missing manifest or
   state, and keeps the new-draft editor screen stating a pending read instead of presenting
   the curator's just-submitted content ahead of a real read-back.
-implementation: sha256:053742bd6aff1b9d1c4b74cfe282a79b2650b090933bab666da0b2006a13d639
+implementation: sha256:97da221a31b05645cb2630c7bdd4fc4bebfd80e589f07981832a662d216833b4
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

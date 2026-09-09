@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Retirement of the manifest-basis immutability assertion in case-version-lifecycle-schema.spec.ts
 summary: Confirms the obsolete manifest-basis assertion is gone from the file, that no replacement of
   any basis was added or needed to remain because the row's-own-state version of the same claim already
   stands elsewhere in the suite, and that the file's remaining tests — none of them altered by this task
   — still pass.
-implementation: sha256:0d772fb4d6da8cc1856824ef6257181da42467f6370758423033678891340abc
+implementation: sha256:7b74bec451f8c59223247f5e2ed0ae356d0e5232d16a42d93333e5b29ccb477d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

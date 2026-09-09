@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for saving Configuration edits before reconciling
 summary: The seven affected tests save Configuration through the real "Save" button and wait for its own
   disabled attribute to reflect the settled save (state.isDirty turning false), bypassing a pre-existing,
   unrelated defect in the "Saved." acknowledgement path; the full suite passes.
-implementation: sha256:a3cfb2ab778d954f422524d2daa1036634ea60c5720992f1f2cacb0d3cd6087a
+implementation: sha256:284da582c790146b65d65076e197c86129562a46c20777f72ddbc5953a9ed05c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

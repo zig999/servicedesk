@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Derive the test dispatch outcome from the mutation instead of duplicating it
 summary: use-test-connector-panel.ts computes testOutcome from useMutation's own status/data/error at
   render/return time, calling mutation.reset() before every dispatch so a second call's outcome never

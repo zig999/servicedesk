@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability creation surface's abandonment split from its listing route
 summary: The creation surface now carries two separate controls in every phase — an abandonment that returns to the surface the authoring was reached from, or the capabilities listing where none exists, and an unconditional route to the capabilities listing.
 task: sha256:bf78a984bfe3c735767173b89d0981c0abbfbbdbfb180cef32a9888b5f7d1745

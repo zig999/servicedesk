@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Collection stage propagates its remaining budget into observe-concept
 summary: evidence-collection-stage.ts now hands its own seven-second-derived stage ceiling into observe-concept's
   remaining-budget field on its one production call site, completing the propagation the sibling task's

@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Discard a draft case version — proof
 summary: Sixteen behavioral tests over CaseVersionEditorScreen prove the Discard control's visibility
   gate, its slug-typed confirmation Dialog, the DELETE it issues, both terminal outcomes of that request,
   and the Dialog's own "Keep draft" control, against a self-contained router-and-fetch fixture confirming
   the slug prop threaded into CaseVersionEditorReadyView is live.
-implementation: sha256:e6925862ac9fd207f5bcba7a56f4ba904db5b29b7d3119ad00b0e1a1a4ad5c22
+implementation: sha256:e49f4d0624c85c78366e67c52a423d738fe122d2b6c55b20f57762ce3917e313
 run: run/version-editor-onda-5-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

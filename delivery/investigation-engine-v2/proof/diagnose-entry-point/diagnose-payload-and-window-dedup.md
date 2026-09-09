@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Diagnose payload shape and window dedup
 summary: Proves diagnose()'s own five criteria — requester refusal, completed-match reuse, in-progress joining, no-ticket-ref always-fresh, and payload-only sourcing of requester/ticket_ref — over hand-rolled fakes for the injected runFresh pipeline, plus direct unit coverage of the new DiagnosisRunRegistry and a structural/behavioral check against the UNDERDETERMINED note's persisted-status candidate.
-implementation: sha256:39261048ff20eaeb52c6b935e9363b53a9febb89f50f56973203f3366bc932d6
+implementation: sha256:4aa500f73cfd8f65bc7d70885717cf3a511147f2187979a6588a0a395316cc27
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

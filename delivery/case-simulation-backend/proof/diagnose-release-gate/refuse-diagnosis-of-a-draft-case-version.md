@@ -1,9 +1,10 @@
 ---
+target: backend
 title: proof — diagnose refuses a draft-state case version
 summary: Nine vitest tests across three files prove that a draft-pinned diagnose request is refused with
   CaseVersionNotReleasedError before the pipeline runs, that the error is registered in status-map.ts
   at 409, and that a released-pinned request proceeds unchanged, both at the unit level and on the wire.
-implementation: sha256:affada8fb67dd799abc91a25060d141d72ab944cdec4711b344ac45dc7c81b58
+implementation: sha256:e1d3ba64e419b1eb6ca473258fe519de1880705968afa3923cfc197618887fb5
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

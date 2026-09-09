@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for seed.spec.ts's tolerance of release-immutability already having made rows permanent
 summary: The file's own 12 it() blocks (11 pre-existing plus one added by work/seed-already-seeded-guard-hotfix's
   own proof pass), confirmed passing by a real, comprehensive install-through-suite run, against the task's
   four criteria.
-implementation: sha256:a9bbe587ac44302c7e8253067bed7ab69d2974d7e7d5e52b9cdda92bf8d84087
+implementation: sha256:dff5d28722b0f40464b097e52a602b8cbef87bb764705ec4d6fd5f24e726eb0a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

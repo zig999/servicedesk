@@ -1,7 +1,8 @@
 ---
+target: backend
 title: evidence-collection-stage's whole-subject passthrough, and its import-freedom
 summary: Adds two tests to the existing, unmodified evidence-collection-stage.spec.ts — a multi-attribute subject reaching every concept's observe-concept call whole and unfiltered, and evidence-collection-stage.ts importing no framework, driver or provider-client package directly — closing the two gaps the existing single-attribute fixture and the task's own UNDERDETERMINED note left open; criterion 3 needed no new test since the pre-existing, unmodified suite already exercises it against the canonical Subject shape.
-implementation: sha256:09ee980aec4ce7d8b7c070a0bbbe6a94d4d8b8b5abcf56039eb907b73f55e79b
+implementation: sha256:8990ab27773e94b2003bb18d48b588d728ad0bd6bf4943029cd273b625dea2f8
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

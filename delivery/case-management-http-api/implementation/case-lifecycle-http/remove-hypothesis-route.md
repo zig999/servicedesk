@@ -1,4 +1,5 @@
 ---
+target: backend
 title: DELETE /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}
 summary: A thin Fastify plugin, controller and Zod DTO exposing the existing removeHypothesis case-lifecycle operation over
   HTTP, mirroring discard-route's own empty-body convention.

@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for scope-to-fixture-names
 summary: The five rescoped it() blocks themselves, confirmed passing against the real database — including
   its own real, permanent leftover rows from store-wiring.spec.ts — by a comprehensive install-through-suite
   run.
-implementation: sha256:544c7a33249af5fde0c25afa755e0b50df0a7d73ca760d885df5070278c021f9
+implementation: sha256:3f4d0456d516df423c7429b2af82b57ac54ce42569e3802ad235f486631f9161
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

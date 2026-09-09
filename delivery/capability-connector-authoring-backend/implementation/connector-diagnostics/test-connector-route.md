@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose test-connector as a diagnostic HTTP route
 summary: Wires a new POST /v1/test-connector route, controller and DTO that resolves a named, already-registered
   capability, refuses it unregistered or connector-mismatched, assembles a subject from the request, issues

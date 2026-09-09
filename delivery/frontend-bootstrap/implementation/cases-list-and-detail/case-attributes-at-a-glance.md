@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case attributes at a glance
 summary: Adds a third "Attributes" view to Case Detail that reads the case's current version whole through
   read-case and renders one state-sensitive action, including an explicit refusal state distinct from

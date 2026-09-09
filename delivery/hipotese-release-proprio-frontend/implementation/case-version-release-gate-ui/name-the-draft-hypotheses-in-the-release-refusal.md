@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case-version release dialog already names every draft hypothesis a refusal reports
 summary: The pre-existing generic release-violations extraction and dialog rendering in the case-version editor already satisfy every criterion for the backend's new draft-hypothesis release refusal, so no frontend source change was required.
 task: sha256:bcffe03d9de4c27beb11d428c7c5056a6ec12fe10bb7d79d882495aee1615c79

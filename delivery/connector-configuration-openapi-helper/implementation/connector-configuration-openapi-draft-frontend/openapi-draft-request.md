@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Draft request hook for draft-connector-configuration-from-openapi
 summary: A new apiFetch-backed useMutation hook that dispatches a connector configuration
   draft request to the published draft-connector-configuration-from-openapi route
@@ -7,7 +8,7 @@ summary: A new apiFetch-backed useMutation hook that dispatches a connector conf
   standing beside a refusal.
 task: sha256:03b2de81d7f11f50684135a374205d5e1e07b64ca29b768eb8e27d1e13769413
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-openapi-draft-request-build-5
 files:

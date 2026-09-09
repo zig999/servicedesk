@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the New Draft origination flow
 summary: Twenty-one tests, across five files, proving Case Detail's "New draft" visibility rule, the blank form's subject pre-set, the POST /v1/cases request it issues, its switch into edit-draft-version's own PATCH flow addressed at the returned version with no follow-up GET, and the 409 CaseAlreadyHasDraftError toast-plus-redirect.
-implementation: sha256:37d869998af527675ca363de3be1d783fd227c7f32120c52411b5fd7a2843bdd
+implementation: sha256:e72a89102ee8ab11ffce57e02cfe8a2147d83509d609104d48b47643c5a3636e
 run: run/version-editor-onda-3-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

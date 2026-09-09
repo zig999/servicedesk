@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of the diagnose input-schema contract change
 summary: Coverage, specification-conformance and standard-conformance passes over the 8 tasks that make
   a capability's input_schema an enforced, well-formed contract, derive case-level input requirements

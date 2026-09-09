@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Concept field's visual emphasis in the capability form's shared field markup
 summary: Wraps the concept Select's existing FormField in TUI's Panel primitive (accent="alt",
   role="group"), titled "Emphasized field" rather than "Concept", so its container

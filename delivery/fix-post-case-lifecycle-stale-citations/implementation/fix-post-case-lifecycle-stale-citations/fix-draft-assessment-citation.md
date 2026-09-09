@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Fix draft-assessment-text.ts's stale case citation
 summary: Corrects the doc-comment citation for consolidationRegister in draft-assessment-text.ts from
   domain/knowledge/case to domain/knowledge/case-version, with no runtime change.

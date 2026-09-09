@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Shared placeholder-declared-by-its-capability check and cross-registry read ports
 summary: A pure check names every Subject-attribute placeholder a connector configuration's call text
   embeds that a capability's declared input-schema properties does not hold, and the capability and connector-configuration

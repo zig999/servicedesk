@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the production wiring swap
 summary: 'What proves task/http-observation-runtime/production-wiring-swap: the reconciled integration
   spec of the one wiring point the swap changed, observed at its two network boundaries, plus the env-schema
   tests over the retired variable — written against the implementation record that deferred exactly this
   reconciliation to this pass.'
-implementation: sha256:118ddf65219c386710763319ddf711f3c7f7af385892265f18e3545742ca4a62
+implementation: sha256:39ac739ae640d044a11f370391fe5f7008df42cf764dc9ba8973c6405f40b8f4
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

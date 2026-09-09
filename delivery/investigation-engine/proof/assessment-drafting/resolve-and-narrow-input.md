@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for resolve-and-narrow-input's outcome resolution and writing-input narrowing
 summary: Pins that resolveAndNarrow forwards the case's own resolve-outcome verbatim by declared precedence, narrows to the determining hypothesis's own evidence or to every evaluation's verdict and reason with no case body, never leaks a hypothesis's criterion or the case's when_to_use, and faults rather than fabricates on a missing evidence entry.
-implementation: sha256:a4457f3dccae71cdae13be8320189413e962f71953e4989b4c924bd8619c35e5
+implementation: sha256:9561913568498336dacb94821ace0e611467ade3206a0e02545953669fedbb2c
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

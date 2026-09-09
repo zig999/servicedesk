@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: The revision Select on the manifest row's Hypothesis cell
 summary: Replaces the manifest row's plain "hypothesisName · rev N" text with a controlled @tui/ui/select
   over that hypothesis's revisions, always showing the row's own pinned revision, disabling proactively

@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: configurationValid rejects a non-object JSON value, both on load and on edit
 summary: New tests over use-connector-configuration-detail.ts prove configurationValid now reads false for every syntactically valid JSON shape that is not an object (array, bare string, number, true, null), at both the moment a record loads and the moment the operator edits the field, and continues to read true for a genuine object at both moments — with the Save-disable and warning-banner reactions to that flag, and the three untouched units, confirmed by reading rather than by new tests.
-implementation: sha256:15e6ee7607075136cfc1c9864be48322ec5018fe3663a95a68111035134f698b
+implementation: sha256:a1bc7f492e40c80f4c4e8f4791160adab736eda8dc28623ebad3a377c6edd392
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

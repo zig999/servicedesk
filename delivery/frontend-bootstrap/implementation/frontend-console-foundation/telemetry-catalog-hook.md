@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Telemetry event catalog hook
 summary: A hook exposing the eight-event telemetry catalog as typed callables, each sinking through one shared emit() to a namespaced console.info call, with the PRH-01 departure disclosed inline where console.info is actually called.
 task: sha256:063530c488907df57e6cfc37f1dc7fcfab5aa94722e68d5f5ec13efe73e259e9

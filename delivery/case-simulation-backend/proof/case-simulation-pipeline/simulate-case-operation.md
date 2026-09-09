@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for POST /v1/simulate returning the complete record without writing an investigation
 summary: Unit tests against handleSimulateCaseRequest and createProductionSimulationRunner directly, plus a real-composition integration proof against createDiagnoseHttpServer, together proving every one of this task's eight criteria and excluding the UNDERDETERMINED cache-reuse implementation its own Notes name.
-implementation: sha256:13b8a25024d24451b0035586d3d3cacbf91f516a6d497b41c9e356e55e8a70df
+implementation: sha256:f31603075b38de83fd7521336b5913019f9eed0ff15a12d3d3ca956cb1ab27ca
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

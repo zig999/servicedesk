@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Resolve-outcome and collection-plan read precedence from position
 summary: case-resolution.ts's collectionPlan and resolveOutcome now order theCase.hypotheses by each one's
   own declared position rather than by the array's own arrangement, leaving requiresEvaluationOf and every

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: observation-source and its fake receive the subject's whole attribute-value set
 summary: fixtureKey in the fake adapter is rebuilt (and documented) as this task's own delivery — composed from concept, the subject's governed type and every attribute-value pair — replacing the disclosed compile-compatibility patch left by the dependency task, with the port interface's own doc comment now stating the same unfiltered-passthrough fact explicitly.
 task: sha256:ee2f69d6cc2667bdaab7a1558e1f4225fa761fc22743f774ec34efe1f72b87d1

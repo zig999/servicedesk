@@ -1,10 +1,11 @@
 ---
+target: backend
 title: HTTP surface for POST /v1/diagnose
 summary: Proves the six criteria of task/http-surface/diagnose-http-endpoint — request/response shape,
   freshness per call, ticket_ref optionality, header independence, and Fastify-only transport — split
   between a unit suite driving buildApp() with a stubbed pipeline seam and an integration suite driving
   the real createDiagnoseHttpServer over the real fixture case with only @anthropic-ai/sdk mocked.
-implementation: sha256:873cae714f9d47c3c5424632c8f43a4d81c28d905fb5842e9cf3aafe9748b406
+implementation: sha256:7af54509b134e5db009f9c4e02aae9ad907833517af2192efe4896681c0821dc
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

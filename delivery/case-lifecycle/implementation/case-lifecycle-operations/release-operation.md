@@ -1,4 +1,5 @@
 ---
+target: backend
 title: release operation
 summary: A ReleaseOperation composing the case store with the glossary and capability-registry ports to
   gate every release on the assembled version's own draft state and on parse-case-document.ts's and validate-case-coherence.ts's

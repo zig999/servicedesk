@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Confirm upsert-by-identity source guarantee; no behavior change needed
 summary: Verified RelationalCapabilityStore already implements upsert-by-identity and fresh-read reads
   (delivered by scope-write-to-identity), and clarified the readCapabilities docstring to state that guarantee

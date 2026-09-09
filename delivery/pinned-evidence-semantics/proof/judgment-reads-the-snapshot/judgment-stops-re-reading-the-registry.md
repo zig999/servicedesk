@@ -1,7 +1,8 @@
 ---
+target: backend
 title: "Proof that judgment stops re-reading the capability registry"
 summary: "citation-validation.spec.ts and judgment-stage.spec.ts are fixed to the narrowed shapes and extended to prove a citation's field is checked only against its own cited evidence item's snapshot, judgeHypotheses takes no capability-registry dependency, and a capability re-registered after collection cannot change an already-computed judgment."
-implementation: "sha256:f9896c5e560f637063e9b9e65aaa5be6ae9fcc3569301897f351810526436528"
+implementation: "sha256:84f68fc92cb77adfdd1881ec204d98b628cd3ac4d0de4167ac176f222033ab44"
 run: run/pinned-evidence-semantics-full-suite-final-2
 tests:
   - file: "src/__tests__/unit/investigation/citation-validation.spec.ts"

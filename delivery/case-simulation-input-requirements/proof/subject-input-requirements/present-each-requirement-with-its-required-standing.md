@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof that every requirement's input carries its own required standing and every asking capability
 summary: CaseSimulationSubjectPanel's requirement-rendering block is proved against required/optional
   marking, every asking capability's own identity and input-schema hint, the explicit empty state, and
   that the panel recomputes nothing of its own.
-implementation: sha256:6863b3b4b19510325c7845bfceec1f9004f82933c4059cb15f8230eb62f528c6
+implementation: sha256:46a50a018b104355e3a8d842f8a6fd0c1064b2f09cd86e844f5368ead6e3e710
 run: run/subject-input-requirements-derive-and-present-suite-2
 tests:
 - file: src/routes/case-simulation-subject-panel.spec.ts

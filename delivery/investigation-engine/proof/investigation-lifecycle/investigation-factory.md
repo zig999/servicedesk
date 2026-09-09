@@ -1,7 +1,8 @@
 ---
+target: backend
 title: The immutable investigation factory, proved
 summary: Fifteen tests over buildInvestigation()'s totality refusals (both directions, both rules), its replay pinning, its plain-value shape, its defensive copies, and the six files it and its sibling types add reaching no infrastructure.
-implementation: sha256:41272304a0547add8efefb95d114815e23bdbe61781b322fa7bbba883b39d6f3
+implementation: sha256:5effe3561280c1ff928243db1d63c6462f7f63baea1c3f12ef79f2dd23b5818e
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

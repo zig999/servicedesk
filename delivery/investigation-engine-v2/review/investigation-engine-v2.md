@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of investigation-engine-v2, the whole initiative as one change
 summary: 'Four passes over the 11 delivered tasks'' own file set: coverage finds 5 of 39 criteria uncovered or partial (mostly fitness-test files the pass was not given, plus two genuine cross-stage/documentation gaps); specification conformance finds 4 places source states or realizes a fact the specification does not quite back; standard conformance finds 4 departures (duplicated test-sweep logic, a hand-assembled schema, filesystem persistence, duplicated key-join logic); failures did not run because the captured run passed cleanly.'
 reviewed:

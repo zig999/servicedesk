@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/glossary/concepts route
 summary: Adds the thin Fastify plugin, controller and Zod DTO exposing IGlossaryQuery.listConcepts over
   HTTP, mirroring list-cases-route's already-delivered pattern.

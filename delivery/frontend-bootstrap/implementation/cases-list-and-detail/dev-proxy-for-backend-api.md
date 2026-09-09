@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Dev-server proxy to the real backend
 summary: vite.config.ts now declares a server.proxy entry forwarding /v1/* to http://localhost:3000, closing the CORS gap between the dev server and the real backend.
 task: sha256:80441c43d675160d631d093183114ce0c2a4a897f96de9ae682587ff1fcbe3c8

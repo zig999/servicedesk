@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: use-simulate-hypothesis hook
 summary: A new mutation hook dispatches the simulate-hypothesis operation of contracts/investigation/case-simulation
   for one named hypothesis of a case version and a subject, exposing exactly one typed evaluation and

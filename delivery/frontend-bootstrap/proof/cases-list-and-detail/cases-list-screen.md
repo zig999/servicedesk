@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the Cases List screen
 summary: Nine tests prove cases-list-screen's four criteria plus several of its own disclosed inferences (state-cell colors, zero-version handling, slug-only search, the inert Create-case button), rendering CasesListScreen inside a self-contained test router and QueryClientProvider with a stubbed fetch.
-implementation: sha256:87f7e45c5fc38ccf5ce952c06f86fff40772262df2b4749f613e57602d414604
+implementation: sha256:db92b4553ea75ff13a1c35ed029e8daa7eaea2aef96fc19070636e731add0ed6
 run: run/cases-list-and-detail-onda-2-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

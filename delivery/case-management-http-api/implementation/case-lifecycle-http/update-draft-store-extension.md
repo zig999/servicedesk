@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ICaseStore gains updateDraft, guarded by draft state
 summary: A new store operation that corrects a case version's own declared attributes only while it stands in draft,
   following discard.operation.ts's own read-whole-then-guard-then-write pattern.

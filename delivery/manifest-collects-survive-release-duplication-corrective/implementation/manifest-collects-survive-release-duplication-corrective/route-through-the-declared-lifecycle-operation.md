@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Route manifest-collects-survive-release.spec.ts's release fixture through releaseHypothesisRevision
 summary: releaseRevisionDirectly now calls the case lifecycle's guarded releaseHypothesisRevision operation instead of writing hypothesis_revisions.state with a raw SQL UPDATE.
 task: sha256:bd82409178eb3f905faa46c8a46506f71e8ec556fe33d8db0a7245ec7fc8f390

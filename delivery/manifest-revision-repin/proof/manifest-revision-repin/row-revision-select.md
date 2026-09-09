@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: The manifest row's revision Select
 summary: Proves the seven criteria of row-revision-select plus its own disclosed inferences and both UNDERDETERMINED
   gaps its Notes named, against the revised implementation.
-implementation: sha256:2ee5b602f0122298470cfeae9fff3d2431f8bab0fcbbb39574d79a3ab24d4dde
+implementation: sha256:0aa93f882f3094ec5306cbafe6fa042079cba9cb69b78c497395fd93190a408c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

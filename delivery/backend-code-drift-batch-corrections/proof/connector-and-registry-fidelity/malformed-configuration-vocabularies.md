@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Malformed-configuration vocabulary derivation, proven against the canonical
   lists
 summary: Proves the six criteria of malformed-configuration-vocabularies against http-declarative-observation-source.adapter.ts's
   httpConfigurationProblems, using the existing test suite in http-declarative-observation-source.adapter.spec.ts,
   plus two new tests closing the responseMap gap the task's second UNDERDETERMINED
   note names.
-implementation: sha256:384181531112ad6e5179d32450278876ed032fb88d570e84e0051bb325f58435
+implementation: sha256:f7749c66f38fe5629c27058618a6c4ffa3d2a359b2ef3b61abb5f1e00625b1f2
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:4050ccb93004dfd5a71749b73d5d0a5e09de427ccddf202095ecbd7e6db18898

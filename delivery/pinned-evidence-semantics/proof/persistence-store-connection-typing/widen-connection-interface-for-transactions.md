@@ -1,4 +1,5 @@
 ---
+target: backend
 title: runInTransaction and openTransaction retyped to IConnectableQueryable — proof
 summary: One new unit test drives runInTransaction (and, through it, the unexported openTransaction) with
   a value built directly to IConnectableQueryable's own two-member shape, with no DatabaseConnection cast;
@@ -6,7 +7,7 @@ summary: One new unit test drives runInTransaction (and, through it, the unexpor
   by the already-captured build's clean typecheck over the tree as delivered, covers the remaining compile-time
   criteria; the two criteria that need an actual execution are left unconfirmed, since this proof holds
   no shell and the one captured run for this task never ran the suite.
-implementation: sha256:a5f11e2320f9c1447cfcf4762346d20598ce06627f6982aca6939a9d46839fa7
+implementation: sha256:6ac7d27312fa047ed9d200ea2ab43a249e4edb572b7b9845dbe931a6dd9e355e
 run: run/persistence-store-connection-typing-widen-interface-suite-2
 standard:
   at: ../standards/backend-node-service.yaml

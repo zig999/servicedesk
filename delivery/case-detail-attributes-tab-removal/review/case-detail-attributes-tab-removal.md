@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of Case Detail's Attributes tab withdrawal
 summary: 'What four passes found over the three tasks of epic/case-detail-attributes-tab: coverage over
   their 31 combined criteria, specification conformance staged over every trace binding, the project''s

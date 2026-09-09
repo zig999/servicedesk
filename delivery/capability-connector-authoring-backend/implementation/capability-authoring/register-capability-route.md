@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose register-capability as a write HTTP route
 summary: A PUT route that creates or replaces a capability, enacting the registry's contract-completeness,
   read-only-nature, one-concept-one-capability and new schema-well-formedness refusals.

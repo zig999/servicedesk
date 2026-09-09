@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Proof for the shared JSON beautify/minify textarea control
 summary: Thirteen tests against JsonTextareaField and getJsonTextareaMinifiedValue, proving all five stated
   criteria plus the implementation's own disclosed inferences.
-implementation: sha256:c8174b220f678c876f6118f36419695ad528c4d2b4d146f8c3349196f9339350
+implementation: sha256:83be48839fc51bd52b466638126181c87dd622cc776bbd50195dc293ad45bd15
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

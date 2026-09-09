@@ -1,4 +1,5 @@
 ---
+target: backend
 title: evidence-collection-stage's subject passthrough is already unfiltered
 summary: Verifies, with no source change, that evidence-collection-stage.ts already dispatches every concept's observe-concept call with the whole canonical Subject by reference, unfiltered, satisfying all three of this task's criteria through the two dependency tasks' already-delivered propagation.
 task: sha256:84e0a81b78fbb35582291c2eb15ed7161f9856d0eff4a8115083009d6584e0ab

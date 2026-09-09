@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the reusable StatusTable component
 summary: Twelve render-based tests over StatusTable cover header/row/cell projection, missing-field tolerance, click and keyboard activation scoped to the exact clicked row, inert-row semantics, and the status-value color indicator's presence and absence.
-implementation: sha256:6129855a436592bb3b7b8b4ad1368f73019d70b74c34a639b72cd56105ef239d
+implementation: sha256:724920d394d15f3db118bd0e5dde95f678cdcbf1d4465eba92416ea8c2cf6c30
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

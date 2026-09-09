@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Widen GlossaryVocabulary to accept subject-attribute
 summary: GlossaryVocabulary gains "subject-attribute" as a fifth member, letting useGlossaryVocabularyOptions
   request GET /v1/glossary/subject-attribute through the same {value, label} mapping already used for

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Group Name, Version and Nature into one row
 summary: CapabilityFormFields now wraps Name, Version and Nature in one grid grid-cols-3 gap-4 row instead
   of Nature sitting in its own row beneath a separate Name/Version flex row.

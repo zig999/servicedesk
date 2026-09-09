@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for DELETE /v1/cases/{slug}/versions/{version}
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createDiscardRoutesPlugin plus the shared
   error handler, that a valid delete removes a draft version and answers a wholly empty 204, that an already-released version
   and an unknown slug/version are each refused with the status status-map assigns, and that path validation runs before discard.
-implementation: sha256:32a8fbbaafbec8f1333be4250c690d79b362f15892514a41357c1e157d12c5f2
+implementation: sha256:3bbf37bfae61289cc68b71f4fe7bf8e1bc9b6e9b29c2415a7247e543d0a56638
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

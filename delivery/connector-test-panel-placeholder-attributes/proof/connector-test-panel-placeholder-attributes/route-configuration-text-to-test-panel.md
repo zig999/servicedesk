@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Proof for routing Configuration text into the test panel's hook
 summary: Three new spec files prove configurationText reaches useTestConnectorPanel through both production
   call sites, by reading what each seam actually received back off the DOM rather than recording a call.
-implementation: sha256:6112d0c31689f634e6745d67db9f7bd1080063db296796b2050fe201141ff116
+implementation: sha256:f6b82d59fbe96ad904c75f8e4b9ac578e66ef2f523c78fdc3faba2c70f8e09a7
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

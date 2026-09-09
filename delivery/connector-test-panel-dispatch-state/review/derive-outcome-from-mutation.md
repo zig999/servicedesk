@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Derive outcome from mutation, review
 summary: What four passes found over the STA-01 corrective task that replaced testOutcome's
   own useState with a value derived from the mutation object.

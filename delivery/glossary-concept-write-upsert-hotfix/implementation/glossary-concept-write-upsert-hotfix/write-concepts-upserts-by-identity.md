@@ -1,4 +1,5 @@
 ---
+target: backend
 title: writeConcepts upserts concepts by identity instead of deleting the whole table
 summary: RelationalGlossaryStore.writeConcepts now upserts each given concept into "concepts" by its own name and reconciles "concept_accepts" scoped per concept, instead of deleting both tables whole, so PUT /v1/glossary/concepts/:name no longer 500s when some other concept row is permanently referenced by capabilities, investigation_evidence or investigation_evaluation_citations.
 task: sha256:1b0564c31a9dc346f19f49a7e8a43f443dacee56ae468e6b1ffe85ecca3f4e8b

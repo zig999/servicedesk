@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the case aggregate's new declared shape — authored_at, position, no hash
 summary: Eleven new or rewritten tests in parse-case-document.spec.ts prove authored_at and per-hypothesis
   position arriving and being required, hash gone from the aggregate, and the two new uniqueness/refusal
   paths this brings; twelve pre-existing test files broken by this same legitimate shape change were brought
   back into agreement with it, with no new behavior invented.
-implementation: sha256:1cf03149a8d9bfa04e4cc2bbd446f665a68d269d5d4c40422bd90455dd6c8943
+implementation: sha256:3e2392c5272b43c3104d132721009f6cf3b9e6e986fa3424af4e3a5822a5ed37
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

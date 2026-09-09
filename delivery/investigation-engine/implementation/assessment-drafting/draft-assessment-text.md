@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Draft the assessment's text from the narrowed input
 summary: Adds the Assessment value type and a pure, deterministic, template-based draftAssessment(resolved, narrowedInput) that copies outcome/referral/determining_hypothesis from the resolved outcome unchanged and drafts text from the narrowed input alone.
 task: sha256:cbfc2ea00b4c0681528735687632988db7c74d44ac78d87587abc1a9fc8999f5

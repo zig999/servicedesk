@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Repin offer conditioned on whether the save moved the draft's pin
 summary: The hypothesis-editing screen's success surface now offers the manifest-builder step only where
   the revision the save answered differs from the revision the draft's manifest entry pinned going into

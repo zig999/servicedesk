@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/glossary/{vocabulary}/{name}
 summary: A thin Fastify route, controller and Zod DTO exposing the existing read-vocabulary-term glossary-query
   operation over HTTP.

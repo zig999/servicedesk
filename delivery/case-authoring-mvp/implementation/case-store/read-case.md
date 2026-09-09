@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Read case — the knowledge context's published case-query composition
 summary: Composes the versioned JSON file store, the case document model, and the coherence validator into read-case and replay-case, so a case answers whole and pinned by content only while every validator rule holds now, refusing otherwise with all violations named together.
 task: sha256:f3294caaedbb0421b3adbb0cd439023a663192e645359139b54c838c2899d99a

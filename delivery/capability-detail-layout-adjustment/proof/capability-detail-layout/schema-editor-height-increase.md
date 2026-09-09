@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for the capability schema editors' height increase, scoped away from connector-configuration
 summary: Four tests proving JsonTextareaField's opt-in tall prop raises the capability form's input-schema
   and output-schema fields to 200px/12.5rem while leaving the connector-configuration form's configuration
   field and the component's own default at 160px/10rem, each asserted on the rendered Textarea's className
   at the call site the criterion names.
-implementation: sha256:c0c4eecad336dda6615f6f29234094c403405ba1a662bf882befc211fe36be15
+implementation: sha256:93b110b5fd97d18370993d8a03c6b3e47648a3ef042ee1a14cf0d685f9b0a7bb
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

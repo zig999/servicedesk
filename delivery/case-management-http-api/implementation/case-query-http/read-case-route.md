@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/cases/{slug}/versions/{version}
 summary: A thin Fastify route, controller and Zod DTO exposing the existing read-case domain operation
   over HTTP.

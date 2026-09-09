@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Replay resolves a pinned case by slug and version, without validation or a digest
 summary: case-query.service.ts's replayCase now answers a bare Case trusted from the exact stored document,
   running neither the structural nor the coherence validation the ordinary read runs and never reading

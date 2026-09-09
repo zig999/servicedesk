@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The idempotency-window lease mechanism
 summary: A subject-type/subject-id/case/ticket-reference key, an in-memory key-and-instant lease store bound to a configured window, and a pure composition that tells a caller which of completed, in-progress or free applies — with no built Investigation and no wiring into a real diagnose entry point.
 task: sha256:d5b7ba4a97d1f22a116a4d84dfa3e8772deaf50d43ea91a3bd645752f7b3ca2d

@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Glossary Browser screen proof
 summary: Tests proving the six-tab, read-only Glossary Browser at /glossary — its listing, formatting,
   loading/error/empty and no-control criteria across all six tabs, tab-switching, the new use-glossary-concepts
   hook, and the repaired route-tree wiring.
-implementation: sha256:66a2f704e0a4283de33ed5d530767e1b429cf08a4f36c224025c9fb8401f6595
+implementation: sha256:4e22611e6605583f09812e9fee23a9eef0c4a1abff768749f55e7ca5b31fbeea
 run: run/glossary-and-capabilities-browser-onda-6-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

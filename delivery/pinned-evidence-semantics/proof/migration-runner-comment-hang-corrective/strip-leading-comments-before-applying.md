@@ -1,11 +1,12 @@
 ---
+target: backend
 title: applyMigrationFile strips comments before applying, and vitest's testTimeout
   raise — proof
 summary: Six new unit tests over migration-runner.ts prove the comment-stripping behavior
   across four criteria (plus two pre-existing, unmodified integration tests cited
   as the replay-fitness proof); two new meta-tests over vitest.config.ts's own source
   text prove the testTimeout raise and the corrected fileParallelism comment.
-implementation: sha256:f65e9062e9c52fbfa142684733e71a04fcf196ffc4b2c172f3f917faa49533f3
+implementation: sha256:3c1837947e2a446e5be91563a26b3e99694139835b05e70705f29de440d8bf7f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

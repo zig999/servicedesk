@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of revise-hypothesis-subject-check-corrective
 summary: 'Four passes over the two files task/revise-hypothesis-subject-check-corrective/read-the-drafts-own-declared-subject delivered: coverage of its three criteria, per-file specification conformance folded into siegard-reconcile/revise-hypothesis-subject-check-corrective.md, the backend standard''s reading rules, and the whole-suite run, which passed clean.'
 reviewed:

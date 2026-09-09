@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Guard proof for diagnose-persistence-deadline-e2e.spec.ts's routed release fixture
 summary: Confirms the existing deadline test still passes unchanged and adds a self-contained test proving releaseRevisionDirectly routes through the guarded lifecycle operation rather than an unguarded write, by exercising the refusal a raw SQL UPDATE could never produce.
-implementation: sha256:164390edbe77cc25e5d7b37f6c5c80b5c4acef7b64871546cfdcfc67884d27f8
+implementation: sha256:78448793f89e8a2d8ec51560c13cd49d9a3cab2d508fc6055c305839f1344ff7
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

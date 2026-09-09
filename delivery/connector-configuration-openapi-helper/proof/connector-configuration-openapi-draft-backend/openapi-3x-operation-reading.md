@@ -1,4 +1,5 @@
 ---
+target: backend
 title: OpenAPI 3.x operation reading -- version gate, refusal shapes, and the anti-corruption
   reader's output
 summary: Proves the version-gate refusals, the operation-not-found refusal, their
@@ -6,7 +7,7 @@ summary: Proves the version-gate refusals, the operation-not-found refusal, thei
   field names and security schemes exactly as an OpenAPI 3.x (or equivalent YAML)
   document spells them, for both its stated criteria and the notes' underdetermined
   and inferred decisions.
-implementation: sha256:1faa7e0bea47edc84a50fd1130387fec818f2dc76d42833777f0fcf2c273e085
+implementation: sha256:3644212971127fb57c5ccc3e60d18d503192e30bdf0ff26d5def8d5bc0ff8acc
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

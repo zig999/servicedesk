@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for the concept create/edit form on the Glossary screen's Concepts tab
 summary: Three spec files mounting GlossaryBrowserScreen end to end prove the "New concept"/"Edit" actions,
   the required accepts multi-select, ttl's own client-side requirement, the register-concept PUT for both
   create and edit, and the disclosed inferences (name disabled while editing, no new error-ui-state entry,
   accepts as a Checkbox group, ttl required with no default).
-implementation: sha256:433341f2c2220ab749a2fa59c2e32ba15e18334c27b5c049bb447de2bf45c20a
+implementation: sha256:4d5a403fceccb3646332429efa90c382d706b4d4a4e889cb7229546280238612
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

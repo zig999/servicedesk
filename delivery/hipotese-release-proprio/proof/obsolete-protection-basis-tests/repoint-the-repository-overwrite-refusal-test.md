@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Repointed overwrite-refusal test proof
 summary: The relational case store repository spec's two overwrite tests — the pre-existing sibling asserting
   refusal from the revision's own released state, and the repointed test asserting no refusal from a manifest
   reference alone — together satisfy every stated criterion, and a full suite run against the file passed.
-implementation: sha256:1dd49255c85a12778138406053c83d63b7f0602babd7b3eee97ebd0f5237b190
+implementation: sha256:f5eb9dbad42903b6f95e5ed295d73777f685a8a570532db91a46eb648505d062
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

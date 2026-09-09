@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of manifest-hypothesis-authoring onda 4 (3 delivered tasks)
 summary: 'Four-pass review of the 3 delivered manifest-hypothesis-authoring tasks: coverage over their
   28 criteria, specification conformance, standard conformance, and the failures pass (which did not run

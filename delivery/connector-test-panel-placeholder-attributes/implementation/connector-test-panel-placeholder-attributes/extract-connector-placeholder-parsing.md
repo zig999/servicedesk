@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Extract the subject-placeholder token grammar into a shared, feature-neutral module
 summary: The placeholder regex, the kind/argument split at the first ':', and the subject-kind filter
   move out of simulation-subject-derivation.ts into a new shared/services/ module that file now composes,

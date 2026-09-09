@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the schema built by numbered scripts under migrations/
 summary: Twenty-three tests, run against a real PostgreSQL database, that replay the six scripts onto
   an empty schema, round-trip every aggregate's required attributes, hold exactly the five nullable columns
   nullable, enforce each of the five enumerations, enforce the four unique keys, and hold a stored case
   version immutable under an ordinary UPDATE.
-implementation: sha256:a6fb2f1684ba2316f894902ba869496f5275ce58c276e6a5f96f01ae015606ab
+implementation: sha256:10d117c60ad6ec42781e95bc8e1fcb48865719c1feb78f24d743d46d3b2248e7
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

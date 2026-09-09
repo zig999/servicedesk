@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Off-page pinned-revision-state resolution, proven at both presentation surfaces and in the shared hooks beneath them
 summary: Proves that a manifest entry's pinned-revision-state badge and table cell resolve the pin's own state across every page of its hypothesis's revisions listing on both the version-manifest builder screen and the case-version editor's released-view table, and that the pending/failed/resolved windows stay distinct and correctly attributed to their own entry whichever read (default or off-page) is still outstanding or has failed.
-implementation: sha256:d2da192b43be93efc0fe5f3ffea426817161b8f1982edcb1fbcfcedefe74f308
+implementation: sha256:1735262138f6d9698ed3690a49e832963baff595d19c3226ce19d9282982e7bd
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

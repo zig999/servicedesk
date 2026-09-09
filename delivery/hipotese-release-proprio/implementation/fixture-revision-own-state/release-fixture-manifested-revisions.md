@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Give the canonical fixture and seed setup's manifested revisions their own released state
 summary: The shared fixture builder, the production seed script, and the ad-hoc case built by manifest-collects-survive-release.spec.ts
   now directly write each manifest-referenced hypothesis-revision's own state to released right after

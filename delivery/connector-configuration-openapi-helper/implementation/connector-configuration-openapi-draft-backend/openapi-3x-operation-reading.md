@@ -1,4 +1,5 @@
 ---
+target: backend
 title: OpenAPI 3.x operation reading -- the version gate and the anti-corruption reader
 summary: A pure reading module parses a fetched OpenAPI document as JSON or YAML,
   gates its declared version, locates the named path-and-method operation, and exposes

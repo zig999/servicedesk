@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for tolerate-permanent-outcome
 summary: Fixes the two hand-written IGlossaryStore stand-ins to typecheck against the new insertMissingTerms
   member, then adds unit tests proving GlossaryService.withNonConclusionOutcomes no longer throws when
   some other outcome is permanently referenced and behaves exactly as before in the ordinary cases, plus
   one integration test proving RelationalGlossaryStore.insertMissingTerms itself tolerates the real permanently-referenced
   rows this shared database already holds.
-implementation: sha256:1607f8e5a8691ebf5f12c86461b85ce4728836a1d47286ba8cb61be2a93f2844
+implementation: sha256:1fa836d84cddcdd94dbc5b3e61c885c17037b605ed2d0085f5e95e391f0c2925
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

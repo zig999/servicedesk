@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Diagnose pipeline composition
 summary: A new composition root, run-diagnosis.ts, wires collection, judgment, resolve-and-narrow, drafting and persistence into one synchronous, deadline-bound run over an already-resolved case/subject/narrative, backed by two new factory files and a new persistence-deadline error.
 task: sha256:9f4624777f24f476807a3acbf12d694bb5441edb0e19641946a09bc8f5e3465b

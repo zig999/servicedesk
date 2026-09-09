@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Generated-credential placeholder generation proof
 summary: Every credential-reduction, placement, collision, name-composition, non-reducible
   and empty-input path of generateCredentialPlaceholders is exercised against observed
   output, alongside parameterDisplacedByCredential's scheme-versus-parameter collision
   helper.
-implementation: sha256:90d56f757dcbe2ea5308e27ad09b735f941c4d04385807ed904eb60b0bdbb79d
+implementation: sha256:ee8d242713cacb81358879d80e395f4d282085138139355f913e8a3619d39e07
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

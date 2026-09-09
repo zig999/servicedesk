@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for making the connector Test Panel's Attribute field read-only
 summary: Proves the Attribute field renders disabled/read-only carrying no onChange while the Value field
   stays editable, that it still displays the reconciled name, and that a dispatched change event on it
   has no effect.
-implementation: sha256:f79315fc1f161b92c6be6bac167ff92a262a31bfa5575e3c653c9ecade053c88
+implementation: sha256:6dc92d68141494ffd6e15c3b9de0714784b20a54d951ceca2e503617cc8d556f
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

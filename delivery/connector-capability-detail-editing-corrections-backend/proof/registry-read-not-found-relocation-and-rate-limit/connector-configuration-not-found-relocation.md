@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Connector-configuration not-found relocation — service wrapper and controller delegation
 summary: Proves ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow's two branches and that handleReadConnectorConfigurationRequest performs no held-check-and-throw of its own, delegating entirely to that wrapper.
-implementation: sha256:407b8a1ef6fdf7771b33fe0cfafbc180b59d50fb5e992edbcd0ee6f6b137db2d
+implementation: sha256:965ea0f70db9088b66f0a8436b22096c2fb8c26a9a3df04b994c80b02e1b0ed8
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

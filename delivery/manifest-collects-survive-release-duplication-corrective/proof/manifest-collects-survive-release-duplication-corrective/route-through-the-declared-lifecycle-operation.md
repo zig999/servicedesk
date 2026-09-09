@@ -1,7 +1,8 @@
 ---
+target: backend
 title: releaseRevisionDirectly routes through the guarded lifecycle operation
 summary: Adds one new test to manifest-collects-survive-release.spec.ts proving releaseRevisionDirectly now enforces the case lifecycle's draft-only release guard, and cites the file's two pre-existing, unmodified tests as the proof that its own suite still passes unchanged.
-implementation: sha256:b4fb7b1c39e1d748d1630ca0bba52644b4c63b5353fdb9473a25458ee9cd0dc8
+implementation: sha256:9a932e24ab2da766f85fa64e902d14e040c99a89b04b0f5be0244456e4ca7c6d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

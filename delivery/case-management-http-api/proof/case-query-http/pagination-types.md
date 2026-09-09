@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Compile-time proof for the shared pagination types
 summary: Proves PaginationRequest and PaginatedResponse<T> in src/types/pagination.ts carry exactly the
   fields the task's two criteria and the implementation's two disclosed inferences state, using vitest's
   built-in expectTypeOf and @ts-expect-error rather than any runtime assertion, since the module is pure
   types with nothing that executes.
-implementation: sha256:e08244632862c0e95b872259be009725a4c595d4158cbf74dcd73fa4e4c6c8ac
+implementation: sha256:be9cdd534526b37a7fc933abab8700b2600cc86a531d75f839d92d357ff85421
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

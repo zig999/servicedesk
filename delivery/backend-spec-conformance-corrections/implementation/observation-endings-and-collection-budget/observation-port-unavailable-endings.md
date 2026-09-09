@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Observation port and HTTP adapter answer unavailable endings instead of throwing
 summary: Widens ObservationOutcome with an optional result_detail and rewrites the four raise sites of
   HttpDeclarativeObservationSource observe-concept to answer unavailable data instead of throwing, issuing

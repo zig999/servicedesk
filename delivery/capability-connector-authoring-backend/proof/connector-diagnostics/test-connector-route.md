@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Proof for the test-connector diagnostic route
 summary: app.inject tests against createTestConnectorRoutesPlugin() with mocked reads and a stubbed HTTP
   client, proving all seven criteria of task/connector-diagnostics/test-connector-route.
-implementation: sha256:1469f7ba4b71565a5f7cda68fc85f208bc2eda9f1445de62be1f525de962a8ad
+implementation: sha256:56bb761989d9bc823de94cba62eb33da2efddd2a5b010a2786b379fbe15a61f1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

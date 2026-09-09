@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Release a draft case version — proof
 summary: Tests proving task/version-editor/release-draft-version's eight criteria and its disclosed inferences,
   written against use-edit-draft-version-form.ts and case-version-editor-ready-view.tsx without touching
   either.
-implementation: sha256:bd095e3bc4cb057ba14da64a303c1e9083e81d6f1e6029dca2e72a5aa2594b36
+implementation: sha256:55dbf29621a6d0d69cae3872605ba7d356f383563ddf58467a2e3d3d00970b4d
 run: run/version-editor-onda-5-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

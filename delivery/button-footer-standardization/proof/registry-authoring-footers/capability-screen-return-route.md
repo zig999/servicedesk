@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Capability screen return route proof
 summary: The three specs still querying the removed Back to capabilities link are rewritten against the footer's Cancel control on every phase it now appears on, closing the task's one criterion the implementation could not satisfy alone without dropping any phase's route coverage.
-implementation: sha256:3b0fdec5f25ccf1863704a0b5451e2e2efe926773cac652d688399712b6169fc
+implementation: sha256:1f8c97ef8a0e0146beac2aa9efe9c7d2ed6f7842207216f8b3b8db24a8ad2c77
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

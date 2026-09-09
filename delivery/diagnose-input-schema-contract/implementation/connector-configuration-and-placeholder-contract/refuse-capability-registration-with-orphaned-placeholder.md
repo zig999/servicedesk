@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Refuse register-capability when its connector already holds an orphaning configuration
 summary: registerCapability now refuses a capability registration whose named connector already
   holds a registered configuration embedding a Subject-attribute placeholder this registration's

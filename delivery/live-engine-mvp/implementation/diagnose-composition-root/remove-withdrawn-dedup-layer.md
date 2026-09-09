@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Remove the window-based dedup layer the specification withdrew
 summary: diagnose.ts and its idempotency/lease/registry siblings, and their own five spec files, are deleted;
   nothing else in the tree references them.

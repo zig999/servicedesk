@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Run-diagnosis persistence deadline hotfix, first review
 summary: What four passes found over the persistence-deadline-uses-remaining-time-and-retries delivery
   — run-diagnosis.ts's stage-bound/retry/id-settlement fix, status-map.ts's new HTTP 500 mapping, and

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Every async UI update is announced to assistive technology (ACC-07)
 summary: Adds an aria-live or role="alert" announcement to each of the four screens whose visible-only
   state change previously gave no signal to a screen-reader user, reusing this codebase's own established

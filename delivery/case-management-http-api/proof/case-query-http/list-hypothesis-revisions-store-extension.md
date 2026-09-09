@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Store-level proof for listHypothesisRevisions
 summary: Integration tests over RelationalCaseStore proving listHypothesisRevisions returns every revision
   of a named hypothesis, paginated, and refuses an unknown slug or hypothesis name through CaseNotFoundError.
-implementation: sha256:05b6d07e292e5a532209d11fcd711c1be6c2c38d869addcab5dd3b1116e9a5ed
+implementation: sha256:ef298d04b260089a7f6a4cc2bb28440043850bae07b957c45e62b956daea8f90
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

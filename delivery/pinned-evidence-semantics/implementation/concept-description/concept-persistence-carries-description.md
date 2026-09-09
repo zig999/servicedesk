@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Concept persistence carries a description, tolerant of a legacy row
 summary: A new additive migration adds a NOT NULL DEFAULT '' description column to
   "concepts", and RelationalGlossaryStore reads and writes it, so a concept row stored

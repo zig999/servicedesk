@@ -1,4 +1,5 @@
 ---
+target: backend
 title: connector-configuration-openapi-draft-backend review
 summary: Coverage, specification-conformance, standard-conformance and failures passes over the 8-task
   connector-configuration-openapi-draft-backend epic's 33 files -- the backend half of the connector-configuration-openapi-helper

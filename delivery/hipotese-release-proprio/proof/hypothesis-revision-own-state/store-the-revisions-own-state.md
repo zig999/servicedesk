@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Store the hypothesis-revision's own state — proof
 summary: Integration tests over a fresh migration replay and over ReviseHypothesisOperation's own write
   path, proving the state column exists, is CHECK-constrained to draft/released, is not nullable, defaults
   draft for a row this migration did not create, and is written draft on insert while left untouched on
   overwrite.
-implementation: sha256:84601799624d6cce8d2dd4fdc25b80ed2d94e62e3b827647a6716e547915abea
+implementation: sha256:6343be0034bd04b782f359cef47b44ba2c306584b4a22a631ff49cd3a9fe9cc5
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

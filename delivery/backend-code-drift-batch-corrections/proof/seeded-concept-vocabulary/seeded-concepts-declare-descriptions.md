@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Seeded concepts declare a description, proven at the fixture, the source and the seeded row
 summary: Property tests over the concept fixture, the seed script's own source, and a real Postgres run
   prove every seeded concept carries a non-empty, fixture-sourced description that restates neither the
   case's hypothesis criterion nor its resolution.
-implementation: sha256:ab1d9821e72effcf0c9630a2de71507f18a5705681f7ca7e89439d9e1bcd9e11
+implementation: sha256:59d791494d799fc489e07a1f7327f4187c7202900d7d43d22f6d1660c5b75532
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:4050ccb93004dfd5a71749b73d5d0a5e09de427ccddf202095ecbd7e6db18898

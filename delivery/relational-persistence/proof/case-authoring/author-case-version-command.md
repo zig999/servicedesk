@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Proof for the author-case-version command
 summary: Unit tests over fake ICaseStore/IGlossaryQuery/ICapabilityQuery ports prove AuthorCaseVersionService
   parses, coherence-checks and stores exactly the parsed case, refusing once with every violation named
@@ -9,7 +10,7 @@ summary: Unit tests over fake ICaseStore/IGlossaryQuery/ICapabilityQuery ports p
   assertions in RelationalCaseStore's own sibling specs, which expected the generic CaseStoreError for
   a duplicate (slug, version) this task's own criterion 2 now distinguishes into CaseVersionAlreadyStoredError,
   are corrected in place.
-implementation: sha256:c8e53eeedcb27b8119cfcda03a33c8ffa8c839db559a3fc42c2724571537c9e0
+implementation: sha256:ff6c83cb2eaac977afff3d0cf22351694ca86a4323d67132c50b85dde5ef6abc
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

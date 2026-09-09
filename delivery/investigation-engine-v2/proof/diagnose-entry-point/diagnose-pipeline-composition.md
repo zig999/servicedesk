@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Diagnose pipeline composition
 summary: Proof for run-diagnosis.ts, composing an already-resolved case/subject/narrative through collection, judgment, drafting and persistence, proving the composition's six criteria against fresh fakes for every port it wires — and one documented, non-executable disagreement over a total-deadline requirement the delivered composition does not actually meet.
-implementation: sha256:b044311a193ebb7909f4327efd565e3ccfa271c7d2e04f750198202fa8df37fe
+implementation: sha256:35cea65d36d7337d44de625f712548b0a9e80430da0c90aa5507bd1e94ce8b0c
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

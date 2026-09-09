@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Error class to UI-state mapping table
 summary: A new src/services/error-ui-state.ts module resolving an ApiError's code, keyed off the exact ten mapped and four unmapped class names in src/src/errors/status-map.ts, to a closed set of UI-state tags with no rendered wording.
 task: sha256:2115eb56b62474b8fd64ba3125f3d54d76e565bdaba31a8febe6e7e0360e54cc

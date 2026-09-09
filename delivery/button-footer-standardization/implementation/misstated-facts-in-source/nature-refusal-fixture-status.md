@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Nature-refusal fixture corrected to HTTP 422
 summary: The one stand-in in the frontend suite that built CapabilityNotReadOnlyError with a status now carries 422, the value rules/integration/a-capability-is-read-only states.
 task: sha256:57e82a099b998d6d207d06d3cb10d2c7d459c9e0b97edbc5ea3856c181f3ff49

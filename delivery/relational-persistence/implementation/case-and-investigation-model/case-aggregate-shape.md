@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The case aggregate carries authored_at and position, and no hash
 summary: Case loses hash and gains authored_at, Hypothesis gains a declared position, and the structural
   validator collects every violation of the new shape in one pass, exactly as it did before.

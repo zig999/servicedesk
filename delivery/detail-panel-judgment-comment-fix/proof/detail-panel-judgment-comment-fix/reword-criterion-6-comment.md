@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Proof for reword-criterion-6-comment
 summary: Proves case-simulation-detail-panel.tsx's own Criterion 6 comment now separately attributes usage/elapsed_ms/prompt
   to domain/investigation/evaluation and model/prompt_version to domain/investigation/investigation, no
   longer groups the four as one "judgment" set, and that this rewording changed no executable code --
   following the same source-text-reading convention cases-list-screen-comment-cites-the-current-nodes.spec.ts
   already established for a comment-prose criterion.
-implementation: sha256:b025558c64f1fb962521d88a1a86199cc0887e1d2ab2d331ba3c62d840c9e13e
+implementation: sha256:8377b12098a149c67c1f04bb1056213610e9b59e338e0dc8d9500be172738191
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

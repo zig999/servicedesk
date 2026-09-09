@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Register-connector maps a missing connector name to its stated refusal
 summary: IncompleteConnectorConfigurationError is added to the shared status map so an absent or empty
   connector name is answered with HTTP 422 instead of the registry's unmapped 500 default, for task/connector-configuration-registration-conformance/incomplete-name-refusal-status.

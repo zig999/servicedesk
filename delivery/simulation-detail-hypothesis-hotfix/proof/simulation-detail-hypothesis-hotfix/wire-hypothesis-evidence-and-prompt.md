@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof that a single-hypothesis simulation's evidence and prompt reach the Detail panel
 summary: Three spec files prove the fix at three levels -- the composed hook, the adapters, and the rendered
   Detail panel -- covering all seven criteria of wire-hypothesis-evidence-and-prompt, including the case-sourced
   non-regression criteria.
-implementation: sha256:39b3c1dd8c84d0f5ec9b0c8a885487c78999bb5aedb4f96a7d0700a67d5ea7a9
+implementation: sha256:c0b30c1a709181793a2e520e06b22880f420413f255487784472d23eefae909e
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

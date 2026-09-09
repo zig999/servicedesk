@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Test fallout from retiring the case file-medium slug convention
 summary: Fixes the five test files broken by parseCaseDocument's fileName-to-slug signature change and
   CASE_DOCUMENT_ENDING's removal, removes the one test that exercised the retired slug-equals-file-name
   refusal, repurposes another into a genuine proof of the new no-equality-check behavior, and adds one
   test closing criterion 2's previously untested claim.
-implementation: sha256:bbd2196694a62e6b0ad27f51d9b1ed0bd57ca67e2fbec4d436f4f61278ed0b0d
+implementation: sha256:0f1d8233cb2f01b70094286c28ba94e15435ac980d3f478f93a3779bdab2f5b8
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

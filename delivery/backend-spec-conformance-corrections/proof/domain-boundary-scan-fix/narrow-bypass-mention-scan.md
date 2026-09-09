@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Bypass-mention scan's specification-node exemption, proven directly against its own extracted logic
 summary: Byte-extracts and compiles the ninth test's new HTTP_CONNECTOR_MENTION/everyHttpConnectorMentionIsANodeIdentityCitation
   logic from domain-depends-on-no-infrastructure.spec.ts and exercises the real, deployed function against
   the actual observation-source.port.ts citation and against synthetic real references, proving both criteria
   of task/domain-boundary-scan-fix/narrow-bypass-mention-scan without reimplementing or exporting anything.
-implementation: sha256:9d15263498a679409b58fa5b6e20275d45b212dbd46b4239b029c634506580a1
+implementation: sha256:f121a7c66639ef08f54da6887b108566eecf320bf94ecd0df949f3cd7a4af7e0
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

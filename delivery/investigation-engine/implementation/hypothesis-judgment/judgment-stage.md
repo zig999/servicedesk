@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Isolated, deadline-bounded judgment of every required hypothesis
 summary: judgeHypotheses assembles Evaluation, one per hypothesis requiresEvaluationOf(theCase) names, in that order, an immediate no-data for a hypothesis whose evidence is not all ok, otherwise one isolated evaluate() call under a caller-configured in-process pool, racing a single shared deadline signal timed once from now/deadline, retrying exactly once on a structurally invalid citation set where that deadline still admits it, and degrading every other path to deadline-exceeded or judgment-failure, never a gap.
 task: sha256:3d78984b271fab0e635c327c92adc18846624357887f6e826309615ed217ec0d

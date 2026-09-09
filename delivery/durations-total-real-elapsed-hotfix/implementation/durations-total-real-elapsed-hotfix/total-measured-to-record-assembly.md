@@ -1,4 +1,5 @@
 ---
+target: backend
 title: durations.total measured to record assembly; durations.writing round-trips absence
 summary: Fixes investigation-pipeline.ts and simulate-hypothesis-pipeline.ts to compute durations.total
   as the real wall-clock elapsed time from pipeline entry to result assembly instead of summing stage

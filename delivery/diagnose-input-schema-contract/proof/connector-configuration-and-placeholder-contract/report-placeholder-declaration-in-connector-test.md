@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for reporting orphaned placeholders in the connector test response
 summary: Wire-level tests over POST /v1/test-connector proving orphaned_placeholders names an undeclared
   Subject-attribute placeholder, is empty when every embedded one is declared, and is never itself a reason
   the test is refused — including when the underlying call fails.
-implementation: sha256:2e68dad6cd2401e9274633e1d4535fbabc426b82dd2163e1f660b3751e2ad596
+implementation: sha256:2c7698571714db0c30d2e73c9ae549791fdb3d7648e393b793c0e8d3855e2c6c
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

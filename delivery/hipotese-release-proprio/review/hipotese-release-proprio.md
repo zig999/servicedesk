@@ -1,4 +1,5 @@
 ---
+target: backend
 title: 'hipotese-release-proprio: release-gate and per-revision release backend delivery — review'
 summary: Coverage, specification-conformance, and standard-conformance passes over the 11 delivered tasks of the hipotese-release-proprio initiative and the 44 files they touched; the failures pass did not run because the captured whole-change run passed cleanly.
 reviewed:

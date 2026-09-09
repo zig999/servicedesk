@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Discard confirmation dialog on both detail screens
 summary: Proves task/detail-screen-corrections/discard-confirmation-dialog's own seven behavioral criteria on both ready-views by updating the two pre-existing discard spec files to exercise the confirm-then-discard flow instead of the removed one-click reset (satisfying criterion 8), and fixes a test-timing race in both files' own mounting helper found while diagnosing the suite's own failures.
-implementation: sha256:4e037cf241653d69a52d821c1459b43bcbc7a4fabb0026295b2b3fac853bac6a
+implementation: sha256:876a3d1ffd65f90965519b16b2f4c1225c61e178fb1704db346a9f337f83f2eb
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

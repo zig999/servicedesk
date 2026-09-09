@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Case admits an optional consolidation register — proof
 summary: Tests over parse-case-document.ts proving a case document's optional consolidation_register parses through when formal or plain, parses successfully when absent, is refused together with any other structural violation when declared outside that closed set, and is carried onto the returned Case rather than dropped.
-implementation: sha256:4cb8aee4f4bd65477e57542403fb92f0e6848bbe80004088c6b82dd3e64528f2
+implementation: sha256:07796cdcdb0c4a161a590cf3742b30440d5e565c79f4818d349ba3d53dabef21
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

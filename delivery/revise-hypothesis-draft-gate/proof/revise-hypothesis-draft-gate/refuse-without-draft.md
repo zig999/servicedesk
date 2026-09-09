@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for revise-hypothesis-draft-gate/refuse-without-draft
 summary: Tests ReviseHypothesisOperation's new draft gate (never-drafted, already-released and already-discarded
   refusal, and success when a draft coexists with release history) in revise-hypothesis.operation.spec.ts,
   fixes that same file's own pre-existing criteria-1-through-5 fixtures to seed a draft so the gate does
   not confound them, and separately adds ICaseStore.findDraftVersion to FakeCaseStore in case-query.service.spec.ts
   purely so the project still typechecks — a build fix, not a test.
-implementation: sha256:b69f31f5b9a8442cbf7e539d2f8bc48a7d3d2ec4e63bfd0e54e90c6622c7c441
+implementation: sha256:4411c1b20898652be760e76901b4856b64b386b4d582c8e1d441c5610d7e9f30
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

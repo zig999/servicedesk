@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector-configuration detail surface's return to origin split from its listing route
 summary: The detail surface's single Cancel link is split into a return-to-origin act carried by the router's own history and an unconditional route to the connector-configurations listing, both rendered on every reading, with neither control's presence turning on how the surface was reached.
 task: sha256:625455e464f0ee3e0d059459769cee1d9cde135664ba27448e9671bc6892b312

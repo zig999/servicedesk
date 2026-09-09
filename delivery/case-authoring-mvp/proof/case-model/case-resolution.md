@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for case resolution
 summary: Holds task/case-model/case-resolution over the specification's worked example — the collection plan deduplicated where the declared order first names each concept, totality demanded as the case declares it, the first confirmed hypothesis in declared order determining while a later confirmation stays unmarked, and the fallback answering whole with no determining name.
-implementation: sha256:7927e3e90a578c70978e89ca444e4ac2e72767928f8ed7078fbe745cb16f8253
+implementation: sha256:82946fcbccd49d64517a4b3a489508e8aced7b11e507eb0bacc606f19b708a69
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Connector-configuration detail surface's return-to-origin split, proved, and its earlier-task specs repaired
 summary: New tests establish the return-to-origin control's history-walk-with-listing-fallback behaviour and its coexistence with the listing-route control across every reading and origin this task's criteria name, and four specs earlier tasks delivered are corrected to query the control each assertion now actually reaches.
-implementation: sha256:d47c4ea476fd1a61ed6b435faf2b2e7ad82a700f25bf97a3170960e021ed5f6c
+implementation: sha256:15feee8c0f326bf5c76d3e96aaeaae7ed71ecf3fcbe01e0fcb9bdae0380fd74d
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

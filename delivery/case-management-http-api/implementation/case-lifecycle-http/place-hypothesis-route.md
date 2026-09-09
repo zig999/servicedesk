@@ -1,4 +1,5 @@
 ---
+target: backend
 title: PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}
 summary: A thin Fastify plugin, controller and Zod DTO exposing the existing placeHypothesis case-lifecycle operation over
   HTTP, answering 204 with no body since the operation itself answers void.

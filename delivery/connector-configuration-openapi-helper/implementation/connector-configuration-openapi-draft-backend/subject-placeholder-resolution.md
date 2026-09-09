@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Subject-placeholder resolution for the OpenAPI connector-configuration draft
 summary: Adds a connector-registry module that resolves each parameter and request-body
   field name of a chosen OpenAPI operation to a ${subject:<name>} placeholder or an

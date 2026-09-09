@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Case version editor action footer proof
 summary: Tests that the editor's action row composes the shared footer, that its release-conditions disclosure states met, not met and not yet decided before any dialog opens, that Cancel returns to whichever screen the editing was actually reached from, and that the pre-creation draft screen withholds every control including Cancel until the created version's record answers.
-implementation: sha256:9fe48fa4b898ef456150bbd4fa68295e490e2bad42a8018603c9687d9c137396
+implementation: sha256:8ff8d538cfbeb330436a69b2d194f183a708c30f71729ab2e326e9a4eebc0990
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

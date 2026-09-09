@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of backend-code-drift-batch-corrections
 summary: Reviews the six delivered tasks of the backend-code-drift-batch-corrections initiative -- case-version-state-from-canonical-list, input-requirements-validates-at-read, malformed-configuration-vocabularies, simulation-response-integer-fields, written-at-is-required, and seeded-concepts-declare-descriptions -- against their criteria, the specification, the project's own standard, and one captured run over the whole change.
 reviewed:

@@ -1,7 +1,8 @@
 ---
+target: backend
 title: assessment-consolidator port and fake, proven
 summary: Tests for IAssessmentConsolidator and FakeAssessmentConsolidator proving the port's own input/output shape, the closed consolidation-register vocabulary, exactly-one-implementer, and no-infrastructure import purity; the UNDERDETERMINED default-register finding is documented, disclosed and left as a genuinely open gap rather than fixed or retrofitted as a test in this pass.
-implementation: sha256:f267fc7482d8c9d75b391d5aa55255f61407cd0ca4f98122de7e0428ca8d1fdb
+implementation: sha256:60006bc2cb2e9439c51fed2457ab9d3475af4c75c1cf5bfb726cb4d4cbd01e06
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

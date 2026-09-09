@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for task/case-authoring/curated-data-seeded
 summary: Proves the seed's npm-script wiring at the unit level and its six real-effect criteria against
   a real database at the integration level, running seed.ts's own unexported top-level code via a dynamic
   import rather than reinventing its logic.
-implementation: sha256:bc53ffc563c0a5c36cf9b356a263636fc97dbd591c72ee825860a24f0c7431a4
+implementation: sha256:790387da0fa5b66f05971a78b29c263ea785f4d448422160c2007226a3f7cd61
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

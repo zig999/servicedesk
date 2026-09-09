@@ -1,7 +1,8 @@
 ---
+target: backend
 title: resolve-and-narrow-input's unconditional breadth
 summary: Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.
-implementation: sha256:3a0bf7d34e2671169550ef1d3dd935c551f0640059aca77b2d0154957cc99ef2
+implementation: sha256:1047dc802fab648177c97b2314ceb0e47ad206cdc4dd479b1e7e69fb8bbffc1f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

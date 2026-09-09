@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: use-simulation-subject hook
 summary: A pure derivation service module plus a new hooks/use-simulation-subject.ts that resolves a case
   version's collection plan through the capability and connector-configuration registries into required

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability detail layout adjustment, first review
 summary: What four passes found over the row regrouping and the schema-editor height increase, plus one
   pre-existing, unrelated test failure the whole-change run surfaced.

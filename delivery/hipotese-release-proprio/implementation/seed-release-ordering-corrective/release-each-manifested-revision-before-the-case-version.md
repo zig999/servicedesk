@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Release each manifested revision before releasing the case version in seed.ts
 summary: Reorders seed.ts's seedCase() to release every manifested hypothesis-revision through the declared lifecycle operation before releasing the case version, and removes the raw SQL UPDATE that used to move revisions to released.
 task: sha256:5bf2e7e6d692aee95d2445e5481f280fda757947fe2f16af99ae4b742bd0709b

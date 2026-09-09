@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Save Configuration edits before reconciling in the affected tests
 summary: The seven tests across three spec files that edit Configuration and then rely on "Add attribute"
   reconciling against that edit now save the edit through the real Save action and await it settling first,

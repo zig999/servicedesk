@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of cases-list-and-detail onda 2 (3 delivered tasks)
 summary: 'Four-pass review of the 3 delivered cases-list-and-detail tasks: coverage over their 12 criteria,
   specification conformance, standard conformance, and the failures pass (which did not run -- the captured

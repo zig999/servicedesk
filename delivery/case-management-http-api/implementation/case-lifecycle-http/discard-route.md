@@ -1,4 +1,5 @@
 ---
+target: backend
 title: DELETE /v1/cases/{slug}/versions/{version}
 summary: A thin Fastify plugin, controller and Zod DTO wired to the existing discard case-lifecycle operation — the first
   use of HTTP 204 No Content in this codebase's HTTP surface.

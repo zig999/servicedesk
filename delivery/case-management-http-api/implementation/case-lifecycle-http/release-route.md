@@ -1,4 +1,5 @@
 ---
+target: backend
 title: POST /v1/cases/{slug}/versions/{version}/release
 summary: A thin Fastify plugin, controller and Zod DTO wired to the existing release case-lifecycle operation, reading the
   released version back through the published case-query contract — the write-then-read pattern update-draft-route established.

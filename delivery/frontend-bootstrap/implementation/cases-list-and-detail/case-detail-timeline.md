@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case Detail version timeline
 summary: Replaces CaseDetailPlaceholder at "/cases/$slug" with CaseDetailScreen, a read-only version timeline read from GET /v1/cases/:slug/versions rendered through StatusTable, offering a precondition-free "Continue editing" navigation on any draft version.
 task: sha256:638cd7c51d03fd5ebfbcb4ec01469c94425dc4b84ce5417a2910ae0130df967e

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ICapabilityQuery gains listCapabilities
 summary: Extends ICapabilityQuery with a paginated listCapabilities operation, implemented by CapabilityRegistryService
   through in-memory slicing over the store's full read, since ICapabilityStore paginates nothing itself.

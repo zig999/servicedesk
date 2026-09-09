@@ -1,12 +1,13 @@
 ---
+target: frontend
 title: Proof that an apply over an unsaved edit is confirmed before anything is replaced
 summary: One spec file mounting both the ready detail view and the create screen through their real
   hook chains and a fetch stub proves all seven criteria -- the confirmation dialog's appearance,
   the field's untouched content until a further explicit confirm, the immediate apply where nothing
   is unsaved, and the absence of any register-connector call through the whole sequence.
-implementation: sha256:3b8873c3fdde0d89af4082e17655ca5cea7773c68b8b401ebf60b08da4696418
+implementation: sha256:b1e2955c537e01554e7225b813a157222998a02d8ce83223d60d4cc6812f2fbd
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-unsaved-edit-apply-confirmation-suite
 tests:

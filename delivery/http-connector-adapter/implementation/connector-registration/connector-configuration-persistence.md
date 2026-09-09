@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector configuration's relational persistence boundary, outside the domain
 summary: A new connector-registry module (port, service, relational store, migration and factory) that writes and reads a connector's own opaque call configuration through the system's one relational database, reachable by nothing under the domain layer.
 task: sha256:5284ae93b4d96ad4860664a2dee5f4c55e980bde30a26323ae8c3da53f8fa3f5

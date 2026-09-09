@@ -1,10 +1,11 @@
 ---
+target: backend
 title: The store refuses a write against a version that is not draft — proof
 summary: Unit and integration tests over relational-case-store.repository.ts prove that placeHypothesis,
   removeManifestEntry, release and discard each refuse against a non-draft version with their stated typed
   error and write nothing, that insertHypothesisRevision refuses CaseHoldsNoDraftError when the case holds
   no draft, and that all five still succeed exactly as before against draft state.
-implementation: sha256:139eec72962c6ba7e265c57fa84813dc8c759393667a69c5b916fd6e75f215e1
+implementation: sha256:98a9e5d3284b30d782a4adec0fe17477a3a00d06c73b980ef44a4e431203547a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

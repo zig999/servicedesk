@@ -1,4 +1,5 @@
 ---
+target: backend
 title: register-concept refuses a description-less submission
 summary: GlossaryService.registerConcept now requires a description, refusing an absent
   or empty one with a typed 422 ConceptDescriptionRequiredError before any read or

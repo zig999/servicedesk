@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Show each listed revision's own state -- proof
 summary: Tests the widened HypothesisRevisionListItem shape, the revision-history screen's new per-row state rendering and its independence from the current-pin indicator, the preserved ordering, and (by citing pre-existing, untouched tests) the preserved revision/criterion/collects fields and the hypotheses tab's total-reading.
-implementation: sha256:cff109fb597ab5e42fc49b393e3bc9e6fdd7d29c556e5c5dbc4e73e57e292b5e
+implementation: sha256:5f2885dd17ab03fe53f2c9512fec3979dc2ef24a9256ee21e18f1f0b6a3a35e3
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

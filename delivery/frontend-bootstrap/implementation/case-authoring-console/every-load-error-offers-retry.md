@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Retry control on every remaining load-error state (EDG-02)
 summary: Adds a Retry Button, wired to that screen's own already-exposed refetch, to Cases List's load-error
   state, Case Detail's VersionsPanel load-error state, and the Capabilities Browser's load-error state

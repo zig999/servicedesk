@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: First-reading determinism for the connector-configuration detail hook's validity
 summary: New render-log tests in the existing validity spec file assert configuration.isValid at the very
   first commit that reports the ready phase, deterministically over the pre-fix hook's deferred-effect
   race, alongside the pre-existing settled-state assertions this task's criteria also require.
-implementation: sha256:182a488289489cfbaf0c7eded821ce5fd2e145f4e168f0b582346a5159d20098
+implementation: sha256:3801801b5ced004a7d0a40736813f15e2ffdfc2b59dc01738a20d290f73b8f8e
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: POST /v1/simulate -- simulate-case controller, route, DTO and production composition
 summary: A new simulate-case.dto.ts/controller/route pair reads the pinned case (either state) through
   ICaseQuery, applies diagnose's own subject-glossary and at-least-one-attribute rules, calls the already-delivered

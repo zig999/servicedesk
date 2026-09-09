@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Rate limit on the capability-by-identity read route
 summary: Seven Vitest tests, exercised through app.inject() against a real Fastify instance registering createReadCapabilityByIdentityRoutesPlugin(), prove the 61st-request refusal, its Retry-After header, the 60th-and-under pass-through, per-source-IP independence, the hook's confinement to this one route, the window's reset at its boundary, and the one-second Retry-After floor.
-implementation: sha256:4918b9529439c46253880839b03ea9afdc37e97e4c713826ef62480025370ee6
+implementation: sha256:c9bf047c741fbfc8ef9cec457ed9285dbe96f201a3850ff6f288f6def73688d6
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

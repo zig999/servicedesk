@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint
 summary: One test reads judgment-stage.ts's own raw source, extracts the JSDoc block immediately preceding
   judgeOneHypothesis, and asserts it now states the denied-slot-costs-nothing consequence in its own voice
   with a plain citation of constraints/hypotheses-are-judged-in-isolated-parallel-calls, and no longer
   carries the node's-own-quoted-text pattern for that sentence; criterion 2's "no runtime behavior changed"
   rests on this file's own pre-existing, unmodified behavioral suite rather than on a new test.
-implementation: sha256:44941d683de1a8978ba2f2d01cb169cdacd899814fbf9a0b8a70de5d1a7fcc6e
+implementation: sha256:43deb8d40d10c63f3a4f5ade07bf0ad2e19d6ec87e9739a66896d712c9d6f1f6
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:20acdee5acacafd214df11f468ff2cd7230209da84a65f7883a30698c000a28d

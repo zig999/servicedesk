@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Derive a case version's input requirements from its collection plan
 summary: Adds a published read-case-input-requirements route that derives, fresh at every call, the union
   of subject attributes a case version's collection plan reaches through its currently registered capabilities,

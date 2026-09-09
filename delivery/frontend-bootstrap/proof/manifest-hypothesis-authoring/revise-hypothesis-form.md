@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for the shared Revise/New-hypothesis form
 summary: Tests proving task/manifest-hypothesis-authoring/revise-hypothesis-form's eleven criteria, over
   the two new routes, the shared form's load/pre-population/submission state machine, its concept and
   glossary dropdowns, and its one generic failure state.
-implementation: sha256:121c4681595cb10bff60d06d6855af6a2d13c3dbe4c85e5a2574f0df430b5eab
+implementation: sha256:d2987edbeee8fb90c4648f5b400eaeb33bf972aef071325613034143c9cb3855
 run: run/manifest-hypothesis-authoring-onda-4-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

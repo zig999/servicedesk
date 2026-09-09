@@ -1,4 +1,5 @@
 ---
+target: backend
 title: POST /v1/cases
 summary: A thin Fastify plugin, controller and Zod DTO wired to the existing createDraft case-lifecycle operation — the first
   route in this initiative to originate a new resource rather than read or correct one already stored.

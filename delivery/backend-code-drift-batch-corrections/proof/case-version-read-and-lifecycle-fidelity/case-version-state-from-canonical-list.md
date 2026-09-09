@@ -1,4 +1,5 @@
 ---
+target: backend
 title: isCaseVersionState's canonical-array rewrite proven through the guard's boundary and the two refusals
   it feeds
 summary: Proves the case-version-state guard still accepts exactly draft and released and rejects everything
@@ -6,7 +7,7 @@ summary: Proves the case-version-state guard still accepts exactly draft and rel
   carry the correct status, name and -- closing the one ground the task's own Notes flagged as reachable
   and unguarded -- the correct stored state in their payload, adding one new unit test for updateDraftVersion's
   refusal path where that ground previously had no unit-level test at all.
-implementation: sha256:c558fb5dd3af1bfc0b45a1899d450027f8f6f5875f11d60d2b60e6dfb02eed8e
+implementation: sha256:8eb7d4098af05dd8dc687f91637aa61948577059940b4ee227e0a77107543e15
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:4050ccb93004dfd5a71749b73d5d0a5e09de427ccddf202095ecbd7e6db18898

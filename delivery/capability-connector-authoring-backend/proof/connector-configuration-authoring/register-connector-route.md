@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for register-connector exposed as a write HTTP route
 summary: HTTP-level tests for PUT /v1/connectors/{connector} (wiring, status mapping, DTO boundary, no-auth)
   plus direct service-level tests for wellFormedConfiguration's real JSON-syntax and object-shape checks,
   together proving the task's five criteria.
-implementation: sha256:4468b1b3066444e622105899ea2f76d5a5438de6f0e49e9d747b04b5c06c9cf2
+implementation: sha256:ed1b9e891a0f1aa3c72b33b45fb867de9dcc3240be0a63b4aac230fedea67078
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

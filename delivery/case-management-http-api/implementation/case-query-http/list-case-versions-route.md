@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/cases/{slug}/versions
 summary: A thin Fastify plugin, controller and Zod DTO over the new listCaseVersions store operation, reached through
   ICaseQuery/CaseQueryService's own new pass-through.

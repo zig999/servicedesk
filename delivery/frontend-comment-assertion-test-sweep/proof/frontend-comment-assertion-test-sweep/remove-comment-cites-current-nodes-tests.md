@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Comment-assertion tests removed, prior behavioral coverage undisturbed
 summary: Cites two pre-existing, unmodified behavioral tests as evidence that deleting the two whole
   files asserting a removed comment's literal prose left the domain facts those comments used to describe
   still proven; this removal-only task authorizes no new test.
-implementation: sha256:c40142fed51c8ac63424b5ee3a2a59de2b0e195f140fbc79ef16d904b1f87c1f
+implementation: sha256:2219307dc77bcd1fb9f558a560fbb5ad1116bf6898d0aa133ed8fde8f4956de6
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

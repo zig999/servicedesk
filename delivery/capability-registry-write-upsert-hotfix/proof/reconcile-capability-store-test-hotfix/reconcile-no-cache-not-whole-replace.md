@@ -1,9 +1,10 @@
 ---
+target: backend
 title: relational-capability-store test reconciled to upsert-by-identity, not whole-table-replace
 summary: Rewrites the one stale assertion in relational-capability-store.repository.spec.ts that expected
   a second write to erase a different identity, and adds one distinct test proving the fresh-read (no-cache)
   guarantee for a capability rewritten under its own identity.
-implementation: sha256:7701d10367b25bb12d8a78f860161e5167998a27f13a1256400e3df8bf8eec38
+implementation: sha256:dec1fca717cd4ed2f367f9ffd6cb10fda398a8074912328c8e40ff98f8f52a18
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

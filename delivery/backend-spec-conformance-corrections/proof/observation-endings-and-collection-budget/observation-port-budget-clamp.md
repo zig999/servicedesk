@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Observation port budget clamp — proof
 summary: Four new tests on the production HTTP adapter's fake-timer-driven settling prove the two criteria
   — a smaller remaining-budget bound governs the call over a capability's own longer timeout, and a capability's
   own timeout governs it wherever the given bound is equal to or larger than it — while every pre-existing
   assertion in the files the implementation touched for compilation stays unread and unchanged.
-implementation: sha256:a227537131f2b3dcf54ea049899d161fabdf596c5ca8ca01c0b50aa5027e2250
+implementation: sha256:4d22d474130a9f1854a8bb8a0fda9a3183da712e3123e02b6bf35789511f42b8
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

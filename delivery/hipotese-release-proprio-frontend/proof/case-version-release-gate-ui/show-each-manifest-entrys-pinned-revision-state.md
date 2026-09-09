@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Manifest entries state their pinned revision's own state, on both presentation surfaces
 summary: Tests over version-manifest-screen.tsx and case-version-editor-ready-view.tsx prove that every manifest entry on both surfaces states its pinned hypothesis-revision's draft-or-released state, unconditioned on the case version's own state or the selector being open, with all pre-existing fields intact and no badge shown when the pin cannot be resolved from the revisions listing; a third test proves the release-checklist crash this task's own fixture surfaced now answers "not satisfied" instead of throwing.
-implementation: sha256:c6225673daa73fd9504cbec86d32dda8998ca50b7f29de1d66bcc2ce7382586f
+implementation: sha256:0330045634e8057dd206913c7eef67c3baa37a197827b843d9aea7c7fb0c3eba
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

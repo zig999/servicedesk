@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Rewrite the reconciliation tie-break test's collision setup
 summary: The tie-break test in connector-test-panel-attribute-reconciliation.spec.ts now induces its
   scenario by editing Configuration's own text rather than by firing a change event on the now-read-only

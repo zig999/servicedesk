@@ -1,4 +1,5 @@
 ---
+target: backend
 title: case-management-http-api — query extensions, listing routes and route registration
 summary: 'Reviews the seven tasks this session delivered: three IGlossaryQuery/ICapabilityQuery pagination
   extensions, their three HTTP routes, and the task wiring all nineteen routes into build-app.ts.'

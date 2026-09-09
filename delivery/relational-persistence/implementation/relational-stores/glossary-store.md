@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The relational glossary store, answering the five vocabularies and the concepts as held
 summary: Adds RelationalGlossaryStore, the database-backed implementation of IGlossaryStore, reading each
   term vocabulary and every concept registration fresh from its own table and replacing a vocabulary's

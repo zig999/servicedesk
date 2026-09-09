@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for register-connector's malformed-object classification
 summary: Tests pin that a null or array configuration value is refused as ConnectorConfigurationNotWellFormedError
   rather than as incomplete, that unparsable-text and accepted-object behavior held unchanged, and that
   ConnectorConfigurationNotWellFormedError still maps to 422 — the last two by pointing at the pre-existing
   tests that already prove them.
-implementation: sha256:0218942380df9f2d663d60ff9cd7e10250b35505eb9be2115eb502741cb4d6e9
+implementation: sha256:941444f73161cdb5c25ded65cf262b5b809420246da389ed2b3569215f4ebd44
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

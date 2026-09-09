@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Malformed connector-configuration values classified as not-well-formed, not incomplete
 summary: registerConnector now refuses a null or array configuration value as ConnectorConfigurationNotWellFormedError
   instead of IncompleteConnectorConfigurationError, alongside the unparsable-text and accepted-object

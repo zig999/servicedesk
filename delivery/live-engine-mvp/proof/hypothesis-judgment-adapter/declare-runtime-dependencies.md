@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Proof for declaring @anthropic-ai/sdk and fastify as runtime dependencies
 summary: Six tests, added to the pre-existing manifest-audit spec, prove the two dependencies are declared,
   pinned as recorded, and are the only additions.
-implementation: sha256:f5d985471c837b9a46bf491d523460c1eec99b7b7bde1c87b34bf42a4e5a23df
+implementation: sha256:ffdac962122b3d94edd70636c8c03620e63f7ded60aae4468da5f002baae8c6e
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

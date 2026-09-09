@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Idempotency key rebuilt over the subject's whole attribute-value set
 summary: idempotency-key.ts's composition and documentation are rebuilt to key on the canonical Subject value (type plus whole attribute-value set) alongside case and ticket reference, replacing the earlier bare subjectType/subjectId strings and the now-superseded reasoning that justified them.
 task: sha256:e0f5cb2d9639420c3acc3674764ea5d033edc292e524f12ca0197020baa03d06

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Capability registration with a held read-only contract over plain JSON files
 summary: register-capability refuses any registration whose nature is not read-only or whose declared contract is incomplete, defaults an unstated timeout to 60000 milliseconds, and persists every held registration as a plain JSON file behind a store port.
 task: sha256:d1f104a74e9d9f4a2725b1810a8426c2330c3e7291df24198d9b55e3822fde9b

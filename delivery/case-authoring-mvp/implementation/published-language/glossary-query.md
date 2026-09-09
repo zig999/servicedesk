@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Published glossary-query read
 summary: The published IGlossaryQuery contract — readVocabularyTerm and readConcept — provided by the existing glossary holding and wired through the module's factory, answering every read from the store's current records and every absence as typed data.
 task: sha256:4cc87881551335b3d10b3a543d45007353e2524f440301d042dcedb9bace2c97

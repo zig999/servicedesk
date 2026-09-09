@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of manifest-collects-survive-release-duplication-corrective
 summary: 'Four passes over the one file task/manifest-collects-survive-release-duplication-corrective/route-through-the-declared-lifecycle-operation delivered: coverage of its two criteria, per-file specification conformance folded into siegard-reconcile/manifest-collects-survive-release-duplication-corrective.md, the backend standard''s reading rules, and the whole-suite run, which passed clean.'
 reviewed:

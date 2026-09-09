@@ -1,7 +1,8 @@
 ---
+target: backend
 title: draft-assessment-text proves its consolidator-consuming rework
 summary: Rewrites draft-assessment-text.spec.ts whole against the new async, single-options-object, consolidator-calling draftAssessment, proving the task's five criteria without duplicating draft-assessment-text-modules.spec.ts's own import-fitness job.
-implementation: sha256:8620994e9cd541b205e5f78af4398a0c46edcc418c423a4826182b67a20f9834
+implementation: sha256:0ac15e3c4fb11822c9094051b42dcf32faa1ab94249082997228e9986a346742
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

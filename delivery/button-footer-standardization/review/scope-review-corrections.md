@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: The six corrections the full-scope review raised
 summary: What three passes found over the five hooks, seven route files and twenty-six specs the six corrective tasks of button-footer-standardization delivered, with the failures pass not run because the captured run passed whole.
 reviewed:

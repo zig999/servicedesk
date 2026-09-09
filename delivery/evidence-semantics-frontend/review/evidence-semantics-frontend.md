@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: evidence-semantics-frontend, full review
 summary: What the coverage, specification-conformance and standard-conformance passes found over all six delivered tasks of the evidence-semantics-frontend initiative; the failures pass did not run because the captured whole-change run passed clean.
 reviewed:

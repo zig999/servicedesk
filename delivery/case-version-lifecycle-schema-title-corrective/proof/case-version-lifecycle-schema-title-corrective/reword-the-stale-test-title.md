@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for reword-the-stale-test-title
 summary: Cites the renamed test's own title and its unchanged arrange/act/assert, plus the file's own unaffected suite, as the evidence for this corrective rename's three criteria.
-implementation: sha256:1ab6ed8141e48afa0608c6cc7eba69a505f111df5a3d0ab32c7d71c322994a43
+implementation: sha256:d0baec5bf88d44bd48bfe861ab6d94ba9bafda76bf594f87da110daafcadc5ce
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Proof for the draft manifest entry's pinned revision on the hypothesis-editing form
 summary: What proves task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save,
   written against its implementation record.
-implementation: sha256:6d6e3f7ef2ababf8e548dae0507181a97896f968846a6131facda91bcb182f21
+implementation: sha256:86363a0fa9bb6380ba90e1d68154a9c56218b5f08f574ca5c1091878a753fc6c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

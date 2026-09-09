@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the concept-description-required UiErrorState kind
 summary: Two new tests in the existing error-ui-state.spec.ts, in the same per-entry style already used for every prior single-entry addition, prove the new table entry resolves to its own distinct kind and carries no wording; the third criterion is already proven by the untouched pre-existing suite.
-implementation: sha256:44d9e75d17b568d579c074c380030d326a25aa7a651b42bbc7344d558e3ab1ac
+implementation: sha256:9668bfcc70a37791281dec475cf9cea3337084739dc768bd17a4f23a4cf3b5f9
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

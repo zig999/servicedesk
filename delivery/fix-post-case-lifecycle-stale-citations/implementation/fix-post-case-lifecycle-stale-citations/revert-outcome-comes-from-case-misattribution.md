@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Revert resolve-and-narrow-input.ts's historical citation to the-writing-input-is-narrowed
 summary: Reverted a prior corrective task's own miscorrection in the module header of resolve-and-narrow-input.ts,
   restoring the citation for the removed confirmed/fallback split's historical implementation to rules/investigation/the-writing-input-is-narrowed,

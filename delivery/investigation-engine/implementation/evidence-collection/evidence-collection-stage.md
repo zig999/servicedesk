@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The evidence-collection stage — parallel, budgeted, scoped observation over a case's plan
 summary: Adds Evidence and collectEvidence, the orchestration that turns a pinned case's collection plan into exactly one Evidence per concept, calling observe-concept in parallel in the requester's own scope, each call bounded by the smaller of the capability's own timeout and the collection stage's seven-second ceiling within the propagated deadline.
 task: sha256:1e1b0b90820c545dbd499338c2c3f440e5bde64d62ebd646a8d2a489e9ba8f03

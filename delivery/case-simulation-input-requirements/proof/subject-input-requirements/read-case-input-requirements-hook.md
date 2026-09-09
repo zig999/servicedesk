@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Read a case version's input requirements -- hook proof
 summary: Ten renderHook-driven tests proving all six of this task's criteria for useCaseInputRequirements(slug,
   version) -- the URL it reads, the requirement and bare-capability shapes it returns, the malformed-input-schema
   list's separation, the empty-vs-error distinction, and the loading/error/refetch shape -- plus the query-key
   inference the implementation recorded.
-implementation: sha256:bf4e9f137651ea54078a416f6e16e0de766c6c45d4965acb6f703fe8d83ee845
+implementation: sha256:c35a1823ebc80327c0e498a773e403c0d9d3407235d346e331b0aa1df2d865ea
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

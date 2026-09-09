@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Observe-concept and the fake's fixture key carry the subject's whole attribute-value set
 summary: Extends src/__tests__/unit/investigation/observation-source.port.spec.ts, previously carrying only single-attribute fixtures, with tests that make an extra pair, a second pair, an attribute name, a pair's order and the governed type each independently change the fake adapter's composed fixture key, proving the port and its fake pass and key on the subject's whole attribute-value set rather than any subset or a bare id.
-implementation: sha256:fc768fd42e9b873dcfc7f1049dcb41a9da636b83896047ad387a6f3f7223ba83
+implementation: sha256:af87e9b4594d0b43f47f34b7e6b1925dcba03ab17fd18ea224ef6de59970220d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

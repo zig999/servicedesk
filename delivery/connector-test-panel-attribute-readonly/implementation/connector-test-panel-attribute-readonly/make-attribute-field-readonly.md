@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Make the connector Test Panel's Attribute field read-only
 summary: ConnectorTestPanelFields now renders each Add attribute row's Attribute field as a disabled,
   read-only Input carrying no onChange, while the Value field stays exactly as editable as before.

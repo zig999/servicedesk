@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of glossary-and-capabilities-browser onda 6 (3 delivered tasks)
 summary: 'Four-pass review of the 3 delivered tasks -- widen-glossary-vocabulary-union, capabilities-browser-screen
   and glossary-browser-screen: coverage over their 18 criteria, specification conformance, standard conformance,

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Diagnose HTTP endpoint over Fastify
 summary: A Fastify server exposes POST /v1/diagnose, reading a case by slug/version through createCaseQuery,
   calling the production diagnose runner with a subject/narrative/requester/optional-ticket_ref from the

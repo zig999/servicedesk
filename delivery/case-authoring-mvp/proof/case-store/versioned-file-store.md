@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the versioned file case store
 summary: Real-filesystem tests over FileCaseStore proving one JSON document per case version, a growing directory-derived index, content-pinned reads, single-file loads, and the manifest half of the no-database constraint by reuse.
-implementation: sha256:e37a0eab9810f4046b99e60fcc111cd6b47a4092b48dc1cc2b4df8e2171e47f5
+implementation: sha256:2d8c69d2e33bfcf715d263320576378f09658d24debb808e9f06e394c4ebd524
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

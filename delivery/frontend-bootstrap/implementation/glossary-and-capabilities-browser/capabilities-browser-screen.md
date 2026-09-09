@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capabilities Browser screen
 summary: Replaces CapabilitiesPlaceholder at /capabilities with a real, read-only screen listing every
   registered capability via a new use-capabilities.ts hook, plus a client-side row-selection detail panel

@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for build-placeholder-declaration-check
 summary: Tests the pure orphaned-placeholder check, its Subject-attribute-placeholder extraction, and
   both registries' narrow cross-reads (default-empty, delegating, failure-propagating, and store-backed
   through the real factories).
-implementation: sha256:f97feb151478dad71726b9bb8d699540d41e165a13ce0d966cf634b4c3a117f9
+implementation: sha256:f5368260f6b76ee798862122f56b7a9ccb63cb5974726b10f81569863be1e606
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: assessment-consolidator port and fake
 summary: A new IAssessmentConsolidator port and its FakeAssessmentConsolidator adapter, mirroring hypothesis-evaluator's port-plus-fake pattern exactly, plus the standalone ConsolidationRegister vocabulary the port's signature needs.
 task: sha256:67eb1bd05153f619774a44f4bdaa0c78e81940633abdac19f523addb8a64ec6a

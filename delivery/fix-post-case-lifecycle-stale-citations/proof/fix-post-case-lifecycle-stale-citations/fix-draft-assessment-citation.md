@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation
 summary: One test reads draft-assessment-text.ts's own raw module header and asserts it now cites domain/knowledge/case-version
   for consolidationRegister's consolidation_register, and no longer cites domain/knowledge/case; criterion
   2's "no runtime behavior changed" rests on this file's own pre-existing, unmodified behavioral suite
   rather than on a new test.
-implementation: sha256:e6b7bc5d6c638ef2a8105166e2f9cccbcffe2dd8e49b41ac48b4e9284783f7c2
+implementation: sha256:5c48a510aa4f68fab0fac5489fe7098da58006bd258e7368f4ec28ac9304da3d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:20acdee5acacafd214df11f468ff2cd7230209da84a65f7883a30698c000a28d

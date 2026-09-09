@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Integer-declared numeric fields of the simulation responses validate as integers
 summary: usageSchema, evaluationSchema.elapsed_ms and durationsSchema in both simulate-case and simulate-hypothesis
   response DTOs now require z.int() instead of bare z.number(), matching the integer domain fields they

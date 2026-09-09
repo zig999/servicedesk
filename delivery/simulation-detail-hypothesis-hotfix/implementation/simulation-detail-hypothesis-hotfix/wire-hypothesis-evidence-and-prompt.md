@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Wire hypothesis-simulation evidence and judgment-call data through to the Detail
   panel
 summary: A single-hypothesis simulation's own evidence array now reaches the Detail

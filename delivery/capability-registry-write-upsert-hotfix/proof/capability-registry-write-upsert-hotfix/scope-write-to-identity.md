@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for the writeCapabilities upsert-by-identity hotfix
 summary: Reconciles the capability-store unit and integration specs with the new upsert-by-identity mechanics
   and adds a real, foreign-key-backed reproduction of the original DELETE-triggered 23503 failure, proving
   all four criteria.
-implementation: sha256:d89822d910402b4a13c5166c938f01048fc65c5fd6f95bb50ae9b8d0693a71b3
+implementation: sha256:085a3ad09271ecc8815bb8eb25e97124227a784f7b6ced9608a8a9902c39b4c9
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

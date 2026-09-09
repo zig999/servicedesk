@@ -1,4 +1,5 @@
 ---
+target: backend
 title: writeCapabilities upserts by identity instead of deleting the whole table
 summary: RelationalCapabilityStore.writeCapabilities now upserts each given capability by its own (name,
   version) identity through INSERT ... ON CONFLICT DO UPDATE, issuing no DELETE at all, so a registration

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Detail hook computes configuration validity synchronously, not after an effect
 summary: useConnectorConfigurationDetail derives configurationValid from the loaded configuration's own
   text at render time, so the ready outcome's isValid is already correct the first time a consumer reads

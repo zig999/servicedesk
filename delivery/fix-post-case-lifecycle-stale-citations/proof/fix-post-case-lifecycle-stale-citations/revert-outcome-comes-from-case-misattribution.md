@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution
 summary: Corrects, in place, a pre-existing test in resolve-and-narrow-input.spec.ts that a sibling task's
   own proof had written to assert the miscorrected (pre-revert) state of the module header's historical
   citation; the corrected assertions now match the reverted text. Criterion 2's "no runtime behavior changed"
   rests on this file's own remaining, unmodified behavioral tests rather than on a new one.
-implementation: sha256:862ece60490695b79604b58d0b2cd459b2fcd9f5312f208682fe334e049b77ca
+implementation: sha256:25405dd0d9e155e65e12631a06b99ded0dfa0c429e0a8b6348888cb9e33ff018
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:20acdee5acacafd214df11f468ff2cd7230209da84a65f7883a30698c000a28d

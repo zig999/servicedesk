@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Citations corrected, round two — comment-content proofs
 summary: Six file-content tests, one per criterion, pin each corrected comment or docstring's exact citation
   text against the specification node it now names, following this codebase's own established convention
   for this exact criterion shape (read source, normalize comment prose, assert the citation and quote
   survive).
-implementation: sha256:dd835e7792683a92ac5cf142804e7dd6ad9a4e7e6ba461cb1d0d2ad28d7e0c0b
+implementation: sha256:3ce5099b11b11e8d6f7fe27856995d76b4b2c54e8c8f35566ed39b663b81b042
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

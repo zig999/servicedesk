@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Integration proof for the diagnose end-to-end persistence deadline
 summary: Closes the one gap the implementation record disclosed — criterion 5 proven only at the unit
   level — with a new integration test against a real database and a deliberately slowed write, and cites
   the existing tests that already prove the other eight criteria.
-implementation: sha256:87c50b4b3747ef99a0364011d5cde76b1877ffd5f90ebe0d76ea142bbb933d4f
+implementation: sha256:c2d108b5fd31d62e34bd2ba4f9a918462ed3e47f21cc7936217537624ce0d479
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

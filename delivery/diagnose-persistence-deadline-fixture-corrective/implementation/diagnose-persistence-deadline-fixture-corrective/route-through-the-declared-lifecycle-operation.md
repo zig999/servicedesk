@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Route diagnose-persistence-deadline-e2e.spec.ts's release fixture through the declared lifecycle operation
 summary: releaseRevisionDirectly in diagnose-persistence-deadline-e2e.spec.ts now calls createCaseLifecycle(connection).releaseHypothesisRevision instead of issuing a raw SQL UPDATE against hypothesis_revisions.
 task: sha256:47f9d3285174ffbed95d2416f2cbf1d814e619e736087eaeb4a35e487f14c18c

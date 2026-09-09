@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Output-schema entry guidance rewrite, proven against its ten criteria
 summary: Every claim the rewritten output-schema paragraph makes, its absence of a worked example, its silence on any check the two named nodes do not state, its narrower reading over the read-only refusal, the surface's refusal to check on any of these grounds, and both disclosed inferences are each proven by a test that fails over exactly the wording or behaviour it targets.
-implementation: sha256:4640f182c9e2074d74060518523c2604821cfd49a5674a4ac70a6f8079987c94
+implementation: sha256:dd45b1fa9a2b349dfd537505d5602fa01e9cca59869402e4b1f9610e3bce5cb4
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The immutable investigation factory
 summary: Adds buildInvestigation(), the one place that validates evidence/evaluation totality against the pinned case and assembles the whole, immutable Investigation from already-completed stage outputs, plus the canonical Subject, Cost and Durations value types and the typed totality-refusal error it throws.
 task: sha256:0603d06821c1f541a9bd7749ebec0ace36523f44736c796deead7c79e2783913

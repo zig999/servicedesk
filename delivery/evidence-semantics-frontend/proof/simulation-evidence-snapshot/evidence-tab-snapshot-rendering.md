@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Evidence tab snapshot rendering — proof
 summary: Seven new tests prove concept_description and per-field semantics render when present, degrade to a stated absence when empty, and render nothing new for a legacy record carrying neither.
-implementation: sha256:4b0d7852eec6a7efef038c6290aa8290b1a4eb9991e77f7ff1b6378beaecfd23
+implementation: sha256:93d58b8dde40c181bff6807c197979582247dd241df0196bd82bb289a27c1c32
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

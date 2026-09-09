@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the fictitious diagnose fixture case
 summary: Sixteen tests read the authored case, glossary, capability and observation fixtures through the
   real parseCaseDocument, case-resolution, file-backed stores and observation-source adapter — never a
   value re-derived from the fixture's own JSON.parse — and show every one of the task's nine criteria
   holds over the exact files this task shipped.
-implementation: sha256:b86deef94e70d972612c07f15b58177c412ea25bbec4496b7742fab46627fdc4
+implementation: sha256:5aedf28eec0422494a1f4d96215abec9bd39ea870e2d33765b7c4dd19c8e7390
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

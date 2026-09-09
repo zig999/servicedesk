@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the reusable ConflictBanner component
 summary: Three render-based tests over a real jsdom tree confirm ConflictBanner's title, message and banner landmark; the accent criterion is not tested here because the implementation record already records it as genuinely unmet.
-implementation: sha256:1e4713861166c91aee139684d3200eb16056cdaa598264d7daa7f480f2bfd807
+implementation: sha256:17612b7e16532b203e0ea06c053b4cb56ea032940e2a24ceb90f6530c0a61405
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

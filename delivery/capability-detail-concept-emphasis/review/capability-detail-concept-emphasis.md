@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capability detail concept emphasis, first review
 summary: What four passes found over the concept-field visual-emphasis change to the
   capability create/edit form's shared field markup.

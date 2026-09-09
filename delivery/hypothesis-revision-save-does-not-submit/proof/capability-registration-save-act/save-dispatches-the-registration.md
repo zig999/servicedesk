@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Save dispatches the capability registration, proven under the footer portal the running application actually takes
 summary: Tests that mount the capability authoring screen with the footer slot present, so ButtonFooter's createPortal is
   actually taken, proving the Save control's restored form ownership, its whole-contract dispatch, its success landing and
   the abandon control's writes-nothing behavior, plus one test closing the refusal-handling gap the task's own notes flagged.
-implementation: sha256:038c6905d916f88f12c0f2154aabbf9a3091b112575c5e6a5aac4ab41370e039
+implementation: sha256:7bae381cac79ce495abd3e4e987f5a5aec8adde87e1f742352f015d5dee96004
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed

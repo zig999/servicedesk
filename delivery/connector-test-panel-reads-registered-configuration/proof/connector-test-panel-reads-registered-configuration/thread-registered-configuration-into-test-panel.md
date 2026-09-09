@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Registered configuration threaded into the Test Panel proof
 summary: Proves that useConnectorConfigurationDetailView's "ready" phase exposes registeredConfigurationText
   (distinct from configuration.value, re-seeded only at load and at a successful save) and that ConnectorConfigurationDetailReadyView
   forwards it to ConnectorTestPanel, so "Add attribute" reconciliation reads the connector's currently
   registered configuration rather than an unsaved edit.
-implementation: sha256:92aa4c0f2d831ac9619c224031ec8ca2aaae376d7eac832adafbcc8241124e29
+implementation: sha256:0e50a7db0298faf23c60a67249ca87332b2f6eed4582077e26602457278b4789
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

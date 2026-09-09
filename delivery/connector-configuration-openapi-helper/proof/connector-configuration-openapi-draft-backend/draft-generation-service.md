@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Connector configuration draft generation service -- proof
 summary: Thirty-seven Vitest cases at src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
   exercise generateConnectorConfigurationDraft end to end through fake ports, covering
   every stated criterion, the four inferences the implementation record names, and
   the one UNDERDETERMINED entry that names a candidate implementation the specification
   refuses.
-implementation: sha256:51dcfbb76de9512b006e00710f84fc47c695bbcfd762b3abcab0981905ef1d67
+implementation: sha256:0d92ff29821998f727499fd90c0473d44fdc8fb6220f3c3d36f811c117b52bb7
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

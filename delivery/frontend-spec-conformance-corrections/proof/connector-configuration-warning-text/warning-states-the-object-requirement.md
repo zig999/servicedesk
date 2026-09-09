@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Connector-configuration warning states the object requirement, not a JSON-syntax claim
 summary: Extends connector-configuration-detail-screen.spec.ts (and its shared test-support fixtures)
   to prove the corrected INVALID_CONFIGURATION_WARNING text and Save-blocking hold across all three isValid=false
   shapes — unparsable text, a syntactically valid array, and syntactically valid null — and that the underlying
   validity gate is unchanged.
-implementation: sha256:a856c412a45bb678ab9c982672f2bee3f9a477b08d20ffde7321e8a2055725bd
+implementation: sha256:2caaae81acfcc5555aa25d35f9bca6ab5a84944a4ce16cd6d158a1a314d6a3b4
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

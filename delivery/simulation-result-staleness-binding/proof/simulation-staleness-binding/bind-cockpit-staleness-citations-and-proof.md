@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof for the cockpit's staleness citation bind
 summary: The three existing tests in use-case-simulation-cockpit-staleness.spec.ts remain the whole proof
   of the return-mount behavior the two nodes govern; the criterion asking for a test that directly proves
   history.markLastRunStale() itself was invoked is left unmet, disclosed here rather than satisfied by
   a technique the project's own standard forbids.
-implementation: sha256:5153d4a7deb9e8ca3609adca1c0af2c3755f20e715f4e43618dd765d11b36fa4
+implementation: sha256:7a22d4a7ce68254d614b9785aeaf6641197c26cc859ab5fa02550a5aeb5a3ac9
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

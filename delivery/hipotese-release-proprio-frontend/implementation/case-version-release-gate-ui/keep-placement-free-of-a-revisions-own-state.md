@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Confirm manifest placement stays free of a revision's own state
 summary: Verified that the manifest composition surface never reads a hypothesis-revision's own draft/released state as a gate on offering, choosing, removing or repinning a manifest entry, and made no source edit because none was needed.
 task: sha256:c84002b3c5c0b21cbdf31a4ce4240da41805dacdbd4e900400c381fa25a7334c

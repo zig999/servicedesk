@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Hold the simulate dispatch open for a missing requirement -- test proof
 summary: Corrects the one pre-existing hook-level test whose assertion this task's own isReady change
   makes wrong, and adds hook-level and cockpit-level tests proving that a required case-input-requirement's
@@ -6,7 +7,7 @@ summary: Corrects the one pre-existing hook-level test whose assertion this task
   mere presence never gates either dispatch, and that the requirement's own required flag still survives
   the read even though the gate stopped consulting it -- while confirming criteria 4-6 are already covered
   and adding nothing redundant for them.
-implementation: sha256:bfb0542c90e21a5d91bb721b134dba713221e0a98789e76be1f1cd53423f1dbf
+implementation: sha256:867cd0592cd48097165379610d8c12e09d24f954876dc064069efedddc97f238
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

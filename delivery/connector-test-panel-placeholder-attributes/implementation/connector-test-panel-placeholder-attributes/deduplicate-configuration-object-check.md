@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Deduplicate the well-formed-configuration-object check into one shared primitive
 summary: A new shared, exported isPlainRecord primitive under frontend/app/src/shared/services/ replaces
   the two private, identical typeof/null/Array.isArray checks use-test-connector-panel.ts and simulation-subject-derivation.ts

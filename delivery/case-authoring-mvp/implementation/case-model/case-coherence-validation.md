@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Case coherence validation over the two query ports
 summary: A pure validator under src/case that reads the current glossary and capability registry through their published query ports and refuses a structurally valid case once, with every coherence violation named in one typed error.
 task: sha256:a766973c424225061a88a666246210c17f985c073b3a8baad587fac204674c1e

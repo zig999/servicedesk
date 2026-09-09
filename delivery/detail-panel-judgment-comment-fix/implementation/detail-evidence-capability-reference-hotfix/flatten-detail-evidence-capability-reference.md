@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Flatten the Detail evidence's capability reference to the wire's own two flat
   fields
 summary: Corrects SimulateEvidenceItem, toDetailEvidence and the Evidence tab's capability/connector

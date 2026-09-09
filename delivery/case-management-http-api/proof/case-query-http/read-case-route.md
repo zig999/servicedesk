@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for GET /v1/cases/{slug}/versions/{version}
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createReadCaseRoutesPlugin
   plus the shared error handler, that a valid request returns the case version whole, a not-found slug/version
   is refused at the status status-map assigns CaseNotFoundError, and a version that cannot be assembled
   whole answers nothing partial.
-implementation: sha256:7ab27766b89269fe6a25c002ad0cd99812c1ba5ecca2cc3b15fd592a81b03b13
+implementation: sha256:902c71b35346c896b6438825dc2b5cb63938068d9c941936d084fd412d0dd093
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

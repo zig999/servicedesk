@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Always-visible manifest shortcut on the hypothesis-editing screen
 summary: Proof that the ready-phase manifest shortcut renders before any save for both entry points, targets
   the exact case version the screen was opened on, adds no request, sits ahead of the form, disappears
   once a save resolves rather than surviving into the branch the repin rule says offers no route, and
   never duplicates the post-save offer.
-implementation: sha256:68b98899b67778e029832378d071237a642beaef22a1f8b8a8d4e54a3c77bbd1
+implementation: sha256:cfffc8f7ca9c745577f59bbf4995e70b520706daae0aee5ba3b21fad6f67c87c
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

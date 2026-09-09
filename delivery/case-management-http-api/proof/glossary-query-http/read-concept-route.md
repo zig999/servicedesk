@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for GET /v1/glossary/concepts/{name}
 summary: Fastify inject tests against a locally-assembled app proving both of the task's criteria — a
   held concept answers whole on the wire, and an unheld one is refused at the status status-map.ts assigns
   ConceptNotHeldError.
-implementation: sha256:1021a01c82891f1f0ed4eb076e1b9d91948a4f8e236f39d5417b0dd7de812401
+implementation: sha256:a3f515223169d8741ec53317b093b7fc99f1a5e954c8106ab033b06b7927bcaf
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

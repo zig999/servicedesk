@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Reject non-object JSON in the connector-configuration validity check
 summary: use-connector-configuration-detail.ts's configurationValid derivation now requires the parsed value to be a plain object, not merely syntactically valid JSON, at both places within the hook where the flag is set.
 task: sha256:8870974af00700fe05f61de0ca734d61519547e27fb75ab53d40b8f12b1f8c25

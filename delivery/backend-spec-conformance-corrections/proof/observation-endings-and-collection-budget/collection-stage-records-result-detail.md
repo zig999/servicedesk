@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for collection stage recording the observation's result detail
 summary: Tests added to evidence-collection-stage.spec.ts proving settledEvidence copies an unavailable
   ObservationOutcome's result_detail into Evidence, for each of the four newly classified causes and when
   absent, while denied and observation-reported timeout endings keep dropping any result_detail they carry.
-implementation: sha256:4c7b45a71c61cc28a8886cc7321f385e5917f0086faa7fefa5e0fcca446dec32
+implementation: sha256:7d5ba6caff75cef95e022db900a6795b13411d6c13b9f4c769562960b488a667
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

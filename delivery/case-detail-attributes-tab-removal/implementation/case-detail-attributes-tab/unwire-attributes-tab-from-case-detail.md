@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Unwire the Attributes tab from Case Detail's tab strip
 summary: case-detail-screen.tsx's Tabs block now wires only Versions and Hypotheses, and the screen-level
   spec that proved the Attributes tab's presence is removed along with it.

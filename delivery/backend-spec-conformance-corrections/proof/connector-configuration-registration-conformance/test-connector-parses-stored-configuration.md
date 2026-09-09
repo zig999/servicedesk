@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Test-connector's parse-then-derive path proven, including responseMap and statusMap
 summary: Proves this task's one criterion — deriving method, responseMap and statusMap from a registered
   connector configuration's parsed, JSON-text-stored content — through the full capability-scoped test-connector
   route, citing the pre-existing tests that already prove the method half and adding two new tests that
   prove the previously-unobserved responseMap/statusMap half.
-implementation: sha256:1bc6cca54beb1cacb561226923e83e4df7160ca96a7af285c9e5e3d4428aa67a
+implementation: sha256:63302ba301391aa6f933bcd2826dc9477d80e59c27212f828086c53f54141b66
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

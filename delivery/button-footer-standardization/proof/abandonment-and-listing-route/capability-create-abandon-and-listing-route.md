@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Capability create screen's abandonment and listing-route controls
 summary: Tests prove the split creation-surface controls — an abandonment that goes back through router history, or falls to the listing with none to return to, and issues no register call, and an unconditional route to the listing on every reading that also issues none — correct three pre-existing specs on this surface that asserted the pre-split fixed-link behaviour, and correct one assertion in a sibling task's spec that pinned the control's role.
-implementation: sha256:0f1a3e11770f788855bee414cb16c83080075b65e8989ea366f97ba8e1f2b8f7
+implementation: sha256:7ced0072ed0d2f158859d5a41d44a2c07858fbe49624b2432ae74f94b87f784e
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

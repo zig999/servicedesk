@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector-configuration read responses answer configuration as a JSON string
 summary: GET /v1/connectors/{connector} and GET /v1/connectors now both re-serialize
   the registry's held configuration object back to the JSON string domain/integration/connector-configuration

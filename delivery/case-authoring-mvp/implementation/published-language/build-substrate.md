@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Build substrate for the backend target
 summary: The manifest, strict compiler configuration and flat lint configuration the project's standard presupposes, arranged over the greenfield tree so every declared step completes and no database driver is declared.
 task: sha256:1b137c9a59e46e6b742d16e5a9b203736bbf8e00e24d6b370a35d6a949d57616

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ReadCaseResult and readCase drop the retired document hash; run-diagnosis's header stops calling
   the pin content-based
 summary: Removes the leftover hash field from ReadCaseResult and readCase's return in the knowledge context's

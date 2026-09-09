@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Store write guards against a non-draft version
 summary: placeHypothesis, removeManifestEntry, release, discard and insertRevision in RelationalCaseStore
   now read the version's (or case's) state and refuse the write before it happens, mirroring the read-state-then-refuse-or-write

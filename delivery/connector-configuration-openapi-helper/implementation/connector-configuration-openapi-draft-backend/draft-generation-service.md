@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector configuration draft generation service
 summary: A pure composing function that fetches an OpenAPI document, reads the chosen
   operation through the existing reader, resolves subject and credential placeholders,

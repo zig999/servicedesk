@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/glossary/{vocabulary}
 summary: A thin Fastify plugin, controller and Zod DTO expose IGlossaryQuery.listVocabularyTerms over
   HTTP, refusing an unrecognized vocabulary segment at the DTO boundary alone.

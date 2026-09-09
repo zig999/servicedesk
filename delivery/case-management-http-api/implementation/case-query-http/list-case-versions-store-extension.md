@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ICaseStore gains listCaseVersions
 summary: Adds a paginated listCaseVersions read to ICaseStore and its relational adapter, refusing a slug
   naming no case at all through CaseNotFoundError.

@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Proof that TestDispatchOutcome makes a stale succeeded result and a fresh failed message structurally
   uncoexistable
 summary: Two compile-time constructions prove the sole criterion at the type level; two runtime tests
   witness it and this task's own two disclosed inferences in the composed panel; two pre-existing spec
   files were mechanically adapted to the new testOutcome shape so the suite still builds.
-implementation: sha256:1e60d0894f260ba400b9e046250f437c765b1c55bb4d86f205fdc6eff0b7784d
+implementation: sha256:b18cdfadc6c6a181aab462f226b8ec5d565843d53fb185bd2917c2ed940f7132
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

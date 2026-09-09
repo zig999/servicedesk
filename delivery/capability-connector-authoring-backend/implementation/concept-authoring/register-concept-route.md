@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose register-concept as a write HTTP route
 summary: Adds a PUT route, controller and DTO pair for register-concept, wired into the app the same way
   register-capability was, over GlossaryService.registerConcept.

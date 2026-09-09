@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for refusing a malformed capability input schema and reading a legacy one as empty
 summary: Direct tests of the new capability-input-schema-shape module, registerCapability's new refusal
   at both the service and route levels, and the status map's new entry, proving all six criteria and the
   recorded inference.
-implementation: sha256:41b093d874d9842bda6a69d6c353e9b169623cc4a9a72863b210a4a09268e90b
+implementation: sha256:0e7f95a93f14bc1e8e32d5751dfc9e14fce9e7d45a82b558be53a6b64ab5b00d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

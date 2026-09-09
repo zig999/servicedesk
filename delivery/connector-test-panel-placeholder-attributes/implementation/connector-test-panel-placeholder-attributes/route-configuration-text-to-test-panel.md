@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Route Configuration's text to the test panel's hook
 summary: ConnectorTestPanel gains a required configurationText prop that ConnectorConfigurationDetailReadyView
   fills with its own live state.configuration.value and forwards into useTestConnectorPanel(connector,

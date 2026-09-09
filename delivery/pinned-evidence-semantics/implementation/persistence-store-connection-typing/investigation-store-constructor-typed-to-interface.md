@@ -1,4 +1,5 @@
 ---
+target: backend
 title: RelationalInvestigationStore's own constructor retyped to IConnectableQueryable
 summary: relational-investigation-store.repository.ts's own constructor parameter is retyped from the
   concrete DatabaseConnection to the connect()-capable IConnectableQueryable interface database-access.ts

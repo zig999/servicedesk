@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Shared ButtonFooter component
 summary: Adds the ButtonFooter component that renders any buttons a screen gives it in an end-aligned, accessibly-grouped row, pinned via CSS sticky to the bottom of AppShell's scrollable main region, without touching app-shell.tsx.
 task: sha256:3c6643dd2454fe3aa329901b1d27af4e6657411dff04be522aa6a1acd7677b03

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Proof for reading a hypothesis's highest revision and release state
 summary: One unit-level pair proving the port module imports no driver, framework or provider
   client, and seven integration-level tests against a real PostgreSQL database proving
@@ -6,7 +7,7 @@ summary: One unit-level pair proving the port module imports no driver, framewor
   the released-reference fact exactly as the task's criteria state, including the two
   discriminating cases — draft-only reference, and a released version pinning a lower revision —
   the port's own discriminated-union shape excludes from ever defaulting wrong.
-implementation: sha256:8b135ae541bfbc5191633b8924c102b10c6b5336fcf2ef3302c1227767c66c33
+implementation: sha256:2b619f89c89eb12ceffd971b27b770c9a52d66bba6b15bd813cbde241f1ffe34
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

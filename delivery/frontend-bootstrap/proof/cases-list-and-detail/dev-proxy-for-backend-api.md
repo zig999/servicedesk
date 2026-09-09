@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the dev-server proxy to the real backend
 summary: Statically asserts vite.config.ts's own server.proxy["/v1"] entry, and names the two criteria a unit suite cannot exercise or verify was left untouched.
-implementation: sha256:63b0bf6577a87e2c89309bd2a45b9ebc96ece09b2e64544a458e540eb3d35007
+implementation: sha256:f8817c1637b4c007025f55297041d829e1757f5beec3f9bedfdd92c9988525f4
 run: run/cases-list-and-detail-onda-2-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

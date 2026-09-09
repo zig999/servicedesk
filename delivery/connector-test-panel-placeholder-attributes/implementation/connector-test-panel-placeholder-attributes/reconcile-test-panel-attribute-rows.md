@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Reconcile the test panel's attribute rows against Configuration's subject-attribute placeholders
 summary: useTestConnectorPanel's onAddAttribute now reads Configuration's current text at click time and
   reconciles the attribute/value rows against every currently-present ${subject:<attribute>} placeholder,

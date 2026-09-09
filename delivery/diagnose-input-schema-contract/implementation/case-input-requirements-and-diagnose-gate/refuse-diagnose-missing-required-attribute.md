@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Diagnose entry gate refusing a subject that misses a required case input
 summary: handleDiagnoseRequest reads the pinned case version's derived input requirements and refuses,
   with a 422 SubjectDoesNotCoverCaseInputsError, before runDiagnose is ever called, if the subject leaves

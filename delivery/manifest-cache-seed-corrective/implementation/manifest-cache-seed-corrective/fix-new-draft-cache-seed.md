@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Stop seeding a partial case-version cache entry at draft creation
 summary: Removed the incomplete initialData seed a new draft wrote into the shared
   ["case-version", slug, version] React Query cache entry, so every consumer of that

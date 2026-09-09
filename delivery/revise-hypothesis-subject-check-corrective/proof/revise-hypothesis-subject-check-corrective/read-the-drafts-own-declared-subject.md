@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Revise-hypothesis's concept-acceptance check reads the draft's own declared subject, never input.subject
 summary: Two new integration tests against ReviseHypothesisOperation prove that a caller-supplied input.subject disagreeing with the case's draft version's own declared subject plays no part in the concept-acceptance outcome, in either direction.
-implementation: sha256:8b8ab59d982c911f06ff06a4ad5eec90bc76caf48c7bcf5b1fcbcd86135495fd
+implementation: sha256:6568cf0b1847267875c13b91b92278f28000495336401333cc769c1d919363cf
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

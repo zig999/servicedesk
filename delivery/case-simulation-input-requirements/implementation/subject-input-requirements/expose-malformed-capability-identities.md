@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Carry malformed-input-schema capability identities onto the simulation subject state
 summary: useSimulationSubject's returned SimulationSubjectState now exposes capabilitiesWithMalformedInputSchema,
   passed through unchanged from useCaseInputRequirements alongside requiredFields.

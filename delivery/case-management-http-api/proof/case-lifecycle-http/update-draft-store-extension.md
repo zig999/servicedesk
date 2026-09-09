@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for ICaseStore.updateDraft (task/case-lifecycle-http/update-draft-store-extension)
 summary: Five integration tests against the real database prove RelationalCaseStore.updateDraft persists the five
   declared attributes only while a version stands in draft, refuses a released version through CaseVersionNotDraftError
   before any write, refuses an absent slug or version through CaseNotFoundError, and leaves everything beyond its
   own five attributes untouched.
-implementation: sha256:2e87e2d1bcb7a3f7f00cfcff1e1afca3a05d067cdf9936de8600ec83aec13fbe
+implementation: sha256:d69b15bd7d8ef03bde5ad3f91b1ce5fd89d60c6b8febbd1ff3ef4ac1d8387ebe
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

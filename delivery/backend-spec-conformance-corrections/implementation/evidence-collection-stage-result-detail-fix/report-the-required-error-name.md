@@ -1,4 +1,5 @@
 ---
+target: backend
 title: unavailableEvidence names its cause by the error's own class name
 summary: evidence-collection-stage.ts's unavailableEvidence() now reports "CapabilityNotResolvedForObservationError"
   as result_detail, read from the error class's own .name rather than a free-text sentence, matching the

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configuration screen return route
 summary: The standalone Back to connector configurations links are removed from every phase of both connector-configuration screens, and the detail screen's loading and load-error phases — which carried no footer at all — now offer the route to the listing through the shared ButtonFooter instead.
 task: sha256:3d6f5ffe8a31868b6d4509b4e6a2b016ca80c642fbf7770c87b3a7140df0e5fa

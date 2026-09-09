@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Glossary vocabulary as data behind a store port
 summary: The four term vocabularies and the concepts as pure domain values whose plain-JSON persistence reaches them only through a domain-declared port, with uniqueness, the sixty-second ttl default and the two non-conclusion outcomes guaranteed by the glossary's holding.
 task: sha256:0b16dc668e8332c826cccfcfee2d31cfb3c17e48971d1794187709840c44dfea

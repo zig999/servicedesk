@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the glossary vocabulary
 summary: What proves task/published-language/glossary-vocabulary — the unique-name refusals, the concept shape and its sixty-second default, the seeded non-conclusion outcomes, the plain-JSON persistence, and the two import audits, including the one the UNDERDETERMINED note demands.
-implementation: sha256:2e52f256825d59ef6eea9a690be2b8247b3d3392ac49081d2d5c226a2a4c781e
+implementation: sha256:d40e39c1fb2b7e3c9b431b752a5e3bec5208e3b6dc9f210fa94872fd0baf6b10
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

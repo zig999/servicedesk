@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Fix post-case-lifecycle stale citations in four investigation/case doc comments
 summary: Corrects doc-comment attributions in validate-case-coherence.ts, judgment-stage.ts, citation-validation.ts
   and resolve-and-narrow-input.ts so title, when_to_use, subject, fallback, collects, resolution and criterion

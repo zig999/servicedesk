@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configuration single-record edit hook
 summary: A new hook, useConnectorConfigurationDetail, that GETs one connector configuration
   by identity, tracks isDirty against a re-seeded loaded-or-saved baseline (including

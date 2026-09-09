@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Release-conditioned refusal on hypothesis_revisions UPDATE
 summary: A new migration replaces the unconditional no-update rule on hypothesis_revisions with a per-row
   trigger that refuses an UPDATE, raising a distinguishable error, only when a released case version's

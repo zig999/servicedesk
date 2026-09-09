@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: 'Review: detail-panel-judgment-comment-fix'
 summary: What four passes found over the corrective fix flattening the Detail evidence capability reference
   to the wire's own two flat fields.

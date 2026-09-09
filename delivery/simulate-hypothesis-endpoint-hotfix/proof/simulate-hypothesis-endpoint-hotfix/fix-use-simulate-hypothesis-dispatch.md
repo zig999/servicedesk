@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for fix-use-simulate-hypothesis-dispatch
 summary: Proves the corrected POST /v1/simulate/hypothesis dispatch (route, body shape, requester forwarding,
   response envelope, and the cockpit's own call-site forwarding), and repairs the six pre-existing test/fixture
   files that modeled the defective dispatch this task replaces.
-implementation: sha256:7031cabb9fac5e6aac7b8294625598d805d84fc6c736fa4a713f1bb2c70986f2
+implementation: sha256:f86965dda269e602aaa144e8ae8ff1c17cfce5f0c459351e898007ba957dfb38
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for DELETE /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createRemoveHypothesisRoutesPlugin plus the
   shared error handler, that a valid removal answers a wholly empty 204, that both named refusals resolve to the status status-map
   assigns, and that path validation and the generic-500 fallback behave as disclosed.
-implementation: sha256:73bf83d11328ad2f814503fc02b4f3e52543d29809c6aa115a27b69e3a44dd31
+implementation: sha256:5f0c13d391d0c2d3e9e7fd5f27b1eecfc854aeebc54134ba76ba07ce3ad4c6bf
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

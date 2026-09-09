@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Refuse register-connector when a placeholder escapes every capability's properties
 summary: registerConnector now refuses a connector-configuration registration or edit whose call text
   embeds a Subject-attribute placeholder that no capability currently registered against that connector's

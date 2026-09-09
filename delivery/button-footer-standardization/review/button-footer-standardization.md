@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Review of the shared ButtonFooter delivery
 summary: What four passes found over the two files task/shared-action-footer/button-footer-component wrote, with the standard's one departure, the coverage the tests do not reach, and two failures the captured run reported from files outside this change.
 reviewed:

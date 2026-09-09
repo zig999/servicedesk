@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Proof for the Hypotheses tab and its revision-history view
 summary: Twenty tests across three new spec files (plus a shared test-support module) prove hypotheses-tab's
   seven criteria -- the new Hypotheses tab beside Versions, the hypothesis list and its total-derived
   Revisions count, the expand/collapse into a hypothesis's own revision history, and that history's current/frozen
   labeling with its Revise link -- while confirming the pre-existing case-detail-screen.spec.ts needed
   no changes because the Versions tab stays selected and mounted by default.
-implementation: sha256:f862bfd71c5d4bb7df54f02a35bd3d7e673123d592375e9519a857880370ee74
+implementation: sha256:57beb610f311050da5b2d95018d2f0ae38f411da6c71a051b86147d42f7e467f
 run: run/manifest-hypothesis-authoring-onda-4-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

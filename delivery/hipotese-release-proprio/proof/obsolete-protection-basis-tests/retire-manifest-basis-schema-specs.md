@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for retiring the manifest-basis persistence schema specs
 summary: Confirms, by reading the two edited files in full and cross-referencing a fresh full suite run,
   that the two schema specs no longer attribute refusal, content-survival or collects-survival to a released
   case version's manifest reference, that every removed assertion has a state-only equivalent already
   standing in the sibling file, and that the retained/sibling tests still pass.
-implementation: sha256:3f8f2a58136d822e3c8bcbd84a5a672f9659502615fc988777b8b88a5e5c4d60
+implementation: sha256:abdb3ac391eedf738c0d8a7859ee605396cf68ae1fba31ad96b2f8f80f007b2b
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

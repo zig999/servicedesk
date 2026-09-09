@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for the shared relational access helper
 summary: Unit-level tests over stand-in IQueryable/DatabaseConnection objects proving the four criteria's
   mechanics, plus integration-level tests against the real database proving each criterion's actual data
   effect.
-implementation: sha256:260a1a45b3e0c7acef4949ab6c774992657021fe02a7fcaada6d836c7f1b0d5c
+implementation: sha256:077efbfd49acef06589a6f6500f318a85171855f051b1427db004f2b39c5a541
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

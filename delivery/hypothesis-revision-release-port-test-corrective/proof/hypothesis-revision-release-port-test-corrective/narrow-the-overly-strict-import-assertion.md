@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Narrowed import assertion in hypothesis-revision-release.port.spec.ts
 summary: The two rewritten tests mirror the sibling port test's denylist pattern verbatim (except source path), replacing the prior bare "no import at all" check and passing because the port itself imports nothing.
-implementation: sha256:0d103c5c0c60fc0f2d00b0c108a565807cd41d0ec90f54a322ec5657016b6a5f
+implementation: sha256:cdf702752de7a34de8afddcd6187aa6bb03bf084153e6481b808cd0ea53e9692
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

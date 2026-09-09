@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of diagnose-persistence-deadline-fixture-corrective
 summary: 'Four passes over the one file task/diagnose-persistence-deadline-fixture-corrective/route-through-the-declared-lifecycle-operation delivered: coverage of its two criteria, per-file specification conformance folded into siegard-reconcile/diagnose-persistence-deadline-fixture-corrective.md, the backend standard''s reading rules, and the whole-suite run, which passed clean.'
 reviewed:

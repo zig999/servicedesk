@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: NewCaseDraftScreen's subject-field tests match the shared component's corrected behavior
 summary: Independently confirms, against case-version-editor-form-fields.tsx and both corrected spec files
   as they stand, that all four corrected assertions match the subject Input's current disabled={isBlocked}/"Subject
   type" behavior and that nothing else in either file changed; adds one new test proving this screen's
   own isBlocked (createMutation.isPending) is what the four corrected assertions' "false" actually depends
   on.
-implementation: sha256:c8dea32775865be2ca78d9f43a96648f5ff47353e3762bdd168ebdd8340cc4fd
+implementation: sha256:fe293f7f8b328fb863cc71081f0d6148adff9fec1ff6e3fbaf2fa7661eb26b81
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

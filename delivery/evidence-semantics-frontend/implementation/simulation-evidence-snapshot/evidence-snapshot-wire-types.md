@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Snapshot fields on the simulate wire types and adapter
 summary: Both simulate hooks' wire evidence types gain optional fields and concept_description, and toDetailEvidence carries both onto the Detail region's own render type, which declares the identical honest-empty reading for a record collected before the snapshot existed.
 task: sha256:dfd8b668620d47a6b1a21b20f51b6ae9e47d4d9a50c2dd7b6eee884a4e028472

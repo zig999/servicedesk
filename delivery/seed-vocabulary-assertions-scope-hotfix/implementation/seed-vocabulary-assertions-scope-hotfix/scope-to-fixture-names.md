@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Scope seed.spec.ts's five vocabulary assertions to the fixture's own declared names
 summary: Five it() blocks in seed.spec.ts now select from public.outcomes, subject_types, actions, recipients,
   concepts and concept_accepts filtered by WHERE name = ANY($1) (concept_name = ANY($1) for concept_accepts),

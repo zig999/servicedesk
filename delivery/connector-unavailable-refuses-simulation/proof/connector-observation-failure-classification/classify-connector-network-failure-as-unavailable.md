@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Connector transport-rejection classified as unavailable
 summary: Proves that HttpDeclarativeObservationSource now resolves a connector call's
   transport-layer rejection to an unavailable ObservationOutcome naming ConnectorUnreachableError
   and the connector — end to end through evidence collection and hypothesis judgment
   — instead of letting it propagate uncaught, while leaving every other resolution-step
   cause, the timeout path and ConnectorUnreachableError's own cause-preservation untouched.
-implementation: sha256:e93bffd24400d849ac917225ebd79b361ecc4e24479645e1240cb02300753d84
+implementation: sha256:01daa10fc13d5c02c22e3e3085da997855b20ebcd80e5e237c67fda93f08c326
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

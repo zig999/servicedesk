@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Runtime proof that testOutcome is derived from the mutation, and TYP-04 still holds across sequential
   dispatches
 summary: Four renderHook-level tests over useTestConnectorPanel prove testOutcome tracks mutation.status/data/error
   on every render with no separate settable copy (criterion 1), and that a second dispatch's outcome never
   carries the first dispatch's leftover result or message in either succeed-then-fail or fail-then-succeed
   order (criterion 2).
-implementation: sha256:de32a988c5de90a49c00e8afa85f8f73cbbb29e6174ed7ae9364b84e253213a9
+implementation: sha256:85f582761b75fbd7863eb8799f2d56b44bc0b96f5754a113f0e878dcc51773c6
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

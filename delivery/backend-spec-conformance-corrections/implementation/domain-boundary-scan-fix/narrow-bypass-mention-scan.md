@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Domain-boundary bypass-mention scan no longer flags a cited specification-node identity
 summary: The ninth test in domain-depends-on-no-infrastructure.spec.ts narrows its http-connector bare-mention
   scan so a citation of a specification-node identity that merely contains that substring in its own slug

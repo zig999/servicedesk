@@ -1,5 +1,6 @@
 ---
-implementation: sha256:bc490b581e0230db03bd3bfdbb5b1d28bea46020bab75d9c798c2c6b1dc6c8ce
+target: frontend
+implementation: sha256:00357bc6e360fa21b8033b8bd043e1afb55d6bd1c2c9c3d47b45073bf3adcf8b
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

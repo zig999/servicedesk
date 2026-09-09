@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The runnable migration step, its CLI entry, and the suite's own global setup
 summary: A shared migration runner applied idempotently by a new CLI entry point and by vitest's own global
   setup, both reading the connection URL from environment configuration alone; its own bookkeeping queries

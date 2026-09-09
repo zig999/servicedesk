@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Subject-placeholder resolution proof
 summary: Vitest tests over resolveSubjectPlaceholders exercise every criterion, both
   UNDERDETERMINED entries and the recorded inferences by supplying a stand-in ICapabilitiesReader
   and asserting the returned SubjectPlaceholderPlacement's path/query/headers/body/unresolved
   fields.
-implementation: sha256:a8c3cef96177e538bbf7e5708edb5acc0acdbd512bfffb9c4a0f920bf9c8160c
+implementation: sha256:c17fae296441c57678047cfb6db8d7ea096b0af80c58e15a46d09b0ff08e8edb
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d

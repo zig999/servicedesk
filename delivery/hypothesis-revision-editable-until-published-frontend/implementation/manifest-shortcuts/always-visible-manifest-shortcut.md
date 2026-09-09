@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Always-visible manifest shortcut on the hypothesis-editing screen
 summary: The hypothesis-editing screen's ready phase now renders a control that navigates to the manifest
   of the case version it was opened on, reusing the hook's existing navigate-to-manifest call, while the

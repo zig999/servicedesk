@@ -1,4 +1,5 @@
 ---
+target: backend
 title: POST /v1/cases/{slug}/hypotheses
 summary: A thin Fastify plugin, controller and Zod DTO exposing the existing ReviseHypothesisOperation over HTTP, narrowed
   to CaseLifecycleOperations['reviseHypothesis'] — with a genuine defect in already-delivered domain code discovered and disclosed

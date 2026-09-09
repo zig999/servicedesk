@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Publish draft-connector-configuration-from-openapi as an HTTP operation
 summary: Adds the POST /v1/draft-connector-configuration-from-openapi route, its zod
   DTO, its thin controller over generateConnectorConfigurationDraft, and its factory

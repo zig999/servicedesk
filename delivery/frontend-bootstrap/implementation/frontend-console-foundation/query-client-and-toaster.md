@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Global QueryClient and single Toaster mount
 summary: Adds a module-level @tanstack/react-query QueryClient that toasts on a background query failure through sonner, wraps the routed app in its QueryClientProvider, and mounts the one Toaster inside AppShell.
 task: sha256:218924b1ab8ff3ad29d709d3fd1e4ba01f2c2061b0d2380fdd2e14c1df6c5b0c

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ticket_ref becomes optional across the investigation build/run chain — proof
 summary: Tests that BuildInvestigationOptions.ticket_ref, Investigation.ticket_ref and RunDiagnosisOptions.ticket_ref
   are genuinely optional (not merely accepted after a delete-and-cast bypass), that an absent ticket_ref
@@ -6,7 +7,7 @@ summary: Tests that BuildInvestigationOptions.ticket_ref, Investigation.ticket_r
   still propagates unchanged, and that the one recorded inference about the untouched investigation store
   holds; one pre-existing test that the delivered change made stale is corrected to state the new, intended
   behavior.
-implementation: sha256:0b0628d8a6e129cd7d8e882bad3d5bce67f352220fc2b1c7614b00c067607723
+implementation: sha256:b6e053796eee8f127051ae41fe8c785052dc4860ba0d3350ec5ca9dbd32b6bcd
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

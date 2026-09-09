@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Routed capability create screen
 summary: Adds a full-page capability create screen at "/capabilities/new", composing the existing capability
   form-fields and the shared create/edit hook's create mode, wired as a static sibling of the dynamic

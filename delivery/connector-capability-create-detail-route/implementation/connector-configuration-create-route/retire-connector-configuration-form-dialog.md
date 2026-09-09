@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Retire the connector configuration popup form dialog
 summary: The connector configuration form dialog component and its nullable-identity form-target
   type are emptied out of the tree and no longer declared, leaving the routed create screen's

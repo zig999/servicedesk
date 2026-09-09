@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for exposing malformed-capability-identities on the simulation subject state
 summary: Renders useSimulationSubject directly through renderHook against a stubbed global fetch, proving
   all three criteria and the UNDERDETERMINED note over deriving the list from the read alone, split into
   a sibling .spec.ts file to stay under this project's own max-lines rule.
-implementation: sha256:3bb8571d33db080b3018cb60a90aa1ce444666a767fb529613e7f7ab5d8c87f7
+implementation: sha256:183744da47cb8a4045f700e028751029d34603c2af3a5df3820161cc7b05ddb8
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

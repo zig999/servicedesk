@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: New Draft origination flow, over the Version Editor's shared form
 summary: Adds a "New draft" entry point to Case Detail that opens a blank instance of the Version Editor whose first Save issues POST /v1/cases, then switches in place into edit-draft-version's own PATCH-based edit-mode flow, and handles the 409 CaseAlreadyHasDraftError race with a toast plus a redirect to the case's existing draft.
 task: sha256:93a8b6cf2b4aa1491715168deff42bed77daa119ea44dd83713d3d2690837af9

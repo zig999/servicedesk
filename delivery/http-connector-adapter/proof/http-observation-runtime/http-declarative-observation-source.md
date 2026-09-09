@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the generic HTTP adapter behind IObservationSource
 summary: What proves task/http-observation-runtime/http-declarative-observation-source, written against
   its implementation record — every criterion and every recorded inference held by a test that fails for
   a stated reason, with the network, the capability registry and the connector-configuration registry
   stood in for and no real call made.
-implementation: sha256:be2420123f5bbd3d0cef7776c01de790aab95733f542bc74378382e7c2954881
+implementation: sha256:14c002f78632f0860335e053442afa8c0022f06873eacf8beb2288cd975856e9
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

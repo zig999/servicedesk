@@ -1,9 +1,10 @@
 ---
+target: backend
 title: writeConnectorConfigurations upserts by identity — full proof
 summary: Tests proving the corrected connector-configuration store upserts by connector identity, deletes
   nothing, and satisfies the corrective task's three criteria, rewritten whole to close the coverage gap
   on criterion 2 and to relabel the schema-fitness test the review found mislabeled as an inference.
-implementation: sha256:a02d5fcfde8c0ea87dabd0f137ff6076ef0d1a352948923ac48078c0e788adde
+implementation: sha256:13a50c57242d39b2922ab5fe2b1fc88e24bfa8cd10024c03b4afe273bbe805a5
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

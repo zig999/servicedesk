@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The relational capability store, and the concept column its schema had been missing
 summary: Adds RelationalCapabilityStore, the database-backed implementation of ICapabilityStore, and the
   migration that gives capabilities the concept column domain/integration/capability now declares required.

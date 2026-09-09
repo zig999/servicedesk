@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: cases-list-screen's CaseSummary comment cites the current specification nodes
 summary: Four file-content tests, one per comment-content criterion, pin the corrected JSDoc above CaseSummary
   in cases-list-screen.tsx against the two stale phrases it must no longer carry and the two specification
   quotes it must now carry, following this codebase's own established convention for this exact criterion
   shape.
-implementation: sha256:54786185f043852bbb0b6060b93cfa68dc31f0065e5a5c03abe4eed8be996ce6
+implementation: sha256:f322ab38705da56169ac6ed16e11a327b4db0d27da785af8bf2973797eed5bce
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

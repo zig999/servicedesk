@@ -1,4 +1,5 @@
 ---
+target: backend
 title: CaseVersionNotValidError renamed and mapped to 409, six stale test files corrected, status-map
   coverage added, and the specification gap documented without asserting it
 summary: Proves the renamed CaseVersionNotValidError maps to HTTP 409 with the right error code across
@@ -6,7 +7,7 @@ summary: Proves the renamed CaseVersionNotValidError maps to HTTP 409 with the r
   corrects six test files still naming the retired identifier CaseNotValidError, adds the missing status-map
   unit test, and converts the one test that would have asserted the task's own UNDERDETERMINED note into
   a non-asserting it.todo so the suite stays green while the gap stays visible.
-implementation: sha256:c3fc821e530805cde0b7639f856e0b0c10b1db5baf0de016d93fc701e372ffa3
+implementation: sha256:98b4ba7e4c2d6a8525515251bbf839c3dc578e8139b138f800ef7a98cf7bd7f1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

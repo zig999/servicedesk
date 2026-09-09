@@ -1,4 +1,5 @@
 ---
+target: backend
 title: revise-hypothesis operation
 summary: A new ReviseHypothesisOperation checks a hypothesis-revision's collects list against the a-hypothesis-collects-at-least-one-concept,
   case-terms-exist-in-the-glossary and a-concept-accepts-the-declared-subject-type rules before delegating

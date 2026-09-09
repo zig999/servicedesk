@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Evidence tab renders the snapshotted concept_description and field semantics
 summary: Two new render helpers show each evidence item's snapshotted concept_description and per-field semantics, distinguishing a pre-snapshot record (renders nothing new) from an honestly empty one (renders a stated absence), reading only from the simulation response already in hand.
 task: sha256:520f00e96001cfa8860f2f992d49b23633f438f2af07136b2c81968b1f43316d

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Fixture case, its glossary, its capabilities and its canned observations
 summary: One fictitious "intermittent-connection-outage" case, valid against every current knowledge rule,
   ships with the glossary vocabulary, capability registrations and canned per-concept observations its

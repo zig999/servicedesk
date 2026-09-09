@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Save dispatches the revise, mounted against the footer portal the running application actually takes
 summary: Proves the save control keeps the screen's own form as its DOM form owner and reaches the revise under the footer-slot
   portal, by mounting the hypothesis revision screen with a FooterSlotContext provider present rather than the bare-Outlet
   harness the earlier specs used.
-implementation: sha256:55df83e4c1dfafd8409cfa4c45e2ada0a7f4fc8090ebde3a65ded8adf71519fd
+implementation: sha256:45802cd87fad648b0adab4920242e641ffe5c5501dd9de64893b87fe53157803
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed

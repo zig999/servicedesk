@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Map revise-hypothesis's four unmapped errors to typed HTTP statuses
 summary: Adds CaseHoldsNoDraftError (409), ConceptNotInGlossaryError (404), HypothesisRevisionCollectsNoConceptError
   (422) and ConceptRefusesSubjectTypeError (422) to status-map.ts's STATUS_BY_ERROR_CLASS table and updates

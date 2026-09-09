@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: connector-capability-detail-editing-corrections-frontend, first review
 summary: 'What four passes found over the frontend corrective change''s two tasks: rejecting non-object JSON in the connector-configuration validity check, and requiring confirmation before Discard on both detail screens.'
 reviewed:

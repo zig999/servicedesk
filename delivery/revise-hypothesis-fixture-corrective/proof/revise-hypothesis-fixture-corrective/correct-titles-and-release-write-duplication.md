@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Retitled tests and the guarded release-write substitution in revise-hypothesis.operation.spec.ts
 summary: Confirms the two corrected test titles now name their own bodies' governing conditions, adds one new test proving releaseHypothesisRevisionOwnState's substitution actually enforces the guard, and cites the file's own unchanged full suite for continued passing.
-implementation: sha256:b80e8f9031fc9a79c53962cb8b3b60dcb3364221cacabb971915f97c6167f9c7
+implementation: sha256:f88047124f6137e2347e1a7eb0829c338accfb3b6efa077d5920386cce6362de
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

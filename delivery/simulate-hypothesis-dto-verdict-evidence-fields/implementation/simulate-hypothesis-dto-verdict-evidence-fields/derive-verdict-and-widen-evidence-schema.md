@@ -1,4 +1,5 @@
 ---
+target: backend
 title: simulate-hypothesis DTO derives verdict from VERDICTS and widens evidenceSchema
 summary: evaluationSchema's three verdict branch discriminators now derive from the imported VERDICTS
   array, and evidenceSchema requires fields and concept_description typed against the shared field-semantics

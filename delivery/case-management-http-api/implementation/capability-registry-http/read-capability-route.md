@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/capabilities/{concept} — read-capability HTTP route
 summary: A thin Fastify plugin, controller and Zod DTO expose the existing readCapability domain operation
   over HTTP, with a new typed error and status-map entry translating its held:false answer into 404.

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector-configuration not-found relocated into a service-level wrapper
 summary: read-connector-configuration.controller.ts no longer performs its own held-check-and-throw; ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow raises ConnectorConfigurationNotFoundError instead, wired only into that route, while the raw readConnectorConfiguration method and every other consumer stay untouched.
 task: sha256:0a1b9d594440c4c75388efb27c098b8831a74030bf8af41227d6245b83064f5e

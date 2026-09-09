@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for capability registration
 summary: What proves task/capability-registry/capability-registration — the registry's refusals, the sixty-second default held as 60000 milliseconds, the plain-JSON persistence, and the exclusions the task's two UNDERDETERMINED notes require.
-implementation: sha256:26e676cc01d244ea1b67d653c1bc158d1af73d3dd43676603c5e7676b6323b5d
+implementation: sha256:8635d920a4d807d3e9ca20cef86d6baa611705d75938ae38bc23ab874e339a4b
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Revision history table reads "current" from the case's highest-numbered version's manifest pin
 summary: The hypothesis revision history table marks the row the case's highest-numbered version's manifest
   actually pins as current, offers Revise on that row, and states explicitly when that version's manifest

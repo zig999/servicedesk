@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Proof for POST /v1/cases/{slug}/hypotheses
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createReviseHypothesisRoutesPlugin plus the
   shared error handler, that a valid request calls reviseHypothesis with exactly the parsed path slug merged onto the parsed
@@ -6,7 +7,7 @@ summary: Fastify inject()-driven proof, over a locally-assembled app registering
   that an empty collects array is passed through rather than refused at the DTO layer, and that a generic non-domain rejection
   falls through to the fixed 500 envelope — with criterion 3's CaseNotFoundError refusal left unproven and disclosed as a
   real defect rather than forced.
-implementation: sha256:fb4cdac9bfe06231ad9eb5ab1c5941fe0b7e74e82e170d5f19e500f765646a9e
+implementation: sha256:2b35b72a63c0578c3c9a981096c172f2bc8097906a4dca5f94a31f57ff2082a9
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

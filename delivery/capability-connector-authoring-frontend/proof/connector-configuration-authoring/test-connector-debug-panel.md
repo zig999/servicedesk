@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Proof for the Test-connector debug panel on the Connector Configuration editor
 summary: Six new spec files (plus one shared test-support module) proving all seven of this task's criteria,
   its own disclosed inferences, the explicit edit-mode-only fact, and the edge cases its two dependent
   reads and its one-shot dispatch raise.
-implementation: sha256:97938be2ba01af559f0b5f8e034ee8683c72a90725129c07a9d12d4afe92872f
+implementation: sha256:885fc78647401c93a9242c3a7f87bb343514a398dbc8cd19afa49eff7dcea614
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

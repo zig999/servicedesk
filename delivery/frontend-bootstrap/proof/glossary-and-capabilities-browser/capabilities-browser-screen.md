@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Capabilities Browser screen proof
 summary: Tests for capabilities-browser-screen.tsx and its use-capabilities.ts hook, covering the listing,
   the loading/error/empty states, the row-selection detail panel, every disclosed inference, and a repair
   of route-tree.spec.ts's own now-stale route-to-component mapping.
-implementation: sha256:956751a6e12c3a171245d65991ec3f49c1f837ab37e6ffb971420fd900d80ae0
+implementation: sha256:6436752fe31b4a247bcb6ddd03c3b24b60bf1537bc98f0c09832bd3e7de8ad00
 run: run/glossary-and-capabilities-browser-onda-6-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

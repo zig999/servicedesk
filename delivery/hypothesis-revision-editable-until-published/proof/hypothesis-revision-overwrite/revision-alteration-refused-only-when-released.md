@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the release-conditioned refusal on hypothesis_revisions UPDATE
 summary: Five integration tests against a real PostgreSQL database, replaying every migration
   script including 0019, proving the unconditional rule is gone and the new trigger lets an
   UPDATE through except where a released case version's manifest still references the row's own
   revision — where it raises the distinguishable error instead of silently discarding the write.
-implementation: sha256:91763574a42fea7f68ef61ed5ccebd7f502e5ce0d9ccf5fdeacfc38c0cf0f30b
+implementation: sha256:3f0334e29211c36f012bdf3064cee2a797e0ab620f2c48832284d3a7a1dc8947
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

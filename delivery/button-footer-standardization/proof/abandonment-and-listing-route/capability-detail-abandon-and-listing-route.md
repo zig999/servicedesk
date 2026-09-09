@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Capability detail surface's return-to-origin and listing-route split, across every reading
 summary: New tests prove the return act's origin-aware landing, the unconditional listing route, their presence and side-effect-freedom across all four readings including the new nothing-registered reading, and the reattempt's exclusivity to the failed reading; five pre-existing specs the split falsified are corrected in place, four owned by earlier tasks of this plan and the fifth owned by no record at all.
-implementation: sha256:1eac85ec153e8801879fbcb76ec948f275b34d6bc7527ce666fb342e755d2b98
+implementation: sha256:b9c1420786f50a7b6c223334597aa612c3fa0b2b0a7774e441b677895ec01334
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

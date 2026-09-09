@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Proof for task/relational-substrate/database-connection
 summary: New tests over env.ts's now-required DATABASE_URL, database-connection.ts's URL-only pg Pool
   construction, a repo-wide absence of deployment-provisioning artifacts, and a cross-directory import
@@ -12,7 +13,7 @@ summary: New tests over env.ts's now-required DATABASE_URL, database-connection.
   (env.spec.ts's validEnvSource() helper and diagnose-server.factory.spec.ts's literal Env object) each
   gain a placeholder DATABASE_URL so they keep typechecking and passing against the now-widened Env, with
   no assertion in either file changed.
-implementation: sha256:a40cba3703742f1da944edb8fc72d4adca5342d755e7a6c7e50e524ad7e193a3
+implementation: sha256:6875f916aaef4dfdaa4a368e2b9c797cd4f500e4f7d4c408f7abf636d5f21847
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

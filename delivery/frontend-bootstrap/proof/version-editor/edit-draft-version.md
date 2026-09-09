@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for the Version Editor over an existing draft
 summary: Seventeen tests over CaseVersionEditorScreen, split across two files, rendered inside a self-contained test router and QueryClientProvider with a stubbed fetch, proving all eight criteria plus the loading/load-error placeholders, the absent-consolidation-register and empty-vocabulary edges, the blur-and-click double-submission guard, and the recovery path for a save failure the stated criteria do not name.
-implementation: sha256:e71873b0b3367f9fee8c4e518d67a5068c742b50d04277059fd17901befcbc14
+implementation: sha256:1d2ba4d78a8631b05813f9635e4f4de35649f9b463f4b1ab7b7ad9cf1934619c
 run: run/version-editor-onda-3-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

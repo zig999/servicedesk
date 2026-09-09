@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Removal of the Attributes tab's modules and their dedicated tests
 summary: The tab component, its data hook and the three test files written solely for them are deleted
   from the tree, with every shared module they imported left standing and the type-check clean.

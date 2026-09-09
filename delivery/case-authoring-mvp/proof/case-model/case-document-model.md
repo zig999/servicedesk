@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the case document model
 summary: Holds task/case-model/case-document-model over the specification's worked example — the one document parses whole and in declared order, every structural refusal fires by name, several violations arrive as one refusal, and the model's modules import nothing but one another.
-implementation: sha256:59bf512d9e74e8a1351c4306455f2793759359de52d4ad3cf283f7ce52a199f5
+implementation: sha256:0f77a596ecb347b5b0fa677dfd7a392dadf81d91d47c1945fd34ea453307da6c
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

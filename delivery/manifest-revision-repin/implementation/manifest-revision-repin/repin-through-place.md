@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Repinning a manifest entry through the existing place-hypothesis mutation
 summary: useManifestBuilder now exposes a per-row repin action that reuses placeMutation with the row's
   own unchanged position, reports its success without signalling a move, and reports its own failure against

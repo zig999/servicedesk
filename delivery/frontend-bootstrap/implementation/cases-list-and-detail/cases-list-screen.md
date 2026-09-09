@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Cases List screen, wired onto the real backend
 summary: Replaces CasesListPlaceholder with a StatusTable-backed screen that lists every case GET /v1/cases returns, derives each row's case-summary (state/version-count/last-updated) from that case's own versions, filters client-side by slug, shows the scope's empty state, and navigates to Case Detail on row click.
 task: sha256:89e949273a7ff3ada5a38d6a1f25a13c7cc34125cda1b7fe5b8ba629d63eda39

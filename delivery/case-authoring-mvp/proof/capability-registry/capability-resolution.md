@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for capability resolution
 summary: What proves task/capability-registry/capability-resolution — the published read answering each concept's one capability whole and current, the absence as data, and the one-to-one guarded at registration and at read so no priority chain can hide behind the four criteria.
-implementation: sha256:54ef429ff2fc394a7d51e890e15b4b58681b72ecd760a74a95b70dab1905bffb
+implementation: sha256:532bba24129217e70766b50eae2ebd1eea296f4039603c05f970519cb74f7740
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the glossary query
 summary: What proves task/published-language/glossary-query, exercising the published IGlossaryQuery contract over a mutable in-memory store for resolution and over the real file store for freshness.
-implementation: sha256:abdd98c51bbaf6b812387ca074fd96dab91c07dac877cfc1bb964ce7d40a2384
+implementation: sha256:4428bee56a744918af93dadd300b3772217bb17c4831f2cc095976be7aaf7e9d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

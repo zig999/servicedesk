@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for configuration held as text across registration, single read and list
 summary: Tests prove configuration is held and answered as JSON object text — never a parsed object —
   through readConnectorConfigurationOrThrow and listConnectorConfigurations after an object-supplied registration,
   that both round-trip to the exact registered content including the empty-object boundary, corroborated
   by the controller/route pass-through and persistence-layer re-serialization tests this task's own file
   set also touches.
-implementation: sha256:863716430d88b9b47a5f80b501c68a13713f1dbb6681a035b1d87820c77b656b
+implementation: sha256:3e21be2bb75fa0797bb73f84e1c2783b700ccfdba8a14a60b740810856de342e
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

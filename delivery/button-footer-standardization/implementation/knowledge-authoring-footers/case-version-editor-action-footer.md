@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Case version editor action footer, its release-conditions disclosure, and Cancel's own-origin return
 summary: Moves the case version editor's Release, Discard, Save and Cancel row into the shared ButtonFooter, replaces the release checklist with the single manifest-pin condition the specification names, and fixes Cancel to return to whichever surface the editing was actually reached from.
 task: sha256:1cdfd05cd775c8a659fdff1460c668cfd7220fa3a1a9f29cea7cea9d9a5897b8

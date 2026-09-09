@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Connector configuration form action footer proof
 summary: Tests proving the create screen and detail ready view route their actions through the footer's Actions group, that Cancel abandons authoring without registering on both surfaces, that the discard stays out of the windows the rule withholds it from, that the create surface states a success naming the connector only once the registry answers, and that the detail surface's new refusal handling distinguishes a recognised refusal from a generic one.
-implementation: sha256:0d36a52775eb054f44c4f6007c1771779c444cd31629e2bde0f8f3fe96e8ac38
+implementation: sha256:d279db6bc7cde1ac8d69728b4b4def83b0cffb60e5c995440abc35456362fc3e
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

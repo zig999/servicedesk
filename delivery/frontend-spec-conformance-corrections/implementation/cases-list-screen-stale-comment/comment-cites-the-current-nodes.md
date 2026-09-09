@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: cases-list-screen.tsx's CaseSummary comment corrected to cite the current specification nodes
 summary: Rewrote the stale two claims in CaseSummary's JSDoc — "an edge no governing node addresses" and
   "this task's own inference" — to quote what domain/knowledge/case-summary and rules/knowledge/a-case-summary-is-derived-from-its-existing-versions

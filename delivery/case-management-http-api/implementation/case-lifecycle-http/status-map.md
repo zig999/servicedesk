@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Status-map module and the middleware that consults it
 summary: A new src/errors/status-map.ts keys seven typed domain errors to a non-500 HTTP status, and error-handler.middleware.ts
   now consults it before falling back to 500.

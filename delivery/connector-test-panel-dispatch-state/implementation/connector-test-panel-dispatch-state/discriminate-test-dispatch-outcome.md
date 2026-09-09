@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Model the test dispatch outcome as a discriminated union
 summary: useTestConnectorPanel's TestConnectorPanelState now returns one discriminated testOutcome field
   (idle/pending/succeeded/failed) in place of the independent isTesting/result/testError fields, and every

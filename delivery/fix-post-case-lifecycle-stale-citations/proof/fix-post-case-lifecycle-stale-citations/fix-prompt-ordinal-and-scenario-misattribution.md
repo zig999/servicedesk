@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Proof for fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution
 summary: Two tests read judgment-stage.ts's and resolve-and-narrow-input.ts's own raw source text — one
   asserting runIsolatedCall's doc comment now cites the judgment-prompt-is-closed node's third (not fifth)
@@ -6,7 +7,7 @@ summary: Two tests read judgment-stage.ts's and resolve-and-narrow-input.ts's ow
   split's two scenarios to an earlier version of rules/investigation/the-outcome-comes-from-the-case rather
   than the-writing-input-is-narrowed; criterion 3's "no runtime behavior changed" rests on this task's
   own unmodified behavioral tests rather than on a new one.
-implementation: sha256:7ffc36306cfd652eb6333c96060b431b09284b8aa34d4871a3cb28da2e8aad12
+implementation: sha256:f9e263631d8b7ceb018fdfafcc3d4e73f404f1e428ec5749a271553ec814e6f1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:20acdee5acacafd214df11f468ff2cd7230209da84a65f7883a30698c000a28d

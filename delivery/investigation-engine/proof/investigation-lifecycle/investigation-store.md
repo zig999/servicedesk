@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the write-once investigation store
 summary: Real-filesystem tests over FileInvestigationStore proving one JSON document per investigation id, refusal of an already-stored identity without touching the earlier file, and write's reuse of the shared JSON-file writer, plus the store's error classes exercised through both failure paths.
-implementation: sha256:bfaffb898a5461d8b41a7cdf3fa381eaa16775e823dc9b919288f2cfaa812b7a
+implementation: sha256:7f59a359903bacb8c5efdf17a46f1a74b4c55581db305e132277d0b9d80d1019
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

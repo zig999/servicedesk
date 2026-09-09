@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/capabilities — the list-capabilities HTTP route
 summary: A new Fastify plugin, controller and Zod query DTO exposing ICapabilityQuery.listCapabilities
   over HTTP, mirroring list-cases-route's own three-file pattern exactly.

@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Direct release control on the hypothesis-revisions listing
 summary: Exercises the per-row release control, its request shape, cache update on success, and the not-draft-at-release refusal, all through the rendered HypothesisRevisionHistory screen with a stubbed fetch.
-implementation: sha256:8363fd3ebcd0d33d226e1ca8a559446af15948848aa260b845437ac9440f9e04
+implementation: sha256:2aa78d3f484067efb15a3f0c4a522d3f3e931f9ff6ad03fa712eac36fb32a3b4
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

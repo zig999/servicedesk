@@ -1,9 +1,10 @@
 ---
+target: backend
 title: register-concept route — proof for task/concept-authoring/register-concept-route
 summary: Eight app.inject() tests against createRegisterConceptRoutesPlugin() with a mocked registerConcept
   dependency, proving the route's create-or-replace pass-through, its silence on authentication, and its
   DTO-level validation refusals.
-implementation: sha256:2296c91a4acc48b1a87616d1b518d147ce44dce6ded8f09976f1a217367d28ec
+implementation: sha256:a8ae39629b34502b8175c280084372244850eb53c902e3b5226d1092bfb4719a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for refusing register-connector when a placeholder escapes every capability's properties
 summary: Tests proving that registerConnector refuses a connector-configuration registration or edit embedding
   an orphaned Subject-attribute placeholder, names it with the failing capabilities, exempts requester/credential
   placeholders, succeeds once any capability declares the attribute, and holds edits to the same refusal
   — all traced to the HTTP 422 envelope.
-implementation: sha256:8712ff780939c885fe02822d0c14488aaa0301aa1f86c2c9fb0b712240e65024
+implementation: sha256:602ae295e0fc1b0d8dd3767a52afc2e30af2709398a6686f7e147821f9f5faa1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

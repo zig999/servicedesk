@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Manifest action on every Versions-panel row — proof
 summary: Proves the case-detail-screen Versions panel's per-row Manifest link exists for both draft and
   released rows, targets each row's own version, renders as a link, coexists with the existing actions
   in the inferred trailing position, navigates without an extra request, and -- for the underdetermined
   finding -- that a released row's Manifest action lands on a manifest whose entries cannot be moved or
   removed.
-implementation: sha256:5ab9c826d3a337efa277e89aca36302448609f586b62eaef12fc8dcad64d3bda
+implementation: sha256:5850cbd4819b4ccf6038b74093b1971ab73e311837c45f0941132551243b6e37
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

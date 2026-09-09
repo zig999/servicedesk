@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Case-version aggregate types and structural validation for the draft/released split
 summary: case.ts now declares hypothesis identity, hypothesis-revision content and manifest entries as
   distinct types with a state/released_at/manifest-bearing case-version type, and parse-case-document.ts

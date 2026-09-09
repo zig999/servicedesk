@@ -1,4 +1,5 @@
 ---
+target: backend
 title: 'Proof for fix-collects-readback, corrected again: diagnose-server.factory.spec.ts''s own afterAll
   hook timeout raised'
 summary: Holds the same six tests against migration 0010 and the global-setup repair step, and additionally
@@ -6,7 +7,7 @@ summary: Holds the same six tests against migration 0010 and the global-setup re
   deleteTolerantly helper, closing a real, reproduced foreign-key violation on hypothesis_revisions that
   the no_delete_when_released rule now causes there, and raises diagnose-server.factory.spec.ts's own
   afterAll hookTimeout to give its teardown headroom under the full suite's accumulated load.
-implementation: sha256:5e14a0f59ae64b9b02274f82c5f3e644bc5ee2a024726162cb3017aae371806a
+implementation: sha256:f2cc792e0211ff98580b2a9e269b72e12d696489e549aac0368a9bc2d0ed0dfc
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

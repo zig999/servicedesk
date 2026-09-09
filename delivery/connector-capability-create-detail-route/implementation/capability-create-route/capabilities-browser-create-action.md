@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Capabilities browser create action navigates to the routed create screen
 summary: CapabilitiesBrowserScreen's "New capability" button now navigates to route-tree.tsx's "/capabilities/new"
   instead of opening the popup CapabilityFormDialog in create mode, and the screen's own formTarget state

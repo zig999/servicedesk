@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for task/seed-already-seeded-guard-hotfix/narrow-the-guard
 summary: Holds seed.spec.ts's own existing tests, plus one new assertion added to that same file, up to
   the task's four criteria — reseeding concept_accepts/capabilities regardless of case state, preserving
   the fully-seeded and freshly-empty paths, and guarding only the case write against a second run.
-implementation: sha256:2110662fc881bb09e286d9ae0bf008e51320d0b04a227a04fc834a8665fc152c
+implementation: sha256:fa6ca4ec63a91090815ef9aa6ec6bb962bd3e7f2be11ca28e4dc1cd2842ee086
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

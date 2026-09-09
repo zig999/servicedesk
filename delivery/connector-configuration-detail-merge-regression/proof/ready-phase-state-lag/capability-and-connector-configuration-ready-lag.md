@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Ready-phase render-timing proof for useCapabilityDetail, useConnectorConfigurationDetail and useConnectorConfigurationDetailView
 summary: Confirms the two pre-existing regression specs now pass and adds render-log-based tests proving
   every field this task's criteria and underdetermined notes name is already correct in the very first
   render reporting phase "ready", rather than lagging one render behind inside a useEffect.
-implementation: sha256:ba2cc806b93ceaaebfd42a5245487c93be287958c6d35a63cd5c024c08ebeebc
+implementation: sha256:24e92f1174b03c979c6591ae390a9d86324e4de34bab75d8105bb1165d9b1485
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

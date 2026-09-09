@@ -1,11 +1,12 @@
 ---
+target: frontend
 title: Reconciliation of the test panel's attribute rows against Configuration's placeholders
 summary: Proves useTestConnectorPanel's reconciled onAddAttribute (add/preserve/remove/exclude/dedupe/invalid-JSON,
   and its three disclosed row-identity/tie-break/order inferences) and brings the five named spec/fixture
   files back to green against that behavior, by seeding one shared subject-attribute placeholder into
   the mount fixture's own configuration text and, for the reconciliation-specific cases, editing the same
   "Configuration" textarea the production route itself feeds into ConnectorTestPanel.
-implementation: sha256:7b88db065836d5a6478f80216a9b6bb9d2103ef5a52acfccff17691030d201b0
+implementation: sha256:586633f40650284203f390061e1ac8403b92f93181df53ebda38ad1dbd16411e
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

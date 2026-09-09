@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Disclose each listed hypothesis-revision's own state
 summary: The list-hypothesis-revisions read path now selects and answers each revision's own stored state,
   and orders the page by revision number descending.

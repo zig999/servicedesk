@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Proof for AppShell's sidebar, topbar breadcrumb and no-auth indicator
 summary: A self-contained three-route test router exercises AppShell's sidebar, breadcrumb, no-auth indicator and content-wrapping behavior without depending on the production route tree.
-implementation: sha256:ae852f85ca0382b14c643a1f5af91f8e7ff2f7bb6ca765ee0cbded2b538655a7
+implementation: sha256:ba1b2016254dee367966f1876ab84f1fb450942afa27aad420364a0d80a8622b
 run: run/frontend-console-foundation-onda-1-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

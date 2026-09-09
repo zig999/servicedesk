@@ -1,4 +1,5 @@
 ---
+target: backend
 title: written_at now stamps the store's settle instant, not the request's entry instant
 summary: run-diagnosis.ts reads written_at from a fresh clock reading taken at persistence time for
   each physical write attempt, replacing the request-entry-instant read the corrective fix targets.

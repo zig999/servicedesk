@@ -1,4 +1,5 @@
 ---
+target: backend
 title: connector-capability-detail-editing-backend, first review
 summary: 'What four passes found over the backend half of the connector-capability-detail-editing initiative:
   the connector-configuration read responses'' wire-type correction, and the new read-capability-by-identity

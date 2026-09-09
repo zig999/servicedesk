@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Manifest env-file scripts verified against criterion 1
 summary: Confirms src/package.json's migrate and seed scripts already read exactly node --env-file=.env
   dist/migrate.js and node --env-file=.env dist/seed.js, so no manifest change was needed; the two spec

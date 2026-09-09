@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Citation structural validation, tested
 summary: Proves isCitationValid's two AND-combined rules (concept-in-collects, field-declared-in-the-cited-evidence's-own-capability-schema) each refuse and jointly accept as the task's three criteria state, that every defensive path the implementation's inferences name answers false rather than throwing, and that acceptedCitations filters a mixed set while preserving proposed order.
-implementation: sha256:b1e3c62535998f7caf6ce16e9529b2da2307ca928b885a5aa42b2b7c34fcab3f
+implementation: sha256:b25d23ff6a0dc152f3412afa4339fdae110fb0fb213b8995b38253bcb98948a6
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

@@ -1,13 +1,14 @@
 ---
+target: frontend
 title: Proof for the draft-connector-configuration-from-openapi request hook
 summary: Vitest/renderHook coverage over useDraftConnectorConfigurationFromOpenApi
   proving the request body and route, the pass-through of an answered draft (including
   its empty-list, no-mismatch and no-capability-leak shapes), each of the four distinguishable
   refusal outcomes, the three UNDERDETERMINED resolutions the implementation record
   names, and the concurrent-dispatch guard.
-implementation: sha256:d104cb9099639459286249d5b7bf5798c6493d3c0e3244b3bcbd44b6c2ab0337
+implementation: sha256:216134594fc7f79afc6d19ab66042cf0f0942af1dbb09e40854ced970c86bd9b
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
 run: run/connector-configuration-openapi-draft-frontend-openapi-draft-request-suite-2
 tests:

@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Connector-configuration read responses answer configuration as a JSON string
 summary: Proves that GET /v1/connectors/{connector} and GET /v1/connectors both answer
   configuration as the JSON string domain/integration/connector-configuration declares,
   and that parsing what either answers reproduces the same JSON value the connector
   was registered with.
-implementation: sha256:40aed6c54db03474386fb36170f488c3851127603c1e154ba48dd00cf5bd7468
+implementation: sha256:0b59c17cf7ab4fa42964e1eec2300396a7abf41b3ec90add3d97fddf24b32f40
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

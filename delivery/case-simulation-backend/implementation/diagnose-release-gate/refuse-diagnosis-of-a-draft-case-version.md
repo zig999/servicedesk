@@ -1,4 +1,5 @@
 ---
+target: backend
 title: diagnose refuses a draft-state case version
 summary: A new CaseVersionNotReleasedError refuses POST /v1/diagnose against a draft-state pinned case
   version, registered in status-map.ts's STATUS_BY_ERROR_CLASS as 409, checked in the controller before

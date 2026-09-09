@@ -1,4 +1,5 @@
 ---
+target: backend
 title: ticket_ref round-trips absence as absence in the investigation store
 summary: relational-investigation-store.repository.ts now writes an absent-or-empty ticket_ref as
   a real SQL NULL and reads a NULL column back as an absent attribute, never coalescing it to the

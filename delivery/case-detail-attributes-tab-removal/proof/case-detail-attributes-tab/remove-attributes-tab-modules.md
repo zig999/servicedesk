@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Proof that the Attributes tab's dead modules and their dedicated tests are gone, tree-wide
 summary: Confirms the five deleted files are absent and that no file anywhere under frontend/app/src still
   names either the tab component's identifier or the hook's own identifier.
-implementation: sha256:54c30056abac867f1d453d27cc785be2aa0298a0b683809d28a7fb0c9e33727b
+implementation: sha256:91a24c2e883ee128d6c4ced8745008e5f2950c731ad7733b6314fb38467c515b
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

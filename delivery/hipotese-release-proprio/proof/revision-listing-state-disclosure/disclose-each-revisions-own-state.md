@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Disclose each listed hypothesis-revision's own state
 summary: Proves the list-hypothesis-revisions read path answers every revision's own draft-or-released
   state, sourced from its own row rather than any referencing case version, ordered highest-revision-first,
   and reconciles every pre-existing test the state field and the descending order broke.
-implementation: sha256:1a29dd93c41fba2b0c2fbfef634ee1e72a3b6797bba1ce893adba7155ef2efdb
+implementation: sha256:8238df9323a3970380771fb18dc7591c4e52c4695ba8a0c75f7c9dcb263e1758
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

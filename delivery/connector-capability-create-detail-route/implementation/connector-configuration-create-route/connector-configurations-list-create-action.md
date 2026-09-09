@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configurations list opens the routed create screen
 summary: The connector configurations list's "New connector configuration" button navigates to "/connectors/new"
   instead of opening the popup create/edit Dialog, and the list screen no longer holds its own create/edit

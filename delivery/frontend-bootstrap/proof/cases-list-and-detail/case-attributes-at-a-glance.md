@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Case attributes at a glance, proof
 summary: Tests proving Case Detail's new Attributes view -- its current-version resolution, its one state-sensitive
   action, its explicit case-not-valid state, and the tab-strip and route-schema wiring that carry it --
   against the implementation record for task/cases-list-and-detail/case-attributes-at-a-glance.
-implementation: sha256:817ed4419ad4e9ce1f8e908106779bd9882a1dec314830fd78e40c309ba06798
+implementation: sha256:17b9ff76d2f0307742bc9e0e02c3d32c6d67f52e829b1cdec92cbc8ac3994986
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

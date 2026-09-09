@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Connector configuration warning states the object requirement, not a JSON-syntax claim
 summary: Corrected INVALID_CONFIGURATION_WARNING in connector-configuration-detail-ready-view.tsx to state
   the registry's actual requirement (the stored value must be a JSON object) instead of the false-in-two-cases

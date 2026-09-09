@@ -1,4 +1,5 @@
 ---
+target: backend
 title: PATCH /v1/cases/{slug}/versions/{version}
 summary: A thin Fastify plugin, controller and Zod DTO wired to the new updateDraft store operation, reading the
   corrected version back through the published case-query contract — the first write route of this initiative.

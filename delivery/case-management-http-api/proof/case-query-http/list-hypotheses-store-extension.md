@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for listHypotheses on RelationalCaseStore
 summary: Seven integration tests against a real PostgreSQL database prove listHypotheses is case-scoped,
   refuses an unknown slug, answers the pagination envelope, and — the task's own UNDERDETERMINED note
   — still returns a hypothesis no version's current manifest references.
-implementation: sha256:447fdc29d751b4ebdc2d8da62c07a0d424ab9f4c855bdcb25fcd9598e5e93288
+implementation: sha256:eef6df0c6d708d3cd4a5fe7333b15d085f2c698f97233a455a5f5b208b294886
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

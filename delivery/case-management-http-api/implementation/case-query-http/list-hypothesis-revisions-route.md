@@ -1,4 +1,5 @@
 ---
+target: backend
 title: GET /v1/cases/{slug}/hypotheses/{name}/revisions
 summary: A thin Fastify plugin, controller and Zod DTO over the new listHypothesisRevisions store operation, reached
   through ICaseQuery/CaseQueryService's own new pass-through.

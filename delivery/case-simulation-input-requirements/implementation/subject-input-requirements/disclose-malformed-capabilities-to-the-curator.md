@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Disclose a malformed capability to the composing curator
 summary: The Subject region now renders a section listing every capability state.capabilitiesWithMalformedInputSchema
   names, by name and version alone, and renders nothing when that array is empty.

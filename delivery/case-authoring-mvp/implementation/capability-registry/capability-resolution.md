@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Capability resolution as the published one-to-one read over the registry
 summary: read-capability resolves a concept to the one capability currently answering it, whole and as currently registered, reporting an unanswered concept as data — and the registry now guarantees the one-to-one by refusing, before any write, a registration whose concept a different capability identity already answers.
 task: sha256:969565b7637b42ea5affbbfb30fcebf42739ffd108053f2733e604281197623b

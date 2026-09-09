@@ -1,4 +1,5 @@
 ---
+target: backend
 title: citation-validation.ts's parseJsonOrUndefined and isPlainObject become importable
 summary: citation-validation.ts's own private parseJsonOrUndefined and isPlainObject functions
   are now exported, with no other change to either function's body or to any of

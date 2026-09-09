@@ -1,4 +1,5 @@
 ---
+target: backend
 title: investigation-factory assembles and validates the subject
 summary: investigation-factory now builds the subject from raw entry-point input via subject.ts's buildSubject and refuses through the glossary-source port when an attribute is not a governed glossary term, carrying only a fully valid subject into the built Investigation.
 task: sha256:893384fd69ab32fc1bb22a9d3fd9dd2b0acb8cad52a7e1a18e0f74fcdf473128

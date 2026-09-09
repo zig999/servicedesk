@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Versions panel discloses a current version that does not read back as a case
 summary: Tests the new useCaseCurrentVersionValidity hook and its wiring into CaseDetailScreen's Versions
   panel against all nine criteria, and extends four pre-existing case-detail-screen specs' fetch stubs
   so the new per-version GET this task introduces succeeds instead of going unhandled.
-implementation: sha256:a25306a2cf07b0c71be7ffac4070d109eacf333f511ee74b356bbe7c0febc4e0
+implementation: sha256:890ec047c3f35755f1a2594cde5ce128c2cc4f9b291f4c673b7bde4ef9585489
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

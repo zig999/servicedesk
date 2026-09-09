@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Mark per-hypothesis evaluations stale on a detected return, symmetric to the Case Result region
 summary: Adds an optional `stale` boolean to CockpitEvaluation and its two narrowed consumer types (SimulationHypothesisEvaluation,
   SimulationEvaluation), always explicitly false on fresh normalization, and flips every currently-held

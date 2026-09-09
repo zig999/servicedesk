@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Narrow seed.ts's alreadySeeded() gate to seedCase alone; make vocabulary reseeding additive
 summary: seedOutcomes and seedRemainingVocabularies now write through the additive insertMissingTerms
   instead of the whole-replace writeTerms, and alreadySeeded()'s own gate wraps only seedCase, so vocabularies,

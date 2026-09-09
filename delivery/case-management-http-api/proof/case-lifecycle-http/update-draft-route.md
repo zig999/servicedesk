@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for PATCH /v1/cases/{slug}/versions/{version}
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createUpdateDraftRoutesPlugin plus
   the shared error handler, that a valid request against a draft version writes then reads back the corrected version,
   that a released version is refused before any read-back is attempted, that an unknown slug or version is refused
   the same way, and that the controller's own write-then-read ordering and optional-field handling behave as disclosed.
-implementation: sha256:088afd25c13d9843aebeac57f5a5567f6f34a5fe0c8eef7f991c2e23bee8d844
+implementation: sha256:82b60b986c08fea789df3e13c46b39afd51f25d07c358df9b40ab988ca35e49a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

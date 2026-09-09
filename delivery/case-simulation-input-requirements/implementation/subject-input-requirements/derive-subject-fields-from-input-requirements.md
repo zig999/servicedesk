@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Derive the Subject region's fields from the case-input-requirements read
 summary: useSimulationSubject and simulation-subject-derivation.ts now derive one editable field per case-input-requirement
   (attribute, required flag, and every currently-registered asking capability's own connector/input_schema)

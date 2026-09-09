@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for read-capability-by-identity-route
 summary: Tests exercise GET /v1/capabilities/{name}/{version} in isolation and through
   buildApp(), proving the four criteria, the class-distinctness inference, the path-coexistence
   inference, and the edge cases the route's behavior raises.
-implementation: sha256:ea1286e97b4cbe2507b5871ef0e893d4b3b5acb42221990746b9f328d0d25750
+implementation: sha256:9bae9b0ff05022e2884dbb41317dbb7c70f187fcfb8e94eaaa115a9f0dc7f55f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

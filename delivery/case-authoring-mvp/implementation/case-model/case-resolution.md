@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Case resolution operations
 summary: The case aggregate's three declared operations — collection-plan, requires-evaluation-of and resolve-outcome — as one pure module over the parsed aggregate, answering plain values from verdicts supplied as plain per-name values.
 task: sha256:7132a78ee42f11b1e803dc16a3af40367c83ce70041fefabf7069d0152adfee1

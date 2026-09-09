@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Bind the cockpit's staleness citation to its two governing nodes
 summary: Replaces the stale "D8" citation in both files' header comments with the identities of rules/investigation/a-simulation-result-is-stale-once-its-source-changes
   and scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result, with no change to any

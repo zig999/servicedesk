@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Resolve the outcome and narrow the writing input
 summary: resolveAndNarrow derives Verdicts from the given evaluations, calls the case's own resolveOutcome exactly once and returns its answer verbatim, then assembles a structurally narrowed input, the determining hypothesis's own evidence, or every evaluation's verdict and reason with no case body, for the drafting step that follows.
 task: sha256:4cd1de68b0e551f7d354d5afb9668921aee63ebb7e34aa891356d917de317ba6

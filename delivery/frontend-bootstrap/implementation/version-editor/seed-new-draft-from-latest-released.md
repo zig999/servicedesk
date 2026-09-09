@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Seed New Draft's blank form from the case's latest released version
 summary: Widens the New Draft origination flow to pre-populate its blank form from the case's own latest
   released version (when one exists) and to name that version's own consolidation_register and source_version

@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for the glossary store's concept write path
 summary: Unit tests for GlossaryService.registerConcept (create, default ttl, replace-in-place) and for
   RelationalGlossaryStore.writeConcepts' own persisted statements, together proving this task's three
   criteria.
-implementation: sha256:74caf839ee3886335f7ba032a355073cc2da92e306cbab8fa9364f839c492901
+implementation: sha256:5d9b495d1f624591fa9747324e635ad920e2d21c4dfebc963fe1f777d47fe9c3
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: 'hipotese-release-proprio: three corrective fixes to the shared release-ordering bug — review'
 summary: Coverage, specification-conformance, and standard-conformance passes over the three corrective deliveries (seed.ts, diagnose-server.factory.spec.ts, case-fixture-reads-clean.spec.ts) that fixed the same release-ordering defect and its shared-fixture-corruption consequence; the failures pass did not run because the captured whole-change run passed cleanly.
 reviewed:

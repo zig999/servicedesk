@@ -1,4 +1,5 @@
 ---
+target: backend
 title: readCaseInputRequirements revalidates at every read, excluding capability availability
 summary: readCaseInputRequirements now refuses a stored version whose structural or glossary/concept coherence
   fails at that reading, the same way readCase does, while leaving a missing or duplicate capability answerer

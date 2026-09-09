@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for GET /v1/cases/{slug}/hypotheses/{name}/revisions
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createListHypothesisRevisionsRoutesPlugin
   plus the shared error handler, that a valid request returns the named hypothesis's paginated revision page unchanged,
   that an unknown slug or hypothesis name is each refused at the status status-map assigns CaseNotFoundError, and
   that the controller's own pagination-bound resolution behaves as disclosed.
-implementation: sha256:1de08d5c5bcb856c4c851080e12a38f51a10c566cc3a279f4b892397220a11a5
+implementation: sha256:aed7e21d6ab9ec762db8bd3ed1f0df75505b715dd7a0bc8dbe7597c03e972da3
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

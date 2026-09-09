@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for refusing a capability registration with an orphaned placeholder
 summary: Tests proving registerCapability refuses a registration whose named connector already holds a
   configuration embedding an undeclared Subject-attribute placeholder, names every such placeholder with
   the registering capability, succeeds once the capability declares it, and is untouched when the connector
   holds no configuration — plus the three disclosed inferences and the malformed-input-schema-declares-nothing
   edge case.
-implementation: sha256:b01011b671f697e3c6e7861fb5f6e9ea52a4304ee649f7d6a122bbe9fffcbf8d
+implementation: sha256:c50589657dabc3142240d0b74622fcef9baf61729f79346c92d45af3fa2c89e5
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

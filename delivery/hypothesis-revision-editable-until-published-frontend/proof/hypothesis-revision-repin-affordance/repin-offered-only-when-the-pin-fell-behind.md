@@ -1,10 +1,11 @@
 ---
+target: frontend
 title: Repin offer conditioned on the pin actually falling behind
 summary: Screen-level tests over the hypothesis-editing success surface proving the manifest-builder step
   is offered exactly where a save's answered revision differs from the draft's pin, plus a hook-level
   test proving the pin used in that comparison is the one captured before the save rather than re-read
   afterwards.
-implementation: sha256:103c066e2b48ccfdd07eb4e752d7731edbd7280d89b0d2a6e28b4ab1d425bfc6
+implementation: sha256:c2dfb4eb6f8ae4a859ebc61789efefcbeb27f525d5fd48ceb972cdd1f3f336f5
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Shared JSON beautify/minify textarea control
 summary: Adds a self-contained, reusable JSON-aware textarea field component that beautifies on demand,
   reports validity with every change, and exposes a pure minify function for submission.

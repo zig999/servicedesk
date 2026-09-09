@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for refuse-a-release-manifesting-a-draft-revision
 summary: Integration tests against ReleaseOperation.release() in the real database, proving each of the
   task's 9 criteria for the manifest-own-state gate, plus repairs to pre-existing fixtures in three
   files that the new gate would otherwise strand mid-scenario.
-implementation: sha256:1900b94607270ea63595872428d6d63c0f6b59cc1d44b07f869c403c81ec5bb7
+implementation: sha256:fda35cf0ccbb1869a11de45a0960269e780375d606d7f5a3684d14174e0e5068
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

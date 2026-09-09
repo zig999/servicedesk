@@ -1,8 +1,9 @@
 ---
+target: frontend
 title: Disclosure of a malformed capability's identity in the Subject panel
 summary: New spec file proving the four criteria of disclose-malformed-capabilities-to-the-curator over
   CaseSimulationSubjectPanel's new state.capabilitiesWithMalformedInputSchema section.
-implementation: sha256:3b70d540698b0861a03e63504d2659fd3cbaedc20e9305fee551bfefe4e6b968
+implementation: sha256:5ed3a41c2e22eef925f54f97a5f8ee4e9747f12c41e4322cd2977e37423537ee
 run: run/subject-input-requirements-disclose-malformed-suite
 tests:
 - file: src/routes/case-simulation-subject-panel-malformed-capabilities.spec.ts

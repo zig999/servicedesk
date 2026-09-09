@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Onda 7 -- case attribute management surface
 summary: What four passes found over the three onda-7 deliveries (view-released-version-read-only, seed-new-draft-from-latest-released,
   case-attributes-at-a-glance), merged into one integrated change over the version-editor and case-detail

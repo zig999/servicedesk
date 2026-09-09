@@ -1,4 +1,5 @@
 ---
+target: backend
 title: IGlossaryQuery gains listConcepts
 summary: Adds a listConcepts read operation to IGlossaryQuery and GlossaryService, answering every registered
   concept as a paginated page over the glossary's existing full-read.

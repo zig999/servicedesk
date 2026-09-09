@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Declare @anthropic-ai/sdk and fastify as runtime dependencies
 summary: package.json's dependencies gain the two packages the standard already authorizes and this plan's
   LLM adapter and HTTP-surface work need, with no other file touched.

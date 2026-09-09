@@ -1,8 +1,9 @@
 ---
+target: backend
 title: Proof for IGlossaryQuery.listVocabularyTerms
 summary: Eight tests over GlossaryService.listVocabularyTerms prove criterion 1 in full; criterion 2 is
   a compile-time guarantee of TermVocabulary's closed union with no runtime path to exercise.
-implementation: sha256:80c8a021ed439e516155b906e0b8d10cf22d42b59dab1b6c4723e942e6e5e31d
+implementation: sha256:c256019e899a02511c419d92934c076c80a16fc049443ef01f2e9b1d7f59bcb2
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

@@ -1,11 +1,12 @@
 ---
+target: backend
 title: Proof for RelationalInvestigationStore, the IInvestigationStore relational adapter
 summary: Unit tests over a stand-in DatabaseConnection prove write()'s and read()'s mechanics (statement
   order and params, one transaction, write-once decided by a key, no UPDATE, no filesystem call, defensive
   re-narrowing on read), and integration tests against a real database prove the whole round trip, real
   write-once and atomicity under real constraint violations, and that the evidence-to-capability pin is
   a real foreign key rather than only this store's own shape.
-implementation: sha256:44a77bc0574fc9d2b1266416aba7ff77f96d6f89bad84069e0532c0be60a93aa
+implementation: sha256:40ad88476c5c419dbe11aad9caf9de386316493e4338a8d9f3de1ea9e0df8dc6
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

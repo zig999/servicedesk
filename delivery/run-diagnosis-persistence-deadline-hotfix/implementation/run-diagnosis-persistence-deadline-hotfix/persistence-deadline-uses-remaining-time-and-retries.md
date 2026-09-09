@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Persistence deadline uses remaining time and retries
 summary: Fixes writeWithinDeadline in run-diagnosis.ts to bound persistence's write against the time actually
   remaining before the propagated deadline (derived from the pipeline's own already-measured durations,

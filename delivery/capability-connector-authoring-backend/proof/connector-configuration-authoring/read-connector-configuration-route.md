@@ -1,9 +1,10 @@
 ---
+target: backend
 title: GET /v1/connectors/{connector} read-connector-configuration route
 summary: Four app.inject() tests against createReadConnectorConfigurationRoutesPlugin with a stood-in
   readConnectorConfiguration, proving both stated criteria plus the route's own not-found mapping and
   empty-path validation.
-implementation: sha256:24544f5cbcd459261a8adacd4417ffbc7cb2f183d40917dde62cbfed6fbae431
+implementation: sha256:50a4d98586a297e67b70729dc2175f8007e8be28321a65c72c4424ea80f9c445
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the evidence-collection stage — parallel, budgeted, scoped observation over a case's plan
 summary: Tests collectEvidence's five stated criteria plus the boundary, parallelism and rejection-propagation edge cases against a fake capability query, a scripted observation source and a delayed capability query, all under vitest fake timers so the stage's own internal setTimeout race is controlled deterministically.
-implementation: sha256:9898101349202c19c9237fa0f57116f2d0ae1d25a28a48e91105c6b64f73dfaa
+implementation: sha256:5a78d6ee58b1476a79a2acebd7ea31009afa222e1247efd10ed9f96b58d13b0a
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

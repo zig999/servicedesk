@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector configuration write upsert hotfix, first review
 summary: What four passes found over writeConnectorConfigurations' switch from a whole-table DELETE-then-reinsert
   to a per-connector upsert, and over the two specs reconciled to prove it.

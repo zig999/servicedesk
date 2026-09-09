@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for GET /v1/cases/{slug}/versions
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createListCaseVersionsRoutesPlugin
   plus the shared error handler, that a valid request returns the named case's paginated version page unchanged,
   that an unknown slug is refused at the status status-map assigns CaseNotFoundError, and that the controller's
   own pagination-bound resolution behaves as disclosed.
-implementation: sha256:d380445a322f29749df611aaa67cceaa3ea82087f886599964c3fa58ae724f5c
+implementation: sha256:2332a8072f2335ebd391f064d95c737285516b34350a4524674cdd18f44a3f79
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

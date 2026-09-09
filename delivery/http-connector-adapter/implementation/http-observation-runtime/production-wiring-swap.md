@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Production wiring swap — HTTP declarative adapter replaces the fixture-backed fake
 summary: diagnose-server.factory.ts now constructs HttpDeclarativeObservationSource from the capability and connector-configuration registries instead of FakeObservationSource, and env.ts drops OBSERVATIONS_FIXTURE_FILE now that no production path reads it.
 task: sha256:0d235aa3a46ae2525b4c9296e378c80f2c01bccd1cfdd6886762021469c07e7e

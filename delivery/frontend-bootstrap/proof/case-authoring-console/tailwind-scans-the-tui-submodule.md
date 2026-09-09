@@ -1,9 +1,10 @@
 ---
+target: frontend
 title: Tailwind's compiled output for TUI's own utility classes
 summary: A single, dedicated real-build spec proves that frontend/app's compiled stylesheet declares sr-only,
   h-9, and a third TUI-only class (max-h-60) after tokens.css's added @source directive, and that the
   fix leaves frontend/app's own already-detected classes compiling unchanged.
-implementation: sha256:cafa5d2ff5cab0fb2d54532562c351f14f15c8e2a37483320f7352e09d2eb379
+implementation: sha256:6b27f1bdd4b6049dde3155539ad3eb71995ca166462e56acd22996d1daa8c28d
 run: run/tailwind-submodule-scan-full-suite
 standard:
   at: ../../standards/frontend-typescript.yaml

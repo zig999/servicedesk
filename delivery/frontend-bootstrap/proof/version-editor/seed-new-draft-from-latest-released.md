@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Proof for seeding New Draft's blank form from the case's latest released version
 summary: Nine new tests across two spec files prove the four criteria of task/version-editor/seed-new-draft-from-latest-released
   and the delivery's own disclosed inferences (highest-numbered released version, no premature blank-form
@@ -7,7 +8,7 @@ summary: Nine new tests across two spec files prove the four criteria of task/ve
   fixtures updated to also answer the seeding read the widened hook now issues unconditionally on mount
   -- without which the pre-existing NewCaseDraftScreen suite (written for new-draft-creation, not touched
   by this task's own implementation record) would fail under the widened hook.
-implementation: sha256:21e99c74256dfb2aaa48a588b73a4f54776d868fae88b540bd2ffda0dfada713
+implementation: sha256:3869bed19bf30c72bf89f5286223581d52a05a970336cfe4a08a6817402725ce
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

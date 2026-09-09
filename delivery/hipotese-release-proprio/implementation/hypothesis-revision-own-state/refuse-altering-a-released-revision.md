@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Refuse a released hypothesis-revision's alteration from its own state
 summary: A migration that moves the schema's release-conditioned refusal on hypothesis_revisions and hypothesis_revision_collects
   off the case-version join and onto the revision's own state column.

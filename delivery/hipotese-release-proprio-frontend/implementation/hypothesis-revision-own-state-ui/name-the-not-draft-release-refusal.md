@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Name the not-draft release refusal in the error vocabulary
 summary: Adds HypothesisRevisionNotDraftAtReleaseError as its own entry in the API-error-to-UI-state lookup table and kind union, distinct from the generic fallback.
 task: sha256:234b511c00b4d881b9c6154f97ed09e9a4dded81210d3c5473e86657cde425b7

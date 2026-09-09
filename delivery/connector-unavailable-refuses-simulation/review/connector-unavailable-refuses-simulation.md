@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Review of connector-unavailable-refuses-simulation
 summary: 'Four passes over the six files task/connector-observation-failure-classification/classify-connector-network-failure-as-unavailable delivered: coverage of its six criteria, per-file specification conformance folded into siegard-reconcile/connector-unavailable-refuses-simulation.md, the backend standard''s reading rules, and the diagnosis of the one failure the captured run reported.'
 reviewed:

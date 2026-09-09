@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Discriminate test dispatch outcome, review
 summary: What four passes found over the TYP-04 corrective task that replaced isTesting/result/testError
   with one discriminated testOutcome field.

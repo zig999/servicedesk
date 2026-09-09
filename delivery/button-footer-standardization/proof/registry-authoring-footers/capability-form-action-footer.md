@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Capability form action footer proof
 summary: Tests establishing that the capability create and detail-ready surfaces compose Save, Cancel, Discard and trailingActions through one ButtonFooter group, that the discard and route controls hold exactly the windows the task's underdetermined notes name, that a submission's outcome is stated only once the registry answers, and repairing an earlier initiative's incomplete sonner stub so its own success-path assertions exercise this delivery's code rather than throwing past it.
-implementation: sha256:b9ca2285e7bd6da32874148c6928d4e79bf41c319f44b314358f733038551105
+implementation: sha256:24d5c5dec32efca1366eccdc62e902d31a18e475aa03bd4a8bb61ab71ac51bec
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

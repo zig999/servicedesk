@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Reusable conflict banner
 summary: Adds ConflictBanner, a shared component composed over TUI's Banner primitive at its default frame, taking a title and message; Banner's accent prop is not reused (see the unmet criterion and divergence below).
 task: sha256:1369555596e8a33bca9364f97b69f041a292eaa4b9d8b9752251470c8bedbc25

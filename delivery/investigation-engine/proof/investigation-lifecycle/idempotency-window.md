@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Idempotency window proof — key, lease store, and resolution
 summary: Tests idempotencyKeyOf's deterministic and collision-free join, IdempotencyLeaseStore's key-and-instant-only lease and its window-bounded blocking, and resolveIdempotency's three-outcome precedence, including both of the task's UNDERDETERMINED entries as the implementation record resolved them.
-implementation: sha256:839e12bab3c592a70b02d487dd47a3c3dd91bdbfec7879b7fa032dabfdc41401
+implementation: sha256:46e4b780fde1d57c7ae7479370e0d6de35c982f0652ecd67e4e66f517c976515
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

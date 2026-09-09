@@ -1,7 +1,8 @@
 ---
+target: backend
 title: "Proof for POST /v1/simulate/hypothesis returning one hypothesis's own evaluation"
 summary: "Unit tests against runSimulateHypothesisPipeline, handleSimulateHypothesisRequest and createProductionHypothesisSimulationRunner directly, one added status-map entry, and a real-composition integration proof against createDiagnoseHttpServer, together proving every one of this task's nine criteria."
-implementation: sha256:41a0a674e4f5adef77f4b09d0e1e898792c7942b477cf08d513e518df4661fc1
+implementation: sha256:4afa8cc2cada60c83ffc22ca07665ea9f7d7cdb369f5c23e7dc89ed92b0022e1
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

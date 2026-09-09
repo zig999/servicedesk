@@ -1,11 +1,12 @@
 ---
+target: backend
 title: unavailableEvidence result_detail matches its rule and the adapter's own path
 summary: Tests that evidence-collection-stage.ts's unavailableEvidence() records result_detail as exactly
   "CapabilityNotResolvedForObservationError", and that this value is identical, character for character,
   to what http-declarative-observation-source.adapter.ts's own resolveCapability path records for the
   identical unresolved-capability condition — correcting one existing test that still asserted the free-text
   sentence the fix replaced.
-implementation: sha256:a5309e46edd82fdad8691efd12de882b8ccf71921050364380db5706edc40468
+implementation: sha256:b90757b5a48307591dcc008a13fc98ab28133728b0f6fb238656121ce1d6fafe
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

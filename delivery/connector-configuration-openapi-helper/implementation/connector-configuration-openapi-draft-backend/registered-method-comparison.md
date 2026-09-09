@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Registered-method comparison for a connector configuration draft
 summary: A pure comparison function reads the connector configuration currently registered
   under a name live through an injected reader, folds case to compare its declared

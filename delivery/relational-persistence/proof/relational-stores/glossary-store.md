@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for the relational glossary store
 summary: Unit tests mocking DatabaseConnection prove RelationalGlossaryStore's own read/write mechanics
   for the five term vocabularies and for concepts, and integration tests against a real database prove
   the same criteria's real effect, including a real primary-key refusal of a duplicate term inside one
   write.
-implementation: sha256:80486d30af08e413838716918266c0de9c251bde58331cd791d18c709f449f2e
+implementation: sha256:c9d87135d678094786fb63e7a5f9220a783b8a33c6865ef493be58c63dc6692f
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

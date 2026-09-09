@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Overwriting a hypothesis revision's content in place
 summary: Integration tests against RelationalCaseStore.overwriteHypothesisRevision proving all six task
   criteria, the record's own inferences, and that the write distinguishes a released-referenced refusal
   from an ordinary write failure.
-implementation: sha256:32102468294aab45466386577158c95236e13fdc500a706741b9de0eddc08052
+implementation: sha256:88e1ac731de21ac65bf4aa20e3342de9b0f04a89e503a447c02235c62006c49d
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3

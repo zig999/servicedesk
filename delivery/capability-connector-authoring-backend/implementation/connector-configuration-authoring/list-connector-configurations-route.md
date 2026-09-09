@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose list-connector-configurations as a read HTTP route
 summary: Adds GET /v1/connectors, backed by a new listConnectorConfigurations operation on ConnectorConfigurationRegistryService
   that reuses the existing readConnectorConfigurations() store read, completing the build-app wiring that

@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Version Editor over an existing draft — edit-draft-version
 summary: Replaces the Case Version route's placeholder with a full-replace PATCH form over an existing draft's title, when_to_use, fixed subject, consolidation_register and glossary-backed fallback outcome/referral, driven by a clean/dirty/saving/conflict save state machine.
 task: sha256:2992f98199db618665a1f64d61853c75abb419d5627e373abea43f73dad0af22

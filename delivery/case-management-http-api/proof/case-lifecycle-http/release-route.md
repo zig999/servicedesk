@@ -1,10 +1,11 @@
 ---
+target: backend
 title: Proof for POST /v1/cases/{slug}/versions/{version}/release
 summary: Fastify inject()-driven proof, over a locally-assembled app registering createReleaseRoutesPlugin plus the shared
   error handler, that a valid release writes then reads back the released version, that the write-then-read ordering holds,
   that an already-released version and an unreleasable manifest are each refused with every violated rule reported together,
   and that an unknown slug/version and validation boundaries behave as disclosed.
-implementation: sha256:9454a6c5bc9ca0e134da77b8a63b9be452820563ecde1e38f2649c744af20b77
+implementation: sha256:95c606394cb0c772d0f7e5652f075d24250d241405bb7b47316f23b7d03a6970
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72

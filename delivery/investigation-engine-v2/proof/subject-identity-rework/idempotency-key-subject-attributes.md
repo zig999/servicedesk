@@ -1,7 +1,8 @@
 ---
+target: backend
 title: Proof for the idempotency key over the subject's whole attribute-value set
 summary: idempotencyKeyOf is proved to answer the same string for two keys sharing subject type, the whole attribute-value set, case reference and ticket reference, and a different string when the attribute-value set, the subject type, the case reference, or the ticket reference each vary on their own — rewriting the pre-existing proof whole against the new subject:Subject shape, in place of the retired flat subjectType/subjectId fields.
-implementation: sha256:3a5dee4d197901cbe38b53dd6966db5abdb313614e07a0dc872e274adc145867
+implementation: sha256:f1cb478667a3d95c55610e5b2ea9c2fe79cdf9231d137097cd6f12d90ac49254
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:5bafeda7dbeb412de7d1cd74d5de75a5b6094735f3be751d451aec2adf300300

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Subject as type plus attribute-value set
 summary: The canonical Subject and SubjectAttributeValue value objects, with a construction-time refusal for an empty attribute-value set, replacing the bare-id Subject and its port-side inline duplicate, plus coordinator-authorized mechanical compile-compat patches to unblock a cross-task build deadlock.
 task: sha256:00b132227922514a66e10aecb58a4f0a30ccea3c6fe72d14368e16d21925f78f

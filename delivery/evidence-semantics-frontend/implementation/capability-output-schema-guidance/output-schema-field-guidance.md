@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: Per-field semantics guidance beside the capability form's output_schema editor
 summary: A short guidance paragraph, rendered beside the shared JsonTextareaField in the one CapabilityFormFields component both the dialog and the routed detail screen compose, states what the platform reads from output_schema and what a description may say — a hint, never enforced.
 task: sha256:e8b0087fd5aac8ac7fd525713e3dc47447be2ee587e6f96c2b8c4041c5544eeb

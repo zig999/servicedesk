@@ -1,4 +1,5 @@
 ---
+target: backend
 title: >-
   Proof that the evaluator port and its prompt carry the snapshotted per-item semantics
 summary: >-
@@ -6,7 +7,7 @@ summary: >-
   rendered judgment prompt inside the closed data block, are omitted correctly when a concept
   description is empty, and leave prompt assembly pure — plus the two pre-existing spec files'
   own EvidenceItem fixtures repaired so the tree type-checks against the widened port again.
-implementation: sha256:5b3365a6255e48a3be675b3f53c084c1ec59e18da40cbaa7256d71d76a2deea9
+implementation: sha256:d9b31f78e71cccb94eebb3859d06448dd8f73dc14bd0155f7b19c90221c38f44
 run: run/pinned-evidence-semantics-full-suite-final-2
 tests:
   - file: "src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts"

@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: Route tree skeleton -- structural proof without rendering
 summary: Four tests over src/routes/route-tree.tsx's router instance, read through @tanstack/react-router's own synchronously-populated routesById, proving the ten leaf paths, their pairwise distinctness, and the eight still-placeholder leaves' one-to-one placeholder assignment -- with no render and no DOM.
-implementation: sha256:2f35d862fe545879be36e084d6640d4206f78f1acc0bdfe2bb25e6c0687d8506
+implementation: sha256:9a9de2ab4e232b89665fd90d73f5f4e7a56fd230737c45d9531b064f45d50176
 run: run/cases-list-and-detail-onda-2-full-suite-2
 standard:
   at: ../../standards/frontend-typescript.yaml

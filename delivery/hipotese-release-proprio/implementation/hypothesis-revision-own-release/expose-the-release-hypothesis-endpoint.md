@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Expose release-hypothesis on the published case-lifecycle HTTP surface
 summary: A new POST route, wired end to end through build-app.ts and its own factory, dispatches
   ReleaseHypothesisRevisionOperation against a hypothesis-revision named by slug, hypothesis name and

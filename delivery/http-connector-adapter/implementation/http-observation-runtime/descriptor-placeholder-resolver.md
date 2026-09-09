@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Connector request-assembly translation (Subject, requester, connector configuration, credential)
 summary: A pure, side-effect-free (besides one environment read) translation module that turns a Subject's attribute-values, the collection's requester identity and a connector's own opaque call configuration into the concrete address/query/headers/body of an outbound HTTP request, with a credential sourced from the environment by name and every reference resolved through one string-substitution mechanism — never executed as code, and never left unresolved.
 task: sha256:1f909398f2f1eef4d0c4a6130e7d164b776693a8aebc4996a6e42f7614307125

@@ -1,4 +1,5 @@
 ---
+target: backend
 title: resolve-and-narrow-input drops confirmed/fallback branching for unconditional breadth
 summary: resolve-and-narrow-input.ts now always narrows every required hypothesis's evaluation and the evidence its citations name, in one shape, regardless of the resolved outcome; draft-assessment-text.ts received one disclosed, out-of-scope compile-compatibility patch so the tree keeps building.
 task: sha256:e5227a5191009472f4a1da00eaedb469fce4928609c682c37c06946da7b4db0f

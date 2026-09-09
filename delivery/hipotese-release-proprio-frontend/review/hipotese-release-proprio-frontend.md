@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: hipotese-release-proprio-frontend, whole-change review
 summary: What four passes found over the 18 files the initiative's 6 tasks wrote or modified, exposing the hypothesis-revision's own release lifecycle in the frontend.
 reviewed:

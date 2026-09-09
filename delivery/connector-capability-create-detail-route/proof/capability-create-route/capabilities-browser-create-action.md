@@ -1,7 +1,8 @@
 ---
+target: frontend
 title: "Proof for the capabilities browser's create action"
 summary: "Vitest coverage for CapabilitiesBrowserScreen's \"New capability\" navigation to /capabilities/new, its dialog-free interaction, the removed form-target state's behavioral fingerprint, the action's persistence across loading, failed and empty list states, and the row-click navigation to a capability's own detail route."
-implementation: sha256:2e6eafbd37dedc541a6b3ae4f64e1f6ee06b17b966e37485e50dc4813bedd70c
+implementation: sha256:24ff533ef6dec289944a26e23f4e6ec69b11479c83daf9a0ba51ec1db0bcca78
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09

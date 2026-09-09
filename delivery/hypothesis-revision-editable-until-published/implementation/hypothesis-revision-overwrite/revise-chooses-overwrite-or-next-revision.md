@@ -1,4 +1,5 @@
 ---
+target: backend
 title: Revise-hypothesis chooses overwrite or next revision by reading released reference state
 summary: ReviseHypothesisOperation now reads a hypothesis's highest revision and its released-reference
   state before writing, overwriting that revision in place while unreleased and creating the next revision

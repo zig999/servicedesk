@@ -1,4 +1,5 @@
 ---
+target: backend
 title: The persistence store derives each listed case's six-attribute summary
 summary: RelationalCaseStore.listCases now joins case_versions to derive current_state, version_count,
   last_updated, title, when_to_use and released_version per case, threaded through ICaseStore, ICaseQuery,

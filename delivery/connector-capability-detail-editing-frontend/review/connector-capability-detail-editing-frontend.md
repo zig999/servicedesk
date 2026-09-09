@@ -1,4 +1,5 @@
 ---
+target: frontend
 title: connector-capability-detail-editing-frontend, first review
 summary: 'What four passes found over the frontend half of the connector-capability-detail-editing initiative:
   pretty-print-on-load, the two detail hooks, and the two detail routes.'

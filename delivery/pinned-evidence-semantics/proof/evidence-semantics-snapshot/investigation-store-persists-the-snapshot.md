@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof that the relational investigation store persists and reads back an evidence item's snapshotted semantics
 summary: Unit-level write/read tests over the two new columns, a schema-replay pair against a real,
   disposable database proving the legacy-row degradation and additivity, plus fixes to four
   pre-existing tests this task's own change to evidenceStatement()'s param shape made stale.
-implementation: sha256:70745cc189d768f06c413c6184aaa84c847c785f6e0f136dc1373952a578c70f
+implementation: sha256:88ad23d0c3a2289659f5d630ca606539388f7aa887f7fd93e7d5a726ca6baaa3
 run: run/pinned-evidence-semantics-full-suite-final-2
 standard:
   at: ../standards/backend-node-service.yaml

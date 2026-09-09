@@ -1,9 +1,10 @@
 ---
+target: backend
 title: Proof for map-status-for-typed-refusals
 summary: Tests that statusForError resolves each of the four hotfix classes to its stated status, that
   the whole HTTP stack answers with that status and the standard domain envelope instead of the generic
   500, and that status-map.ts's header comment now names all four under their correct group.
-implementation: sha256:d958be86d7413cb1ca94414712535864507d10a5f777218166484abaacee4168
+implementation: sha256:9b537cef82c3f6e89e77646014003653f13ab479ba52774b8480cd63b5c699a6
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3
