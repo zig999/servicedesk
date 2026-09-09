@@ -104,13 +104,10 @@ describe("ButtonFooter", () => {
       render(createElement(RouterProvider, { router }));
 
       const group = screen.getByRole("group", { name: "Actions" });
-      const appFooter = document.querySelector("footer");
-      expect(appFooter).not.toBeNull();
-      expect(appFooter?.contains(group)).toBe(false);
+      const appFooter = screen.getByRole("contentinfo");
+      expect(within(appFooter).queryByRole("group", { name: "Actions" })).toBeNull();
       expect(
-        Boolean(
-          group.compareDocumentPosition(appFooter as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
-        ),
+        Boolean(group.compareDocumentPosition(appFooter) & Node.DOCUMENT_POSITION_FOLLOWING),
       ).toBe(true);
     });
 
