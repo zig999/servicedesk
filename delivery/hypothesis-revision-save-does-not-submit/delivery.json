@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-registration-save-act/save-dispatches-the-registration",
+      "kind": "implementation",
+      "file": "implementation/capability-registration-save-act/save-dispatches-the-registration.md",
+      "title": "Save owns its form again on the capability registration screen",
+      "summary": "The capability authoring screen's submit control keeps the screen's own form as its DOM form owner even when ButtonFooter portals it into the app shell's footer slot, restoring the register-capability dispatch the portal broke.",
+      "task": "task/capability-registration-save-act/save-dispatches-the-registration"
+    },
+    {
       "id": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise.md",
       "title": "Save owns its form again under the footer portal",
       "summary": "The hypothesis revision screen's submit control keeps the screen's own form as its DOM form owner even when ButtonFooter portals it into the app shell's footer slot, restoring the save-to-revise dispatch the portal broke.",
       "task": "task/hypothesis-revision-save-act/save-dispatches-the-revise"
+    },
+    {
+      "id": "proof/capability-registration-save-act/save-dispatches-the-registration",
+      "kind": "proof",
+      "file": "proof/capability-registration-save-act/save-dispatches-the-registration.md",
+      "title": "Save dispatches the capability registration, proven under the footer portal the running application actually takes",
+      "summary": "Tests that mount the capability authoring screen with the footer slot present, so ButtonFooter's createPortal is actually taken, proving the Save control's restored form ownership, its whole-contract dispatch, its success landing and the abandon control's writes-nothing behavior, plus one test closing the refusal-handling gap the task's own notes flagged.",
+      "task": "task/capability-registration-save-act/save-dispatches-the-registration"
     },
     {
       "id": "proof/hypothesis-revision-save-act/save-dispatches-the-revise",
@@ -20,9 +36,21 @@
   ],
   "edges": [
     {
+      "from": "implementation/capability-registration-save-act/save-dispatches-the-registration",
+      "to": "task/capability-registration-save-act/save-dispatches-the-registration",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise",
       "to": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-registration-save-act/save-dispatches-the-registration",
+      "to": "implementation/capability-registration-save-act/save-dispatches-the-registration",
+      "kind": "proves",
       "at": "the path"
     },
     {

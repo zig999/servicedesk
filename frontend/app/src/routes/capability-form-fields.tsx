@@ -10,6 +10,8 @@ import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capab
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
 
+export const CAPABILITY_FORM_ID = "capability-form";
+
 export type CapabilityFormFieldsProps = {
   readonly form: UseFormReturn<CapabilityFormValues>;
   readonly conceptOptions: readonly ConceptOption[];
@@ -82,7 +84,7 @@ export function CapabilityFormFields({
     isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form id={CAPABILITY_FORM_ID} onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
       <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
         <Controller
           control={control}
@@ -193,7 +195,12 @@ export function CapabilityFormFields({
       </div>
 
       <ButtonFooter>
-        <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
+        <Button
+          type="submit"
+          form={CAPABILITY_FORM_ID}
+          loading={isSubmitting}
+          disabled={isSaveDisabled}
+        >
           Save
         </Button>
         {trailingActions}
