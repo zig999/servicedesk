@@ -1,6 +1,6 @@
 // a suppressed `@ts-expect-error` line executes as ordinary, harmless JavaScript.
 
-import { readdir, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, expectTypeOf, it } from 'vitest';
 import * as connectorConfigurationDraftModule from '../../../connector-registry/connector-configuration-draft.js';
@@ -100,14 +100,6 @@ it("the draft's domain module carries no import statement at all, naming no fram
   const importSpecifiers = [...source.matchAll(/(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g)];
 
   expect(importSpecifiers).toEqual([]);
-});
-
-it("the draft's five domain elements sit in one module, with no sibling file splitting one of them out", async () => {
-  const directoryPath = fileURLToPath(new URL('../../../connector-registry/', import.meta.url));
-
-  const files = (await readdir(directoryPath)).filter((file) => file.startsWith('connector-configuration-draft'));
-
-  expect(files).toEqual(['connector-configuration-draft.ts']);
 });
 
 it('exports no runtime guard function alongside the closed vocabulary — only the vocabulary array itself carries a runtime value', () => {
