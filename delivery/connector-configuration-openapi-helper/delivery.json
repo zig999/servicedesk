@@ -66,6 +66,14 @@
       "task": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request.md",
+      "title": "Draft request hook for draft-connector-configuration-from-openapi",
+      "summary": "A new apiFetch-backed useMutation hook that dispatches a connector configuration draft request to the published draft-connector-configuration-from-openapi route and exposes either the answered draft (rebuilt from only its five declared fields) or one of four distinguishable classified failures, with no fact of a draft ever standing beside a refusal.",
+      "task": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request"
+    },
+    {
       "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proof",
       "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
@@ -128,6 +136,14 @@
       "title": "Subject-placeholder resolution proof",
       "summary": "Vitest tests over resolveSubjectPlaceholders exercise every criterion, both UNDERDETERMINED entries and the recorded inferences by supplying a stand-in ICapabilitiesReader and asserting the returned SubjectPlaceholderPlacement's path/query/headers/body/unresolved fields.",
       "task": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request.md",
+      "title": "Proof for the draft-connector-configuration-from-openapi request hook",
+      "summary": "Vitest/renderHook coverage over useDraftConnectorConfigurationFromOpenApi proving the request body and route, the pass-through of an answered draft (including its empty-list, no-mismatch and no-capability-leak shapes), each of the four distinguishable refusal outcomes, the three UNDERDETERMINED resolutions the implementation record names, and the concurrent-dispatch guard.",
+      "task": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request"
     }
   ],
   "edges": [
@@ -456,6 +472,60 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "task/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proves",
@@ -500,6 +570,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
       "to": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
       "kind": "proves",
       "at": "the path"
     }

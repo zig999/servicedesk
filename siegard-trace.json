@@ -456,6 +456,10 @@
       "digest": "sha256:1332ce7cb18ce44db736f3ee72f58bd3fdcaa13dffab8be70adbad3ec7fc5c4f",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        },
+        {
           "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
           "digest": "sha256:98d3ace9545fa289d1a104671a171ee9ae44e643103e1c2f96d3271470e70786"
         }
@@ -879,6 +883,10 @@
       "node": "contracts/integration/connector-configuration-draft",
       "digest": "sha256:de057f31d0bce80d1309dbe6b8c702d71fc44bbe16d0bcc67dec6845da3b8278",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
           "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
@@ -2434,6 +2442,10 @@
       "digest": "sha256:78240115a0f0e67440bbfd7bfd7e8a4c524d324214b29470e7b6191d2c70774b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
           "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
         },
@@ -2456,6 +2468,10 @@
       "digest": "sha256:0268a3b3ebaffd85006e52c858ba29e57922f5bbebe89dfcf36af6f84522d605",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
         },
@@ -2470,6 +2486,10 @@
       "digest": "sha256:ec56f13e184ed245d4833c29bf46618de2b74380df7f8b6c6365f9755cb26a26",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
         },
@@ -2483,6 +2503,10 @@
       "node": "domain/integration/connector-configuration-draft-unresolved-item",
       "digest": "sha256:744281a7ed8930dec86be4e318aff85fb29b19ece83b9ad375e90f378b4f1270",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
           "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
@@ -4854,6 +4878,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "digest": "sha256:0b2e0fd990a365003dee636afe99384a042ef1c909a9beee0e9d945260ea8f92",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme",
       "digest": "sha256:1c63802251988176c3a65897562817570a936d8c6937415aca650fabd9dde442",
       "files": [
@@ -5222,6 +5256,16 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator",
+      "digest": "sha256:9797f3109c78ddee813512d10e7fd693e0b48493d06d887efd505327155d4d9f",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
         }
       ]
     },
