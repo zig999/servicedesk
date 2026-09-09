@@ -42,6 +42,10 @@
       "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a",
       "files": [
         {
+          "path": "src/src/http/draft-connector-configuration-from-openapi.routes.ts",
+          "digest": "sha256:ec3c52d297a2185f6e2af216b38c525487689dc24e52b0d344a4eccd8ea1ccea"
+        },
+        {
           "path": "src/src/http/dto/register-capability.dto.ts",
           "digest": "sha256:1b4f7cae0a7f11c2feb0f97434c1cf60233d4992235b66b23bea4e727f909604"
         },
@@ -878,6 +882,14 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
           "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+        },
+        {
+          "path": "src/src/http/build-app.ts",
+          "digest": "sha256:e8eb3a17432b922a90fa70e32293a15a3237d842ee43eaec26ab7b1e8712294f"
+        },
+        {
+          "path": "src/src/http/draft-connector-configuration-from-openapi.routes.ts",
+          "digest": "sha256:ec3c52d297a2185f6e2af216b38c525487689dc24e52b0d344a4eccd8ea1ccea"
         }
       ]
     },
@@ -2432,6 +2444,10 @@
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
           "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
+        },
+        {
+          "path": "src/src/http/draft-connector-configuration-from-openapi.controller.ts",
+          "digest": "sha256:a26e427dc7a4469892026fbdd69384fbd5936832d40dda0385e82c7ab0cc5368"
         }
       ]
     },
@@ -5124,6 +5140,16 @@
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-drafted-connector-configuration-is-answered-as-a-read",
+      "digest": "sha256:04e630856fa5db4156d80cff2edabf9ef11037a0ced8cfaba5864a24a785546b",
+      "files": [
+        {
+          "path": "src/src/http/draft-connector-configuration-from-openapi.routes.ts",
+          "digest": "sha256:ec3c52d297a2185f6e2af216b38c525487689dc24e52b0d344a4eccd8ea1ccea"
         }
       ]
     },

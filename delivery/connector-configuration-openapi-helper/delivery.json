@@ -18,6 +18,14 @@
       "task": "task/connector-configuration-openapi-draft-backend/draft-generation-service"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface.md",
+      "title": "Publish draft-connector-configuration-from-openapi as an HTTP operation",
+      "summary": "Adds the POST /v1/draft-connector-configuration-from-openapi route, its zod DTO, its thin controller over generateConnectorConfigurationDraft, and its factory wiring, so the draft or one of its three named refusals answers through the existing composed dependencies and the shared error-handler/status-map mechanism.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface"
+    },
+    {
       "id": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
       "kind": "implementation",
       "file": "implementation/connector-configuration-openapi-draft-backend/generated-credential-placeholders.md",
@@ -72,6 +80,14 @@
       "title": "Connector configuration draft generation service -- proof",
       "summary": "Thirty-seven Vitest cases at src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts exercise generateConnectorConfigurationDraft end to end through fake ports, covering every stated criterion, the four inferences the implementation record names, and the one UNDERDETERMINED entry that names a candidate implementation the specification refuses.",
       "task": "task/connector-configuration-openapi-draft-backend/draft-generation-service"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/draft-operation-http-surface.md",
+      "title": "HTTP surface for draft-connector-configuration-from-openapi",
+      "summary": "Proves the POST /v1/draft-connector-configuration-from-openapi operation dispatches through its composed dependencies, refuses malformed bodies and each of the three named document/operation failures with their own code and exact details, and answers a success body carrying exactly the five allowed fields with no capability or credential-value leak.",
+      "task": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface"
     },
     {
       "id": "proof/connector-configuration-openapi-draft-backend/generated-credential-placeholders",
@@ -220,6 +236,36 @@
     {
       "from": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
       "to": "task/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "rules/integration/a-drafted-connector-configuration-is-answered-as-a-read",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "task/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
       "kind": "implements",
       "at": "the path"
     },
@@ -418,6 +464,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-generation-service",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-generation-service",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
+      "to": "implementation/connector-configuration-openapi-draft-backend/draft-operation-http-surface",
       "kind": "proves",
       "at": "the path"
     },
