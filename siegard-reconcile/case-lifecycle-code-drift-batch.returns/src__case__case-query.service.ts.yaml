@@ -1,0 +1,58 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: >-
+      the read-time refusal that collects every coherence violation and reports
+      them together in one throw, in refuseIncoherence/refuseGlossaryIncoherence
+      and refuseViolations
+    evidence: |-
+      const violations = await caseCoherenceViolations(theCase, this.glossary, this.capabilities);
+      refuseViolations(theCase.slug, version, violations);
+      ...
+      function refuseViolations(slug: string, version: number, violations: readonly string[]): void {
+        if (violations.length > 0) {
+          throw new CaseVersionNotValidError(slug, version, violations);
+        }
+      }
+  - node: domain/knowledge/case
+    held_at: >-
+      the `slug` accepted as the sole identifying parameter of every query
+      method, and carried through to the assembled version's own field
+    evidence: |-
+      public async readCase(slug: string, version: number): Promise<ReadCaseResult> {
+      ...
+      slug: assembled.slug,
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: readCaseInputRequirements, lines 41-47
+    evidence: |-
+      public async readCaseInputRequirements(slug: string, version: number): Promise<CaseInputRequirementsResult> {
+          const assembled = await heldVersion(this.caseStore, slug, version);
+          const theCase = structuralCase(assembled, slug, version);
+          await this.refuseGlossaryIncoherence(theCase, version);
+          const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+          return deriveCaseInputRequirements(theCase, registeredCapabilities);
+        }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: >-
+      slug used as the sole key locating a case across every read method —
+      readCase, listCaseVersions, listHypotheses, listHypothesisRevisions —
+      never combined with any other disambiguator
+    evidence: |-
+      public async listCaseVersions(
+          slug: string,
+          pagination: PaginationRequest,
+        ): Promise<PaginatedResponse<CaseVersionListItem>> {
+
+looked_past: >-
+  The derivation mechanics of a-case-versions-input-requirements-are-derived (which attribute
+  becomes required, which capabilities answer it) live in case-input-requirements.ts, and the
+  coherence-check mechanics (glossary and capability violations) live in
+  validate-case-coherence.ts — both outside this file and this review's file set; likewise the
+  CaseNotFoundError, CaseVersionNotValidError and InvalidCaseDocumentError classes this file
+  throws are judgments over their own files, not this one, and their shape was only read here to
+  confirm this file's use of them is consistent with rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  and rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name, neither of
+  which is in this file's node set or candidate index.
+
+candidates_opened:
+  - rules/knowledge/validation-runs-at-every-read
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle

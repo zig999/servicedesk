@@ -1,0 +1,8 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+
+looked_past: >-
+  The re-exported class's constructed error message ("the case ... violates its validator rules: ...")
+  lives in case-version-not-valid.error.ts, outside this file set, and is not judged here.

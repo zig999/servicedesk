@@ -1,0 +1,17 @@
+read:
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: >-
+      the operation's own signature and its lookup, which treat `slug` (together with `version`)
+      as sufficient to resolve exactly one case version
+    evidence: >-
+      public async release(slug: string, version: number): Promise<void> {
+        const assembled = await heldAssembledVersion(this.caseStore, slug, version);
+
+looked_past: >-
+  The structural and coherence checks this file delegates to (parseCaseDocument,
+  caseCoherenceViolations) belong to the domain-model and case-authoring nodes those modules
+  themselves are bound to, not to this file's own judgment.
+
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions

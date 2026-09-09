@@ -1,0 +1,34 @@
+findings:
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: "the hypothesis_revisions tests, lines 263-302, alongside the release-immutability tests at lines 371-385 and 428-471"
+    evidence: >-
+      "changes an already-stored hypothesis revision's own columns on an ordinary UPDATE while
+      the revision's own state is still draft" (the test at line 287), whose insertHypothesisRevision
+      helper (lines 90-98) never names a `state` column at all — no test in this file inserts a
+      hypothesis_revisions row in 'released' state or attempts an UPDATE against one.
+    cost: >-
+      This file's own beforeAll applies every migration file in the directory (migrationFilesInOrder(),
+      line 140), so the schema under test already carries hypothesis_revisions.state and the
+      hypothesis_revisions_no_update_when_released trigger that raises ReleasedHypothesisRevisionNotAlterableError.
+      The file already proves the analogous release-immutability for case_versions rows (line 371) and
+      for case_version_hypotheses manifest entries (line 428), so a reader trusts it covers the sibling
+      table too; nothing here would fail if that trigger were dropped or its condition weakened, so a
+      regression reopening a released hypothesis-revision to UPDATE passes this suite silently.
+    kind: contradicts
+    correction: >-
+      Add a test that inserts a hypothesis_revisions row, marks it 'released', and asserts an UPDATE to
+      its criterion, resolution or state is rejected (matching hypothesis_revisions_refuse_when_released()'s
+      RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError'), mirroring the existing
+      "leaves a released case_versions row's own columns unchanged..." test at line 371.
+    node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+
+read:
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: >-
+      insertHypothesisRevision (lines 90-98) inserts only case_slug, hypothesis_name, revision,
+      criterion, resolution_outcome, resolution_action, resolution_recipient — no state column — and
+      the sole UPDATE test against hypothesis_revisions, "changes an already-stored hypothesis revision's
+      own columns on an ordinary UPDATE while the revision's own state is still draft" (line 287),
+      explicitly scopes itself to the draft case; no test in the file inserts or updates a released
+      hypothesis_revisions row.

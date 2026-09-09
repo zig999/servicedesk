@@ -1,0 +1,59 @@
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      assignNextVersion() / nextVersionUpdateStatement(), invoked from createDraftVersion() —
+      the one counter is incremented and the previous value handed out as the new draft's version.
+    evidence: |-
+      function nextVersionUpdateStatement(slug: string): IStatement {
+        return {
+          text: `UPDATE ${CASES_TABLE} SET next_version = next_version + 1
+             WHERE slug = $1
+             RETURNING next_version - 1 AS version`,
+          params: [slug],
+        };
+      }
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      requireCaseHoldsDraft(), called at the top of insertRevision() before any revision row is
+      written.
+    evidence: |-
+      async function requireCaseHoldsDraft(tx: IQueryable, slug: string): Promise<void> {
+        const row = await queryOneOrAbsent<{ version: number }>(tx, draftVersionSelect(slug), raiseReadFailure);
+        if (row === undefined) {
+          throw new CaseHoldsNoDraftError(slug);
+        }
+      }
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: >-
+      releaseHypothesisRevisionRow()/releaseHypothesisRevisionStatement() carries out the one
+      draft→released transition; resolveHypothesisRevisionOwnState()/hypothesisRevisionOwnStateSelect()
+      is the state read the refusal guard for a non-draft (or never-stored) revision is built on —
+      that guard itself lives in ReleaseHypothesisRevisionOperation (src/case/release-hypothesis-revision.operation.ts),
+      which reads this file's own-state query, then calls this file's release, composing the two
+      into the refusal the node states.
+    evidence: |-
+      function releaseHypothesisRevisionStatement(key: IRevisionKey): IStatement {
+        return {
+          text: `UPDATE ${HYPOTHESIS_REVISIONS_TABLE} SET state = $4
+             WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+          params: [key.slug, key.hypothesis_name, key.revision, HYPOTHESIS_REVISION_RELEASED_STATE],
+        };
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: >-
+      caseIdentityStatement(), called at the top of createDraftVersion(); the ON CONFLICT clause
+      presupposes the slug column's own unique constraint, which is what makes the statement a
+      no-op rather than a second row.
+    evidence: |-
+      function caseIdentityStatement(slug: string): IStatement {
+        return { text: `INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING`, params: [slug] };
+      }
+
+looked_past: >-
+  The file also implements case-version listing/pagination, whole-version assembly, manifest and
+  collects reads, resolution/referral column mapping, consolidation-register and case-version-state
+  vocabulary checks, and case-version release/discard/update — all governed by specification nodes
+  outside this batch's four-node set, so left unreviewed here; separately, the CaseAlreadyHasDraftError
+  path (ONE_DRAFT_PER_CASE_CONSTRAINT in raiseCreateDraftFailure) matches
+  rules/knowledge/a-case-has-at-most-one-draft, a node that exists in the specification but is not
+  part of this file's bound set, so no finding is owed for it.

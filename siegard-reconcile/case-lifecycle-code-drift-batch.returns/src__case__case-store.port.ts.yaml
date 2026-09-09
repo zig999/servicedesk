@@ -1,0 +1,29 @@
+read:
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: >-
+      the CaseVersionState type declaration, line 5
+    evidence: >-
+      export type CaseVersionState = 'draft' | 'released';
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      the DraftVersion type (lines 51-54) exposing the draft's own subject, and
+      HypothesisRevisionInput (lines 56-62) carrying no subject field of its own
+    evidence: >-
+      export type DraftVersion = {
+        readonly version: number;
+        readonly subject: string;
+      };
+
+      export type HypothesisRevisionInput = {
+        readonly slug: string;
+        readonly hypothesis_name: string;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: Resolution;
+      };
+
+looked_past: >-
+  The file's other exported types (AssembledCaseVersion, ManifestEntry, CreateDraftInput,
+  CaseSummary, CaseVersionListItem, HypothesisRevisionListItem, HYPOTHESIS_REVISION_STATES, and
+  the rest of ICaseStore's methods) encode case and hypothesis-revision facts this batch binds
+  to other nodes and other files, not to the two nodes bound here.

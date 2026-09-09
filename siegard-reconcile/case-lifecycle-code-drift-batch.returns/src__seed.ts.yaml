@@ -1,0 +1,19 @@
+read:
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: >-
+      collects: entry.collects,
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: >-
+      await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: nowhere
+    evidence: >-
+      await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+
+looked_past: >-
+  seedOutcomes, seedRemainingVocabularies, seedConcepts and seedCapabilities seed glossary
+  vocabularies and capability registrations that no node in this pack or the batch's candidate
+  index governs, so any domain fact those functions might touch is another judgment's to
+  attribute.
