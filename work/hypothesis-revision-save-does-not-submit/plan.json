@@ -1,0 +1,166 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/hypothesis-revision-save-act",
+      "kind": "epic",
+      "file": "epic/hypothesis-revision-save-act.md",
+      "title": "The revise act on the hypothesis revision screen",
+      "summary": "What a curator's save on the hypothesis revision screen must reach, and the proof that fails when it does not."
+    },
+    {
+      "id": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "kind": "task",
+      "file": "task/hypothesis-revision-save-act/save-dispatches-the-revise.md",
+      "title": "Save dispatches the revise",
+      "summary": "The hypothesis revision screen's save control reaches the revise, in the DOM shape the running application actually has.",
+      "epic": "hypothesis-revision-save-act"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/hypothesis-revision-save-act",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
