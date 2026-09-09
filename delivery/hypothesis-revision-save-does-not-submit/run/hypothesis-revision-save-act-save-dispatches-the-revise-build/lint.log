@@ -1,0 +1,12 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/shared/components/button-footer.spec.ts
+  107:34  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  107:34  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  112:41  error  Do not use any type assertions                                           @typescript-eslint/consistent-type-assertions
+
+✖ 3 problems (3 errors, 0 warnings)
+

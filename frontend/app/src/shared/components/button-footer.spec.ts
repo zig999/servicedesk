@@ -105,11 +105,9 @@ describe("ButtonFooter", () => {
 
       const group = screen.getByRole("group", { name: "Actions" });
       const appFooter = screen.getByRole("contentinfo");
-      expect(appFooter.contains(group)).toBe(false);
+      expect(within(appFooter).queryByRole("group", { name: "Actions" })).toBeNull();
       expect(
-        Boolean(
-          group.compareDocumentPosition(appFooter) & Node.DOCUMENT_POSITION_FOLLOWING,
-        ),
+        Boolean(group.compareDocumentPosition(appFooter) & Node.DOCUMENT_POSITION_FOLLOWING),
       ).toBe(true);
     });
 

@@ -1,0 +1,121 @@
+read:
+  - node: domain/glossary/action
+    held_at: >-
+      the "Referral action" Select bound to resolution.referral.action, lines 183-201
+    evidence: |
+      name="resolution.referral.action"
+      render={({ field }) => (
+        <Select
+          value={field.value || null}
+          onChange={field.onChange}
+          onBlur={field.onBlur}
+          options={actionOptions.options}
+  - node: domain/glossary/concept
+    held_at: >-
+      the Collects checkbox list, lines 121-138
+    evidence: |
+      {collectsOptions.map((concept) => {
+        const checked = field.value.includes(concept.name);
+        return (
+          <Checkbox
+            key={concept.name}
+            id={`collects-${concept.name}`}
+            checked={checked}
+  - node: domain/glossary/outcome
+    held_at: >-
+      the "Resolution outcome" Select bound to resolution.outcome, lines 157-174
+    evidence: |
+      name="resolution.outcome"
+      render={({ field }) => (
+
+        <Select
+          value={field.value || null}
+          onChange={field.onChange}
+          onBlur={field.onBlur}
+          options={outcomeOptions.options}
+  - node: domain/glossary/recipient
+    held_at: >-
+      the "Referral recipient" Select bound to resolution.referral.recipient, lines 210-227
+    evidence: |
+      name="resolution.referral.recipient"
+      render={({ field }) => (
+        <Select
+          value={field.value || null}
+          onChange={field.onChange}
+          onBlur={field.onBlur}
+          options={recipientOptions.options}
+  - node: domain/glossary/subject-type
+    held_at: >-
+      the disabled subjectType Input, lines 95-97
+    evidence: |
+      <FormField label="Subject type (from draft, fixed)" errorId="subject-error">
+        <Input value={subjectType} disabled readOnly />
+      </FormField>
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the same read-only subjectType field, lines 95-97 — the case-version's own declared subject attribute, shown but not editable from this form
+    evidence: |
+      <FormField label="Subject type (from draft, fixed)" errorId="subject-error">
+        <Input value={subjectType} disabled readOnly />
+      </FormField>
+  - node: domain/knowledge/hypothesis
+    held_at: >-
+      the hypothesis_name Input, gated by hypothesisNameEditable, lines 87-92
+    evidence: |
+      <Input
+        {...register("hypothesis_name")}
+        disabled={!hypothesisNameEditable || isSubmitting}
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the criterion Textarea (lines 100-107), the Collects fieldset (lines 109-149) and the resolution field group (lines 151-231) together, which compose the revision's own content
+    evidence: |
+      <FormField label="Criterion" errorId="criterion-error" error={errors.criterion?.message}>
+        <Textarea
+          {...register("criterion")}
+          disabled={isSubmitting}
+  - node: domain/knowledge/referral
+    held_at: >-
+      the paired "Referral action" and "Referral recipient" fields, lines 178-230
+    evidence: |
+      name="resolution.referral.action"
+      ...
+      name="resolution.referral.recipient"
+  - node: domain/knowledge/resolution
+    held_at: >-
+      the outcome/referral group wrapped in one row, lines 151-231
+    evidence: |
+      <div className="flex gap-4">
+        <FormField
+          label="Resolution outcome"
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: >-
+      the trailingActions slot rendered beside the submit control inside ButtonFooter, lines 233-238 — the extension point the specification leaves to the interface for whatever control carries abandonment, without this file wiring any write into it
+    evidence: |
+      <ButtonFooter>
+        <Button type="submit" form={HYPOTHESIS_REVISION_FORM_ID} disabled={isSubmitting}>
+          Save hypothesis
+        </Button>
+        {trailingActions}
+      </ButtonFooter>
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: >-
+      the four vocabulary-bound fields, which offer only options already supplied from the glossary hooks rather than free text — lines 121-230
+    evidence: |
+      options={outcomeOptions.options}
+      ...
+      options={actionOptions.options}
+      ...
+      options={recipientOptions.options}
+  - node: rules/knowledge/every-position-declares-a-resolution
+    held_at: >-
+      the always-rendered resolution.outcome, resolution.referral.action and resolution.referral.recipient fields, lines 151-231
+    evidence: |
+      <FormField
+        label="Resolution outcome"
+        errorId="resolution.outcome-error"
+        error={errors.resolution?.outcome?.message}
+      >
+looked_past: >-
+  The blank line left inside the resolution.outcome Controller's render callback, immediately before
+  <Select, reads as a formatting remnant of one of the two removed prose comments rather than a
+  domain-fact matter, so it is left to whatever pass reads source form rather than reported here.
