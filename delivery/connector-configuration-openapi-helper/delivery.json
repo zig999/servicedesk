@@ -74,6 +74,14 @@
       "task": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure.md",
+      "title": "Disclose the answered draft's every part, and a refusal on its own terms",
+      "summary": "ConnectorConfigurationHelperFields now renders the drafted configuration text, every unresolved item by name and reason, every generated credential by name and security scheme, a method mismatch where one stands, or a refusal statement distinguishable across its three named conditions plus an unrecognised-failure fallback -- all derived by a new pure mapping service, with the Configuration field never touched.",
+      "task": "task/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure"
+    },
+    {
       "id": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
       "kind": "implementation",
       "file": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request.md",
@@ -152,6 +160,14 @@
       "title": "Configuration Helper section beneath the Configuration field",
       "summary": "Proves the Configuration Helper section renders beneath Configuration on both authoring surfaces, offers its three named controls plus a non-submitting Request Draft control that dispatches the draft request and never reaches the operator-supplied document link or the save path, while every existing field and the Actions footer stay reachable.",
       "task": "task/connector-configuration-openapi-draft-frontend/configuration-helper-section"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure.md",
+      "title": "Disclosure of the answered draft and of a refused request",
+      "summary": "Unit tests over the pure disclosureStateForOutcome mapping and component tests over ConnectorConfigurationHelperFields together prove every disclosure criterion, the three UNDERDETERMINED implementation choices, and that the Configuration field is never touched by either a draft or a refusal.",
+      "task": "task/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure"
     },
     {
       "id": "proof/connector-configuration-openapi-draft-frontend/openapi-draft-request",
@@ -506,6 +522,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-generated-credential",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-method-mismatch",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "task/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-openapi-draft-frontend/openapi-draft-request",
       "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
       "kind": "encodes",
@@ -610,6 +674,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-frontend/configuration-helper-section",
       "to": "implementation/connector-configuration-openapi-draft-frontend/configuration-helper-section",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
+      "to": "implementation/connector-configuration-openapi-draft-frontend/drafted-answer-disclosure",
       "kind": "proves",
       "at": "the path"
     },
