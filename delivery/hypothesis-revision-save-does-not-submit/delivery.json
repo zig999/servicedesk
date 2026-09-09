@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise.md",
+      "title": "Save owns its form again under the footer portal",
+      "summary": "The hypothesis revision screen's submit control keeps the screen's own form as its DOM form owner even when ButtonFooter portals it into the app shell's footer slot, restoring the save-to-revise dispatch the portal broke.",
+      "task": "task/hypothesis-revision-save-act/save-dispatches-the-revise"
+    },
+    {
+      "id": "proof/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-save-act/save-dispatches-the-revise.md",
+      "title": "Save dispatches the revise, mounted against the footer portal the running application actually takes",
+      "summary": "Proves the save control keeps the screen's own form as its DOM form owner and reaches the revise under the footer-slot portal, by mounting the hypothesis revision screen with a FooterSlotContext provider present rather than the bare-Outlet harness the earlier specs used.",
+      "task": "task/hypothesis-revision-save-act/save-dispatches-the-revise"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "to": "task/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "to": "implementation/hypothesis-revision-save-act/save-dispatches-the-revise",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

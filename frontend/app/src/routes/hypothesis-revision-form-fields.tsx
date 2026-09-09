@@ -11,6 +11,8 @@ import type { HypothesisRevisionFormValues } from "../services/hypothesis-revisi
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
 
+export const HYPOTHESIS_REVISION_FORM_ID = "hypothesis-revision-form";
+
 export type HypothesisRevisionFormFieldsProps = {
   readonly form: UseFormReturn<HypothesisRevisionFormValues>;
   readonly hypothesisNameEditable: boolean;
@@ -70,7 +72,12 @@ export function HypothesisRevisionFormFields({
   } = form;
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form
+      id={HYPOTHESIS_REVISION_FORM_ID}
+      onSubmit={onSubmit}
+      noValidate
+      className="flex flex-col gap-4"
+    >
       <div className="flex gap-4">
         <FormField
           label="Hypothesis name"
@@ -99,26 +106,10 @@ export function HypothesisRevisionFormFields({
         />
       </FormField>
 
-      {/*
-        Not FormField (above): that pattern wraps one control in one outer
-        <label>, but each Checkbox below already renders its own <label
-        htmlFor> around its own <input> (TUI's own checkbox.tsx) -- nesting
-        that inside a second, outer <label> would associate several distinct
-        controls with one label element, which is invalid HTML and leaves a
-        screen reader unable to tell which control the outer label actually
-        names. A <fieldset>/<legend> pair is the standard grouping semantics
-        for a set of independently-labeled checkboxes instead (ACC-01,
-        ACC-03) -- this task's own inference, disclosed in its delivery
-        record.
-      */}
       <fieldset
         className="flex flex-col gap-1 border-0 p-0"
         aria-describedby={errors.collects != null ? "collects-error" : undefined}
       >
-        {/* Matches TUI's own Label default classes (label.tsx) so this
-            caption reads the same as every FormField label above and below
-            it, even though a <legend> -- not a Label -- is the correct
-            element here (see this fieldset's own header comment). */}
         <legend className="block text-sm leading-none font-medium tracking-wider text-accent uppercase">
           Collects
         </legend>
@@ -240,7 +231,7 @@ export function HypothesisRevisionFormFields({
       </div>
 
       <ButtonFooter>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" form={HYPOTHESIS_REVISION_FORM_ID} disabled={isSubmitting}>
           Save hypothesis
         </Button>
         {trailingActions}
