@@ -1,0 +1,15 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/connector-configuration-openapi-helper/frontend/app/src/routes/connector-configuration-form-fields-configuration-helper.spec.ts
+   92:26  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+   93:26  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+   93:67  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  106:26  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  107:26  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  107:67  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+✖ 6 problems (6 errors, 0 warnings)
+

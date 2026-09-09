@@ -5,6 +5,7 @@ import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
 import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
+import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import type { ConfigurationFieldState } from "../hooks/use-connector-configuration-form";
 
@@ -58,6 +59,7 @@ export function ConnectorConfigurationFormFields({
 }: ConnectorConfigurationFormFieldsProps): JSX.Element {
   const {
     register,
+    watch,
     formState: { errors },
   } = form;
 
@@ -81,6 +83,8 @@ export function ConnectorConfigurationFormFields({
         onChange={configuration.onChange}
         disabled={isSubmitting}
       />
+
+      <ConnectorConfigurationHelper connector={watch("connector")} />
 
       <ButtonFooter>
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
