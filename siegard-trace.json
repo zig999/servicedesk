@@ -2440,6 +2440,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
         }
       ]
     },
@@ -2450,6 +2454,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+        },
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
         }
       ]
     },
@@ -4788,12 +4796,26 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "digest": "sha256:d1cbdfccfd56bcbe8dd5f5008e0c57b9f5e8050fac25b6f40a7cf1a38b680bfd",
+      "files": [
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
       "digest": "sha256:9d975789850d537821de9e658130ff77303beffab93cb9b8892e320c40c64788",
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:139338325067699b1b4bd53d5caa471f57cb819d61a0b1154dee1f3356e309c6"
+        },
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
         }
       ]
     },
@@ -7412,6 +7434,16 @@
       ]
     },
     {
+      "node": "scenarios/integration/a-mismatched-parameter-name-stays-unresolved",
+      "digest": "sha256:106d54b0b2c8ae894dfb0b90493253c16999c5abac50a23d2338e89053e9ed10",
+      "files": [
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+        }
+      ]
+    },
+    {
       "node": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
       "digest": "sha256:5b158a45715f9e124eac8475e0276130bcd54ce3fa0fe8cf6999f77b078e363f",
       "files": [
@@ -7432,6 +7464,16 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "digest": "sha256:8a55babc61ed231d7efeac7b913249b9f7d5f2efa92893b312e9feeabead6141",
+      "files": [
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
         }
       ]
     },

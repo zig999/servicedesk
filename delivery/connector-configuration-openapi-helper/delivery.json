@@ -34,6 +34,14 @@
       "task": "task/connector-configuration-openapi-draft-backend/registered-method-comparison"
     },
     {
+      "id": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution.md",
+      "title": "Subject-placeholder resolution for the OpenAPI connector-configuration draft",
+      "summary": "Adds a connector-registry module that resolves each parameter and request-body field name of a chosen OpenAPI operation to a ${subject:<name>} placeholder or an unresolved item, reading the registered capabilities and their input-schema shape through the two existing reuse points and placing every resolved or unresolved value at its own position (path, query, headers, Cookie, body).",
+      "task": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution"
+    },
+    {
       "id": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proof",
       "file": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape.md",
@@ -64,6 +72,14 @@
       "title": "Registered-method comparison against the currently registered connector configuration",
       "summary": "Confirms registeredMethodMismatch names both methods upper-cased exactly where a live-read registered configuration's declared method disagrees (case-folded) with the operation's, states no mismatch in the three named absence/agreement cases, reads only from the registered text through a narrow injected reader with no capability parameter, leaves the registered configuration unchanged, and propagates rather than swallows a failing or malformed dependency read.",
       "task": "task/connector-configuration-openapi-draft-backend/registered-method-comparison"
+    },
+    {
+      "id": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "proof",
+      "file": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution.md",
+      "title": "Subject-placeholder resolution proof",
+      "summary": "Vitest tests over resolveSubjectPlaceholders exercise every criterion, both UNDERDETERMINED entries and the recorded inferences by supplying a stand-in ICapabilitiesReader and asserting the returned SubjectPlaceholderPlacement's path/query/headers/body/unresolved fields.",
+      "task": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution"
     }
   ],
   "edges": [
@@ -206,6 +222,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "scenarios/integration/a-mismatched-parameter-name-stays-unresolved",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "task/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "to": "implementation/connector-configuration-openapi-draft-backend/draft-domain-shape",
       "kind": "proves",
@@ -226,6 +284,12 @@
     {
       "from": "proof/connector-configuration-openapi-draft-backend/registered-method-comparison",
       "to": "implementation/connector-configuration-openapi-draft-backend/registered-method-comparison",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
+      "to": "implementation/connector-configuration-openapi-draft-backend/subject-placeholder-resolution",
       "kind": "proves",
       "at": "the path"
     }
