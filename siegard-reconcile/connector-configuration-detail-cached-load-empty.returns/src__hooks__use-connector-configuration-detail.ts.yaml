@@ -1,0 +1,280 @@
+findings:
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the `query.isError` branch, lines 122-130
+    evidence: |-
+      if (query.isError) {
+        return {
+          phase: "load-error",
+          retryLoad: () => {
+            void query.refetch();
+          },
+          onCancel,
+        };
+      }
+    cost: >-
+      A read refused because nothing is registered under the connector name and any other
+      read failure are shown as the identical "load-error" state, both carrying the same
+      retryLoad action. An operator on a connector name nothing is registered under is told
+      nothing about that, and is offered a retry that will be refused identically every time
+      it is taken, unable to tell a name that will never resolve from a read that is merely
+      down right now.
+    kind: contradicts
+    node: rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+    correction: >-
+      Distinguish the refusal reported for an unregistered connector name from any other
+      read failure, and for that case return a state that carries no retry action and states
+      explicitly that nothing is registered under the connector name.
+
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the "ready"-phase return object, lines 157-171 (no discard/reset handler exists anywhere in the hook)
+    evidence: |-
+      return {
+        phase: "ready",
+        form,
+        configuration: {
+          value: configurationValue,
+          isValid: configurationValid,
+
+          onChange: handleConfigurationChange,
+        },
+        isDirty,
+        isSubmitting: mutation.isPending,
+        isSubmitSuccessful: mutation.isSuccess,
+        onSubmit,
+        onCancel,
+      };
+    cost: >-
+      An operator who has changed the connector name or configuration away from what the
+      read answered has no act anywhere in this state that returns those fields to the read
+      content while remaining on the screen: onCancel leaves the surface entirely and
+      onSubmit registers. Recovering the read content costs the operator the leave-and-return
+      navigation the specification's own reasoning says this act exists to spare them, over a
+      configuration an operator cannot retype from memory.
+    kind: contradicts
+    node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    correction: >-
+      Expose a discard action, gated by its own further explicit confirmation, that resets
+      the form's connector field and configurationValue/configurationValid back to
+      configurationBaseline without leaving the screen or issuing a register-connector call.
+
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the render-time sync block, lines 82-90
+    evidence: |-
+      if (query.data !== syncedConfigurationData) {
+        setSyncedConfigurationData(query.data);
+        if (query.data) {
+          form.reset({ connector: query.data.connector });
+          setConfigurationValue(query.data.configuration);
+          setConfigurationValid(isValidConfigurationObject(query.data.configuration));
+          setConfigurationBaseline(query.data.configuration);
+        }
+      }
+    cost: >-
+      Whenever the query's data reference changes — a background refetch after
+      invalidateQueries, a window refocus, a reconnect — every field is unconditionally
+      overwritten with the newly arrived answer, with no check for an edit the operator has
+      composed and not submitted. An operator mid-edit of a long opaque configuration can
+      have that edit silently replaced by content they never asked to have written in, with
+      no further act of theirs involved and no way to get the discarded edit back.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-read-answering-over-an-unsubmitted-edit-leaves-that-edit-standing
+    correction: >-
+      Gate the sync so an arriving answer changes no field while the operator holds an edit
+      the read has not answered and no register-connector submission has been made from it,
+      applying the new answer only where the operator explicitly asks for it.
+
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the `configuration` field of the "ready"-phase return object, lines 160-165
+    evidence: |-
+      configuration: {
+        value: configurationValue,
+        isValid: configurationValid,
+
+        onChange: handleConfigurationChange,
+      },
+    cost: >-
+      Nothing this hook returns distinguishes the configuration the presented read answer
+      carries from the current, possibly operator-edited, field content — both are the same
+      configurationValue string. A test panel built against this hook's return value has no
+      way to collect Subject-attribute values against the presented answer rather than the
+      field, and no way to detect that the two have diverged, exactly the confusion the rule
+      requires be told apart and stated to the operator.
+    kind: contradicts
+    node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    correction: >-
+      Expose the configuration the presented read answer carries (e.g. the last-synced
+      query.data.configuration) separately from the editable field value, so a consumer can
+      derive tested Subject attributes from the answer and detect divergence from the field.
+
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the `submit` callback, lines 139-144
+    evidence: |-
+      const submit = form.handleSubmit((values) => {
+        if (!configurationValid) {
+          return;
+        }
+        mutation.mutate(values);
+      });
+    cost: >-
+      The hook decides, on its own, that a submission whose configuration content it judges
+      not well-formed is withheld from the registry entirely — no register-connector call is
+      made and nothing is stated about why the submit act did nothing. No node in the
+      specification states whether such a submission is withheld here or left to the
+      registry's own refusal; a reader asking why a Save here is a no-op finds that decision
+      only in this hook, never in the specification.
+    kind: unstated
+
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the useQuery reading a connector configuration and the useMutation registering one
+    evidence: |-
+      const query = useQuery({
+        queryKey: ["connector-configuration", connector],
+        queryFn: () =>
+          apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
+      });
+      ...
+      mutationFn: (values: ConnectorConfigurationFormValues) =>
+        apiFetch<ConnectorConfiguration>(
+          `/v1/connectors/${encodeURIComponent(values.connector)}`,
+          { method: "PUT", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ configuration: getJsonTextareaMinifiedValue(configurationValue) }) },
+        ),
+  - node: domain/integration/connector-configuration
+    held_at: the form's connector field and the configurationValue state
+    evidence: |-
+      const form = useForm<ConnectorConfigurationFormValues>({
+        resolver: zodResolver(connectorConfigurationFormSchema),
+        defaultValues: { connector },
+      });
+  - node: rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    held_at: the loading-phase gate, which only returns "loading" when no data is held yet
+    evidence: |-
+      if (query.isLoading || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: onCancel
+    evidence: |-
+      const onCancel = (): void => {
+        if (router.history.canGoBack()) {
+          router.history.back();
+          return;
+        }
+        void navigate({ to: "/connectors" });
+      };
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: isValidConfigurationObject (a client-side mirror of the registry's own criterion, not the registry's own refusal)
+    evidence: |-
+      function isValidConfigurationObject(text: string): boolean {
+        const minified = getJsonTextareaMinifiedValue(text);
+        if (minified === null) {
+          return false;
+        }
+        const parsed: unknown = JSON.parse(minified);
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      }
+  - node: rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content
+    held_at: isValidConfigurationObject together with the configurationValid state and the returned configuration.isValid
+    evidence: |-
+      setConfigurationValid(isValidConfigurationObject(value));
+      ...
+      configuration: { value: configurationValue, isValid: configurationValid, onChange: handleConfigurationChange },
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      return {
+        phase: "ready",
+        form,
+        configuration: { value: configurationValue, isValid: configurationValid, onChange: handleConfigurationChange },
+        isDirty,
+        isSubmitting: mutation.isPending,
+        isSubmitSuccessful: mutation.isSuccess,
+        onSubmit,
+        onCancel,
+      };
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: the three-branch phase gating (loading / load-error / ready)
+    evidence: |-
+      if (query.isError) { return { phase: "load-error", retryLoad: () => { void query.refetch(); }, onCancel }; }
+      if (query.isLoading || !query.data) { return { phase: "loading", onCancel }; }
+  - node: rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    held_at: nowhere explicit — no discard exists at all, and onSubmit is not itself conditioned on isDirty
+    evidence: |-
+      const isDirty =
+        form.formState.isDirty ||
+        getJsonTextareaMinifiedValue(configurationValue) !== getJsonTextareaMinifiedValue(configurationBaseline);
+  - node: rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered
+    held_at: the render-time sync block
+    evidence: |-
+      if (query.data !== syncedConfigurationData) {
+        setSyncedConfigurationData(query.data);
+        if (query.data) {
+          form.reset({ connector: query.data.connector });
+          setConfigurationValue(query.data.configuration);
+          setConfigurationValid(isValidConfigurationObject(query.data.configuration));
+          setConfigurationBaseline(query.data.configuration);
+        }
+      }
+  - node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    held_at: nowhere
+    evidence: |-
+      configuration: { value: configurationValue, isValid: configurationValid, onChange: handleConfigurationChange },
+  - node: rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
+    held_at: the mutation state gating (isSubmitSuccessful only true once the registry has answered)
+    evidence: |-
+      isSubmitSuccessful: mutation.isSuccess,
+      ...
+      onSuccess: () => { form.reset({ connector }); setConfigurationBaseline(configurationValue); ... },
+      onError: (error) => { toast.error(saveFailureMessage(error)); },
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: onCancel, present in the loading, load-error and ready return objects alike
+    evidence: |-
+      return { phase: "load-error", retryLoad: ..., onCancel };
+      return { phase: "loading", onCancel };
+      return { phase: "ready", ..., onCancel };
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: the mutation's onError handler (onSuccess states nothing explicit)
+    evidence: |-
+      onSuccess: () => {
+        form.reset({ connector });
+        setConfigurationBaseline(configurationValue);
+        void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+        void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+      },
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: the mutation's onSuccess handler, which issues no navigation and so leaves the operator on the surface addressed by `connector`
+    evidence: |-
+      onSuccess: () => {
+        form.reset({ connector });
+        setConfigurationBaseline(configurationValue);
+        void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+        void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+      },
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: onCancel's else branch
+    evidence: |-
+      void navigate({ to: "/connectors" });
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing
+    held_at: onCancel, which issues no mutation.mutate call in either branch
+    evidence: |-
+      const onCancel = (): void => {
+        if (router.history.canGoBack()) {
+          router.history.back();
+          return;
+        }
+        void navigate({ to: "/connectors" });
+      };
+
+looked_past: >-
+  The isSubmittingRef double-submission guard and whether the consuming component actually
+  disables the submit control when isDirty is false are interface/technical concerns this
+  pass leaves alone, not domain facts.
+
+candidates_opened:
+  - rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+  - rules/integration/a-connector-configuration-read-answering-over-an-unsubmitted-edit-leaves-that-edit-standing

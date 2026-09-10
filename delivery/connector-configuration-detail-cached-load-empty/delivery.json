@@ -16,6 +16,22 @@
       "title": "Cached-load presentation of a read connector configuration",
       "summary": "Seven new tests over the connector configuration detail screen's cache-seeded first render, proving the task's six criteria and two of its UNDERDETERMINED notes against a real react-query cache hit, plus a test-support extension that lets a mount pre-seed the query client.",
       "task": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held"
+    },
+    {
+      "id": "review/connector-configuration-detail-cached-load-empty",
+      "kind": "review",
+      "file": "review/connector-configuration-detail-cached-load-empty.md",
+      "title": "Review of the cached-load presentation correction on the connector configuration screen",
+      "summary": "What four passes found over the hook, the test support and the spec the delivery of read-answer-is-presented-whenever-held wrote, read against the trace and the plan alike.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Where the read's answer is already held before the first render, the test surface derives its subject attributes from the placeholders of the configuration the read answered."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -78,6 +94,12 @@
       "to": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-detail-cached-load-empty",
+      "to": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

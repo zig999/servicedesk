@@ -1,0 +1,43 @@
+certified:
+  - node: rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-detail-screen-cached-load.spec.ts
+        name: >-
+          presents the connector name and the configuration exactly as the held answer carries
+          them, and states nothing to the effect the configuration is still being read, while a
+          further read of the same configuration remains outstanding underneath -- an
+          implementation that leaves the fields at their loading defaults, or that states the
+          still-being-read condition alongside the held answer, would fail this
+    why: >-
+      The offered proof holds one test that stands the screen in the situation the fact is stated
+      over — a held answer at first presentation with the further read of that same configuration
+      left permanently outstanding (the `CONFIGURATION_PATH` handler is a promise that never
+      settles). Within that situation it binds the positive half whole: the Connector field is
+      asserted equal to the connector name the held answer carries, the Configuration field equal
+      to that answer's configuration, and Save and Discard changes are asserted present, so an
+      implementation that left the fields at their loading defaults or presented a value the
+      answer did not carry would fail. Two stated parts go unexercised. First, the fact requires
+      the screen to stand in the returned reading and in none of the other three; the test rules
+      out the outstanding reading (absence of the loading statement) and the failed reading
+      (absence of Retry), but nothing in the set asserts the absence of the fourth reading, the
+      one stating a connector name nothing is registered under, so an implementation presenting
+      the held answer and that statement together would pass. Second, "states nothing to the
+      effect that the configuration is still being read" is asserted only as the absence of the
+      single literal `Loading connector configuration ${CONNECTOR}…`, and no test in the offered
+      proof ever asserts that string present in the outstanding reading; nothing in the set
+      therefore shows the negative assertion is capable of failing, and a screen stating the
+      still-being-read condition by any other rendering — a differently worded message, a spinner,
+      a busy attribute — would pass. The remaining tests in the file exercise sibling facts over a
+      held answer whose further read settles, so they do not bear on the outstanding interval this
+      fact is stated over.
+    remainder: testable
+    remainder_why: >-
+      Two assertions close it, both inside the same input the existing test already sets up — a
+      held answer at first presentation with the further read of that configuration outstanding.
+      One: assert that the screen states nothing to the effect that nothing is registered under
+      that connector name, so the fourth reading is ruled out alongside the outstanding and failed
+      ones. Two: add, in the same file, a test that stands the surface in the genuine outstanding
+      reading with no answer held and asserts the still-being-read statement present as the
+      surface actually renders it; the held-answer test's assertion of that same rendering's
+      absence then has a demonstrated way to fail.

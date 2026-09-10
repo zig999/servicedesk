@@ -1,0 +1,73 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the first-render assertions that the Connector and Configuration fields hold exactly the
+      name and configuration text the mount was given
+    evidence: >-
+      expect(screen.getByLabelText<HTMLInputElement>("Connector").value).toBe(CONNECTOR);
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      prettyPrinted(LOADED_CONFIGURATION),
+      );
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: >-
+      the assertions that no loading text and no Retry control are present once an already-held
+      answer is presented, distinguishing the returned reading from the outstanding and failed ones
+    evidence: >-
+      expect(screen.queryByText(`Loading connector configuration ${CONNECTOR}…`)).toBeNull();
+      expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
+  - node: rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    held_at: >-
+      the first describe block, mounting with an already-held answer while the configuration
+      fetch is stubbed to a promise that never settles
+    evidence: >-
+      const fetchMock = createFetchStub(
+      baseHandlers(LOADED_CONFIGURATION, { [CONFIGURATION_PATH]: pendingResponse }),
+      );
+  - node: rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered
+    held_at: >-
+      the same first-render field assertions, taken immediately after mount with no intervening
+      wait, so the values are checked from the first moment the reading is entered
+    evidence: >-
+      expect(screen.getByLabelText<HTMLInputElement>("Connector").value).toBe(CONNECTOR);
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      prettyPrinted(LOADED_CONFIGURATION),
+      );
+  - node: rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content
+    held_at: >-
+      the well-formed case asserting no malformed-configuration warning, and the malformed case
+      asserting the warning appears distinguishably from the load-error presentation
+    evidence: >-
+      expect(screen.queryByText(INVALID_CONFIGURATION_WARNING)).toBeNull();
+      ... expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
+      expect(screen.queryByText(`Loading connector configuration ${CONNECTOR}…`)).toBeNull();
+      expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
+  - node: rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    held_at: >-
+      the assertion that Save and Discard changes are disabled at first render, before any
+      operator edit
+    evidence: >-
+      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+      expect(
+      screen.getByRole("button", { name: "Discard changes" }).hasAttribute("disabled"),
+      ).toBe(true);
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: >-
+      the discard-returns-to-held-answer test and the discard-returns-to-the-surface's-own-later-read
+      test, both confirming with the discard dialog present and confirmed
+    evidence: >-
+      fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
+      await openDiscardDialog();
+      fireEvent.click(discardConfirmButton());
+      await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+      expect(configurationField.value).toBe(prettyPrinted(LOADED_CONFIGURATION));
+  - node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    held_at: >-
+      the test naming the added Attribute row after the ${subject:account-id} placeholder embedded
+      in the held answer's own configuration
+    evidence: >-
+      fireEvent.click(screen.getByRole("button", { name: "Add attribute" }));
+      expect(screen.getByLabelText<HTMLInputElement>("Attribute").value).toBe("account-id");
+looked_past: >-
+  The repeated mount-and-assert scaffolding and the duplicated discard-dialog helper usage across
+  describe blocks are structural test-quality matters, not a domain-fact judgment, and are left to
+  a different pass.

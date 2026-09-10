@@ -1,0 +1,60 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the `baseHandlers` fixture's response for the configuration path, which shapes the
+      mocked read answer as the domain value-object's own two attributes
+    evidence: >-
+      [CONFIGURATION_PATH]: () => jsonResponse({ connector: CONNECTOR, configuration }),
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: nowhere
+    evidence: >-
+      export function errorResponse(code: string, status = 500): Response {
+        return new Response(JSON.stringify({ error: { code, message: code } }), { status });
+      }
+  - node: rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    held_at: >-
+      the `seededAnswer` branch of `mountConnectorConfigurationDetailScreen`, which seeds the
+      query cache with an already-held read answer before the screen is first presented
+    evidence: >-
+      if (seededAnswer) {
+          queryClient.setQueryData(["connector-configuration", seededAnswer.connector], seededAnswer);
+        }
+  - node: rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered
+    held_at: nowhere
+    evidence: >-
+      export function prettyPrinted(value: string): string {
+        return JSON.stringify(JSON.parse(value), null, 2);
+      }
+  - node: rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content
+    held_at: >-
+      the fixture constants naming the non-well-formed categories the rule's own expression
+      enumerates — unparsable text, a null value, an array
+    evidence: >-
+      export const INVALID_CONFIGURATION = "{not valid json";
+
+      export const ARRAY_CONFIGURATION = "[1,2,3]";
+
+      export const NULL_CONFIGURATION = "null";
+  - node: rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    held_at: nowhere
+    evidence: >-
+      export const LOADED_CONFIGURATION = '{"key":"value"}';
+      export const UPDATED_CONFIGURATION = '{"key":"updated"}';
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      const listRoute = createRoute({
+          getParentRoute: () => rootRoute,
+          path: "/connectors",
+          component: () => createElement("div", null, "Connector Configurations List Placeholder"),
+        });
+  - node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    held_at: nowhere
+    evidence: >-
+      export const SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
+looked_past: >-
+  The literal URL paths, the HTTP-method-keyed PUT helpers, and the emptyPage() default of
+  limit: 20 (offered against constraints/listings-are-paged, which names the default as
+  deployment configuration and deliberately never fixes its value) are interface/transport
+  plumbing this file must fill to stub fetch, not domain facts this pass's kind vocabulary
+  fits, and are left to whichever judgment owns the interface's own form.

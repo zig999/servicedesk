@@ -1,0 +1,39 @@
+certified:
+  - node: rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-detail-screen-cached-load.spec.ts
+        name: >-
+          disables Save and Discard changes at the screen's first render, before the operator has
+          touched any field -- an implementation whose dirtiness baseline is not seeded from the
+          held answer would enable one or both
+    why: >-
+      One test exercises the fact, and only over one of the conditions the node states it holds
+      across. It asserts both acts unoffered at first render of a screen presented already holding
+      the answer, so a screen whose fields were never touched is covered for that arrival. Two
+      stated parts go unexercised. First, the node says nothing turns on "whether that read's
+      answer was in hand before s was first presented or arrived after it": nothing in the set
+      asserts either act unoffered on a screen presented without a held answer whose
+      read-connector-configuration answer lands afterwards with no field changed away from it — the
+      one test where a later read lands with different content (the UNDERDETERMINED-note-4 test)
+      edits the field and then discards, and asserts nothing about whether either act was offered
+      while the fields still held exactly what that later read answered. Second, the node decides
+      the condition by comparing the fields against the answer ("where every field of s holds
+      exactly what that answer carried"), not by whether the operator has touched a field: nothing
+      in the set edits a field away from the answer and returns it to exactly what the answer
+      carried, so an implementation whose baseline is a touched flag rather than the answer's
+      content would violate the node and still pass every test offered. Separately, the test at the
+      screen's first render with an outstanding further read asserts only that the Save and Discard
+      controls are present (toBeTruthy), never that the acts they carry are unoffered, so it does
+      not bear on the fact — presence versus absence of a control is form the node explicitly
+      leaves to the interface — and a reader who finds it should not read it as proof.
+    remainder: testable
+    remainder_why: >-
+      Two inputs against two expected results, both decidable on one screen. One: a screen
+      presented with no answer in hand whose read-connector-configuration answers afterwards, with
+      no field changed away from that answer — expect neither the discard act nor the
+      register-connector submitting act offered once that answer stands presented, and no
+      register-connector call leaving the screen. Two: on a screen standing on an answered read, a
+      field changed away from that answer and then set back to exactly what the answer carried —
+      expect both acts unoffered again, which fails any baseline keyed to the operator having
+      touched a field rather than to the answer's content.
