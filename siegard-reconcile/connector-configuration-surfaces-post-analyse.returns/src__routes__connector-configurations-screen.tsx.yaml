@@ -1,0 +1,48 @@
+findings:
+  - file: src/routes/connector-configurations-screen.tsx
+    where: "the comment above the \"New connector configuration\" Button, lines 70-86"
+    evidence: >-
+      "New connector configuration" renders unconditionally, ahead of
+        the loading/error/empty branches above, so criterion 4 (this
+        task's own -- "renders while the list is loading, while it has
+        failed to load, and while it is empty, as it does today") holds
+        regardless of whichever of those three states the list itself is
+        currently in -- unchanged from before this task [...] hiding a create action behind an unrelated read
+        failure would block authoring a connector configuration for a
+        reason that has nothing to do with it.
+    cost: >-
+      The rule that the route to author a new configuration is offered on every reading — because
+      "a read of the registered set that is still outstanding, that failed, or that answered
+      nothing is a fact about that read; authoring a configuration is a write to a registry the
+      read never touched" — is re-derived here in the comment's own words, tied to a task
+      citation, rather than left to live in the node alone. The code's placement of the button
+      ahead of renderBody() already carries the rule; the comment is a second place the same
+      decision is stated, in a task's own voice. If the specification narrows this rule later, the
+      comment stays behind stating the old reasoning as if it still held, and nothing marks it stale.
+    kind: contradicts
+    correction: >-
+      Remove the comment; the reasoning it restates belongs in the rule's own file and the task's
+      historical record, not in the source consuming it.
+    node: rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      toRow — the connector attribute is read off the domain object and mapped into the row; the
+      configuration attribute is not read or shown by this listing.
+    evidence: >-
+      function toRow(connectorConfiguration: ConnectorConfiguration): StatusTableRow {
+        return {
+          id: connectorConfiguration.connector,
+          connector: connectorConfiguration.connector,
+        };
+      }
+looked_past: >-
+  The specific wording of the loading, error and empty-state messages ("Loading connector
+  configurations…", "Connector configurations could not be loaded.", "No connector configurations
+  are currently registered.") and the Retry control's presence are UI copy the candidate node
+  itself disclaims — "what the listing states about its own read in each of its readings is stated
+  by no node and not stated here" — so no finding is reported over them.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read

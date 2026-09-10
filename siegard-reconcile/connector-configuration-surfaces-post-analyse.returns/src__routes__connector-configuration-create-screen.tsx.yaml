@@ -1,0 +1,24 @@
+read:
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: >-
+      the `useConnectorConfigurationForm(null, handleSaved)` call (line 19) and the
+      trailingActions block passed to ConnectorConfigurationFormFields (lines 31-40): this
+      screen authors a connector configuration at an identity nothing is registered under
+      (the hook is called with `null`, so no read-connector-configuration answer is ever held
+      here), and it offers only a "Cancel" button and a "Connectors" link — no act that
+      returns fields to a prior read's content while keeping the operator on the same
+      surface. This matches the node's own exclusion — "d is offered on no surface authoring
+      a registration at an identity nothing is currently registered at ... those surfaces
+      holding no read registration for d to return the fields to" — by holding no such act at
+      all, there being no read registration to return to.
+    evidence: >-
+      const state = useConnectorConfigurationForm(null, handleSaved);
+looked_past: >-
+  state.onCancel's own behavior (discard-and-stay versus leave-and-return-to-listing) is
+  defined in the shared use-connector-configuration-form hook, not in this file, so its
+  conformance to the discard rule belongs to whichever file implements it rather than to this
+  screen, which only wires the handler to a button.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read

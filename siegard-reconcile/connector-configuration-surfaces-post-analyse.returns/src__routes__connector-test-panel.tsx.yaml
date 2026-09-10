@@ -1,0 +1,21 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      export type ConnectorTestPanelProps = {
+        readonly connector: string;
+        readonly configurationText: string;
+      };
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: nowhere
+    evidence: >-
+      const state = useTestConnectorPanel(connector, configurationText);
+looked_past: >-
+  The component forwards a `configurationText` prop straight into useTestConnectorPanel, which
+  is the vocabulary the policy uses for unsaved authoring content, but whether that hook exercises
+  the registered configuration or the passed-in text is settled inside use-test-connector-panel.ts,
+  a file outside this set's scope, not in this thin wrapper.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read

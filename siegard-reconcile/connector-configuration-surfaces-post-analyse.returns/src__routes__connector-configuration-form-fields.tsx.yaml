@@ -1,0 +1,84 @@
+read:
+  - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+    held_at: >-
+      the JSX placing `<ConnectorConfigurationHelper>` directly beneath the Configuration
+      field's `<JsonTextareaField>`, lines 117-125
+    evidence: |-
+      <JsonTextareaField
+        id="configuration"
+        label="Configuration"
+        value={configuration.value}
+        onChange={configuration.onChange}
+        disabled={isSubmitting}
+      />
+
+      <ConnectorConfigurationHelper connector={watch("connector")} onApply={handleApply} />
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: nowhere
+    evidence: >-
+      `const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;`
+      (line 81) is the only place this file touches well-formedness, and it only consumes an
+      already-computed `configuration.isValid` flag — the criterion itself (null/array
+      excluded but a plain object or its text accepted, the distinct IncompleteConnectorConfigurationError
+      for an absent or wrongly-shaped value, the 422 responses) is not expressed anywhere in
+      this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: >-
+      handleApply (lines 86-92), which withholds the direct apply and opens the confirmation
+      dialog whenever hasUnsavedEdit is true
+    evidence: |-
+      function handleApply(configurationText: string): void {
+          if (!hasUnsavedEdit) {
+            configuration.onChange(configurationText, true);
+            return;
+          }
+          setPendingApplyText(configurationText);
+        }
+  - node: rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+    held_at: >-
+      handleApply and handleConfirmApply (lines 86-99), both of which only call
+      configuration.onChange and issue no other call
+    evidence: |-
+      function handleConfirmApply(): void {
+          if (pendingApplyText !== null) {
+            configuration.onChange(pendingApplyText, true);
+          }
+          setPendingApplyText(null);
+        }
+  - node: scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation
+    held_at: >-
+      the Dialog block (lines 127-153): it opens whenever pendingApplyText is non-null, asks
+      the operator to confirm, and closes without applying on "Keep editing" or on dismissal
+    evidence: |-
+      <Dialog
+        open={pendingApplyText !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingApplyText(null);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Apply drafted configuration?</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>{APPLY_OVER_UNSAVED_EDIT_DESCRIPTION}</DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Keep editing
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button type="button" variant="destructive" onClick={handleConfirmApply}>
+                Apply
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read
+  - rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission

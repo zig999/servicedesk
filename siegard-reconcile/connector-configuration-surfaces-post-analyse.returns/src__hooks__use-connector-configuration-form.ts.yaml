@@ -1,0 +1,83 @@
+findings:
+  - file: src/hooks/use-connector-configuration-form.ts
+    where: "the `SAVE_FAILURE_MESSAGE_BY_KIND` map and its use in `saveFailureMessage`"
+    evidence: |-
+      const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+        "connector-configuration-not-well-formed":
+          "This configuration is not syntactically valid JSON.",
+      };
+
+      export function saveFailureMessage(error: unknown): string {
+        if (error instanceof ApiError) {
+          const state = uiStateForApiError(error);
+          return SAVE_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_SAVE_FAILURE_MESSAGE;
+        }
+        return GENERIC_SAVE_FAILURE_MESSAGE;
+      }
+    cost: >-
+      An operator whose submitted registration is refused for the connector-name condition —
+      one of the registration conditions this same node's own description names alongside the
+      well-formedness condition as a condition this route can name — is shown the identical
+      "Something went wrong while saving this connector configuration. Try again." toast used
+      for a refusal the surface does not recognise at all. The one named condition this map does
+      single out (`connector-configuration-not-well-formed`) is stated distinguishably even
+      though the client already blocks that case before it ever reaches the registry, showing
+      the pattern this file itself uses for a named condition — but the other named condition on
+      this route falls through to the same message as an unrecognised refusal, which is exactly
+      the collapse the node forbids.
+    kind: contradicts
+    correction: >-
+      Add an entry to `SAVE_FAILURE_MESSAGE_BY_KIND` for the connector-naming condition, worded
+      distinguishably from `GENERIC_SAVE_FAILURE_MESSAGE`, so it is not presented as an
+      unrecognised refusal.
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the mutation's PUT call, which replaces the configuration whole rather than merging, and
+      `isValidConfigurationObject`, which requires the Configuration field's text to parse as a
+      JSON object rather than an array or other value
+    evidence: |-
+      apiFetch<ConnectorConfiguration>(
+        `/v1/connectors/${encodeURIComponent(values.connector)}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            configuration: getJsonTextareaMinifiedValue(configurationValue),
+          }),
+        },
+      )
+      ...
+      function isValidConfigurationObject(text: string): boolean {
+        const minified = getJsonTextareaMinifiedValue(text);
+        if (minified === null) {
+          return false;
+        }
+        const parsed: unknown = JSON.parse(minified);
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      }
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: >-
+      the mutation's `onSuccess` and `onError` callbacks, fired only once the registry has
+      answered, stating registration by connector name on success and a refusal message on
+      failure — though the failure branch only distinguishes one of the route's named
+      conditions (see finding)
+    evidence: |-
+      onSuccess: (_data, values) => {
+        toast.success(`Connector configuration ${values.connector} registered.`);
+        void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+        onSaved();
+      },
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+looked_past: >-
+  The double-submit dispatch guard (`isDispatchingRef`) and the cancel-navigation fallback
+  (`router.history.canGoBack()` vs. navigating to "/connectors") are implementation robustness
+  and routing detail rather than a domain fact any node in this pack or the named candidates
+  governs, so they are left for a different judgment.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read

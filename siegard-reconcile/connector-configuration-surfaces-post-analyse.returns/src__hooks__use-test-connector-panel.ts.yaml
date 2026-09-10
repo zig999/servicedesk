@@ -1,0 +1,98 @@
+findings:
+  - file: src/hooks/use-test-connector-panel.ts
+    where: the `onAttributeChange` field of `TestConnectorPanelState` and its implementation, lines 91 and 260-264
+    evidence: |-
+      readonly onAttributeChange: (id: string, field: "attribute" | "value", value: string) => void;
+      ...
+      onAttributeChange: (id, field, value) => {
+        setAttributes((current) =>
+          current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
+        );
+      },
+    cost: >-
+      An operator can rename a subject-attribute row's `attribute` field directly through this
+      handler, so the name `onTest` dispatches for that row need never be one of the connector
+      configuration's own `${subject:<attribute-name>}` placeholders. The next reader who trusts
+      that "an attribute those placeholders do not name is no part of the subject the test
+      assembles" will find the panel offering exactly that: a free-form attribute name, with no
+      re-derivation or re-check against the registered configuration's placeholders before the
+      request body is built.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    correction: >-
+      restrict the handler (or the row shape it edits) to the `value` field only, so every
+      attribute name reaching `onTest` continues to originate from
+      `subjectPlaceholderNamesInConfiguration` rather than from operator input.
+  - file: src/hooks/use-test-connector-panel.ts
+    where: the `hasCompleteAttribute`/`canTest` definitions, lines 194-202
+    evidence: |-
+      const hasCompleteAttribute =
+        attributes.length > 0 &&
+        attributes.every((row) => row.attribute.trim() !== "" && row.value.trim() !== "");
+
+      const canTest =
+        selectedCapability !== undefined &&
+        subjectType !== "" &&
+        hasCompleteAttribute &&
+        requester.trim() !== "";
+    cost: >-
+      A capability whose connector configuration declares no ${subject:<attribute-name>}
+      placeholder reconciles to zero attribute rows, so `hasCompleteAttribute` is `false` forever
+      (`0 > 0` never holds) and `canTest` can never turn true. The specification's own subject for
+      such a capability is legitimately empty — "one attribute-value per distinct attribute those
+      placeholders name" is vacuously zero when there are no placeholders — yet this gate makes
+      that capability untestable through the panel, a refusal the policy never states.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    correction: >-
+      drop the `attributes.length > 0` conjunct (or otherwise treat a zero-row subject as
+      complete) so a capability whose configuration names no subject placeholder remains
+      testable.
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the `connector`/`configurationText` parameters of `useTestConnectorPanel` and the
+      `parsesAsConfigurationObject` well-formedness guard used before deriving subject
+      placeholders
+    evidence: |-
+      export function useTestConnectorPanel(
+        connector: string,
+        configurationText: string,
+      ): TestConnectorPanelState {
+      ...
+      function parsesAsConfigurationObject(configurationText: string): boolean {
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(configurationText);
+        } catch {
+          return false;
+        }
+        return isPlainRecord(parsed);
+      }
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      the `capabilityOptions` filter, the `onTest` request-body assembly, and
+      `reconcileAttributeRows`'s deduplication of placeholder names — with the gaps reported as
+      findings above
+    evidence: |-
+      const capabilityOptions: SelectOption[] = capabilities
+        .filter((capability) => capability.connector === connector)
+      ...
+      const body: TestConnectorRequestBody = {
+        capability: { name: selectedCapability.name, version: selectedCapability.version },
+        connector,
+        subject: {
+          type: subjectType,
+          attributes: attributes.map(({ attribute, value }) => ({ attribute, value })),
+        },
+        requester,
+      };
+looked_past: >-
+  TEST_DISPATCH_FAILURE_MESSAGE_BY_KIND is an empty map, so every dispatch failure — including a
+  404 CapabilityNotRegisteredForTestError and a 409 CapabilityConnectorMismatchError — surfaces
+  the same generic message; wording and control choice for a stated outcome are the interface's
+  own under the nodes read here, so this is left unreported.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read

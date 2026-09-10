@@ -1,0 +1,45 @@
+read:
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: >-
+      the Dialog trailing action (lines 53-81): the "Discard changes" trigger disabled
+      while there is no edit or a submission is in flight, and the destructive confirm
+      button inside the dialog that actually performs the discard
+    evidence: |-
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={!state.isDirty || state.isSubmitting}
+      >
+        Discard changes
+      </Button>
+      ...
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onDiscard}>
+          Discard changes
+        </Button>
+      </DialogClose>
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: >-
+      the justSaved status paragraph (lines 82-87), which is the only outcome statement
+      this file renders
+    evidence: |-
+      {state.justSaved && (
+
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+
+looked_past: >-
+  This file only shows a bare "Saved." status and never renders a refusal outcome or a
+  distinguishable named-condition message; that node is also bound to
+  src/hooks/use-connector-configuration-form.ts, and whether the refusal side of the
+  outcome statement is held there — along with the submit-gating and connector-identity
+  display that live inside ConnectorConfigurationFormFields — is that file's own judgment,
+  not this one's.
+
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object

@@ -1,0 +1,40 @@
+read:
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      return {
+          phase: "ready",
+          form,
+          configuration: {
+            value: configurationValue,
+            isValid: configurationValid,
+
+            onChange: handleConfigurationChange,
+          },
+          isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+        };
+  - node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    held_at: nowhere
+    evidence: |-
+      | {
+            readonly phase: "ready";
+            readonly form: UseFormReturn<ConnectorConfigurationFormValues>;
+            readonly configuration: ConfigurationFieldState;
+            readonly isDirty: boolean;
+            readonly isSubmitting: boolean;
+
+            readonly isSubmitSuccessful: boolean;
+            readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+            readonly onCancel: () => void;
+          };
+looked_past: The query.data-to-form-and-local-state synchronization is performed by comparing state inline in the render body (`if (query.data !== syncedConfigurationData) { setSyncedConfigurationData(...); ... }`) rather than in an effect, which is a code-shape observation and not a domain-fact question.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  - rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read
+  - rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - domain/integration/connector-configuration
