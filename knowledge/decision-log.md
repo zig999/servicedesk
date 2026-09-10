@@ -5003,4 +5003,305 @@ entries:
     what it decided is unchanged, and it now reads at the node that holds the disclosure. Leaving the
     clause here beside a fitness that never named it is the state the material found: a frontend step
     declaring this constraint on a clause its fitness does not authorize.'
+- location: rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content.md
+  field: statement
+  unstated: Whether an operator-facing surface presenting or editing a connector configuration performs any judgment
+    of its own over the content its Configuration field holds, and what it states to the operator over content that
+    is well-formed JSON object text and over content that is not. a-connector-configuration-holds-a-well-formed-object
+    states the criterion and the registry's own refusal of a write that departs from it, and says nothing about
+    a surface; a-presented-connector-configuration-states-an-outstanding-or-failed-read and a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+    state what that screen states in each of the four readings of the read and nothing about the content the field
+    then holds; a-submitted-registration-states-its-outcome-to-the-operator states only what is told once the registry
+    has answered a submission; the helper rules move content into that field and state nothing about judging it.
+    No rule, scenario or constraint stated it, so both whether the judgment happened and what it said fell to whatever
+    the interface rendered.
+  decided: 'The surface judges, and judges by the registry''s own criterion: it judges whether the content its Configuration
+    field currently holds — from a returned read, an applied draft or the operator''s typing alike — is well-formed
+    JSON object text as a-connector-configuration-holds-a-well-formed-object fixes that (unparsable text, an empty
+    field, a null value and an array all short of it), states to the operator that the field''s content is not a
+    well-formed JSON object exactly where its judgment finds it is not, states nothing to that effect where its
+    judgment finds it well formed, and holds that statement distinguishable from, and never in place of, the four
+    readings of the read. Recorded as a new invariant over domain/integration/connector-configuration. Not decided
+    here: whether a submission of content the judgment finds short of the criterion is withheld, whether the surface''s
+    other acts are offered alike on both judgments, and which control carries the statement, its wording, its count
+    and its placement.'
+  why: 'Judging is owed because the operator authoring opaque text is the only person who can still fix it and the
+    cheapest moment to fix it is before the write — a-connector-configuration-holds-a-well-formed-object''s own
+    Description already reasons that a human authoring this text directly can write what a runtime call would fail
+    on — and because content a read returns can be short of the criterion even now, the criterion admitting an object
+    on input and configurations registered before it existing unjudged, the same posture a-capability-input-schema-holds-a-well-formed-object
+    takes toward a stored schema predating its shape; a surface silent about that leaves the operator editing over
+    content the registry will not take. The registry''s criterion and no other, so the surface promises no check
+    the registry does not perform — the bound an-output-schema-entrys-statement-carries-no-sixth-claim holds over
+    the sibling registry''s entry surface — and so the well-formedness fact keeps one home rather than being answered
+    two ways. Silence over well-formed content is the same condition''s other half: a standing statement over content
+    the registry accepts teaches the same falsehood in reverse. Distinguishability from the four readings follows
+    a-presented-connector-configurations-four-readings-are-mutually-distinguishable''s own reasoning, which this
+    specification has now taken five times — a surface reading identically in materially different situations tells
+    its reader nothing about which one they are in — and content short of the criterion asks a different act of
+    the operator than waiting, re-issuing a read, or authoring under an unregistered name. It is a fact rather than
+    form on this project''s own line, changing what the operator can learn rather than how it looks, so control,
+    wording, count and placement stay the interface''s. It moves nothing: a statement about the field''s content
+    is not a value of connector or configuration, so the returned-read presentation a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    fixes stands untouched. Disclosed as this route requires: the scope material under work/connector-configuration-detail-cached-load-empty/intake/
+    describes a frontend already delivered and is in part derived from source already written — it reports that
+    screen carrying both a field-level alert naming invalid JSON and a screen-level warning that the stored value
+    must be a JSON object, one shown and the other not in the very defect it reports, so it exhibits an incoherence
+    rather than stating this fact; the reasoning here rests on this specification''s own standing rules, and a reviewer
+    who rejects it rejects that reasoning.'
+- location: rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding.md
+  field: statement
+  unstated: 'Which of the four readings of the read of one connector configuration an operator-facing screen stands
+    in where it is first presented already holding the answer of an earlier read of that configuration while a further
+    read of that same configuration is outstanding, and whether the connector name and configuration that held answer
+    carries are presented to the operator while that further read is outstanding. a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    states three windows over "the read" — not returned, failed, returned — and a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+    a fourth, none of them written for a screen holding one answer with another read outstanding: its outstanding
+    window is stated over a read of that configuration having not returned, which is true of the further read, and
+    its returned window over a read of that configuration having returned, which is true of the held answer, so
+    one situation was claimed by two readings. a-failed-connector-configuration-read-is-reissued-only-on-the-operators-act
+    governs only the re-issue of a failed read; a-connector-configuration-surface-judges-its-configuration-fields-content
+    judges the field''s content and expressly states nothing about the read''s presentation; and a-presented-connector-configurations-four-readings-are-mutually-distinguishable
+    holds the four apart without saying which of them this situation is. So both which reading the operator met
+    and whether they were shown the registered configuration at all fell to whatever the interface happened to render.'
+  decided: 'The screen stands in the reading a read that returned stands in, not the reading an outstanding read
+    stands in, and presents the connector name and the configuration exactly as the held answer carries them for
+    as long as the further read is outstanding, stating nothing to the effect that the configuration is still being
+    read. Recorded as a new invariant over domain/integration/connector-configuration, with a-presented-connector-configuration-states-an-outstanding-or-failed-read''s
+    outstanding window narrowed in its statement and expression to the window in which no read of that configuration
+    has yet answered the screen, so that one situation is not claimed by two readings. Not decided here: whether
+    the screen states to the operator at all that a further read is under way, what it presents once that further
+    read answers, fails or is refused, and which control carries anything, its wording and its placement.'
+  why: 'The outstanding reading exists for the interval in which nothing about the configuration is known and settles
+    on its own — the reason a-presented-connector-configuration-states-an-outstanding-or-failed-read gives for telling
+    that window from the failed one — and a screen holding an earlier answer knows what the registry answered, so
+    presenting that window over it would put a blank exactly where the registry did answer; since a connector configuration
+    is opaque text the operator authors and edits and domain/integration/connector-configuration is replaced whole
+    on every edit, that blank reads to them as a configuration holding nothing and invites an edit and a submission
+    that would replace a standing configuration with content the registry never answered. Disclosed as this route
+    requires: the scope material under work/connector-configuration-detail-cached-load-empty/intake/scope.md describes
+    an already delivered frontend and names its source files, so it is in part derived from code already written;
+    read as data it reports the empty presentation of an answer already held as an error and reports the read answering
+    HTTP 200 with the full configuration, which corroborates this value without founding it — the reasoning above
+    rests on this specification''s own standing rules, and a reviewer who rejects it rejects that reasoning.'
+- location: rules/integration/a-connector-configuration-read-answering-over-an-unsubmitted-edit-leaves-that-edit-standing.md
+  field: statement
+  unstated: What an operator-facing screen presenting one connector configuration does with the fields the operator
+    has edited and not submitted when the answer of a read of that same configuration arrives there — whether it
+    writes that answer into them or leaves the edit standing. a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    states only what the screen presents while a further read is outstanding and expressly leaves what it presents
+    once that read answers unstated; a-presented-connector-configuration-states-an-outstanding-or-failed-read states
+    what the screen presents of a read that returned without considering an edit standing in the fields; a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    and an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation protect that edit against a
+    discard and against an applied draft and say nothing about a read's answer. So whether an operator's unsubmitted
+    work survived a further answer fell to whatever the interface happened to render.
+  decided: The arriving answer changes no field of the screen; the edit stands exactly as the operator left it,
+    and the fields hold what that answer carries only where the operator states in a further, explicit act that
+    the edit is to be replaced by it. Recorded as a new invariant over domain/integration/connector-configuration.
+  why: The unsubmitted edit exists on the screen and nowhere else and this specification publishes no operation
+    that can answer it back, while the arriving answer is content the registry holds and a further read answers
+    again on request, so writing the answer over the edit destroys the only copy of one thing to save a retrieval
+    of the other that costs nothing — and since domain/integration/connector-configuration is replaced whole on
+    every edit, an operator who does not notice the silent replacement can submit content they never intended over
+    a configuration that was standing.
+- location: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names.md
+  field: statement
+  unstated: Which statement of a connector configuration an operator-facing screen reads the Subject attribute names
+    it collects test values for from, and what it states where two statements name different attributes. a-connector-configuration-is-tested-through-a-registered-capability
+    states that the test's subject carries exactly the attributes named by the placeholders in the configuration
+    currently registered under that connector name, read at the moment of the test, and a-presented-connector-configuration-offers-its-test-on-the-reading-that-answered
+    offers the act on the reading where the read returned and expressly leaves which attributes the operator supplies
+    values for to that other rule — so no node says whether the screen derives the names from the answer of the
+    read it is presenting, from the content its Configuration field then holds, or from the configuration the test
+    itself reads, nor what the operator is told when the configuration tested names a different set than the values
+    were collected for.
+  decided: The screen collects one value per distinct Subject attribute the ${subject:<attribute-name>} placeholders
+    name in the configuration as the answer of the read that screen is presenting carries it, and for no attribute
+    outside that set, whatever content its Configuration field then holds; and where the configuration the test
+    read at the moment of the test names a set of attributes other than the set collected for, the screen states
+    to the operator that the configuration registered under that connector name changed since the answer being presented
+    and that the test exercised a configuration those values were not collected for, distinguishably from and never
+    in place of what the test answered.
+  why: The answer being presented is the only statement of the configuration in existence when the values are collected
+    — the configuration the test reads is read only after the request carrying those values is made — and it is
+    the statement the screen is already held to presenting, while the field's content may hold an unsubmitted edit
+    or an applied draft the test is forbidden to exercise, so any other source asks the operator for values about
+    a configuration that screen is not showing and that call never resolves; the divergence needs stating because
+    no refusal meets it, a placeholder resolving to nothing ending unavailable, which reaches the operator as an
+    ending indistinguishable from a connector that is genuinely down while their next act is to re-read and collect
+    again rather than to investigate the connector.
+- location: rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered.md
+  field: statement
+  unstated: Whether the fields an operator edits and submits a registration from, on a screen presenting the connector
+    configuration a read of the configuration registered under a connector name answered, hold the connector name
+    and the configuration content that answer carries, and from which moment inside that reading they hold them.
+    a-presented-connector-configuration-states-an-outstanding-or-failed-read and a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    state that the screen presents connector and configuration exactly as the answer carries them, without stating
+    that the operator's own fields are where they stand or from when; a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    reasons from a condition in which every field holds exactly what that answer carried without any node stating
+    that condition ever obtains; a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface presupposes
+    fields changed away from what the read answered; and a-connector-configuration-surface-judges-its-configuration-fields-content
+    judges whatever content the Configuration field holds while stating nothing about how it came to hold it.
+  decided: The fields the operator edits and submits from hold exactly the connector name and the configuration
+    content that answer carries, from the first moment that reading is entered — whether the answer was in hand
+    before the screen was first presented or arrived after it — and for as long as it stands, no field standing
+    absent, empty or holding content drawn from anything but that answer, until the operator themselves changes
+    it.
+  why: Those fields are the same fields register-connector is submitted from and domain/integration/connector-configuration
+    is replaced whole on every edit, so a reading entered on an answer the registry gave while those fields stand
+    empty sets the operator to work on a blank and lets them submit content the registry never answered over a configuration
+    that was standing; and a field filled at some later moment inside that reading leaves it, for that interval,
+    indistinguishable from the window in which nothing about the configuration is known, while an empty Configuration
+    field additionally draws the surface's own not-well-formed statement over a configuration the registry holds
+    well formed.
+- location: rules/integration/a-further-connector-configuration-answer-becomes-what-a-screen-holding-no-edit-presents.md
+  field: statement
+  unstated: What an operator-facing screen presenting the connector configuration registered under one named connector
+    presents, and what the fields the operator edits and submits a registration from hold, when the answer of a
+    further read of that same configuration arrives there carrying content different from the answer the screen
+    is presenting and the operator has changed no field away from that presented answer. a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    states what the screen presents while such a further read is outstanding and expressly leaves what it presents
+    once that read answers unstated; a-presented-connector-configuration-states-an-outstanding-or-failed-read states
+    the returned reading over "the read" without saying which of two answers of the same configuration is the one
+    presented; a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered
+    holds those fields to the answer the screen presents without deciding which answer that is once a second has
+    arrived; and a-connector-configuration-read-answering-over-an-unsubmitted-edit-leaves-that-edit-standing decides
+    only the half where the operator has changed a field away from that answer. So whether the operator went on
+    being shown a configuration the registry had replaced fell to whatever the interface happened to render.
+  decided: 'The arriving answer becomes the answer the screen presents: from the moment it arrives, the field the
+    operator edits the connector name in and the field they edit the configuration in hold exactly the connector
+    and configuration values that arriving answer carries, the screen states no value that answer did not carry,
+    and no part of the screen goes on presenting a value of the answer it replaced; the screen stands in the returned
+    reading throughout, and every field then holds exactly what that arriving answer carried and no content the
+    operator put there. Recorded as a new invariant over domain/integration/connector-configuration. Not decided
+    here: what the screen presents where such a further read fails or is refused over an answer it is already presenting,
+    whether it states at all that a further read is under way, and which control carries anything, its wording and
+    its placement.'
+  why: 'Nothing on the screen is lost by taking the arriving answer, and something is lost by refusing it: the reason
+    an unsubmitted edit stands under an arriving answer is that the edit exists on the screen and nowhere else with
+    no operation able to answer it back, and where no field has been changed away from the presented answer no such
+    content exists, while the answer being replaced is content the registry either still holds and a further read
+    answers again for the asking or no longer holds at all; since register-connector is create-or-replace and domain/integration/connector-configuration
+    is replaced whole on every edit, an operator editing from a superseded answer and submitting writes the older
+    content back over the newer in one total write, and the test collects its values for the attributes the presented
+    answer''s placeholders name, so a screen keeping the superseded answer manufactures the very divergence a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    exists to report. Disclosed as this route requires: the scope material under work/connector-configuration-detail-cached-load-empty/intake/scope.md
+    describes an already delivered frontend and names its source files, so it is in part derived from code already
+    written; read as data it reports an already-answered read presented empty as an error and says nothing about
+    a second answer carrying different content, so it neither founds nor contradicts this value — the reasoning
+    above rests on this specification''s own standing rules, and a reviewer who rejects it rejects that reasoning.'
+- location: rules/integration/a-held-connector-configuration-answer-stands-presented-through-a-failed-further-read-but-not-a-refused-one.md
+  field: statement
+  unstated: What an operator-facing screen presenting the connector configuration registered under one named connector
+    presents, and which of the four readings of the read of that configuration it stands in, where a further read
+    of that same configuration fails or is refused while the screen is presenting the answer of an earlier read
+    of that configuration that it already held when it was first presented. a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    states what the screen presents while such a further read is outstanding and expressly leaves what it presents
+    once that read fails or is refused unstated; a-further-connector-configuration-answer-becomes-what-a-screen-holding-no-edit-presents
+    and a-connector-configuration-read-answering-over-an-unsubmitted-edit-leaves-that-edit-standing each decide
+    only the case in which that further read answers and say the failed and refused cases are no part of them; a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    states its failed window over "the read", written for a screen holding no answer, so read strictly that window
+    and the returned window claimed one situation at once, which a-presented-connector-configurations-four-readings-are-mutually-distinguishable
+    forbids the operator to be shown; and a-failed-connector-configuration-read-is-reissued-only-on-the-operators-act
+    governs only who re-issues a failed read. So whether the operator went on being shown the registered configuration
+    or met a screen reporting a read that could not be made fell to whatever the interface happened to render.
+  decided: 'Where that further read fails, the screen goes on presenting the connector name and the configuration
+    exactly as the held answer carries them and stands in the reading a read that returned stands in, stating nothing
+    to the effect that the configuration could not be read; where that further read is instead refused because nothing
+    is registered under that connector name, the screen stands in the reading a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+    states, states that nothing is registered under that name and presents no connector or configuration value,
+    that held answer being presented no further. Recorded as a new invariant over domain/integration/connector-configuration,
+    scoped to a screen holding no field the operator has changed away from that held answer, with a-presented-connector-configuration-states-an-outstanding-or-failed-read''s
+    failed window narrowed in its statement and expression to a read that failed while the screen holds the answer
+    of no read of that configuration, so that one situation is not claimed by two readings. Not decided here: what
+    a screen holding an unsubmitted edit presents where such a further read fails or is refused, whether the screen
+    states to the operator at all that a further read was made, failed or was refused, and which control carries
+    anything, its wording and its placement.'
+  why: 'A failure is no answer about the configuration, and the failed window exists — by that rule''s own Description
+    — for the case in which nothing about the configuration is or will be known unless the read is made again, which
+    is false of a screen that holds what the registry answered a moment ago; blanking it would put a blank exactly
+    where the registry answered, and since a connector configuration is opaque text the operator authors and edits,
+    domain/integration/connector-configuration is replaced whole on every edit and register-connector is create-or-replace,
+    that blank invites an edit and a submission replacing a standing configuration with content the registry never
+    answered — the identical reasoning by which a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    kept the outstanding window off this same screen. A refusal because nothing is registered under the name goes
+    the other way because it is the registry''s own definite answer that the name holds nothing, which a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+    makes a reading of its own precisely because making the read again cannot change it: going on presenting the
+    held answer there shows the operator, as the registration in front of them, content the registry no longer holds
+    — the harm a-further-connector-configuration-answer-becomes-what-a-screen-holding-no-edit-presents names in
+    terms, compounded by a create-or-replace submission that would write back a registration the registry has answered
+    it does not hold and by the test that reading would otherwise offer over a configuration nothing is registered
+    under — and would present the refused reading as the returned one, which a-presented-connector-configurations-four-readings-are-mutually-distinguishable
+    refuses, while that reading leaves no blank unexplained. Disclosed as this route requires: the scope material
+    under work/connector-configuration-detail-cached-load-empty/intake/scope.md describes an already delivered frontend
+    and names its source files, so it is in part derived from code already written; read as data it reports the
+    empty presentation of an answer already held at mount as an error and reports that read answering HTTP 200 with
+    the full configuration, and says nothing at all about a further read failing or being refused — the reasoning
+    above rests on this specification''s own standing rules, and a reviewer who rejects it rejects that reasoning.'
+- location: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface.md
+  field: expression
+  unstated: No node stated what content the act that returns a surface's fields to the content of the registration
+    the surface last read returns them to, where the surface was first presented already holding the answer of an
+    earlier read of the registration it presents and issued no read of that registration itself. The statement fixes
+    the target as the content of the registration the surface last read and its expression as the content "that
+    read answered", both written for a surface whose own read answered to it; the exclusions it carries and a-surface-holding-no-read-registration-offers-no-discard
+    name only surfaces holding no read registration at all — one authoring at an unregistered identity, one whose
+    read has not answered, one whose read failed; a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    and a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered state
+    what such a surface presents and what its fields hold before any edit, neither of them what a discard over an
+    edit returns them to; and a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    turns expressly on nothing about whether the answer was in hand before the surface was first presented, deciding
+    only that no discard is offered while no field has been changed. So what the operator's fields held after a
+    discard on such a surface fell to whatever the interface happened to render, including emptying them.
+  decided: 'The content that held answer carries: where the surface issued no read of the registration itself and
+    was first presented already holding the answer of an earlier read of it, that held answer is the registration
+    content the surface last read, so the act sets every field of the surface to the content that held answer carries
+    and to the content of no other answer.'
+  why: That held answer is the only content of the registration in hand on such a surface, so every other target
+    either empties fields where the registry answered or fills them from a source no read of that registration gave;
+    since both registries' writes are create-or-replace and a connector configuration is replaced whole on every
+    edit, an operator whose discard left them a blank or foreign content, with the edit it replaced destroyed and
+    answerable back by no operation, goes on editing and submits over a standing registration content the registry
+    never answered.
+- location: rules/integration/a-connector-configuration-answer-is-retained-sixty-seconds-past-the-surface-that-read-it.md
+  field: statement
+  unstated: Whether the answer of a read of the connector configuration registered under one named connector is
+    in hand beyond the operator-facing surface whose read obtained it — so that a later surface presenting the configuration
+    registered under that same connector name is first presented already holding it — and, where it is, for how
+    long. Four standing rules are each stated over a screen first presented already holding the answer of an earlier
+    read of that configuration (a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding,
+    a-held-connector-configuration-answer-stands-presented-through-a-failed-further-read-but-not-a-refused-one,
+    a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered's clause
+    for an answer in hand before the surface was first presented, and a-presented-connector-configuration-states-an-outstanding-or-failed-read's
+    own reading of its outstanding window), and no node states that an answer ever outlives the surface that read
+    it, nor any bound past which it no longer does.
+  decided: 'Retained, and bounded: the answer a read of the configuration registered under a connector name returned
+    is in hand for sixty seconds from the moment it arrived and no moment later, whichever surface issued that read
+    and whether or not that surface still stands; a surface presenting the configuration registered under that same
+    connector name is first presented already holding that answer where it is first presented inside that interval,
+    and holds the answer of no read of that configuration where it is first presented outside every such interval,
+    standing there in the reading for a read that has not yet answered; where several answers have arrived, each
+    interval runs from its own arrival and the latest arrival is the one in hand; a failed read and a read refused
+    because nothing is registered under the name each return no answer and so put nothing in hand. What a surface
+    already presenting an answer goes on presenting is not bounded by this.'
+  why: 'Retained rather than not, because register-connector is create-or-replace and domain/integration/connector-configuration
+    is replaced whole on every edit, so the harm every rule over this surface is written against is an operator
+    working from content the registry did not answer — and an operator who read a configuration a moment ago, took
+    the route to the listing that a-connector-configuration-surface-offers-a-route-to-the-listing owes on every
+    reading, and reopened the same connector is an operator the registry has already answered for; refusing the
+    retention puts them back in the window in which nothing about the configuration is known for no gain. Bounded
+    at sixty seconds rather than left open, because an answer in hand without limit lets a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    put a surface into the returned reading presenting values as the registry''s answer on the strength of a read
+    made at any distance in the past, which is exactly the superseded answer a-further-connector-configuration-answer-becomes-what-a-screen-holding-no-edit-presents
+    names as the content an operator writes back over a newer registration in one total write; and sixty seconds
+    is the value this specification already fixed for the bound a retained read answer keeps where nothing states
+    another, in a-collected-concept-declares-a-ttl, whose own logged reasoning is that a short bound produces no
+    error but only a read that could have been avoided — long enough for the listing reached and the connector reopened,
+    short enough that a registration made under that name meanwhile is not presented past it. Disclosed as this
+    route requires: the scope material under work/connector-configuration-detail-cached-load-empty/intake/scope.md
+    describes an already delivered frontend and names its source files, so it is in part derived from code already
+    written; read as data it reports the delivered screen receiving the answer already at mount when the listing
+    was visited and the same connector reopened within the cache''s lifetime, or the screen is reached by the browser''s
+    history, which corroborates the retention half without founding it, and it names no lifetime, duration or bound
+    of any kind, so the sixty seconds departs from nothing that was built and agrees with nothing either.'
 ---

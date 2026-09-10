@@ -1,0 +1,388 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-configuration-read-presentation",
+      "kind": "epic",
+      "file": "epic/connector-configuration-read-presentation.md",
+      "title": "The presentation of a read connector configuration",
+      "summary": "What the connector configuration screen must present once the registry has answered its read, whether that answer arrived after the screen mounted or was already held when it did, and the proof that fails when it does not."
+    },
+    {
+      "id": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "kind": "task",
+      "file": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held.md",
+      "title": "A read connector configuration is presented whenever the read has answered",
+      "summary": "The connector configuration screen presents the configuration the registry answered, whether that answer arrived after the screen mounted or was already held when it mounted.",
+      "epic": "connector-configuration-read-presentation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-listing-routes-presence-turns-on-nothing-further",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-names-its-connector",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-read-answering-over-an-unsubmitted-edit-leaves-that-edit-standing",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-failed-connector-configuration-read-is-reissued-only-on-the-operators-act",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-further-connector-configuration-answer-becomes-what-a-screen-holding-no-edit-presents",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-held-connector-configuration-answer-stands-presented-through-a-failed-further-read-but-not-a-refused-one",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configuration-offers-its-test-on-the-reading-that-answered",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configurations-four-readings-are-mutually-distinguishable",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-return-to-origin-routes-presence-turns-on-nothing-further",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-return-to-origin-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "kind": "covers",
+      "at": "covers[36]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-surface-holding-no-read-registration-offers-no-discard",
+      "kind": "covers",
+      "at": "covers[37]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[38]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing",
+      "kind": "covers",
+      "at": "covers[39]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-authoring-surface-includes-an-unsubmitted-edit-of-a-standing-registration",
+      "kind": "covers",
+      "at": "covers[40]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[41]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "kind": "covers",
+      "at": "covers[42]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[43]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-unclassified-status-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[44]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-unreachable-connector-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[45]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[46]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "covers",
+      "at": "covers[47]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
+      "kind": "covers",
+      "at": "covers[48]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "covers",
+      "at": "covers[49]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-answer-is-retained-sixty-seconds-past-the-surface-that-read-it",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "scenarios/integration/a-drafts-method-mismatches-what-is-registered",
+      "kind": "covers",
+      "at": "covers[50]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "covers",
+      "at": "covers[51]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation",
+      "kind": "covers",
+      "at": "covers[52]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-configuration-read-presentation",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names",
+      "kind": "implements",
+      "at": "implements[7]"
+    }
+  ]
+}
