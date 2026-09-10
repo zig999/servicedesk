@@ -1,0 +1,47 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: >-
+      nowhere — this file has no operation that composes, releases or otherwise writes a case
+      version; every public method reads
+    evidence: >-
+      public async readCase(slug: string, version: number): Promise<ReadCaseResult> { ... }
+      public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
+        return this.caseStore.listCases(pagination);
+      }
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      public async readCase(slug: string, version: number): Promise<ReadCaseResult> { ... }
+      — slug and version arrive as plain parameters used only to key a read; the file declares
+      no create-draft operation, no next_version counter and no slug-uniqueness check anywhere
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: >-
+      readCaseInputRequirements(), lines 41-47
+    evidence: >-
+      public async readCaseInputRequirements(slug: string, version: number): Promise<CaseInputRequirementsResult> {
+        const assembled = await heldVersion(this.caseStore, slug, version);
+        const theCase = structuralCase(assembled, slug, version);
+        await this.refuseGlossaryIncoherence(theCase, version);
+        const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+        return deriveCaseInputRequirements(theCase, registeredCapabilities);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
+        return this.caseStore.listCases(pagination);
+      }
+      — the file only forwards slugs to the store for reads; no code here asserts or checks that
+      a slug names at most one case
+
+looked_past: >-
+  readCase()'s unconditional refuseIncoherence(), applied the same way to a draft or a released
+  version, and replayCase()'s trustedCaseOf() path that skips both structuralCase() and any
+  coherence check, match rules/knowledge/validation-runs-at-every-read — "a stored case version,
+  draft or released, is read as a case only while every validator rule holds ... a replay reads
+  the pinned version without revalidation" — a node bound elsewhere in this batch (not in this
+  file's own node set) and not this file's finding to carry, since the fact is correctly held
+  there rather than unstated.
+
+candidates_opened:
+  - rules/knowledge/validation-runs-at-every-read

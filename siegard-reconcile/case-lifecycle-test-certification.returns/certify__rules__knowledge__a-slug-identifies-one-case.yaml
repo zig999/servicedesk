@@ -1,0 +1,38 @@
+certified:
+  - node: rules/knowledge/a-slug-identifies-one-case
+    state: partial
+    tests:
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          answers a case exactly once in the page, however many versions it currently holds
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          leaves the page's total the number of cases currently held, unaffected by how many versions any case holds
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses a second draft for a case that already holds one in draft state
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          lets only one of two concurrent draft-creation calls for the same case succeed, the other refused through CaseAlreadyHasDraftError
+    why: >-
+      The fact is that no two cases share a slug. Nothing in the offered proof ever attempts to bring a
+      second case into existence under a slug a case already holds and observes that attempt refused: no
+      test writes a second `cases` row for one slug — neither directly (a second `INSERT INTO cases`
+      expecting the unique violation) nor through the store — so the constraint that makes the slug the
+      case's identity is never put under the pressure the rule names. The four cited integration tests
+      bear on the fact only incidentally, and each on the way to asserting something else: the two catalog
+      tests assert that the listing projection does not multiply a case across its versions (one entry,
+      and a total that counts cases rather than versions) and would fail if repeated `createDraft` calls
+      under one slug produced a second case row, but their subject is the projection's grouping, not the
+      identity constraint, and they exercise only the one write path that ever creates a case row; the two
+      draft tests assert draft uniqueness per case (CaseAlreadyHasDraftError, sequential and concurrent)
+      and would fail if a same-slug call produced a fresh case with its own draft, but they would be
+      changed the day the draft rule changes and nothing marks the slug-identity half as load-bearing.
+      They also reach the fact only through `createDraft`; a duplicate arriving by any other write, or by
+      the storage constraint itself being dropped, is unexercised.
+      src/__tests__/unit/case/case-query.service.spec.ts
+      cannot bear on the fact at all: its FakeCaseStore holds cases in a `Map<string, ICaseRecord>` keyed
+      by slug, so one slug can hold only one case by construction of the double — including "answers the
+      version stored under the named slug, never the same version number stored under a different slug",
+      which exercises slug-scoped lookup while presuming the invariant rather than testing it. A test
+      there would not fail if the fact stopped holding in the system.

@@ -1,0 +1,43 @@
+certified:
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    state: partial
+    tests:
+      - file: src/__tests__/integration/case/release.operation.spec.ts
+        name: >-
+          marks a draft that holds against every rule released, recording the instant of release
+      - file: src/__tests__/integration/case/release.operation.spec.ts
+        name: >-
+          refuses releasing a version that is not in draft state, through this operation's own
+          CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged
+      - file: src/__tests__/integration/case/release.operation.spec.ts
+        name: >-
+          releases a draft case version whose manifest holds two hypothesis-revisions, each pinned at a
+          revision whose own state is already released, not refused by this rule
+      - file: src/__tests__/integration/case/release.operation.spec.ts
+        name: >-
+          leaves a case version in draft state, recording no release, when this rule alone refuses the
+          release
+      - file: src/__tests__/integration/case/release.operation.spec.ts
+        name: >-
+          refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at
+          all, naming both structural violations together, leaving the version in draft state with no
+          release recorded
+      - file: src/__tests__/integration/case/release.operation.spec.ts
+        name: >-
+          refuses releasing a draft whose collected concept both rejects the declared subject type and
+          answers no capability, naming both coherence violations together, leaving the version in draft
+          state with no release recorded
+    why: >-
+      Exercised: the one declared transition — a draft that holds moves to released and records the
+      instant — and that a refused release leaves the version in draft with no release recorded; and
+      release asked of a version standing in released is refused through CaseVersionNotDraftAtReleaseError
+      whose context is asserted to equal exactly the slug, the version number and the state it stood in.
+      Unexercised, two stated parts. First, the HTTP 409 both refusals are stated to carry: every test in
+      the file calls ReleaseOperation.release() directly against a RelationalCaseStore and asserts on the
+      thrown error object, so no response and no status code is ever observed — the transport could answer
+      400, 422 or 500 for either refusal and the whole file would still pass. Second, the refusal stated
+      for a lifecycle operation other than release asked of a version not in draft state: nothing in the
+      file invokes any non-release lifecycle operation, CaseVersionNotDraftError is neither imported nor
+      referenced, and so that refusal and its reported error are wholly unexercised. The file's proof of
+      "moves only along its declared lifecycle" is also confined to the release trigger; no test attempts
+      any other trigger out of released.

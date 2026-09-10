@@ -1,0 +1,56 @@
+findings:
+  - file: src/case/case-store.port.ts
+    where: the module-level constant, line 7
+    evidence: "export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;"
+    cost: >-
+      This runtime array re-enumerates the hypothesis-revision lifecycle's own states (initial
+      draft, terminal released) as a second, independently-maintained vocabulary in the port
+      file, rather than the port reading the two states from the rule that declares them — the
+      way `CaseVersionState` is declared here as a bare type alias with no backing array. If the
+      lifecycle's declared states ever change, this constant is a second place a reader must
+      remember to update, and nothing here ties it back to the node that owns it.
+    kind: contradicts
+    correction: >-
+      Drop the runtime array and declare `HypothesisRevisionState` as a plain union type mirroring
+      the rule's own `status`/`transitions`, the same way `CaseVersionState` is declared, so no
+      vocabulary is duplicated as a standalone constant.
+    node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      the `CaseIdentity` type (the case's slug identity) and the `createDraft` operation on
+      `ICaseStore`
+    evidence: |-
+      export type CaseIdentity = {
+        readonly slug: string;
+      };
+      ...
+      createDraft(input: CreateDraftInput): Promise<number>;
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: the `CaseVersionState` type alias, line 5
+    evidence: "export type CaseVersionState = 'draft' | 'released';"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      the `findDraftVersion` operation and the `DraftVersion` type it returns, and the absence of
+      any subject field on `HypothesisRevisionInput`
+    evidence: |-
+      findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
+      ...
+      export type DraftVersion = {
+        readonly version: number;
+        readonly subject: string;
+      };
+      ...
+      export type HypothesisRevisionInput = {
+        readonly slug: string;
+        readonly hypothesis_name: string;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: Resolution;
+      };
+
+candidates_opened:
+  - rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  - contracts/system/case-authoring
+  - rules/knowledge/a-slug-identifies-one-case

@@ -1,0 +1,46 @@
+certified:
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    state: partial
+    tests:
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case that has never held any version at all, writing no hypothesis or revision row
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only version is already released rather than in draft state, writing no hypothesis or revision row
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only draft version has already been discarded, writing no hypothesis or revision row
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          leaves an already-existing revision of the hypothesis reading exactly as it did, refusing to alter it, when a later revise is refused for the case holding no draft version
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          succeeds for a case that holds both an already-released earlier version and a currently open draft version — the draft gate finds the draft rather than being confused by the case's own release history
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          accepts a revise whose input.subject disagrees with the case's own draft version's declared subject type, deciding the concept-acceptance check by the draft's own subject alone
+      - file: src/__tests__/integration/case/revise-hypothesis.operation.spec.ts
+        name: >-
+          refuses with ConceptRefusesSubjectTypeError naming the case's own draft version's declared subject type — never the caller-supplied input.subject that disagrees with it — when the collected concept refuses that draft's own subject even though it would accept input.subject
+    why: >-
+      Two of the fact's three parts are exercised and would fail if they stopped holding: the
+      revise-only-while-a-draft-is-held part is exercised in both directions (three refusals —
+      no version ever, only version released, draft discarded — plus a success where a draft
+      coexists with an already-released version, so the gate cannot be satisfied by a stub that
+      always refuses), and the subject-type-comes-from-the-draft part is exercised by the pair
+      that makes input.subject disagree with the draft's declared subject, one asserting the
+      revise succeeds on the draft's subject and one asserting the refusal's context names the
+      draft's subject rather than input.subject. The third part goes unexercised: the fact states
+      the refusal is delivered "with an HTTP 409 response reporting a CaseHoldsNoDraftError", and
+      every test in the offered proof calls ReviseHypothesisOperation.reviseHypothesis directly
+      and asserts only the rejected value's error type and context. Nothing in the set drives an
+      HTTP request or reads a status code, so the status the refusal surfaces as could change to
+      any other code and the whole file would still pass; the mapping from CaseHoldsNoDraftError
+      to 409 must be proved at whatever layer builds the response, and that test is outside the
+      proof offered here. One further note for a reader opening the file: the last test,
+      "excludes an implementation that originates a hypothesis identity and revision for a case
+      holding no draft version at all, without refusing", asserts only
+      rejects.toBeInstanceOf(Error), which any thrown error satisfies — it does not bind the
+      refusal to CaseHoldsNoDraftError, and the three named refusal tests above are what carry
+      that part.

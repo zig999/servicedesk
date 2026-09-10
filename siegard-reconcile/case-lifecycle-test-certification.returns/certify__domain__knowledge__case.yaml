@@ -1,0 +1,20 @@
+certified:
+  - node: domain/knowledge/case
+    state: uncovered
+    why: >-
+      Every part of the fact the node states is supplied by FakeCaseStore, the test double declared
+      inside this same proof file, so no assertion in the set can fail when the fact stops holding
+      in the delivered system. The counter is unexercised in all three of its stated parts: nothing
+      reads next_version, nothing calls the store's discard at all, and so the node's central claim
+      — that the number assigned to the next draft is always greater than every version this case
+      has ever held, including one later discarded — has no test that would notice a reused number.
+      create-draft as the operation that originates a new draft version is only ever the fixture's
+      own seedCase helper; the composition under test, CaseQueryService, never originates a version.
+      Two tests bear on the identity incidentally and certify nothing: "answers each version by its
+      own content, never another version's" and "answers the version stored under the named slug,
+      never the same version number stored under a different slug" both assert that a read passes
+      the slug and version it was handed through to the store, against version numbers the fake
+      itself assigned, and a slug never shared with another case is a property of the fake's Map
+      keying rather than an asserted behavior — both pass unchanged if a case's slug stopped being
+      its own stable identity. A reader who opens this file will find these tests and should not
+      conclude the audit missed them.

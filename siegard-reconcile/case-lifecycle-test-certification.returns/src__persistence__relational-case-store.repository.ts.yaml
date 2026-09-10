@@ -1,0 +1,93 @@
+findings:
+  - file: src/persistence/relational-case-store.repository.ts
+    where: releaseHypothesisRevisionRow / releaseHypothesisRevisionStatement, lines 615-625
+    evidence: >-
+      async function releaseHypothesisRevisionRow(tx: IQueryable, key: IRevisionKey): Promise<void> {
+        await runStatement(tx, releaseHypothesisRevisionStatement(key), raiseWriteFailure);
+      }
+
+      function releaseHypothesisRevisionStatement(key: IRevisionKey): IStatement {
+        return {
+          text: `UPDATE ${HYPOTHESIS_REVISIONS_TABLE} SET state = $4
+                 WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+          params: [key.slug, key.hypothesis_name, key.revision, HYPOTHESIS_REVISION_RELEASED_STATE],
+        };
+      }
+    cost: >-
+      A revision already released — or a hypothesis-revision identity nothing was ever stored for
+      — can be released again through this path with no refusal at all: the UPDATE runs
+      unconditionally (or silently matches zero rows) instead of raising
+      HypothesisRevisionNotDraftAtReleaseError. The sibling operation on the case-version path in
+      this same file (releaseVersion → refuseUnlessDraftAtRelease → CaseVersionNotDraftAtReleaseError)
+      does perform the check, so the next reader who trusts that pattern to repeat here will not
+      find the guard, and the one-way draft-to-released transition the rule requires is not enforced
+      at this layer.
+    kind: contradicts
+    correction: >-
+      releaseHypothesisRevisionRow should read the revision's current own state first (e.g. via
+      resolveHypothesisRevisionOwnState, treating an absent stored row as not-draft) and throw
+      HypothesisRevisionNotDraftAtReleaseError when that state is not 'draft', before issuing the
+      UPDATE.
+    node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      assignNextVersion / nextVersionUpdateStatement, invoked from createDraftVersion — the case's
+      own next_version counter is incremented and the pre-increment value returned as the new
+      draft's version number; discardDraft never touches this counter, so a discarded version's
+      number is never reissued.
+    evidence: >-
+      UPDATE ${CASES_TABLE} SET next_version = next_version + 1
+             WHERE slug = $1
+             RETURNING next_version - 1 AS version
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: >-
+      refuseUnlessDraft (used by insertManifestEntry, deleteManifestEntry, discardDraft and
+      updateDraftVersion — every lifecycle operation other than release) and
+      refuseUnlessDraftAtRelease (used only by releaseVersion), lines 880-890.
+    evidence: >-
+      function refuseUnlessDraft(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftError(key.slug, key.version, state);
+        }
+      }
+
+      function refuseUnlessDraftAtRelease(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftAtReleaseError(key.slug, key.version, state);
+        }
+      }
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      insertRevision calls requireCaseHoldsDraft(tx, input.slug) before inserting any revision row;
+      findDraftVersion separately exposes the draft's own subject for a caller's concept-acceptance
+      check.
+    evidence: >-
+      async function requireCaseHoldsDraft(tx: IQueryable, slug: string): Promise<void> {
+        const row = await queryOneOrAbsent<{ version: number }>(tx, draftVersionSelect(slug), raiseReadFailure);
+        if (row === undefined) {
+          throw new CaseHoldsNoDraftError(slug);
+        }
+      }
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: >-
+      insertRevisionRow inserts every new revision at HYPOTHESIS_REVISION_DRAFT_STATE, and
+      releaseHypothesisRevisionRow performs an unconditional UPDATE to
+      HYPOTHESIS_REVISION_RELEASED_STATE with no prior state check and no
+      HypothesisRevisionNotDraftAtReleaseError thrown anywhere in the file.
+    evidence: >-
+      UPDATE ${HYPOTHESIS_REVISIONS_TABLE} SET state = $4
+             WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: >-
+      caseIdentityStatement, relied on by createDraftVersion to ensure at most one `cases` row
+      exists per slug.
+    evidence: >-
+      INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING
+
+looked_past: >-
+  The file also encodes manifest-position uniqueness (ManifestPositionOccupiedError /
+  POSITION_UNIQUE_CONSTRAINT), resolution/consolidation-register vocabularies, and pagination —
+  these answer to domain and rule nodes outside this reconciliation's node set and are not judged
+  here.
