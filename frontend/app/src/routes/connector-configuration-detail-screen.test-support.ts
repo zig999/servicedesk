@@ -92,10 +92,14 @@ function buildTestRouter(initialPath: string) {
 export async function mountConnectorConfigurationDetailScreen(
   fetchMock: FetchFn,
   initialPath = `/connectors/${CONNECTOR}`,
+  seededAnswer?: { connector: string; configuration: string },
 ): Promise<ReturnType<typeof buildTestRouter>> {
   vi.stubGlobal("fetch", fetchMock);
   const router = buildTestRouter(initialPath);
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  if (seededAnswer) {
+    queryClient.setQueryData(["connector-configuration", seededAnswer.connector], seededAnswer);
+  }
   await router.load();
   render(
     createElement(

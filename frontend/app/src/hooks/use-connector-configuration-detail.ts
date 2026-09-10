@@ -13,6 +13,8 @@ import {
 import type { ConnectorConfiguration } from "./use-connector-configurations";
 import { saveFailureMessage, type ConfigurationFieldState } from "./use-connector-configuration-form";
 
+const UNSYNCED_CONFIGURATION_DATA = Symbol("unsynced-connector-configuration-data");
+
 function isValidConfigurationObject(text: string): boolean {
   const minified = getJsonTextareaMinifiedValue(text);
   if (minified === null) {
@@ -74,7 +76,9 @@ export function useConnectorConfigurationDetail(
     defaultValues: { connector },
   });
 
-  const [syncedConfigurationData, setSyncedConfigurationData] = useState(query.data);
+  const [syncedConfigurationData, setSyncedConfigurationData] = useState<
+    ConnectorConfiguration | undefined | typeof UNSYNCED_CONFIGURATION_DATA
+  >(UNSYNCED_CONFIGURATION_DATA);
   if (query.data !== syncedConfigurationData) {
     setSyncedConfigurationData(query.data);
     if (query.data) {

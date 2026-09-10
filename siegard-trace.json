@@ -2345,7 +2345,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
-          "digest": "sha256:cd64841d1c3973c8960f9a225fcf1396b68c4dade8c32f56193fe25d04f5a723"
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
@@ -4900,6 +4900,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding",
+      "digest": "sha256:f74623d125cc7432c9d65e1b4f4e99b3ea16ae09aa99834700006eff82a4e8c7",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
       "digest": "sha256:dc878540f88c8c7be41bcda929259b69633d156d92394aedacfcff6edbb982a8",
       "files": [
@@ -5150,6 +5160,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content",
+      "digest": "sha256:676a8f2d4bdf654914cccbb202feeb6e474abc21347706f12429c187378d8a89",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing",
       "digest": "sha256:80f4fb0ec02a4800a6f7f7d7803d02228b169f4ddd94716a6d0019b0b608254f",
       "files": [
@@ -5249,8 +5269,12 @@
     },
     {
       "node": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
-      "digest": "sha256:8d540b391ccebf6728bdd943afc16831bcecaf2de0e057a5fdd1687951b3102f",
+      "digest": "sha256:a5bc0f34130dd44154fcc8a0bf06f35ce79b4a9d85fcc4ae48112cf4a0fcd900",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
           "digest": "sha256:80c5888f651763503acea6419dbf4fffd9d5888c33a2c22930757bd90ae4bb46"
@@ -5307,15 +5331,45 @@
     },
     {
       "node": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
-      "digest": "sha256:eb02a3bbc5e674660964a80a71094201786c383e83ad18d8fb60951c40f8ff6e",
+      "digest": "sha256:c43eec40c12195416d81e4fc685f47449c38cc59f6af05e4f1b8e0c0a046796d",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
-          "digest": "sha256:cd64841d1c3973c8960f9a225fcf1396b68c4dade8c32f56193fe25d04f5a723"
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission",
+      "digest": "sha256:b72074e886ca694bb7c0d7a6f6a305137e3cb7c55eae6311b67fdeca71e4dc0e",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered",
+      "digest": "sha256:d434339d115e5cea294d59bd20c0959c3ff6378cb289367238d53d014ac235d8",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names",
+      "digest": "sha256:dc896b99d175605c7102436030c3a853978b67966c8eb32a8a76cc4bcbf241f4",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
         }
       ]
     },

@@ -1,0 +1,83 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held.md",
+      "title": "Fix connector configuration screen presenting an empty configuration when the read's answer is already held at mount",
+      "summary": "Corrects use-connector-configuration-detail.ts so its own-read sync mechanism runs on the very first render whenever a cached answer is already present, not only on a later render, fixing the empty-configuration defect while leaving the after-mount-arrival path untouched.",
+      "task": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held"
+    },
+    {
+      "id": "proof/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "kind": "proof",
+      "file": "proof/connector-configuration-read-presentation/read-answer-is-presented-whenever-held.md",
+      "title": "Cached-load presentation of a read connector configuration",
+      "summary": "Seven new tests over the connector configuration detail screen's cache-seeded first render, proving the task's six criteria and two of its UNDERDETERMINED notes against a real react-query cache hit, plus a test-support extension that lets a mount pre-seed the query client.",
+      "task": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "task/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "to": "implementation/connector-configuration-read-presentation/read-answer-is-presented-whenever-held",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
