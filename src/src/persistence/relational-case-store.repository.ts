@@ -31,6 +31,7 @@ import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../errors/case-version-not-draft.error.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { ManifestPositionOccupiedError } from '../errors/manifest-position-occupied.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from '../errors/released-hypothesis-revision-not-alterable.error.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
@@ -613,7 +614,14 @@ function hypothesisRevisionOwnStateSelect(key: IRevisionKey): IStatement {
 }
 
 async function releaseHypothesisRevisionRow(tx: IQueryable, key: IRevisionKey): Promise<void> {
+  refuseUnlessHypothesisRevisionDraftAtRelease(await resolveHypothesisRevisionOwnState(tx, key));
   await runStatement(tx, releaseHypothesisRevisionStatement(key), raiseWriteFailure);
+}
+
+function refuseUnlessHypothesisRevisionDraftAtRelease(state: HypothesisRevisionState | undefined): void {
+  if (state !== HYPOTHESIS_REVISION_DRAFT_STATE) {
+    throw new HypothesisRevisionNotDraftAtReleaseError();
+  }
 }
 
 function releaseHypothesisRevisionStatement(key: IRevisionKey): IStatement {

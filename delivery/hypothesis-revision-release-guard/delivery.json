@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-release-guard/guard-release-on-current-state.md",
+      "title": "Guard hypothesis-revision release on its currently stored state",
+      "summary": "RelationalCaseStore's releaseHypothesisRevisionRow now reads the revision's own current state before writing and refuses with HypothesisRevisionNotDraftAtReleaseError unless that state is draft, including when no row was ever stored.",
+      "task": "task/hypothesis-revision-release-guard/guard-release-on-current-state"
+    },
+    {
+      "id": "proof/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-release-guard/guard-release-on-current-state.md",
+      "title": "Guard hypothesis-revision release on its currently stored state",
+      "summary": "Proves that releaseHypothesisRevisionRow refuses release with HypothesisRevisionNotDraftAtReleaseError whenever the revision's own current state is not draft — including an identity never stored — leaves the row untouched on refusal, succeeds and marks the row released when the state is draft, and raises the refusal identically across both triggering branches.",
+      "task": "task/hypothesis-revision-release-guard/guard-release-on-current-state"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "to": "task/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "to": "implementation/hypothesis-revision-release-guard/guard-release-on-current-state",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

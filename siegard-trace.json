@@ -1617,7 +1617,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370"
+          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -4333,7 +4333,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:e07dc82774ae6295395d52bb313857facb24e934fa23b0a60fa08920b4ca942a"
+          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
         },
         {
           "path": "src/src/seed.ts",
@@ -6579,7 +6579,7 @@
     },
     {
       "node": "rules/knowledge/a-case-versions-input-requirements-are-derived",
-      "digest": "sha256:eec35fab8696b317d8ab50782eb58ce5f9406db1d979249ff64cd4f5f89edf6e",
+      "digest": "sha256:b259456fc75c11d5e6d268244b8e5bfc74122277af860736adb9446dfcba2292",
       "files": [
         {
           "path": "src/src/case/case-input-requirements.ts",
@@ -6963,7 +6963,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:b2c97a7c391c59c0b7ae3255347e213fb0d134bd43b099f4d524145e0a52e354"
+          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
         },
         {
           "path": "src/src/seed.ts",

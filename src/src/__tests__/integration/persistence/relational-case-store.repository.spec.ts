@@ -9,6 +9,7 @@ import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { statusForError } from '../../../errors/status-map.js';
@@ -1016,6 +1017,64 @@ it(
     expect(assembled?.manifest).toEqual([
       { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'a-hypothesis', revision }) },
     ]);
+  },
+);
+
+it('releases a hypothesis-revision whose currently stored state is draft, reading released back afterward', async () => {
+  const slug = `case-lifecycle-store-release-hypothesis-revision-draft-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'a criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  await store.releaseHypothesisRevision(slug, 'a-hypothesis', revision);
+
+  const state = await store.readHypothesisRevisionOwnState(slug, 'a-hypothesis', revision);
+  expect(state).toBe('released');
+});
+
+it(
+  'refuses releasing a hypothesis-revision already released, through HypothesisRevisionNotDraftAtReleaseError, ' +
+    'leaving its own stored state exactly as it was',
+  async () => {
+    const slug = `case-lifecycle-store-release-hypothesis-revision-twice-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.releaseHypothesisRevision(slug, 'a-hypothesis', revision);
+
+    const rejection = store.releaseHypothesisRevision(slug, 'a-hypothesis', revision);
+
+    await expect(rejection).rejects.toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    const state = await store.readHypothesisRevisionOwnState(slug, 'a-hypothesis', revision);
+    expect(state).toBe('released');
+  },
+);
+
+it(
+  'refuses releasing a hypothesis-revision identity that was never stored at all, through HypothesisRevisionNotDraftAtReleaseError',
+  async () => {
+    const store = new RelationalCaseStore(pool);
+    const slug = `case-lifecycle-store-release-hypothesis-revision-absent-${randomUUID()}`;
+
+    const rejection = store.releaseHypothesisRevision(slug, 'never-stored', 1);
+
+    await expect(rejection).rejects.toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
   },
 );
 

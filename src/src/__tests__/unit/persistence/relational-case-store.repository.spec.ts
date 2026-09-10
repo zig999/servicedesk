@@ -11,6 +11,7 @@ import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error
 import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
+import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
@@ -527,6 +528,89 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
+
+it('releases a hypothesis-revision whose currently stored state is draft, updating its own state to released', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: Row[] }> => {
+    recorded.push({ text, params });
+    if (text.includes('SELECT state FROM hypothesis_revisions')) return { rows: [{ state: 'draft' }] };
+    return { rows: [] };
+  };
+  const { connection, client } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  await store.releaseHypothesisRevision('a-slug', 'a-hypothesis', 3);
+
+  const texts = collapsedTexts(recorded);
+  expect(texts[1]).toContain('SELECT state FROM hypothesis_revisions');
+  expect(texts[2]).toContain('SET state = $4');
+  expect(recorded[2]?.params).toEqual(['a-slug', 'a-hypothesis', 3, 'released']);
+  expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it(
+  "refuses releaseHypothesisRevision with HypothesisRevisionNotDraftAtReleaseError, and issues no UPDATE, " +
+    "when the revision's currently stored state is not draft",
+  async () => {
+    const recorded: { text: string }[] = [];
+    const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+      recorded.push({ text });
+      if (text.includes('SELECT state FROM hypothesis_revisions')) return { rows: [{ state: 'released' }] };
+      return { rows: [] };
+    };
+    const { connection } = fakeTransactionConnection(handleQuery);
+    const store = new RelationalCaseStore(connection);
+
+    const rejection = store.releaseHypothesisRevision('a-slug', 'a-hypothesis', 3);
+
+    await expect(rejection).rejects.toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    expect(recorded.some((entry) => entry.text.includes('SET state ='))).toBe(false);
+  },
+);
+
+it(
+  'refuses releaseHypothesisRevision with HypothesisRevisionNotDraftAtReleaseError, and issues no UPDATE, ' +
+    'when the identity has never been stored at all',
+  async () => {
+    const recorded: { text: string }[] = [];
+    const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
+      recorded.push({ text });
+      return { rows: [] };
+    };
+    const { connection } = fakeTransactionConnection(handleQuery);
+    const store = new RelationalCaseStore(connection);
+
+    const rejection = store.releaseHypothesisRevision('a-slug', 'never-stored', 1);
+
+    await expect(rejection).rejects.toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    expect(recorded.some((entry) => entry.text.includes('SET state ='))).toBe(false);
+  },
+);
+
+it(
+  'raises HypothesisRevisionNotDraftAtReleaseError with the exact same message and no own field beyond ' +
+    'name, whether the revision was already released or was never stored at all',
+  async () => {
+    const alreadyReleasedQuery = async (text: string): Promise<{ rows: Row[] }> => {
+      if (text.includes('SELECT state FROM hypothesis_revisions')) return { rows: [{ state: 'released' }] };
+      return { rows: [] };
+    };
+    const neverStoredQuery = async (): Promise<{ rows: Row[] }> => ({ rows: [] });
+    const { connection: releasedConnection } = fakeTransactionConnection(alreadyReleasedQuery);
+    const { connection: neverStoredConnection } = fakeTransactionConnection(neverStoredQuery);
+    const releasedStore = new RelationalCaseStore(releasedConnection);
+    const neverStoredStore = new RelationalCaseStore(neverStoredConnection);
+
+    const releasedError = await releasedStore.releaseHypothesisRevision('a-slug', 'a-hypothesis', 1).catch((error: unknown) => error);
+    const neverStoredError = await neverStoredStore.releaseHypothesisRevision('a-slug', 'never-stored', 1).catch((error: unknown) => error);
+
+    expect(releasedError).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    expect(neverStoredError).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+    expect((releasedError as Error).message).toBe((neverStoredError as Error).message);
+    expect(Object.keys(releasedError as object)).toEqual(['name']);
+    expect(Object.keys(neverStoredError as object)).toEqual(['name']);
+  },
+);
 
 it("removes a draft version's own manifest entries before its own row, after reading the version state as draft, never touching any hypothesis-revision", async () => {
   const recorded: { text: string }[] = [];
