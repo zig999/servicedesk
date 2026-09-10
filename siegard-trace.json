@@ -5160,6 +5160,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read",
+      "digest": "sha256:087c03641910e940d0dd22f85d577d425b7eba2cb872b112784949812bd47e98",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content",
       "digest": "sha256:676a8f2d4bdf654914cccbb202feeb6e474abc21347706f12429c187378d8a89",
       "files": [
@@ -5184,6 +5194,34 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed",
+      "digest": "sha256:f2a236699b0a6304849f1f25befd8f210b8cfea8481684415444e6d090d30d5c",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:016a4f83f6f6f8768ecf2fd86f672ba67675718bbc90b1af0ed8ad307606a1c5"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading",
+      "digest": "sha256:ba6c71a884a9f985204a4d77bc7596d376f79d26b90af4ca0258397c0ce2fc11",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configurations-screen.tsx",
+          "digest": "sha256:461abc1a06301ee331ddc55472df5fdc38d2ef4ecd98097e89f755abf2cf0d67"
         }
       ]
     },
