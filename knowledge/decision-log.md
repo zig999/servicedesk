@@ -4186,4 +4186,43 @@ entries:
     answer writes older content back over newer in one total write; with no node deciding how long an answer stays
     in hand, the further read on every such presentation is the one thing that bounds that staleness, and the held
     answer standing meanwhile costs the operator no blank.
+- location: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed.md
+  field: statement
+  unstated: Whether an operator's attempt to submit a connector configuration whose Configuration field content
+    the surface's own judgment finds not well-formed JSON object text is withheld from register-connector on the
+    surface, or sent to the registry to be refused and stated as the outcome a-submitted-registration-states-its-outcome-to-the-operator
+    owes. a-connector-configuration-surface-judges-its-configuration-fields-content states the judgment and the
+    statement it owes and expressly leaves the submission open; a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    withholds the act only where no field changed; the delivered surfaces withhold it in silence, which two specification-conformance
+    judgments reported as a fact held by no node.
+  decided: The act submitting a registration is not offered while the surface's own judgment finds the field's content
+    not well-formed JSON object text; the statement that judgment owes stands in its place. Where the content is
+    well formed nothing here decides whether the act is offered. Recorded as a new invariant over domain/integration/connector-configuration.
+  why: 'The surface judges by the registry''s own criterion, so a submission of content that judgment finds short
+    of it is one the registry refuses, and offering the act spends a round trip to tell the operator what the surface
+    is already stating beside the field; withholding an act whose outcome is certain follows the reading a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    already took over this same screen for an act with nothing to act on. Disclosed as this route requires: the
+    material is a reconciliation record and a review record over source already delivered, which withhold the act
+    by disabling the control and by a guard that silently drops the call; the value decided matches the control''s
+    behavior and the reasoning rests on the specification''s own rules, so a reviewer who rejects it rejects that
+    reasoning, not the code.'
+- location: rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading.md
+  field: statement
+  unstated: Whether the surface presenting the listing of registered connector configurations offers a route to
+    author a new connector configuration, and whether that offer holds while the listing's own read has not answered,
+    has failed, or has answered no configuration. a-connector-configuration-surface-offers-a-route-to-the-listing
+    and a-connector-configuration-listing-routes-presence-turns-on-nothing-further state only the reverse direction,
+    a single configuration's route back to the listing; the delivered listing renders the authoring route unconditionally
+    and says why only in a source comment, which a specification-conformance judgment reported as a fact held by
+    no node.
+  decided: The listing offers a route to author a new connector configuration on every reading of the listing, its
+    presence turning on nothing about the read backing the listing, and taking the route registers nothing. Recorded
+    as a new invariant over domain/integration/connector-configuration.
+  why: 'The listing''s read answers which configurations are registered and nothing about whether one may be authored,
+    so a route to author blocked behind that read''s state refuses the operator an act for a reason unrelated to
+    it, and the empty page is the very case where the route is needed most; the presence-turns-on-nothing-further
+    construction is the one this specification already uses for a route whose availability must not read as conditional.
+    Disclosed as this route requires: the material is source already delivered and a comment in it; the value decided
+    matches that source, and the reasoning rests on the specification''s own rules for its sibling routes, so a
+    reviewer who rejects it rejects that reasoning.'
 ---

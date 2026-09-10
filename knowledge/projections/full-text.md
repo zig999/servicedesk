@@ -4798,6 +4798,45 @@ entries:
     answer writes older content back over newer in one total write; with no node deciding how long an answer stays
     in hand, the further read on every such presentation is the one thing that bounds that staleness, and the held
     answer standing meanwhile costs the operator no blank.
+- location: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed.md
+  field: statement
+  unstated: Whether an operator's attempt to submit a connector configuration whose Configuration field content
+    the surface's own judgment finds not well-formed JSON object text is withheld from register-connector on the
+    surface, or sent to the registry to be refused and stated as the outcome a-submitted-registration-states-its-outcome-to-the-operator
+    owes. a-connector-configuration-surface-judges-its-configuration-fields-content states the judgment and the
+    statement it owes and expressly leaves the submission open; a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    withholds the act only where no field changed; the delivered surfaces withhold it in silence, which two specification-conformance
+    judgments reported as a fact held by no node.
+  decided: The act submitting a registration is not offered while the surface's own judgment finds the field's content
+    not well-formed JSON object text; the statement that judgment owes stands in its place. Where the content is
+    well formed nothing here decides whether the act is offered. Recorded as a new invariant over domain/integration/connector-configuration.
+  why: 'The surface judges by the registry''s own criterion, so a submission of content that judgment finds short
+    of it is one the registry refuses, and offering the act spends a round trip to tell the operator what the surface
+    is already stating beside the field; withholding an act whose outcome is certain follows the reading a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    already took over this same screen for an act with nothing to act on. Disclosed as this route requires: the
+    material is a reconciliation record and a review record over source already delivered, which withhold the act
+    by disabling the control and by a guard that silently drops the call; the value decided matches the control''s
+    behavior and the reasoning rests on the specification''s own rules, so a reviewer who rejects it rejects that
+    reasoning, not the code.'
+- location: rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading.md
+  field: statement
+  unstated: Whether the surface presenting the listing of registered connector configurations offers a route to
+    author a new connector configuration, and whether that offer holds while the listing's own read has not answered,
+    has failed, or has answered no configuration. a-connector-configuration-surface-offers-a-route-to-the-listing
+    and a-connector-configuration-listing-routes-presence-turns-on-nothing-further state only the reverse direction,
+    a single configuration's route back to the listing; the delivered listing renders the authoring route unconditionally
+    and says why only in a source comment, which a specification-conformance judgment reported as a fact held by
+    no node.
+  decided: The listing offers a route to author a new connector configuration on every reading of the listing, its
+    presence turning on nothing about the read backing the listing, and taking the route registers nothing. Recorded
+    as a new invariant over domain/integration/connector-configuration.
+  why: 'The listing''s read answers which configurations are registered and nothing about whether one may be authored,
+    so a route to author blocked behind that read''s state refuses the operator an act for a reason unrelated to
+    it, and the empty page is the very case where the route is needed most; the presence-turns-on-nothing-further
+    construction is the one this specification already uses for a route whose availability must not read as conditional.
+    Disclosed as this route requires: the material is source already delivered and a comment in it; the value decided
+    matches that source, and the reasoning rests on the specification''s own rules for its sibling routes, so a
+    reviewer who rejects it rejects that reasoning.'
 ---
 
 === domain/glossary/_context
@@ -6828,6 +6867,72 @@ constrains:
 Taking it registers nothing. `register-connector` is the one operation that creates a configuration or replaces whatever answered to its name, and `domain/integration/connector-configuration` is replaced whole on every edit; a route away that wrote what the surface was holding would make leaving indistinguishable from registering, on a value object where the write is total. What becomes of content an authoring surface was holding when the operator leaves it is no part of this: the route says where the operator lands, never what happens to content never registered.
 
 Which control carries the route, whether it stands apart from the controls that register or is carried by one of them, its wording, and where it sits — above the surface's heading, beneath it, or anywhere else — are form and belong to the interface, not here, the same reading `a-listed-case-version-offers-a-route-to-its-own-manifest` and `a-draft-versions-content-is-presented-only-from-its-own-record` already take over their own controls. This adds no attribute to `domain/integration/connector-configuration`, publishes no operation, discloses nothing further about a configuration, and refuses no call.
+
+=== rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+---
+type: invariant
+statement: >-
+  A surface presenting or editing a connector configuration offers no act submitting a
+  registration through register-connector while its own judgment finds the content its
+  Configuration field currently holds not to be well-formed JSON object text, the statement
+  that judgment owes standing in its place.
+expression: >-
+  For a surface s presenting or editing the connector configuration registered under a
+  connector name n, or authoring one under n, and the content c its Configuration field holds
+  at a given moment: where s's own judgment of c finds it not well-formed JSON object text, s
+  offers no act submitting a registration through register-connector of
+  contracts/integration/connector-configuration-registry, so no register-connector call
+  leaves s while that judgment stands; where that judgment finds c well formed, whether the
+  act is offered is decided by nothing here. Nothing here turns on how c came to be held, on
+  which control would have carried the act, or on how s was reached.
+constrains:
+- domain/integration/connector-configuration
+---
+
+## Description
+
+A surface authoring or editing a connector configuration judges its Configuration field's content by the registry's own criterion and states to the operator where it falls short, and no node said what the act submitting a registration does while that statement stands.
+Left unstated, an operator could take the act and be told nothing, or take it and be refused by the registry a round trip later for the condition the surface was already stating.
+
+The act is not offered, because its outcome is already known on the surface.
+The judgment the surface makes is the registry's own criterion, so a submission carrying content that judgment finds short of it is one the registry refuses, and offering the act spends a call to tell the operator what the surface already states beside the field.
+The statement standing in the act's place is what the operator has to go on: what is wrong with the content, rather than a refusal arriving after the fact.
+
+This decides that the act is withheld while the judgment finds the content not well formed, and nothing beyond it.
+What the surface states about the content is the judgment rule's own; whether the act is offered where the content is well formed but nothing was changed is decided by the rule over the surface that read a registration and holds no edit; what the registry answers a submission that does reach it stays the registry's own rules'; and which control carries the act, whether a withheld act is absent or carried by a control the operator cannot take, its wording and its placement are the interface's own.
+
+=== rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
+---
+type: invariant
+statement: >-
+  The listing of registered connector configurations offers the operator a route to author a
+  new connector configuration on every reading of the listing — while its own read has not
+  answered, where that read failed, where it answered no configuration, and where it answered
+  some — and taking that route registers nothing.
+expression: >-
+  For the surface l presenting the listing list-connector-configurations of
+  contracts/integration/connector-configuration-registry answers: l carries a route whose
+  destination is a surface authoring a connector configuration at a connector name nothing is
+  registered under, and that route is present at every reading of l, its presence turning on
+  nothing about the read backing l, which may not yet have answered, may have failed, or may
+  have answered an empty or a populated page. Taking that route from l issues no
+  register-connector call and leaves every registered connector configuration exactly as it
+  stood. Which control carries the route, its wording and its placement are not evaluated here.
+constrains:
+- domain/integration/connector-configuration
+---
+
+## Description
+
+`list-connector-configurations` of `contracts/integration/connector-configuration-registry` answers the configurations currently registered, in pages, and the surface presenting that listing is where an operator arrives to find one or to author one.
+No node said whether that surface offers a route to author a new configuration, nor whether the offer survives a listing whose own read has not answered, failed or came back empty.
+
+The route is offered on every reading, because what the listing's read answers says nothing about whether a configuration may be authored.
+A read of the registered set that is still outstanding, that failed, or that answered nothing is a fact about that read; authoring a configuration is a write to a registry the read never touched, and blocking it behind the read's state would refuse the operator an act for a reason unrelated to it.
+The empty page is the case that makes this sharp: a registry holding no configuration yet is exactly where the operator most needs the route to author the first.
+
+This decides that the route is offered, on which readings, and that taking it registers nothing, and nothing beyond it.
+What the authoring surface then offers, states and refuses is its own rules'; what the listing states about its own read in each of its readings is stated by no node and not stated here; and which control carries the route, its wording and its placement are the interface's own.
 
 === rules/integration/a-connector-placeholder-is-declared-by-its-capability
 ---
