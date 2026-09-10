@@ -1,0 +1,41 @@
+certified:
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    state: partial
+    tests:
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          releases a hypothesis-revision whose currently stored state is draft, updating its own state to released
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses releaseHypothesisRevision with HypothesisRevisionNotDraftAtReleaseError, and issues no UPDATE, when the revision's currently stored state is not draft
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses releaseHypothesisRevision with HypothesisRevisionNotDraftAtReleaseError, and issues no UPDATE, when the identity has never been stored at all
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          raises HypothesisRevisionNotDraftAtReleaseError with the exact same message and no own field beyond name, whether the revision was already released or was never stored at all
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          releases a hypothesis-revision whose currently stored state is draft, reading released back afterward
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses releasing a hypothesis-revision already released, through HypothesisRevisionNotDraftAtReleaseError, leaving its own stored state exactly as it was
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses releasing a hypothesis-revision identity that was never stored at all, through HypothesisRevisionNotDraftAtReleaseError
+    why: >-
+      The lifecycle itself is exercised whole: the draft-to-released transition is driven and the
+      released state read back (unit and integration), release against a revision already released
+      is refused with HypothesisRevisionNotDraftAtReleaseError while the state and the absence of
+      any UPDATE are asserted, release against a never-stored identity is refused the same way, and
+      the "whole of what that refusal reports" half — same message, no own field beyond `name`, so
+      never which of the two triggers raised it — is asserted directly by the unit test comparing
+      the two errors. What goes unexercised is the refusal's stated HTTP 409: nothing in the offered
+      proof maps HypothesisRevisionNotDraftAtReleaseError to a status. Every refusal assertion in
+      both files stops at the error's type and shape, so the named tests would all still pass if
+      that error answered 500, or 422, or nothing at all. The one status assertion in the set —
+      `expect(statusForError(caught)).toBe(409)` in the integration file's overwrite test — is over
+      ReleasedHypothesisRevisionNotAlterableError, a different error raised by a different trigger,
+      and proves nothing about this refusal's own status. Whatever test binds this error to 409
+      (a status-map or HTTP-layer test) lies outside the proof the certification offered, so it
+      cannot be cited here and the state stays short of covered.

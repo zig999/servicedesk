@@ -1,0 +1,68 @@
+certified:
+  - node: domain/knowledge/hypothesis-revision
+    state: partial
+    tests:
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: "releases a hypothesis-revision whose currently stored state is draft, updating its own state to released"
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: "refuses releaseHypothesisRevision with HypothesisRevisionNotDraftAtReleaseError, and issues no UPDATE, when the revision's currently stored state is not draft"
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: "refuses releaseHypothesisRevision with HypothesisRevisionNotDraftAtReleaseError, and issues no UPDATE, when the identity has never been stored at all"
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: "removes only the named manifest entry, after reading the version state as draft, never touching the hypothesis-revision it referenced"
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: "removes a draft version's own manifest entries before its own row, after reading the version state as draft, never touching any hypothesis-revision"
+      - file: src/__tests__/unit/persistence/relational-case-store.repository.spec.ts
+        name: "raises this store's own typed error rather than answering a highest-revision read whose own state is outside the declared enumeration — a row this driver-level double can answer even though the real schema's own CHECK constraint on hypothesis_revisions.state never lets it occur"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "releases a hypothesis-revision whose currently stored state is draft, reading released back afterward"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "refuses releasing a hypothesis-revision already released, through HypothesisRevisionNotDraftAtReleaseError, leaving its own stored state exactly as it was"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "refuses releasing a hypothesis-revision identity that was never stored at all, through HypothesisRevisionNotDraftAtReleaseError"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "carries the highest revision's own state as draft still, even once the case version that pins it moves to released state — releasing a case version never alters the hypothesis-revision's own state column"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "answers a revision's own stored state — draft — even though a released case version's manifest still references that revision, reading the state from the revision's own row and not from the referencing case version"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "carries the highest revision's own state as released once that row is updated directly, with no case version anywhere referencing it — this read never joins to case_version_hypotheses or case_versions at all"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "returns every revision the named hypothesis currently holds, by its own full content, each revision's own collects grouped to it alone and never conflated with another revision of the same hypothesis"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "excludes another hypothesis's own revisions from the page, within the same case, naming only the hypothesis name it was asked for"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "excludes a different case's own revisions of a hypothesis sharing the same name, naming only the slug it was asked for"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "overwrites a revision's content while leaving its own revision number exactly as it was before"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "answers the replacement's own criterion and resolution, once that revision is read back after the overwrite"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "does not refuse an overwrite attempt against a hypothesis-revision whose own state is draft, even though a released case version's manifest still references that revision"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "refuses an overwrite attempt against a revision whose own state is released, through the same typed ReleasedHypothesisRevisionNotAlterableError mapped to HTTP 409, even though no case version's manifest has ever referenced that revision"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "removes only the named manifest entry, never the hypothesis-revision it referenced"
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: "removes a draft version and its own manifest entries, without deleting any hypothesis-revision"
+    why: >-
+      The release half of the fact is exercised whole: a draft revision moves to released by its own
+      release, a second release is refused with the stored state left as it was, an identity never
+      stored is refused, and the state is read from and written to the revision's own row with no
+      case version and no manifest consulted — a released case version pinning the revision leaves it
+      draft, and a revision released directly reads released while nothing references it. The
+      in-place-edit-before-release half is exercised too: an overwrite replaces criterion, collects
+      and resolution while the revision number stays exactly what it was, and it is refused once the
+      revision's own state is released. Three stated parts go unexercised. First, "a further edit
+      always creates the next revision instead": nothing in the set submits an edit against a
+      released revision and observes the next revision come into being — the released path is
+      exercised only as the overwrite refusal, and the numbering test inserts against a hypothesis
+      whose revisions are all draft, so the routing from a released revision to a new one is never
+      run. Second, "leaving every version that already adopted this one reading exactly what it
+      always read": no test creates a further revision after release and then reassembles the case
+      version that had already adopted the earlier one to confirm it still reads the content it
+      always read. Third, "a case version's manifest may point at this revision in either state":
+      every placeHypothesis in the set points at a revision whose own state is draft, so pointing a
+      manifest at a revision already released — and the claim that doing so moves neither the
+      revision nor the version — is never submitted.

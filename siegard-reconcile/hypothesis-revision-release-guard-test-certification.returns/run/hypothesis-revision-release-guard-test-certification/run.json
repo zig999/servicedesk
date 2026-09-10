@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/hypothesis-revision-release-guard-test-certification",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "test-unit",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test-unit.log",
+      "started_at": "2026-09-10T00:04:33.362+00:00",
+      "ended_at": "2026-09-10T00:05:55.282+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
