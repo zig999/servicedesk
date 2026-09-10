@@ -1,0 +1,83 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-save-act/save-dispatches-the-registration.md",
+      "title": "Restore form ownership for the connector configuration screen's Save control",
+      "summary": "Fixes the portaled Save button on the connector-configuration form so it submits the screen's own form, restoring the register-connector dispatch the footer-portal DOM shape had silently disabled.",
+      "task": "task/connector-configuration-save-act/save-dispatches-the-registration"
+    },
+    {
+      "id": "proof/connector-configuration-save-act/save-dispatches-the-registration",
+      "kind": "proof",
+      "file": "proof/connector-configuration-save-act/save-dispatches-the-registration.md",
+      "title": "Save dispatches the registration — proof for connector-configuration-save-act",
+      "summary": "Mounts the connector configuration detail screen with the app shell's footer slot present, so ButtonFooter's createPortal is actually taken, and proves the Save control regains its form owner and reaches every outcome the task's criteria and Notes describe.",
+      "task": "task/connector-configuration-save-act/save-dispatches-the-registration"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "task/connector-configuration-save-act/save-dispatches-the-registration",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-save-act/save-dispatches-the-registration",
+      "to": "implementation/connector-configuration-save-act/save-dispatches-the-registration",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -942,6 +942,10 @@
           "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
         },
         {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
         },
@@ -5334,6 +5338,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers",
+      "digest": "sha256:c41e101f9b18ababf3b9023d71f425233a58e3ca15cc6d8136f6f7d4636798e6",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
+          "digest": "sha256:db4c757af3f2243c742184b008e47dd7f7f9ccc809911ccb5d1ecec5b3b988bf"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:cd64841d1c3973c8960f9a225fcf1396b68c4dade8c32f56193fe25d04f5a723"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
       "digest": "sha256:89acbe576d7c9716dd9dec750795a2777790a768d15a96491e06ae65452468fe",
       "files": [
@@ -5383,7 +5401,7 @@
     },
     {
       "node": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
-      "digest": "sha256:d4c20d76e248582918fd5fab91e971e1069e88c6f4d620d97445f77194ba69cd",
+      "digest": "sha256:d5c1c7132b4939fb7f8ab9ebfe3b08d3652d3dbde7424f8116e453fc28c6991e",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
@@ -5399,7 +5417,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
-          "digest": "sha256:e947773d386f15a7397f1296495aa2de86e835f2e9644419c4fa7e0e7ab400f9"
+          "digest": "sha256:016a4f83f6f6f8768ecf2fd86f672ba67675718bbc90b1af0ed8ad307606a1c5"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen-outcome.spec.ts",
@@ -5407,13 +5425,21 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:79b73063e0f2f600c5e872959efc3cbb0063c52da94e4783747b8554349a5baa"
+          "digest": "sha256:87e69656eacb2c1b082e82a22ecfbeb7109b94f7121f20f2a5280559361061a1"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
+          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
         }
       ]
     },
     {
       "node": "rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface",
-      "digest": "sha256:b0947d737cd8cd72d27e27e9cd422646ab6b7873ce5f40ba994d965d04bf46e3",
+      "digest": "sha256:c2694294c3bdb5c192f2109763f6d56e19bf4c0a11d7ae5690e82c1bef0ea3d7",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
@@ -5422,6 +5448,10 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
           "digest": "sha256:0d9b7b5cabed47e12fdd961840925edb27b43e13869a62074dd8b958a409ca34"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
+          "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
         }
       ]
     },
@@ -5449,7 +5479,7 @@
     },
     {
       "node": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
-      "digest": "sha256:06a5c5a76fcf043df1e32a697050d239e1be4bf04740cc566139679d2952024f",
+      "digest": "sha256:8b13f82dc77f214b03ad4e62f5e547140a790789d5fa7bd5bbbab05e1b59601a",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
@@ -5466,6 +5496,16 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:016a4f83f6f6f8768ecf2fd86f672ba67675718bbc90b1af0ed8ad307606a1c5"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing",
+      "digest": "sha256:b86a05025bc21184643aca0bc6bc16f66af3888a9bd68394ea3f7f4c32dc4220",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:cd64841d1c3973c8960f9a225fcf1396b68c4dade8c32f56193fe25d04f5a723"
         }
       ]
     },

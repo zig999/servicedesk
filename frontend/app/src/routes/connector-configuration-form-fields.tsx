@@ -18,6 +18,8 @@ import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import type { ConfigurationFieldState } from "../hooks/use-connector-configuration-form";
 
+export const CONNECTOR_CONFIGURATION_FORM_ID = "connector-configuration-form";
+
 const APPLY_OVER_UNSAVED_EDIT_DESCRIPTION =
   "Applying this drafted configuration will replace the edit you have not saved in the " +
   "Configuration field. This cannot be undone.";
@@ -97,7 +99,12 @@ export function ConnectorConfigurationFormFields({
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form
+      id={CONNECTOR_CONFIGURATION_FORM_ID}
+      onSubmit={onSubmit}
+      noValidate
+      className="flex flex-col gap-4"
+    >
       <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
         <Input
           {...register("connector")}
@@ -146,7 +153,12 @@ export function ConnectorConfigurationFormFields({
       </Dialog>
 
       <ButtonFooter>
-        <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
+        <Button
+          type="submit"
+          form={CONNECTOR_CONFIGURATION_FORM_ID}
+          loading={isSubmitting}
+          disabled={isSaveDisabled}
+        >
           Save
         </Button>
         {trailingActions}
