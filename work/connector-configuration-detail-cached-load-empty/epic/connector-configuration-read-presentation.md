@@ -8,13 +8,13 @@ rationale: 'Seeded from trace.py --encodes over the file the human named, then c
   read presented as an empty configuration is a failure of the presentation, which reaches every rule the connector-configuration
   domain node and the registration surface state, whether or not this correction touches it.'
 sources:
+- intake/scope-2026-09-10-drop-retention-node.md
 - intake/scope.md
 covers:
 - contracts/integration/connector-configuration-registry
 - domain/integration/capability
 - domain/integration/connector-configuration
 - rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
-- rules/integration/a-connector-configuration-answer-is-retained-sixty-seconds-past-the-surface-that-read-it
 - rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
 - rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
 - rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
@@ -70,9 +70,6 @@ uncovered:
 - node: domain/integration/capability
   why: The capability registry and its authoring surface are a different registration surface this correction never
     touches.
-- node: rules/integration/a-connector-configuration-answer-is-retained-sixty-seconds-past-the-surface-that-read-it
-  why: The retention and its sixty-second bound make the premise of this task's criteria obtain but reach no criterion;
-    the binder returned them as a remainder for the task implementing client-side retention.
 - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
   why: The abandon control and its destination are untouched; no criterion of this task reaches them.
 - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
@@ -192,3 +189,4 @@ The ninth binding surfaced one more silence the route decided into a-loaded-regi
 The tenth binding surfaced one more silence the route decided — a-connector-configuration-answer-is-retained-sixty-seconds-past-the-surface-that-read-it — so the claim grew again and the binder ran an eleventh time.
 The eleventh binding returned one more silence; the human paused the decided-fact route there and had the task composed on that binding's implements, the open fact recorded in the task's Notes as advisory.
 The uncovered remainder is reconciled to that binding's implements.
+On 2026-09-10 the human removed a-connector-configuration-answer-is-retained-sixty-seconds-past-the-surface-that-read-it from the specification, and this claim dropped it from covers and uncovered without touching the task; intake/scope-2026-09-10-drop-retention-node.md holds the ask.
