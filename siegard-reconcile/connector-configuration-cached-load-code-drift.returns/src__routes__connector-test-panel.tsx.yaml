@@ -1,0 +1,21 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      nowhere
+    evidence: >-
+      export type ConnectorTestPanelProps = { readonly connector: string; readonly configurationText: string; };
+      const state = useTestConnectorPanel(connector, configurationText);
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      nowhere
+    evidence: >-
+      const state = useTestConnectorPanel(connector, configurationText);
+      return (
+        <section className="flex flex-col gap-4 pt-4 border-t border-border">
+          <h3 className="text-lg font-semibold text-foreground">Test</h3>
+          <ConnectorTestPanelFields state={state} />
+          <ConnectorTestPanelResult testOutcome={state.testOutcome} />
+        </section>
+      );
+looked_past: >-
+  The actual test policy — the 404/409 refusals, the registered-configuration read, and the subject-attribute assembly from ${subject:<attribute-name>} placeholders — is implemented in use-test-connector-panel.ts, which this route only calls; this file itself is pure layout composition with no branching or domain logic of its own to judge.

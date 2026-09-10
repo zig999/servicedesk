@@ -1,0 +1,159 @@
+findings:
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the phase branching that returns `load-error`, lines 122-133 (the `query.isError` check runs ahead of, and without regard to, whether `query.data` already holds an answer)
+    evidence: |-
+      if (query.isError) {
+        return {
+          phase: "load-error",
+          retryLoad: () => {
+            void query.refetch();
+          },
+          onCancel,
+        };
+      }
+      if (query.isLoading || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+    cost: >-
+      An operator already presented with a connector's configuration — reached, for instance,
+      after this same hook invalidates and refetches the query on a successful save — is switched
+      into the load-error phase and loses the presented connector, configuration and any in-place
+      edit the moment any further read of that same configuration fails, even one that fails only
+      in the background. The node bound to this file states that a screen already holding an
+      earlier answer "stays in the returned window presenting that held answer" through a failed
+      further read, and reserves the failed window for a screen that holds no earlier answer; this
+      branch does not distinguish the two and empties the screen either way.
+    kind: contradicts
+    node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    correction: >-
+      guard the load-error branch on the absence of a held answer, e.g. `if (query.isError &&
+      !query.data)`, so a screen already presenting a returned configuration remains in the ready
+      phase through a failed further read.
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: the submit gate inside `submit`, lines 139-144
+    evidence: |-
+      const submit = form.handleSubmit((values) => {
+          if (!configurationValid) {
+            return;
+          }
+          mutation.mutate(values);
+        });
+    cost: >-
+      When the surface's own local judgment marks the Configuration field content as not
+      well-formed, pressing submit silently does nothing: no register-connector call is ever
+      issued, and neither of the outcomes an operator is owed on submitting — registered, or
+      refused with a named condition — is ever stated, because none was submitted. Nothing in the
+      specification decided that this is what should happen to such an attempt; the one rule that
+      governs the surface's own well-formedness judgment expressly leaves this open ("Whether the
+      surface withholds a submission of content its judgment finds short of the criterion... [is]
+      no part of this"), so the silent no-op is a decision this file made on its own rather than
+      one the specification recorded.
+    kind: unstated
+    correction: >-
+      the specification would need to decide, and record, whether an operator's attempt to submit
+      locally-judged-invalid content is withheld client-side or sent to the registry to be refused
+      and reported through the outcome the operator is otherwise owed.
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: the query and mutation definitions, lines 68-72 and 92-103
+    evidence: |-
+      queryFn: () =>
+          apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
+      ...
+      mutationFn: (values: ConnectorConfigurationFormValues) =>
+          apiFetch<ConnectorConfiguration>(
+            `/v1/connectors/${encodeURIComponent(values.connector)}`,
+            { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ configuration: getJsonTextareaMinifiedValue(configurationValue) }) },
+          ),
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: onCancel, lines 55-61
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/connectors" });
+        };
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: isValidConfigurationObject, lines 18-25
+    evidence: |-
+      function isValidConfigurationObject(text: string): boolean {
+        const minified = getJsonTextareaMinifiedValue(text);
+        if (minified === null) {
+          return false;
+        }
+        const parsed: unknown = JSON.parse(minified);
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      }
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: the phase branching, lines 122-133
+    evidence: |-
+      if (query.isError) {
+        return {
+          phase: "load-error",
+          retryLoad: () => { void query.refetch(); },
+          onCancel,
+        };
+      }
+      if (query.isLoading || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+  - node: rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
+    held_at: isSubmitting/isSubmitSuccessful drawn straight from mutation state, lines 167-168
+    evidence: |-
+      isSubmitting: mutation.isPending,
+      isSubmitSuccessful: mutation.isSuccess,
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: onCancel returned from every phase — loading, load-error and ready
+    evidence: |-
+      if (query.isLoading || !query.data) {
+        return { phase: "loading", onCancel };
+      }
+      ...
+      return {
+        phase: "ready",
+        ...
+        onCancel,
+      };
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: the mutation's onSuccess/onError handlers, lines 104-115
+    evidence: |-
+      onSuccess: () => {
+            form.reset({ connector });
+            setConfigurationBaseline(configurationValue);
+            void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+            void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+          },
+          onError: (error) => {
+            toast.error(saveFailureMessage(error));
+          },
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: the mutation's onSuccess handler, lines 104-111 (no navigation away from the surface)
+    evidence: |-
+      onSuccess: () => {
+            form.reset({ connector });
+            setConfigurationBaseline(configurationValue);
+            void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+            void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+          },
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: onCancel's fallback branch, line 60
+    evidence: 'void navigate({ to: "/connectors" });'
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing
+    held_at: onCancel, lines 55-61 (no call to mutation.mutate)
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/connectors" });
+        };
+looked_past: >-
+  the isSubmittingRef double-submission guard and the UNSYNCED_CONFIGURATION_DATA state-sync
+  pattern used to mirror query data into local state are implementation technique, not a domain
+  fact, and are left to a code review.
+candidates_opened:
+  - domain/integration/connector-configuration
+  - rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content

@@ -1,0 +1,59 @@
+read:
+  - node: contracts/integration/connector-diagnostics
+    held_at: >-
+      the mutation definition and dispatch handler that issue one test-connector call per
+      click, assembling the subject fresh from form state rather than reading any stored one
+    evidence: |-
+      const mutation = useMutation({
+        mutationFn: (body: TestConnectorRequestBody) =>
+          apiFetch<TestConnectorResult>("/v1/test-connector", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          }),
+      });
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      TestConnectorRequestBody's connector field, and parsesAsConfigurationObject's check that
+      the configuration text is a well-formed JSON object before it is used to derive placeholder
+      names
+    evidence: |-
+      export type TestConnectorRequestBody = {
+        readonly capability: { readonly name: string; readonly version: string };
+        readonly connector: string;
+      ...
+      function parsesAsConfigurationObject(configurationText: string): boolean {
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(configurationText);
+        } catch {
+          return false;
+        }
+        return isPlainRecord(parsed);
+      }
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      capabilityOptions filtered to the given connector, canTest requiring a selectedCapability,
+      and the dispatched body carrying capability, connector, subject and requester but never
+      configuration text
+    evidence: |-
+      const capabilityOptions: SelectOption[] = capabilities
+        .filter((capability) => capability.connector === connector)
+        .map((capability) => ({ ... }));
+      ...
+      const body: TestConnectorRequestBody = {
+        capability: { name: selectedCapability.name, version: selectedCapability.version },
+        connector,
+        subject: {
+          type: subjectType,
+          attributes: attributes.map(({ attribute, value }) => ({ attribute, value })),
+        },
+        requester,
+      };
+looked_past: >-
+  rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+  governs whether the text handed to this hook must be the read's own presented answer rather
+  than an unsubmitted field edit, and requires a staleness statement when the two diverge — that
+  node is not bound to this file (its caller, connector-configuration-detail-ready-view.tsx,
+  passes a value named registeredConfigurationText), so whether that binding and the divergence
+  statement are honored is a different file's judgment, not this hook's.

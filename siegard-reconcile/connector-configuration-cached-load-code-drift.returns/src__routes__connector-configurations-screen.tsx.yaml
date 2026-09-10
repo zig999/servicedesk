@@ -1,0 +1,55 @@
+findings:
+  - file: src/routes/connector-configurations-screen.tsx
+    where: >-
+      the "New connector configuration" Button, placed in the outer return
+      ahead of `{renderBody()}}`, together with the comment above it
+    evidence: >-
+      "New connector configuration" renders unconditionally, ahead of
+              the loading/error/empty branches above, so criterion 4 (this
+              task's own -- "renders while the list is loading, while it has
+              failed to load, and while it is empty, as it does today") holds
+              regardless of whichever of those three states the list itself is
+              currently in [...] hiding a create action behind an unrelated read
+              failure would block authoring a connector configuration for a
+              reason that has nothing to do with it.
+    cost: >-
+      The rule that authoring a new connector configuration must stay reachable
+      no matter whether the listing is loading, has failed to load, or is empty
+      lives only in this comment and in the JSX's structural placement of the
+      button outside `renderBody()`. Nothing under the specification states this
+      guarantee, though the specification does state its mirror image as an
+      invariant (a single-configuration surface's route back to the listing
+      "turns on nothing further"). The next person changing this screen has no
+      spec text obliging them to keep the create action outside the
+      loading/error/empty branch, and a reader looking for why it is placed
+      there will not find the reason in the specification, only in this comment.
+    kind: unstated
+    correction: >-
+      An invariant constraining domain/integration/connector-configuration (or a
+      sibling of a-connector-configuration-listing-routes-presence-turns-on-nothing-further,
+      stated for the forward direction) declaring that the connector-configurations
+      listing's route to create/register a new connector configuration is available
+      regardless of the listing's own read state.
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the `toRow` function and the "Connector" column, which surface the
+      configuration's required `connector` attribute as the row identity and
+      display value
+    evidence: >-
+      function toRow(connectorConfiguration: ConnectorConfiguration): StatusTableRow {
+        return {
+          id: connectorConfiguration.connector,
+          connector: connectorConfiguration.connector,
+        };
+      }
+looked_past: >-
+  The loading, failed-load/retry, and empty-list copy strings are treated as
+  interface form (wording and placement the specification's own route/state
+  invariants explicitly leave to the interface) rather than domain fact, since
+  no listing-level analogue of the single-configuration read-state invariant
+  exists to hold them, and this pass does not judge whether one should.
+candidates_opened:
+  - rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+  - rules/integration/a-connector-configuration-listing-routes-presence-turns-on-nothing-further
+  - rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read

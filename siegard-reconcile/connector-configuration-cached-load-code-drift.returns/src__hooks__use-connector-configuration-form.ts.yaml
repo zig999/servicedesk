@@ -1,0 +1,99 @@
+findings:
+  - file: src/hooks/use-connector-configuration-form.ts
+    where: "the initial configurationValid state, line 76"
+    evidence: |-
+      const [configurationValid, setConfigurationValid] = useState(existing !== null);
+    cost: >-
+      An operator opening the edit form for a connector configuration whose already-registered
+      content is not well-formed JSON object text (a null, an array, or any legacy value the
+      registry never held to this criterion) is told nothing is wrong: validity is set to true
+      from the mere presence of `existing`, without ever running the same judgment
+      (`isValidConfigurationObject`) applied to every keystroke afterward. The operator edits
+      over content the registry will not take and learns of the problem only from a refused
+      submission, or never learns it at all if they resubmit unchanged text the mutation
+      happens to accept for other reasons — exactly the silence the governing rule requires
+      the surface to close.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content
+    correction: >-
+      Initialize configurationValid from isValidConfigurationObject(existing?.configuration ?? ""),
+      the same criterion applied on every subsequent onChange, instead of from existing !== null.
+
+  - file: src/hooks/use-connector-configuration-form.ts
+    where: "SAVE_FAILURE_MESSAGE_BY_KIND, lines 44-47"
+    evidence: |-
+      const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+        "connector-configuration-not-well-formed":
+          "This configuration is not syntactically valid JSON.",
+      };
+    cost: >-
+      The governing node states explicitly that a null value and an array are both
+      syntactically valid JSON and are refused for a different reason — not being an object.
+      An operator whose configuration was e.g. `[1,2,3]` or `null` parses without any syntax
+      error, so being told "This configuration is not syntactically valid JSON" misnames the
+      actual refusal: they will look for a JSON syntax mistake that is not there, instead of
+      learning the value must be an object.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    correction: >-
+      Reword the message to state the actual criterion — that the configuration must be a
+      well-formed JSON object (a null value or an array excluded), not merely syntactically
+      parsable JSON.
+
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the mutation's mutationFn, which issues the register-connector call
+    evidence: |-
+      apiFetch<ConnectorConfiguration>(
+              `/v1/connectors/${encodeURIComponent(values.connector)}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  configuration: getJsonTextareaMinifiedValue(configurationValue),
+                }),
+              },
+            ),
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the form's default connector value and the configuration state passed in the request body
+    evidence: |-
+      defaultValues: {
+              connector: existing?.connector ?? "",
+            },
+      ...
+      configuration: getJsonTextareaMinifiedValue(configurationValue),
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      the client-side well-formedness gate before mutate, and the refused-write message mapping
+    evidence: |-
+      if (!configurationValid) {
+              return;
+            }
+            mutation.mutate(values);
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: >-
+      the mutation's onSuccess and onError handlers
+    evidence: |-
+      onSuccess: (_data, values) => {
+              toast.success(`Connector configuration ${values.connector} registered.`);
+              void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+              onSaved();
+            },
+            onError: (error) => {
+              toast.error(saveFailureMessage(error));
+            },
+
+looked_past: >-
+  onCancel's router.history.canGoBack()/navigate("/connectors") logic and the post-save
+  invalidateQueries/onSaved calls look like they compose with the "return to origin",
+  "route to the listing" and "discard without leaving the surface" rules the candidate index
+  binds to the route files (connector-configuration-create-screen.tsx,
+  connector-configuration-detail-ready-view.tsx) and to use-connector-configuration-detail.ts
+  rather than to this hook, so judging that behavior here would answer a fact this file's own
+  nodes and the trace's own bindings assign elsewhere.
+
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content

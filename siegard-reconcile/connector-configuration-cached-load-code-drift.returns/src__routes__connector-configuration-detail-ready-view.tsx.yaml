@@ -1,0 +1,55 @@
+findings:
+  - file: src/routes/connector-configuration-detail-ready-view.tsx
+    where: the `state.justSaved` success message, lines 82-87
+    evidence: |-
+      {state.justSaved && (
+
+                    <p role="status" className="text-sm text-foreground">
+                      Saved.
+                    </p>
+                  )}
+    cost: the operator who just submitted this registration is told only "Saved.", never which connector configuration now stands registered — the next reader looking for where the specification requires the registered identity to be stated will find this surface silent on it, and an operator who has the page open beside others of the same shape has nothing in the statement itself to confirm which connector's configuration succeeded
+    kind: contradicts
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    correction: name what registered in the success statement — the connector name the submission carried, already held in scope as the `connector` prop — rather than a generic "Saved."
+read:
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: >-
+      the trailing "Connectors" button, lines 91-93
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/connectors">Connectors</Link>
+      </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: >-
+      the "Discard changes" dialog and trigger, lines 53-81
+    evidence: |-
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={!state.isDirty || state.isSubmitting}
+      >
+        Discard changes
+      </Button>
+      ...
+      <Button type="button" variant="destructive" onClick={state.onDiscard}>
+        Discard changes
+      </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: >-
+      the "Cancel" button, lines 88-90
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: >-
+      the `state.justSaved` status message, lines 82-87 — holds the success branch only, and holds it without naming what registered
+    evidence: |-
+      {state.justSaved && (
+
+                    <p role="status" className="text-sm text-foreground">
+                      Saved.
+                    </p>
+                  )}
+looked_past: the invalid-configuration warning text and its `!state.configuration.isValid` condition track a well-formedness judgment governed by a node outside this file's set (rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content) and matched it without disagreement, so it is not reported as a finding here; the refusal branch of the submission-outcome node is discharged by `toast.error(saveFailureMessage(error))` in use-connector-configuration-detail.ts, a different file of the same batch, and is that file's reading to give.

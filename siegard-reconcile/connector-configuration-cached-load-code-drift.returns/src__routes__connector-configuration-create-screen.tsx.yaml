@@ -1,0 +1,28 @@
+read:
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: >-
+      the trailingActions button linking to the connector-configuration listing, rendered
+      alongside the form fields
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/connectors">Connectors</Link>
+      </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      const state = useConnectorConfigurationForm(null, handleSaved);
+      ...
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+      — the hook is invoked with `null`, so this surface authors a configuration at an
+      identity nothing is currently registered under; the file carries no field-reset act
+      here, which is what the node's own exclusion (no such act on a surface authoring at an
+      identity nothing is registered at) calls for.
+looked_past: >-
+  The heading text "New connector configuration", the "Cancel" and "Connectors" button
+  wording, and their order in trailingActions are exactly the interface-level choices the
+  route-to-listing and discard nodes both name as form belonging to the interface, not to the
+  specification.
+candidates_opened:
+  - rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
