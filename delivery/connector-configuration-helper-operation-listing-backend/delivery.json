@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/openapi-document-operations-read/document-operations-reading",
+      "kind": "implementation",
+      "file": "implementation/openapi-document-operations-read/document-operations-reading.md",
+      "title": "The domain reading behind read-openapi-document-operations",
+      "summary": "A new connector-registry unit fetches an operator-named OpenAPI document link through the existing IOpenApiDocumentFetcher port, parses it through the shared parse step, and answers every path-item operation it declares as a path-and-upper-cased-method pair, or lets the fetch or parse refusal already raised by those units propagate unchanged.",
+      "task": "task/openapi-document-operations-read/document-operations-reading"
+    },
+    {
       "id": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "kind": "implementation",
       "file": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step.md",
       "title": "Extract the OpenAPI parse-and-version-refusal step into a shared unit",
       "summary": "A new readOpenApiDocument unit in connector-registry holds the JSON-then-YAML parse and the OpenAPI 3.x version refusal (including a paths-shape well-formedness check), and readOpenApiOperation now delegates to it instead of holding that logic itself.",
       "task": "task/openapi-document-operations-read/shared-openapi-document-parse-step"
+    },
+    {
+      "id": "proof/openapi-document-operations-read/document-operations-reading",
+      "kind": "proof",
+      "file": "proof/openapi-document-operations-read/document-operations-reading.md",
+      "title": "Proof of the domain reading behind read-openapi-document-operations",
+      "summary": "Proves the backend reading that fetches an operator-named OpenAPI document through IOpenApiDocumentFetcher, parses it through the shared parse step, and answers every declared path/method operation whole or lets a fetch or parse refusal propagate unchanged.",
+      "task": "task/openapi-document-operations-read/document-operations-reading"
     },
     {
       "id": "proof/openapi-document-operations-read/shared-openapi-document-parse-step",
@@ -19,6 +35,60 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "domain/integration/openapi-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "rules/integration/an-openapi-operations-method-is-upper-cased",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/document-operations-reading",
+      "to": "task/openapi-document-operations-read/document-operations-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
@@ -47,6 +117,12 @@
       "from": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "to": "task/openapi-document-operations-read/shared-openapi-document-parse-step",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/openapi-document-operations-read/document-operations-reading",
+      "to": "implementation/openapi-document-operations-read/document-operations-reading",
+      "kind": "proves",
       "at": "the path"
     },
     {

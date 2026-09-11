@@ -466,6 +466,10 @@
         {
           "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
           "digest": "sha256:98d3ace9545fa289d1a104671a171ee9ae44e643103e1c2f96d3271470e70786"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -1058,6 +1062,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -2646,6 +2654,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -2656,6 +2668,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -5420,6 +5436,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -5732,6 +5752,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -5786,6 +5810,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
@@ -7946,6 +7974,16 @@
         {
           "path": "src/src/errors/openapi-document-not-readable.error.ts",
           "digest": "sha256:ca8d1e222bfdf1c7b3ff96ccddd11ced838288ba3ab960f686d86563cdfe7103"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-swagger-2-document-refuses-the-operations-read",
+      "digest": "sha256:98c744baefc7265484df904dd84322994ab69f805144ca5f9915f42bf432c587",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
         }
       ]
     },
