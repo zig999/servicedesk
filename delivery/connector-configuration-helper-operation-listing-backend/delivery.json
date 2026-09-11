@@ -87,6 +87,31 @@
         "readOpenApiOperation obtains its parsed document from that unit and holds no parsing, version-checking or version-refusal code of its own."
       ],
       "findings": 2
+    },
+    {
+      "id": "review/connector-configuration-helper-operation-listing-backend-2",
+      "kind": "review",
+      "file": "review/connector-configuration-helper-operation-listing-backend-2.md",
+      "title": "Configuration Helper operation listing — backend review (2nd pass, with the GET-vs-POST corrective task)",
+      "summary": "Reviews all 4 delivered backend tasks together: the three tasks of epic openapi-document-operations-read plus the corrective fix changing read-openapi-document-operations from POST to GET-with-query-param.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A request naming no document link, or naming one that is not a string, is rejected by the route handler as a VALIDATION_ERROR with HTTP 400, and no fetch is issued.",
+        "No error class, message or context readOpenApiOperation previously raised is renamed, retyped or dropped.",
+        "The controller maps the validated DTO and its injected dependencies onto the reading and holds no logic of its own.",
+        "The document fetch is issued inside this backend reading through IOpenApiDocumentFetcher, and the reading offers no parameter by which a caller supplies already-fetched document text.",
+        "The fetch is abandoned as a timeout where the named link has not answered within 60000 milliseconds, delivered by the existing IOpenApiDocumentFetcher port rather than by a second timeout introduced here.",
+        "The operation registers nothing and issues no register-connector call.",
+        "The reading generates no connector configuration draft and issues no register-connector call.",
+        "The reading parses through the unit task/openapi-document-operations-read/shared-openapi-document-parse-step established, holding no parse or version-refusal code of its own.",
+        "The request body is validated by a zod schema in src/src/http/dto, following the project's routes/controller/dto triplet rather than a shape of its own.",
+        "readOpenApiOperation obtains its parsed document from that unit and holds no parsing, version-checking or version-refusal code of its own."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -305,6 +330,30 @@
       "to": "task/openapi-document-operations-read/read-operations-http-operation",
       "kind": "reviews",
       "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend-2",
+      "to": "task/openapi-document-operations-read/shared-openapi-document-parse-step",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend-2",
+      "to": "task/openapi-document-operations-read/document-operations-reading",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend-2",
+      "to": "task/openapi-document-operations-read/read-operations-http-operation",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend-2",
+      "to": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

@@ -1,0 +1,97 @@
+read:
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: domain/integration/openapi-operation
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: contracts/integration/openapi-document-operations
+  held_at: routePluginFactories entry
+  evidence: the new route plugin factory is registered through the same app.register() sweep as every
+    other route
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: contracts/glossary/glossary-authoring
+  held_at: elsewhere in the module, unrelated to this delivery
+  evidence: a stale trace binding predating this delivery, belonging to a different operation this file
+    also wires (capability registry, glossary authoring, case lifecycle, connector configuration registry)
+    — this delivery's own tasks neither implement nor touch this node's fact, and this return does not
+    clear it
+- node: contracts/integration/capability-registry
+  held_at: elsewhere in the module, unrelated to this delivery
+  evidence: a stale trace binding predating this delivery, belonging to a different operation this file
+    also wires (capability registry, glossary authoring, case lifecycle, connector configuration registry)
+    — this delivery's own tasks neither implement nor touch this node's fact, and this return does not
+    clear it
+- node: contracts/integration/connector-configuration-draft
+  held_at: elsewhere in the module, unrelated to this delivery
+  evidence: a stale trace binding predating this delivery, belonging to a different operation this file
+    also wires (capability registry, glossary authoring, case lifecycle, connector configuration registry)
+    — this delivery's own tasks neither implement nor touch this node's fact, and this return does not
+    clear it
+- node: contracts/knowledge/case-input-requirements
+  held_at: elsewhere in the module, unrelated to this delivery
+  evidence: a stale trace binding predating this delivery, belonging to a different operation this file
+    also wires (capability registry, glossary authoring, case lifecycle, connector configuration registry)
+    — this delivery's own tasks neither implement nor touch this node's fact, and this return does not
+    clear it
+- node: contracts/knowledge/case-lifecycle
+  held_at: elsewhere in the module, unrelated to this delivery
+  evidence: a stale trace binding predating this delivery, belonging to a different operation this file
+    also wires (capability registry, glossary authoring, case lifecycle, connector configuration registry)
+    — this delivery's own tasks neither implement nor touch this node's fact, and this return does not
+    clear it
+- node: domain/integration/connector-configuration-registry
+  held_at: elsewhere in the module, unrelated to this delivery
+  evidence: a stale trace binding predating this delivery, belonging to a different operation this file
+    also wires (capability registry, glossary authoring, case lifecycle, connector configuration registry)
+    — this delivery's own tasks neither implement nor touch this node's fact, and this return does not
+    clear it

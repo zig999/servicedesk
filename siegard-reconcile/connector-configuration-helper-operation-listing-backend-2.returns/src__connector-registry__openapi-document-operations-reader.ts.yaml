@@ -1,0 +1,56 @@
+read:
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: domain/integration/openapi-operation
+  held_at: OpenApiOperation type and operationsAt()
+  evidence: 'Readonly<{path: string; method: string}> emitted per recognized path-item key'
+- node: domain/integration/openapi-document-operations
+  held_at: readOpenApiDocumentOperations() return
+  evidence: 'Readonly<{operations: readonly OpenApiOperation[]}>, answered whole from one fetch'
+- node: contracts/integration/openapi-document-operations
+  held_at: readOpenApiDocumentOperations()
+  evidence: fetches the operator-named link, generates no draft, issues no register-connector call
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: isOpenApiMethodKey / key.toUpperCase()
+  evidence: every emitted entry's method is upper-cased regardless of the document's own casing
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: documentFetcher.fetchOpenApiDocument(link) awaited before parsing
+  evidence: a network failure, timeout or non-2xx status propagates as OpenApiDocumentNotFetchedError
+    before any parse is attempted
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: readOpenApiDocument(documentText) call
+  evidence: delegates all parse/version refusal to the shared unit; no parsing or version code of its
+    own
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: readOpenApiDocument delegation
+  evidence: a swagger:2.0 document is refused by the shared unit's version check before operationsDeclaredBy
+    runs
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: ReadOpenApiDocumentOperationsOptions
+  evidence: declares only link and documentFetcher; no parameter accepts already-fetched text
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere in this file
+  evidence: this file implements no fact of this node; it is part of the plan's node set read on every
+    file of this review, per the staging step
