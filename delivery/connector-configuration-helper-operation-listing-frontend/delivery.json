@@ -1,0 +1,95 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read.md",
+      "title": "Frontend hook reading an OpenAPI document's operations",
+      "summary": "A new query-backed hook, useOpenApiDocumentOperations, calls the backend's read-openapi-document-operations route keyed by an operator-named link and exposes a closed outcome of operations, one of the named refusals (including a document declaring no version, told apart from a generic parse/version failure), or an unrecognised failure.",
+      "task": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read"
+    },
+    {
+      "id": "proof/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "proof",
+      "file": "proof/connector-configuration-helper-operation-listing/openapi-document-operations-read.md",
+      "title": "Frontend hook reading an OpenAPI document's operations — test proof",
+      "summary": "Tests use-openapi-document-operations.ts against every stated criterion and the task's two UNDERDETERMINED notes, with fetch stubbed at the network boundary; two domain nodes are demonstrated whole, and the second UNDERDETERMINED note's test now asserts the specific openapi-document-declares-no-version kind the corrected implementation exposes, distinct from a generic parse failure — a stronger proof of the same fact than the prior inequality check.",
+      "task": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "domain/integration/openapi-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "rules/integration/an-openapi-operations-method-is-upper-cased",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "to": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
