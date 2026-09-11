@@ -1,6 +1,6 @@
-import { load as loadYamlDocument } from 'js-yaml';
 import { OpenApiDocumentNotReadableError } from '../errors/openapi-document-not-readable.error.js';
 import { OpenApiOperationNotFoundError } from '../errors/openapi-operation-not-found.error.js';
+import { readOpenApiDocument } from './openapi-document-reader.js';
 
 type PlainObject = Readonly<Record<string, unknown>>;
 
@@ -43,8 +43,7 @@ type RawOpenApiParameter = PlainObject & {
 };
 
 export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
-  const document = parsedOpenApiDocument(documentText);
-  refuseUnsupportedVersion(document);
+  const document = readOpenApiDocument(documentText);
   const { pathItem, operation, operationKey } = operationEntry(document, path, method);
   return {
     method: operationKey,
@@ -189,43 +188,6 @@ function pointerTarget(document: PlainObject, pointer: string): unknown {
 
 function decodedPointerSegment(segment: string): string {
   return segment.replace(/~1/g, '/').replace(/~0/g, '~');
-}
-
-function parsedOpenApiDocument(documentText: string): PlainObject {
-  const parsed = parsedAsJsonOrYaml(documentText);
-  if (!isPlainObject(parsed)) {
-    throw notReadable('unparseable', 'the fetched document text');
-  }
-  return parsed;
-}
-
-function parsedAsJsonOrYaml(documentText: string): unknown {
-  try {
-    return JSON.parse(documentText);
-  } catch {
-    return parsedAsYaml(documentText);
-  }
-}
-
-function parsedAsYaml(documentText: string): unknown {
-  try {
-    return loadYamlDocument(documentText);
-  } catch (error) {
-    throw notReadable('unparseable', 'the fetched document text', error);
-  }
-}
-
-function refuseUnsupportedVersion(document: PlainObject): void {
-  if (typeof document.openapi === 'string') {
-    if (!document.openapi.startsWith('3.')) {
-      throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.openapi });
-    }
-    return;
-  }
-  if (typeof document.swagger === 'string') {
-    throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.swagger });
-  }
-  throw new OpenApiDocumentNotReadableError({ kind: 'no-version-declared' });
 }
 
 function notReadable(kind: 'unparseable', detail: string, cause?: unknown): OpenApiDocumentNotReadableError {

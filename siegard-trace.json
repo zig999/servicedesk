@@ -5275,8 +5275,12 @@
     },
     {
       "node": "rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
-      "digest": "sha256:b11d29b5d7b3a74eeec988d4ee3c9a934773997ffbc94ae2ba6d68d0dc5d2e47",
+      "digest": "sha256:0d9e3d5db4c33a86144718630b79e0e6613e3d5164656bcc09bee9958a8d1dee",
       "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-reader.ts",
+          "digest": "sha256:c822e4955a0315cc205b785f2fb4ffe03811886460bcfbd45daad90ac65096ec"
+        },
         {
           "path": "src/src/errors/openapi-document-not-fetched.error.ts",
           "digest": "sha256:55233dae94148d3f2266a7009479fa3c33c895c9f6bd65de3fc575a7e4c452f4"
@@ -5333,7 +5337,7 @@
     },
     {
       "node": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
-      "digest": "sha256:5e86117882d9dd35d2468c80b0c580ff545e090f75bbecdcc49dfde219c5036d",
+      "digest": "sha256:967fd6f59f2d49aeffe01cab366cc8ae39c910f8070e6b6a30269b9b54e743ea",
       "files": [
         {
           "path": "src/package.json",
@@ -5342,6 +5346,10 @@
         {
           "path": "src/src/connector-registry/js-yaml.d.ts",
           "digest": "sha256:08c3652c60ef31ee56cbc967480b0020097f456e21ccf4d6611aac5f7a061179"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-document-reader.ts",
+          "digest": "sha256:c822e4955a0315cc205b785f2fb4ffe03811886460bcfbd45daad90ac65096ec"
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
@@ -5647,7 +5655,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:044ca3b9d7ba4844b1c1450e72fa10c9733a96f1d1da25f0282a7e2ea686613b"
+          "digest": "sha256:f724dcc4ce9818dc5e60b3b8b83801f4014c67c638f7a15f5d98e3102309a335"
         },
         {
           "path": "src/src/errors/openapi-operation-not-found.error.ts",
@@ -7839,6 +7847,10 @@
       "node": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
       "digest": "sha256:5b158a45715f9e124eac8475e0276130bcd54ce3fa0fe8cf6999f77b078e363f",
       "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-reader.ts",
+          "digest": "sha256:c822e4955a0315cc205b785f2fb4ffe03811886460bcfbd45daad90ac65096ec"
+        },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:044ca3b9d7ba4844b1c1450e72fa10c9733a96f1d1da25f0282a7e2ea686613b"
