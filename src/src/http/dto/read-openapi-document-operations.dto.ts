@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const readOpenApiDocumentOperationsRequestSchema = z.object({
+export const readOpenApiDocumentOperationsQuerySchema = z.object({
   link: z.string().min(1),
 });
 
-export type ReadOpenApiDocumentOperationsRequestDto = z.infer<
-  typeof readOpenApiDocumentOperationsRequestSchema
+export type ReadOpenApiDocumentOperationsQueryDto = z.infer<
+  typeof readOpenApiDocumentOperationsQuerySchema
 >;

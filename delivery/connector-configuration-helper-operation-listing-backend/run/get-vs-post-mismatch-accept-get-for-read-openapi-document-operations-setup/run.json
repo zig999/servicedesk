@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/get-vs-post-mismatch-accept-get-for-read-openapi-document-operations-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-11T20:02:06.342+00:00",
+      "ended_at": "2026-09-11T20:02:14.529+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

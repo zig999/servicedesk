@@ -3,7 +3,7 @@ import {
   type OpenApiDocumentOperations,
 } from '../connector-registry/openapi-document-operations-reader.js';
 import type { IOpenApiDocumentFetcher } from '../connector-registry/openapi-document-fetcher.port.js';
-import type { ReadOpenApiDocumentOperationsRequestDto } from './dto/read-openapi-document-operations.dto.js';
+import type { ReadOpenApiDocumentOperationsQueryDto } from './dto/read-openapi-document-operations.dto.js';
 
 export type ReadOpenApiDocumentOperationsControllerDependencies = {
   readonly documentFetcher: IOpenApiDocumentFetcher;
@@ -11,7 +11,7 @@ export type ReadOpenApiDocumentOperationsControllerDependencies = {
 
 export async function handleReadOpenApiDocumentOperationsRequest(
   dependencies: ReadOpenApiDocumentOperationsControllerDependencies,
-  body: ReadOpenApiDocumentOperationsRequestDto,
+  query: ReadOpenApiDocumentOperationsQueryDto,
 ): Promise<OpenApiDocumentOperations> {
-  return readOpenApiDocumentOperations({ link: body.link, documentFetcher: dependencies.documentFetcher });
+  return readOpenApiDocumentOperations({ link: query.link, documentFetcher: dependencies.documentFetcher });
 }

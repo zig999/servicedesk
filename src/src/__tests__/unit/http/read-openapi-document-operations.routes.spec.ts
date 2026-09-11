@@ -9,11 +9,8 @@ const ROUTE_URL = '/v1/read-openapi-document-operations';
 
 type FetchMock = ReturnType<typeof vi.fn<(link: string) => Promise<string>>>;
 
-function validBody(overrides: Record<string, unknown> = {}): Record<string, unknown> {
-  return {
-    link: 'https://example.com/openapi.json',
-    ...overrides,
-  };
+function urlFor(link = 'https://example.com/openapi.json'): string {
+  return `${ROUTE_URL}?${new URLSearchParams({ link }).toString()}`;
 }
 
 function documentWith(paths: Record<string, unknown>): string {
@@ -49,7 +46,7 @@ it(
       documentWith({ '/widgets': { get: {} }, '/gadgets': { post: {} } }),
     );
 
-    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const response = await app.inject({ method: 'GET', url: urlFor() });
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual({
@@ -72,8 +69,8 @@ it(
       .mockResolvedValueOnce(documentWith({ '/first': { get: {} }, '/second': { post: {} }, '/third': { put: {} } }))
       .mockResolvedValueOnce(documentWith({ '/only': { delete: {} } }));
 
-    const firstResponse = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ link: 'link-one' }) });
-    const secondResponse = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ link: 'link-two' }) });
+    const firstResponse = await app.inject({ method: 'GET', url: urlFor('link-one') });
+    const secondResponse = await app.inject({ method: 'GET', url: urlFor('link-two') });
 
     expect(firstResponse.json()).toEqual({
       operations: [
@@ -93,32 +90,31 @@ it(
     app = built.app;
     built.fetchOpenApiDocument.mockResolvedValueOnce(documentWith({ '/widgets': { PuT: {} } }));
 
-    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const response = await app.inject({ method: 'GET', url: urlFor() });
 
     expect(response.json()).toEqual({ operations: [{ path: '/widgets', method: 'PUT' }] });
   },
 );
 
-it('refuses with 400 VALIDATION_ERROR and issues no fetch, for a request naming no document link at all', async () => {
+it('refuses with 400 VALIDATION_ERROR naming the query as what failed, and issues no fetch, for a request naming no link query parameter at all', async () => {
   const built = buildTestApp();
   app = built.app;
-  const withoutLink = validBody();
-  delete withoutLink.link;
 
-  const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: withoutLink });
+  const response = await app.inject({ method: 'GET', url: ROUTE_URL });
 
   expect(response.statusCode).toBe(400);
   const body = response.json() as { error: { code: string; message: string; details: readonly unknown[] } };
   expect(body.error.code).toBe('VALIDATION_ERROR');
   expect(body.error.details.length).toBeGreaterThan(0);
+  expect(body.error.details.some((detail) => String(detail).startsWith('link:'))).toBe(true);
   expect(built.fetchOpenApiDocument).not.toHaveBeenCalled();
 });
 
-it('refuses with 400 VALIDATION_ERROR and issues no fetch, for a request whose link is not a string', async () => {
+it('refuses with 400 VALIDATION_ERROR and issues no fetch, for a request whose link query parameter is empty', async () => {
   const built = buildTestApp();
   app = built.app;
 
-  const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ link: 12345 }) });
+  const response = await app.inject({ method: 'GET', url: `${ROUTE_URL}?link=` });
 
   expect(response.statusCode).toBe(400);
   const body = response.json() as { error: { code: string; details: readonly unknown[] } };
@@ -138,7 +134,7 @@ it(
       new OpenApiDocumentNotFetchedError('https://example.com/openapi.json', { kind: 'network-failure' }),
     );
 
-    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const response = await app.inject({ method: 'GET', url: urlFor() });
 
     expect(response.statusCode).toBe(422);
     const body = response.json() as { error: { code: string; details: unknown } };
@@ -165,7 +161,7 @@ it.each(UNREADABLE_DOCUMENT_CASES)(
     app = built.app;
     built.fetchOpenApiDocument.mockResolvedValueOnce(fetchedText);
 
-    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const response = await app.inject({ method: 'GET', url: urlFor() });
 
     expect(response.statusCode).toBe(422);
     const body = response.json() as { error: { code: string; details: unknown } };
@@ -183,7 +179,7 @@ it(
     app = built.app;
     built.fetchOpenApiDocument.mockResolvedValueOnce(JSON.stringify({ swagger: '2.0', paths: {} }));
 
-    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const response = await app.inject({ method: 'GET', url: urlFor() });
 
     expect(response.statusCode).toBe(422);
     const body = response.json() as { error: { code: string; details: unknown }; operations?: unknown };
@@ -202,13 +198,13 @@ it(
     unfetchable.fetchOpenApiDocument.mockRejectedValueOnce(
       new OpenApiDocumentNotFetchedError('https://example.com/openapi.json', { kind: 'timeout' }),
     );
-    const unfetchableResponse = await unfetchable.app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const unfetchableResponse = await unfetchable.app.inject({ method: 'GET', url: urlFor() });
     await unfetchable.app.close();
 
     const unreadable = buildTestApp();
     app = unreadable.app;
     unreadable.fetchOpenApiDocument.mockResolvedValueOnce('null');
-    const unreadableResponse = await unreadable.app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+    const unreadableResponse = await unreadable.app.inject({ method: 'GET', url: urlFor() });
 
     expect(unfetchableResponse.statusCode).toBe(422);
     expect(unreadableResponse.statusCode).toBe(422);

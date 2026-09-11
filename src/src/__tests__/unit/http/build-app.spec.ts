@@ -568,9 +568,8 @@ const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
   },
   {
     description: 'read-openapi-document-operations',
-    method: 'POST',
-    url: '/v1/read-openapi-document-operations',
-    payload: { link: 'a-link' },
+    method: 'GET',
+    url: '/v1/read-openapi-document-operations?link=a-link',
   },
 ];
 

@@ -51,7 +51,7 @@
         },
         {
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
-          "digest": "sha256:7298a9a88a42ed109a3749ecc29a79e65531afbc330ade31cc6d3081de9df58c"
+          "digest": "sha256:f8e2a172f8c6575447e5ad35af2e63f8b4ccfccdbfea4a67045a43046acb863c"
         },
         {
           "path": "src/src/http/release-hypothesis-revision.routes.ts",
@@ -1096,12 +1096,16 @@
           "digest": "sha256:3a742eb69636ccaef047a11ac00f3b3b812952b7710dc6504b061e96504672bf"
         },
         {
+          "path": "src/src/http/dto/read-openapi-document-operations.dto.ts",
+          "digest": "sha256:13f134a491628375b792eae0daa97fcae491de36090b848951b9518b8071dea8"
+        },
+        {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
-          "digest": "sha256:1983d68cdbc6574777529c168e9b794efa51984052a8ebc237e39b9d39eaa9de"
+          "digest": "sha256:148cd63eab6955c74ce5f0f967d98373bbe3d47c94ffea5fa2021f53a3cec231"
         },
         {
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
-          "digest": "sha256:7298a9a88a42ed109a3749ecc29a79e65531afbc330ade31cc6d3081de9df58c"
+          "digest": "sha256:f8e2a172f8c6575447e5ad35af2e63f8b4ccfccdbfea4a67045a43046acb863c"
         }
       ]
     },

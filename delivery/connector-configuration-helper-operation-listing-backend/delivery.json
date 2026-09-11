@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "kind": "implementation",
+      "file": "implementation/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations.md",
+      "title": "Accept GET for read-openapi-document-operations",
+      "summary": "The read-openapi-document-operations route now accepts GET with the link as a query parameter, matching what the frontend sends, instead of only POST with a body.",
+      "task": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations"
+    },
+    {
       "id": "implementation/openapi-document-operations-read/document-operations-reading",
       "kind": "implementation",
       "file": "implementation/openapi-document-operations-read/document-operations-reading.md",
@@ -24,6 +32,14 @@
       "title": "Extract the OpenAPI parse-and-version-refusal step into a shared unit",
       "summary": "A new readOpenApiDocument unit in connector-registry holds the JSON-then-YAML parse and the OpenAPI 3.x version refusal (including a paths-shape well-formedness check), and readOpenApiOperation now delegates to it instead of holding that logic itself.",
       "task": "task/openapi-document-operations-read/shared-openapi-document-parse-step"
+    },
+    {
+      "id": "proof/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "kind": "proof",
+      "file": "proof/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations.md",
+      "title": "Proof for accepting GET on read-openapi-document-operations",
+      "summary": "What proves task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations, written by rewriting the sibling task read-operations-http-operation own pre-existing tests from POST to GET, since no specification node ever fixed POST and the old assertions are now legitimately obsolete.",
+      "task": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations"
     },
     {
       "id": "proof/openapi-document-operations-read/document-operations-reading",
@@ -74,6 +90,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/openapi-document-operations-read/document-operations-reading",
       "to": "domain/integration/openapi-operation",
@@ -228,6 +262,12 @@
       "from": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "to": "task/openapi-document-operations-read/shared-openapi-document-parse-step",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "implementation/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "kind": "proves",
       "at": "the path"
     },
     {
