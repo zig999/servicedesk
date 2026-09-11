@@ -4308,4 +4308,42 @@ entries:
     often come back from a link that does not publish an OpenAPI document, and a refusal that names an
     empty version, or that names a parse failure over text which parsed perfectly, sends each operator
     after the other's correction."
+- location: rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator.md
+  field: statement
+  unstated: What an operator-facing surface states to the operator when read-openapi-document-operations of
+    contracts/integration/openapi-document-operations refuses the read of a document's operations.
+    an-unfetchable-openapi-link-refuses-the-operations-read,
+    a-malformed-or-unsupported-openapi-document-refuses-the-operations-read and
+    an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document state what each refusal
+    answers its caller and nothing of what the operator is told;
+    a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing states that the operator chooses
+    from the fetched document's own operations and says nothing of a read that never produced them;
+    a-refused-draft-request-states-its-refusal-to-the-operator states exactly this pattern for the sibling
+    draft-connector-configuration-from-openapi and, by its own text, for that contract alone.
+  found: work/connector-configuration-helper-operation-listing-frontend/intake/scope.md — "Handle the read's own
+    refusals (rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read,
+    rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read,
+    rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document) by
+    disclosing them to the operator, the same way a-refused-draft-request-states-its-refusal-to-the-operator
+    already discloses the draft's own refusals."
+- location: rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers.md
+  field: statement
+  unstated: No node states whether a surface may state a refusal of an operations read read-openapi-document-operations
+    has not yet answered. a-refused-operations-read-states-its-refusal-to-the-operator states what the operator is
+    told where that read is refused and fixes no moment for it; an-unfetchable-openapi-link-refuses-the-operations-read,
+    a-malformed-or-unsupported-openapi-document-refuses-the-operations-read and
+    an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document state what each refusal
+    answers its caller and nothing of when a surface may speak; no-draft-refusal-is-stated-before-the-operation-answers
+    states exactly this bound for the sibling draft call and, by its own text, for that contract alone; and
+    a-presented-connector-configuration-states-an-outstanding-or-failed-read governs the connector configuration
+    read, not this one.
+  decided: No refusal a-refused-operations-read-states-its-refusal-to-the-operator states is stated of an
+    operations-read request the operation has not answered — recorded as a new invariant over
+    domain/integration/openapi-document-operations. What the surface states while such a request is outstanding
+    stays undecided.
+  why: A refusal is a claim about an answer, so stating one before any answer arrived is the surface inventing an
+    outcome the operation never gave; the operator whose read is still in flight is sent to correct a link or a
+    document nothing has yet found fault with, and is the more surely misled here because
+    a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing leaves them no other way to name
+    an operation, so a premature refusal reads to them as a document with nothing to offer.
 ---
