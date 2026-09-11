@@ -1,0 +1,52 @@
+read:
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(error.context).toEqual({ kind: ''unsupported-version'', declaredVersion: ''2.5.0''
+    }); ... expect(error.context).toEqual({ kind: ''no-version-declared'' });'
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(error.context).toEqual({ kind: ''unparseable'', detail: ''the fetched document text''
+    });'
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: 'This file''s version tests use openapi: ''2.5.0'', never swagger: ''2.0''; the swagger-2.0
+    case is exercised in openapi-operation-reader.spec.ts and openapi-document-operations-reader.spec.ts
+    instead.'
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: No path or method lookup is exercised by this file at all.
+- node: domain/integration/openapi-operation
+  held_at: nowhere
+  evidence: Not exercised; this file tests the whole-document parse step, not an operation entry.
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: Not exercised; no operations listing is asserted here.
+- node: contracts/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: Not exercised; this file tests a shared internal unit, not the published contract.
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere
+  evidence: No method casing is asserted; the well-formed-document test returns the document whole, method
+    casing untouched.
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This unit takes already-parsed text; no fetch is exercised.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: Not asserted under this rule's own identity; the operations-read's own test file exercises
+    it directly.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: Not exercised here.
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere
+  evidence: This file passes text directly; no fetch is exercised.
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: No HTTP status is asserted anywhere in this file.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: Not an HTTP test.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: Not an HTTP test.

@@ -1,0 +1,9 @@
+certified:
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  state: covered
+  tests:
+  - file: src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts
+    name: upper-cases every method regardless of the case the document's own path-item key used
+  - file: src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts
+    name: upper-cases an operation's method whatever case the fetched document's own path-item key names
+      it under

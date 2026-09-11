@@ -48,6 +48,29 @@
       "title": "The extracted OpenAPI parse-and-version-refusal unit, tested directly, with the draft operation's preserved behavior evidenced from the tests already standing over it",
       "summary": "Five new tests exercise readOpenApiDocument's own contract directly (whole-document return, both parse failures, both version refusals, the new paths well-formedness check), and the unmodified openapi-operation-reader and draft-connector-configuration-from-openapi suites are cited as the standing evidence that the draft operation's behavior is unchanged.",
       "task": "task/openapi-document-operations-read/shared-openapi-document-parse-step"
+    },
+    {
+      "id": "review/connector-configuration-helper-operation-listing-backend",
+      "kind": "review",
+      "file": "review/connector-configuration-helper-operation-listing-backend.md",
+      "title": "Configuration Helper operation listing — backend review",
+      "summary": "Reviews the three tasks of epic openapi-document-operations-read: extracting the shared OpenAPI parse/version-refusal step, the operations-read domain reading, and its HTTP publication.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "No error class, message or context readOpenApiOperation previously raised is renamed, retyped or dropped.",
+        "The controller maps the validated DTO and its injected dependencies onto the reading and holds no logic of its own.",
+        "The document fetch is issued inside this backend reading through IOpenApiDocumentFetcher, and the reading offers no parameter by which a caller supplies already-fetched document text.",
+        "The fetch is abandoned as a timeout where the named link has not answered within 60000 milliseconds, delivered by the existing IOpenApiDocumentFetcher port rather than by a second timeout introduced here.",
+        "The operation registers nothing and issues no register-connector call.",
+        "The reading generates no connector configuration draft and issues no register-connector call.",
+        "The reading parses through the unit task/openapi-document-operations-read/shared-openapi-document-parse-step established, holding no parse or version-refusal code of its own.",
+        "readOpenApiOperation obtains its parsed document from that unit and holds no parsing, version-checking or version-refusal code of its own."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -224,6 +247,24 @@
       "to": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend",
+      "to": "task/openapi-document-operations-read/shared-openapi-document-parse-step",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend",
+      "to": "task/openapi-document-operations-read/document-operations-reading",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-backend",
+      "to": "task/openapi-document-operations-read/read-operations-http-operation",
+      "kind": "reviews",
+      "at": "tasks[2]"
     }
   ]
 }

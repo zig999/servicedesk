@@ -1,0 +1,90 @@
+read:
+- node: contracts/integration/openapi-document-operations
+  held_at: routePluginFactories's appended entry and BuildAppDependencies's readOpenApiDocumentOperations
+    field
+  evidence: (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: registers the route reachable only through this backend app; issues no fetch itself
+  evidence: 'readonly readOpenApiDocumentOperations: ReadOpenApiDocumentOperationsControllerDependencies;'
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: domain/integration/openapi-operation
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: This file only appends one entry to routePluginFactories and one field to BuildAppDependencies
+    for the new operation; it states no fact this node governs.
+- node: contracts/glossary/glossary-authoring
+  held_at: elsewhere in this file, pre-existing and untouched by this delivery
+  evidence: This delivery's diff against this file is purely additive (one import, one routePluginFactories/BuildAppDependencies
+    entry, or one wiring function and one spread); nothing this pre-existing binding depends on was removed
+    or reshaped.
+- node: contracts/integration/capability-registry
+  held_at: elsewhere in this file, pre-existing and untouched by this delivery
+  evidence: This delivery's diff against this file is purely additive (one import, one routePluginFactories/BuildAppDependencies
+    entry, or one wiring function and one spread); nothing this pre-existing binding depends on was removed
+    or reshaped.
+- node: contracts/integration/connector-configuration-draft
+  held_at: elsewhere in this file, pre-existing and untouched by this delivery
+  evidence: This delivery's diff against this file is purely additive (one import, one routePluginFactories/BuildAppDependencies
+    entry, or one wiring function and one spread); nothing this pre-existing binding depends on was removed
+    or reshaped.
+- node: contracts/knowledge/case-input-requirements
+  held_at: elsewhere in this file, pre-existing and untouched by this delivery
+  evidence: This delivery's diff against this file is purely additive (one import, one routePluginFactories/BuildAppDependencies
+    entry, or one wiring function and one spread); nothing this pre-existing binding depends on was removed
+    or reshaped.
+- node: contracts/knowledge/case-lifecycle
+  held_at: elsewhere in this file, pre-existing and untouched by this delivery
+  evidence: This delivery's diff against this file is purely additive (one import, one routePluginFactories/BuildAppDependencies
+    entry, or one wiring function and one spread); nothing this pre-existing binding depends on was removed
+    or reshaped.
+- node: domain/integration/connector-configuration-registry
+  held_at: elsewhere in this file, pre-existing and untouched by this delivery
+  evidence: This delivery's diff against this file is purely additive (one import, one routePluginFactories/BuildAppDependencies
+    entry, or one wiring function and one spread); nothing this pre-existing binding depends on was removed
+    or reshaped.

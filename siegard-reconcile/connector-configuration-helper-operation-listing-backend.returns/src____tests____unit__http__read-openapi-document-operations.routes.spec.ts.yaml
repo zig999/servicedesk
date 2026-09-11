@@ -1,0 +1,55 @@
+read:
+- node: domain/integration/openapi-operation
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(response.json()).toEqual({ operations: [{ path: ''/widgets'', method: ''GET'' }, {
+    path: ''/gadgets'', method: ''POST'' }] });'
+- node: domain/integration/openapi-document-operations
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: answers each of two requests naming a different link with that call's own complete, freshly-read
+    operations list
+- node: contracts/integration/openapi-document-operations
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'const response = await app.inject({ method: ''POST'', url: ROUTE_URL, payload: validBody()
+    }); expect(response.statusCode).toBe(200);'
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(response.json()).toEqual({ operations: [{ path: ''/widgets'', method: ''PUT'' }] });
+    -- from PuT'
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(response.statusCode).toBe(422); expect(body.error.code).toBe('OpenApiDocumentNotFetchedError');
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: it.each(UNREADABLE_DOCUMENT_CASES)(... expect(body.error.code).toBe('OpenApiDocumentNotReadableError');
+    expect(body.error.details).toEqual(expectedDetails); ...)
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(body.error.details).toEqual({ kind: ''unsupported-version'', declaredVersion: ''2.0''
+    }); expect(body.operations).toBeUndefined();'
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: built.fetchOpenApiDocument -- the only source of document text in every test in this file;
+    the test never fetches from the browser side, only injects a server-side fetcher mock
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(unfetchableCode).toBe('OpenApiDocumentNotFetchedError'); expect(unreadableCode).toBe('OpenApiDocumentNotReadableError');
+    expect(unfetchableCode).not.toBe(unreadableCode);
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(response.statusCode).toBe(400); expect(body.error.code).toBe('VALIDATION_ERROR'); expect(body.error.details.length).toBeGreaterThan(0);
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: '''answers 422 reporting OpenApiDocumentNotFetchedError ... never falling through to the generic
+    500 handler'''
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file tests only the operations-read route.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: No single-operation lookup is exercised at this route.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file's own mirror rule is tested above instead.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file's own scenario is the operations-read mirror, tested above.

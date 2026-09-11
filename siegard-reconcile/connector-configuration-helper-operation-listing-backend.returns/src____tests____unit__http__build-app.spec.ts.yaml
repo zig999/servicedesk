@@ -1,0 +1,61 @@
+read:
+- node: contracts/integration/openapi-document-operations
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(response.statusCode).not.toBe(404); -- for { method: ''POST'', url: ''/v1/read-openapi-document-operations'',
+    payload: { link: ''a-link'' } }, added to REGISTERED_ROUTE_REQUESTS'
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: domain/integration/openapi-operation
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere
+  evidence: This file only asserts route reachability and pre-existing stub wiring for the new dependency
+    field; it exercises no further fact of this node.

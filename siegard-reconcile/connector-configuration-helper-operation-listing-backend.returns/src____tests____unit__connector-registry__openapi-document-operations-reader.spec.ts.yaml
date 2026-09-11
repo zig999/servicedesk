@@ -1,0 +1,52 @@
+read:
+- node: domain/integration/openapi-operation
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(result.operations).toEqual([{ path: ''/items'', method: ''GET'' }, { path: ''/items'',
+    method: ''POST'' }]);'
+- node: domain/integration/openapi-document-operations
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(result.operations).toEqual([...six entries across three paths, one array...]);
+- node: contracts/integration/openapi-document-operations
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(result).toEqual({ operations: [{ path: ''/items'', method: ''GET'' }, { path: ''/items'',
+    method: ''POST'' }] });'
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(result.operations.map((operation) => operation.method)).toEqual(['GET', 'POST', 'DELETE']);
+    -- from Get/PoSt/delete
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(refusal).toBe(fetchFailure); -- for network-failure, timeout and status-outside-2xx
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(error.context).toEqual({ kind: ''unsupported-version'', declaredVersion: ''2.0'' });
+    ... { kind: ''unparseable'', ... }; ... { kind: ''no-version-declared'' }; ... every out-of-range
+    version'
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: 'expect(error.context).toEqual({ kind: ''unsupported-version'', declaredVersion: ''2.0'' });'
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: answers strictly from whatever the injected fetcher resolves, with no alternate source for
+    the document text
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: asserted directly by this file's test expectations, never restated as a second domain authority
+  evidence: expect(unfetchableRefusal).toBeInstanceOf(OpenApiDocumentNotFetchedError); expect(unfetchableRefusal).not.toBeInstanceOf(OpenApiDocumentNotReadableError);
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file tests the operations-read's own mirror rule, not the draft's.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: No single-operation lookup is exercised here.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file's own mirror is the operations-read rule, tested above.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file's own scenario is the operations-read mirror, tested above.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: Not an HTTP test.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: Not an HTTP test.

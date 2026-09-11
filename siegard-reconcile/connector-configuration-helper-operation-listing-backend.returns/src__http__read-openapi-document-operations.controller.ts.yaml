@@ -1,0 +1,54 @@
+read:
+- node: domain/integration/openapi-operation
+  held_at: returns readOpenApiDocumentOperations's result unchanged
+  evidence: 'return readOpenApiDocumentOperations({ link: body.link, documentFetcher: dependencies.documentFetcher
+    });'
+- node: domain/integration/openapi-document-operations
+  held_at: same return, unmodified
+  evidence: 'return readOpenApiDocumentOperations({ link: body.link, documentFetcher: dependencies.documentFetcher
+    });'
+- node: contracts/integration/openapi-document-operations
+  held_at: handleReadOpenApiDocumentOperationsRequest, the controller for the contract's operation
+  evidence: export async function handleReadOpenApiDocumentOperationsRequest(...)
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: preserves the already-upper-cased method unchanged; casing is decided upstream in the domain
+    reader
+  evidence: 'return readOpenApiDocumentOperations({ link: body.link, documentFetcher: dependencies.documentFetcher
+    });'
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: no try/catch; the reading's rejection propagates unchanged
+  evidence: 'export async function handleReadOpenApiDocumentOperationsRequest(...): Promise<OpenApiDocumentOperations>
+    { return readOpenApiDocumentOperations(...); }'
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: same unguarded propagation
+  evidence: no try/catch anywhere in this file
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: reached through the same unguarded propagation
+  evidence: no try/catch anywhere in this file
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: the fetch runs only through the injected documentFetcher this controller forwards, never issuing
+    one itself
+  evidence: 'readOpenApiDocumentOperations({ link: body.link, documentFetcher: dependencies.documentFetcher
+    })'
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file decides no HTTP status and maps no error to a code; that decision is status-map.ts's,
+    outside this file set. The controller only lets both distinguishable error values propagate unguarded.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This controller backs the operations-read contract, not the draft.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: Not this controller's operation; it performs no single-operation lookup.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: Governs the draft's own HTTP surface, a different, already-delivered controller.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: The draft's own scenario, not this operation's.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: Request-shape validation happens in the routes file before this controller is ever called.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: This controller introduces no new error class and decides no status mapping.

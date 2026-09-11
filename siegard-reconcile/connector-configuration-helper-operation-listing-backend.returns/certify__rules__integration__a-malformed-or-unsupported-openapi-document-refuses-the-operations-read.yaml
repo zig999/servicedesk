@@ -1,0 +1,15 @@
+certified:
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  state: partial
+  tests:
+  - file: src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts
+    name: answers 422 reporting OpenApiDocumentNotReadableError naming its own distinct condition, never
+      conflated with either of the other two, reading no operations, when $description
+  why: The three named conditions (unparseable, no-version-declared, swagger 2.0) are each exercised distinctly
+    at this HTTP surface. The rule also refuses any other out-of-range declared version (e.g. openapi
+    4.0.0, swagger 1.2), which the offered proof does not exercise at this surface -- that case is tested
+    only in openapi-document-operations-reader.spec.ts, a file not named as this node's proof.
+  remainder: testable
+  remainder_why: one input -- a request whose fetched document declares an out-of-range version other
+    than 2.0 (e.g. openapi 4.0.0) -- against one expected result, a 422 naming that declared version at
+    this route.

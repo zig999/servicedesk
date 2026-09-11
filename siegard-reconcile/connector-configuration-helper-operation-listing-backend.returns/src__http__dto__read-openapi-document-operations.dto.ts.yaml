@@ -1,0 +1,62 @@
+read:
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: declares only the accepted shape (link, a non-empty string); the refusal itself is enacted
+    in read-openapi-document-operations.routes.ts, not here
+  evidence: 'export const readOpenApiDocumentOperationsRequestSchema = z.object({ link: z.string().min(1)
+    });'
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: domain/integration/openapi-operation
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: contracts/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: This file declares only a zod request schema and its inferred type; it has no behavior of
+    its own to hold any other fact.

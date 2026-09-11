@@ -1,0 +1,6 @@
+certified:
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  state: covered
+  tests:
+  - file: src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts
+    name: refuses a document declaring swagger 2.0, naming the declared version

@@ -1,0 +1,11 @@
+certified:
+- node: domain/integration/openapi-operation
+  state: covered
+  tests:
+  - file: src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts
+    name: reads a path declaring a get and a post operation into two entries naming that same path, one
+      per method
+  - file: src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts
+    name: answers 200 with exactly the fetched document's every operation, each entry carrying exactly
+      its own path and upper-cased method and no other key, and forwards the request's own link unchanged
+      to the injected fetcher, for a request naming one OpenAPI document link

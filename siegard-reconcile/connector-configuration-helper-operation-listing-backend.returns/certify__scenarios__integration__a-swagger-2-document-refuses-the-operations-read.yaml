@@ -1,0 +1,9 @@
+certified:
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  state: covered
+  tests:
+  - file: src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts
+    name: refuses a document declaring swagger 2.0, naming the declared version, with no operations read
+  - file: src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts
+    name: refuses the read, naming the declared version and reading no operations, when an OpenAPI document
+      link answers a document declaring swagger 2.0

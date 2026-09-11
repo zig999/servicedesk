@@ -1,0 +1,11 @@
+certified:
+- node: domain/integration/openapi-document-operations
+  state: covered
+  tests:
+  - file: src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts
+    name: answers every operation across every path in one array, ignoring any page, cursor or limit-like
+      field and truncating nothing
+  - file: src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts
+    name: answers each of two requests naming a different link with that call's own complete, freshly-read
+      operations list -- never a cached or shortened one -- proving the read is neither cached across
+      calls nor paged within one

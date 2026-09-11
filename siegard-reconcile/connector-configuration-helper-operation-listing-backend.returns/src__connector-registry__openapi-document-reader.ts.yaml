@@ -1,0 +1,62 @@
+read:
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: refuseUnsupportedVersion (lines 37-48) and refuseMalformedPaths (lines 50-54)
+  evidence: 'throw new OpenApiDocumentNotReadableError({ kind: ''unsupported-version'', declaredVersion:
+    document.openapi });
+
+    ...
+
+    throw new OpenApiDocumentNotReadableError({ kind: ''no-version-declared'' });'
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: nowhere
+  evidence: This unit performs no path or method lookup at all; operationEntry, which raises OpenApiOperationNotFoundError,
+    lives only in openapi-operation-reader.ts.
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: produces the OpenApiDocumentNotReadableError value this rule requires the HTTP surface to report
+    for an unreadable document
+  evidence: 'function notReadable(detail: string, cause?: unknown): OpenApiDocumentNotReadableError {
+    return new OpenApiDocumentNotReadableError({ kind: ''unparseable'', detail }, ...); }'
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: refuseUnsupportedVersion's swagger branch
+  evidence: 'if (typeof document.swagger === ''string'') { throw new OpenApiDocumentNotReadableError({
+    kind: ''unsupported-version'', declaredVersion: document.swagger }); }'
+- node: domain/integration/openapi-operation
+  held_at: nowhere
+  evidence: This unit returns the whole parsed document, not path/method entries; it has no OpenApiOperation
+    shape of its own.
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This unit performs no operations listing; it stops at the parsed document.
+- node: contracts/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This unit is a shared parse step consumed by the contract's implementation, not the contract's
+    own operation.
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere
+  evidence: No method is read or cased here; this unit never inspects path-item keys.
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This unit takes already-fetched text; it issues no fetch and cannot refuse a fetch failure.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This is the draft's parse unit; the operations-read's own binding of the same shape belongs
+    to the unit that calls this one for that purpose (openapi-document-operations-reader.ts), not to this
+    file's own identity as a node.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: No operations-read scenario is exercised by this file's own behavior; it is consumed by that
+    reading, not the reading itself.
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere
+  evidence: This unit takes already-fetched text as a parameter; it does not fetch, so it is not where
+    this constraint's fetch is performed.
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This unit never raises OpenApiDocumentNotFetchedError and states no HTTP status; the fetch-failure
+    half of this rule is outside its concern.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: Not an HTTP route; states nothing about request validation.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: Not an HTTP route; states no status mapping.

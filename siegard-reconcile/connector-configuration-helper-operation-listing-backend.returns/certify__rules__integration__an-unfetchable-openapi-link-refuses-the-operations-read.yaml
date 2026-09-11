@@ -1,0 +1,16 @@
+certified:
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  state: partial
+  tests:
+  - file: src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts
+    name: answers 422 reporting OpenApiDocumentNotFetchedError naming the fetch failure -- never swallowing
+      it into 200 with an empty operations list, and never falling through to the generic 500 handler
+      -- when the named link cannot be fetched at all
+  why: Only the network-failure fetch kind is exercised at this HTTP surface by the offered proof; the
+    rule also names a timeout and a status-outside-2xx answer as fetch failures, and the sixty-second
+    abandonment, neither exercised here -- both are tested only in openapi-document-operations-reader.spec.ts,
+    a file not named as this node's proof.
+  remainder: testable
+  remainder_why: 'one input against one expected result for each remaining case at this route: a fetcher
+    rejecting with a timeout kind, and one rejecting with a status-outside-2xx kind, each answered 422
+    naming that kind.'

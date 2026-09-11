@@ -1,0 +1,67 @@
+read:
+- node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+  held_at: nowhere
+  evidence: This file only reads parameter names and locations (parametersOf/requestBodyFieldNamesOf/requiredSecuritySchemesOf);
+    it assembles no address, query, header or body value for a draft -- that placement is connector-configuration-draft-generation.ts's,
+    outside this file set.
+- node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+  held_at: nowhere
+  evidence: 'readOpenApiOperation returns method: operationKey, which is method.toLowerCase() (line 83)
+    -- lower-cased, never upper-cased. Upper-casing this value into a draft is a fact of connector-configuration-draft-generation.ts,
+    outside this file set. This binding predates the extraction and no longer matches what this file does.'
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  held_at: nowhere
+  evidence: readOpenApiOperation now delegates entirely to readOpenApiDocument(documentText) (line 46)
+    for parsing and version refusal; the parsedOpenApiDocument/refuseUnsupportedVersion functions this
+    rule once bound here were removed by this delivery's own shared-parse-step task and now live only
+    in openapi-document-reader.ts.
+- node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  held_at: operationEntry (lines 80-89)
+  evidence: if (!isPlainObject(rawOperation)) { throw new OpenApiOperationNotFoundError(path, method);
+    }
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file raises no OpenApiDocumentNotFetchedError and states no HTTP status; the unreadable-document
+    error value it once raised directly now comes from readOpenApiDocument, delegated rather than raised
+    here.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+  held_at: nowhere
+  evidence: The swagger-2.0 refusal this file once raised directly now lives in readOpenApiDocument (openapi-document-reader.ts),
+    reached only through delegation (line 46).
+- node: domain/integration/openapi-operation
+  held_at: nowhere
+  evidence: This file returns an OpenApiOperationReading (parameters, request body fields, security schemes,
+    servers) for one chosen operation, never a {path, method} listing entry.
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This file looks up exactly one operation by path and method; it never lists every operation
+    a document declares.
+- node: contracts/integration/openapi-document-operations
+  held_at: nowhere
+  evidence: This file backs the draft contract's single-operation lookup, not the operations-listing contract.
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere
+  evidence: The method this file returns (operationKey) is lower-cased, and no path-item key from a listing
+    is ever read here.
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file takes already-fetched text; it issues no fetch.
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: This file's own refusal is delegated to readOpenApiDocument; it states no operations-read-specific
+    fact of its own.
+- node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+  held_at: nowhere
+  evidence: Not exercised by this file; it backs the draft, not the operations-read.
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere
+  evidence: This file takes already-fetched text as a parameter; it does not fetch.
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere
+  evidence: This file states no HTTP status and raises no OpenApiDocumentNotFetchedError.
+- node: constraints/a-malformed-request-is-refused-with-a-validation-error
+  held_at: nowhere
+  evidence: Not an HTTP route.
+- node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  held_at: nowhere
+  evidence: Not an HTTP route.
