@@ -239,9 +239,9 @@ rules/investigation/judgment-reads-the-evidence-snapshot is what keeps this pure
 
 === constraints/the-openapi-document-is-fetched-by-the-backend
 ---
-statement: The OpenAPI document a connector configuration draft is generated from is fetched by the backend that generates the draft; no frontend module issues that fetch directly.
+statement: The OpenAPI document a connector configuration draft is generated from, or whose operations are read for the Configuration Helper's listing, is fetched by the backend that generates the draft or reads the operations; no frontend module issues that fetch directly.
 scope: integration
-fitness: A dependency and network-call audit over the frontend module finds no direct request to an OpenAPI document's own URL; the fetch runs only inside the backend operation that generates the draft.
+fitness: A dependency and network-call audit over the frontend module finds no direct request to an OpenAPI document's own URL; the fetch runs only inside the backend operation that generates the draft or the backend operation that reads its operations.
 ---
 
 ## Description
@@ -407,6 +407,18 @@ operations:
 ## Description
 
 What normalization reads from the glossary: the vocabulary it translates into, which is why integration depends on the glossary and not on the knowledge context.
+
+=== contracts/integration/openapi-document-operations
+---
+type: api
+direction: published
+operations:
+  - read-openapi-document-operations
+---
+
+## Description
+
+Read every operation a fetched OpenAPI document declares — its path and its method — for the Configuration Helper to offer as choices before a connector configuration draft is requested from one of them. Fetches the same operator-named document contracts/integration/connector-configuration-draft's own draft operation would fetch, but generates no draft and issues no register-connector call.
 
 === contracts/investigation/assessment-reviewed
 ---
@@ -4837,6 +4849,49 @@ entries:
     Disclosed as this route requires: the material is source already delivered and a comment in it; the value decided
     matches that source, and the reasoning rests on the specification''s own rules for its sibling routes, so a
     reviewer who rejects it rejects that reasoning.'
+- location: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing.md
+  field: statement
+  unstated: a-connector-configuration-authoring-surface-offers-a-configuration-helper says an operator names an
+    OpenAPI document link and one of its operations through the helper, but not how the operation is named once
+    the document answers — typed as a path and a method, or chosen from what the document itself declares.
+  decided: The operator names an operation by choosing an entry from every operation the fetched document declares,
+    never by typing a path or a method; the chosen entry's own path and method are what the draft request then
+    names. Recorded as a new invariant over domain/integration/connector-configuration, and a new read,
+    domain/integration/openapi-document-operations, exposed through contracts/integration/openapi-document-operations.md.
+  why: A pairing typed free-hand can name a path or a method the document never declares, which
+    an-openapi-document-declaring-no-such-operation-refuses-the-draft exists to catch; choosing only from what
+    the document lists leaves that refusal nothing to catch through this route, and it also spares the operator
+    retyping a path and a method the document already states on its own account, the same reasoning
+    a-connector-configuration-draft-states-the-chosen-operations-method already gives the method itself.
+- location: domain/integration/openapi-operation.md
+  field: attributes.method
+  unstated: Whether a listed operation's method is shown as the fetched document names it — lower-case, under
+    its path-item key — or in the case the executing connector's own vocabulary uses.
+  decided: Upper-cased. Recorded as a new invariant, rules/integration/an-openapi-operations-method-is-upper-cased.
+  why: a-connector-configuration-draft-states-the-chosen-operations-method already upper-cases the method a chosen
+    operation is drafted under, since the document names it lower-case while the executing connector's vocabulary
+    is upper-case; listing the document's own casing would show an operator a value the draft they choose it into
+    never states.
+- location: domain/integration/openapi-document-operations.md
+  field: attributes.operations.many
+  unstated: Whether a fetched document's operations are answered as one page of a paginated listing —
+    constraints/listings-are-paged.md's own default for a published api's list operation — or as everything the
+    document declares, answered whole.
+  decided: Answered whole, as one unpaged read; recorded as the read-openapi-document-operations operation of
+    contracts/integration/openapi-document-operations.md rather than as a list operation.
+  why: constraints/listings-are-paged.md pages a persisted collection that can grow without the caller controlling
+    it; a document's operation set is bounded by, and fetched fresh from, the one link the operator themselves
+    named, the same bounded, one-document shape domain/integration/connector-configuration-draft's own unresolved
+    and generated_credentials attributes already take unpaged.
+- location: constraints/the-openapi-document-is-fetched-by-the-backend.md
+  field: statement
+  unstated: Whether the backend-only fetch this constraint already gives the draft operation also binds the new
+    read of a document's operations, which fetches the same operator-named link before any operation is chosen.
+  decided: Yes — the same link, read for either purpose, is fetched only by the backend; no frontend module issues
+    either fetch directly.
+  why: The CORS dependency and the single auditable path this constraint exists for follow from the link being
+    operator-supplied and external, which is equally true of the read that lists a document's operations before
+    a draft is ever requested from one of them.
 ---
 
 === domain/glossary/_context
@@ -5214,6 +5269,44 @@ Registers a connector configuration by name, replacing whatever configuration al
 ## Responsibility
 
 Refuse any registration whose configuration is not a well-formed JSON object, or whose own text embeds a placeholder naming a Subject attribute a capability already registered against that connector's name does not declare in its input schema; hold the current configuration for each connector name as currently registered.
+
+=== domain/integration/openapi-document-operations
+---
+type: value-object
+attributes:
+  - name: operations
+    type: openapi-operation
+    required: true
+    many: true
+---
+
+## Description
+
+Every operation one fetched OpenAPI document declares, read fresh from the operator-named link and answered whole rather than as a paged listing — the same bounded, one-document shape a connector configuration draft's own unresolved and generated_credentials attributes already take.
+
+## Responsibility
+
+Hold every operation a fetched OpenAPI document declares, for an operator to choose one from before a connector configuration draft is requested.
+
+=== domain/integration/openapi-operation
+---
+type: value-object
+attributes:
+  - name: path
+    type: string
+    required: true
+  - name: method
+    type: string
+    required: true
+---
+
+## Description
+
+One operation a fetched OpenAPI document declares, disclosed as the path it is declared under and its HTTP method upper-cased, offered to an operator choosing which of a document's operations a connector configuration draft is generated from.
+
+## Responsibility
+
+Disclose one path and one HTTP method a fetched OpenAPI document declares an operation for.
 
 === domain/investigation/_context
 ---
@@ -6269,6 +6362,18 @@ consistency: immediate
 `a-listed-case-version-offers-a-route-to-its-own-manifest` states the route from a listing to the single thing listed, carrying the same clause that its presence turns on nothing further — not on the presented thing's state, not on what preceded the reading. This states the reverse direction over the registry's own subject: from the single capability back to the set of them, owed unconditionally for the same reason.
 
 Consistency is immediate because the route's presence follows from the surface's own subject alone, one capability, and from nothing read elsewhere; no fact here spans two reads.
+
+=== rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+---
+type: invariant
+statement: The Configuration Helper offers, once its named OpenAPI document link is fetched and parses as OpenAPI 3.x, every operation that document declares as one path and one HTTP method pair for the operator to choose from; the operator names one of the document's operations by choosing one of those pairs, never by typing a path or a method, and the draft request the helper then issues names the chosen pair's own path and its own method.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+a-connector-configuration-authoring-surface-offers-a-configuration-helper already holds that an operator names an OpenAPI document link and one of its operations through the helper; this is how that naming happens once the link answers — from the document's own declared operations, never from a path or a method the operator types free-hand. A pairing typed rather than chosen could name a path or a method the document never declares, which an-openapi-document-declaring-no-such-operation-refuses-the-draft would then have to refuse; choosing from what the document itself lists leaves nothing for that refusal to catch through this route.
 
 === rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
 ---
@@ -7333,6 +7438,26 @@ Only OpenAPI 3.x is read: an earlier Swagger 2.0 document names its operations, 
 
 Both serializations are read because they are the two the OpenAPI format defines for one and the same document, and every construct the draft rules read -- an operation at a path and method, its parameters, its request body's media types, its security schemes -- is the same object model whichever of the two carried it, so the serialization decides nothing about what a draft resolves. Refusing a document because it arrived as YAML would refuse most of what an operator can name while nothing about the text was in fact unreadable. The serialization is decided by parsing the text rather than by a declared content type because the only thing an-unfetchable-openapi-link-refuses-the-draft reads of the response is its status; reading a content type instead would add a refusal this rule does not hold, for a document that parses perfectly and was merely served under a type whatever publishes it chose. Text that parses as neither serialization is text nobody can read as OpenAPI, which is the refusal this rule already gives — the same unreadable-document refusal `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` states, never a fetch failure and never a condition of its own — so it takes no third condition and no third error value.
 
+=== rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+---
+type: invariant
+statement: >-
+  The document fetched for a request to read an OpenAPI document's operations is read as OpenAPI
+  3.x in either of the two serializations the OpenAPI format itself defines -- JSON and YAML --
+  with the serialization decided by parsing the fetched text itself and never by any content
+  type the response declared; and a request whose fetched document parses as neither of those
+  two serializations, or parses as one of them but is not a well-formed OpenAPI document, or
+  whose declared version is not OpenAPI 3.x -- a Swagger 2.0 document among them -- is refused,
+  naming what failed to parse or which version was declared, no operations read from an
+  unparseable or unsupported document.
+constrains:
+  - domain/integration/openapi-document-operations
+---
+
+## Description
+
+a-malformed-or-unsupported-openapi-document-refuses-the-draft gives the draft operation this same refusal for the same reason: only OpenAPI 3.x is read, an earlier Swagger 2.0 document names its operations differently, and text that parses as neither JSON nor YAML is text nobody can read as OpenAPI. The Configuration Helper's read of a document's operations parses the same fetched text before any path or method is chosen, so it refuses the same way at the same parse stage.
+
 === rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
 ---
 type: policy
@@ -8319,6 +8444,18 @@ The refusal names the path and the method it was given, on its own account, for 
 
 HTTP 422 and the OpenApiOperationNotFoundError name follow the same reading a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already gives the draft operation's other two refusals: the request is well formed and the document was read; what it names — a path and method pairing — is what cannot be drafted from, the same class of refusal the other two already answer under 422, distinguished from them by its own named condition.
 
+=== rules/integration/an-openapi-operations-method-is-upper-cased
+---
+type: invariant
+statement: An operation the Configuration Helper lists states its method upper-cased, whatever case the fetched OpenAPI document's own path-item key names it under.
+constrains:
+  - domain/integration/openapi-operation
+---
+
+## Description
+
+a-connector-configuration-draft-states-the-chosen-operations-method already upper-cases the method a chosen operation is drafted under, since the executing connector's own vocabulary — GET, POST, PUT, PATCH, DELETE — is upper-case while an OpenAPI 3.x document names its operations under lower-case path-item keys. Listing the document's own lower-case spelling instead would show an operator a value the draft they choose it into never states, and a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing already carries the chosen entry's method straight to that draft request.
+
 === rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
 ---
 type: policy
@@ -8414,6 +8551,18 @@ constrains:
 
 Fetching and parsing are two different acts that fail for two different reasons: a link nothing answered, or answered wrong, has no content yet to hold a parse failure against. Naming the fetch failure on its own account, rather than folding it into whatever a parser would say about an empty response, is what lets an operator tell a document that does not exist from one that is malformed.
 The timeout is the same sixty seconds a-capability-declares-its-contract already gives an outward call whose own budget nobody declared: the far end publishing the document is outside the system in exactly that sense, and one figure for that wait is what keeps a slow document distinguishable from an absent one rather than from a second, unrelated bound.
+
+=== rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+---
+type: invariant
+statement: A request to read an OpenAPI document's operations whose named document link cannot be fetched — a network failure, a timeout, or a response outside the 2xx range — is refused before any parsing is attempted, naming the fetch failure; the fetch is abandoned as a timeout where the named link has not answered within 60000 milliseconds of that fetch beginning; no operations are read from a document that was never received.
+constrains:
+  - domain/integration/openapi-document-operations
+---
+
+## Description
+
+an-unfetchable-openapi-link-refuses-the-draft gives the draft operation this same refusal for the same reason: a link nothing answered, or answered wrong, has no content yet to hold a parse failure against, and the sixty-second timeout is the one figure that keeps a slow document distinguishable from an absent one. The Configuration Helper's read of a document's operations fetches the same link before any path or method is chosen, so it fails the same way at the same fetch stage.
 
 === rules/integration/an-unreachable-connector-ends-unavailable
 ---
@@ -10666,6 +10815,22 @@ then:
 
 A 2.0 document names its operations, parameters and security schemes differently from 3.x; reading it as though it were 3.x would misname what the draft resolves rather than refuse honestly.
 
+=== scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+---
+subject: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+given:
+  - an OpenAPI document link answers a document declaring swagger 2.0
+when:
+  - the Configuration Helper reads that document's operations
+then:
+  - the request is refused, naming the declared version
+  - no operations are read
+---
+
+## Description
+
+A 2.0 document names its operations differently from 3.x; listing them as though they were 3.x operations would misname what the operator chooses from rather than refuse honestly.
+
 === scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
 ---
 subject: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
@@ -10683,6 +10848,23 @@ involves:
 ## Description
 
 The generated name is disclosed so the operator knows which environment variable to configure; it is never a value the scheme's own credential resolved to.
+
+=== scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
+---
+subject: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+given:
+  - an OpenAPI document link answers a document declaring one path /items with a get operation and a post operation
+when:
+  - the Configuration Helper lists the document's operations
+  - the operator chooses the entry naming /items and POST
+then:
+  - the draft request names /items as its path
+  - the draft request names POST as its method
+---
+
+## Description
+
+The operator never types /items or POST: both come from the entry chosen off the list the document's own fetch produced.
 
 === scenarios/integration/an-optional-attribute-absent-degrades-its-observation
 ---

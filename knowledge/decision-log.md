@@ -4225,4 +4225,47 @@ entries:
     Disclosed as this route requires: the material is source already delivered and a comment in it; the value decided
     matches that source, and the reasoning rests on the specification''s own rules for its sibling routes, so a
     reviewer who rejects it rejects that reasoning.'
+- location: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing.md
+  field: statement
+  unstated: a-connector-configuration-authoring-surface-offers-a-configuration-helper says an operator names an
+    OpenAPI document link and one of its operations through the helper, but not how the operation is named once
+    the document answers — typed as a path and a method, or chosen from what the document itself declares.
+  decided: The operator names an operation by choosing an entry from every operation the fetched document declares,
+    never by typing a path or a method; the chosen entry's own path and method are what the draft request then
+    names. Recorded as a new invariant over domain/integration/connector-configuration, and a new read,
+    domain/integration/openapi-document-operations, exposed through contracts/integration/openapi-document-operations.md.
+  why: A pairing typed free-hand can name a path or a method the document never declares, which
+    an-openapi-document-declaring-no-such-operation-refuses-the-draft exists to catch; choosing only from what
+    the document lists leaves that refusal nothing to catch through this route, and it also spares the operator
+    retyping a path and a method the document already states on its own account, the same reasoning
+    a-connector-configuration-draft-states-the-chosen-operations-method already gives the method itself.
+- location: domain/integration/openapi-operation.md
+  field: attributes.method
+  unstated: Whether a listed operation's method is shown as the fetched document names it — lower-case, under
+    its path-item key — or in the case the executing connector's own vocabulary uses.
+  decided: Upper-cased. Recorded as a new invariant, rules/integration/an-openapi-operations-method-is-upper-cased.
+  why: a-connector-configuration-draft-states-the-chosen-operations-method already upper-cases the method a chosen
+    operation is drafted under, since the document names it lower-case while the executing connector's vocabulary
+    is upper-case; listing the document's own casing would show an operator a value the draft they choose it into
+    never states.
+- location: domain/integration/openapi-document-operations.md
+  field: attributes.operations.many
+  unstated: Whether a fetched document's operations are answered as one page of a paginated listing —
+    constraints/listings-are-paged.md's own default for a published api's list operation — or as everything the
+    document declares, answered whole.
+  decided: Answered whole, as one unpaged read; recorded as the read-openapi-document-operations operation of
+    contracts/integration/openapi-document-operations.md rather than as a list operation.
+  why: constraints/listings-are-paged.md pages a persisted collection that can grow without the caller controlling
+    it; a document's operation set is bounded by, and fetched fresh from, the one link the operator themselves
+    named, the same bounded, one-document shape domain/integration/connector-configuration-draft's own unresolved
+    and generated_credentials attributes already take unpaged.
+- location: constraints/the-openapi-document-is-fetched-by-the-backend.md
+  field: statement
+  unstated: Whether the backend-only fetch this constraint already gives the draft operation also binds the new
+    read of a document's operations, which fetches the same operator-named link before any operation is chosen.
+  decided: Yes — the same link, read for either purpose, is fetched only by the backend; no frontend module issues
+    either fetch directly.
+  why: The CORS dependency and the single auditable path this constraint exists for follow from the link being
+    operator-supplied and external, which is equally true of the read that lists a document's operations before
+    a draft is ever requested from one of them.
 ---

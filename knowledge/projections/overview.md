@@ -7,7 +7,7 @@ Derived by spec.py from the specification files; never edited.
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
 | glossary | supporting | 6 | 10 | 2 | 1 |
-| integration | generic | 10 | 86 | 7 | 10 |
+| integration | generic | 12 | 90 | 8 | 12 |
 | investigation | supporting | 16 | 39 | 7 | 17 |
 | knowledge | core | 12 | 60 | 5 | 12 |
 
@@ -53,4 +53,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-258 decision(s) disclosed in the decision log.
+262 decision(s) disclosed in the decision log.
