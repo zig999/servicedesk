@@ -2,6 +2,13 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/get-vs-post-mismatch",
+      "kind": "epic",
+      "file": "epic/get-vs-post-mismatch.md",
+      "title": "GET vs POST mismatch on read-openapi-document-operations",
+      "summary": "Corrects the read-openapi-document-operations route to accept GET with the link as a query parameter, matching what the frontend already sends."
+    },
+    {
       "id": "epic/openapi-document-operations-read",
       "kind": "epic",
       "file": "epic/openapi-document-operations-read.md",
@@ -14,6 +21,14 @@
       "file": "inventory/connector-registry-openapi-operations-reading.md",
       "title": "OpenAPI operation reading machinery in connector-registry",
       "summary": "Documents the existing fetch/parse/read pipeline for draft-connector-configuration-from-openapi that a new read-openapi-document-operations operation must reuse."
+    },
+    {
+      "id": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "kind": "task",
+      "file": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations.md",
+      "title": "Accept GET for read-openapi-document-operations",
+      "summary": "The HTTP route accepts a GET request naming the document link as a query parameter, matching what the frontend sends, instead of only POST.",
+      "epic": "get-vs-post-mismatch"
     },
     {
       "id": "task/openapi-document-operations-read/document-operations-reading",
@@ -41,6 +56,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "epic/get-vs-post-mismatch",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/get-vs-post-mismatch",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/get-vs-post-mismatch",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
     {
       "from": "epic/openapi-document-operations-read",
       "to": "domain/integration/openapi-operation",
@@ -184,6 +217,24 @@
       "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/get-vs-post-mismatch/accept-get-for-read-openapi-document-operations",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "implements",
+      "at": "implements[2]"
     },
     {
       "from": "task/openapi-document-operations-read/document-operations-reading",
