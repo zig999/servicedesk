@@ -1,0 +1,48 @@
+read:
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: the queryFn passed to useQuery, lines ~99-101
+  evidence: apiFetch(`/v1/read-openapi-document-operations?link=${encodeURIComponent(link)}`) -- calls
+    the backend's own route, never the operator-named link itself
+- node: contracts/integration/openapi-document-operations
+  held_at: the queryFn passed to useQuery
+  evidence: apiFetch<ReadOpenApiDocumentOperationsResponse>(`/v1/read-openapi-document-operations?link=...`)
+- node: domain/integration/openapi-document-operations
+  held_at: outcomeFromQuery's success branch
+  evidence: '{ kind: "operations", operations: query.data.operations }'
+- node: domain/integration/openapi-operation
+  held_at: the OpenApiOperation type and its pass-through in outcomeFromQuery
+  evidence: 'export type OpenApiOperation = { readonly path: string; readonly method: string; }'
+- node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+  held_at: nowhere in this file
+  evidence: this file neither offers a choice among operations nor consumes one
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this rule governs the draft operation's own refusal, encoded in connector-configuration-draft-disclosure.ts,
+    outside this review's file set
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: outcomeForNotReadableError
+  evidence: 'if (isPlainRecord(details) && details.reason === "no-version-declared") { return { kind:
+    "openapi-document-declares-no-version" }; } return { kind: "openapi-document-not-readable" };'
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere in this file
+  evidence: this file does not render or assert a method's casing
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: outcomeForRefusal's switch on error.code
+  evidence: 'case "OpenApiDocumentNotFetchedError": ... case "OpenApiDocumentNotReadableError": ...'
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: outcomeForNotFetchedError
+  evidence: 'fetchFailureFromDetails(details) reading kind: network-failure | timeout | status-outside-2xx'
+- node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+  held_at: nowhere in this file
+  evidence: this file is not the surface that locates the Configuration Helper; that fact is already held
+    by the already-delivered connector-configuration-helper.tsx / connector-configuration-form-fields.tsx
+    composition, outside this file set
+- node: rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+  held_at: nowhere in this file
+  evidence: this file does not state a refusal message to the operator
+- node: rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers
+  held_at: nowhere in this file
+  evidence: this file does not render or gate a refusal on the read's own in-flight state
+- node: scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
+  held_at: nowhere in this file
+  evidence: this file does not exercise the concrete choose-an-operation scenario

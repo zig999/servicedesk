@@ -80,6 +80,24 @@
       "title": "Proof for rewrite-orphaned-specs — the three orphaned Configuration Helper specs now drive the operation Select",
       "summary": "Cites the rewritten it() blocks in the three named spec files that decide this task's four criteria, and records why the node this task implements, the suite-wide criterion and the underdetermined casing entry carry no test of their own from this task.",
       "task": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs"
+    },
+    {
+      "id": "review/connector-configuration-helper-operation-listing-frontend",
+      "kind": "review",
+      "file": "review/connector-configuration-helper-operation-listing-frontend.md",
+      "title": "Review — Connector Configuration Helper operation listing (frontend)",
+      "summary": "Coverage, conformance, standard and failures passes over the 5 delivered tasks of connector-configuration-helper-operation-listing-frontend.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "The full frontend suite (npm test) passes with these three files included.",
+        "The refusal is rendered inside the helper's aria-live container, in an element carrying role=alert and the same text-sm text-destructive classes the draft's refusal already uses.",
+        "connector-configuration-helper-fields.spec.ts and connector-configuration-helper-fields-apply.spec.ts build their hand-written state literal from the state shape this task leaves, and both suites pass."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -292,6 +310,36 @@
       "to": "implementation/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-frontend",
+      "to": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-frontend",
+      "to": "task/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-frontend",
+      "to": "task/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-frontend",
+      "to": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/connector-configuration-helper-operation-listing-frontend",
+      "to": "task/connector-configuration-helper-operation-listing/operations-read-refusal-disclosure",
+      "kind": "reviews",
+      "at": "tasks[4]"
     }
   ]
 }

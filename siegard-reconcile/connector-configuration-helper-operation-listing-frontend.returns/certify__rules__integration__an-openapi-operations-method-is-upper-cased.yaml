@@ -1,0 +1,6 @@
+certified:
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  state: covered
+  tests:
+  - file: src/routes/connector-configuration-helper-fields-operation-select.spec.ts
+    name: states the method upper-cased on the option regardless of the case the entry itself holds

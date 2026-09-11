@@ -1,0 +1,75 @@
+read:
+- node: contracts/integration/connector-configuration-draft
+  held_at: nowhere in this file
+  evidence: this file does not compose or read a connector configuration draft request
+- node: domain/integration/connector-configuration-draft
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: domain/integration/connector-configuration-draft-generated-credential
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: domain/integration/connector-configuration-draft-method-mismatch
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: domain/integration/connector-configuration-draft-unresolved-item
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: domain/integration/openapi-document-operations
+  held_at: operationOptions
+  evidence: 'state.operations.map((operation) => ({ value: operationSelectValue(operation), label: ...
+    }))'
+- node: domain/integration/openapi-operation
+  held_at: operationSelectValue
+  evidence: return `${entry.method.toUpperCase()} ${entry.path}`;
+- node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+  held_at: the Select rendering and onOperationSelected, replacing the removed Input fields
+  evidence: <Select options={operationOptions} value={selectedOperationValue} onChange={onOperationSelected}
+    /> -- no free-text path/method input exists in this file
+- node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+  held_at: the component's own JSX
+  evidence: renders the OpenAPI document link field, the Operation Select, and the Request Draft button
+    together, beneath the Configuration field the caller composes this into
+- node: rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+  held_at: the operationsReadDisclosure render branch
+  evidence: '{operationsReadDisclosure.kind === "refused" && (<p role="alert" className="text-sm text-destructive">{operationsReadDisclosure.message}</p>)}'
+- node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: operationSelectValue and the option label
+  evidence: 'label: `${operation.path} — ${operation.method.toUpperCase()}`'
+- node: rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+  held_at: nowhere in this file
+  evidence: not this file's concern
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere in this file
+  evidence: this file issues no fetch of its own; it either does not call the network at all, or (for
+    use-openapi-document-operations.ts) calls only the backend's own route through apiFetch
+- node: contracts/integration/openapi-document-operations
+  held_at: nowhere in this file
+  evidence: this file does not itself call read-openapi-document-operations; that call is use-openapi-document-operations.ts's
+    own
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this rule governs the draft operation's own refusal, encoded in connector-configuration-draft-disclosure.ts,
+    outside this review's file set
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: the parse/version refusal itself runs server-side; this file at most maps the resulting error
+    code to a named outcome, which is a-refused-operations-read-states-its-refusal-to-the-operator's and
+    an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document's own territory
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this file does not distinguish the two refusal conditions from one another
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: the fetch-failure refusal itself runs server-side; no frontend file implements it
+- node: rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers
+  held_at: operationsReadDisclosureStateForOutcome's idle/pending mapping, consumed here
+  evidence: operationsReadDisclosure.kind === "refused" is false for idle and pending, so nothing renders
+- node: scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
+  held_at: nowhere in this file
+  evidence: this file does not exercise the concrete choose-an-operation scenario

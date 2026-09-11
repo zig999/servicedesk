@@ -1,0 +1,10 @@
+certified:
+- node: domain/integration/openapi-operation
+  state: covered
+  tests:
+  - file: src/hooks/use-openapi-document-operations.spec.ts
+    name: exposes the answered path and method verbatim, and nothing else, for a document declaring one
+      operation
+  - file: src/routes/connector-configuration-helper-fields-operation-select.spec.ts
+    name: shows the entry's own path and its own method together on the option, upper-cased even though
+      the entry names it lower-case

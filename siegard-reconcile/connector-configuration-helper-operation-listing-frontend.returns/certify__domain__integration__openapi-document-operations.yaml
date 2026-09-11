@@ -1,0 +1,10 @@
+certified:
+- node: domain/integration/openapi-document-operations
+  state: covered
+  tests:
+  - file: src/hooks/use-openapi-document-operations.spec.ts
+    name: exposes an operations outcome carrying exactly the operations the answer listed, in one array
+  - file: src/hooks/use-connector-configuration-helper.spec.ts
+    name: exposes exactly the operations the read answered for the named link, once it resolves
+  - file: src/routes/connector-configuration-helper-fields-operation-select.spec.ts
+    name: opens onto exactly one option per entry in state.operations, both entries represented

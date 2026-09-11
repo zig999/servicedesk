@@ -1,0 +1,9 @@
+certified:
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  state: covered
+  tests:
+  - file: src/hooks/use-openapi-document-operations.spec.ts
+    name: issues exactly one network call, to a route naming read-openapi-document-operations and carrying
+      the link as data, never to the link itself
+  - file: src/hooks/use-connector-configuration-helper.spec.ts
+    name: issues no fetch call whose URL is the operator-named link, once that link is named

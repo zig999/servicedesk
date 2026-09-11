@@ -1,0 +1,6 @@
+certified:
+- node: rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers
+  state: covered
+  tests:
+  - file: src/services/connector-configuration-operations-read-disclosure.spec.ts
+    name: 'maps both idle and pending to exactly {kind: "none"}'

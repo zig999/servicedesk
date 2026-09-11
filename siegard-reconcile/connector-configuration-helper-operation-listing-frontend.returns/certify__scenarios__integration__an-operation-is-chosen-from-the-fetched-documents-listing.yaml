@@ -1,0 +1,6 @@
+certified:
+- node: scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
+  state: covered
+  tests:
+  - file: src/hooks/use-connector-configuration-helper.spec.ts
+    name: issues a draft request naming /items as its path and POST as its method once that entry is chosen

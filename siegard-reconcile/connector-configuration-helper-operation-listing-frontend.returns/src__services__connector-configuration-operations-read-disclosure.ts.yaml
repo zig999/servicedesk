@@ -1,0 +1,50 @@
+read:
+- node: rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+  held_at: nowhere in this file
+  evidence: this file does not state a refusal message to the operator
+- node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this file does not distinguish the two refusal conditions from one another
+- node: rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers
+  held_at: nowhere in this file
+  evidence: this file does not render or gate a refusal on the read's own in-flight state
+- node: constraints/the-openapi-document-is-fetched-by-the-backend
+  held_at: nowhere in this file
+  evidence: this file issues no fetch of its own; it either does not call the network at all, or (for
+    use-openapi-document-operations.ts) calls only the backend's own route through apiFetch
+- node: contracts/integration/openapi-document-operations
+  held_at: nowhere in this file
+  evidence: this file does not itself call read-openapi-document-operations; that call is use-openapi-document-operations.ts's
+    own
+- node: domain/integration/openapi-document-operations
+  held_at: nowhere in this file
+  evidence: this file neither declares nor consumes the operations array directly
+- node: domain/integration/openapi-operation
+  held_at: nowhere in this file
+  evidence: this file does not shape or read a {path, method} entry
+- node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+  held_at: nowhere in this file
+  evidence: this file neither offers a choice among operations nor consumes one
+- node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+  held_at: nowhere in this file
+  evidence: this file is not the surface that locates the Configuration Helper; that fact is already held
+    by the already-delivered connector-configuration-helper.tsx / connector-configuration-form-fields.tsx
+    composition, outside this file set
+- node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  held_at: nowhere in this file
+  evidence: this rule governs the draft operation's own refusal, encoded in connector-configuration-draft-disclosure.ts,
+    outside this review's file set
+- node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: the parse/version refusal itself runs server-side; this file at most maps the resulting error
+    code to a named outcome, which is a-refused-operations-read-states-its-refusal-to-the-operator's and
+    an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document's own territory
+- node: rules/integration/an-openapi-operations-method-is-upper-cased
+  held_at: nowhere in this file
+  evidence: this file does not render or assert a method's casing
+- node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+  held_at: nowhere in this file
+  evidence: the fetch-failure refusal itself runs server-side; no frontend file implements it
+- node: scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
+  held_at: nowhere in this file
+  evidence: this file does not exercise the concrete choose-an-operation scenario

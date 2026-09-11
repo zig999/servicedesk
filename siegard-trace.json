@@ -487,6 +487,18 @@
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
           "digest": "sha256:148cd63eab6955c74ce5f0f967d98373bbe3d47c94ffea5fa2021f53a3cec231"
         }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.spec.ts",
+          "digest": "sha256:5ffc1ce0a5b28993be2e5e364d883667b6b721edaeeea11146285d803662892e"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-openapi-document-operations.spec.ts",
+          "digest": "sha256:16fe1cd3f3c7c660d7e50046bec44bd4e9bb34f365447505ae04adef5948be52"
+        }
       ]
     },
     {
@@ -909,7 +921,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
-          "digest": "sha256:83ce4bb4a73a544826c3e16fcb509bc73cb74093b840fc40fd817a10b1c7d9b8"
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
         },
         {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
@@ -917,7 +929,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:7ca2b8b159363a7b301d8eafdfd6a65d05a23a487e0cc2e9ac04be04a1ec2ccc"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
@@ -2521,7 +2533,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:bab4337ee57ce07e1c12bcc0399ec3fbb8ab4cbb83c4e9b42d151410271198d8"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
@@ -2555,7 +2567,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:12e25e6487e8709322aa58d2a05fe4c7896939e3f65c29d0d80308fff4360caf"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
@@ -2581,7 +2593,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:12e25e6487e8709322aa58d2a05fe4c7896939e3f65c29d0d80308fff4360caf"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
@@ -2603,7 +2615,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:12e25e6487e8709322aa58d2a05fe4c7896939e3f65c29d0d80308fff4360caf"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
@@ -2701,7 +2713,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:d0ef41f452bf833c47d21e555d3a14e027da0d47af19c54c514813ef35d045fc"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
@@ -2714,6 +2726,22 @@
         {
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
           "digest": "sha256:f8e2a172f8c6575447e5ad35af2e63f8b4ccfccdbfea4a67045a43046acb863c"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.spec.ts",
+          "digest": "sha256:5ffc1ce0a5b28993be2e5e364d883667b6b721edaeeea11146285d803662892e"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-openapi-document-operations.spec.ts",
+          "digest": "sha256:16fe1cd3f3c7c660d7e50046bec44bd4e9bb34f365447505ae04adef5948be52"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields-operation-select.spec.ts",
+          "digest": "sha256:1c0fab9ef14d17e7bdb2ebc24ee5edce3e1e492b7eedd2b36a972e89cc8907fe"
         }
       ]
     },
@@ -2731,7 +2759,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:d0ef41f452bf833c47d21e555d3a14e027da0d47af19c54c514813ef35d045fc"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
@@ -2740,6 +2768,18 @@
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
           "digest": "sha256:148cd63eab6955c74ce5f0f967d98373bbe3d47c94ffea5fa2021f53a3cec231"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/hooks/use-openapi-document-operations.spec.ts",
+          "digest": "sha256:16fe1cd3f3c7c660d7e50046bec44bd4e9bb34f365447505ae04adef5948be52"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields-operation-select.spec.ts",
+          "digest": "sha256:1c0fab9ef14d17e7bdb2ebc24ee5edce3e1e492b7eedd2b36a972e89cc8907fe"
         }
       ]
     },
@@ -5043,7 +5083,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:d0ef41f452bf833c47d21e555d3a14e027da0d47af19c54c514813ef35d045fc"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         }
       ]
     },
@@ -5085,7 +5125,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
-          "digest": "sha256:83ce4bb4a73a544826c3e16fcb509bc73cb74093b840fc40fd817a10b1c7d9b8"
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
         },
         {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
@@ -5097,7 +5137,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:d0ef41f452bf833c47d21e555d3a14e027da0d47af19c54c514813ef35d045fc"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper.tsx",
@@ -5595,7 +5635,7 @@
     },
     {
       "node": "rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator",
-      "digest": "sha256:9797f3109c78ddee813512d10e7fd693e0b48493d06d887efd505327155d4d9f",
+      "digest": "sha256:843e2843a2ea1918bfbc00dc1e22751ec8e991a5bbd92c3626ffab97e8d0e533",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
@@ -5603,7 +5643,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:12e25e6487e8709322aa58d2a05fe4c7896939e3f65c29d0d80308fff4360caf"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
@@ -5799,11 +5839,11 @@
     },
     {
       "node": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
-      "digest": "sha256:fa6f86c4e085e103c3397c21804153a9cb78de07226a8ecae29f2b98e4d636da",
+      "digest": "sha256:87e73eb1251f073bce8504402792d273576e078f155e4f3e997251a6de729bb6",
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:12e25e6487e8709322aa58d2a05fe4c7896939e3f65c29d0d80308fff4360caf"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
@@ -5865,11 +5905,19 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:d0ef41f452bf833c47d21e555d3a14e027da0d47af19c54c514813ef35d045fc"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
           "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields-operation-select.spec.ts",
+          "digest": "sha256:1c0fab9ef14d17e7bdb2ebc24ee5edce3e1e492b7eedd2b36a972e89cc8907fe"
         }
       ]
     },
@@ -6003,7 +6051,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:bab4337ee57ce07e1c12bcc0399ec3fbb8ab4cbb83c4e9b42d151410271198d8"
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-helper.tsx",
@@ -6032,6 +6080,14 @@
         {
           "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
           "digest": "sha256:39c88a61a56e13c3d60e5922b292668fa4db865e47a82324748050e6a16062f2"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.spec.ts",
+          "digest": "sha256:009806f0776a57c2c53f4dc46d0dd5b1086f2185e106b45dacbc3d0165f3b234"
         }
       ]
     },
@@ -8152,6 +8208,14 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
           "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.spec.ts",
+          "digest": "sha256:5ffc1ce0a5b28993be2e5e364d883667b6b721edaeeea11146285d803662892e"
         }
       ]
     },
