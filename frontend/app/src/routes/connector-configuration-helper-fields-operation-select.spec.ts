@@ -52,9 +52,9 @@ describe("ConnectorConfigurationHelperFields -- the Select offers every operatio
   });
 });
 
-describe("ConnectorConfigurationHelperFields -- an option's label states both the entry's path and its method (criterion 2, domain/integration/openapi-operation)", () => {
-  it("shows the entry's own path and its own method together on the option", () => {
-    renderFields(stateWith({ operations: [operation("/v2/translate", "POST")] }));
+describe("ConnectorConfigurationHelperFields -- an option's label states both the entry's path and its method, upper-cased, together (criterion 2, domain/integration/openapi-operation)", () => {
+  it("shows the entry's own path and its own method together on the option, upper-cased even though the entry names it lower-case", () => {
+    renderFields(stateWith({ operations: [operation("/v2/translate", "post")] }));
 
     openOperationSelect();
     const option = screen.getByRole("option");

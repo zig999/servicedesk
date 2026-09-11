@@ -21,6 +21,8 @@ afterEach(() => {
 });
 
 const DRAFT_ROUTE = "/v1/draft-connector-configuration-from-openapi";
+const OPERATOR_LINK = "https://api.example.com/openapi.json";
+const HELPER_OPERATION = { path: "/v2/translate", method: "POST" };
 
 const DRAFTED_CONFIGURATION_TEXT = JSON.stringify(
   { address: "https://api.example.com/v2/translate", distinctive: true },
@@ -39,6 +41,20 @@ function draftResponse(configurationText: string): Response {
   });
 }
 
+function operationsReadRoute(link: string): string {
+  return `/v1/read-openapi-document-operations?link=${encodeURIComponent(link)}`;
+}
+
+function operationsReadJsonResponse(): Response {
+  return jsonResponse({ operations: [HELPER_OPERATION] });
+}
+
+async function chooseHelperOperation(path: string, method: string): Promise<void> {
+  fireEvent.click(screen.getByLabelText("Operation"));
+  const option = await screen.findByRole("option", { name: `${path} — ${method}` });
+  fireEvent.mouseDown(option);
+}
+
 async function mountDetailReady(): Promise<{
   fetchMock: ReturnType<typeof createDetailScreenFetchStub>;
   configurationField: HTMLTextAreaElement;
@@ -46,6 +62,7 @@ async function mountDetailReady(): Promise<{
   const fetchMock = createDetailScreenFetchStub(
     detailScreenBaseHandlers(LOADED_CONFIGURATION, {
       [DRAFT_ROUTE]: () => draftResponse(DRAFTED_CONFIGURATION_TEXT),
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     }),
   );
   await mountConnectorConfigurationDetailScreen(fetchMock);
@@ -60,6 +77,7 @@ async function mountCreateReady(): Promise<{
 }> {
   const fetchMock = createCreateScreenFetchStub({
     [DRAFT_ROUTE]: () => draftResponse(DRAFTED_CONFIGURATION_TEXT),
+    [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
   });
   await mountConnectorConfigurationCreateScreen(fetchMock);
   const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
@@ -67,11 +85,8 @@ async function mountCreateReady(): Promise<{
 }
 
 async function offerDraft(): Promise<void> {
-  fireEvent.change(screen.getByLabelText("OpenAPI document link"), {
-    target: { value: "https://api.example.com/openapi.json" },
-  });
-  fireEvent.change(screen.getByLabelText("Operation path"), { target: { value: "/v2/translate" } });
-  fireEvent.change(screen.getByLabelText("Operation method"), { target: { value: "POST" } });
+  fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+  await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
   fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
   await screen.findByRole("button", { name: "Apply" });
 }

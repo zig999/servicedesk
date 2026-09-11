@@ -2715,18 +2715,6 @@
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
           "digest": "sha256:7298a9a88a42ed109a3749ecc29a79e65531afbc330ade31cc6d3081de9df58c"
         }
-      ],
-      "decided_by": "test",
-      "step": "test",
-      "proof": [
-        {
-          "path": "src/src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts",
-          "digest": "sha256:5e6713dbce0a2101d5beadb8f04687493c8ca1c560a162946fb5ed28c5b0d5f4"
-        },
-        {
-          "path": "src/src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts",
-          "digest": "sha256:cd8e95f88d33148a03c5eeda7b25b8dbd2f2f3d4a08de8f7eeec7c5d1400231f"
-        }
       ]
     },
     {
@@ -2752,18 +2740,6 @@
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
           "digest": "sha256:1983d68cdbc6574777529c168e9b794efa51984052a8ebc237e39b9d39eaa9de"
-        }
-      ],
-      "decided_by": "test",
-      "step": "test",
-      "proof": [
-        {
-          "path": "src/src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts",
-          "digest": "sha256:5e6713dbce0a2101d5beadb8f04687493c8ca1c560a162946fb5ed28c5b0d5f4"
-        },
-        {
-          "path": "src/src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts",
-          "digest": "sha256:cd8e95f88d33148a03c5eeda7b25b8dbd2f2f3d4a08de8f7eeec7c5d1400231f"
         }
       ]
     },
@@ -5054,6 +5030,18 @@
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
         },
         {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen-apply-draft.spec.ts",
+          "digest": "sha256:540d377821047f6a9cdddd8aadeeb01e8f06ce8470c8f8806492efc5ba9d2262"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields-apply-confirmation.spec.ts",
+          "digest": "sha256:b86e0f0474d1bd9730e6367973cd3a548b9dc21a8d083527c14cc53946d7ac89"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields-configuration-helper.spec.ts",
+          "digest": "sha256:6e0408e2abb713631dc71e23515b512030b09fff3f1e2ddd5b4104558e0e2e9f"
+        },
+        {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
           "digest": "sha256:d0ef41f452bf833c47d21e555d3a14e027da0d47af19c54c514813ef35d045fc"
         }
@@ -5868,18 +5856,6 @@
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
           "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
-        }
-      ],
-      "decided_by": "test",
-      "step": "test",
-      "proof": [
-        {
-          "path": "src/src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts",
-          "digest": "sha256:5e6713dbce0a2101d5beadb8f04687493c8ca1c560a162946fb5ed28c5b0d5f4"
-        },
-        {
-          "path": "src/src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts",
-          "digest": "sha256:cd8e95f88d33148a03c5eeda7b25b8dbd2f2f3d4a08de8f7eeec7c5d1400231f"
         }
       ]
     },

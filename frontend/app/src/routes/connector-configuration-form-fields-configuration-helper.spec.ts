@@ -20,6 +20,21 @@ afterEach(() => {
 
 const DRAFT_ROUTE = "/v1/draft-connector-configuration-from-openapi";
 const OPERATOR_LINK = "https://api.example.com/openapi.json";
+const HELPER_OPERATION = { path: "/v2/translate", method: "POST" };
+
+function operationsReadRoute(link: string): string {
+  return `/v1/read-openapi-document-operations?link=${encodeURIComponent(link)}`;
+}
+
+function operationsReadJsonResponse(): Response {
+  return jsonResponse({ operations: [HELPER_OPERATION] });
+}
+
+async function chooseHelperOperation(path: string, method: string): Promise<void> {
+  fireEvent.click(screen.getByLabelText("Operation"));
+  const option = await screen.findByRole("option", { name: `${path} — ${method}` });
+  fireEvent.mouseDown(option);
+}
 
 function draftJsonResponse(): Response {
   return jsonResponse({
@@ -35,7 +50,10 @@ function errorResponse(code: string): Response {
 }
 
 async function mountCreateScreenWithHelper() {
-  const fetchMock = createCreateScreenFetchStub({ [DRAFT_ROUTE]: draftJsonResponse });
+  const fetchMock = createCreateScreenFetchStub({
+    [DRAFT_ROUTE]: draftJsonResponse,
+    [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
+  });
   await mountConnectorConfigurationCreateScreen(fetchMock);
   await screen.findByLabelText("Configuration");
   return fetchMock;
@@ -43,7 +61,10 @@ async function mountCreateScreenWithHelper() {
 
 async function mountDetailScreenWithHelper() {
   const fetchMock = createDetailScreenFetchStub(
-    detailScreenBaseHandlers(LOADED_CONFIGURATION, { [DRAFT_ROUTE]: draftJsonResponse }),
+    detailScreenBaseHandlers(LOADED_CONFIGURATION, {
+      [DRAFT_ROUTE]: draftJsonResponse,
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
+    }),
   );
   await mountConnectorConfigurationDetailScreen(fetchMock);
   await screen.findByLabelText("Configuration");
@@ -82,7 +103,10 @@ describe("ConnectorConfigurationFormFields -- the Configuration Helper section s
 
 describe("ConnectorConfigurationFormFields -- the Configuration Helper is rendered inline in the same form as the Configuration field, on no screen or dialog of its own (criterion 3)", () => {
   it("shares the Configuration field's own owning <form> and opens no dialog, on the create screen", async () => {
-    const fetchMock = createCreateScreenFetchStub({ [DRAFT_ROUTE]: draftJsonResponse });
+    const fetchMock = createCreateScreenFetchStub({
+      [DRAFT_ROUTE]: draftJsonResponse,
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
+    });
     const router = await mountConnectorConfigurationCreateScreen(fetchMock);
     await screen.findByLabelText("Configuration");
 
@@ -120,28 +144,26 @@ describe("ConnectorConfigurationFormFields -- the section offers a control namin
   });
 });
 
-describe("ConnectorConfigurationFormFields -- the section offers controls naming one operation by its path and method (criterion 5)", () => {
-  it("renders editable Operation path and Operation method controls that hold what the operator types", async () => {
+describe("ConnectorConfigurationFormFields -- the section offers a control naming one operation from the fetched document (criterion 5)", () => {
+  it("renders an Operation Select whose value reflects the entry the operator chooses", async () => {
     await mountCreateScreenWithHelper();
 
-    const pathInput = screen.getByLabelText<HTMLInputElement>("Operation path");
-    const methodInput = screen.getByLabelText<HTMLInputElement>("Operation method");
-    fireEvent.change(pathInput, { target: { value: "/v2/translate" } });
-    fireEvent.change(methodInput, { target: { value: "POST" } });
+    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
-    expect(pathInput.value).toBe("/v2/translate");
-    expect(methodInput.value).toBe("POST");
+    const operationSelect = screen.getByLabelText("Operation");
+    expect(operationSelect.textContent).toContain(HELPER_OPERATION.path);
+    expect(operationSelect.textContent).toContain(HELPER_OPERATION.method);
   });
 });
 
-describe("ConnectorConfigurationFormFields -- the section's control dispatches the draft request with the stated link and named operation (criterion 6)", () => {
+describe("ConnectorConfigurationFormFields -- the section's control dispatches the draft request with the stated link and the chosen operation (criterion 6)", () => {
   it("issues a POST to the draft route carrying the current connector, link, path and method, when Request Draft is clicked", async () => {
     const fetchMock = await mountCreateScreenWithHelper();
 
     fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
     fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
-    fireEvent.change(screen.getByLabelText("Operation path"), { target: { value: "/v2/translate" } });
-    fireEvent.change(screen.getByLabelText("Operation method"), { target: { value: "POST" } });
+    await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
     fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
 
@@ -156,8 +178,8 @@ describe("ConnectorConfigurationFormFields -- the section's control dispatches t
     expect(JSON.parse(rawBody)).toEqual({
       connector: "deepl-connector",
       link: OPERATOR_LINK,
-      path: "/v2/translate",
-      method: "POST",
+      path: HELPER_OPERATION.path,
+      method: HELPER_OPERATION.method,
     });
   });
 });
@@ -182,6 +204,7 @@ describe("ConnectorConfigurationFormFields -- nothing the section offers submits
       [DRAFT_ROUTE]: draftJsonResponse,
       [connectorPutPath("deepl-connector")]: () =>
         jsonResponse({ connector: "deepl-connector", configuration: "{}" }),
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await screen.findByLabelText("Configuration");

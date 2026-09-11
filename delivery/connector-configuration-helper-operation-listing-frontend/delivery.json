@@ -26,6 +26,14 @@
       "task": "task/connector-configuration-helper-operation-listing/operation-choice-fields"
     },
     {
+      "id": "implementation/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "kind": "implementation",
+      "file": "implementation/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs.md",
+      "title": "Rewrite the three orphaned Configuration Helper specs to drive the operation Select",
+      "summary": "Rewrites the Configuration Helper interactions in the three pre-existing spec files so each drives the helper by choosing a fetched operation from the Select, stubbing the operations-read route the same way the sibling task's own spec does, while leaving every other assertion and all production code untouched.",
+      "task": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs"
+    },
+    {
       "id": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state",
       "kind": "proof",
       "file": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state.md",
@@ -40,6 +48,22 @@
       "title": "Frontend hook reading an OpenAPI document's operations — test proof",
       "summary": "Tests use-openapi-document-operations.ts against every stated criterion and the task's two UNDERDETERMINED notes, with fetch stubbed at the network boundary; two domain nodes are demonstrated whole, and the second UNDERDETERMINED note's test now asserts the specific openapi-document-declares-no-version kind the corrected implementation exposes, distinct from a generic parse failure — a stronger proof of the same fact than the prior inequality check.",
       "task": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read"
+    },
+    {
+      "id": "proof/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "kind": "proof",
+      "file": "proof/connector-configuration-helper-operation-listing/operation-choice-fields.md",
+      "title": "Configuration Helper offers operations as a Select, tests over the choice control and the upper-casing invariant",
+      "summary": "connector-configuration-helper-fields-operation-select.spec.ts (with one existing test's input data corrected to a lower-case method so it actually decides the case-invariance it already claimed to cover) carries all eight criteria of operation-choice-fields.md, the underdetermined entry, and the two domain nodes a finite test can decide whole; the two rule nodes this task only partially implements are left untested with why, per the task's own REMAINDER notes.",
+      "task": "task/connector-configuration-helper-operation-listing/operation-choice-fields"
+    },
+    {
+      "id": "proof/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "kind": "proof",
+      "file": "proof/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs.md",
+      "title": "Proof for rewrite-orphaned-specs — the three orphaned Configuration Helper specs now drive the operation Select",
+      "summary": "Cites the rewritten it() blocks in the three named spec files that decide this task's four criteria, and records why the node this task implements, the suite-wide criterion and the underdetermined casing entry carry no test of their own from this task.",
+      "task": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs"
     }
   ],
   "edges": [
@@ -188,6 +212,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "to": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state",
       "to": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
       "kind": "proves",
@@ -196,6 +232,18 @@
     {
       "from": "proof/connector-configuration-helper-operation-listing/openapi-document-operations-read",
       "to": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "to": "implementation/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
       "kind": "proves",
       "at": "the path"
     }

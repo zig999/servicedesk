@@ -13,6 +13,8 @@ afterEach(() => {
 
 const DRAFT_ENDPOINT_PATH = "/v1/draft-connector-configuration-from-openapi";
 const CONNECTOR_NAME = "deepl-connector";
+const OPERATOR_LINK = "https://api.example.com/openapi.json";
+const HELPER_OPERATION = { path: "/v2/translate", method: "POST" };
 const WELL_FORMED_APPLIED_TEXT = JSON.stringify({ distinctive: true }, null, 2);
 const NOT_AN_OBJECT_APPLIED_TEXT = "42";
 
@@ -25,15 +27,26 @@ function draftResponse(configurationText: string): Response {
   });
 }
 
+function operationsReadRoute(link: string): string {
+  return `/v1/read-openapi-document-operations?link=${encodeURIComponent(link)}`;
+}
+
+function operationsReadJsonResponse(): Response {
+  return jsonResponse({ operations: [HELPER_OPERATION] });
+}
+
+async function chooseHelperOperation(path: string, method: string): Promise<void> {
+  fireEvent.click(screen.getByLabelText("Operation"));
+  const option = await screen.findByRole("option", { name: `${path} — ${method}` });
+  fireEvent.mouseDown(option);
+}
+
 async function fillHelperRequestFields(): Promise<void> {
   fireEvent.change(await screen.findByLabelText<HTMLInputElement>("Connector"), {
     target: { value: CONNECTOR_NAME },
   });
-  fireEvent.change(screen.getByLabelText("OpenAPI document link"), {
-    target: { value: "https://api.example.com/openapi.json" },
-  });
-  fireEvent.change(screen.getByLabelText("Operation path"), { target: { value: "/v2/translate" } });
-  fireEvent.change(screen.getByLabelText("Operation method"), { target: { value: "POST" } });
+  fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+  await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 }
 
 async function applyAnsweredDraft(configurationText: string): Promise<{
@@ -42,6 +55,7 @@ async function applyAnsweredDraft(configurationText: string): Promise<{
 }> {
   const fetchMock = createFetchStub({
     [DRAFT_ENDPOINT_PATH]: () => draftResponse(configurationText),
+    [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
   });
   const router = await mountConnectorConfigurationCreateScreen(fetchMock);
 
@@ -122,6 +136,7 @@ describe("ConnectorConfigurationCreateScreen -- applying a well-formed draft's t
   it("flips Save from disabled to enabled once a well-formed draft is applied to a field that started invalid and empty", async () => {
     const fetchMock = createFetchStub({
       [DRAFT_ENDPOINT_PATH]: () => draftResponse(WELL_FORMED_APPLIED_TEXT),
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
 
