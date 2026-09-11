@@ -5612,6 +5612,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator",
+      "digest": "sha256:fa35bbd042ecffb81142a3a1ace40fd2b959273a2911f4508edea3ad673f3699",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
+          "digest": "sha256:39c88a61a56e13c3d60e5922b292668fa4db865e47a82324748050e6a16062f2"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers",
       "digest": "sha256:c41e101f9b18ababf3b9023d71f425233a58e3ca15cc6d8136f6f7d4636798e6",
       "files": [
@@ -5868,6 +5882,10 @@
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
         },
         {
+          "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
+          "digest": "sha256:39c88a61a56e13c3d60e5922b292668fa4db865e47a82324748050e6a16062f2"
+        },
+        {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:6991bda46afef8842944bf1f25da24c491121e75f930dc4962a9c72231340b9f"
         },
@@ -6004,6 +6022,16 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers",
+      "digest": "sha256:365436fd7f1555cb004cd1361ab3db7826ac7f1b59c2550f6cfe779deb705d13",
+      "files": [
+        {
+          "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
+          "digest": "sha256:39c88a61a56e13c3d60e5922b292668fa4db865e47a82324748050e6a16062f2"
         }
       ]
     },

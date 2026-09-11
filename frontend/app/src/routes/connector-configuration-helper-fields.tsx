@@ -9,6 +9,7 @@ import {
   disclosureStateForOutcome,
   type DraftDisclosure,
 } from "../services/connector-configuration-draft-disclosure";
+import { operationsReadDisclosureStateForOutcome } from "../services/connector-configuration-operations-read-disclosure";
 
 export type ConnectorConfigurationHelperFieldsProps = {
   readonly state: ConnectorConfigurationHelperState;
@@ -24,6 +25,7 @@ export function ConnectorConfigurationHelperFields({
   onApply,
 }: ConnectorConfigurationHelperFieldsProps): JSX.Element {
   const disclosure = disclosureStateForOutcome(state.outcome);
+  const operationsReadDisclosure = operationsReadDisclosureStateForOutcome(state.operationsOutcome);
 
   const operationOptions: SelectOption[] = state.operations.map((operation) => ({
     value: operationSelectValue(operation),
@@ -81,6 +83,11 @@ export function ConnectorConfigurationHelperFields({
         )}
         {disclosure.kind === "drafted" && (
           <ConnectorConfigurationDraftDisclosure draft={disclosure.draft} onApply={onApply} />
+        )}
+        {operationsReadDisclosure.kind === "refused" && (
+          <p role="alert" className="text-sm text-destructive">
+            {operationsReadDisclosure.message}
+          </p>
         )}
       </div>
     </div>
