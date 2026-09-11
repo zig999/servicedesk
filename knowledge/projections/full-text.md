@@ -4892,6 +4892,46 @@ entries:
   why: The CORS dependency and the single auditable path this constraint exists for follow from the link being
     operator-supplied and external, which is equally true of the read that lists a document's operations before
     a draft is ever requested from one of them.
+- location: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document.md
+  field: statement
+  unstated: No node states which HTTP status or which error value read-openapi-document-operations answers a
+    request with when its named document link cannot be fetched, or when the fetched document does not parse
+    or does not declare OpenAPI 3.x, nor whether the operations-read shares the answers the draft operation's
+    own refusals were given.
+  decided: HTTP 422 reporting an OpenApiDocumentNotFetchedError for the fetch failure, and HTTP 422 reporting
+    an OpenApiDocumentNotReadableError for the document that does not parse or does not declare OpenAPI 3.x —
+    the same status and the same two error values the draft operation's refusals answer under, never
+    interchanged and never answered as an unnamed refusal.
+  why: 422 is this specification's established answer for a well-formed request whose named content the domain
+    refuses, and both refusals are exactly that; 500 is reserved for a server-side condition the requester
+    cannot correct by changing the request, which a link the request itself named is not. The two error values
+    are the draft's own rather than a new pair because the conditions are the same two conditions against the
+    same fetched document, stated by two rules that mirror the draft's at the same fetch and parse stages, and
+    both names state a subject and a condition of the OpenAPI document with no mention of the draft — a second
+    pair would give one specification two vocabularies for one distinction. Two values rather than one, because
+    telling a document that was never received from one that cannot be read is the whole reason the two
+    refusals are two rules.
+- location: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft.md
+  field: statement
+  unstated: 'Both refusal rules state that a fetched document which does not parse, or whose declared
+    version is not OpenAPI 3.x, is refused "naming what failed to parse or which version was declared"
+    — while neither says what that refusal names where the document parses cleanly but declares no
+    version at all, neither an OpenAPI version nor a Swagger one, so that the "which version was
+    declared" half has nothing to name. a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    states only the status and the error value an unreadable document is answered under and nothing of
+    what that refusal names, and the two Swagger 2.0 scenarios reach only a document that does declare
+    a version.'
+  decided: 'The refusal names that the document declares no version — the absence stated in its own
+    terms, told apart from both a parse failure and a declared version outside 3.x, and never given as
+    an absent or empty declared version — inside the one unreadable-document refusal already stated,
+    taking no further error value; stated in those same terms in the statement of
+    rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read, which
+    refuses on the same parse and version-check terms.'
+  why: "The operator's next act turns on which of the two it was: a document declaring 2.0 is answered
+    by finding the 3.x document for the same api, while a document declaring no version at all has most
+    often come back from a link that does not publish an OpenAPI document, and a refusal that names an
+    empty version, or that names a parse failure over text which parsed perfectly, sends each operator
+    after the other's correction."
 ---
 
 === domain/glossary/_context
@@ -7426,8 +7466,11 @@ statement: >-
   draft a connector configuration whose fetched document parses as neither of those two
   serializations, or parses as one of them but is not a well-formed OpenAPI document, or whose
   declared version is not OpenAPI 3.x -- a Swagger 2.0 document among them -- is refused, naming
-  what failed to parse or which version was declared, no draft generated from an unparseable or
-  unsupported document.
+  what failed to parse or which version was declared and, where the document parses but declares
+  no version at all -- neither an OpenAPI version nor a Swagger one -- naming that the document
+  declares no version, that naming told apart from both the others and never given as an absent
+  or empty declared version and never as a parse failure, no draft generated from an unparseable
+  or unsupported document.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -7437,6 +7480,8 @@ constrains:
 Only OpenAPI 3.x is read: an earlier Swagger 2.0 document names its operations, parameters and security schemes differently, and reading one as though it were 3.x would misname what the draft resolves rather than refuse honestly. A document that does not parse at all is the same refusal for the same reason a-connector-configuration-holds-a-well-formed-object already gives a registration that does not parse: nothing partial is worth drafting from text nobody can read.
 
 Both serializations are read because they are the two the OpenAPI format defines for one and the same document, and every construct the draft rules read -- an operation at a path and method, its parameters, its request body's media types, its security schemes -- is the same object model whichever of the two carried it, so the serialization decides nothing about what a draft resolves. Refusing a document because it arrived as YAML would refuse most of what an operator can name while nothing about the text was in fact unreadable. The serialization is decided by parsing the text rather than by a declared content type because the only thing an-unfetchable-openapi-link-refuses-the-draft reads of the response is its status; reading a content type instead would add a refusal this rule does not hold, for a document that parses perfectly and was merely served under a type whatever publishes it chose. Text that parses as neither serialization is text nobody can read as OpenAPI, which is the refusal this rule already gives — the same unreadable-document refusal `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` states, never a fetch failure and never a condition of its own — so it takes no third condition and no third error value.
+
+A document that parses but declares no version at all is that same unreadable-document refusal and not a further one, and what it names is the absence itself: nothing about the text failed to parse, and no version stands there to be named. The operator whose link answered a 2.0 document goes looking for the 3.x document of the same api; the operator whose link answered a document declaring no version has most often been answered by something that is not an OpenAPI document, or not the document they meant. A refusal naming an empty version, or naming a parse failure over text that parsed perfectly, sends each of them after the other's correction.
 
 === rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
 ---
@@ -7448,7 +7493,10 @@ statement: >-
   type the response declared; and a request whose fetched document parses as neither of those
   two serializations, or parses as one of them but is not a well-formed OpenAPI document, or
   whose declared version is not OpenAPI 3.x -- a Swagger 2.0 document among them -- is refused,
-  naming what failed to parse or which version was declared, no operations read from an
+  naming what failed to parse or which version was declared and, where the document parses but
+  declares no version at all -- neither an OpenAPI version nor a Swagger one -- naming that the
+  document declares no version, that naming told apart from both the others and never given as
+  an absent or empty declared version and never as a parse failure, no operations read from an
   unparseable or unsupported document.
 constrains:
   - domain/integration/openapi-document-operations
@@ -7457,6 +7505,8 @@ constrains:
 ## Description
 
 a-malformed-or-unsupported-openapi-document-refuses-the-draft gives the draft operation this same refusal for the same reason: only OpenAPI 3.x is read, an earlier Swagger 2.0 document names its operations differently, and text that parses as neither JSON nor YAML is text nobody can read as OpenAPI. The Configuration Helper's read of a document's operations parses the same fetched text before any path or method is chosen, so it refuses the same way at the same parse stage.
+
+A document that parses but declares no version at all names that absence here too, at that same parse stage: no version stands to be named and nothing failed to parse, and the operator whose link answered something that is not an OpenAPI document at all has a different next act from the one whose link answered a 2.0 document.
 
 === rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
 ---
@@ -8455,6 +8505,31 @@ constrains:
 ## Description
 
 a-connector-configuration-draft-states-the-chosen-operations-method already upper-cases the method a chosen operation is drafted under, since the executing connector's own vocabulary — GET, POST, PUT, PATCH, DELETE — is upper-case while an OpenAPI 3.x document names its operations under lower-case path-item keys. Listing the document's own lower-case spelling instead would show an operator a value the draft they choose it into never states, and a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing already carries the chosen entry's method straight to that draft request.
+
+=== rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+---
+type: invariant
+statement: >-
+  A request to read an OpenAPI document's operations refused because its named document link
+  could not be fetched is answered with an HTTP 422 response reporting an
+  OpenApiDocumentNotFetchedError, and a request refused because the fetched document does not
+  parse as a well-formed OpenAPI document or does not declare OpenAPI 3.x is answered with an
+  HTTP 422 response reporting an OpenApiDocumentNotReadableError instead — the same two error
+  values the draft operation's own refusals report, neither of the two ever answered as the
+  other and neither ever answered as a refusal carrying no named condition.
+constrains:
+  - domain/integration/openapi-document-operations
+---
+
+## Description
+
+The two refusals themselves are already stated: `an-unfetchable-openapi-link-refuses-the-operations-read` refuses a link nothing answered, or answered outside the 2xx range, before any parsing is attempted, and `a-malformed-or-unsupported-openapi-document-refuses-the-operations-read` refuses a fetched document that does not parse or declares a version other than OpenAPI 3.x. What the HTTP surface answers for each was stated by neither. Because `constraints/the-openapi-document-is-fetched-by-the-backend` puts this read's fetch inside the backend operation exactly as it puts the draft's, both refusals are `read-openapi-document-operations`' own answer to its caller and each has a status and an error value; this states them, once, for both.
+
+HTTP 422 for both, for the reason `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` already gives the sibling draft refusals: 422 is this specification's established answer for a well-formed request whose named content the domain refuses — `ConnectorConfigurationNotWellFormedError`, `IncompleteConnectorConfigurationError`, `CapabilitySchemaNotWellFormedError`, `ConnectorPlaceholderOutsideInputSchemaError` and `OpenApiOperationNotFoundError` all answer it — and both refusals here are that case: the request is well formed, and what it names, a link or the document that link answered, cannot be read for its operations. HTTP 500 is reserved for a server-side condition the requester neither caused nor can correct by changing the request, and a link the request itself named is corrected by naming another. A gateway or unavailable status would additionally assert an upstream fault, or a transience worth retrying, that no node holds.
+
+Two error values, and the same two the draft operation reports. The two conditions are the same two conditions, held against the same fetched document, by the two rules that mirror the draft's own: `an-unfetchable-openapi-link-refuses-the-operations-read` and `a-malformed-or-unsupported-openapi-document-refuses-the-operations-read` each state their refusal as the draft rule's refusal for the draft rule's reason, at the same fetch and parse stages, before any path or method is chosen. The error value names its subject and its condition — an OpenAPI document not fetched, an OpenAPI document not readable — and neither name mentions the draft, so the subject a value names is the same subject whichever operation met it. Minting a second pair of names for one pair of conditions would give one specification two vocabularies for one distinction, which is what `a-submitted-registration-states-its-outcome-to-the-operator` refuses by deciding one fact once rather than once per caller; and a single shared value across the two conditions would leave the operator where `constraints/a-domain-error-unmapped-by-status-is-refused-generically` leaves a caller, knowing only that something failed, which is the whole reason the two refusals are two rules.
+
+The two are never answered as one another and never as a refusal carrying no named condition, the reading `a-draft-fetch-and-readability-refusals-never-read-alike` takes for the draft: telling a document that was never received from one that cannot be read is what the distinction is for, and an operator who receives either answer under the other is sent to correct an input that was never at fault.
 
 === rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
 ---
