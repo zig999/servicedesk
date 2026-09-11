@@ -1,8 +1,10 @@
 import type { JSX } from "react";
 import { Label } from "@tui/ui/label";
 import { Input } from "@tui/ui/input";
+import { Select, type SelectOption } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
 import type { ConnectorConfigurationHelperState } from "../hooks/use-connector-configuration-helper";
+import type { OpenApiOperation } from "../hooks/use-openapi-document-operations";
 import {
   disclosureStateForOutcome,
   type DraftDisclosure,
@@ -13,15 +15,36 @@ export type ConnectorConfigurationHelperFieldsProps = {
   readonly onApply: (configurationText: string) => void;
 };
 
+function operationSelectValue(entry: Pick<OpenApiOperation, "path" | "method">): string {
+  return `${entry.method.toUpperCase()} ${entry.path}`;
+}
+
 export function ConnectorConfigurationHelperFields({
   state,
   onApply,
 }: ConnectorConfigurationHelperFieldsProps): JSX.Element {
   const disclosure = disclosureStateForOutcome(state.outcome);
 
+  const operationOptions: SelectOption[] = state.operations.map((operation) => ({
+    value: operationSelectValue(operation),
+    label: `${operation.path} — ${operation.method.toUpperCase()}`,
+  }));
+
+  const selectedOperationValue =
+    state.path === "" && state.method === ""
+      ? ""
+      : operationSelectValue({ path: state.path, method: state.method });
+
+  const onOperationSelected = (value: string): void => {
+    const chosen = state.operations.find((operation) => operationSelectValue(operation) === value);
+    if (chosen !== undefined) {
+      state.onChooseOperation(chosen);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-1">
           <Label htmlFor="configuration-helper-link">OpenAPI document link</Label>
           <Input
@@ -30,22 +53,15 @@ export function ConnectorConfigurationHelperFields({
             onChange={(event) => state.onLinkChange(event.target.value)}
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="configuration-helper-path">Operation path</Label>
-          <Input
-            id="configuration-helper-path"
-            value={state.path}
-            onChange={(event) => state.onPathChange(event.target.value)}
+        <Label className="flex flex-col gap-1">
+          Operation
+          <Select
+            options={operationOptions}
+            value={selectedOperationValue}
+            onChange={onOperationSelected}
+            placeholder="Select an operation"
           />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="configuration-helper-method">Operation method</Label>
-          <Input
-            id="configuration-helper-method"
-            value={state.method}
-            onChange={(event) => state.onMethodChange(event.target.value)}
-          />
-        </div>
+        </Label>
       </div>
       <div className="flex justify-end">
         <Button

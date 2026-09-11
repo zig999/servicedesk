@@ -18,6 +18,14 @@
       "task": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read"
     },
     {
+      "id": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields.md",
+      "title": "Configuration Helper offers operations as a Select, method upper-cased",
+      "summary": "ConnectorConfigurationHelperFields renders the Configuration Helper's Operation field as a Select built from state.operations, with no free-text path or method Input remaining, and now upper-cases each operation's method -- in both the option label and the value used to match the selection -- before it is displayed or chosen from.",
+      "task": "task/connector-configuration-helper-operation-listing/operation-choice-fields"
+    },
+    {
       "id": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state",
       "kind": "proof",
       "file": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state.md",
@@ -140,6 +148,42 @@
     {
       "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
       "to": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "domain/integration/openapi-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "rules/integration/an-openapi-operations-method-is-upper-cased",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/operation-choice-fields",
+      "to": "task/connector-configuration-helper-operation-listing/operation-choice-fields",
       "kind": "implements",
       "at": "the path"
     },
