@@ -10,6 +10,14 @@
       "task": "task/openapi-document-operations-read/document-operations-reading"
     },
     {
+      "id": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "kind": "implementation",
+      "file": "implementation/openapi-document-operations-read/read-operations-http-operation.md",
+      "title": "Publish read-openapi-document-operations over HTTP",
+      "summary": "Adds the routes/controller/dto triplet for read-openapi-document-operations and wires it into build-app.ts and build-app.factory.ts, reusing the existing document-operations reading, the shared OpenApiDocumentFetcher adapter, and the already-mapped 422 refusals with no change to status-map.ts.",
+      "task": "task/openapi-document-operations-read/read-operations-http-operation"
+    },
+    {
       "id": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "kind": "implementation",
       "file": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step.md",
@@ -24,6 +32,14 @@
       "title": "Proof of the domain reading behind read-openapi-document-operations",
       "summary": "Proves the backend reading that fetches an operator-named OpenAPI document through IOpenApiDocumentFetcher, parses it through the shared parse step, and answers every declared path/method operation whole or lets a fetch or parse refusal propagate unchanged.",
       "task": "task/openapi-document-operations-read/document-operations-reading"
+    },
+    {
+      "id": "proof/openapi-document-operations-read/read-operations-http-operation",
+      "kind": "proof",
+      "file": "proof/openapi-document-operations-read/read-operations-http-operation.md",
+      "title": "Publish read-openapi-document-operations over HTTP — proof",
+      "summary": "New unit tests over the routes/controller/dto triplet and one added wiring-reachability row prove the read's happy path, its value-object shape, its method-casing invariant, its request validation, and its two distinguished 422 refusals; a required plumbing fix to an existing stub is disclosed separately from the assertions.",
+      "task": "task/openapi-document-operations-read/read-operations-http-operation"
     },
     {
       "id": "proof/openapi-document-operations-read/shared-openapi-document-parse-step",
@@ -90,6 +106,78 @@
       "at": "the path"
     },
     {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "domain/integration/openapi-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "rules/integration/an-openapi-operations-method-is-upper-cased",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-operations-read",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-read/read-operations-http-operation",
+      "to": "task/openapi-document-operations-read/read-operations-http-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/openapi-document-operations-read/shared-openapi-document-parse-step",
       "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft",
       "kind": "encodes",
@@ -122,6 +210,12 @@
     {
       "from": "proof/openapi-document-operations-read/document-operations-reading",
       "to": "implementation/openapi-document-operations-read/document-operations-reading",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/openapi-document-operations-read/read-operations-http-operation",
+      "to": "implementation/openapi-document-operations-read/read-operations-http-operation",
       "kind": "proves",
       "at": "the path"
     },

@@ -1,0 +1,6 @@
+npm error code ENOTEMPTY
+npm error syscall rmdir
+npm error path /home/siegfriedneto/projects/servicedeskn1/src/node_modules/eslint/messages
+npm error errno -39
+npm error ENOTEMPTY: directory not empty, rmdir '/home/siegfriedneto/projects/servicedeskn1/src/node_modules/eslint/messages'
+npm error A complete log of this run can be found in: /home/siegfriedneto/.npm/_logs/2026-09-11T19_19_35_966Z-debug-0.log

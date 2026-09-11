@@ -11,6 +11,7 @@ import type { ProductionDiagnoseCall } from '../../../factories/production-diagn
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
+import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from '../../../http/draft-connector-configuration-from-openapi.controller.js';
 import type { ListConnectorConfigurationsControllerDependencies } from '../../../http/list-connector-configurations.controller.js';
 import type { ReadCapabilityByIdentityControllerDependencies } from '../../../http/read-capability-by-identity.controller.js';
 import type { ReadConnectorConfigurationControllerDependencies } from '../../../http/read-connector-configuration.controller.js';
@@ -163,6 +164,14 @@ function stubListConnectorConfigurations(): ListConnectorConfigurationsControlle
   };
 }
 
+function stubDraftConnectorConfigurationFromOpenApi(): DraftConnectorConfigurationFromOpenApiControllerDependencies {
+  return {
+    documentFetcher: { fetchOpenApiDocument: async () => '{}' },
+    capabilitiesReader: { readCapabilities: async () => [] },
+    registry: { readConnectorConfiguration: async (connector) => ({ held: false, connector }) },
+  };
+}
+
 function stubTestConnector(): TestConnectorControllerDependencies {
   return {
     readCapabilityByIdentity: async (name, version) => ({
@@ -279,10 +288,9 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     readConnectorConfiguration: stubReadConnectorConfiguration(),
     listConnectorConfigurations: stubListConnectorConfigurations(),
     testConnector: stubTestConnector(),
-    draftConnectorConfigurationFromOpenApi: {
+    draftConnectorConfigurationFromOpenApi: stubDraftConnectorConfigurationFromOpenApi(),
+    readOpenApiDocumentOperations: {
       documentFetcher: { fetchOpenApiDocument: async () => '{}' },
-      capabilitiesReader: { readCapabilities: async () => [] },
-      registry: { readConnectorConfiguration: async (connector) => ({ held: false, connector }) },
     },
   };
 }
@@ -557,6 +565,12 @@ const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
     method: 'POST',
     url: '/v1/draft-connector-configuration-from-openapi',
     payload: { connector: 'a-connector', link: 'a-link', path: '/a-path', method: 'GET' },
+  },
+  {
+    description: 'read-openapi-document-operations',
+    method: 'POST',
+    url: '/v1/read-openapi-document-operations',
+    payload: { link: 'a-link' },
   },
 ];
 

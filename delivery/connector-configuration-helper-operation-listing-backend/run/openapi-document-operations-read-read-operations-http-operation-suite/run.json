@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/openapi-document-operations-read-read-operations-http-operation-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 2400,
+  "outcome": "failed",
+  "failed_step": "typecheck",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-11T19:19:29.581+00:00",
+      "ended_at": "2026-09-11T19:19:43.231+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "failed",
+      "exit_code": 127,
+      "output": "typecheck.log",
+      "started_at": "2026-09-11T19:19:43.231+00:00",
+      "ended_at": "2026-09-11T19:19:43.654+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null,
+      "started_at": null,
+      "ended_at": null
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null,
+      "started_at": null,
+      "ended_at": null
+    },
+    {
+      "name": "test-unit",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null,
+      "started_at": null,
+      "ended_at": null
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null,
+      "started_at": null,
+      "ended_at": null
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -37,6 +37,8 @@ import type { ReadCapabilityByIdentityControllerDependencies } from './read-capa
 import { createReadCapabilityByIdentityRoutesPlugin } from './read-capability-by-identity.routes.js';
 import type { ReadCaseControllerDependencies } from './read-case.controller.js';
 import { createReadCaseRoutesPlugin } from './read-case.routes.js';
+import type { ReadOpenApiDocumentOperationsControllerDependencies } from './read-openapi-document-operations.controller.js';
+import { createReadOpenApiDocumentOperationsRoutesPlugin } from './read-openapi-document-operations.routes.js';
 import type { ReadConnectorConfigurationControllerDependencies } from './read-connector-configuration.controller.js';
 import { createReadConnectorConfigurationRoutesPlugin } from './read-connector-configuration.routes.js';
 import type { ReadConceptControllerDependencies } from './read-concept.controller.js';
@@ -95,6 +97,7 @@ export type BuildAppDependencies = {
   readonly registerConcept: RegisterConceptControllerDependencies;
   readonly registerConnector: RegisterConnectorControllerDependencies;
   readonly draftConnectorConfigurationFromOpenApi: DraftConnectorConfigurationFromOpenApiControllerDependencies;
+  readonly readOpenApiDocumentOperations: ReadOpenApiDocumentOperationsControllerDependencies;
 };
 
 const routePluginFactories: ReadonlyArray<
@@ -132,6 +135,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
   (dependencies) =>
     createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
 ];
 
 function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] {

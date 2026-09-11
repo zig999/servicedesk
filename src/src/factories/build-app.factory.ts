@@ -15,6 +15,7 @@ import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
 import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from '../http/draft-connector-configuration-from-openapi.controller.js';
+import type { ReadOpenApiDocumentOperationsControllerDependencies } from '../http/read-openapi-document-operations.controller.js';
 import type { SimulateCaseControllerDependencies } from '../http/simulate-case.controller.js';
 import type { SimulateHypothesisControllerDependencies } from '../http/simulate-hypothesis.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
@@ -154,6 +155,13 @@ function draftConnectorConfigurationFromOpenApiDependencies(
   return { draftConnectorConfigurationFromOpenApi: dependencies };
 }
 
+function readOpenApiDocumentOperationsDependencies(): Pick<BuildAppDependencies, 'readOpenApiDocumentOperations'> {
+  const dependencies: ReadOpenApiDocumentOperationsControllerDependencies = {
+    documentFetcher: new OpenApiDocumentFetcher(),
+  };
+  return { readOpenApiDocumentOperations: dependencies };
+}
+
 export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
   const { env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis } = inputs;
   const resources = composeResources(env, connection, caseQuery);
@@ -167,5 +175,6 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...registrationDependencies(resources),
     ...testConnectorDependencies(resources),
     ...draftConnectorConfigurationFromOpenApiDependencies(resources),
+    ...readOpenApiDocumentOperationsDependencies(),
   };
 }
