@@ -9,6 +9,13 @@
       "summary": "The Configuration Helper reads its named OpenAPI document's operations from the backend, offers them as the only way an operator names a path and a method, and states that read's own refusals."
     },
     {
+      "id": "epic/reconcile-orphaned-configuration-helper-tests",
+      "kind": "epic",
+      "file": "epic/reconcile-orphaned-configuration-helper-tests.md",
+      "title": "Reconcile orphaned Configuration Helper specs from a closed initiative",
+      "summary": "Three pre-existing spec files, delivered before this initiative, still drive the Configuration Helper through the free-text path/method inputs this initiative removed."
+    },
+    {
       "id": "inventory/connector-configuration-helper-operation-listing-frontend",
       "kind": "inventory",
       "file": "inventory/connector-configuration-helper-operation-listing-frontend.md",
@@ -46,6 +53,14 @@
       "title": "State a refused operations read to the operator",
       "summary": "A disclosure for the operations read's outcome, mirroring connector-configuration-draft-disclosure.ts, rendered in the helper's existing alert shape.",
       "epic": "connector-configuration-helper-operation-listing"
+    },
+    {
+      "id": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "kind": "task",
+      "file": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs.md",
+      "title": "Rewrite the three orphaned specs to drive the operation Select",
+      "summary": "connector-configuration-form-fields-configuration-helper.spec.ts, connector-configuration-form-fields-apply-confirmation.spec.ts and connector-configuration-create-screen-apply-draft.spec.ts choose an offered operation from the Select instead of typing a path or a method.",
+      "epic": "reconcile-orphaned-configuration-helper-tests"
     }
   ],
   "edges": [
@@ -138,6 +153,36 @@
       "to": "rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "epic/reconcile-orphaned-configuration-helper-tests",
+      "to": "domain/integration/openapi-operation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/reconcile-orphaned-configuration-helper-tests",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/reconcile-orphaned-configuration-helper-tests",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/reconcile-orphaned-configuration-helper-tests",
+      "to": "rules/integration/an-openapi-operations-method-is-upper-cased",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/reconcile-orphaned-configuration-helper-tests",
+      "to": "rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper",
+      "kind": "covers",
+      "at": "covers[4]"
     },
     {
       "from": "task/connector-configuration-helper-operation-listing/helper-operation-choice-state",
@@ -300,6 +345,12 @@
       "to": "rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
       "kind": "implements",
       "at": "implements[2]"
+    },
+    {
+      "from": "task/reconcile-orphaned-configuration-helper-tests/rewrite-orphaned-specs",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "implements",
+      "at": "implements[0]"
     }
   ]
 }
