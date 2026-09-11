@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state.md",
+      "title": "Carry the chosen operation in useConnectorConfigurationHelper's state",
+      "summary": "The helper hook now composes useOpenApiDocumentOperations over its own link, exposes the offered entries and their read outcome, and lets choosing an entry set the draft's path and method.",
+      "task": "task/connector-configuration-helper-operation-listing/helper-operation-choice-state"
+    },
+    {
       "id": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
       "kind": "implementation",
       "file": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read.md",
       "title": "Frontend hook reading an OpenAPI document's operations",
       "summary": "A new query-backed hook, useOpenApiDocumentOperations, calls the backend's read-openapi-document-operations route keyed by an operator-named link and exposes a closed outcome of operations, one of the named refusals (including a document declaring no version, told apart from a generic parse/version failure), or an unrecognised failure.",
       "task": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read"
+    },
+    {
+      "id": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "kind": "proof",
+      "file": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state.md",
+      "title": "Choosing an operation carries the fetched document's own pairing into the helper's draft",
+      "summary": "Tests over useConnectorConfigurationHelper prove the offered entries track the currently named link, choosing one names the draft's path and method, and the read's own outcome is exposed independently of the draft's -- plus one guard test over the implementation the task's second UNDERDETERMINED note names.",
+      "task": "task/connector-configuration-helper-operation-listing/helper-operation-choice-state"
     },
     {
       "id": "proof/connector-configuration-helper-operation-listing/openapi-document-operations-read",
@@ -19,6 +35,48 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "domain/integration/openapi-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "task/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
       "to": "domain/integration/openapi-operation",
@@ -83,6 +141,12 @@
       "from": "implementation/connector-configuration-helper-operation-listing/openapi-document-operations-read",
       "to": "task/connector-configuration-helper-operation-listing/openapi-document-operations-read",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "to": "implementation/connector-configuration-helper-operation-listing/helper-operation-choice-state",
+      "kind": "proves",
       "at": "the path"
     },
     {

@@ -17,6 +17,9 @@ function baseState(outcome: DraftConnectorConfigurationRequestOutcome): Connecto
   return {
     link: "",
     onLinkChange: () => {},
+    operations: [],
+    operationsOutcome: { kind: "idle" },
+    onChooseOperation: () => {},
     path: "",
     onPathChange: () => {},
     method: "",

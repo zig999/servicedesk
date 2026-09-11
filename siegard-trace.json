@@ -456,6 +456,10 @@
       "digest": "sha256:5f410ca953d391f649959a1ed759eb08afbe4363c0039f1d1451b65be50ddc21",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+        },
+        {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
           "digest": "sha256:f03d5df002c758b315e60bcb16bd05a641716d67a67f497880dc3058f11b4e59"
         },
@@ -1059,6 +1063,10 @@
       "node": "contracts/integration/openapi-document-operations",
       "digest": "sha256:b7bb5f14f95440c10eedda97d973d3b151a55842191d642481e16b46368e2a64",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+        },
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
@@ -2652,6 +2660,10 @@
       "digest": "sha256:2701761e940466db15d4e9a4c278fe7d94e95b8f6ff8a403cee266460a168248",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+        },
+        {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
         },
@@ -2665,6 +2677,10 @@
       "node": "domain/integration/openapi-operation",
       "digest": "sha256:b62651b189b7c205f164eb025456e4ee002b14ec28943ad0bf991d45dbacc085",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+        },
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
@@ -4953,6 +4969,10 @@
       "node": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
       "digest": "sha256:27c0d3e9f36f0ef60edcbe1da6319cb8c180b635ac6df9956af84b867e07d6a3",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+        },
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
@@ -7994,6 +8014,16 @@
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
           "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing",
+      "digest": "sha256:eceb08add2ca2b52fef6a86233469b4493def3c9c9316ae68061a6dbd242d955",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
         }
       ]
     },
