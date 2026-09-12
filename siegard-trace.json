@@ -5166,16 +5166,6 @@
       ]
     },
     {
-      "node": "rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap",
-      "digest": "sha256:b83faed9bbe7bfbc832dbd750d76bc4b85363c8abc53bf1ba6c8ca03f9b29bb2",
-      "files": [
-        {
-          "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
-        }
-      ]
-    },
-    {
       "node": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
       "digest": "sha256:ea69394bf2e460836b58fb88b7e1c58fb335dd9f4a6a59682bee3b20b466010e",
       "files": [
