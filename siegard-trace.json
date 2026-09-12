@@ -2541,7 +2541,11 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:36beea8bb688ecb68c293745e1ee9ca8cd3cd329ca2a2efb83e9766c0dd96821"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
+        },
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft-reading-notes.ts",
+          "digest": "sha256:da17d4c7a2209d785d5ddbe82a707696e04295d90c9c646fedd2531d077aca14"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
@@ -2614,6 +2618,10 @@
       "digest": "sha256:30b6dc91057aee5195adb11234bb0c37005504ea5c5dde1831804b39ca6ffdd1",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-draft-reading-notes.ts",
+          "digest": "sha256:da17d4c7a2209d785d5ddbe82a707696e04295d90c9c646fedd2531d077aca14"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
         }
@@ -2624,12 +2632,16 @@
       "digest": "sha256:c0bfcce7a49ae4ac99924cb6f3ede65febf06173435ddf9df60e7f8942c6eafb",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-draft-reading-notes.ts",
+          "digest": "sha256:da17d4c7a2209d785d5ddbe82a707696e04295d90c9c646fedd2531d077aca14"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         }
       ]
     },
@@ -5234,6 +5246,10 @@
       "digest": "sha256:b443d625db079d7b902e41fedbf54ae024b7d2cce03a51d0b6f31bd1860ec594",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-draft-reading-notes.ts",
+          "digest": "sha256:da17d4c7a2209d785d5ddbe82a707696e04295d90c9c646fedd2531d077aca14"
+        },
+        {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
         }
@@ -5899,7 +5915,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:b017ab7f4fdbd2d5b357ee111490335dbfb26f012030f702dc947532a962557a"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         }
       ]
     },

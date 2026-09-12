@@ -90,7 +90,7 @@ it(
       generated_credentials: [],
       status_readings: [],
       response_fields: [],
-      reading_notes: [],
+      reading_notes: [{ kind: 'no-responses-declared', subject: 'GET /widgets' }],
     });
   },
 );
@@ -117,7 +117,7 @@ it(
       generated_credentials: [],
       status_readings: [],
       response_fields: [],
-      reading_notes: [],
+      reading_notes: [{ kind: 'no-responses-declared', subject: 'GET /widgets' }],
       method_mismatch: { registered: 'POST', operation: 'GET' },
     });
   },

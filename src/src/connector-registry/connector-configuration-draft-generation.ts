@@ -14,10 +14,13 @@ import type {
   OpenApiOperationResponse,
   OpenApiSuccessResponseField,
 } from './openapi-operation-reader.js';
+import { draftedReadingNotes } from './connector-configuration-draft-reading-notes.js';
+import { lowestStatusSuccessFieldsOf } from './success-response-field-selection.js';
 import type { IOpenApiDocumentFetcher } from './openapi-document-fetcher.port.js';
 import type { ICapabilitiesReader } from './capabilities-reader.port.js';
 import type {
   ConnectorConfigurationDraft,
+  ConnectorConfigurationDraftReadingNote,
   ConnectorConfigurationDraftResponseField,
   ConnectorConfigurationDraftStatusReading,
   ConnectorConfigurationDraftUnresolvedItem,
@@ -86,9 +89,22 @@ export async function generateConnectorConfigurationDraft(
     generated_credentials: credentialPlacement.generatedCredentials,
     status_readings: draftedStatusReadings(reading.responses),
     response_fields: draftedResponseFields(reading.successResponseFields),
-    reading_notes: [],
+    reading_notes: draftedReadingNotesOf(reading, path),
     ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
   };
+}
+
+function draftedReadingNotesOf(
+  reading: OpenApiOperationReading,
+  path: string,
+): readonly ConnectorConfigurationDraftReadingNote[] {
+  return draftedReadingNotes({
+    method: reading.method,
+    path,
+    responses: reading.responses,
+    successResponseReadings: reading.successResponseReadings,
+    successResponseFields: reading.successResponseFields,
+  });
 }
 
 function draftedConfigurationText(input: DraftedConfigurationInput): string {
@@ -105,19 +121,6 @@ function draftedConfigurationText(input: DraftedConfigurationInput): string {
     responseMap: draftedResponseMap(reading.successResponseFields),
   };
   return JSON.stringify(configuration);
-}
-
-function lowestStatusSuccessFieldsOf(
-  fields: readonly OpenApiSuccessResponseField[],
-): readonly OpenApiSuccessResponseField[] {
-  const byName = new Map<string, OpenApiSuccessResponseField>();
-  for (const field of fields) {
-    const current = byName.get(field.name);
-    if (current === undefined || Number(field.status) < Number(current.status)) {
-      byName.set(field.name, field);
-    }
-  }
-  return [...byName.values()];
 }
 
 function draftedResponseMap(fields: readonly OpenApiSuccessResponseField[]): Readonly<Record<string, string>> {

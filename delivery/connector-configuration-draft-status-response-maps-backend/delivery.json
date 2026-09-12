@@ -10,6 +10,14 @@
       "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
     },
     {
+      "id": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/draft-reading-notes.md",
+      "title": "Draft reading notes for every exhibited condition",
+      "summary": "Populates ConnectorConfigurationDraft's reading_notes with one note per kind-and-subject pairing the chosen operation's responses exhibit, replacing the [] placeholder, across two new modules and an extended openapi-operation-reader.ts.",
+      "task": "task/connector-configuration-draft-maps/draft-reading-notes"
+    },
+    {
       "id": "implementation/connector-configuration-draft-maps/drafted-response-map",
       "kind": "implementation",
       "file": "implementation/connector-configuration-draft-maps/drafted-response-map.md",
@@ -56,6 +64,14 @@
       "title": "Draft disclosure type shapes proven at compile time",
       "summary": "Adds compile-time type assertions for the three new value-object shapes and the closed nine-kind reading-note vocabulary that the existing, mechanically widened tests do not already establish.",
       "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/draft-reading-notes",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/draft-reading-notes.md",
+      "title": "Draft reading notes for every exhibited condition -- proof",
+      "summary": "Proves reading_notes carries exactly one note per closed-vocabulary condition the chosen operation's responses exhibit, at the subject and cardinality the specification fixes, and none for a condition not exhibited.",
+      "task": "task/connector-configuration-draft-maps/draft-reading-notes"
     },
     {
       "id": "proof/connector-configuration-draft-maps/drafted-response-map",
@@ -132,6 +148,42 @@
     {
       "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
       "to": "task/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "task/connector-configuration-draft-maps/draft-reading-notes",
       "kind": "implements",
       "at": "the path"
     },
@@ -288,6 +340,12 @@
     {
       "from": "proof/connector-configuration-draft-maps/draft-disclosure-type",
       "to": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/draft-reading-notes",
+      "to": "implementation/connector-configuration-draft-maps/draft-reading-notes",
       "kind": "proves",
       "at": "the path"
     },

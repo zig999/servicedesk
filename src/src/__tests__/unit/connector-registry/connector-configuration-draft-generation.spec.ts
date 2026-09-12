@@ -856,3 +856,207 @@ it('propagates a failure the injected registry raises, rather than swallowing it
   expect(outcome).toBeInstanceOf(Error);
   expect((outcome as Error).message).toBe('the registry is unavailable');
 });
+
+it('drafts a default-response-not-drafted note naming the default key, alongside a valid success schema', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      default: {},
+      '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'default-response-not-drafted', subject: 'default' }]);
+});
+
+it('drafts one status-range-not-drafted note per range key declared', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '4XX': {},
+      '5XX': {},
+      '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([
+    { kind: 'status-range-not-drafted', subject: '4XX' },
+    { kind: 'status-range-not-drafted', subject: '5XX' },
+  ]);
+});
+
+it('reads a lower-case range key spelling as exhibiting status-range-not-drafted exactly as the upper-case wildcard would', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '2xx': {},
+      '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'status-range-not-drafted', subject: '2xx' }]);
+});
+
+it('reads a purely numeric key outside the 100-through-599 status bound as exhibiting status-range-not-drafted', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '600': {},
+      '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'status-range-not-drafted', subject: '600' }]);
+});
+
+it("names the response's own key as the subject of non-json-success-content-not-read, never its description or its media type", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { description: 'Widget list', content: { 'text/plain': {} } },
+      '201': { content: { 'application/json': { schema: { properties: { ok: {} } } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'non-json-success-content-not-read', subject: '200' }]);
+});
+
+it("names the response's own key as the subject of variants-united, never its description", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { content: { 'application/json': { schema: { properties: { ok: {} } } } } },
+      '201': {
+        description: 'Union response',
+        content: {
+          'application/json': { schema: { oneOf: [{ properties: { a: {} } }, { properties: { b: {} } }] } },
+        },
+      },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'variants-united', subject: '201' }]);
+});
+
+it('names the envelope property as the subject of envelope-read-through', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': { schema: { properties: { payload: { type: 'object', properties: { id: {} } } } } },
+        },
+      },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'envelope-read-through', subject: 'payload' }]);
+});
+
+it('carries exactly one envelope-read-through note when two success response schemas are read through an envelope property of the same name', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': { schema: { properties: { payload: { type: 'object', properties: { id: {} } } } } },
+        },
+      },
+      '201': {
+        content: {
+          'application/json': { schema: { properties: { payload: { type: 'object', properties: { other: {} } } } } },
+        },
+      },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'envelope-read-through', subject: 'payload' }]);
+});
+
+it("names the response's own key as the subject of success-schema-declares-no-properties, at the top level, never leaving it absent", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } },
+      '204': { description: 'No content', content: { 'application/json': { schema: { properties: {} } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([{ kind: 'success-schema-declares-no-properties', subject: '204' }]);
+});
+
+it('drafts success-schema-declares-no-properties at the envelope inner level too, alongside the envelope-read-through note for that same response', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': { schema: { properties: { payload: { type: 'object', properties: {} } } } },
+        },
+      },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([
+    { kind: 'envelope-read-through', subject: 'payload' },
+    { kind: 'success-schema-declares-no-properties', subject: '200' },
+  ]);
+});
+
+it("names the operation's own method upper-cased followed by its path as the subject of no-responses-declared, never the connector's name, an operationId or a lower-cased method", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    options({
+      method: 'get',
+      documentFetcher: fetcherFor({
+        openapi: '3.0.0',
+        paths: { '/widgets': { get: { operationId: 'listWidgets' } } },
+      }),
+    }),
+  );
+
+  expect(draft.reading_notes).toHaveLength(1);
+  const [note] = draft.reading_notes;
+  expect(note.kind).toBe('no-responses-declared');
+  expect(note.subject.startsWith('GET')).toBe(true);
+  expect(note.subject.endsWith('/widgets')).toBe(true);
+  expect(note.subject).not.toContain('erp-http');
+  expect(note.subject).not.toContain('listWidgets');
+  expect(note.subject).not.toContain('get /widgets');
+});
+
+it('drafts a no-success-response-schema note naming the operation itself when the responses declare no success response schema under application/json', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '404': {} }));
+
+  expect(draft.reading_notes).toHaveLength(1);
+  const [note] = draft.reading_notes;
+  expect(note.kind).toBe('no-success-response-schema');
+  expect(note.subject.startsWith('GET')).toBe(true);
+  expect(note.subject.endsWith('/widgets')).toBe(true);
+});
+
+it('names every not-drafted path for a repeated field name, each beside the ascending success status it was read from, none of them left out', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } },
+      '201': {
+        content: {
+          'application/json': { schema: { properties: { wrapA: { type: 'object', properties: { id: {} } } } } },
+        },
+      },
+      '202': {
+        content: {
+          'application/json': { schema: { properties: { wrapB: { type: 'object', properties: { id: {} } } } } },
+        },
+      },
+    }),
+  );
+
+  const repeatedNotes = draft.reading_notes.filter((note) => note.kind === 'repeated-field-name-path-not-taken');
+  expect(repeatedNotes).toHaveLength(1);
+  const [note] = repeatedNotes;
+  expect(note.subject).toBe('id');
+  const detail = note.detail ?? '';
+  expect(detail).toContain('wrapA.id');
+  expect(detail).toContain('wrapB.id');
+  expect(detail.indexOf('wrapA.id')).toBeLessThan(detail.indexOf('wrapB.id'));
+});
+
+it('carries an empty reading-notes list for an operation exhibiting none of these conditions', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { content: { 'application/json': { schema: { properties: { id: {}, name: {} } } } } },
+    }),
+  );
+
+  expect(draft.reading_notes).toEqual([]);
+});

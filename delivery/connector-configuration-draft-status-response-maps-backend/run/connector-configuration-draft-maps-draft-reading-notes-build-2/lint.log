@@ -1,0 +1,11 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/src/src/connector-registry/openapi-operation-reader.ts
+  266:1  error  Function 'directSchemaReading' has too many parameters (4). Maximum allowed is 3     max-params
+  281:1  error  Function 'envelopedSchemaReading' has too many parameters (5). Maximum allowed is 3  max-params
+
+✖ 2 problems (2 errors, 0 warnings)
+

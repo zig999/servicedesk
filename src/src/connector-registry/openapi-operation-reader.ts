@@ -40,6 +40,14 @@ export type OpenApiSuccessResponseField = {
   readonly envelope?: string;
 };
 
+export type OpenApiSuccessResponseReading = {
+  readonly key: string;
+  readonly hasJsonContent: boolean;
+  readonly variantsUnited: boolean;
+  readonly declaresNoProperties: boolean;
+  readonly envelope?: string;
+};
+
 export type OpenApiOperationReading = {
   readonly method: string;
   readonly parameters: readonly OpenApiOperationParameter[];
@@ -48,6 +56,7 @@ export type OpenApiOperationReading = {
   readonly serversInEffect: readonly string[];
   readonly responses: readonly OpenApiOperationResponse[];
   readonly successResponseFields: readonly OpenApiSuccessResponseField[];
+  readonly successResponseReadings: readonly OpenApiSuccessResponseReading[];
 };
 
 type OperationEntry = {
@@ -72,6 +81,7 @@ export function readOpenApiOperation(documentText: string, path: string, method:
     serversInEffect: serversInEffectOf(pathItem, operation, document),
     responses: responsesOf(document, operation),
     successResponseFields: successResponseFieldsOf(document, operation),
+    successResponseReadings: successResponseReadingsOf(document, operation),
   };
 }
 
@@ -192,34 +202,107 @@ function successResponseFieldsAt(
   const content = isPlainObject(response) ? response.content : undefined;
   const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
   const schema = isPlainObject(mediaType) ? resolveRef(document, mediaType.schema) : undefined;
-  return isPlainObject(schema) ? schemaFieldsAt(document, schema, status) : [];
+  return isPlainObject(schema) ? schemaReadingAt(document, schema, status).fields : [];
 }
 
-function schemaFieldsAt(
+function successResponseReadingsOf(
   document: PlainObject,
-  schema: PlainObject,
-  status: string,
-): readonly OpenApiSuccessResponseField[] {
-  const merged = mergedSchemaProperties(schemaPropertySources(document, schema));
+  operation: PlainObject,
+): readonly OpenApiSuccessResponseReading[] {
+  const responses = operation.responses;
+  if (!isPlainObject(responses)) {
+    return [];
+  }
+  return Object.keys(responses)
+    .filter(isSuccessStatusKey)
+    .map((key) => successResponseReadingAt(document, key, responses[key]));
+}
+
+function successResponseReadingAt(
+  document: PlainObject,
+  key: string,
+  rawResponse: unknown,
+): OpenApiSuccessResponseReading {
+  const response = resolveRef(document, rawResponse);
+  const content = isPlainObject(response) ? response.content : undefined;
+  const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
+  if (!isPlainObject(mediaType)) {
+    return { key, hasJsonContent: false, variantsUnited: false, declaresNoProperties: false };
+  }
+  const schema = resolveRef(document, mediaType.schema);
+  if (!isPlainObject(schema)) {
+    return { key, hasJsonContent: true, variantsUnited: false, declaresNoProperties: true };
+  }
+  const reading = schemaReadingAt(document, schema, key);
+  return {
+    key,
+    hasJsonContent: true,
+    variantsUnited: reading.variantsUnited,
+    declaresNoProperties: reading.declaresNoProperties,
+    ...(reading.envelope === undefined ? {} : { envelope: reading.envelope }),
+  };
+}
+
+type SchemaReading = {
+  readonly fields: readonly OpenApiSuccessResponseField[];
+  readonly variantsUnited: boolean;
+  readonly declaresNoProperties: boolean;
+  readonly envelope?: string;
+};
+
+function schemaReadingAt(document: PlainObject, schema: PlainObject, status: string): SchemaReading {
+  const combinatorKind = combinatorKindOf(schema);
+  const variantsUnited = combinatorKind === 'oneOf' || combinatorKind === 'anyOf';
+  const merged = mergedSchemaProperties(schemaPropertySources(document, schema, combinatorKind));
   const topLevelNames = Object.keys(merged.properties);
   const envelopeSchema =
     topLevelNames.length === 1 ? envelopeSchemaOf(document, merged.properties[topLevelNames[0]]) : undefined;
   if (envelopeSchema === undefined) {
-    return topLevelNames.map((name) =>
-      responseField({ name, propertySchema: merged.properties[name], requiredNames: merged.requiredNames, status }),
-    );
+    return directSchemaReading({ merged, topLevelNames, status, variantsUnited });
   }
-  const envelope = topLevelNames[0];
+  return envelopedSchemaReading({ document, envelopeSchema, envelope: topLevelNames[0], status, variantsUnited });
+}
+
+function directSchemaReading(input: {
+  readonly merged: MergedSchemaProperties;
+  readonly topLevelNames: readonly string[];
+  readonly status: string;
+  readonly variantsUnited: boolean;
+}): SchemaReading {
+  const { merged, topLevelNames, status, variantsUnited } = input;
+  return {
+    fields: topLevelNames.map((name) =>
+      responseField({ name, propertySchema: merged.properties[name], requiredNames: merged.requiredNames, status }),
+    ),
+    variantsUnited,
+    declaresNoProperties: topLevelNames.length === 0,
+  };
+}
+
+function envelopedSchemaReading(input: {
+  readonly document: PlainObject;
+  readonly envelopeSchema: PlainObject;
+  readonly envelope: string;
+  readonly status: string;
+  readonly variantsUnited: boolean;
+}): SchemaReading {
+  const { document, envelopeSchema, envelope, status, variantsUnited } = input;
   const enveloped = mergedSchemaProperties(schemaPropertySources(document, envelopeSchema));
-  return Object.keys(enveloped.properties).map((name) =>
-    responseField({
-      name,
-      propertySchema: enveloped.properties[name],
-      requiredNames: enveloped.requiredNames,
-      status,
-      envelope,
-    }),
-  );
+  const envelopedNames = Object.keys(enveloped.properties);
+  return {
+    fields: envelopedNames.map((name) =>
+      responseField({
+        name,
+        propertySchema: enveloped.properties[name],
+        requiredNames: enveloped.requiredNames,
+        status,
+        envelope,
+      }),
+    ),
+    variantsUnited,
+    declaresNoProperties: envelopedNames.length === 0,
+    envelope,
+  };
 }
 
 function envelopeSchemaOf(document: PlainObject, propertySchema: unknown): PlainObject | undefined {
@@ -227,12 +310,28 @@ function envelopeSchemaOf(document: PlainObject, propertySchema: unknown): Plain
   return isPlainObject(resolved) && Object.prototype.hasOwnProperty.call(resolved, 'properties') ? resolved : undefined;
 }
 
-function schemaPropertySources(document: PlainObject, schema: PlainObject): readonly PlainObject[] {
-  const combinator = schema.allOf ?? schema.oneOf ?? schema.anyOf;
-  if (!Array.isArray(combinator)) {
+type SchemaCombinatorKind = 'allOf' | 'oneOf' | 'anyOf';
+
+function combinatorKindOf(schema: PlainObject): SchemaCombinatorKind | undefined {
+  if (Array.isArray(schema.allOf)) {
+    return 'allOf';
+  }
+  if (Array.isArray(schema.oneOf)) {
+    return 'oneOf';
+  }
+  return Array.isArray(schema.anyOf) ? 'anyOf' : undefined;
+}
+
+function schemaPropertySources(
+  document: PlainObject,
+  schema: PlainObject,
+  combinatorKind: SchemaCombinatorKind | undefined = combinatorKindOf(schema),
+): readonly PlainObject[] {
+  if (combinatorKind === undefined) {
     return [schema];
   }
-  return combinator.map((part) => resolveRef(document, part)).filter(isPlainObject);
+  const combinator = schema[combinatorKind];
+  return (combinator as readonly unknown[]).map((part) => resolveRef(document, part)).filter(isPlainObject);
 }
 
 type MergedSchemaProperties = {
