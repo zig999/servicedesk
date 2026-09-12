@@ -4346,4 +4346,40 @@ entries:
     document nothing has yet found fault with, and is the more surely misled here because
     a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing leaves them no other way to name
     an operation, so a premature refusal reads to them as a document with nothing to offer.
+- location: rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed.md
+  field: statement
+  unstated: No node states whether a path a fetched OpenAPI document's paths object declares as a $ref to a reusable
+    path item, rather than as an inline path item, contributes the operations that path item declares to the operations
+    the document declares, or contributes none.
+  decided: 'A path declared in the paths object as a $ref is read through to the path item it targets, including
+    one under #/components/pathItems, before the operations under that path are read, so those operations are among
+    the ones the document declares exactly as if the path item stood inline.'
+  why: OpenAPI 3.x itself fixes a $ref as the declaration it targets read as though written where the reference
+    sits, so a paths entry read as its literal keys is a reading of a document other than the one the operator named
+    -- the same standing already given a $ref at a parameter, a request-body schema and a security scheme.
+- location: rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read.md
+  field: statement
+  unstated: No node states what the read of an OpenAPI document's operations does with a path whose paths-object
+    entry declares a $ref the document has no target for, or whose target is not a path item. an-unfetchable-openapi-link-refuses-the-operations-read
+    and a-malformed-or-unsupported-openapi-document-refuses-the-operations-read hold their refusals against the
+    fetched document as a whole at the fetch and parse stages and say nothing of a single path within a document
+    that parsed and declares OpenAPI 3.x; an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    states the status and error value of those same two refusals only; a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    reads a $ref through to the declaration it targets for the draft operation alone and is silent on a reference
+    that targets nothing; and domain/integration/openapi-document-operations declares what a fetched document's
+    operations are without saying which paths contribute one.
+  decided: The read contributes no operation for that path and is not refused on account of it, answering with the
+    operations the document's other paths declare -- recorded as a new invariant over domain/integration/openapi-document-operations.
+  why: 'Both refusals this read has are conditions of the document as a whole, decided before any path is read --
+    a link that never answered, and text that does not parse or does not declare OpenAPI 3.x -- and a document that
+    passed both is not made unreadable by one stale reference inside it. Refusing the whole read would deny the
+    operator every operation the document does declare and, since a-refused-operations-read-states-its-refusal-to-the-operator
+    gives them only "the link could not be fetched" or "the document could not be read as OpenAPI 3.x" and a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    leaves them no other way to name an operation, would send them to correct a link or a document that was not
+    at fault. Listing nothing rather than a partial entry follows from domain/integration/openapi-operation being
+    a path together with a method: a reference naming no path item declares no method, so an entry for it would
+    offer a choice no draft request could be made from. The reading matches an-openapi-document-declaring-no-such-operation-refuses-the-draft,
+    which already treats a paths entry declaring no operation as an operation the document does not declare rather
+    than as a document that cannot be read.'
+
 ---

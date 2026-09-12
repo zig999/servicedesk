@@ -1,0 +1,112 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/openapi-document-operations-ref-resolution",
+      "kind": "epic",
+      "file": "epic/openapi-document-operations-ref-resolution.md",
+      "title": "operationsAt() resolves a path-item-level $ref before listing operations",
+      "summary": "Bring readOpenApiDocumentOperations back into agreement with the single-operation read: a path declared via $ref to a reusable path item contributes its operations, not zero of them."
+    },
+    {
+      "id": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "kind": "task",
+      "file": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref.md",
+      "title": "operationsAt() resolves a path-item-level $ref before listing operations",
+      "summary": "Bring readOpenApiDocumentOperations back into agreement with the single-operation read for a path declared via a path-item-level $ref, and remove a duplicated isPlainObject helper along the way.",
+      "epic": "openapi-document-operations-ref-resolution"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "domain/integration/openapi-operation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "rules/integration/an-openapi-operations-method-is-upper-cased",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "scenarios/integration/a-swagger-2-document-refuses-the-operations-read",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/openapi-document-operations-ref-resolution",
+      "to": "rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "domain/integration/openapi-operation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}

@@ -4970,6 +4970,42 @@ entries:
     document nothing has yet found fault with, and is the more surely misled here because
     a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing leaves them no other way to name
     an operation, so a premature refusal reads to them as a document with nothing to offer.
+- location: rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed.md
+  field: statement
+  unstated: No node states whether a path a fetched OpenAPI document's paths object declares as a $ref to a reusable
+    path item, rather than as an inline path item, contributes the operations that path item declares to the operations
+    the document declares, or contributes none.
+  decided: 'A path declared in the paths object as a $ref is read through to the path item it targets, including
+    one under #/components/pathItems, before the operations under that path are read, so those operations are among
+    the ones the document declares exactly as if the path item stood inline.'
+  why: OpenAPI 3.x itself fixes a $ref as the declaration it targets read as though written where the reference
+    sits, so a paths entry read as its literal keys is a reading of a document other than the one the operator named
+    -- the same standing already given a $ref at a parameter, a request-body schema and a security scheme.
+- location: rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read.md
+  field: statement
+  unstated: No node states what the read of an OpenAPI document's operations does with a path whose paths-object
+    entry declares a $ref the document has no target for, or whose target is not a path item. an-unfetchable-openapi-link-refuses-the-operations-read
+    and a-malformed-or-unsupported-openapi-document-refuses-the-operations-read hold their refusals against the
+    fetched document as a whole at the fetch and parse stages and say nothing of a single path within a document
+    that parsed and declares OpenAPI 3.x; an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    states the status and error value of those same two refusals only; a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    reads a $ref through to the declaration it targets for the draft operation alone and is silent on a reference
+    that targets nothing; and domain/integration/openapi-document-operations declares what a fetched document's
+    operations are without saying which paths contribute one.
+  decided: The read contributes no operation for that path and is not refused on account of it, answering with the
+    operations the document's other paths declare -- recorded as a new invariant over domain/integration/openapi-document-operations.
+  why: 'Both refusals this read has are conditions of the document as a whole, decided before any path is read --
+    a link that never answered, and text that does not parse or does not declare OpenAPI 3.x -- and a document that
+    passed both is not made unreadable by one stale reference inside it. Refusing the whole read would deny the
+    operator every operation the document does declare and, since a-refused-operations-read-states-its-refusal-to-the-operator
+    gives them only "the link could not be fetched" or "the document could not be read as OpenAPI 3.x" and a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    leaves them no other way to name an operation, would send them to correct a link or a document that was not
+    at fault. Listing nothing rather than a partial entry follows from domain/integration/openapi-operation being
+    a path together with a method: a reference naming no path item declares no method, so an entry for it would
+    offer a choice no draft request could be made from. The reading matches an-openapi-document-declaring-no-such-operation-refuses-the-draft,
+    which already treats a paths entry declaring no operation as an operation the document does not declare rather
+    than as a document that cannot be read.'
+
 ---
 
 === domain/glossary/_context
@@ -7541,6 +7577,29 @@ a-malformed-or-unsupported-openapi-document-refuses-the-draft gives the draft op
 
 A document that parses but declares no version at all names that absence here too, at that same parse stage: no version stands to be named and nothing failed to parse, and the operator whose link answered something that is not an OpenAPI document at all has a different next act from the one whose link answered a 2.0 document.
 
+=== rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed
+---
+type: invariant
+statement: >-
+  A path a fetched OpenAPI document's paths object declares as a $ref in place of stating a
+  path item directly is read through to the path item that reference targets -- including one
+  held under #/components/pathItems -- before the operations declared under that path are
+  read, so those operations are among the operations the document declares exactly as if the
+  path item had been stated inline.
+constrains:
+  - domain/integration/openapi-document-operations
+---
+
+## Description
+
+What a $ref stands for is fixed by OpenAPI 3.x itself and is not a reading this specification is free to choose either way: a reference names a declaration to be read exactly as if it stood written where the reference sits. A path read instead as the literal keys it carries has one key, `$ref`, which names no HTTP method, so the path contributes nothing — not a narrower reading of the operator's document but a reading of a different document, one in which the operator's own declared operations are absent.
+
+`a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs` already reads a $ref through at a parameter, a request-body schema and a security scheme for the sibling draft operation, and says nothing of a reference standing at the path itself, which is one level above everything it reaches; the read that lists a document's operations meets that reference before any parameter is reached, so it is stated here.
+
+What is lost when the reference is not followed falls on the operator rather than on any caller. `a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing` leaves them no way to name an operation but from this listing, and a path that silently contributes none is indistinguishable to them from a document declaring none there — no refusal is due, since `a-malformed-or-unsupported-openapi-document-refuses-the-operations-read` refuses documents that do not parse or do not declare OpenAPI 3.x, and a document declaring a path by reference is a well-formed one.
+
+Home is a new invariant over `domain/integration/openapi-document-operations`, the element that holds every operation a fetched document declares: this states what "declares" reaches, and adds no attribute, publishes no operation and refuses no call.
+
 === rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
 ---
 type: policy
@@ -8756,6 +8815,36 @@ consistency: eventual
 A capability may be registered before its connector is ever configured (domain/integration/connector-configuration), so an investigation can reach a concept whose call cannot be assembled.
 The absence of data is a recorded fact and never an exception (domain/investigation/evidence), so what the investigation records is an ending that names its cause, not a fault that aborts the stage.
 A placeholder resolving to nothing joins these three for the same reason each already degrades rather than faults: for a diagnose, with a-diagnosed-subject-covers-its-cases-required-attributes refusing at the door whatever a case's own derived requirements demand, what still reaches a call unresolved here is always something optional — an attribute the capability's own input schema does not require, a required one its registration under-declared (a-connector-placeholder-is-declared-by-its-capability catches that at the write it escaped), or a credential's environment variable absent from configuration. For a simulate-case or simulate-hypothesis call, no such door stands (a-simulated-subject-missing-a-requirement-degrades-not-refuses), so a required attribute's own absence can reach this same ending too — a fact of data or configuration either way, exactly the class this rule already resolves as a recorded ending rather than a fault that aborts the stage.
+
+=== rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read
+---
+type: invariant
+statement: >-
+  Where a path in a fetched OpenAPI document's paths object declares a $ref that names no
+  target in that document, or names a target that is not a path item, the read of that
+  document's operations contributes no operation for that path and is not refused on account
+  of it, answering with the operations the document's other paths declare.
+expression: >-
+  For a request to read the operations of a document that was fetched, parses and declares
+  OpenAPI 3.x: where an entry of that document's paths object declares a $ref whose target
+  the document does not hold, or whose target is not a path item, the answered
+  openapi-document-operations holds no openapi-operation carrying that path, the request is
+  not refused on account of that entry — neither as OpenApiDocumentNotFetchedError nor as
+  OpenApiDocumentNotReadableError — and every openapi-operation the document's other paths
+  declare is answered as it stands.
+constrains:
+  - domain/integration/openapi-document-operations
+---
+
+## Description
+
+This read's two refusals are both held against the document as a whole and both before any path is looked at: `an-unfetchable-openapi-link-refuses-the-operations-read` refuses a link that answered nothing or answered outside 2xx, and `a-malformed-or-unsupported-openapi-document-refuses-the-operations-read` refuses text that does not parse, that parses as something other than an OpenAPI document, or that declares a version other than OpenAPI 3.x — at the parse stage, on the document's own terms. A document that was received, parses and declares 3.x has passed both, and one of its paths pointing at a target the document does not hold is not a further version of either condition.
+
+Refusing the whole read for it would take from the operator every operation the document does declare. `a-refused-operations-read-states-its-refusal-to-the-operator` states a refusal as either a link that could not be fetched or a document that could not be read as OpenAPI 3.x, and `a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing` leaves that operator no other way to name an operation: told the document is unreadable when every other path in it lists perfectly well, they go and correct a link or a document that was not what was wrong, and a document with one stale reference becomes a document nothing can be drafted from.
+
+Nothing is listed for that path either, because there is nothing to list. `domain/integration/openapi-operation` is a path together with the HTTP method the document declares an operation under, and a reference naming no path item declares no method at all; an entry carrying the path with no method, or with the reference text in the method's place, would offer the operator a choice that `contracts/integration/connector-configuration-draft`'s draft request cannot be made from. `an-openapi-document-declaring-no-such-operation-refuses-the-draft` already reads a paths entry that declares no operation for a method as an operation the document does not declare rather than as a document that cannot be read, and the same reading is taken here — the listing simply has no per-path refusal to take, being the call that produces the pairings rather than one naming a pairing.
+
+This states nothing about a $ref that does name a path item the document holds.
 
 === rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
 ---
