@@ -510,3 +510,301 @@ it('classifies a digits-only response key outside 100 through 599 as a range key
   expect(kinds).toEqual(new Set(['range']));
   expect(reading.responses).toHaveLength(2);
 });
+
+it('yields a field named and pathed for each of three top-level properties a success response schema declares', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': {
+              content: {
+                'application/json': {
+                  schema: {
+                    properties: { id: { type: 'string' }, name: { type: 'string' }, active: { type: 'boolean' } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const namesAndPaths = reading.successResponseFields.map((field) => ({ name: field.name, path: field.path }));
+  expect(namesAndPaths).toEqual([
+    { name: 'id', path: 'id' },
+    { name: 'name', path: 'name' },
+    { name: 'active', path: 'active' },
+  ]);
+  expect(reading.successResponseFields).toHaveLength(3);
+});
+
+it("carries the type each field's own schema declares, and omits declaredType entirely where the schema declares none", () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': {
+              content: { 'application/json': { schema: { properties: { id: { type: 'string' }, extra: {} } } } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const idField = reading.successResponseFields.find((field) => field.name === 'id');
+  const extraField = reading.successResponseFields.find((field) => field.name === 'extra');
+  expect(idField?.declaredType).toBe('string');
+  expect(Object.prototype.hasOwnProperty.call(extraField, 'declaredType')).toBe(false);
+});
+
+it("carries whether a schema's required list names each field, true for a named field and false for one it omits", () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': {
+              content: {
+                'application/json': {
+                  schema: { properties: { a: { type: 'string' }, b: { type: 'string' } }, required: ['a'] },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const aField = reading.successResponseFields.find((field) => field.name === 'a');
+  const bField = reading.successResponseFields.find((field) => field.name === 'b');
+  expect(aField?.declaredRequired).toBe(true);
+  expect(bField?.declaredRequired).toBe(false);
+});
+
+it('leaves declaredRequired absent, never false, for a field whose success response schema declares no required list at all', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': { content: { 'application/json': { schema: { properties: { a: { type: 'string' } } } } } },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const aField = reading.successResponseFields.find((field) => field.name === 'a');
+  expect(Object.prototype.hasOwnProperty.call(aField, 'declaredRequired')).toBe(false);
+});
+
+it('carries the success status of the response each field was read from, distinguishing fields read from different statuses', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': { content: { 'application/json': { schema: { properties: { a: { type: 'string' } } } } } },
+            '201': { content: { 'application/json': { schema: { properties: { b: { type: 'string' } } } } } },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const aField = reading.successResponseFields.find((field) => field.name === 'a');
+  const bField = reading.successResponseFields.find((field) => field.name === 'b');
+  expect(aField?.status).toBe('200');
+  expect(bField?.status).toBe('201');
+});
+
+it('yields no field for a success response whose content declares a media type other than application/json', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': { content: { 'application/xml': { schema: { properties: { a: { type: 'string' } } } } } },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.successResponseFields).toEqual([]);
+});
+
+it('yields no field for a success response declaring no content at all', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': { description: 'ok' } } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.successResponseFields).toEqual([]);
+});
+
+it('reads a success response and its schema reached through $refs into fields, the same as if declared inline', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: { responses: { '200': { $ref: '#/components/responses/Widget' } } },
+      },
+    },
+    components: {
+      responses: {
+        Widget: { content: { 'application/json': { schema: { $ref: '#/components/schemas/WidgetBody' } } } },
+      },
+      schemas: {
+        WidgetBody: { properties: { serial: { type: 'string' } } },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.successResponseFields).toEqual([
+    { name: 'serial', path: 'serial', status: '200', declaredType: 'string' },
+  ]);
+});
+
+it('refuses (as OpenApiDocumentNotReadableError) a success response schema whose $ref chain cycles back to itself', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: { '200': { content: { 'application/json': { schema: { $ref: '#/components/schemas/A' } } } } },
+        },
+      },
+    },
+    components: {
+      schemas: {
+        A: { $ref: '#/components/schemas/B' },
+        B: { $ref: '#/components/schemas/A' },
+      },
+    },
+  });
+
+  const error = readableErrorThrownBy(() => readOpenApiOperation(documentText, '/widgets', 'get'));
+
+  expect(error.context.kind).toBe('unparseable');
+});
+
+it('merges the properties of every allOf part into one set of fields', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': {
+              content: {
+                'application/json': {
+                  schema: { allOf: [{ properties: { a: { type: 'string' } } }, { properties: { b: { type: 'string' } } }] },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const names = reading.successResponseFields.map((field) => field.name).sort();
+  expect(names).toEqual(['a', 'b']);
+});
+
+it('unites the properties of every oneOf variant into one set of fields', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': {
+              content: {
+                'application/json': {
+                  schema: { oneOf: [{ properties: { a: { type: 'string' } } }, { properties: { b: { type: 'string' } } }] },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const names = reading.successResponseFields.map((field) => field.name).sort();
+  expect(names).toEqual(['a', 'b']);
+});
+
+it('yields no field for a success response schema declaring no properties object', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: { responses: { '200': { content: { 'application/json': { schema: { type: 'object' } } } } } },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.successResponseFields).toEqual([]);
+});
+
+it('contributes fields only from response keys within 200 through 299, excluding a status just outside the range, a default key and a range key', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '199': { content: { 'application/json': { schema: { properties: { tooLow: { type: 'string' } } } } } },
+            '200': { content: { 'application/json': { schema: { properties: { lowBoundary: { type: 'string' } } } } } },
+            '299': { content: { 'application/json': { schema: { properties: { highBoundary: { type: 'string' } } } } } },
+            '300': { content: { 'application/json': { schema: { properties: { tooHigh: { type: 'string' } } } } } },
+            default: { content: { 'application/json': { schema: { properties: { defaultField: { type: 'string' } } } } } },
+            '2XX': { content: { 'application/json': { schema: { properties: { rangeField: { type: 'string' } } } } } },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const names = reading.successResponseFields.map((field) => field.name).sort();
+  expect(names).toEqual(['highBoundary', 'lowBoundary']);
+});

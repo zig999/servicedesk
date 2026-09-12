@@ -31,6 +31,14 @@ export type OpenApiOperationResponse = {
   readonly description?: string;
 };
 
+export type OpenApiSuccessResponseField = {
+  readonly name: string;
+  readonly path: string;
+  readonly status: string;
+  readonly declaredType?: string;
+  readonly declaredRequired?: boolean;
+};
+
 export type OpenApiOperationReading = {
   readonly method: string;
   readonly parameters: readonly OpenApiOperationParameter[];
@@ -38,6 +46,7 @@ export type OpenApiOperationReading = {
   readonly requiredSecuritySchemes: readonly OpenApiRequiredSecurityScheme[];
   readonly serversInEffect: readonly string[];
   readonly responses: readonly OpenApiOperationResponse[];
+  readonly successResponseFields: readonly OpenApiSuccessResponseField[];
 };
 
 type OperationEntry = {
@@ -61,6 +70,7 @@ export function readOpenApiOperation(documentText: string, path: string, method:
     requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
     serversInEffect: serversInEffectOf(pathItem, operation, document),
     responses: responsesOf(document, operation),
+    successResponseFields: successResponseFieldsOf(document, operation),
   };
 }
 
@@ -153,6 +163,94 @@ function responseKeyKind(key: string): OpenApiResponseKeyKind {
     return 'default';
   }
   return /^[1-5][0-9]{2}$/.test(key) ? 'status' : 'range';
+}
+
+function isSuccessStatusKey(key: string): boolean {
+  return responseKeyKind(key) === 'status' && key.startsWith('2');
+}
+
+function successResponseFieldsOf(
+  document: PlainObject,
+  operation: PlainObject,
+): readonly OpenApiSuccessResponseField[] {
+  const responses = operation.responses;
+  if (!isPlainObject(responses)) {
+    return [];
+  }
+  return Object.keys(responses)
+    .filter(isSuccessStatusKey)
+    .flatMap((status) => successResponseFieldsAt(document, status, responses[status]));
+}
+
+function successResponseFieldsAt(
+  document: PlainObject,
+  status: string,
+  rawResponse: unknown,
+): readonly OpenApiSuccessResponseField[] {
+  const response = resolveRef(document, rawResponse);
+  const content = isPlainObject(response) ? response.content : undefined;
+  const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
+  const schema = isPlainObject(mediaType) ? resolveRef(document, mediaType.schema) : undefined;
+  return isPlainObject(schema) ? schemaFieldsAt(document, schema, status) : [];
+}
+
+function schemaFieldsAt(
+  document: PlainObject,
+  schema: PlainObject,
+  status: string,
+): readonly OpenApiSuccessResponseField[] {
+  const merged = mergedSchemaProperties(schemaPropertySources(document, schema));
+  return Object.keys(merged.properties).map((name) =>
+    responseField({ name, propertySchema: merged.properties[name], requiredNames: merged.requiredNames, status }),
+  );
+}
+
+function schemaPropertySources(document: PlainObject, schema: PlainObject): readonly PlainObject[] {
+  const combinator = schema.allOf ?? schema.oneOf ?? schema.anyOf;
+  if (!Array.isArray(combinator)) {
+    return [schema];
+  }
+  return combinator.map((part) => resolveRef(document, part)).filter(isPlainObject);
+}
+
+type MergedSchemaProperties = {
+  readonly properties: PlainObject;
+  readonly requiredNames: readonly string[] | undefined;
+};
+
+function mergedSchemaProperties(parts: readonly PlainObject[]): MergedSchemaProperties {
+  const properties: Record<string, unknown> = {};
+  let requiredNames: string[] | undefined;
+  for (const part of parts) {
+    if (isPlainObject(part.properties)) {
+      Object.assign(properties, part.properties);
+    }
+    if (Array.isArray(part.required)) {
+      requiredNames = [...(requiredNames ?? []), ...part.required.filter(isStringValue)];
+    }
+  }
+  return { properties, requiredNames };
+}
+
+function isStringValue(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function declaredTypeOf(propertySchema: unknown): string | undefined {
+  return isPlainObject(propertySchema) && typeof propertySchema.type === 'string' ? propertySchema.type : undefined;
+}
+
+function responseField(input: {
+  readonly name: string;
+  readonly propertySchema: unknown;
+  readonly requiredNames: readonly string[] | undefined;
+  readonly status: string;
+}): OpenApiSuccessResponseField {
+  const { name, propertySchema, requiredNames, status } = input;
+  const declaredType = declaredTypeOf(propertySchema);
+  const declaredRequired = requiredNames === undefined ? undefined : requiredNames.includes(name);
+  const withType = declaredType === undefined ? { name, path: name, status } : { name, path: name, status, declaredType };
+  return declaredRequired === undefined ? withType : { ...withType, declaredRequired };
 }
 
 function requiredSecuritySchemesOf(

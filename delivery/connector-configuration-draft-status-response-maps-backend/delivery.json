@@ -10,12 +10,28 @@
       "task": "task/connector-configuration-draft-maps/openapi-responses-reading"
     },
     {
+      "id": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/success-response-schema-fields.md",
+      "title": "Success response schema field reading in the OpenAPI operation reader",
+      "summary": "openapi-operation-reader.ts now exposes, per operation, the top-level application/json fields of every success (200-299) response schema, each with its path, declared type, declared required-ness and the status it was read from.",
+      "task": "task/connector-configuration-draft-maps/success-response-schema-fields"
+    },
+    {
       "id": "proof/connector-configuration-draft-maps/openapi-responses-reading",
       "kind": "proof",
       "file": "proof/connector-configuration-draft-maps/openapi-responses-reading.md",
       "title": "OpenAPI operation reader's response-key reading",
       "summary": "Extends the existing openapi-operation-reader unit spec with tests over the new responses field -- classification, description carrying, the no-responses-object and $ref-through-resolveRef paths, and the two range-key cases the specification's lower-case and digits-only-out-of-range facts add.",
       "task": "task/connector-configuration-draft-maps/openapi-responses-reading"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/success-response-schema-fields",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/success-response-schema-fields.md",
+      "title": "Success response schema field reading -- proof",
+      "summary": "Thirteen tests added to openapi-operation-reader.spec.ts cover every criterion of success-response-schema-fields and the one underdetermined entry a test could be written against; the five implemented specification nodes are each left untested because this task's own REMAINDER/UNDERDETERMINED notes bound it to only part of each node's fact.",
+      "task": "task/connector-configuration-draft-maps/success-response-schema-fields"
     }
   ],
   "edges": [
@@ -56,8 +72,50 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "task/connector-configuration-draft-maps/success-response-schema-fields",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-draft-maps/openapi-responses-reading",
       "to": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/success-response-schema-fields",
+      "to": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
       "kind": "proves",
       "at": "the path"
     }

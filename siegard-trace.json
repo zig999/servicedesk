@@ -2525,7 +2525,7 @@
     },
     {
       "node": "domain/integration/connector-configuration-draft",
-      "digest": "sha256:7371b3bafc5b5eb85684fd0f979aed1ffecd747f06cc039cf0cbabce31c9671b",
+      "digest": "sha256:929b1b6238c530bb2a0da690499c7884e520676eea3d7822182be2de892525e6",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
@@ -2550,6 +2550,10 @@
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
           "digest": "sha256:f2538fede8e1397dee3e559b9473b5b5c71d269a9021439cfac1da7d9cbd2ef9"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
         },
         {
           "path": "src/src/http/draft-connector-configuration-from-openapi.controller.ts",
@@ -2612,6 +2616,16 @@
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft-response-field",
+      "digest": "sha256:b74d0d0a63e6a585ba6033da7bd1904324ecbb7e0172e8dafb46707bd59a80d1",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
         }
       ]
     },
@@ -5228,6 +5242,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas",
+      "digest": "sha256:54927a88fa4743295c85aeee22f763f241c081d1a9c843fcd20a2a56a9587323",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses",
       "digest": "sha256:944c77dc3550713648113f6dbcbf9ba79399760ca6541346f004ad904f7ef123",
       "files": [
@@ -5267,7 +5291,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
         }
       ]
     },
@@ -5812,6 +5836,16 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
           "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope",
+      "digest": "sha256:21b6023c1a583b988f6ed7962041e045f5452bacb9ed212e9a80d95b9d8f0d50",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
         }
       ]
     },
