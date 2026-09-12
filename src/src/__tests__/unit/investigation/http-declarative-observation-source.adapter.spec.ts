@@ -863,3 +863,76 @@ it('treats a response body that is not valid JSON as nothing extracted, rather t
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({}) });
 });
+
+it('excludes an output-schema property from the ok observation when no responseMap key names it, even though the response body happens to carry a same-named field', async () => {
+  const capability = aCapability({
+    concept: 'a-concept',
+    output_schema: JSON.stringify({ type: 'object', properties: { status: { type: 'string' }, untouched_field: { type: 'string' } } }),
+  });
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ raw_status: 'a-value', untouched_field: 'a-value-the-map-never-names' }));
+  const adapter = anAdapter({
+    capability,
+    connectorConfiguration: anHttpConfiguration({ responseMap: { status: 'raw_status' } }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ status: 'a-value' }) });
+});
+
+it('carries no field for a responseMap key that is itself a declared output-schema property when its own path does not resolve in the response body', async () => {
+  const capability = aCapability({
+    concept: 'a-concept',
+    output_schema: JSON.stringify({ type: 'object', properties: { status: { type: 'string' } } }),
+  });
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ a_different_field: 'irrelevant' }));
+  const adapter = anAdapter({
+    capability,
+    connectorConfiguration: anHttpConfiguration({ responseMap: { status: 'a_path_the_body_never_carries' } }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({}) });
+});
+
+it('ends ok with an empty observation, refusing nothing at read time, when every responseMap key names no output-schema property at all', async () => {
+  const capability = aCapability({
+    concept: 'a-concept',
+    output_schema: JSON.stringify({ type: 'object', properties: { a_schema_only_field: { type: 'string' } } }),
+  });
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ raw_vendor_status: 'operational' }));
+  const adapter = anAdapter({
+    capability,
+    connectorConfiguration: anHttpConfiguration({ responseMap: { vendor_status: 'raw_vendor_status' } }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({}) });
+});
+
+it('carries exactly the field whose name is at once a responseMap key and a declared output-schema property with a resolving path, excluding a schema-only property, a responseMap-only key and a key whose own path fails to resolve, all present in the same call', async () => {
+  const capability = aCapability({
+    concept: 'a-concept',
+    output_schema: JSON.stringify({
+      type: 'object',
+      properties: { matched_field: { type: 'string' }, unresolved_field: { type: 'string' }, schema_only_field: { type: 'string' } },
+    }),
+  });
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ raw_matched_path: 'resolved-value', raw_extra_path: 'noise' }));
+  const adapter = anAdapter({
+    capability,
+    connectorConfiguration: anHttpConfiguration({
+      responseMap: { matched_field: 'raw_matched_path', unresolved_field: 'a_path_the_body_never_carries', extra_from_response: 'raw_extra_path' },
+    }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ matched_field: 'resolved-value' }) });
+});

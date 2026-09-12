@@ -42,6 +42,14 @@
       "task": "task/connector-configuration-draft-maps/drafted-status-map"
     },
     {
+      "id": "implementation/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/observation-output-schema-filter-conformance.md",
+      "title": "Pin the observation's existing output-schema filter behavior",
+      "summary": "A pinning task with no source change: observationOf's existing filtering in the HTTP declarative observation source adapter already carries only the output-schema fields the responseMap reaches, provable entirely through the adapter's existing public observeConcept entry point, with no export or visibility change needed.",
+      "task": "task/connector-configuration-draft-maps/observation-output-schema-filter-conformance"
+    },
+    {
       "id": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
       "kind": "implementation",
       "file": "implementation/connector-configuration-draft-maps/openapi-responses-reading.md",
@@ -104,6 +112,14 @@
       "title": "Drafted statusMap classification and status-reading disclosure -- proof",
       "summary": "Seven new unit tests over generateConnectorConfigurationDraft prove the statusMap's ok/denied/unavailable classification at its boundaries, its exclusion of default- and range-keyed responses, the one-reading-per-entry pairing, and the declared_as disclosure rule; one criterion was already fully proved by the implementation's own updated pre-existing test.",
       "task": "task/connector-configuration-draft-maps/drafted-status-map"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/observation-output-schema-filter-conformance.md",
+      "title": "Pin the observation's existing output-schema filter behavior -- proof",
+      "summary": "Tests through observeConcept() alone hold the unmodified HttpDeclarativeObservationSource to the fact that an ok observation carries exactly the fields both named by the connector's responseMap and declared as a top-level property of the capability's output schema, with a resolving path -- and nothing else.",
+      "task": "task/connector-configuration-draft-maps/observation-output-schema-filter-conformance"
     },
     {
       "id": "proof/connector-configuration-draft-maps/openapi-responses-reading",
@@ -300,6 +316,12 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
+      "to": "task/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
       "to": "domain/integration/connector-configuration-draft-status-reading",
       "kind": "encodes",
@@ -416,6 +438,12 @@
     {
       "from": "proof/connector-configuration-draft-maps/drafted-status-map",
       "to": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
+      "to": "implementation/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
       "kind": "proves",
       "at": "the path"
     },
