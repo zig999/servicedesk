@@ -11,8 +11,13 @@ import type {
   ConnectorConfigurationDraft,
   ConnectorConfigurationDraftGeneratedCredential,
   ConnectorConfigurationDraftMethodMismatch,
+  ConnectorConfigurationDraftReadingNote,
+  ConnectorConfigurationDraftReadingNoteKind,
+  ConnectorConfigurationDraftResponseField,
+  ConnectorConfigurationDraftStatusReading,
   ConnectorConfigurationDraftUnresolvedItem,
 } from '../../../connector-registry/connector-configuration-draft.js';
+import type { EvidenceResult } from '../../../investigation/evidence-result.js';
 
 it('admits exactly the three vocabulary reasons the specification enumerates, and no other value', () => {
   const expected = [
@@ -36,6 +41,9 @@ it('accepts a draft whose unresolved and generated-credentials lists are both em
     configuration: '{}',
     unresolved: [],
     generated_credentials: [],
+    status_readings: [],
+    response_fields: [],
+    reading_notes: [],
   };
 
   expect(draft.unresolved).toEqual([]);
@@ -54,6 +62,9 @@ it('accepts a draft with no method_mismatch, leaving the field absent rather tha
     configuration: '{}',
     unresolved: [],
     generated_credentials: [],
+    status_readings: [],
+    response_fields: [],
+    reading_notes: [],
   };
 
   expect(draft.method_mismatch).toBeUndefined();
@@ -66,6 +77,9 @@ it('declares no capability field on the draft, so a generator resolves any numbe
     readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
     readonly generated_credentials: readonly ConnectorConfigurationDraftGeneratedCredential[];
     readonly method_mismatch?: ConnectorConfigurationDraftMethodMismatch;
+    readonly status_readings: readonly ConnectorConfigurationDraftStatusReading[];
+    readonly response_fields: readonly ConnectorConfigurationDraftResponseField[];
+    readonly reading_notes: readonly ConnectorConfigurationDraftReadingNote[];
   }>();
 });
 
@@ -104,5 +118,47 @@ it("the draft's domain module carries no import statement at all, naming no fram
 it('exports no runtime guard function alongside the closed vocabulary — only the vocabulary array itself carries a runtime value', () => {
   expect(Object.keys(connectorConfigurationDraftModule)).toEqual([
     'CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS',
+    'CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS',
   ]);
+});
+
+it('declares a status reading as exactly a status, an ending typed by the same evidence-result the draft mapped it to, and an optional declared_as', () => {
+  expectTypeOf<ConnectorConfigurationDraftStatusReading>().toEqualTypeOf<{
+    readonly status: string;
+    readonly ending: EvidenceResult;
+    readonly declared_as?: string;
+  }>();
+});
+
+it('declares a response field as exactly a name, a path and a status, with declared_type, declared_required and envelope optional', () => {
+  expectTypeOf<ConnectorConfigurationDraftResponseField>().toEqualTypeOf<{
+    readonly name: string;
+    readonly path: string;
+    readonly status: string;
+    readonly declared_type?: string;
+    readonly declared_required?: boolean;
+    readonly envelope?: string;
+  }>();
+});
+
+it('declares a reading note as exactly a kind typed by the reading-note-kind vocabulary and a subject, with detail optional', () => {
+  expectTypeOf<ConnectorConfigurationDraftReadingNote>().toEqualTypeOf<{
+    readonly kind: ConnectorConfigurationDraftReadingNoteKind;
+    readonly subject: string;
+    readonly detail?: string;
+  }>();
+});
+
+it("types a reading note's kind by exactly the nine kinds the specification enumerates, and no other value", () => {
+  expectTypeOf<ConnectorConfigurationDraftReadingNoteKind>().toEqualTypeOf<
+    | 'default-response-not-drafted'
+    | 'status-range-not-drafted'
+    | 'non-json-success-content-not-read'
+    | 'envelope-read-through'
+    | 'variants-united'
+    | 'repeated-field-name-path-not-taken'
+    | 'no-responses-declared'
+    | 'no-success-response-schema'
+    | 'success-schema-declares-no-properties'
+  >();
 });

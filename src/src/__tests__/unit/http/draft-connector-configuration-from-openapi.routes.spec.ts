@@ -88,6 +88,9 @@ it(
       configuration: JSON.stringify({ method: 'GET', address: '/widgets' }),
       unresolved: [],
       generated_credentials: [],
+      status_readings: [],
+      response_fields: [],
+      reading_notes: [],
     });
   },
 );
@@ -112,6 +115,9 @@ it(
       configuration: JSON.stringify({ method: 'GET', address: '/widgets' }),
       unresolved: [],
       generated_credentials: [],
+      status_readings: [],
+      response_fields: [],
+      reading_notes: [],
       method_mismatch: { registered: 'POST', operation: 'GET' },
     });
   },
@@ -158,6 +164,9 @@ it('carries no capability name, version or count anywhere in the response, even 
     'configuration',
     'connector',
     'generated_credentials',
+    'reading_notes',
+    'response_fields',
+    'status_readings',
     'unresolved',
   ]);
 });

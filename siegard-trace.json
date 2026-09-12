@@ -2545,7 +2545,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -2610,9 +2610,23 @@
       ]
     },
     {
+      "node": "domain/integration/connector-configuration-draft-reading-note",
+      "digest": "sha256:30b6dc91057aee5195adb11234bb0c37005504ea5c5dde1831804b39ca6ffdd1",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
+        }
+      ]
+    },
+    {
       "node": "domain/integration/connector-configuration-draft-reading-note-kind",
       "digest": "sha256:c0bfcce7a49ae4ac99924cb6f3ede65febf06173435ddf9df60e7f8942c6eafb",
       "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
+        },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
@@ -2624,6 +2638,10 @@
       "digest": "sha256:b74d0d0a63e6a585ba6033da7bd1904324ecbb7e0172e8dafb46707bd59a80d1",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
+        },
+        {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:b017ab7f4fdbd2d5b357ee111490335dbfb26f012030f702dc947532a962557a"
         }
@@ -2633,6 +2651,10 @@
       "node": "domain/integration/connector-configuration-draft-status-reading",
       "digest": "sha256:1128c81035635a3a66ed7d1ef71e83c58f9310cc18c9617f5db6402badad2821",
       "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft.ts",
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
+        },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"

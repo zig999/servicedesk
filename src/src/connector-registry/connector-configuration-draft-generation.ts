@@ -74,6 +74,9 @@ export async function generateConnectorConfigurationDraft(
     configuration: draftedConfigurationText({ reading, subjectPlacement, credentialPlacement, displaced }),
     unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
     generated_credentials: credentialPlacement.generatedCredentials,
+    status_readings: [],
+    response_fields: [],
+    reading_notes: [],
     ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
   };
 }

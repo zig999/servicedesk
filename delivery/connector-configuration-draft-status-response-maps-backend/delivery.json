@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/draft-disclosure-type.md",
+      "title": "Grow ConnectorConfigurationDraft with its disclosure material, and repair its call sites",
+      "summary": "ConnectorConfigurationDraft now declares status_readings, response_fields and reading_notes with their value shapes and closed note-kind vocabulary, and every existing site constructing a draft (or asserting its shape) supplies or admits the three new required fields.",
+      "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
+    },
+    {
       "id": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
       "kind": "implementation",
       "file": "implementation/connector-configuration-draft-maps/openapi-responses-reading.md",
@@ -24,6 +32,14 @@
       "title": "Success response schema field reading in the OpenAPI operation reader",
       "summary": "openapi-operation-reader.ts now exposes, per operation, the top-level application/json fields of every success (200-299) response schema, each with its path, declared type, declared required-ness and the status it was read from.",
       "task": "task/connector-configuration-draft-maps/success-response-schema-fields"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/draft-disclosure-type.md",
+      "title": "Draft disclosure type shapes proven at compile time",
+      "summary": "Adds compile-time type assertions for the three new value-object shapes and the closed nine-kind reading-note vocabulary that the existing, mechanically widened tests do not already establish.",
+      "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
     },
     {
       "id": "proof/connector-configuration-draft-maps/openapi-responses-reading",
@@ -51,6 +67,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "task/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
       "to": "domain/integration/connector-configuration-draft-status-reading",
@@ -139,6 +191,12 @@
       "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
       "to": "task/connector-configuration-draft-maps/success-response-schema-fields",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/draft-disclosure-type",
+      "to": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "proves",
       "at": "the path"
     },
     {
