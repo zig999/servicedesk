@@ -1,0 +1,88 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/subject-placeholder-input-schema-match-removal",
+      "kind": "epic",
+      "file": "epic/subject-placeholder-input-schema-match-removal.md",
+      "title": "Subject placeholder resolution stops requiring an input_schema name match",
+      "summary": "Bring subject-placeholder-resolution.ts back into conformance with the revised specification: a request field resolves as ${subject:<name>} wherever a capability is registered for the connector, regardless of input_schema match."
+    },
+    {
+      "id": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "kind": "task",
+      "file": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema.md",
+      "title": "Subject placeholder resolution stops requiring an input_schema name match",
+      "summary": "Bring subject-placeholder-resolution.ts back into conformance with the revised specification: a request field resolves as ${subject:<name>} wherever a capability is registered for the connector, regardless of input_schema match.",
+      "epic": "subject-placeholder-input-schema-match-removal"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/subject-placeholder-input-schema-match-removal",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/subject-placeholder-input-schema-match-removal",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/subject-placeholder-input-schema-match-removal",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/subject-placeholder-input-schema-match-removal",
+      "to": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/subject-placeholder-input-schema-match-removal",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/subject-placeholder-input-schema-match-removal",
+      "to": "scenarios/integration/a-mismatched-parameter-name-resolves-regardless",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "scenarios/integration/a-mismatched-parameter-name-resolves-regardless",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
