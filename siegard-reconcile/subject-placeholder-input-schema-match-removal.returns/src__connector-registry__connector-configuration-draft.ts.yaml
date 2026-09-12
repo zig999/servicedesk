@@ -1,0 +1,75 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — no import statement appears anywhere in it
+    evidence: >-
+      export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      the ConnectorConfigurationDraft type declaration, lines 25-31
+    evidence: |-
+      export type ConnectorConfigurationDraft = {
+        readonly connector: string;
+        readonly configuration: string;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+        readonly generated_credentials: readonly ConnectorConfigurationDraftGeneratedCredential[];
+        readonly method_mismatch?: ConnectorConfigurationDraftMethodMismatch;
+      };
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: >-
+      the ConnectorConfigurationDraftGeneratedCredential type declaration, lines 15-18
+    evidence: |-
+      export type ConnectorConfigurationDraftGeneratedCredential = {
+        readonly name: string;
+        readonly security_scheme: string;
+      };
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: >-
+      the ConnectorConfigurationDraftMethodMismatch type declaration, lines 20-23
+    evidence: |-
+      export type ConnectorConfigurationDraftMethodMismatch = {
+        readonly registered: string;
+        readonly operation: string;
+      };
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: >-
+      the ConnectorConfigurationDraftUnresolvedItem type declaration, lines 10-13
+    evidence: |-
+      export type ConnectorConfigurationDraftUnresolvedItem = {
+        readonly name: string;
+        readonly reason: ConnectorConfigurationDraftUnresolvedReason;
+      };
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: >-
+      the CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS constant and the type derived from it, lines 1-8
+    evidence: |-
+      export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
+        'no-capability-registered',
+        'security-scheme-not-reducible-to-a-credential',
+        'drafted-key-occupied-by-another-security-scheme',
+      ] as const;
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: >-
+      readonly configuration: string; — the file declares the resolved configuration as a plain
+      string and holds no logic that decides when a name becomes a ${subject:<name>} placeholder
+      or is instead placed on the unresolved list; that resolution policy is not exercised
+      anywhere in this file, which contains no functions, only type declarations.
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: >-
+      readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[]; — the file
+      declares the shape of the unresolved list but contains no logic that populates it, so the
+      scenario's given/when/then is not exercised here.
+  - node: scenarios/integration/a-mismatched-parameter-name-resolves-regardless
+    held_at: nowhere
+    evidence: >-
+      readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[]; — as above, the
+      file holds only the list's shape, not the matching behavior the scenario describes.
+looked_past: >-
+  domain/integration/connector-configuration-draft's own relationships section names a 0..*
+  reference to capability, but the ConnectorConfigurationDraft type carries no field for it;
+  this was not reported because whether that relationship is realized elsewhere (the resolution
+  logic that would consume registered capabilities lives in subject-placeholder-resolution.ts,
+  outside this file) is an implementation-completeness question, not a case of this file stating
+  a fact the specification does not hold or disagreeing with one it does.

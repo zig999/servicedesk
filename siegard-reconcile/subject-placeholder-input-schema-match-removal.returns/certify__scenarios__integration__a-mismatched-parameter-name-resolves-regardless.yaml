@@ -1,0 +1,32 @@
+certified:
+  - node: scenarios/integration/a-mismatched-parameter-name-resolves-regardless
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts
+        name: >-
+          resolves customerId as ${subject:customerId} even though the one registered capability declares only customer_id, never withholding it for the mismatch
+      - file: src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts
+        name: >-
+          places ${subject:<name>} at a path parameter's own position inside the substituted path
+    why: >-
+      The mismatch half of the fact is exercised: with erp-http's one registered capability holding only
+      customer_id, the named test asserts customerId resolves to ${subject:customerId} and that customerId
+      is named in no unresolved item, so a return to requiring an exact input-schema name match would fail
+      it. Two stated parts go unexercised. First, the scenario's "when" is that a connector configuration
+      draft is generated for connector erp-http from that operation, and its "then" speaks of the draft's
+      configuration and the draft's unresolved list; nothing in the offered proof generates a draft — every
+      test calls resolveSubjectPlaceholders directly with an injected capabilities reader, so a draft
+      generator that dropped, re-filtered or re-wrote the resolved placement (for instance by re-applying an
+      input-schema name check of its own before embedding) would leave the whole file passing while the
+      fact stopped holding. Second, the scenario's position is customerId's own position inside the path
+      GET /customers/{customerId}/invoices; the mismatch test places customerId as a query key, and the
+      path-position test uses order_id, a name the capability's schema does match. No test in the set puts a
+      mismatched name at a path position, so "${subject:customerId} at customerId's own position" in
+      /customers/{customerId}/invoices is asserted nowhere.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result: with capability read-invoices registered naming connector
+      erp-http and its input schema properties holding only customer_id, generate a connector configuration
+      draft for erp-http from the operation GET /customers/{customerId}/invoices, and assert the draft's
+      configuration carries /customers/${subject:customerId}/invoices — the placeholder at customerId's own
+      path position — and that no item of the draft's unresolved list names customerId.

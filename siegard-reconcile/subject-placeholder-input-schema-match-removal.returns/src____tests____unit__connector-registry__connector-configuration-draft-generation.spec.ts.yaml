@@ -1,0 +1,53 @@
+read:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: >-
+      the byName maps the tests build straight from draft.unresolved's own name/reason
+      attributes, e.g. lines 306, 421 and 541
+    evidence: >-
+      const byName = new Map(draft.unresolved.map((item) => [item.name, item.reason]));
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: >-
+      the literal reason strings asserted against draft.unresolved entries, e.g. lines
+      424-426 and 544-545
+    evidence: |-
+      new Map([
+        ['limit', 'no-capability-registered'],
+        ['OAuthFlow', 'security-scheme-not-reducible-to-a-credential'],
+      ]),
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: >-
+      the test at lines 297-309, asserting that once a capability is registered for the
+      connector, a parameter or field absent from that capability's own input schema
+      (unresolved_param, unresolved_field) still resolves to a ${subject:...} placeholder
+      the same as one the schema names (resolved_param)
+    evidence: |-
+      expect(configuration.query).toEqual({ resolved_param: '${subject:resolved_param}' });
+      const headers = configuration.headers as Record<string, string>;
+      expect(headers.unresolved_param).toBe('${subject:unresolved_param}');
+      expect(configuration.body).toEqual({ unresolved_field: '${subject:unresolved_field}' });
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: >-
+      the test at lines 408-429, run against the default options() whose capabilitiesReader
+      returns no capability for erp-http, asserting the parameter is named unresolved with
+      reason no-capability-registered and the draft still generates rather than refusing
+    evidence: |-
+      const byName = new Map(draft.unresolved.map((item) => [item.name, item.reason]));
+      expect(byName).toEqual(
+        new Map([
+          ['limit', 'no-capability-registered'],
+          ['OAuthFlow', 'security-scheme-not-reducible-to-a-credential'],
+        ]),
+      );
+  - node: scenarios/integration/a-mismatched-parameter-name-resolves-regardless
+    held_at: >-
+      the same test at lines 297-309, where a capability registered naming only
+      resolved_param in its own input schema still lets unresolved_param and
+      unresolved_field resolve, the mismatch-tolerant case the scenario illustrates
+    evidence: >-
+      expect(headers.unresolved_param).toBe('${subject:unresolved_param}');
+looked_past: >-
+  the file's other tests — address/server-precedence composition, security-scheme credential
+  naming and generation, method_mismatch, and the collision-resolution placement rule — state
+  facts outside this delegation's node set (several are candidates bound to
+  connector-configuration-draft.ts and subject-placeholder-resolution.ts) and were not judged
+  here.

@@ -16,6 +16,19 @@
       "title": "Subject placeholder resolution proof — resolves regardless of input_schema match",
       "summary": "Proves outcomeFor() resolves any candidate name to ${subject:<name>} whenever at least one capability is registered for the connector, refuses only with no-capability-registered when none is, and never produces the retired no-matching-input-schema-property reason — across the resolver's own unit tests and the two pre-existing spec files the retired reason also reached.",
       "task": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema"
+    },
+    {
+      "id": "review/subject-placeholder-input-schema-match-removal",
+      "kind": "review",
+      "file": "review/subject-placeholder-input-schema-match-removal.md",
+      "title": "Subject placeholder input_schema match removal — first review",
+      "summary": "What four passes found over the corrected subject-placeholder resolver, its closed reason vocabulary, and the three pre-existing spec files that asserted the retired behavior.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -60,6 +73,12 @@
       "to": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/subject-placeholder-input-schema-match-removal",
+      "to": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

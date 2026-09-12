@@ -1,0 +1,86 @@
+findings:
+  - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+    where: "line 27, the test title `it('refuses an unresolved item whose reason is not one of the four vocabulary values', ...)`"
+    evidence: >-
+      it('refuses an unresolved item whose reason is not one of the four vocabulary values', () => {
+    cost: >-
+      A reader who trusts this title for the size of the vocabulary comes away believing it
+      has four members; the node that owns the enumeration holds exactly three
+      (no-capability-registered, security-scheme-not-reducible-to-a-credential,
+      drafted-key-occupied-by-another-security-scheme), and this very file's own `expected`
+      array two tests above (lines 18-22) is built from those same three values. The label on
+      the test that exists to guard the vocabulary misstates the vocabulary it guards — a stale
+      count left behind by the recent removal of the fourth, now-retired reason
+      (no-matching-input-schema-property).
+    kind: contradicts
+    node: domain/integration/connector-configuration-draft-unresolved-reason
+    correction: change "four" to "three" in the test title.
+  - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+    where: "lines 93-101, the test asserting the domain module carries no import statement at all"
+    evidence: >-
+      const importSpecifiers = [...source.matchAll(/(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g)];
+
+      expect(importSpecifiers).toEqual([]);
+    cost: >-
+      The constraint this test claims to guard permits infrastructure to reach the domain
+      "only through ports" — it audits for a framework, a driver or a provider-client package,
+      not for the presence of any import whatsoever. This test instead fails on any import at
+      all, including a legitimate port-type or domain-to-domain type import the specification
+      would allow; a future, conformant change that imports such a type into this file would be
+      rejected by a test stricter than the rule it names.
+    kind: contradicts
+    node: constraints/the-domain-depends-on-no-infrastructure
+    correction: >-
+      narrow the assertion to import specifiers naming a framework, driver or provider-client
+      package, rather than rejecting every import specifier.
+read:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: "lines 72-77, the expectTypeOf assertion on ConnectorConfigurationDraftUnresolvedItem"
+    evidence: >-
+      expectTypeOf<ConnectorConfigurationDraftUnresolvedItem>().toEqualTypeOf<{
+        readonly name: string;
+        readonly reason: (typeof CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS)[number];
+      }>();
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: "lines 17-25, the vocabulary equality test"
+    evidence: >-
+      const expected = [
+        'no-capability-registered',
+        'security-scheme-not-reducible-to-a-credential',
+        'drafted-key-occupied-by-another-security-scheme',
+      ];
+
+      expect([...CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS].sort()).toEqual([...expected].sort());
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: nowhere
+    evidence: >-
+      The file's only runtime and type imports from the draft module are the vocabulary
+      constant and four type declarations: `import { CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS }
+      from '../../../connector-registry/connector-configuration-draft.js';` and `import type {
+      ConnectorConfigurationDraft, ConnectorConfigurationDraftGeneratedCredential,
+      ConnectorConfigurationDraftMethodMismatch, ConnectorConfigurationDraftUnresolvedItem }
+      from '../../../connector-registry/connector-configuration-draft.js';` — no test in this
+      file generates a draft from a capability registration or a fetched operation, so the rule
+      governing when a name becomes a ${subject:...} placeholder is never exercised here.
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: >-
+      The same import surface noted above is the whole of this file's contact with the draft
+      module; no test here constructs an operation, a connector name, or an absence of
+      registered capability to exercise this scenario.
+  - node: scenarios/integration/a-mismatched-parameter-name-resolves-regardless
+    held_at: nowhere
+    evidence: >-
+      The same import surface noted above is the whole of this file's contact with the draft
+      module; no test here registers a capability with a differently-named input-schema
+      property or exercises resolution against it.
+looked_past: >-
+  The test at lines 104-108 asserting that the module's export list holds only the vocabulary
+  constant and no runtime guard function states a module-surface/implementation fact rather
+  than a domain fact no node addresses, and is left to whichever pass judges code structure.
+candidates_opened:
+  - domain/integration/connector-configuration-draft
+  - domain/integration/connector-configuration-draft-generated-credential
+  - domain/integration/connector-configuration-draft-method-mismatch
+  - constraints/the-domain-depends-on-no-infrastructure
+  - rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it

@@ -2525,7 +2525,7 @@
     },
     {
       "node": "domain/integration/connector-configuration-draft",
-      "digest": "sha256:78240115a0f0e67440bbfd7bfd7e8a4c524d324214b29470e7b6191d2c70774b",
+      "digest": "sha256:7371b3bafc5b5eb85684fd0f979aed1ffecd747f06cc039cf0cbabce31c9671b",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
@@ -2545,7 +2545,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -2575,7 +2575,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -2597,7 +2597,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
         },
         {
           "path": "src/src/connector-registry/registered-method-comparison.ts",
@@ -2627,7 +2627,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -5193,7 +5193,7 @@
         },
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
-          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+          "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
         }
       ]
     },

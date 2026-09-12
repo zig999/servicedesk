@@ -1,0 +1,45 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          admits exactly the three vocabulary reasons the specification enumerates, and no other value
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares an unresolved item as exactly a name and a single reason, never a set of reasons
+    why: >-
+      The closure of the value set is exercised: the first test compares the exported vocabulary,
+      sorted, against the three literals the node enumerates, so it fails if a fourth reason is
+      added, one is removed, or one is spelled differently. What goes unexercised is the meaning
+      the node states for each value — that `no-capability-registered` names the circumstance that
+      no capability is currently registered naming the connector the draft is generated for, that
+      `security-scheme-not-reducible-to-a-credential` names an operation security scheme the
+      connector configuration's own ${credential:<name>} mechanism cannot reduce to a single value,
+      and that `drafted-key-occupied-by-another-security-scheme` names a query or headers key
+      already held by another security scheme the same operation requires. Nothing in the offered
+      proof produces a draft under any of those three circumstances and asserts which reason the
+      draft carries, so all three could be mapped to the wrong circumstance, or one circumstance
+      left producing no unresolved item at all, and every test in the file would still pass. Two
+      further facts a reader of the file needs: the test named "refuses an unresolved item whose
+      reason is not one of the four vocabulary values" carries no assertion — it binds a value to
+      a type and discards it with `void invalid` — so it cannot fail when run as a test, and its
+      own title says "four" where the node enumerates three; and the type-level tests in this file,
+      including "declares an unresolved item as exactly a name and a single reason", assert nothing
+      at runtime, so they bear on this node only under a typecheck-enabled run of the `test` step,
+      which the pack does not establish. Separately, the test "exports no runtime guard function
+      alongside the closed vocabulary" asserts the module's exported key list is exactly one entry —
+      a totality over the module that this node does not state, and that breaks the day the same
+      module legitimately exports something beside the vocabulary.
+    remainder: testable
+    remainder_why: >-
+      The three circumstances the node names are a closed, finite set, so the remainder is one
+      input per value against one expected result: generate a draft for a connector no registered
+      capability names, and expect the unresolved item's reason to be `no-capability-registered`;
+      generate a draft for an operation whose security scheme the ${credential:<name>} mechanism
+      cannot reduce to a single value, and expect `security-scheme-not-reducible-to-a-credential`;
+      generate a draft for an operation where a required security scheme already holds the query or
+      headers key the drafted parameter, or the other security scheme, would have occupied, and
+      expect `drafted-key-occupied-by-another-security-scheme`. A test asserting a bare string is
+      rejected as a reason must assert it at runtime, or the run must be typecheck-enabled, for the
+      closure to be exercised anywhere other than the vocabulary array itself.

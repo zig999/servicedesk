@@ -1,0 +1,49 @@
+read:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: >-
+      the byName map assertion (lines 37-44) and the unresolved-list assertions throughout,
+      e.g. line 61
+    evidence: >-
+      expect(placement.unresolved).toEqual([{ name: 'order_id', reason: 'no-capability-registered' }]);
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: the reason value 'no-capability-registered' asserted against every unresolved case
+    evidence: |-
+      new Map([
+            ['order_id', 'no-capability-registered'],
+            ['contract_number', 'no-capability-registered'],
+            ['billing_address', 'no-capability-registered'],
+          ]),
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: >-
+      the no-capability and registered-capability test pairs, e.g. lines 25-45 and lines 87-99
+    evidence: >-
+      it('places ${subject:<name>} as a query parameter's own key value", async () => {
+        const registered = capability({ input_schema: JSON.stringify({ properties: { order_id: {} } }) });
+        ...
+        expect(placement.query).toEqual({ order_id: '${subject:order_id}' });
+      });
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: the test at lines 25-45
+    evidence: >-
+      it('names every parameter and request-body field name unresolved with no-capability-registered
+      when no capability is registered at all', async () => { ... }
+  - node: scenarios/integration/a-mismatched-parameter-name-resolves-regardless
+    held_at: the test at lines 172-184
+    evidence: >-
+      it('resolves customerId as ${subject:customerId} even though the one registered capability
+      declares only customer_id, never withholding it for the mismatch', async () => {
+        const registered = capability({ input_schema: JSON.stringify({ properties: { customer_id: {} } }) });
+        ...
+        expect(placement.query).toEqual({ customerId: '${subject:customerId}' });
+        expect(placement.unresolved).toEqual([]);
+      });
+looked_past: >-
+  Two tests describe implementation robustness rather than a domain fact — "propagates a failure
+  the injected capabilities reader itself raises, rather than swallowing it" (lines 249-261) and
+  the return-shape check "discloses none of the registered capabilities it read on the returned
+  placement" (lines 220-234) — neither is backed nor denied by any node in the specification, and
+  neither states a business rule the spec would need to hold; that judgment belongs to a code
+  review, not this pass.
+candidates_opened:
+  - rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+  - rules/integration/a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text

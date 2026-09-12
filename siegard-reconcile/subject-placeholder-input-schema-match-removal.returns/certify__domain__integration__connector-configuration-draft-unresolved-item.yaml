@@ -1,0 +1,32 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts
+        name: >-
+          names every parameter and request-body field name unresolved with no-capability-registered when no
+          capability is registered at all
+      - file: src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts
+        name: >-
+          names every name unresolved with no-capability-registered when only a capability naming a different
+          connector is registered
+      - file: src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts
+        name: >-
+          names a name occupying two positions exactly once in the unresolved list, holding the brace form at
+          both of its positions
+    why: >-
+      The parameter and request-body halves of the item are exercised whole: the three tests assert unresolved
+      entries by exact equality as a name paired with a reason, so an item that lost either required attribute,
+      or that carried a reason not paired to the name that earned it, would fail them; "the name exactly as the
+      OpenAPI document itself gives it" is exercised by the camelCase `orderId` case, which would fail if the
+      name were normalised on its way into the item. The security-scheme half goes entirely unexercised — the
+      resolver the whole file drives (`resolveSubjectPlaceholders`) accepts only `path`, `parameters` and
+      `requestBodyFieldNames`, so no input in the set can name a security scheme, and nothing here could fail if
+      a draft stopped naming an unresolvable security scheme, or named one by a mangled name or with no reason.
+      Whatever produces that item, if anything does, is proven only by a test outside the offered proof.
+    remainder: testable
+    remainder_why: >-
+      One input — a draft over an operation whose security scheme the draft cannot honestly turn into a
+      placeholder — against one expected result: one unresolved item naming that scheme by the name the OpenAPI
+      document itself gives it, paired with the reason it went unresolved, asserted by exact equality as the
+      three existing tests assert the parameter and request-body items.

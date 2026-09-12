@@ -1,0 +1,53 @@
+read:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: >-
+      the object literal built in unresolvedItems(), around line 81
+    evidence: >-
+      items.push({ name, reason: outcome.reason });
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: >-
+      the single member used via a type import and the NO_CAPABILITY_REGISTERED constant, line 9
+      (the enumeration itself is declared in connector-configuration-draft.ts, not here)
+    evidence: >-
+      const NO_CAPABILITY_REGISTERED: ConnectorConfigurationDraftUnresolvedReason = 'no-capability-registered';
+  - node: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
+    held_at: >-
+      outcomeFor(), lines 64-68
+    evidence: |-
+      function outcomeFor(name: string, registered: readonly RegisteredCapabilityForPlaceholderCheck[]): NameOutcome {
+        return registered.length === 0
+          ? { resolved: false, reason: NO_CAPABILITY_REGISTERED }
+          : { resolved: true, value: `\${${SUBJECT_PLACEHOLDER_KIND}:${name}}` };
+      }
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: >-
+      the four placements assembled in resolveSubjectPlaceholders(), lines 41-47, and the cookie
+      join in cookieHeaderValue(), lines 127-138
+    evidence: |-
+      path: substitutedPath(path, parameters, outcomes),
+      query: recordFor(parameters, 'query', outcomes),
+      headers: headersWithCookie(parameters, outcomes),
+      body: recordForNames(requestBodyFieldNames, outcomes),
+  - node: scenarios/integration/a-mismatched-parameter-name-resolves-regardless
+    held_at: >-
+      outcomeFor(), lines 64-68 — the only test applied is registered.length === 0, no
+      input-schema property name is ever consulted
+    evidence: >-
+      return registered.length === 0
+        ? { resolved: false, reason: NO_CAPABILITY_REGISTERED }
+        : { resolved: true, value: `\${${SUBJECT_PLACEHOLDER_KIND}:${name}}` };
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: >-
+      outcomeFor() together with positionValue()'s fallback, lines 64-72, and unresolvedItems(),
+      lines 75-85
+    evidence: |-
+      function positionValue(name: string, outcomes: ReadonlyMap<string, NameOutcome>): string {
+        const outcome = outcomes.get(name);
+        return outcome !== undefined && outcome.resolved ? outcome.value : `{${name}}`;
+      }
+looked_past: >-
+  the fallback value `{name}` for an unresolved position, and the server-URL/address prefix
+  applied ahead of this file's `path` substitution, are each named in this rule's own Description
+  as another node's responsibility (a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text
+  for the former, address construction handled in connector-configuration-draft-generation.ts for
+  the latter) — neither node is in this batch's set or candidate index, so neither claim is made here.
