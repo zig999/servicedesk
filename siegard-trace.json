@@ -2562,6 +2562,10 @@
         {
           "path": "src/src/http/draft-connector-configuration-from-openapi.controller.ts",
           "digest": "sha256:a26e427dc7a4469892026fbdd69384fbd5936832d40dda0385e82c7ab0cc5368"
+        },
+        {
+          "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
+          "digest": "sha256:312d69b40cb333514a9c04562b1e884f05e7a8ef40e00172403164697669283a"
         }
       ]
     },
@@ -2624,6 +2628,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
+        },
+        {
+          "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
+          "digest": "sha256:312d69b40cb333514a9c04562b1e884f05e7a8ef40e00172403164697669283a"
         }
       ]
     },
@@ -2642,6 +2650,10 @@
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
+        },
+        {
+          "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
+          "digest": "sha256:312d69b40cb333514a9c04562b1e884f05e7a8ef40e00172403164697669283a"
         }
       ]
     },
@@ -2660,6 +2672,10 @@
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:b017ab7f4fdbd2d5b357ee111490335dbfb26f012030f702dc947532a962557a"
+        },
+        {
+          "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
+          "digest": "sha256:312d69b40cb333514a9c04562b1e884f05e7a8ef40e00172403164697669283a"
         }
       ]
     },
@@ -2678,6 +2694,10 @@
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+        },
+        {
+          "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
+          "digest": "sha256:312d69b40cb333514a9c04562b1e884f05e7a8ef40e00172403164697669283a"
         }
       ]
     },
