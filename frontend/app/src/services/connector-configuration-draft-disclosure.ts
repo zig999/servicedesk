@@ -35,6 +35,13 @@ export type ResponseFieldDisclosure = {
   readonly envelope: string | undefined;
 };
 
+export type ReadingNoteDisclosure = {
+  readonly kind: string;
+  readonly kindLabel: string;
+  readonly subject: string;
+  readonly detail: string | undefined;
+};
+
 export type DraftDisclosure = {
   readonly configuration: string;
   readonly unresolved: readonly UnresolvedItemDisclosure[];
@@ -42,6 +49,7 @@ export type DraftDisclosure = {
   readonly methodMismatch: MethodMismatchDisclosure | undefined;
   readonly statusReadings: readonly StatusReadingDisclosure[];
   readonly responseFields: readonly ResponseFieldDisclosure[];
+  readonly readingNotes: readonly ReadingNoteDisclosure[];
 };
 
 export type ConnectorConfigurationHelperDisclosureState =
@@ -62,6 +70,22 @@ const UNRESOLVED_REASON_LABEL: Readonly<Record<string, string>> = {
 
 function unresolvedReasonLabel(reason: string): string {
   return UNRESOLVED_REASON_LABEL[reason] ?? reason;
+}
+
+const READING_NOTE_KIND_LABEL: Readonly<Record<string, string>> = {
+  "default-response-not-drafted": "Default response, not drafted into the status map",
+  "status-range-not-drafted": "Status range, not drafted into the status map",
+  "non-json-success-content-not-read": "Non-JSON success content, not read",
+  "envelope-read-through": "Single-property envelope, read through",
+  "variants-united": "oneOf/anyOf variants, united into one field set",
+  "repeated-field-name-path-not-taken": "Repeated field name; this path was not taken",
+  "no-responses-declared": "No responses object declared",
+  "no-success-response-schema": "No success response schema under application/json",
+  "success-schema-declares-no-properties": "No properties declared; no field read",
+};
+
+function readingNoteKindLabel(kind: string): string {
+  return READING_NOTE_KIND_LABEL[kind] ?? kind;
 }
 
 function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosure {
@@ -89,6 +113,12 @@ function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosur
       declaredType: field.declared_type,
       declaredRequired: field.declared_required,
       envelope: field.envelope,
+    })),
+    readingNotes: (draft.reading_notes ?? []).map((note) => ({
+      kind: note.kind,
+      kindLabel: readingNoteKindLabel(note.kind),
+      subject: note.subject,
+      detail: note.detail,
     })),
   };
 }

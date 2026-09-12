@@ -10,6 +10,14 @@
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/reading-notes-stated",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/reading-notes-stated.md",
+      "title": "Reading notes stated in the Configuration Helper's draft disclosure",
+      "summary": "Adds a \"Reading notes\" section to the Configuration Helper's drafted-answer disclosure, stating each reading note's kind (as a distinguishable label), subject and, where carried, its detail, fed from the existing ConnectorConfigurationDraft.reading_notes array.",
+      "task": "task/drafted-answer-disclosure/reading-notes-stated"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/response-fields-stated",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/response-fields-stated.md",
@@ -32,6 +40,14 @@
       "title": "The grown draft answer's parts round-trip through the frontend's reading, whole -- proof",
       "summary": "Four new tests over a new sibling spec file prove that status readings, response fields and reading notes each survive the reading with their required attributes always present and their optional ones present exactly when carried, and that the reading-note kind vocabulary is exactly the closed set of nine.",
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/reading-notes-stated",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/reading-notes-stated.md",
+      "title": "Reading notes stated in the Configuration Helper's draft disclosure -- proof",
+      "summary": "Proves the drafted answer's per-reading-note disclosure at both the projection layer and the rendered surface -- kind, subject and, where carried, detail always stated, the nine-kind vocabulary pairwise distinct, and no note the answer did not carry ever invented -- via two new sibling spec files.",
+      "task": "task/drafted-answer-disclosure/reading-notes-stated"
     },
     {
       "id": "proof/drafted-answer-disclosure/response-fields-stated",
@@ -94,6 +110,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/drafted-answer-disclosure/reading-notes-stated",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/reading-notes-stated",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/reading-notes-stated",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/reading-notes-stated",
+      "to": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/reading-notes-stated",
+      "to": "task/drafted-answer-disclosure/reading-notes-stated",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/drafted-answer-disclosure/response-fields-stated",
       "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
       "kind": "encodes",
@@ -144,6 +190,12 @@
     {
       "from": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/reading-notes-stated",
+      "to": "implementation/drafted-answer-disclosure/reading-notes-stated",
       "kind": "proves",
       "at": "the path"
     },

@@ -181,6 +181,20 @@ function ConnectorConfigurationDraftDisclosure({
           </ul>
         </section>
       )}
+
+      {draft.readingNotes.length > 0 && (
+        <section className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-foreground">Reading notes</p>
+          <ul className="flex flex-col gap-1">
+            {draft.readingNotes.map((note) => (
+              <li key={`${note.kind}:${note.subject}`} className="text-sm">
+                <span className="font-medium">{note.subject}</span> — {note.kindLabel}
+                {note.detail !== undefined && <> (detail: {note.detail})</>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
