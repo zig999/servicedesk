@@ -19,7 +19,7 @@ expression: >-
   Configuration Helper a-connector-configuration-authoring-surface-offers-a-configuration-helper
   states: where that request is answered with a connector-configuration-draft d, s states d's
   configuration; for every item of d's unresolved, s states that item's name and that item's
-  reason, and the four reasons domain/integration/connector-configuration-draft-unresolved-reason
+  reason, and the three reasons domain/integration/connector-configuration-draft-unresolved-reason
   holds are distinguishable from one another to the operator, none of them presented as another;
   for every item of d's generated_credentials, s states that item's name and that item's
   security_scheme; and where d carries method_mismatch, s states its registered and its operation,
@@ -44,8 +44,8 @@ Every part is stated, rather than the configuration text alone, because that tex
 A surface stating the text and nothing else hands the operator text designed to be incomplete while withholding the record of how, and the operator applies it and submits it as whole.
 
 Each unresolved item carries its name and its reason because the reasons name different things to fix.
-`domain/integration/connector-configuration-draft-unresolved-item` pairs one name with exactly one reason, and the four `domain/integration/connector-configuration-draft-unresolved-reason` holds send the operator to four different places: `no-capability-registered` to registering a capability naming this connector; `no-matching-input-schema-property` to a disagreement between two names that read alike to a person, which `scenarios/integration/a-mismatched-parameter-name-stays-unresolved` records for `customerId` against `customer_id`; `security-scheme-not-reducible-to-a-credential` to authoring that part of the call by hand, the scheme having no single value to substitute at all; `drafted-key-occupied-by-another-security-scheme` to a collision between two schemes of the same operation.
-A count of unresolved names, or a list of names without their reasons, leaves the operator to guess which of the four applies and to correct an input that was never at fault.
+`domain/integration/connector-configuration-draft-unresolved-item` pairs one name with exactly one reason, and the three `domain/integration/connector-configuration-draft-unresolved-reason` holds send the operator to three different places: `no-capability-registered` to registering a capability naming this connector; `security-scheme-not-reducible-to-a-credential` to authoring that part of the call by hand, the scheme having no single value to substitute at all; `drafted-key-occupied-by-another-security-scheme` to a collision between two schemes of the same operation.
+A count of unresolved names, or a list of names without their reasons, leaves the operator to guess which of the three applies and to correct an input that was never at fault.
 This is the reasoning `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` already gave for two error values rather than one, and `a-refused-draft-request-states-its-refusal-to-the-operator` for holding its three refusal conditions apart: a distinction the answer carries and the surface drops is a distinction returned to where the operator cannot read it.
 
 Each generated credential carries both names for the same reason it carries both in the answer.

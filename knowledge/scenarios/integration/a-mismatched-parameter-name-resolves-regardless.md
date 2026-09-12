@@ -6,8 +6,8 @@ given:
 when:
   - a connector configuration draft is generated for connector erp-http from that operation
 then:
-  - customerId is named in the draft's unresolved list with reason no-matching-input-schema-property
-  - the draft's configuration embeds no ${subject:customerId} placeholder
+  - the draft's configuration embeds ${subject:customerId} at customerId's own position
+  - customerId is named in no item of the draft's unresolved list
 involves:
   - domain/integration/capability
   - domain/integration/connector-configuration-draft
@@ -15,4 +15,4 @@ involves:
 
 ## Description
 
-customerId and customer_id read alike to a person; the draft never treats them as the same fact.
+customerId and customer_id read alike to a person; this rule no longer holds the draft to whether any registered capability's input schema names the exact string customerId, only to whether erp-http currently has a capability registered against it at all — which read-invoices already satisfies.

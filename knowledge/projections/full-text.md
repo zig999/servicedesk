@@ -5248,7 +5248,7 @@ relationships:
 ## Description
 
 A candidate connector configuration, generated from one operation of an OpenAPI document for one connector name, offered for an operator to review and apply — never registered by its own generation.
-Its configuration holds the same method/address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name exactly matches a property every one of the named capabilities' own input schemas declares, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
+Its configuration holds the same method/address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name is one at least one of the named capabilities is currently registered against, whatever any of those capabilities' own input schemas declare, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
 The capability reference is every capability, if any, currently registered naming the connector the draft is generated for — empty where none is, since resolving a subject placeholder has nothing to check a name against without one, and all of them where more than one is, since the draft reads none of them in preference to the others.
 
 ## Responsibility
@@ -5320,14 +5320,13 @@ Name one thing the draft left unresolved and the one reason it did.
 type: enumeration
 values:
   - no-capability-registered
-  - no-matching-input-schema-property
   - security-scheme-not-reducible-to-a-credential
   - drafted-key-occupied-by-another-security-scheme
 ---
 
 ## Description
 
-The closed set of reasons a connector configuration draft names a parameter, a request-body field, or a security scheme apart from what it resolved: no capability is currently registered naming the connector the draft is generated for; at least one is registered but at least one of those registered capabilities' input schemas names no property matching that exact name; the operation's security scheme is not one the connector configuration's own ${credential:<name>} mechanism can reduce to a single value; or a security scheme the same operation requires already holds the drafted query or headers key that this parameter, or this other security scheme, would itself have occupied.
+The closed set of reasons a connector configuration draft names a parameter, a request-body field, or a security scheme apart from what it resolved: no capability is currently registered naming the connector the draft is generated for; the operation's security scheme is not one the connector configuration's own ${credential:<name>} mechanism can reduce to a single value; or a security scheme the same operation requires already holds the drafted query or headers key that this parameter, or this other security scheme, would itself have occupied.
 
 ## Responsibility
 
@@ -6554,19 +6553,15 @@ Which schemes an operation requires, and in which order, is `a-connector-configu
 === rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
 ---
 type: policy
-statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration only where at least one capability is currently registered naming the connector the draft is generated for and every capability currently registered naming that connector names that exact parameter or field name — matched case-sensitively and separator-sensitively, never normalized — among its own input schema properties, the draft reading every one of those capabilities together and never one of them chosen over the others; where no capability is currently registered for that connector, the parameter or field is instead named in the draft's unresolved list with reason no-capability-registered, and where at least one is registered and any one of them does not name that exact name among its properties, the parameter or field is instead named in that list with reason no-matching-input-schema-property.
+statement: An operation parameter or request-body field a connector configuration draft considers becomes a ${subject:<name>} placeholder in the draft's configuration wherever at least one capability is currently registered naming the connector the draft is generated for, whatever any of those capabilities' own input schemas do or do not declare among their properties; where no capability is currently registered for that connector, the parameter or field is instead named in the draft's unresolved list with reason no-capability-registered.
 expression: >-
   For a connector name c a draft is generated for, and a parameter or request-body field
   named n an operation of the fetched document declares: where the set of capabilities
   currently registered naming connector c is empty, the draft's unresolved list holds an
-  item naming n with reason no-capability-registered. Where that set is non-empty and
-  every capability in it has an input schema whose properties holds a key equal to n by
-  byte-for-byte comparison, the draft's configuration embeds ${subject:n} at n's own
-  position. Where that set is non-empty and any capability in it has an input schema
-  whose properties holds no key equal to n, the draft's unresolved list holds an item
-  naming n with reason no-matching-input-schema-property. No third outcome exists for n;
-  no placeholder is ever generated from a name matched by anything short of byte-for-byte
-  equality, and none from a name fewer than every capability in that set declares.
+  item naming n with reason no-capability-registered. Where that set is non-empty, the
+  draft's configuration embeds ${subject:n} at n's own position, whichever capability in
+  that set does or does not declare a property named n among its input schema's own. No
+  third outcome exists for n.
 constrains:
   - domain/integration/connector-configuration-draft
   - domain/integration/capability
@@ -6575,11 +6570,11 @@ consistency: eventual
 
 ## Description
 
-A capability may be registered before its connector is ever configured, and a connector may be configured before any capability names it (domain/integration/connector-configuration); this rule reads only what already stands on the capability side at the moment the draft is generated, the same restraint a-connector-placeholder-is-declared-by-its-capability already holds for the registration write it protects. A draft built this way can never itself introduce the orphaned placeholder that rule refuses, because it never emits ${subject:name} for a name every capability currently registered against that connector does not already declare in its own input schema.
+A capability may be registered before its connector is ever configured, and a connector may be configured before any capability names it (domain/integration/connector-configuration); this rule reads only what already stands on the capability side at the moment the draft is generated — whether that set is empty — and reads no further into what any of those capabilities declare.
 
-The match is exact rather than normalized on purpose: a name that merely resembles a declared property — a different case, a different separator — is not evidence of the same fact, and silently equating the two would risk resolving a placeholder against an attribute it was never declared for. An operator who judges two differently-spelled names to mean the same thing corrects the draft by hand; the draft itself never guesses.
+Whether a candidate name matches any registered capability's own input schema properties plays no part in whether the draft resolves it: registration existence is the only condition this rule tests, never what a registered capability's own schema names. A parameter or request-body field name absent from every registered capability's input schema still becomes ${subject:name} in the draft, on the same terms as one every registered capability declares.
 
-Several capabilities may name one connector — a connector holds one configuration, and each capability naming it answers its own concept through that same call descriptor — so the draft reads all of them and holds a name to all of them, rather than choosing one to read. That is the reading a-connector-placeholder-is-declared-by-its-capability already fixes for the registered state: it refuses a capability registration whose own input schema properties lack a subject placeholder the connector's standing configuration embeds, so a configuration's subject placeholders can only ever be names every capability naming that connector declares, in whichever order the two sides were written. A draft resolving a name only some of them declare would hand the operator a configuration the registry refuses to accept, which is the one thing a helper generating candidate configurations must not do.
+This reopens exactly what an exact-match condition once existed to prevent: a-connector-placeholder-is-declared-by-its-capability refuses a connector configuration registration or edit whose own text embeds a subject placeholder absent from a currently registered capability's input schema properties — that refusal is unchanged by this rule, and it is now where a name the draft resolved too eagerly is caught, if it is caught at all: at the moment an operator applies the draft and submits it as the connector's own configuration, never at the moment the draft itself was generated. An operator who never applies the draft, or who applies it to a connector no capability yet names, never meets that refusal, and a draft's unresolved list no longer names this class of mismatch at all.
 
 Where no capability is registered at all, every candidate name is unresolved for that one reason, and the draft still generates — capability registration order is not a precondition this rule imposes, the same reading domain/integration/connector-configuration already gives a configuration authored before its capability exists.
 
@@ -6697,7 +6692,7 @@ constrains:
 
 ## Description
 
-The capability reference a draft holds serves one purpose in this specification: `a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability` reads every capability currently registered naming the draft's connector to decide whether a parameter or request-body field name is one all of them declare among their own input schema properties.
+The capability reference a draft holds serves one purpose in this specification: `a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability` reads the capabilities currently registered naming the draft's connector to decide only whether that set is empty, never what any of them declares among its own input schema properties.
 No rule, scenario or surface anywhere has an operator act on that set.
 What an operator does with a draft is read its configuration text, read what it left unresolved and why, and apply it to the Configuration field they are already editing — `applying-a-drafted-configuration-changes-only-the-local-edit` and `a-connector-configuration-draft-registers-nothing` bound the whole of that act — and none of those steps is taken against a capability.
 Leaving a generation-time input out of the answer withholds nothing from the operator: the capabilities registered against a connector are a fact `contracts/integration/capability-registry` answers for, on its own reads and under the terms its own nodes state, and a draft answer enumerating them would answer for that registry from a route those nodes do not reach.
@@ -6705,10 +6700,10 @@ Leaving a generation-time input out of the answer withholds nothing from the ope
 The draft already discloses each thing it read as the derived fact the operator acts on, never as the record it read.
 The connector configuration currently registered under the same name is the other input generating a draft reads, and it reaches the answer only as `domain/integration/connector-configuration-draft-method-mismatch` — two method names side by side — never as the registration itself.
 A security scheme reaches the answer only as `domain/integration/connector-configuration-draft-generated-credential` — the generated name and the scheme's own name — never as the value that credential resolves to, the same restraint `a-diagnostic-response-masks-a-resolved-credential` already holds over the other diagnostic read this context publishes.
-The capability set is disclosed on exactly that pattern: as a `${subject:<name>}` placeholder where every registered capability declared the name, and as an unresolved item naming that name where they did not.
+The capability set is disclosed on exactly that pattern: as a `${subject:<name>}` placeholder where at least one capability is registered, and as an unresolved item naming that name where none is.
 
 Nothing an operator could learn from the set is lost by it.
-Whether any capability is registered against that connector at all is stated by reason `no-capability-registered`, which the placeholder rule puts on every candidate name where none is; whether what they declare covered the operation's names is stated name by name with reason `no-matching-input-schema-property`.
+Whether any capability is registered against that connector at all is stated by reason `no-capability-registered`, which the placeholder rule puts on every candidate name where none is; what any registered capability's own input schema declares is not restated to the operator at all, because the placeholder rule no longer reads it to decide anything.
 That is what `domain/integration/connector-configuration-draft`'s own Responsibility already bounds the draft's disclosure to — hold what could honestly be resolved, and "disclose by name and by reason everything it could not."
 The answer's shape is therefore the same whichever of the three registration states holds, so a reader never reads registration state off the answer's shape rather than off the reason that states it.
 
@@ -8435,7 +8430,7 @@ expression: >-
   Configuration Helper a-connector-configuration-authoring-surface-offers-a-configuration-helper
   states: where that request is answered with a connector-configuration-draft d, s states d's
   configuration; for every item of d's unresolved, s states that item's name and that item's
-  reason, and the four reasons domain/integration/connector-configuration-draft-unresolved-reason
+  reason, and the three reasons domain/integration/connector-configuration-draft-unresolved-reason
   holds are distinguishable from one another to the operator, none of them presented as another;
   for every item of d's generated_credentials, s states that item's name and that item's
   security_scheme; and where d carries method_mismatch, s states its registered and its operation,
@@ -8460,8 +8455,8 @@ Every part is stated, rather than the configuration text alone, because that tex
 A surface stating the text and nothing else hands the operator text designed to be incomplete while withholding the record of how, and the operator applies it and submits it as whole.
 
 Each unresolved item carries its name and its reason because the reasons name different things to fix.
-`domain/integration/connector-configuration-draft-unresolved-item` pairs one name with exactly one reason, and the four `domain/integration/connector-configuration-draft-unresolved-reason` holds send the operator to four different places: `no-capability-registered` to registering a capability naming this connector; `no-matching-input-schema-property` to a disagreement between two names that read alike to a person, which `scenarios/integration/a-mismatched-parameter-name-stays-unresolved` records for `customerId` against `customer_id`; `security-scheme-not-reducible-to-a-credential` to authoring that part of the call by hand, the scheme having no single value to substitute at all; `drafted-key-occupied-by-another-security-scheme` to a collision between two schemes of the same operation.
-A count of unresolved names, or a list of names without their reasons, leaves the operator to guess which of the four applies and to correct an input that was never at fault.
+`domain/integration/connector-configuration-draft-unresolved-item` pairs one name with exactly one reason, and the three `domain/integration/connector-configuration-draft-unresolved-reason` holds send the operator to three different places: `no-capability-registered` to registering a capability naming this connector; `security-scheme-not-reducible-to-a-credential` to authoring that part of the call by hand, the scheme having no single value to substitute at all; `drafted-key-occupied-by-another-security-scheme` to a collision between two schemes of the same operation.
+A count of unresolved names, or a list of names without their reasons, leaves the operator to guess which of the three applies and to correct an input that was never at fault.
 This is the reasoning `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` already gave for two error values rather than one, and `a-refused-draft-request-states-its-refusal-to-the-operator` for holding its three refusal conditions apart: a distinction the answer carries and the surface drops is a distinction returned to where the operator cannot read it.
 
 Each generated credential carries both names for the same reason it carries both in the answer.
@@ -10961,7 +10956,7 @@ involves:
 
 Nothing about this capability's own registration changes on its own — re-registering it, with the shape this rule now demands, is an operator's act this scenario only makes visible, never one this specification performs for them.
 
-=== scenarios/integration/a-mismatched-parameter-name-stays-unresolved
+=== scenarios/integration/a-mismatched-parameter-name-resolves-regardless
 ---
 subject: rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability
 given:
@@ -10970,8 +10965,8 @@ given:
 when:
   - a connector configuration draft is generated for connector erp-http from that operation
 then:
-  - customerId is named in the draft's unresolved list with reason no-matching-input-schema-property
-  - the draft's configuration embeds no ${subject:customerId} placeholder
+  - the draft's configuration embeds ${subject:customerId} at customerId's own position
+  - customerId is named in no item of the draft's unresolved list
 involves:
   - domain/integration/capability
   - domain/integration/connector-configuration-draft
@@ -10979,7 +10974,7 @@ involves:
 
 ## Description
 
-customerId and customer_id read alike to a person; the draft never treats them as the same fact.
+customerId and customer_id read alike to a person; this rule no longer holds the draft to whether any registered capability's input schema names the exact string customerId, only to whether erp-http currently has a capability registered against it at all — which read-invoices already satisfies.
 
 === scenarios/integration/a-swagger-2-document-refuses-the-draft
 ---

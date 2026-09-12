@@ -8150,16 +8150,6 @@
       ]
     },
     {
-      "node": "scenarios/integration/a-mismatched-parameter-name-stays-unresolved",
-      "digest": "sha256:106d54b0b2c8ae894dfb0b90493253c16999c5abac50a23d2338e89053e9ed10",
-      "files": [
-        {
-          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
-          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
-        }
-      ]
-    },
-    {
       "node": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
       "digest": "sha256:5b158a45715f9e124eac8475e0276130bcd54ce3fa0fe8cf6999f77b078e363f",
       "files": [
