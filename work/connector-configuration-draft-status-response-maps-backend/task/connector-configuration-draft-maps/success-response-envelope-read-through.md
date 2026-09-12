@@ -8,21 +8,23 @@ rationale: Cut from the plain field reading because it is its own decision about
 sources:
 - intake/scope.md
 objective: A success response schema whose top-level properties object holds exactly one property that
-  is an object declaring properties is read one level down, yielding that inner object's properties at
-  the outer property's name, a dot and each field's own name.
+  is an object explicitly declaring a properties keyword, whether empty or not, is read one level down,
+  yielding that inner object's properties at the outer property's name, a dot and each field's own name.
 criteria:
-- A success schema whose single top-level property is an object with properties yields that inner object's
-  properties and not the outer property itself.
+- A success schema whose single top-level property is an object explicitly declaring a properties keyword,
+  whether empty or not, yields that inner object's properties and not the outer property itself.
 - Each field yielded through an envelope holds the path made of the outer property's name, a dot and the
   field's own name.
 - Each field yielded through an envelope carries the outer property's name as its envelope.
 - A success schema with two or more top-level properties yields those top-level properties at their own
   names and carries no envelope.
-- A success schema whose single top-level property is not an object declaring properties yields that property
-  itself at its own name.
+- A success schema whose single top-level property's own schema is not an object explicitly declaring a
+  properties keyword yields that property itself as one field at its own name, carrying no envelope.
 - An object property declared inside the envelope is not descended into, and its own subproperties yield
   no field.
-- A single top-level property that is an object declaring no properties object yields no field.
+- A single top-level property that is an object declaring an empty properties keyword is read through as
+  an envelope and yields no field, and a success schema whose top-level properties keyword is absent or
+  empty yields no field.
 depends_on:
 - task/connector-configuration-draft-maps/success-response-schema-fields
 implements:
@@ -36,8 +38,7 @@ The narrowest reading that reaches the fields a document wrapped in one envelope
 
 ## Notes
 The envelope name is carried out of the reading because the draft discloses by which name it descended.
-BLOCKING, from the specification — Criteria 5 and 7 cannot both hold for a success response schema whose single top-level property is an object declaring no properties object. rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope conditions the envelope descent on the single property's own schema being "an object declaring a properties object"; failing that, its "otherwise" clause reads that one property as the schema's own top-level properties, at its own name — the outcome criterion 5 states. But domain/integration/connector-configuration-draft-reading-note-kind defines success-schema-declares-no-properties as a success response schema that "declares no properties object at either the top level or inside a single-property envelope", which names this exact schema shape as yielding nothing — the outcome criterion 7 states. Both nodes speak to the same schema shape and disagree; a person must settle which node owns the outcome — through the scope, or through the analysis that extends the specification — before this task can be written without asking the executor to satisfy a contradiction. This is standing, unresolved by the decided-fact edits made during this planning invocation, since neither of the two nodes in conflict was touched.
-UNDERDETERMINED, from the specification — No criterion covers a success response schema declaring no properties object at the top level at all (not the single-property-envelope case) — the rule's own closing clause ("a schema declaring no properties object at the level it is read at yielding no field") is untested for the top-level case.
-UNDERDETERMINED, from the specification — No criterion requires a yielded field to carry the success status it was read from, or the declared type and required listing the schema declares for it, though domain/integration/connector-configuration-draft-response-field declares all three. A reader dropping them from every yielded field satisfies every criterion as written.
-UNDERDETERMINED, from the specification — No criterion states that a field read at a single top-level property that is not an object declaring properties (the non-envelope case) carries no envelope — only the two-or-more-properties case and the through-an-envelope case are covered.
-ADVISORY, from the specification — The envelope-read-through reading note (and the success-schema-declares-no-properties note) that this descent's outcome decides belongs to the task naming the draft's reading_notes; confirm that task is handed the envelope name and the no-properties schemas this reading identifies.
+An earlier binding of this task found a BLOCKING contradiction between the envelope rule's own "otherwise" clause and the reading-note kind's account of success-schema-declares-no-properties, over a success response schema whose single top-level property is an object with no properties keyword at all. Resolved by an /analyse cross-check, commit 729e5e46: the envelope precondition is now the keyword's mere presence, empty or not, and success-schema-declares-no-properties is reserved for the level actually read declaring the keyword absent or empty. Criteria 1, 5 and 7 above are reworded to this resolved reading, and a re-bind after the fix confirms every clause of the rule's statement now reaches a criterion with no contradiction remaining.
+ADVISORY, from the specification — domain/integration/connector-configuration-draft-response-field declares status required, and declared_type and declared_required where the schema declares them; no criterion of this task states what a yielded field carries for those three, because the status and the schema-declared account are assigned by the responseMap rule's reading across responses (success-response-schema-fields and drafted-response-map), not by this one-level descent. Not a specification gap — a seam the caller should confirm drafted-response-map closes, since a field this task yields is not yet a complete connector-configuration-draft-response-field on its own.
+REMAINDER, from the specification — The envelope rule's own Description states the envelope was read through, and by what name, is named to the operator as a reading note; a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits carries the emission of that note (and of success-schema-declares-no-properties). No criterion of this task names a note; belongs to the task naming the draft's reading_notes.
+REMAINDER, from the specification — a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas names this rule as the reader of one schema's fields and owns the responseMap assembly across a chosen operation's success responses — keying by name, the lowest-status rule, the status/type/required carried from that same schema, application/json and $ref/allOf/oneOf/anyOf reading, the empty responseMap default. None of that is a criterion here; belongs to success-response-schema-fields and drafted-response-map within this same epic.
