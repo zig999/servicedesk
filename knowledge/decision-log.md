@@ -4381,5 +4381,65 @@ entries:
     offer a choice no draft request could be made from. The reading matches an-openapi-document-declaring-no-such-operation-refuses-the-draft,
     which already treats a paths entry declaring no operation as an operation the document does not declare rather
     than as a document that cannot be read.'
+- location: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses.md
+  field: statement
+  unstated: The material maps a declared 2xx status to ok, 401, 403 and 407 to denied, every other 4xx and every 5xx to unavailable,
+    and says nothing of a declared 1xx or 3xx status.
+  decided: Every numeric status outside 200 through 299 and outside 401, 403 and 407 is drafted unavailable, a declared 1xx
+    or 3xx status included.
+  why: an-unclassified-status-ends-unavailable already ends any status the statusMap does not classify as unavailable, so
+    drafting a 1xx or 3xx the same way states the ending it would take at observation and invents no fourth reading of a
+    status the material never mentioned.
+- location: domain/integration/connector-configuration-draft-reading-note-kind.md
+  field: values
+  unstated: The material names the conditions a draft reads past or reads through -- a default response, a status-range key,
+    a non-JSON success body, an envelope, united variants, a repeated field name, no responses, no success schema -- and
+    leaves open whether they join the unresolved-reason enumeration or become an element of their own, naming no closed set.
+  decided: A new value object, connector-configuration-draft-reading-note, carried by the draft as reading_notes, with a closed
+    kind enumeration of nine values -- default-response-not-drafted, status-range-not-drafted, non-json-success-content-not-read,
+    envelope-read-through, variants-united, repeated-field-name-path-not-taken, no-responses-declared, no-success-response-schema,
+    success-schema-declares-no-properties.
+  why: An unresolved item names a parameter, a field or a security scheme the draft could not turn into a placeholder, and
+    a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text gives each a position in the drafted
+    text, while a response read past or read through has no position and is no failure to resolve, so widening that enumeration
+    would hand its consumers names that stand nowhere; a closed set of kinds lets the surface hold them apart exactly as it
+    already holds the unresolved reasons apart.
+- location: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads.md
+  field: statement
+  unstated: The material places which capability reads each drafted key as a column of the draft's own disclosure and has the
+    draft's capabilities reader carry the output schema, without saying whether the draft's answer then carries a capability
+    name, and separately asks the readiness panel to make the same reading over the Configuration field after the draft is
+    applied.
+  decided: The surface reads the capabilities currently registered naming the connector through the registry's own published
+    reads and makes the coverage statement over the draft's configuration and over the field's content alike; the draft's
+    answer carries no capability.
+  why: a-connector-configuration-draft-response-carries-no-capability already refuses a capability name in the answer, and the
+    reading the material needs over the field after applying can be made only by the surface, so one reading made in one place
+    serves both moments without reopening a standing decision.
+- location: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides.md
+  field: statement
+  unstated: The material groups the subject-placeholder finding under the block whose findings withhold the submission, while
+    stating separately that the surface promises no check the registry does not perform, and does not reconcile the two for
+    a check the registry makes against the capabilities standing at the moment of the write.
+  decided: Submission is withheld only over content that is not well-formed JSON object text; a subject placeholder no
+    capability declares, a departure from the HTTP connector's vocabulary and a key no capability reads are each stated and
+    the act stays offered.
+  why: a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed withholds the act because its
+    outcome is certain on the surface, and a placeholder reading made against capabilities read at one moment is not certain
+    at the write, so withholding over it would refuse a registration the registry might accept.
+- location: domain/integration/connector-configuration-draft-response-field.md
+  field: attributes.declared_type.type
+  unstated: The material shows each drafted field beside the type its schema declares, without saying how a schema declaring
+    a list of types is carried.
+  decided: string, a list of types carried as its members joined by a vertical bar.
+  why: The value is the document's own account of the field, carried for the operator's review and read by nothing downstream,
+    so one text form that shows every declared type serves and no structure is owed.
+- location: domain/integration/connector-configuration-draft-status-reading.md
+  field: attributes.declared_as.required
+  unstated: The material shows every drafted status beside the description the document declares its response under, without
+    saying what the reading carries where a document omits that description.
+  decided: declared_as is not required; a status whose response declares no description carries none.
+  why: OpenAPI 3.x requires a description on a response object and documents in the wild omit it, and inventing one would put
+    text the document never stated beside the very status the operator is asked to judge by it.
 
 ---

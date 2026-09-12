@@ -5005,6 +5005,66 @@ entries:
     offer a choice no draft request could be made from. The reading matches an-openapi-document-declaring-no-such-operation-refuses-the-draft,
     which already treats a paths entry declaring no operation as an operation the document does not declare rather
     than as a document that cannot be read.'
+- location: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses.md
+  field: statement
+  unstated: The material maps a declared 2xx status to ok, 401, 403 and 407 to denied, every other 4xx and every 5xx to unavailable,
+    and says nothing of a declared 1xx or 3xx status.
+  decided: Every numeric status outside 200 through 299 and outside 401, 403 and 407 is drafted unavailable, a declared 1xx
+    or 3xx status included.
+  why: an-unclassified-status-ends-unavailable already ends any status the statusMap does not classify as unavailable, so
+    drafting a 1xx or 3xx the same way states the ending it would take at observation and invents no fourth reading of a
+    status the material never mentioned.
+- location: domain/integration/connector-configuration-draft-reading-note-kind.md
+  field: values
+  unstated: The material names the conditions a draft reads past or reads through -- a default response, a status-range key,
+    a non-JSON success body, an envelope, united variants, a repeated field name, no responses, no success schema -- and
+    leaves open whether they join the unresolved-reason enumeration or become an element of their own, naming no closed set.
+  decided: A new value object, connector-configuration-draft-reading-note, carried by the draft as reading_notes, with a closed
+    kind enumeration of nine values -- default-response-not-drafted, status-range-not-drafted, non-json-success-content-not-read,
+    envelope-read-through, variants-united, repeated-field-name-path-not-taken, no-responses-declared, no-success-response-schema,
+    success-schema-declares-no-properties.
+  why: An unresolved item names a parameter, a field or a security scheme the draft could not turn into a placeholder, and
+    a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text gives each a position in the drafted
+    text, while a response read past or read through has no position and is no failure to resolve, so widening that enumeration
+    would hand its consumers names that stand nowhere; a closed set of kinds lets the surface hold them apart exactly as it
+    already holds the unresolved reasons apart.
+- location: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads.md
+  field: statement
+  unstated: The material places which capability reads each drafted key as a column of the draft's own disclosure and has the
+    draft's capabilities reader carry the output schema, without saying whether the draft's answer then carries a capability
+    name, and separately asks the readiness panel to make the same reading over the Configuration field after the draft is
+    applied.
+  decided: The surface reads the capabilities currently registered naming the connector through the registry's own published
+    reads and makes the coverage statement over the draft's configuration and over the field's content alike; the draft's
+    answer carries no capability.
+  why: a-connector-configuration-draft-response-carries-no-capability already refuses a capability name in the answer, and the
+    reading the material needs over the field after applying can be made only by the surface, so one reading made in one place
+    serves both moments without reopening a standing decision.
+- location: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides.md
+  field: statement
+  unstated: The material groups the subject-placeholder finding under the block whose findings withhold the submission, while
+    stating separately that the surface promises no check the registry does not perform, and does not reconcile the two for
+    a check the registry makes against the capabilities standing at the moment of the write.
+  decided: Submission is withheld only over content that is not well-formed JSON object text; a subject placeholder no
+    capability declares, a departure from the HTTP connector's vocabulary and a key no capability reads are each stated and
+    the act stays offered.
+  why: a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed withholds the act because its
+    outcome is certain on the surface, and a placeholder reading made against capabilities read at one moment is not certain
+    at the write, so withholding over it would refuse a registration the registry might accept.
+- location: domain/integration/connector-configuration-draft-response-field.md
+  field: attributes.declared_type.type
+  unstated: The material shows each drafted field beside the type its schema declares, without saying how a schema declaring
+    a list of types is carried.
+  decided: string, a list of types carried as its members joined by a vertical bar.
+  why: The value is the document's own account of the field, carried for the operator's review and read by nothing downstream,
+    so one text form that shows every declared type serves and no structure is owed.
+- location: domain/integration/connector-configuration-draft-status-reading.md
+  field: attributes.declared_as.required
+  unstated: The material shows every drafted status beside the description the document declares its response under, without
+    saying what the reading carries where a document omits that description.
+  decided: declared_as is not required; a status whose response declares no description carries none.
+  why: OpenAPI 3.x requires a description on a response object and documents in the wild omit it, and inventing one would put
+    text the document never stated beside the very status the operator is asked to judge by it.
 
 ---
 
@@ -5275,6 +5335,18 @@ attributes:
     many: true
   - name: method_mismatch
     type: connector-configuration-draft-method-mismatch
+  - name: status_readings
+    type: connector-configuration-draft-status-reading
+    required: true
+    many: true
+  - name: response_fields
+    type: connector-configuration-draft-response-field
+    required: true
+    many: true
+  - name: reading_notes
+    type: connector-configuration-draft-reading-note
+    required: true
+    many: true
 relationships:
   - target: capability
     type: reference
@@ -5284,7 +5356,8 @@ relationships:
 ## Description
 
 A candidate connector configuration, generated from one operation of an OpenAPI document for one connector name, offered for an operator to review and apply — never registered by its own generation.
-Its configuration holds the same method/address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name is one at least one of the named capabilities is currently registered against, whatever any of those capabilities' own input schemas declare, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value; it never states a responseMap or a statusMap, which no OpenAPI construct can supply.
+Its configuration holds the same method/address/query/headers/body shape an-http-connector-configuration-declares-its-call already governs, built with a ${subject:<name>} placeholder wherever a parameter or request-body field's name is one at least one of the named capabilities is currently registered against, whatever any of those capabilities' own input schemas declare, and a ${credential:<name>} placeholder wherever an operation's security scheme reduces to one credential value, together with a statusMap drafted from the numeric statuses the operation's responses declare and a responseMap keyed by the fields its success response schemas declare.
+Its status_readings, response_fields and reading_notes disclose, beside that text, what the document declared each drafted status and field as and what the draft read past or read through.
 The capability reference is every capability, if any, currently registered naming the connector the draft is generated for — empty where none is, since resolving a subject placeholder has nothing to check a name against without one, and all of them where more than one is, since the draft reads none of them in preference to the others.
 
 ## Responsibility
@@ -5330,6 +5403,114 @@ Present on a connector configuration draft only where a connector configuration 
 ## Responsibility
 
 Name the method a currently registered connector configuration declares and the method the drafted operation declares, where the two disagree.
+
+=== domain/integration/connector-configuration-draft-reading-note
+---
+type: value-object
+attributes:
+  - name: kind
+    type: connector-configuration-draft-reading-note-kind
+    required: true
+  - name: subject
+    type: string
+    required: true
+  - name: detail
+    type: string
+---
+
+## Description
+
+One condition of the chosen operation's responses a connector configuration draft met while drafting its statusMap and responseMap — the kind naming the condition, the subject naming the response key, the media type, the property or the field the condition was met at exactly as the document names it, and the detail carrying what the kind needs said beside its subject, the path not taken for a repeated field name among them.
+A note names what the draft read past or read through, so that a map shorter than the document is never read as a document shorter than it is.
+
+## Responsibility
+
+Name one reading condition, the thing it was met at and what the condition needs said beside it.
+
+=== domain/integration/connector-configuration-draft-reading-note-kind
+---
+type: enumeration
+values:
+  - default-response-not-drafted
+  - status-range-not-drafted
+  - non-json-success-content-not-read
+  - envelope-read-through
+  - variants-united
+  - repeated-field-name-path-not-taken
+  - no-responses-declared
+  - no-success-response-schema
+  - success-schema-declares-no-properties
+---
+
+## Description
+
+The closed set of conditions a connector configuration draft discloses about how it read the chosen operation's responses.
+default-response-not-drafted is a response keyed default, which names no status and is drafted into no statusMap entry.
+status-range-not-drafted is a response keyed by a status range such as 2XX, which no observation's own status ever equals and is drafted into no statusMap entry.
+non-json-success-content-not-read is a success response whose content declares no application/json media type, from which no field is read.
+envelope-read-through is a success response schema whose single object property was read through as an envelope.
+variants-united is a success response schema whose oneOf or anyOf variants were united into one set of fields.
+repeated-field-name-path-not-taken is a field name read under differing paths from more than one success response schema, of which the path from the lowest status was drafted and this one was not.
+no-responses-declared is an operation declaring no responses object at all.
+no-success-response-schema is an operation whose responses declare no success response schema under application/json.
+success-schema-declares-no-properties is a success response schema that declares no properties object at either the top level or inside a single-property envelope.
+
+## Responsibility
+
+None.
+
+=== domain/integration/connector-configuration-draft-response-field
+---
+type: value-object
+attributes:
+  - name: name
+    type: string
+    required: true
+  - name: path
+    type: string
+    required: true
+  - name: status
+    type: string
+    required: true
+  - name: declared_type
+    type: string
+  - name: declared_required
+    type: boolean
+  - name: envelope
+    type: string
+---
+
+## Description
+
+One field a connector configuration draft read from a success response schema of the chosen operation and drafted as one responseMap entry — the field's own name as the entry's key and the path to it as the entry's value — together with the success status it was read from and, where the schema declares them, the type the schema declares for the field, whether the schema lists the field as required, and the name of the envelope property the reading descended through to reach it.
+The type, the required listing and the envelope are the document's own account of the field, carried for the operator's review and read by no observation.
+
+## Responsibility
+
+Disclose one drafted response field with what the document declares about it.
+
+=== domain/integration/connector-configuration-draft-status-reading
+---
+type: value-object
+attributes:
+  - name: status
+    type: string
+    required: true
+  - name: ending
+    type: domain/investigation/evidence-result
+    required: true
+  - name: declared_as
+    type: string
+---
+
+## Description
+
+One numeric HTTP status code the chosen operation's responses object declares, paired with the evidence-result ending the connector configuration draft mapped it to in the drafted statusMap and with the description the OpenAPI document declares that response under, where it declares one.
+It is disclosed so that the operator reviewing the draft reads the document's own account of the status beside the ending the draft chose for it, before deciding whether that ending stands.
+
+## Responsibility
+
+Disclose one declared status, the ending drafted for it and what the document says that status means.
 
 === domain/integration/connector-configuration-draft-unresolved-item
 ---
@@ -6614,17 +6795,21 @@ This reopens exactly what an exact-match condition once existed to prevent: a-co
 
 Where no capability is registered at all, every candidate name is unresolved for that one reason, and the draft still generates — capability registration order is not a precondition this rule imposes, the same reading domain/integration/connector-configuration already gives a configuration authored before its capability exists.
 
-=== rules/integration/a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap
+=== rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
 ---
 type: invariant
-statement: A connector configuration draft never states a value for responseMap or for statusMap — an OpenAPI document names no evidence-result ending for a status and no field path for a response, so both are always absent from the drafted configuration and left for the operator to author directly.
+statement: >-
+  A connector configuration draft names in its reading_notes one note, by kind and by subject, for
+  every condition domain/integration/connector-configuration-draft-reading-note-kind names that the
+  chosen operation's responses exhibit, and names no note for a condition they do not exhibit.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
 
 ## Description
 
-an-http-connector-configuration-declares-its-call holds statusMap to a mapping of an HTTP status to one evidence-result ending — ok, denied, timeout or unavailable — and holds responseMap to the field paths an evidence result reads a response by. Neither is a fact an OpenAPI document states: its response schemas describe shape, never which of this system's own outcomes a status means, and never which path this system's own evidence reads a field from. Inventing either from a guess would put a fact the business never decided into a drafted configuration silently; leaving both absent is the honest answer, and the drafted configuration still registers, address, query, headers, body and every generated placeholder intact, exactly as incomplete as an operator's own first hand-authored attempt would be.
+A drafted statusMap or responseMap can honestly be shorter than the document — a default response, a status range, a non-JSON success body, a field name repeated under two paths — or can have been read through an envelope or across variants, and an operator shown the maps alone cannot tell a short map from a short document.
+Each note names the condition and the thing it was met at, so the operator knows what the draft read past, what it read through and what remains theirs to write by hand.
 
 === rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
 ---
@@ -6747,6 +6932,53 @@ An invariant over `domain/integration/connector-configuration-draft`, immediate 
 A new rule rather than `contracts/integration/connector-configuration-draft`, which as an api declares the operations it publishes and can declare no shape of an answer at all, and rather than the domain element, whose declaration leaves this open by construction — a declared reference says what the draft holds while it is generated, not what the operation hands back.
 It decides nothing about how many capabilities the draft reads, nothing about how a name is matched, and nothing about the draft's refusals, each of which stays its own rule's.
 
+=== rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+---
+type: invariant
+statement: >-
+  A connector configuration draft's configuration declares a responseMap holding, for each
+  response field a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+  reads from a success response schema of the chosen operation — a success response schema being
+  the schema a response keyed by a numeric status from 200 through 299 declares under the media
+  type application/json and no other, read through its $refs, with the parts of an allOf merged
+  into one properties object and the variants of a oneOf or an anyOf united into one — exactly one
+  entry keyed by the field's own name and holding the path to it, a name read under differing
+  paths from more than one success response schema holding the path read from the lowest status,
+  and an operation from which no such field is read drafted with an empty responseMap object and
+  never without one.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The document names the fields a success response carries and the path to each; it never names which of them a capability reads or under what name, so the draft keys every field by its own name and leaves the choice of which to keep and what to rename to the operator, who reads which capability fields those keys reach through a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads.
+Every success response schema contributes, rather than the lowest one alone, because a field one status carries and another does not is still a field the operation answers with, and the draft exists to hand the operator the most the document states.
+application/json is the one media type read for the same reason a-connector-configuration-drafts-request-body-fields-are-its-json-schemas-top-level-properties reads it alone for the request body: the body an observation parses is JSON, and a content object's entries are alternative encodings with no first among them.
+The responseMap is drafted even where it holds no entry because a configuration lacking one ends an observation unavailable before any call is issued.
+
+=== rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+---
+type: invariant
+statement: >-
+  A connector configuration draft's configuration declares a statusMap holding exactly one entry
+  for each key of the chosen operation's responses object that is a numeric HTTP status code and
+  no entry for any other key — the entry's ending ok for a status from 200 through 299, denied for
+  the statuses 401, 403 and 407, and unavailable for every other numeric status — so that an
+  operation declaring no numeric status key is drafted with an empty statusMap object and never
+  without one.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+The document names which statuses the operation answers with and never names which of this system's four endings a status means, so the draft chooses each ending by a fixed reading of the status alone and discloses the choice beside the document's own description of that status in its status_readings, for the operator to keep or change.
+A denial is read only from the three statuses that name an authentication or authorization refusal, because every other status an observation meets unclassified already ends it unavailable under an-unclassified-status-ends-unavailable, so drafting those as unavailable states the ending they would take rather than changing it.
+No declared status is drafted as timeout, an ending that names a call the connector never received an answer to.
+The statusMap is drafted even where it holds no entry because a configuration lacking one ends an observation unavailable before any call is issued.
+Which keys of the responses object are not numeric statuses, and that each of them is named to the operator, is a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits's own.
+
 === rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
 ---
 type: invariant
@@ -6834,6 +7066,28 @@ constrains:
 Only the top level of a request-body schema names fields because a-capability-input-schema-holds-a-well-formed-object declares a capability's own names at the top level of properties, one per Subject attribute, and a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability matches a field name against those keys byte for byte. A nested leaf name would equate two different fields wherever a body repeats a name at two depths, and a name rooted from the body would be matched against a key no capability ever declares that way; either produces a placeholder standing for something other than the field it was read from — the exact silent equation that rule refuses. A body schema that is an array or another non-object names nothing to match against, so it honestly declares no field, and the draft states no body rather than inventing a key.
 
 application/json is the one media type whose schema is read because the body an-http-connector-configuration-declares-its-call admits is a value inside the connector configuration's own JSON text, so a JSON object of top-level keys is the only body the executing connector ever carries; field names read off a multipart, form-encoded or XML schema would draft keys for a body that connector never sends in the shape the document declared them for. Where one request body declares content under several media types, naming this one is also the only choice available without a preference the document never states: the entries of a content object are alternative encodings of the same call, keyed rather than ordered, so there is no first entry to read the way a servers array has one. A request body declaring content under no such media type — a JSON-suffixed vendor media type alone among them — leaves the draft stating no body key rather than reading a schema at a name this reader does not recognize: the same honest gap a document declaring no server leaves in the address, and the same one a non-object body schema already leaves, closed by the reviewing operator by hand.
+
+=== rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+---
+type: invariant
+statement: >-
+  A surface offering an operator entry of a connector configuration states, at that entry, that
+  what is entered is a JSON object; that the HTTP connector reads its method, address, statusMap
+  and responseMap and reads a query, headers and a body where it declares them; and that a
+  placeholder is written as ${subject:<attribute-name>}, ${requester} or ${credential:<name>} —
+  each of those claims one
+  an-http-connector-configuration-declares-its-method-and-status-vocabulary,
+  an-http-connector-configuration-declares-its-call or
+  a-connector-configuration-placeholder-is-written-in-one-of-three-forms already holds, the entry
+  stating no further claim and refusing nothing.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A connector configuration is opaque text an operator authors directly, and the keys it must carry are stated by rules the operator authoring it has not read; an entry that says nothing leaves them to learn the keys from a collection that ended unavailable.
+The statement is bounded to what three rules already hold and carries no example of its own, for the reason an-output-schema-entry-states-what-the-system-reads-from-it and an-output-schema-entrys-statement-carries-no-sixth-claim give for the sibling registry's entry: guidance drawn from the nodes that hold a fact is not a second home for it, and a screen carrying its own worked example would be.
 
 === rules/integration/a-connector-configuration-holds-a-well-formed-object
 ---
@@ -7041,7 +7295,7 @@ The surface judges, because the operator authoring this text is the one person w
 A configuration that reads to them as ordinary text is exactly the text `a-connector-configuration-holds-a-well-formed-object`'s own Description says a human can now write and a runtime call would fail on; a surface that says nothing leaves that operator to learn it from a refused submission, or — where the content came back from a read rather than from their own typing — never to learn it at all, while editing over content the registry will not take.
 Content a returned read carries can be short of the criterion even now: the criterion admits a registration supplied as an object and answers it as text, and configurations registered before that rule existed were never held to it, exactly the posture `a-capability-input-schema-holds-a-well-formed-object` already takes toward a stored schema written before its own shape was demanded.
 
-It judges by the registry's criterion and by no other, so that the surface promises no check the registry does not perform — the bound `an-output-schema-entrys-statement-carries-no-sixth-claim` holds over the sibling registry's own entry surface, held here for the same reason: a surface that refused what the registry accepts, or accepted what the registry refuses, would be a second home for the well-formedness fact and would state to the operator something no node holds.
+It judges well-formedness by the registry's criterion and by no other, so that the surface promises no well-formedness check the registry does not perform — the bound `an-output-schema-entrys-statement-carries-no-sixth-claim` holds over the sibling registry's own entry surface, held here for the same reason: a surface that refused what the registry accepts, or accepted what the registry refuses, would be a second home for the well-formedness fact and would state to the operator something no node holds.
 Stating nothing where the content is well formed is the other half of one condition and not a second decision: a statement that stands over content the criterion accepts teaches the operator that a configuration the registry will take is somehow wrong, which is the same misreading in the other direction.
 
 It is a fact rather than form on this specification's own line — it changes what the operator can learn about the text they are about to submit, not how that text looks — so which control carries the statement, its wording, how many controls carry it and where they sit are the interface's own, exactly as every surface rule here leaves them.
@@ -7114,6 +7368,116 @@ The statement standing in the act's place is what the operator has to go on: wha
 
 This decides that the act is withheld while the judgment finds the content not well formed, and nothing beyond it.
 What the surface states about the content is the judgment rule's own; whether the act is offered where the content is well formed but nothing was changed is decided by the rule over the surface that read a registration and holds no edit; what the registry answers a submission that does reach it stays the registry's own rules'; and which control carries the act, whether a withheld act is absent or carried by a control the operator cannot take, its wording and its placement are the interface's own.
+
+=== rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+---
+type: invariant
+statement: >-
+  A surface presenting or editing a connector configuration states, for each
+  ${credential:<name>} placeholder the well-formed JSON object text of its Configuration field
+  embeds, that the credential it names is resolved from the server's own configuration at the
+  moment of a test or an observation and is checked by nothing on that surface.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A credential placeholder resolves against environment configuration the surface cannot see, and an-unresolvable-observation-ends-unavailable is where one that resolves to nothing is met.
+Beside a surface that states every other thing it can judge about the text, silence over the one thing it cannot reads as a check that passed; naming the credential and saying where it is checked keeps the operator from submitting a configuration believing the surface confirmed it.
+
+=== rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+---
+type: policy
+statement: >-
+  A surface presenting or editing a connector configuration under a connector name states, for
+  each ${subject:<attribute-name>} placeholder the well-formed JSON object text of its
+  Configuration field embeds, whether the attribute name is among the input schema properties of
+  every capability currently registered naming that connector — naming the placeholder and the
+  capability that does not declare it where one does not — and states, where no capability is
+  currently registered naming that connector, that its subject placeholders cannot be checked.
+constrains:
+  - domain/integration/connector-configuration
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+a-connector-placeholder-is-declared-by-its-capability refuses the write, and a-connector-placeholder-refusal-reports-every-orphaned-placeholder names what the refusal reports; the operator meets both a round trip after typing the placeholder.
+Stating the same reading beside the field, from the capabilities the surface reads at that moment, hands the operator the correction before the write rather than after it.
+The reading is the surface's own at the moment it is made and the registry's at the moment of the write, so the two can differ where a capability is registered between them, which is why the statement withholds nothing.
+
+=== rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+---
+type: invariant
+statement: >-
+  A surface presenting or editing a connector configuration whose Configuration field holds
+  well-formed JSON object text states to the operator each way that content departs from what
+  an-http-connector-configuration-declares-its-method-and-status-vocabulary,
+  an-http-connector-configuration-declares-its-call and
+  a-connector-configuration-placeholder-is-written-in-one-of-three-forms require of a
+  configuration the HTTP connector executes — naming the key that departs and, for a method or a
+  statusMap ending outside its vocabulary, the values that vocabulary admits — and states no such
+  departure where its own judgment finds none.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The registry holds a connector configuration to well-formedness alone, and what the HTTP connector requires of its keys is applied at observation, so an operator who writes a method in lower case or an ending outside the four learns it from a collection that ended unavailable, or never.
+The surface states each departure by the same criteria the connector applies and states nothing where none is found, the posture a-connector-configuration-surface-judges-its-configuration-fields-content already takes over well-formedness: a statement standing over content the connector would execute teaches the operator that a configuration that works is wrong.
+Whether the surface withholds any act over a departure it states is a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides's own.
+
+=== rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+---
+type: policy
+statement: >-
+  A surface authoring or editing a connector configuration under a connector name states, over
+  each configuration text it presents that is well-formed JSON object text declaring a responseMap
+  object — the content of its Configuration field and the configuration of a draft it states
+  alike — which keys of that responseMap name a top-level output schema property of a capability
+  currently registered naming that connector, naming that capability, which keys name none, and
+  each top-level output schema property of every such capability that no key of that responseMap
+  names, and states, where no capability is currently registered naming that connector, that
+  which fields an observation would carry cannot be read.
+constrains:
+  - domain/integration/connector-configuration
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+an-observation-carries-only-the-output-schema-fields-its-response-map-reaches makes a responseMap key useful only under a capability's own field name, and nothing at registration refuses a key under any other name — so the one moment the operator can learn that a key reaches nothing, or that a field the capability expects has no key, is while the text is in front of them.
+The reading is made over the draft's configuration as well as over the field, because the draft keys every field by the document's name and the operator decides what to rename before applying it as much as after.
+The surface reads the capabilities itself, through the registry's own published reads, and the draft's answer carries no capability, exactly as a-connector-configuration-draft-response-carries-no-capability leaves it.
+Which control carries each statement, its wording and where it stands beside the text are the interface's own.
+
+=== rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+---
+type: invariant
+statement: >-
+  Every statement
+  a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content,
+  a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares,
+  a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution and
+  a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+  have a surface make over a connector configuration's text is a condition the registry, the
+  HTTP connector or an observation itself already decides, the surface refusing nothing on any
+  of them and withholding no act submitting a registration beyond the one
+  a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+  withholds.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A surface that judged by a criterion of its own would be a second home for a fact about what a configuration must be, and a surface that withheld the write over a reading the registry does not itself make would refuse what the registry accepts.
+Submission is withheld over content that is not a well-formed object because that outcome is certain on the surface; a subject placeholder no capability declares, a method outside the vocabulary or a key no capability reads are stated and left to the operator, since the registry accepts the last two and decides the first against the capabilities standing at the moment of the write.
+The same bound an-output-schema-entrys-statement-carries-no-sixth-claim holds over the sibling registry's entry.
 
 === rules/integration/a-connector-configurations-listing-offers-a-route-to-author-a-new-configuration-on-every-reading
 ---
@@ -7240,6 +7604,24 @@ HTTP 500 is reserved here for a server-side condition the requester neither caus
 The fetch refusal reports the link and the failure to its caller because the refusal is otherwise unactionable: the operator's next act is either to name a different link or to go and fix the far end publishing the document, and which of the three failures happened is the whole of what tells those two apart — a link nothing answered, a link too slow to keep waiting for (`an-unfetchable-openapi-link-refuses-the-draft`'s sixty seconds), and a link that answered with a status. Held only server-side, that distinction would exist in a log the operator authoring the configuration cannot read. The link is echoed because it is the request's own input handed straight back, disclosing nothing the caller did not itself send, and the answered status is the far end's own public answer to a request the operator named, so neither field says anything about this system.
 
 The details stop there. `constraints/a-domain-error-unmapped-by-status-is-refused-generically` keeps an unanticipated error's own message and carried context server-side because they may describe internal state; this refusal is anticipated and named, but the underlying network or client error's own message is that same kind of text and is held to that same treatment, and the body an unsuccessful status arrived with is content this operation never read as a document and would be handing back unexamined. Three named failures and, for one of them, a status code, is the whole of what distinguishes the three causes, which is the whole job a detail has here — the reading `an-unreachable-connector-ends-unavailable` already takes when its detail names the connector and no part of the call.
+
+=== rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+---
+type: invariant
+statement: >-
+  The Configuration Helper offers the act requesting a connector configuration draft only while
+  the surface's Connector field holds a non-empty connector name and an operation stands chosen
+  from the fetched document's listing, stating in the act's place, while either is missing, which
+  of the two the request waits on.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A draft resolves its subject placeholders by the capabilities registered against the connector name, so a request made under an empty name names every parameter unresolved with reason no-capability-registered, a true statement about the wrong cause.
+A request made before an operation is chosen names no path and no method, and the only answer it can have is the refusal an-openapi-document-declaring-no-such-operation-refuses-the-draft states for a pairing the operator never chose.
+Withholding the act until both stand, and saying which is missing, follows a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed: an act whose outcome is already known on the surface is not offered to fail.
 
 === rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
 ---
@@ -8220,6 +8602,24 @@ Which control carries this act, whether it stands among the surface's own action
 One fact, decided once for both registries, on the reading `a-submitted-registration-states-its-outcome-to-the-operator` and `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface` each already took over this same pair.
 Consistency is eventual because the surface never holds either registration: the readings this rule is stated over are the windows a read issued separately to a registry passes through.
 
+=== rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+---
+type: invariant
+statement: >-
+  A connector configuration draft the Configuration Helper states stands marked as generated for
+  the link, the operation and the connector name of the request that produced it, and is stated
+  as stale — the act applying it still offered — from the moment the surface's link, chosen
+  operation or connector name differs from any of those three.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+A draft is a reading of one operation of one document for one connector, and a-refused-draft-request-states-its-refusal-to-the-operator already refuses to let an earlier request's draft stand beside a later request's refusal as if it answered it.
+The same misreading arises without a second request: an operator who changes the link, the operation or the connector name and applies the draft still standing applies text drafted from what they moved away from, and the unresolved items and the reading notes beside it describe an operation they are no longer looking at.
+The act is still offered because the draft is still exactly what it was — what changed is the surface around it, and the operator who knows that may still want it.
+
 === rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
 ---
 type: policy
@@ -8269,6 +8669,27 @@ This is about a write, and the sibling rules about a read stay where they are. `
 What follows a stated outcome is no part of this: where the surface goes after a registration was made, whether it stays, reloads or leaves, is not decided here. Whether either outcome is ever stated before the registry answers, or the two are ever presented alike, is `a-registration-outcome-is-never-stated-before-the-registry-answers`'s own. Which control carries either statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
 
 Consistency is eventual because the surface performs no registration itself: what it states is the answer to a call issued separately to a registry that holds the registration, and the statement settles only when that call settles.
+
+=== rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+---
+type: invariant
+statement: >-
+  The response fields a connector configuration draft reads from one success response schema are,
+  where that schema's top-level properties object holds exactly one property whose own schema is
+  an object declaring a properties object, the properties of that inner object, each at the path
+  made of the outer property's name, a dot and the field's own name, and otherwise the schema's
+  own top-level properties, each at the path that is its own name — the reading never descending
+  below that one envelope, and a schema declaring no properties object at the level it is read at
+  yielding no field.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Many documents wrap a response's fields in one enveloping property, and read literally such a schema yields a single field named after the envelope, which no capability would read a value from.
+Reading through exactly one single-property object envelope is the narrowest reading that reaches the fields such a document declares without guessing at anything deeper: a schema with two or more top-level properties is read as it stands, and nothing below the envelope is ever flattened, since a nested field's path is the operator's own choice to write.
+That the envelope was read through, and by what name, is named to the operator as a reading note.
 
 === rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface
 ---
@@ -8478,25 +8899,39 @@ statement: >-
   unresolved item the answer carries, each by the name that answer gave it and by the reason that
   answer named for it, each of those reasons stated apart from every other reason the draft's own
   reason vocabulary holds; every generated credential the answer carries, each by the generated
-  name and by the security scheme's own name that answer gave it; and, where that answer carries a
-  method mismatch, the method it names as currently registered together with the method it names as
-  the drafted operation's, neither of the two standing for the other — and where that answer
-  carries no method mismatch, no mismatch is stated at all — stating no name, no reason, no
-  generated name, no security scheme name and no method the answer did not carry, for any of them.
+  name and by the security scheme's own name that answer gave it; every status reading the answer
+  carries, each by its status, its ending and what the document declared it as; every response
+  field the answer carries, each by its name, its path and the status it was read from and, where
+  the answer carries them, its declared type, its declared required listing and the envelope it
+  was read through; every reading note the answer carries, each by its kind and its subject and,
+  where the answer carries it, its detail, each of those kinds stated apart from every other kind
+  the draft's own note-kind vocabulary holds; and, where that answer carries a method mismatch,
+  the method it names as currently registered together with the method it names as the drafted
+  operation's, neither of the two standing for the other — and where that answer carries no
+  method mismatch, no mismatch is stated at all — stating no name, no reason, no generated name,
+  no security scheme name, no status, no field, no note and no method the answer did not carry,
+  for any of them.
 expression: >-
   For an operator requesting a draft through draft-connector-configuration-from-openapi of
   contracts/integration/connector-configuration-draft, from the surface s carrying the
   Configuration Helper a-connector-configuration-authoring-surface-offers-a-configuration-helper
-  states: where that request is answered with a connector-configuration-draft d, s states d's
-  configuration; for every item of d's unresolved, s states that item's name and that item's
-  reason, and the three reasons domain/integration/connector-configuration-draft-unresolved-reason
+  states: where that request is answered with a domain/integration/connector-configuration-draft
+  d, s states d's configuration; for every item of d's unresolved, s states that item's name and that item's
+  reason, and the reasons domain/integration/connector-configuration-draft-unresolved-reason
   holds are distinguishable from one another to the operator, none of them presented as another;
   for every item of d's generated_credentials, s states that item's name and that item's
-  security_scheme; and where d carries method_mismatch, s states its registered and its operation,
-  distinguishably from each other, while where d carries no method_mismatch s states no mismatch.
-  s states no name, no reason, no generated name, no security scheme name and no method that d did
-  not carry. The content of the Configuration field of s is identical before and after that answer
-  arrives, and changes only through the operator's own act of applying d, which
+  security_scheme; for every item of d's status_readings, s states that item's status, its ending
+  and, where carried, its declared_as; for every item of d's response_fields, s states that
+  item's name, path and status and, where carried, its declared_type, its declared_required and
+  its envelope; for every item of d's reading_notes, s states that item's kind and subject and,
+  where carried, its detail, and the kinds
+  domain/integration/connector-configuration-draft-reading-note-kind holds are distinguishable
+  from one another to the operator, none of them presented as another; and where d carries
+  method_mismatch, s states its registered and its operation, distinguishably from each other,
+  while where d carries no method_mismatch s states no mismatch. s states no name, no reason, no
+  generated name, no security scheme name, no status, no field, no note and no method that d did
+  not carry. The content of the Configuration field of s is identical before and after that
+  answer arrives, and changes only through the operator's own act of applying d, which
   applying-a-drafted-configuration-changes-only-the-local-edit and
   an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation govern.
 constrains:
@@ -8510,13 +8945,13 @@ constrains:
 `domain/integration/connector-configuration-draft`'s own Responsibility is to hold, for review, everything one operation could honestly resolve toward one connector's configuration and to disclose by name and by reason everything it could not — and no review of the second half is possible over parts the surface that asked for them never states.
 
 Every part is stated, rather than the configuration text alone, because that text alone is the one presentation that reads as a finished answer while being an unfinished one.
-`a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability` and `a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme` each resolve only what they can honestly resolve and disclose the rest rather than guessing, and `a-connector-configuration-draft-never-states-a-responsemap-or-a-statusmap` leaves the drafted text deliberately short of a configuration that would work.
-A surface stating the text and nothing else hands the operator text designed to be incomplete while withholding the record of how, and the operator applies it and submits it as whole.
+`a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability` and `a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme` each resolve only what they can honestly resolve and disclose the rest rather than guessing; the drafted statusMap and responseMap are the document's statuses and paths under endings and keys the draft chose by a fixed reading, and the status readings, the response fields and the reading notes are what lets the operator judge each choice against what the document itself declared and see what the draft read past.
+A surface stating the text and nothing else hands the operator text designed to be reviewed while withholding the record the review needs, and the operator applies it and submits it as whole.
 
 Each unresolved item carries its name and its reason because the reasons name different things to fix.
-`domain/integration/connector-configuration-draft-unresolved-item` pairs one name with exactly one reason, and the three `domain/integration/connector-configuration-draft-unresolved-reason` holds send the operator to three different places: `no-capability-registered` to registering a capability naming this connector; `security-scheme-not-reducible-to-a-credential` to authoring that part of the call by hand, the scheme having no single value to substitute at all; `drafted-key-occupied-by-another-security-scheme` to a collision between two schemes of the same operation.
-A count of unresolved names, or a list of names without their reasons, leaves the operator to guess which of the three applies and to correct an input that was never at fault.
-This is the reasoning `a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document` already gave for two error values rather than one, and `a-refused-draft-request-states-its-refusal-to-the-operator` for holding its three refusal conditions apart: a distinction the answer carries and the surface drops is a distinction returned to where the operator cannot read it.
+`domain/integration/connector-configuration-draft-unresolved-item` pairs one name with exactly one reason, and the reasons `domain/integration/connector-configuration-draft-unresolved-reason` holds send the operator to different places: `no-capability-registered` to registering a capability naming this connector; `security-scheme-not-reducible-to-a-credential` to authoring that part of the call by hand, the scheme having no single value to substitute at all; `drafted-key-occupied-by-another-security-scheme` to a collision between two schemes of the same operation.
+A count of unresolved names, or a list of names without their reasons, leaves the operator to guess which applies and to correct an input that was never at fault.
+The reading notes are held apart by kind for the same reason: a default response read past, an envelope read through and a field name whose second path was not taken each send the operator to a different act, and a note without its kind is a list of names again.
 
 Each generated credential carries both names for the same reason it carries both in the answer.
 `scenarios/integration/an-api-key-scheme-becomes-a-generated-credential` records why the generated name is disclosed at all — the operator has to configure that environment value before the drafted call resolves — and `a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme` composes that name from the connector name and the scheme name with every character outside A-Z0-9 replaced and the whole upper-cased, a form from which the operator cannot read back which scheme of the document it answers where an operation requires more than one.
@@ -8525,15 +8960,35 @@ Nothing of a credential's value is stated because the answer carries none: `doma
 The method mismatch is stated where the answer carries one because applying the draft acts on it.
 `a-connector-configuration-draft-states-the-chosen-operations-method` puts the chosen operation's own method into the drafted text whether it agrees with what is registered or not, `a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered` makes the comparison, and `domain/integration/connector-configuration-draft-method-mismatch` names the two side by side, never one silently replacing the other — `scenarios/integration/a-drafts-method-mismatches-what-is-registered` is that case exactly, registered `GET` against drafted `POST`.
 A surface holding that back lets the operator apply and submit a change of method they were never shown, which is precisely the silent replacement the element refuses.
-Where the answer carries no mismatch nothing is stated, on this specification's standing refusal to state a value an answer did not carry — `a-presented-connector-configuration-states-an-outstanding-or-failed-read` and `a-presented-capability-states-its-declared-attributes-as-the-read-answered-them` each hold a presentation to its own answer — and a mismatch shown where none was answered would report a disagreement with a registration that need not even exist.
+Where the answer carries no mismatch nothing is stated, on this specification's standing refusal to state a value an answer did not carry, and a mismatch shown where none was answered would report a disagreement with a registration that need not even exist.
 
-Whether the Configuration field's own content stands untouched by this answer's arrival is `the-configuration-field-is-untouched-by-a-drafts-arrival`'s own, the same bound `a-refused-draft-request-states-its-refusal-to-the-operator` reads on its own side of the answer.
+Whether the Configuration field's own content stands untouched by this answer's arrival is `the-configuration-field-is-untouched-by-a-drafts-arrival`'s own.
+Which capability fields the drafted responseMap's keys reach is `a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads`'s own, read by the surface and carried by no answer.
 
-Home is a new invariant over `domain/integration/connector-configuration-draft`, the placement its refusal-side sibling took: the api contract cannot declare a presentation, and the element declares what a draft is rather than what a surface states about requesting one, which is where every presentation fact of this specification sits.
-It adds no attribute to that element, publishes no operation and refuses no call — what the answer carries stays the drafting rules' own, and the capabilities read to resolve the placeholders reach neither the answer nor this statement, `a-connector-configuration-draft-response-carries-no-capability` having already decided that.
-Nothing here owes the operator a second copy of what they typed: the link, the operation and the connector name the draft was generated for are already standing on the surface they were entered on, the same reading the refusal side took of the link it echoes.
-What that surface states while a draft request is outstanding is not decided here, exactly as `a-refused-draft-request-states-its-refusal-to-the-operator` left it, and what applying a draft does stays `applying-a-drafted-configuration-changes-only-the-local-edit`'s and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation`'s.
+Home is an invariant over `domain/integration/connector-configuration-draft`, the placement its refusal-side sibling took: the api contract cannot declare a presentation, and the element declares what a draft is rather than what a surface states about requesting one, which is where every presentation fact of this specification sits.
+Nothing here owes the operator a second copy of what they typed: the link, the operation and the connector name the draft was generated for are already standing on the surface they were entered on.
+What that surface states while a draft request is outstanding is not decided here, and what applying a draft does stays `applying-a-drafted-configuration-changes-only-the-local-edit`'s and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation`'s.
 It is a fact rather than form on this project's own line, changing what a person can learn and do; which control carries each statement, its wording, its order, its placement and how long it stands are the interface's own, exactly as every other surface rule here leaves them.
+
+=== rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+---
+type: invariant
+statement: >-
+  The confirmation an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+  asks for states, where the field's unsubmitted content and the draft's configuration are both
+  well-formed JSON object text, each top-level key, and each key of the statusMap, responseMap,
+  query and headers objects, that applying the draft would add, remove or change in value, and
+  states, where the field's content is not well-formed JSON object text, that what would change
+  cannot be itemized.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+Applying a draft replaces the field whole, and the draft is deliberately more than an operator keeps: it lists every field the document declares under the document's own names, while the edit it replaces may hold the two keys the operator chose and renamed by hand.
+A confirmation that says only that the edit will be replaced asks the operator to remember what they would lose; one that names the keys shows them.
+This is where a draft is compared with what the operator already holds, and the draft itself is compared with nothing — it stays the same function of the operation whatever is registered or typed.
 
 === rules/integration/an-authoring-surface-includes-an-unsubmitted-edit-of-a-standing-registration
 ---
@@ -8607,6 +9062,28 @@ constrains:
 ## Description
 
 A configuration missing its address or naming an unrecognized or malformed placeholder never reaches a call at all — the same evidence-result ending `an-http-connector-configuration-declares-its-method-and-status-vocabulary`'s own malformed-key case already declares, distinguished only by its own named cause. A configuration whose placeholder is well-formed but resolves to nothing is a different fact, about the data or the environment rather than about the configuration's own shape, and ends unavailable through an-unresolvable-observation-ends-unavailable's own condition for it instead.
+
+=== rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+---
+type: policy
+statement: >-
+  An observation an HTTP connector configuration's call ends ok carries exactly those fields whose
+  name is at once a key of that configuration's responseMap and a key of the producing
+  capability's output schema's own top-level properties object and whose responseMap path resolves
+  in the response body — a responseMap key naming no such property contributes nothing to the
+  observation, and an output schema property no responseMap key names is absent from it.
+constrains:
+  - domain/integration/connector-configuration
+  - domain/integration/capability
+  - domain/investigation/evidence
+consistency: eventual
+---
+
+## Description
+
+A responseMap key is the name an observation carries a value under, and the capability's output schema is the vocabulary that observation is read in — the fields domain/investigation/field-semantics snapshots and a citation is held to.
+A key outside that vocabulary is read from the body and then carried nowhere, so a configuration whose keys are the source system's own names observes nothing while ending ok, and nothing at registration refuses it.
+This is why the operator authoring a responseMap names each key by the capability's field rather than by the document's property, and why a surface authoring one states which keys reach a capability field and which fields no key reaches.
 
 === rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
 ---
@@ -8947,6 +9424,23 @@ constrains:
 ## Description
 
 The Configuration field is untouched by the answer's arrival because applying is the operator's own act and nothing else. `applying-a-drafted-configuration-changes-only-the-local-edit` makes applying the operator carrying their own review into the field they are already editing, and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation` refuses even that act over an unsubmitted edit absent a further explicit confirmation, which `scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation` records. A helper writing the drafted text into the field the moment the answer arrived would perform, on its own initiative, the act those two rules hold to the operator: it would destroy an edit held nowhere else, and it would do it before the operator had read the unresolved items and the mismatch the review exists for.
+
+=== rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+---
+type: invariant
+statement: >-
+  The Configuration Helper states, while the read of the named link's operations has not
+  answered, that those operations are being read, and, where that read answered with no
+  operation, that the fetched document declares none — each of the two apart from the other and
+  apart from every refusal a-refused-operations-read-states-its-refusal-to-the-operator states.
+constrains:
+  - domain/integration/openapi-document-operations
+---
+
+## Description
+
+a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing leaves the operator no way to name an operation but the listing, so a listing with nothing in it is the whole of what they see while the read is outstanding, when the document declares no operation, and when the read was refused.
+Three situations reading alike tell the operator nothing about which they are in — waiting, correcting the document, or correcting the link — which is the same silence a-presented-connector-configurations-four-readings-are-mutually-distinguishable refuses over the sibling read.
 
 === rules/investigation/a-citation-stays-within-the-hypothesis-collects
 ---
@@ -11065,6 +11559,89 @@ involves:
 
 customerId and customer_id read alike to a person; this rule no longer holds the draft to whether any registered capability's input schema names the exact string customerId, only to whether erp-http currently has a capability registered against it at all — which read-invoices already satisfies.
 
+=== scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+---
+subject: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+given:
+  - a capability tech-profile is registered naming connector fsm-http, its output schema declaring the top-level properties login and installations
+  - the fsm-http connector configuration declares statusMap {"200":"ok"} and responseMap {"id":"data.id","installations":"data.installations"}
+  - the call answers 200 with the body {"data":{"id":"u1","installations":["a","b"]}}
+when:
+  - an investigation collects tech-profile's concept
+then:
+  - the evidence records result ok
+  - the observation carries installations with the value ["a","b"]
+  - the observation carries no field named id and no field named login
+involves:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+  - domain/investigation/evidence
+---
+
+## Description
+
+The key id was read from the body and carried nowhere, because tech-profile reads no field by that name; the field login the capability does read had no key to reach it.
+Nothing refused the configuration and nothing degraded the ending — the observation is ok and thinner than the operator meant it to be.
+
+=== scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+---
+subject: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+given:
+  - a capability tech-profile is registered naming connector fsm-http, its output schema declaring the top-level properties login and installations
+  - the Configuration field of the fsm-http authoring surface holds a well-formed configuration whose responseMap keys are id, installations and syncEvents
+when:
+  - the surface reads the capabilities registered naming fsm-http
+then:
+  - the surface states that installations is read by tech-profile
+  - the surface states that id and syncEvents are read by no capability
+  - the surface states that tech-profile expects login and no responseMap key names it
+involves:
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The operator renames id to login, or adds login at the path they choose, before saving — the correction an observation ending ok with an empty field set would never have told them to make.
+
+=== scenarios/integration/a-single-object-property-is-read-through-as-the-response-envelope
+---
+subject: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+given:
+  - the chosen operation's 200 response declares an application/json schema whose only top-level property is data, an object whose properties are id, installations, syncEvents, failedTransactions, gpsTrail, active and accessGroups
+when:
+  - a connector configuration draft is generated from that operation
+then:
+  - the draft's configuration declares a responseMap of seven entries, id at data.id through accessGroups at data.accessGroups
+  - the draft declares no responseMap entry keyed data
+  - the draft's response_fields carry envelope data for each of the seven
+  - the draft's reading_notes name data with kind envelope-read-through
+involves:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Read literally the schema declares one field named data, which no capability reads a value from; read through its single object property it declares the seven the operator chooses among.
+
+=== scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+---
+subject: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+given:
+  - the Configuration field of a connector configuration authoring surface holds a well-formed object whose statusMap declares "200" as "OK"
+when:
+  - the surface judges the field's content
+then:
+  - the surface states that the statusMap entry for 200 names an ending outside the vocabulary and names ok, denied, timeout and unavailable as the endings admitted
+  - the act submitting the registration stays offered
+involves:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The registry would accept this text and the HTTP connector would end every observation through it unavailable; the surface says so while the operator can still change one letter, and withholds nothing the registry would take.
+
 === scenarios/integration/a-swagger-2-document-refuses-the-draft
 ---
 subject: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
@@ -11097,6 +11674,49 @@ then:
 
 A 2.0 document names its operations differently from 3.x; listing them as though they were 3.x operations would misname what the operator chooses from rather than refuse honestly.
 
+=== scenarios/integration/a-technician-profile-operation-drafts-its-status-map-from-its-declared-statuses
+---
+subject: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+given:
+  - the chosen operation GET /v1/technicians/{userId}/profile declares responses keyed 200, 403, 503 and default
+when:
+  - a connector configuration draft is generated for connector fsm-http from that operation
+then:
+  - the draft's configuration declares statusMap {"200":"ok","403":"denied","503":"unavailable"}
+  - the draft's status_readings name 200, 403 and 503, each with its ending and the description the document declares it under
+  - the draft's reading_notes name default with kind default-response-not-drafted
+  - no status is drafted as timeout
+involves:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Three declared statuses, three entries; the default response names no status and is disclosed as read past rather than silently dropped.
+
+=== scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+---
+subject: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+given:
+  - the Configuration Helper of the fsm-http authoring surface has requested a draft for GET /v1/technicians/{userId}/profile
+  - the answer carries status readings for 200, 403 and 503, seven response fields each read through the envelope data, one reading note of kind default-response-not-drafted with subject default, and no method mismatch
+when:
+  - the answer arrives
+then:
+  - the surface states the drafted configuration text
+  - the surface states each of the three status readings with its status, its ending and what the document declared it as
+  - the surface states each of the seven response fields with its name, its path, its status and the envelope data
+  - the surface states the note with its kind and its subject default, apart from every other note kind
+  - the surface states no method mismatch
+  - the content of the Configuration field is what it was before the answer arrived
+involves:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Every part the answer carries reaches the operator, nothing it does not carry is stated, and the field waits for the operator's own act.
+
 === scenarios/integration/an-api-key-scheme-becomes-a-generated-credential
 ---
 subject: rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme
@@ -11114,6 +11734,26 @@ involves:
 ## Description
 
 The generated name is disclosed so the operator knows which environment variable to configure; it is never a value the scheme's own credential resolved to.
+
+=== scenarios/integration/an-operation-declaring-no-success-schema-drafts-an-empty-response-map
+---
+subject: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+given:
+  - the chosen operation DELETE /v1/sessions/{sessionId} declares a 204 response with no content and a 404 response
+when:
+  - a connector configuration draft is generated from that operation
+then:
+  - the draft's configuration declares statusMap {"204":"ok","404":"unavailable"}
+  - the draft's configuration declares responseMap {}
+  - the draft's response_fields are empty
+  - the draft's reading_notes name the operation with kind no-success-response-schema
+involves:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+Both maps are drafted, the second empty, so that the configuration applied as drafted issues its call rather than ending unavailable for a missing key; the note says why the map is empty.
 
 === scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
 ---

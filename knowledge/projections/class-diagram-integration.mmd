@@ -34,6 +34,9 @@ classDiagram
         +ConnectorConfigurationDraftUnresolvedItem[] unresolved
         +ConnectorConfigurationDraftGeneratedCredential[] generatedCredentials
         +ConnectorConfigurationDraftMethodMismatch methodMismatch
+        +ConnectorConfigurationDraftStatusReading[] statusReadings
+        +ConnectorConfigurationDraftResponseField[] responseFields
+        +ConnectorConfigurationDraftReadingNote[] readingNotes
     }
     class ConnectorConfigurationDraftGeneratedCredential {
         <<ValueObject>>
@@ -44,6 +47,39 @@ classDiagram
         <<ValueObject>>
         +string registered
         +string operation
+    }
+    class ConnectorConfigurationDraftReadingNote {
+        <<ValueObject>>
+        +ConnectorConfigurationDraftReadingNoteKind kind
+        +string subject
+        +string detail
+    }
+    class ConnectorConfigurationDraftReadingNoteKind {
+        <<Enumeration>>
+        DEFAULT_RESPONSE_NOT_DRAFTED
+        STATUS_RANGE_NOT_DRAFTED
+        NON_JSON_SUCCESS_CONTENT_NOT_READ
+        ENVELOPE_READ_THROUGH
+        VARIANTS_UNITED
+        REPEATED_FIELD_NAME_PATH_NOT_TAKEN
+        NO_RESPONSES_DECLARED
+        NO_SUCCESS_RESPONSE_SCHEMA
+        SUCCESS_SCHEMA_DECLARES_NO_PROPERTIES
+    }
+    class ConnectorConfigurationDraftResponseField {
+        <<ValueObject>>
+        +string name
+        +string path
+        +string status
+        +string declaredType
+        +boolean declaredRequired
+        +string envelope
+    }
+    class ConnectorConfigurationDraftStatusReading {
+        <<ValueObject>>
+        +string status
+        +EvidenceResult ending
+        +string declaredAs
     }
     class ConnectorConfigurationDraftUnresolvedItem {
         <<ValueObject>>
@@ -71,5 +107,8 @@ classDiagram
     }
     class Concept {
         <<external: glossary>>
+    }
+    class EvidenceResult {
+        <<external: investigation>>
     }
     ConnectorConfigurationDraft "0..*" --> "0..*" Capability

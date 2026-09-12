@@ -11,6 +11,7 @@ flowchart LR
     knowledge -->|case-query| investigation
     system -->|corporate-records| integration
     integration ==>|model: concept| glossary
+    integration ==>|model: evidence-result| investigation
     investigation ==>|model: concept| glossary
     investigation ==>|model: outcome| glossary
     investigation ==>|model: subject-attribute| glossary
