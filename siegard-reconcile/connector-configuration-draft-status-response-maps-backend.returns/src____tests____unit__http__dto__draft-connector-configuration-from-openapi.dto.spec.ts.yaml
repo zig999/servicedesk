@@ -1,0 +1,81 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: "the shape assertion in the first `it` block, lines 38-39"
+    evidence: >-
+      const shapeKeys = Object.keys(draftConnectorConfigurationFromOpenApiResponseSchema.shape).sort();
+      expect(shapeKeys).toEqual([...REQUIRED_TOP_LEVEL_ATTRIBUTES, 'method_mismatch'].sort());
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: "the reading_notes item-schema key assertion, lines 88-89"
+    evidence: >-
+      const itemSchema = draftConnectorConfigurationFromOpenApiResponseSchema.shape.reading_notes.element;
+      expect(Object.keys(itemSchema.shape).sort()).toEqual(['detail', 'kind', 'subject']);
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: "the parametrized kind-validity test, lines 97-108"
+    evidence: |-
+      const READING_NOTE_KIND_CASES: ReadonlyArray<readonly [string, boolean]> = [
+        ...CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS.map((kind) => [kind, true] as const),
+        ['an-undeclared-kind', false] as const,
+      ];
+      ...
+      expect(kindSchema.safeParse(kind).success).toBe(expectedValid);
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: "the response_fields item-schema key assertion, lines 62-69"
+    evidence: |-
+      expect(Object.keys(itemSchema.shape).sort()).toEqual([
+          'declared_required',
+          'declared_type',
+          'envelope',
+          'name',
+          'path',
+          'status',
+        ]);
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: "the status_readings item-schema key assertion, lines 51-52"
+    evidence: >-
+      const itemSchema = draftConnectorConfigurationFromOpenApiResponseSchema.shape.status_readings.element;
+      expect(Object.keys(itemSchema.shape).sort()).toEqual(['declared_as', 'ending', 'status']);
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: >-
+      the file exercises only the reading_notes item's shape (`kind`, `subject`, `detail`) and the closed
+      set of kind values; it asserts nothing about which pairing of kind and subject the draft names a
+      note for, or that exactly one note is named per exhibited condition.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: "the shape assertion in the first `it` block, lines 38-39"
+    evidence: >-
+      expect(shapeKeys).toEqual([...REQUIRED_TOP_LEVEL_ATTRIBUTES, 'method_mismatch'].sort());
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: nowhere
+    evidence: >-
+      the response_fields item schema is checked only for its own key set and presence terms, lines 60-85;
+      nothing here asserts which fields a responseMap holds, which status or path an entry carries, or how
+      a repeated field name is resolved.
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: >-
+      the status_readings item schema is checked only for its own key set and presence terms, lines 50-58;
+      nothing here asserts which statuses are drafted or which ending a status maps to.
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: |-
+      import {
+        draftConnectorConfigurationFromOpenApiResponseSchema,
+        type DraftConnectorConfigurationFromOpenApiResponseDto,
+      } from '../../../../http/dto/draft-connector-configuration-from-openapi.dto.js';
+      the file tests only the response DTO's shape; it reads no operation, path item or $ref.
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: |-
+      envelope: 'data',
+      the `envelope` key is exercised only as an optional string field on response_fields, lines 71-84;
+      nothing here asserts when an envelope is read through or what name it discloses.
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      the file tests only the shape of the draft's HTTP response DTO; it has no observation, capability
+      output schema, or responseMap-reachability logic in scope.
+looked_past: >-
+  the parametrized test's title hardcodes "the declared nine values" rather than deriving the count
+  from CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS.length — currently accurate against the
+  reading-note-kind enumeration's nine members, but a naming/maintainability nit rather than a domain
+  fact the assertions themselves enforce, so it is left to a different judgment.

@@ -1,0 +1,237 @@
+findings:
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: >-
+      unavailableFor(), lines 52-54, as used for the MalformedHttpConnectorConfigurationError
+      branch of resolveHttpConnectorCallConfiguration (line 157)
+    evidence: |-
+      function unavailableFor(error: Error): ObservationOutcome {
+        return { result: 'unavailable', result_detail: error.name };
+      }
+    cost: >-
+      An operator whose connector configuration fails this check sees only
+      `result_detail: "MalformedHttpConnectorConfigurationError"`, with no statement of the
+      vocabulary the malformed key was held to — the accepted HTTP methods when the method key
+      is wrong, or the accepted evidence-result endings when the statusMap is wrong. They have
+      to go read source (or guess) to learn what to correct, rather than reading it off the
+      observation the rule says should already carry that detail; the same function used here
+      also carries the connector name for ConnectorUnreachableError two lines away, so the loss
+      is specific to this branch, not a general limitation of the outcome shape.
+    kind: contradicts
+    correction: >-
+      result_detail for a MalformedHttpConnectorConfigurationError would need to carry the
+      vocabulary beside the error name — the accepted methods or the accepted evidence-result
+      endings — the way unavailableForUnreachableConnector already appends the connector name
+      beside ConnectorUnreachableError, rather than reusing the name-only unavailableFor for
+      this one error.
+    node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+
+read:
+  - node: constraints/evidence-normalization-is-an-anticorruption-layer
+    held_at: the filter in observationOf() keeping only the capability's declared output-schema fields
+    evidence: |-
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      this file is itself the infrastructure adapter (constructs a default httpClient from
+      `fetch` and issues HTTP calls) and touches the domain only through a type-only import —
+      `import type { IObservationSource, ObservationOutcome, ObserveConceptOptions, Subject }
+      from './observation-source.port.js';` — the constraint binds the domain layer's own
+      imports, a fact this adapter file does not state either way about itself
+  - node: contracts/integration/concept-observation
+    held_at: the observeConcept method
+    evidence: |-
+      public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {
+  - node: contracts/integration/corporate-records-source
+    held_at: resolveConnectorConfiguration, resolving the call by the capability's own connector name
+    evidence: |-
+      const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);
+  - node: contracts/investigation/observation-source
+    held_at: the same observeConcept method, one call per concept
+    evidence: |-
+      public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {
+  - node: contracts/system/corporate-records
+    held_at: the generic, capability-resolved connector lookup with no system named in this file
+    evidence: |-
+      const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);
+  - node: domain/integration/capability
+    held_at: the reads of capability.timeout, capability.connector and capability.output_schema
+    evidence: |-
+      function effectiveTimeoutMsFor(capability: Capability, remainingBudgetMs: number | undefined): number {
+        return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+      }
+  - node: domain/investigation/evidence-result
+    held_at: the isEvidenceResult guard and the ok/unavailable/denied/timeout result literals
+    evidence: |-
+      function isEvidenceResult(value: unknown): value is EvidenceResult {
+        return typeof value === 'string' && (EVIDENCE_RESULTS as readonly string[]).includes(value);
+      }
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: |-
+      export function asHttpConnectorCallConfiguration(
+        connector: string,
+        configuration: Readonly<Record<string, unknown>>,
+      ): HttpConnectorCallConfiguration {
+        refuseHttpConfigurationDepartures(connector, configuration);
+        return { method: configuration.method, responseMap: configuration.responseMap, statusMap: configuration.statusMap };
+      }
+  - node: rules/integration/an-unclassified-status-ends-unavailable
+    held_at: DEFAULT_STATUS_ENDING and endingForStatus
+    evidence: |-
+      function endingForStatus(statusMap: StatusEndingMap, status: number): EvidenceResult {
+        const mapped = statusMap[String(status)];
+        return isEvidenceResult(mapped) ? mapped : DEFAULT_STATUS_ENDING;
+      }
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: unavailableForUnreachableConnector, used from issueRequestOrUnreachable's catch
+    evidence: |-
+      function unavailableForUnreachableConnector(connector: string, cause: unknown): ObservationOutcome {
+        const error = new ConnectorUnreachableError(connector, { cause });
+        return { result: 'unavailable', result_detail: `${error.name}: ${connector}` };
+      }
+  - node: rules/integration/an-unresolvable-observation-ends-unavailable
+    held_at: resolveCapability, resolveConnectorConfiguration and resolveAssembledRequest
+    evidence: |-
+      if (!resolution.held) {
+        return { ok: false, outcome: unavailableFor(new CapabilityNotResolvedForObservationError(concept)) };
+      }
+  - node: rules/integration/evidence-arrives-in-the-glossary-vocabulary
+    held_at: observationOf's filter to the capability's own declared output-schema fields
+    evidence: |-
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: rules/investigation/collection-has-its-own-budget-within-the-total
+    held_at: effectiveTimeoutMsFor
+    evidence: |-
+      return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+  - node: rules/investigation/collection-runs-in-the-requester-scope
+    held_at: the requester parameter threaded from observeConcept into resolveAssembledRequest
+    evidence: |-
+      const requestResolution = this.resolveAssembledRequest(rawConfiguration, subject, requester);
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the timed-out branch of observeConcept
+    evidence: |-
+      if (call.value.kind === 'timed-out') {
+        return { result: 'timeout' };
+      }
+  - node: scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+    held_at: resolveAssembledRequest's catch of ConnectorPlaceholderNotResolvedError
+    evidence: |-
+      if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: the same timed-out branch of observeConcept
+    evidence: |-
+      if (call.value.kind === 'timed-out') {
+        return { result: 'timeout' };
+      }
+  - node: scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+    held_at: effectiveTimeoutMsFor clamping the capability's own timeout to the propagated remaining budget
+    evidence: |-
+      return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: |-
+      public constructor(options: HttpDeclarativeObservationSourceOptions) {
+        this.capabilities = options.capabilities;
+        this.connectorConfigurations = options.connectorConfigurations;
+        this.httpClient = options.httpClient ?? fetch;
+      }
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: observationOf(), extracting by responseMap and filtering to the capability's own output-schema fields
+    evidence: |-
+      function observationOf(capability: Capability, responseMap: ResponseFieldPaths, body: unknown): Record<string, unknown> {
+        const extracted = extractResponseFields(responseMap, body);
+        const declaredFields = declaredFieldsOf(capability.output_schema);
+        return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+      }
+
+looked_past: >-
+  parsedBodyOrUndefined() silently turns a body-parse failure into `undefined` rather than a
+  distinct outcome, and httpConfigurationProblems() accumulates its problem strings in a plain
+  array — neither misstates a domain fact this file's nodes hold, so both are left for whatever
+  pass judges implementation choices rather than conformance.
+candidates_opened:
+  - domain/integration/connector-configuration

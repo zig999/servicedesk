@@ -1,0 +1,62 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-response-field
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          keys each drafted responseMap entry by the field's own name and values it with the path the reading gave it, through an envelope
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries exactly one response field per drafted responseMap entry, holding that entry's own name, path and success status
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries the declared type and the declared required listing on a response field when the schema declares both
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries neither declared_type nor declared_required on a response field when the schema declares neither
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries declared_required as false, rather than omitting it, for a field a declared required listing exists but does not name
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries the envelope name on a response field read through a single-property envelope
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries, whole, the response field shape the specification declares -- required name/path/status always present, and declared_type, declared_required and envelope present only where the schema declares them
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          keeps a drafted responseMap key as the field's own name, never a name a registered capability's schema declares instead
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          discloses the lowest success status's own account for a field whose path already agrees across success response schemas
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          states an empty responseMap object -- never an absent key -- and no response fields, for a success response from which no field is read
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a response field as exactly a name, a path and a status, with declared_type, declared_required and envelope optional
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly name, path, status, declared_type, declared_required and envelope as response_fields' own attributes, name/path/status required and the rest optional
+    why: >-
+      The drafting half of the fact is exercised whole: the entry keyed by the field's own name and
+      valued with the path the reading gave it (plain and through an envelope), the success status the
+      field was read from, and declared_type, declared_required and envelope present exactly where the
+      schema declares them and absent where it does not — each of those would fail if the fact stopped
+      holding. What goes unexercised is the second sentence: that the type, the required listing and
+      the envelope are carried for the operator's review and read by no observation. Nothing in the
+      offered set shows those three staying out of what an observation consumes — the generation spec
+      asserts them only on `draft.response_fields`, never that the drafted `configuration` text an
+      observation runs is free of them, and no test in the set runs an observation at all. The
+      `configuration`-level assertions present ("keys each drafted responseMap entry…", "states an
+      empty responseMap object…") read `responseMap` with `toEqual`, which would catch a declared type
+      leaking into a responseMap value but not one carried elsewhere in the configuration; the
+      draft-type and DTO tests bear on the attribute set only and cannot speak to what an observation
+      reads.
+    remainder: testable
+    remainder_why: >-
+      One input — a drafted configuration generated from a success response schema that declares a type,
+      a required listing and an envelope for its field — against one expected result: the configuration
+      text an observation runs carries only the name-to-path responseMap entry, with the declared type,
+      the required listing and the envelope name appearing nowhere in it, and an observation over a
+      response whose value contradicts the declared type reading the field through unchanged.

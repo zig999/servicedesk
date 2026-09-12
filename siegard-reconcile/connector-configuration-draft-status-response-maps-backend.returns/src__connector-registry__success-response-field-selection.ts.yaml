@@ -1,0 +1,75 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      export function lowestStatusEntry(
+        entries: readonly OpenApiSuccessResponseField[],
+      ): OpenApiSuccessResponseField {
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: |-
+      export function lowestStatusSuccessFieldsOf(
+        fields: readonly OpenApiSuccessResponseField[],
+      ): readonly OpenApiSuccessResponseField[] {
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      const byName = new Map<string, OpenApiSuccessResponseField[]>();
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: |-
+      import type { OpenApiSuccessResponseField } from './openapi-operation-reader.js';
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      return entries.reduce((lowest, entry) => (Number(entry.status) < Number(lowest.status) ? entry : lowest));
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: |-
+      return [...byName.values()].map(lowestStatusEntry);
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      export function lowestStatusEntry(
+        entries: readonly OpenApiSuccessResponseField[],
+      ): OpenApiSuccessResponseField {
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      lowestStatusEntry (lines 3-7) and lowestStatusSuccessFieldsOf (lines 9-22): fields
+      are grouped by name and, for each name, the one entry whose status is lowest is kept —
+      the piece of the rule that says a field name read under differing paths from more than
+      one success response schema holds the path read from the lowest status, and that the
+      disclosed field carries the lowest such status.
+    evidence: |-
+      const entries = byName.get(field.name);
+      ...
+      return entries.reduce((lowest, entry) => (Number(entry.status) < Number(lowest.status) ? entry : lowest));
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: |-
+      export function lowestStatusEntry(
+        entries: readonly OpenApiSuccessResponseField[],
+      ): OpenApiSuccessResponseField {
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: |-
+      const entries = byName.get(field.name);
+      if (entries === undefined) {
+        byName.set(field.name, [field]);
+      } else {
+        entries.push(field);
+      }
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: |-
+      for (const field of fields) {
+        const entries = byName.get(field.name);
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: |-
+      return [...byName.values()].map(lowestStatusEntry);
+looked_past: >-
+  The file groups success-response fields by name and keeps the lowest-status entry per name,
+  which is the piece of the response-map rule this file carries; generating the corresponding
+  repeated-field-name-path-not-taken reading note (naming the paths not taken) is done elsewhere
+  and is not this file's own construct, so it is not reported here.

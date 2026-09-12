@@ -1,0 +1,121 @@
+certified:
+  - node: domain/integration/connector-configuration-draft
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          admits exactly the three vocabulary reasons the specification enumerates, and no other value
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          refuses an unresolved item whose reason is not one of the four vocabulary values
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          accepts a draft whose unresolved and generated-credentials lists are both empty, since resolving every operation reference and declaring no security scheme are each a legitimate outcome
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          refuses a draft that omits its unresolved or generated-credentials list instead of declaring it present and empty
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          accepts a draft with no method_mismatch, leaving the field absent rather than defaulted
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares no capability field on the draft, so a generator resolves any number of capability references — including none — without the type ever exposing the count
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares an unresolved item as exactly a name and a single reason, never a set of reasons
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a generated credential as exactly the generated name and the security scheme's own name
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a method mismatch as exactly the registered method and the operation's method, as two separate fields
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a status reading as exactly a status, an ending typed by the same evidence-result the draft mapped it to, and an optional declared_as
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a response field as exactly a name, a path and a status, with declared_type, declared_required and envelope optional
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a reading note as exactly a kind typed by the reading-note-kind vocabulary and a subject, with detail optional
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          types a reading note's kind by exactly the nine kinds the specification enumerates, and no other value
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          the draft's domain module carries no import statement at all, naming no framework, driver or provider client
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          exports no runtime guard function alongside the closed vocabulary — only the vocabulary array itself carries a runtime value
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly the eight attributes ConnectorConfigurationDraft declares, method_mismatch optional and every other attribute required
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly status, ending and declared_as as status_readings' own attributes, status and ending required and declared_as optional
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly name, path, status, declared_type, declared_required and envelope as response_fields' own attributes, name/path/status required and the rest optional
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly kind, subject and detail as reading_notes' own attributes, kind and subject required and detail optional
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          parses reading_notes.kind %s as valid only when it is one of the declared nine values (expected valid: %s)
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly ConnectorConfigurationDraft's own eight attribute names as DraftConnectorConfigurationFromOpenApiResponseDto's keys, no field the draft type does not declare
+    why: >-
+      The attribute half of the fact is exercised: the eight attributes with method_mismatch alone
+      optional, the item shapes of unresolved, generated_credentials, method_mismatch,
+      status_readings, response_fields and reading_notes, and the two closed vocabularies (three
+      unresolved reasons, nine reading-note kinds) are each decided by an assertion that would fail
+      if the declaration changed — at the DTO boundary by safeParse, which fails at runtime.
+      Everything the description states about what a draft *is* goes unexercised. Nothing in the set
+      generates a draft from an operation of an OpenAPI document, so: that the configuration carries
+      a ${subject:<name>} placeholder wherever a parameter or request-body field's name is one a
+      currently-registered named capability is registered against, whatever that capability's own
+      input schema declares; that it carries a ${credential:<name>} placeholder wherever an
+      operation's security scheme reduces to one credential value; that its statusMap is drafted from
+      the numeric statuses the operation's responses declare; that its responseMap is keyed by the
+      fields the success response schemas declare; and that the configuration holds the
+      method/address/query/headers/body shape at all — none of these is asserted. Likewise the
+      disclosure clause: the tests assert that a status reading has a declared_as field and a reading
+      note a kind and subject, never that a drafted status reading carries what the document declared
+      that status as, nor that any of the nine note kinds is ever emitted for the reading it names.
+      "never registered by its own generation" is unexercised — nothing in the set generates a draft
+      and then observes the registry unchanged. The capability-reference clause is unexercised in its
+      own terms: the one test that names capabilities asserts only that the draft type declares no
+      capability field, which is a fact about the type's shape and cannot fail when the reference
+      resolves to the wrong set — empty where none is registered, and all of them where more than one
+      is, is never observed.
+      Two further facts a reader should have. First, the assertions written with expectTypeOf, and
+      the two @ts-expect-error cases whose bodies are only `void invalid;`, carry no runtime
+      assertion; they decide only where the step named as proof runs vitest's type checking, and
+      under a plain run they pass unconditionally. That is most of the first file. Second, two tests
+      assert beyond anything this node states: "the draft's domain module carries no import statement
+      at all" and "exports no runtime guard function alongside the closed vocabulary", which pins the
+      module's exact export list to exactly two names. The node states neither an import prohibition
+      nor an export inventory, and the second breaks the day a sibling task legitimately adds an
+      export to that module.
+    remainder: testable
+    remainder_why: >-
+      One input — one operation of an OpenAPI document, for one connector name, against a stated
+      registry state — against one expected result, the drafted ConnectorConfigurationDraft, closes
+      it, over a finite set of pairings: an operation with a parameter and a request-body field whose
+      names a registered capability is registered against, expecting ${subject:<name>} at each and
+      the literal value elsewhere, including where the capability's own input schema declares that
+      name differently; an operation whose security scheme reduces to one credential value, expecting
+      ${credential:<name>} and a generated_credentials entry naming that scheme, against one that
+      does not reduce, expecting an unresolved entry with reason
+      security-scheme-not-reducible-to-a-credential; an operation declaring numeric response statuses,
+      expecting a statusMap over exactly those and a status_readings entry per drafted status carrying
+      the document's own declared_as; a success response schema declaring fields, expecting a
+      responseMap keyed by exactly those and a response_fields entry per field carrying the declared
+      type, requiredness and envelope; one reading-note case per each of the nine kinds — a default
+      response, a status range, non-JSON success content, an envelope read through, united variants,
+      a repeated field name, no responses declared, no success response schema, a success schema with
+      no properties — expecting the note of that kind naming its subject; the registry read back after
+      a generation, expecting no connector registered; and the capability reference over three
+      registry states — no capability naming the connector, expecting empty; one, expecting that one;
+      more than one, expecting all of them.

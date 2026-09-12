@@ -1,0 +1,165 @@
+findings:
+  - file: src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts
+    where: >-
+      the test "accepts a method field naming no standard HTTP verb, matching it
+      case-insensitively against the document's own declared operation key" (lines 194-202)
+    evidence: >-
+      it("accepts a method field naming no standard HTTP verb, matching it case-insensitively
+      against the document's own declared operation key", async () => {
+        const built = buildTestApp();
+        app = built.app;
+        built.fetchOpenApiDocument.mockResolvedValueOnce(JSON.stringify({ openapi: '3.0.0', paths: { '/widgets': { purge: {} } } }));
+
+        const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ method: 'Purge' }) });
+
+        expect(response.statusCode).toBe(200);
+      });
+    cost: >-
+      The test fixes, as a passing behavior, that an operation is looked up by folding the
+      request's method field and the document's own path-item key to one case before comparing
+      them. No node in this file's set, nor
+      rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft (which
+      only states that a request naming a path and method the document declares no operation for
+      is refused) nor
+      rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+      (which only upper-cases the value the draft states, and only after an operation is already
+      chosen) says anything about how the lookup itself compares case. A future change that made
+      operation lookup case-sensitive would break only this test, and the next reader would find
+      no specification passage to consult over which behavior the business actually wants.
+    kind: unstated
+    correction: >-
+      Record an invariant (or extend
+      rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft) stating
+      that the requested method is matched against the document's own path-item operation key
+      case-insensitively when selecting the operation.
+  - file: src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts
+    where: "the test 'refuses with 400 a request whose connector is an empty string' (lines 236-243)"
+    evidence: |-
+      it('refuses with 400 a request whose connector is an empty string', async () => {
+        const built = buildTestApp();
+        app = built.app;
+
+        const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ connector: '' }) });
+
+        expect(response.statusCode).toBe(400);
+      });
+    cost: >-
+      rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation's
+      own Description reasons the opposite way about exactly this input: "A draft resolves its
+      subject placeholders by the capabilities registered against the connector name, so a
+      request made under an empty name names every parameter unresolved with reason
+      no-capability-registered, a true statement about the wrong cause." That reasoning only
+      holds if the backend processes an empty-name request and answers with a generated draft
+      disclosing the emptiness indirectly through unresolved reasons — the whole point being that
+      withholding the act at the Configuration Helper is needed because the backend itself would
+      not refuse and would instead mislead the operator about the cause. This test instead fixes
+      a 400 VALIDATION_ERROR refusal at the API boundary for that same input, so a reader of this
+      test learns a connector-name emptiness check the specification's own reasoning says does
+      not exist at this route, and the scenario the Description explains — a misleading but true
+      disclosure the surface exists to prevent — never occurs to be prevented.
+    kind: contradicts
+    node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    correction: >-
+      Either the test's expectation changes to a 200 whose unresolved list names every parameter
+      with reason no-capability-registered (matching the node's own stated resolution mechanics),
+      or the node is amended to state that draft-connector-configuration-from-openapi itself
+      refuses an empty connector name — the two currently disagree and only one can be what the
+      business decided.
+read:
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      only the empty-statusMap edge case, in the configuration string asserted by the
+      "no-responses-declared" tests
+    evidence: >-
+      configuration: JSON.stringify({ method: 'GET', address: '/widgets', statusMap: {},
+      responseMap: {} })
+  - node: domain/integration/connector-configuration-draft
+    held_at: the full response-body assertions in the 200 and Object.keys tests
+    evidence: |-
+      expect(response.json()).toEqual({
+        connector: 'a-connector',
+        configuration: JSON.stringify({ method: 'GET', address: '/widgets', statusMap: {}, responseMap: {} }),
+        unresolved: [],
+        generated_credentials: [],
+        status_readings: [],
+        response_fields: [],
+        reading_notes: [{ kind: 'no-responses-declared', subject: 'GET /widgets' }],
+      });
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the reading_notes assertion in the 200-response tests
+    evidence: "reading_notes: [{ kind: 'no-responses-declared', subject: 'GET /widgets' }]"
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: the same reading_notes assertion, asserting the kind value no-responses-declared
+    evidence: "reading_notes: [{ kind: 'no-responses-declared', subject: 'GET /widgets' }]"
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: >-
+      only as the empty-array assertion `response_fields: []`; no test in this file ever asserts
+      a populated response_fields entry, so the element's own attributes (name, path, status,
+      declared_type, declared_required, envelope) are never exercised here
+    evidence: "response_fields: [],"
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: >-
+      only as the empty-array assertion `status_readings: []`; no test in this file asserts a
+      populated status_readings entry
+    evidence: "status_readings: [],"
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      the single pairing this file exercises — kind no-responses-declared at subject "GET
+      /widgets" — asserted whenever the fetched document declares no responses object
+    evidence: "reading_notes: [{ kind: 'no-responses-declared', subject: 'GET /widgets' }]"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: >-
+      the test "carries no capability name, version or count anywhere in the response, even
+      though two capabilities are registered against the drafted connector"
+    evidence: |-
+      expect(Object.keys(response.json() as object).sort()).toEqual([
+        'configuration',
+        'connector',
+        'generated_credentials',
+        'reading_notes',
+        'response_fields',
+        'status_readings',
+        'unresolved',
+      ]);
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      only the empty-responseMap edge case, in the same configuration string as the status-map
+      finding above
+    evidence: >-
+      configuration: JSON.stringify({ method: 'GET', address: '/widgets', statusMap: {},
+      responseMap: {} })
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: >-
+      only the general fact that an operation's own declared parameter is read at all — the
+      path-item-level merge and $ref-resolution parts of this rule are never exercised, since the
+      document used declares the parameter directly on the operation object
+    evidence: >-
+      const PARAMETERIZED_DOCUMENT = JSON.stringify({ openapi: '3.0.0', paths: {
+      '/widgets/{id}': { get: { parameters: [{ name: 'id', in: 'path' }] } } } });
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: >-
+      no test in this file supplies any responses object with a success schema at all; the only
+      responseMap value asserted anywhere is the empty one from the no-responses-declared case
+      (`responseMap: {}`), so no envelope is ever read through here
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      this file only exercises createDraftConnectorConfigurationFromOpenApiRoutesPlugin and its
+      draft-generation responses; no observation, capability output schema or response-map-driven
+      field read appears anywhere in it
+looked_past: >-
+  The test verifying the route "reaches its own controller and answers only through the injected
+  document fetcher and registry — never a fetcher or registry it constructs itself" checks
+  dependency wiring/architecture rather than a domain fact, which is a different judgment's to
+  make.
+candidates_opened:
+  - domain/integration/connector-configuration-draft-method-mismatch
+  - domain/integration/connector-configuration-draft-generated-credential
+  - domain/integration/connector-configuration-draft-unresolved-item
+  - domain/integration/connector-configuration-draft-unresolved-reason
+  - rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+  - contracts/integration/connector-configuration-draft
+  - rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  - rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  - scenarios/integration/a-swagger-2-document-refuses-the-draft

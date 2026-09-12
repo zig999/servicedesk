@@ -1,0 +1,22 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-status-reading
+    state: covered
+    tests:
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries exactly one status reading per drafted statusMap entry, each holding that entry's own status and ending
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          carries the document's own description as declared_as on a status reading, and omits declared_as entirely where the document declares no description
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          produces no statusMap entry and no status reading for a default-keyed or a range-keyed response
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts
+        name: >-
+          always states a statusMap key drafted from the operation's declared responses -- empty when it declares none -- always states a responseMap key too, empty when no success response schema field is read, and pairs an empty status_readings list with that empty statusMap
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a status reading as exactly a status, an ending typed by the same evidence-result the draft mapped it to, and an optional declared_as
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly status, ending and declared_as as status_readings' own attributes, status and ending required and declared_as optional

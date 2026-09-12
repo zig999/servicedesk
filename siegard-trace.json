@@ -933,7 +933,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/http/build-app.ts",
@@ -2475,7 +2475,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
@@ -2557,7 +2557,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         },
         {
           "path": "src/src/http/draft-connector-configuration-from-openapi.controller.ts",
@@ -2587,7 +2587,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -2609,7 +2609,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
         },
         {
           "path": "src/src/connector-registry/registered-method-comparison.ts",
@@ -2663,7 +2663,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:36beea8bb688ecb68c293745e1ee9ca8cd3cd329ca2a2efb83e9766c0dd96821"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
@@ -2671,7 +2671,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:b017ab7f4fdbd2d5b357ee111490335dbfb26f012030f702dc947532a962557a"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         },
         {
           "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
@@ -2685,7 +2685,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:856496c73db51ebf65e606cfe2f12f72d656464c201077f914e3110b72120f46"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
@@ -2693,11 +2693,27 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         },
         {
           "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
           "digest": "sha256:312d69b40cb333514a9c04562b1e884f05e7a8ef40e00172403164697669283a"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts",
+          "digest": "sha256:dc298b8b3d3926d35eedc2f1e4534800b514e4fa10eb57a640bbb0468abcc9f1"
+        },
+        {
+          "path": "src/src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts",
+          "digest": "sha256:4c91f9e36506157160a3d12e066374234ecb107ebfd8aeec80e86bca1c2c53f2"
+        },
+        {
+          "path": "src/src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts",
+          "digest": "sha256:b223168ca724720e496af8fa1a3bbe018c38518ab11c4da90caf62f96c4f693a"
         }
       ]
     },
@@ -2719,11 +2735,11 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
+          "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -5271,7 +5287,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         }
       ]
     },
@@ -5281,7 +5297,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -5289,7 +5305,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:f724dcc4ce9818dc5e60b3b8b83801f4014c67c638f7a15f5d98e3102309a335"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         },
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
@@ -5303,7 +5319,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         }
       ]
     },
@@ -5313,11 +5329,11 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:36beea8bb688ecb68c293745e1ee9ca8cd3cd329ca2a2efb83e9766c0dd96821"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         }
       ]
     },
@@ -5327,19 +5343,19 @@
       "files": [
         {
           "path": "src/src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts",
-          "digest": "sha256:b54b7d2976f343edfed0186734b0295c383218ec5e7481a8052da5c7202a4b48"
+          "digest": "sha256:dc298b8b3d3926d35eedc2f1e4534800b514e4fa10eb57a640bbb0468abcc9f1"
         },
         {
           "path": "src/src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts",
-          "digest": "sha256:d030d5d8382db63bb29b77c1d98a91e0522dde509b2db2c10dddd85886e762ed"
+          "digest": "sha256:e115c7d12847e33700cee922fe1ac52886b2006868cfc2d27a82225f3d2048c8"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:856496c73db51ebf65e606cfe2f12f72d656464c201077f914e3110b72120f46"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         }
       ]
     },
@@ -5349,11 +5365,11 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:f724dcc4ce9818dc5e60b3b8b83801f4014c67c638f7a15f5d98e3102309a335"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         }
       ]
     },
@@ -5695,7 +5711,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:f724dcc4ce9818dc5e60b3b8b83801f4014c67c638f7a15f5d98e3102309a335"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         },
         {
           "path": "src/src/errors/openapi-document-not-readable.error.ts",
@@ -8353,7 +8369,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:f724dcc4ce9818dc5e60b3b8b83801f4014c67c638f7a15f5d98e3102309a335"
+          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
         },
         {
           "path": "src/src/errors/openapi-document-not-readable.error.ts",

@@ -1,0 +1,125 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      draftConnectorConfigurationFromOpenApiResponseSchema, lines 55-64 — the eight keys and
+      their required/optional shape match the node's eight attributes exactly.
+    evidence: |
+      export const draftConnectorConfigurationFromOpenApiResponseSchema = z.object({
+        connector: z.string(),
+        configuration: z.string(),
+        unresolved: z.array(draftUnresolvedItemResponseSchema),
+        generated_credentials: z.array(draftGeneratedCredentialResponseSchema),
+        method_mismatch: draftMethodMismatchResponseSchema.optional(),
+        status_readings: z.array(draftStatusReadingResponseSchema),
+        response_fields: z.array(draftResponseFieldResponseSchema),
+        reading_notes: z.array(draftReadingNoteResponseSchema),
+      });
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: draftReadingNoteResponseSchema, lines 49-53
+    evidence: |
+      const draftReadingNoteResponseSchema = z.object({
+        kind: z.enum(CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS),
+        subject: z.string(),
+        detail: z.string().optional(),
+      });
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: >-
+      nowhere as a restated vocabulary — the file references the enumeration by importing it
+      rather than declaring its values.
+    evidence: |
+      import {
+        CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS,
+        CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS,
+      } from '../../connector-registry/connector-configuration-draft.js';
+      ...
+      kind: z.enum(CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS),
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: draftResponseFieldResponseSchema, lines 40-47
+    evidence: |
+      const draftResponseFieldResponseSchema = z.object({
+        name: z.string(),
+        path: z.string(),
+        status: z.string(),
+        declared_type: z.string().optional(),
+        declared_required: z.boolean().optional(),
+        envelope: z.string().optional(),
+      });
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: draftStatusReadingResponseSchema, lines 34-38
+    evidence: |
+      const draftStatusReadingResponseSchema = z.object({
+        status: z.string(),
+        ending: z.enum(EVIDENCE_RESULTS),
+        declared_as: z.string().optional(),
+      });
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      nowhere — this only declares the note's shape; nothing here computes which note fires for
+      which subject, or the digit/range/repeated-path handling the rule states.
+    evidence: |
+      const draftReadingNoteResponseSchema = z.object({
+        kind: z.enum(CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS),
+        subject: z.string(),
+        detail: z.string().optional(),
+      });
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: >-
+      the response schema's closed field list, lines 55-64 — it names the draft's own eight
+      declared attributes and no capability name, version or count.
+    evidence: |
+      export const draftConnectorConfigurationFromOpenApiResponseSchema = z.object({
+        connector: z.string(),
+        configuration: z.string(),
+        unresolved: z.array(draftUnresolvedItemResponseSchema),
+        generated_credentials: z.array(draftGeneratedCredentialResponseSchema),
+        method_mismatch: draftMethodMismatchResponseSchema.optional(),
+        status_readings: z.array(draftStatusReadingResponseSchema),
+        response_fields: z.array(draftResponseFieldResponseSchema),
+        reading_notes: z.array(draftReadingNoteResponseSchema),
+      });
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      nowhere — the responseMap this rule describes is opaque text inside that one string field;
+      nothing here builds it from success response schemas.
+    evidence: |
+      configuration: z.string(),
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      nowhere — the statusMap this rule describes is likewise opaque text inside that one string
+      field; nothing here reads the operation's declared responses.
+    evidence: |
+      configuration: z.string(),
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: >-
+      nowhere — this names the request that selects an operation; it reads no parameter, path
+      item or $ref, which happens elsewhere.
+    evidence: |
+      export const draftConnectorConfigurationFromOpenApiRequestSchema = z.object({
+        connector: z.string().min(1),
+        link: z.string().min(1),
+        path: z.string().min(1),
+        method: z.string().min(1),
+      });
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: >-
+      nowhere — this field only discloses the envelope's name after the fact; the descend-or-not
+      reading the rule states is not here.
+    evidence: |
+      envelope: z.string().optional(),
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: >-
+      nowhere — nothing in this file touches an observation, a capability's output schema, or a
+      responseMap being resolved against one; the file declares only the draft request/response
+      shapes.
+    evidence: |
+      import { z } from 'zod';
+looked_past: >-
+  The request schema's z.string().min(1) non-empty validation on connector/link/path/method is
+  ordinary input validation, not a domain value the specification states or omits — a code-review
+  concern rather than this pass's.
+candidates_opened:
+  - domain/integration/connector-configuration-draft-unresolved-item
+  - domain/integration/connector-configuration-draft-unresolved-reason
+  - domain/integration/connector-configuration-draft-generated-credential
+  - domain/integration/connector-configuration-draft-method-mismatch
+  - contracts/integration/connector-configuration-draft

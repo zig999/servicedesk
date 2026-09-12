@@ -1,0 +1,180 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's import list, which names only local connector-registry
+      modules and two ports, never a framework, driver or provider client
+    evidence: |-
+      import type { IOpenApiDocumentFetcher } from './openapi-document-fetcher.port.js';
+      import type { ICapabilitiesReader } from './capabilities-reader.port.js';
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      the exported async function generateConnectorConfigurationDraft, which
+      performs the whole draft-connector-configuration-from-openapi operation
+      as a sequence of reads
+    evidence: |-
+      export async function generateConnectorConfigurationDraft(
+        options: GenerateConnectorConfigurationDraftOptions,
+      ): Promise<ConnectorConfigurationDraft> {
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the registry read consulted only to compare the currently registered
+      method against the operation's
+    evidence: |-
+      const methodMismatch = await registeredMethodMismatch(registry, connector, reading.method);
+  - node: domain/integration/connector-configuration-draft
+    held_at: the object literal returned by generateConnectorConfigurationDraft
+    evidence: |-
+      return {
+          connector,
+          configuration: draftedConfigurationText({ reading, subjectPlacement, credentialPlacement, displaced }),
+          unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
+          generated_credentials: credentialPlacement.generatedCredentials,
+          status_readings: draftedStatusReadings(reading.responses),
+          response_fields: draftedResponseFields(reading.successResponseFields),
+          reading_notes: draftedReadingNotesOf(reading, path),
+          ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
+        };
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: responseFieldOf
+    evidence: |-
+      function responseFieldOf(field: OpenApiSuccessResponseField): ConnectorConfigurationDraftResponseField {
+        const { name, path, status, declaredType, declaredRequired, envelope } = field;
+        return {
+          name,
+          path,
+          status,
+          ...(declaredType === undefined ? {} : { declared_type: declaredType }),
+          ...(declaredRequired === undefined ? {} : { declared_required: declaredRequired }),
+          ...(envelope === undefined ? {} : { envelope }),
+        };
+      }
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: statusReadingOf
+    evidence: |-
+      function statusReadingOf(response: OpenApiOperationResponse): ConnectorConfigurationDraftStatusReading {
+        const ending = statusEnding(response.key);
+        return response.description === undefined
+          ? { status: response.key, ending }
+          : { status: response.key, ending, declared_as: response.description };
+      }
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: reconciledUnresolved
+    evidence: |-
+      const displacedItems = [...displacedNames].map((name) => ({ name, reason: OCCUPIED_REASON }));
+      return [...kept, ...displacedItems, ...credentialUnresolved];
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: >-
+      draftedAddress, the query/headers/body assembly in draftedConfigurationText,
+      and the cookie-segment join in finalCookieValue
+    evidence: |-
+      function draftedAddress(path: string, serversInEffect: readonly string[]): string {
+        const first = serversInEffect[0];
+        return first === undefined ? path : `${withoutTrailingSlash(first)}${path}`;
+      }
+      const COOKIE_SEGMENT_SEPARATOR = '; ';
+  - node: rules/integration/a-connector-configuration-draft-registers-nothing
+    held_at: the whole body of generateConnectorConfigurationDraft, which issues only reads
+    evidence: |-
+      const documentText = await documentFetcher.fetchOpenApiDocument(link);
+      const reading = readOpenApiOperation(documentText, path, method);
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: draftedResponseMap
+    evidence: |-
+      function draftedResponseMap(fields: readonly OpenApiSuccessResponseField[]): Readonly<Record<string, string>> {
+        return Object.fromEntries(lowestStatusSuccessFieldsOf(fields).map((field) => [field.name, field.path]));
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: statusEnding and draftedStatusMap
+    evidence: |-
+      const DENIED_STATUSES: ReadonlySet<string> = new Set(['401', '403', '407']);
+      const OK_STATUS_RANGE_MIN = 200;
+      const OK_STATUS_RANGE_MAX = 299;
+      function statusEnding(status: string): ConnectorConfigurationDraftStatusReading['ending'] {
+        if (DENIED_STATUSES.has(status)) {
+          return 'denied';
+        }
+        const numericStatus = Number(status);
+        return numericStatus >= OK_STATUS_RANGE_MIN && numericStatus <= OK_STATUS_RANGE_MAX ? 'ok' : 'unavailable';
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: the configuration object's method field
+    evidence: |-
+      method: reading.method.toUpperCase(),
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: >-
+      the file only consumes `reading.parameters` and
+      `reading.requestBodyFieldNames` as already-resolved values passed
+      straight into resolveSubjectPlaceholders and displacedParameters — it
+      performs no path-item merge and no $ref resolution of its own
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: >-
+      `...(envelope === undefined ? {} : { envelope }),` only forwards an
+      already-computed envelope value onto the response field; no envelope
+      reduction is performed in this file
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: nowhere
+    evidence: >-
+      the capability-registered check happens inside resolveSubjectPlaceholders;
+      this file only supplies `capabilitiesReader` and `connector` to it and
+      later reads `subjectPlacement.unresolved` back
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: draftedReadingNotesOf, assigned to reading_notes
+    evidence: |-
+      function draftedReadingNotesOf(
+        reading: OpenApiOperationReading,
+        path: string,
+      ): readonly ConnectorConfigurationDraftReadingNote[] {
+        return draftedReadingNotes({
+          method: reading.method,
+          path,
+          responses: reading.responses,
+          successResponseReadings: reading.successResponseReadings,
+          successResponseFields: reading.successResponseFields,
+        });
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      draftedReadingNotesOf forwards only method, path, responses and success
+      response data to the imported draftedReadingNotes; this file never
+      names or inspects a specific reading-note kind value
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: >-
+      the note-per-kind-per-subject algorithm lives in the imported
+      draftedReadingNotes; this file supplies raw inputs only, as shown in
+      draftedReadingNotesOf
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: the return object in generateConnectorConfigurationDraft, which holds no capability-related field
+    evidence: |-
+      return {
+          connector,
+          configuration: draftedConfigurationText({ reading, subjectPlacement, credentialPlacement, displaced }),
+          unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
+          generated_credentials: credentialPlacement.generatedCredentials,
+          status_readings: draftedStatusReadings(reading.responses),
+          response_fields: draftedResponseFields(reading.successResponseFields),
+          reading_notes: draftedReadingNotesOf(reading, path),
+          ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
+        };
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      draftedResponseMap only maps a field's own name to its path
+      (`Object.fromEntries(lowestStatusSuccessFieldsOf(fields).map((field) =>
+      [field.name, field.path]))`); this file drafts responseMap text at
+      generation time and performs no observation-time filtering against a
+      capability's output schema
+looked_past: >-
+  reconciledUnresolved builds displacedItems from a Set keyed by parameter
+  name alone, which would conflate two distinct displaced parameters that
+  share a name at different locations into one unresolved item — a possible
+  behavioral edge case, not a quoted domain fact any node here states
+  differently, so it is left for a different pass to weigh.
+candidates_opened:
+  - domain/integration/connector-configuration-draft-unresolved-reason
+  - rules/integration/an-http-connector-configuration-declares-its-call
+  - rules/integration/a-security-scheme-collision-at-one-drafted-key-favors-declared-order
+  - rules/integration/a-drafted-positions-value-is-the-resolved-placeholder-or-the-documents-own-brace-text

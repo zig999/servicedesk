@@ -1,0 +1,139 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      the exported draftedReadingNotes() function, whose returned array supplies the draft's
+      reading_notes attribute
+    evidence: |-
+      export function draftedReadingNotes(
+        input: DraftedReadingNotesInput,
+      ): readonly ConnectorConfigurationDraftReadingNote[] {
+        const { method, path, responses, successResponseReadings, successResponseFields } = input;
+        return [
+          ...responseKeysOfKind(responses, 'default').map((key) => note('default-response-not-drafted', key)),
+          ...responseKeysOfKind(responses, 'range').map((key) => note('status-range-not-drafted', key)),
+          ...nonJsonSuccessContentNotes(successResponseReadings),
+          ...envelopeReadThroughNotes(successResponseReadings),
+          ...variantsUnitedNotes(successResponseReadings),
+          ...repeatedFieldNameNotes(successResponseFields),
+          ...operationLevelNotes({ method, path, responses, successResponseReadings }),
+          ...noPropertiesNotes(successResponseReadings),
+        ];
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the note() helper, lines 41-47
+    evidence: |-
+      function note(
+        kind: ConnectorConfigurationDraftReadingNoteKind,
+        subject: string,
+        detail?: string,
+      ): ConnectorConfigurationDraftReadingNote {
+        return detail === undefined ? { kind, subject } : { kind, subject, detail };
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: >-
+      the nine literal kind strings passed to note() across draftedReadingNotes and its helpers
+    evidence: |-
+      note('default-response-not-drafted', key)
+      note('status-range-not-drafted', key)
+      note('non-json-success-content-not-read', reading.key)
+      note('envelope-read-through', reading.envelope)
+      note('variants-united', reading.key)
+      note('repeated-field-name-path-not-taken', name, detailOf(notDrafted))
+      note('no-responses-declared', subject)
+      note('no-success-response-schema', subject)
+      note('success-schema-declares-no-properties', reading.key)
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      the composition in draftedReadingNotes(), which assembles exactly one note-producing branch
+      per kind named in the specification's closed set
+    evidence: |-
+      return [
+        ...responseKeysOfKind(responses, 'default').map((key) => note('default-response-not-drafted', key)),
+        ...responseKeysOfKind(responses, 'range').map((key) => note('status-range-not-drafted', key)),
+        ...nonJsonSuccessContentNotes(successResponseReadings),
+        ...envelopeReadThroughNotes(successResponseReadings),
+        ...variantsUnitedNotes(successResponseReadings),
+        ...repeatedFieldNameNotes(successResponseFields),
+        ...operationLevelNotes({ method, path, responses, successResponseReadings }),
+        ...noPropertiesNotes(successResponseReadings),
+      ];
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: >-
+      nowhere — this file consumes only a field's name and path to decide the
+      repeated-field-name-path-not-taken note; it never constructs the response-field value object
+      itself (declared_type, declared_required, envelope, status), which is built elsewhere.
+    evidence: |-
+      function fieldsGroupedByName(
+        fields: readonly OpenApiSuccessResponseField[],
+      ): Map<string, OpenApiSuccessResponseField[]> {
+      const distinctPaths = [...new Set(entries.map((entry) => entry.path))];
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      function responseKeysOfKind(
+        responses: readonly OpenApiOperationResponse[],
+        kind: OpenApiOperationResponse['kind'],
+      ): readonly string[] {
+        return responses.filter((response) => response.kind === kind).map((response) => response.key);
+      }
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      import type {
+        OpenApiOperationResponse,
+        OpenApiSuccessResponseField,
+        OpenApiSuccessResponseReading,
+      } from './openapi-operation-reader.js';
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: nowhere
+    evidence: |-
+      const draftedPathByName = new Map(lowestStatusSuccessFieldsOf(fields).map((field) => [field.name, field.path]));
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: |-
+      function responseKeysOfKind(
+        responses: readonly OpenApiOperationResponse[],
+        kind: OpenApiOperationResponse['kind'],
+      ): readonly string[] {
+        return responses.filter((response) => response.kind === kind).map((response) => response.key);
+      }
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: |-
+      export type DraftedReadingNotesInput = {
+        readonly method: string;
+        readonly path: string;
+        readonly responses: readonly OpenApiOperationResponse[];
+        readonly successResponseReadings: readonly OpenApiSuccessResponseReading[];
+        readonly successResponseFields: readonly OpenApiSuccessResponseField[];
+      };
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: envelopeReadThroughNotes(), lines 76-88
+    evidence: |-
+      function envelopeReadThroughNotes(
+        readings: readonly OpenApiSuccessResponseReading[],
+      ): readonly ConnectorConfigurationDraftReadingNote[] {
+        const seen = new Set<string>();
+        const notes: ConnectorConfigurationDraftReadingNote[] = [];
+        for (const reading of readings) {
+          if (reading.envelope !== undefined && !seen.has(reading.envelope)) {
+            seen.add(reading.envelope);
+            notes.push(note('envelope-read-through', reading.envelope));
+          }
+        }
+        return notes;
+      }
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: |-
+      export type DraftedReadingNotesInput = {
+        readonly method: string;
+        readonly path: string;
+        readonly responses: readonly OpenApiOperationResponse[];
+        readonly successResponseReadings: readonly OpenApiSuccessResponseReading[];
+        readonly successResponseFields: readonly OpenApiSuccessResponseField[];
+      };
+looked_past: >-
+  Whether no-responses-declared and no-success-response-schema should both fire when responses.length
+  is 0 (the code's early return emits only the former) is a reading of the rule's cross-product
+  phrasing I could not settle from the text alone, so I did not raise it as a finding.

@@ -1,0 +1,48 @@
+certified:
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts
+        name: >-
+          reads through the single-object-property envelope invariant exactly as the rule states
+          it, across every branch it distinguishes
+      - file: src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts
+        name: >-
+          omits the envelope attribute entirely from a field not read through an envelope, rather
+          than carrying it as undefined
+      - file: src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts
+        name: >-
+          yields a field named and pathed for each of three top-level properties a success response
+          schema declares
+      - file: src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts
+        name: 'yields no field for a success response schema declaring no properties object'
+      - file: src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts
+        name: >-
+          reads a success response and its schema reached through $refs into fields, the same as if
+          declared inline
+    why: >-
+      Most of the fact is exercised and would fail if it stopped holding: the single-property
+      envelope read through to its inner entries at outer-dot-name with the envelope named (status
+      200 and 203 of the branch test), the two-or-more-property schema read as it stands at its own
+      names (201, and three properties at the separate paths test), the reading not descending below
+      the one envelope (203, where the envelope's own object-typed child declaring properties is
+      read as the field wrapper.child rather than descended into for deep), an envelope whose
+      properties keyword is empty yielding no field rather than the envelope itself (204), and a
+      top-level schema declaring no properties keyword yielding no field (205 and the separate
+      no-properties-object test). What goes unexercised is one half of the discriminator the fact
+      turns the envelope decision on. The fact reads the single property as one field "wherever its
+      own schema is not itself an object declaring a properties keyword", and that condition fails
+      two distinct ways: the schema is not an object, and the schema is an object declaring no
+      properties keyword. Only the first is submitted — 202 offers {value: {type: 'string'}}, which
+      is neither an object nor carries a properties keyword, and the $ref test's {serial: {type:
+      'string'}} is the same shape. Nothing in the set submits a single top-level property whose own
+      schema declares type object and no properties keyword, so an implementation deciding the
+      envelope by the declared type rather than by the properties keyword passes every test here
+      while contradicting the fact.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result: a success response in 200-299 whose application/json
+      schema is {properties: {data: {type: 'object'}}} — exactly one top-level property, its own
+      schema an object declaring no properties keyword — expected to yield exactly one field, named
+      data at the path data with no envelope carried, rather than being descended into and yielding
+      no field.

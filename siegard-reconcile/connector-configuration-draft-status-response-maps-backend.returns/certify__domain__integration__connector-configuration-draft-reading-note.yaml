@@ -1,0 +1,46 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-reading-note
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a reading note as exactly a kind typed by the reading-note-kind vocabulary and a subject, with detail optional
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          types a reading note's kind by exactly the nine kinds the specification enumerates, and no other value
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly kind, subject and detail as reading_notes' own attributes, kind and subject required and detail optional
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          parses reading_notes.kind %s as valid only when it is one of the declared nine values (expected valid: %s)
+    why: >-
+      The attribute half of the fact is exercised whole: the type test pins kind/subject/detail with detail alone
+      optional and kind typed by the kind vocabulary, and the DTO tests reject a note missing kind or subject, accept
+      one missing detail, and admit each of the nine declared kinds while refusing an undeclared one. What the node
+      states about the *content* of subject and detail goes unexercised. Nothing in the offered set drafts a note and
+      asserts that a subject names the response key, property or field the condition was met at exactly as the
+      document names it; nothing asserts the exception — that for a chosen operation with no responses object
+      declared, or no application/json success response schema among the responses declared, the subject is the
+      operation itself named as its method upper-cased followed by the path the document declares it under; nothing
+      asserts that no note's subject is ever a media type (the `non-json-success-content-not-read` kind is the one
+      where a media type is the obvious wrong subject, and no test reaches it); and nothing asserts that detail
+      carries what the kind needs said beside its subject, including the path not taken for a
+      `repeated-field-name-path-not-taken` note. The only subject value that appears anywhere in the set is the
+      literal `'GET /widgets'` used as a fixture in the DTO test, where it is passed through a schema parse that
+      asserts presence, never shape — a reader who opens that file and sees an operation-shaped subject should not
+      read it as proof of the operation-naming rule. Separately, `exports no runtime guard function alongside the
+      closed vocabulary — only the vocabulary array itself carries a runtime value` asserts that the draft module's
+      exports are exactly two names; that is a totality over a module several nodes share, and it will break the day
+      a sibling node legitimately adds an export beside the kind vocabulary.
+    remainder: testable
+    remainder_why: >-
+      Drafting inputs against expected notes, over the nine declared kinds — a finite table. Concretely: a document
+      whose chosen operation declares no responses object, expected to yield a note with kind `no-responses-declared`
+      and subject equal to the operation's method upper-cased followed by its declared path (e.g. `GET /widgets`), not
+      a response key; the same for `no-success-response-schema` where the responses declared hold no application/json
+      success schema; a success response whose content is a non-JSON media type, expected to yield
+      `non-json-success-content-not-read` with the response key as subject and never the media type; and a success
+      schema carrying a repeated field name, expected to yield `repeated-field-name-path-not-taken` whose subject is
+      the field as the document names it and whose detail is the path not taken. Each of the remaining kinds pairs one
+      such input against the subject the document names and the detail the kind requires beside it.

@@ -1,0 +1,98 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      nowhere — the file exercises only the raw OpenAPI reader that a draft is later built from; it
+      never assembles or asserts the draft's own attributes (configuration, unresolved,
+      generated_credentials, method_mismatch, status_readings, response_fields, reading_notes).
+    evidence: |-
+      import { readOpenApiOperation } from '../../../connector-registry/openapi-operation-reader.js';
+      const reading = readOpenApiOperation(documentText, '/widgets', 'GET');
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: >-
+      nowhere — no kind/subject/detail triple is ever produced or asserted anywhere in the file.
+    evidence: >-
+      expect(reading.responses).toEqual([{ key: '200', kind: 'status' }]);
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: >-
+      the response `kind` classification the file asserts ('status' / 'range' / 'default') supplies
+      the raw signal several of this enum's values are read from, but no reading-note-kind value
+      itself is ever produced or asserted.
+    evidence: |-
+      expect(rangeEntry?.kind).toBe('range');
+      expect(defaultEntry?.kind).toBe('default');
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: >-
+      the `successResponseFields` entries the reader returns, asserted with name, path, status,
+      declaredType, declaredRequired and envelope.
+    evidence: |-
+      expect(idField?.declaredType).toBe('string');
+      { name: 'id', path: 'data.id', envelope: 'data' }
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: >-
+      nowhere — the reader's `responses` entries carry only key, kind and description; no `ending`
+      (ok/denied/unavailable) is ever computed or asserted in this file.
+    evidence: >-
+      expect(reading.responses).toEqual([{ key: '200', kind: 'status', description: 'Widget created' }]);
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      the status-range-not-drafted sub-facts alone — a lower-case range key and a digits-only key
+      outside 100 through 599 are classified as a range exactly as the upper-case spelling is; the
+      note-production invariant itself (one note per kind/subject pairing, the
+      repeated-field-name-path-not-taken detail's ordering) is not exercised here.
+    evidence: |-
+      expect(reading.responses).toEqual([{ key: '2xx', kind: 'range' }]);
+      const kinds = new Set(reading.responses.map((response) => response.kind));
+      expect(kinds).toEqual(new Set(['range']));
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: >-
+      nowhere — the file never reads, holds or asserts anything about a registered capability or a
+      capability reference; its whole subject is the OpenAPI reader.
+    evidence: >-
+      import { readOpenApiOperation } from '../../../connector-registry/openapi-operation-reader.js';
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      the `successResponseFields` reading — restricted to statuses 200 through 299, application/json
+      only, allOf parts merged and oneOf variants united, single-property envelope read through.
+    evidence: |-
+      expect(names).toEqual(['highBoundary', 'lowBoundary']);
+      const names = reading.successResponseFields.map((field) => field.name).sort();
+      expect(names).toEqual(['a', 'b']);
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      the response-key classification alone (a purely numeric key outside 100 through 599 read as a
+      range); the ending (ok/denied/unavailable) each numeric status maps to is never computed or
+      asserted here.
+    evidence: |-
+      const kinds = new Set(reading.responses.map((response) => response.kind));
+      expect(kinds).toEqual(new Set(['range']));
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: >-
+      the `reading.parameters` merge and $ref-resolution tests.
+    evidence: |-
+      expect(parameterKeys).toEqual(new Set(['Widget_Id|path', 'Limit-Count|query']));
+      expect(reading.parameters).toEqual([{ name: 'X-Api-Version', location: 'header' }]);
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: >-
+      the envelope-branch test walking every distinguished case of the invariant.
+    evidence: |-
+      { name: 'id', path: 'data.id', envelope: 'data' },
+      { name: 'a', path: 'a', envelope: undefined },
+      { name: 'child', path: 'wrapper.child', envelope: 'wrapper' },
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: >-
+      nowhere — this node governs a runtime observation an HTTP call ends with; the file never
+      builds or asserts an observation, only the draft-time OpenAPI reader.
+    evidence: >-
+      import { readOpenApiOperation } from '../../../connector-registry/openapi-operation-reader.js';
+looked_past: >-
+  One test's title states that a scheme type outside "the five OpenAPI recognizes" refuses the
+  document — a citation of the external OpenAPI standard's own type count rather than a decision
+  this specification makes, so it is not reported as a domain fact stated without a node; and the
+  oneOf-union test has no anyOf counterpart, a coverage gap rather than a stated fact in conflict
+  with one.
+candidates_opened:
+  - rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  - rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  - rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+  - rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+  - scenarios/integration/a-swagger-2-document-refuses-the-draft

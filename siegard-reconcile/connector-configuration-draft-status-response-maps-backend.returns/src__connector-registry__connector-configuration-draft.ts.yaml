@@ -1,0 +1,158 @@
+findings:
+  - file: src/connector-registry/connector-configuration-draft.ts
+    where: "the local type alias at line 25, feeding the `ending` field of ConnectorConfigurationDraftStatusReading (lines 27-31)"
+    evidence: |-
+      type ConnectorConfigurationDraftStatusReadingEnding = 'ok' | 'unavailable' | 'denied' | 'timeout';
+    cost: >-
+      domain/investigation/evidence-result already names this exact four-value vocabulary and
+      already has one canonical home in code, src/investigation/evidence-result.ts, which exports
+      EVIDENCE_RESULTS and EvidenceResult for exactly this purpose. This file re-derives the same
+      four literals as a private, unexported alias instead of referencing that type, so the
+      vocabulary now has two independent declarations; if evidence-result.ts's set ever changes,
+      nothing ties this alias to it and the two can silently disagree with no type error to catch it.
+    kind: contradicts
+    correction: >-
+      import and use EvidenceResult from src/investigation/evidence-result.ts as the type of
+      `ending` instead of declaring ConnectorConfigurationDraftStatusReadingEnding locally.
+    node: domain/investigation/evidence-result
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — it opens directly on its own exports, with no import statement anywhere in it
+    evidence: |-
+      export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
+  - node: domain/integration/connector-configuration-draft
+    held_at: "the ConnectorConfigurationDraft type, lines 63-72"
+    evidence: |-
+      export type ConnectorConfigurationDraft = {
+        readonly connector: string;
+        readonly configuration: string;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+        readonly generated_credentials: readonly ConnectorConfigurationDraftGeneratedCredential[];
+        readonly method_mismatch?: ConnectorConfigurationDraftMethodMismatch;
+        readonly status_readings: readonly ConnectorConfigurationDraftStatusReading[];
+        readonly response_fields: readonly ConnectorConfigurationDraftResponseField[];
+        readonly reading_notes: readonly ConnectorConfigurationDraftReadingNote[];
+      };
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: "the ConnectorConfigurationDraftGeneratedCredential type, lines 15-18"
+    evidence: |-
+      export type ConnectorConfigurationDraftGeneratedCredential = {
+        readonly name: string;
+        readonly security_scheme: string;
+      };
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: "the ConnectorConfigurationDraftMethodMismatch type, lines 20-23"
+    evidence: |-
+      export type ConnectorConfigurationDraftMethodMismatch = {
+        readonly registered: string;
+        readonly operation: string;
+      };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: "the ConnectorConfigurationDraftReadingNote type, lines 57-61"
+    evidence: |-
+      export type ConnectorConfigurationDraftReadingNote = {
+        readonly kind: ConnectorConfigurationDraftReadingNoteKind;
+        readonly subject: string;
+        readonly detail?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: "the CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS const and its derived type, lines 42-55"
+    evidence: |-
+      export const CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS = [
+        'default-response-not-drafted',
+        'status-range-not-drafted',
+        'non-json-success-content-not-read',
+        'envelope-read-through',
+        'variants-united',
+        'repeated-field-name-path-not-taken',
+        'no-responses-declared',
+        'no-success-response-schema',
+        'success-schema-declares-no-properties',
+      ] as const;
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: "the ConnectorConfigurationDraftResponseField type, lines 33-40"
+    evidence: |-
+      export type ConnectorConfigurationDraftResponseField = {
+        readonly name: string;
+        readonly path: string;
+        readonly status: string;
+        readonly declared_type?: string;
+        readonly declared_required?: boolean;
+        readonly envelope?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: "the ConnectorConfigurationDraftStatusReading type, lines 27-31, with its `ending` field typed by the local alias at line 25 rather than by evidence-result's own type"
+    evidence: |-
+      export type ConnectorConfigurationDraftStatusReading = {
+        readonly status: string;
+        readonly ending: ConnectorConfigurationDraftStatusReadingEnding;
+        readonly declared_as?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: "the ConnectorConfigurationDraftUnresolvedItem type, lines 10-13"
+    evidence: |-
+      export type ConnectorConfigurationDraftUnresolvedItem = {
+        readonly name: string;
+        readonly reason: ConnectorConfigurationDraftUnresolvedReason;
+      };
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: "the CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS const and its derived type, lines 1-8"
+    evidence: |-
+      export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
+        'no-capability-registered',
+        'security-scheme-not-reducible-to-a-credential',
+        'drafted-key-occupied-by-another-security-scheme',
+      ] as const;
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: >-
+      the file declares only the reading_notes container, `readonly reading_notes: readonly
+      ConnectorConfigurationDraftReadingNote[];` (line 71) and the ReadingNote/ReadingNoteKind
+      shapes; the one-note-per-exhibited-condition invariant this rule states is behavior, and no
+      function or computation appears anywhere in this file
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: "the ConnectorConfigurationDraft type, lines 63-72, which declares no capability field"
+    evidence: |-
+      export type ConnectorConfigurationDraft = {
+        readonly connector: string;
+        readonly configuration: string;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+        readonly generated_credentials: readonly ConnectorConfigurationDraftGeneratedCredential[];
+        readonly method_mismatch?: ConnectorConfigurationDraftMethodMismatch;
+        readonly status_readings: readonly ConnectorConfigurationDraftStatusReading[];
+        readonly response_fields: readonly ConnectorConfigurationDraftResponseField[];
+        readonly reading_notes: readonly ConnectorConfigurationDraftReadingNote[];
+      };
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: nowhere
+    evidence: >-
+      `configuration` is declared only as `readonly configuration: string;` (line 64); the
+      responseMap this rule describes is text inside that string, and the reading that would
+      derive it from success response schemas is not performed anywhere in this file
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: >-
+      the file contains no OpenAPI parameter, path-item or $ref handling of any kind — only the
+      value-object shapes a draft is disclosed through
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: >-
+      `configuration` is declared only as `readonly configuration: string;` (line 64); the
+      statusMap this rule describes is text inside that string, and the ending-per-status
+      classification this rule states is not computed anywhere in this file
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: "the optional `envelope` field of ConnectorConfigurationDraftResponseField, line 39"
+    evidence: |-
+      readonly envelope?: string;
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      this rule constrains domain/integration/connector-configuration, domain/integration/capability
+      and domain/investigation/evidence; nothing in this file — which declares only draft
+      value-object shapes — touches an observation or a capability's output schema
+looked_past: >-
+  the type alias at line 25 is the only unexported declaration in a file where every other type
+  and const is exported, which is a naming/style consistency matter rather than a domain fact.
+candidates_opened:
+  - domain/investigation/evidence-result

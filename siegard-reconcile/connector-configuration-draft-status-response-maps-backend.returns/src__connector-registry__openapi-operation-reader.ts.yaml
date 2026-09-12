@@ -1,0 +1,258 @@
+findings:
+  - file: src/connector-registry/openapi-operation-reader.ts
+    where: >-
+      operationEntry's resolution of the requested path (line 113, `resolveRef(document,
+      paths[path])`), together with pointerTarget's throw for an unresolved segment (lines
+      431-442)
+    evidence: |-
+      const pathItem = resolveRef(document, paths[path]);
+      ...
+      function pointerTarget(document: PlainObject, pointer: string): unknown {
+        if (!pointer.startsWith('#/')) {
+          throw notReadable('unparseable', `the $ref "${pointer}"`);
+        }
+        const segments = pointer.slice(2).split('/').map(decodedPointerSegment);
+        return segments.reduce<unknown>((node, segment) => {
+          if (!isPlainObject(node) || !(segment in node)) {
+            throw notReadable('unparseable', `the $ref "${pointer}"`);
+          }
+          return node[segment];
+        }, document);
+      }
+    cost: >-
+      An operator whose document names the requested path through a $ref the document holds no
+      target for (or one targeting something that is not a path item) is answered with an HTTP 422
+      OpenApiDocumentNotReadableError naming the broken $ref, rather than the
+      OpenApiOperationNotFoundError naming their path and method — sending them to suspect the
+      whole document is unreadable when the decided reading is that this case is exactly "the
+      document declares no operation for that path", refused the same way an absent paths[path]
+      entry already is.
+    kind: contradicts
+    correction: >-
+      operationEntry should treat a path-item $ref that resolveRef cannot resolve to a plain
+      object (an unresolvable target, or one that is not a path item) the same as an absent
+      paths[path] entry, refusing with OpenApiOperationNotFoundError(path, method) rather than
+      letting notReadable's OpenApiDocumentNotReadableError propagate.
+    node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      nowhere directly — this file supplies the raw OpenAPI facts (parameters, request-body field
+      names, security schemes, servers in effect, responses, success-response fields and readings)
+      that connector-configuration-draft-generation.ts assembles into the draft's own attributes;
+      none of the draft's declared attributes is itself constructed here.
+    evidence: |-
+      return {
+          method: operationKey,
+          parameters: parametersOf(document, pathItem, operation),
+          requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
+          requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
+          serversInEffect: serversInEffectOf(pathItem, operation, document),
+          responses: responsesOf(document, operation),
+          successResponseFields: successResponseFieldsOf(document, operation),
+          successResponseReadings: successResponseReadingsOf(document, operation),
+        };
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: >-
+      successResponseReadingAt / OpenApiSuccessResponseReading — computes the per-response
+      booleans (`hasJsonContent`, `variantsUnited`, `declaresNoProperties`) and `envelope` each
+      kind's condition is drafted from downstream; the closed set of kind names itself is not
+      enumerated in this file.
+    evidence: |-
+      return {
+          key,
+          hasJsonContent: true,
+          variantsUnited: reading.variantsUnited,
+          declaresNoProperties: reading.declaresNoProperties,
+          ...(reading.envelope === undefined ? {} : { envelope: reading.envelope }),
+        };
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: >-
+      the OpenApiSuccessResponseField type and responseField() — directly matches the node's own
+      shape.
+    evidence: |-
+      export type OpenApiSuccessResponseField = {
+        readonly name: string;
+        readonly path: string;
+        readonly status: string;
+        readonly declaredType?: string;
+        readonly declaredRequired?: boolean;
+        readonly envelope?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: >-
+      responsesOf/responseReading — supplies the raw response key and, where declared, the
+      document's own description, the material each status_reading's `status` and `declared_as`
+      are drafted from; the `ending` (evidence-result) is not computed here.
+    evidence: |-
+      function responseReading(document: PlainObject, key: string, rawResponse: unknown): OpenApiOperationResponse {
+        const response = resolveRef(document, rawResponse);
+        const description = isPlainObject(response) && typeof response.description === 'string' ? response.description : undefined;
+        const kind = responseKeyKind(key);
+        return description === undefined ? { key, kind } : { key, kind, description };
+      }
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      responseKeyKind / successResponseReadingsOf — supplies the per-key classification
+      (status/range/default) and the per-success-key hasJsonContent/variantsUnited/declaresNoProperties/envelope
+      facts the reading notes are drafted from; note assembly (one note per kind/subject pairing,
+      the repeated-field-name detail) is not performed in this file.
+    evidence: |-
+      function responseKeyKind(key: string): OpenApiResponseKeyKind {
+        if (key === 'default') {
+          return 'default';
+        }
+        return /^[1-5][0-9]{2}$/.test(key) ? 'status' : 'range';
+      }
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: >-
+      parametersOf, requestBodyFieldNamesOf, serversInEffectOf — supply the raw parameter
+      name/location pairs, the request body's own field names and the servers array in effect,
+      the material address/query/headers/body placement is computed from downstream.
+    evidence: |-
+      function serversInEffectOf(pathItem: unknown, operation: PlainObject, document: PlainObject): readonly string[] {
+        const ownServers = declaredServerUrls(operation.servers);
+        if (ownServers !== undefined) {
+          return ownServers;
+        }
+        const pathItemServers = isPlainObject(pathItem) ? declaredServerUrls(pathItem.servers) : undefined;
+        if (pathItemServers !== undefined) {
+          return pathItemServers;
+        }
+        return declaredServerUrls(document.servers) ?? [];
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      successResponseFieldsOf/successResponseFieldsAt/schemaReadingAt — reads only the
+      application/json schema of each status from 200 through 299, resolves $refs, merges allOf
+      parts and unites oneOf/anyOf variants, and reads through a single-property envelope, exactly
+      as the rule directs; the cross-status merge keeping the lowest-status path for a name
+      repeated under differing paths is not performed here.
+    evidence: |-
+      function successResponseFieldsAt(document: PlainObject, status: string, rawResponse: unknown): readonly OpenApiSuccessResponseField[] {
+        const response = resolveRef(document, rawResponse);
+        const content = isPlainObject(response) ? response.content : undefined;
+        const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
+        const schema = isPlainObject(mediaType) ? resolveRef(document, mediaType.schema) : undefined;
+        return isPlainObject(schema) ? schemaReadingAt(document, schema, status).fields : [];
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      responseKeyKind/isSuccessStatusKey — classify a responses-object key as a three-digit
+      100-through-599 `status`, else `range` (a purely numeric key outside that range, or a
+      lower-case range spelling, included), or `default`; the ok/denied/unavailable ending
+      assignment is not computed here.
+    evidence: |-
+      function isSuccessStatusKey(key: string): boolean {
+        return responseKeyKind(key) === 'status' && key.startsWith('2');
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: >-
+      readOpenApiOperation's `method: operationKey` — returns the chosen operation's own method
+      exactly as the path item's own key names it (lower-case, matching the document's spelling);
+      upper-casing into the drafted method value is not performed in this file.
+    evidence: |-
+      const operationKey = method.toLowerCase();
+      ...
+      return { pathItem, operation: rawOperation, operationKey };
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: >-
+      parametersOf/resolvedParameterList — every parameter the operation object declares plus
+      every parameter the path item declares that no operation parameter names at the same
+      location and name, each $ref resolved to its target before its name or location is read.
+    evidence: |-
+      function parametersOf(
+        document: PlainObject,
+        pathItem: unknown,
+        operation: PlainObject,
+      ): readonly OpenApiOperationParameter[] {
+        const operationParams = resolvedParameterList(document, operation.parameters);
+        const pathItemParams = isPlainObject(pathItem) ? resolvedParameterList(document, pathItem.parameters) : [];
+        const isOwnConflict = (candidate: OpenApiOperationParameter): boolean =>
+          operationParams.some((own) => own.name === candidate.name && own.location === candidate.location);
+        return [...operationParams, ...pathItemParams.filter((candidate) => !isOwnConflict(candidate))];
+      }
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: >-
+      the call `readOpenApiDocument(documentText)` at the top of readOpenApiOperation — delegates
+      the fetched text's serialization, parse and version checks entirely to
+      openapi-document-reader.ts; this file performs none of that reading itself.
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: >-
+      schemaReadingAt/envelopeSchemaOf/envelopedSchemaReading — descends into a schema's single
+      top-level property only where that property's own resolved schema declares a `properties`
+      keyword, reading no deeper than that one envelope, and yields no field where the level
+      finally read declares an absent or empty `properties`.
+    evidence: |-
+      function envelopeSchemaOf(document: PlainObject, propertySchema: unknown): PlainObject | undefined {
+        const resolved = resolveRef(document, propertySchema);
+        return isPlainObject(resolved) && Object.prototype.hasOwnProperty.call(resolved, 'properties') ? resolved : undefined;
+      }
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: >-
+      operationEntry — throws OpenApiOperationNotFoundError(path, method) when the resolved path
+      item declares no operation object at the requested method key, refusing the same way whether
+      paths holds no entry for the path or holds one declaring nothing for the method; the one
+      case this does not hold for is filed as a finding above.
+    evidence: |-
+      if (!isPlainObject(rawOperation)) {
+        throw new OpenApiOperationNotFoundError(path, method);
+      }
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: >-
+      the same delegation as a-malformed-or-unsupported-openapi-document-refuses-the-draft —
+      readOpenApiDocument(documentText); the Swagger 2.0 version check is not performed in this
+      file.
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: >-
+      nowhere — this file assembles no kind/subject/detail structure; it exposes only the
+      underlying per-response booleans and merged field readings that
+      connector-configuration-draft-reading-notes.ts builds notes from.
+    evidence: |-
+      export type OpenApiSuccessResponseReading = {
+        readonly key: string;
+        readonly hasJsonContent: boolean;
+        readonly variantsUnited: boolean;
+        readonly declaresNoProperties: boolean;
+        readonly envelope?: string;
+      };
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: >-
+      nowhere — this file reads OpenAPI operation facts only; it holds no capability reference, no
+      draft answer and no connector-registration read of any kind.
+    evidence: |-
+      export type OpenApiOperationReading = {
+        readonly method: string;
+        readonly parameters: readonly OpenApiOperationParameter[];
+        readonly requestBodyFieldNames: readonly string[];
+        readonly requiredSecuritySchemes: readonly OpenApiRequiredSecurityScheme[];
+        readonly serversInEffect: readonly string[];
+        readonly responses: readonly OpenApiOperationResponse[];
+        readonly successResponseFields: readonly OpenApiSuccessResponseField[];
+        readonly successResponseReadings: readonly OpenApiSuccessResponseReading[];
+      };
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: >-
+      nowhere — this file never reads a capability's output schema, a responseMap or an
+      observation; its concern ends at reading the OpenAPI document's own declared shape.
+    evidence: |-
+      export type OpenApiOperationReading = {
+        readonly method: string;
+        readonly parameters: readonly OpenApiOperationParameter[];
+        readonly requestBodyFieldNames: readonly string[];
+        readonly requiredSecuritySchemes: readonly OpenApiRequiredSecurityScheme[];
+        readonly serversInEffect: readonly string[];
+        readonly responses: readonly OpenApiOperationResponse[];
+        readonly successResponseFields: readonly OpenApiSuccessResponseField[];
+        readonly successResponseReadings: readonly OpenApiSuccessResponseReading[];
+      };
+looked_past: >-
+  Whether reading.method's lower-case spelling is upper-cased before it reaches the drafted
+  configuration, and whether the distinction between an operation declaring no `responses` object
+  at all and one declaring an empty `{}` survives into the reading notes, both depend on
+  connector-configuration-draft-generation.ts and connector-configuration-draft-reading-notes.ts,
+  which are outside this file and belong to their own reading.

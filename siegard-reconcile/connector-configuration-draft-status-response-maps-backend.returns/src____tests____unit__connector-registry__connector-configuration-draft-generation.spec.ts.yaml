@@ -1,0 +1,89 @@
+read:
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      the statusMap assertions across the "drafts the ok/denied/unavailable ending" tests, e.g. the
+      401/403/407 test
+    evidence: >-
+      expect(configurationOf(draft).statusMap).toEqual({ '401': 'denied', '403': 'denied', '407': 'denied' });
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      the draft's attributes read directly off the returned object throughout the file, e.g. the
+      unresolved/generated_credentials assertions
+    evidence: >-
+      const byName = new Map(draft.unresolved.map((item) => [item.name, item.reason]));
+      expect(byName).toEqual(new Map([['limit', 'no-capability-registered'], ['OAuthFlow', 'security-scheme-not-reducible-to-a-credential']]));
+      expect(draft.generated_credentials).toEqual([]);
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: >-
+      the repeated-field-name-path-not-taken note's subject/detail assertion
+    evidence: >-
+      expect(note.subject).toBe('id');
+      const detail = note.detail ?? '';
+      expect(detail).toContain('wrapA.id');
+      expect(detail).toContain('wrapB.id');
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: >-
+      each of the nine enumerated kinds asserted by name across the reading_notes tests, e.g. the
+      default-response-not-drafted test
+    evidence: >-
+      expect(draft.reading_notes).toEqual([{ kind: 'default-response-not-drafted', subject: 'default' }]);
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: >-
+      the response_fields assertions carrying name/path/status/declared_type/declared_required/envelope
+    evidence: >-
+      ['rich', { name: 'rich', path: 'data.rich', status: '200', declared_type: 'string', declared_required: true, envelope: 'data' }],
+      ['minimal', { name: 'minimal', path: 'minimal', status: '201' }],
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: >-
+      the status_readings assertions carrying status/ending/declared_as, including its omission test
+    evidence: >-
+      expect(draft.status_readings).toEqual([
+        { status: '201', ending: 'ok', declared_as: 'Widget created' },
+        { status: '404', ending: 'unavailable' },
+      ]);
+      expect('declared_as' in draft.status_readings[1]).toBe(false);
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      the repeated-field-name-path-not-taken ordering test and the lower-case-range-key test
+    evidence: >-
+      const repeatedNotes = draft.reading_notes.filter((note) => note.kind === 'repeated-field-name-path-not-taken');
+      expect(repeatedNotes).toHaveLength(1);
+      expect(detail.indexOf('wrapA.id')).toBeLessThan(detail.indexOf('wrapB.id'));
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      it("keeps a drafted responseMap key as the field's own name, never a name a registered capability's
+      schema declares instead", async () => { ... capabilitiesReader: { readCapabilities: async () =>
+      [capabilityGranting(['identifier'])] }, ... expect(configurationOf(draft).responseMap).toEqual({ id: 'id' }); });
+      — the capability set is used throughout the file only to resolve subject placeholders; no assertion
+      anywhere in this file checks that the draft's own answer omits a capability's name, version or count.
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      the responseMap assertions, including the lowest-success-status path-wins test
+    evidence: >-
+      expect(configurationOf(draft).responseMap).toEqual({ id: 'id', extra: 'extra' });
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: >-
+      the positionsOptions tests (path/query/header/cookie parameters merged from the path item and the
+      operation) and the $ref-resolved parameter test
+    evidence: >-
+      paths: { '/widgets': { get: { parameters: [{ $ref: '#/components/parameters/ApiVersion' }] } } },
+      components: { parameters: { ApiVersion: { name: 'X-Api-Version', in: 'header' } } },
+      ...
+      expect(headers['X-Api-Version']).toBe('${subject:X-Api-Version}');
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: >-
+      the single-property envelope tests, including the empty-inner-properties case
+    evidence: >-
+      expect(draft.response_fields).toEqual([{ name: 'token', path: 'data.token', status: '200', envelope: 'data' }]);
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      expect(configurationOf(draft).responseMap).toEqual({ order_id: 'payload.order_id', order_status: 'payload.order_status' });
+      — every responseMap assertion in this file checks the drafted configuration text at generation time;
+      none exercises an observation's runtime field set against a capability's own output schema, which is
+      what this policy governs.
+looked_past: >-
+  The method_mismatch, generated-credential-naming and unresolved-item/unresolved-reason assertions (e.g.
+  'drafted-key-occupied-by-another-security-scheme', 'security-scheme-not-reducible-to-a-credential') exercise
+  domain elements outside this node set and are left to whichever pack covers those nodes.

@@ -1,0 +1,96 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from '../../../capability-registry/capability.js';
+      import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
+      import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from '../../../capability-registry/capability.js';
+      import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from '../../../capability-registry/capability.js';
+      import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: |-
+      function anHttpConfiguration(overrides ...): Readonly<Record<string, unknown>> {
+        return { address: '...', method: 'GET', responseMap: { status: 'status' }, statusMap: { '200': 'ok' }, ...overrides };
+      }
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      function anHttpConfiguration(overrides ...): Readonly<Record<string, unknown>> {
+        return { address: '...', method: 'GET', responseMap: { status: 'status' }, statusMap: { '200': 'ok' }, ...overrides };
+      }
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: |-
+      import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: nowhere
+    evidence: |-
+      responseMap: { status: 'status' }, statusMap: { '200': 'ok' }
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: |-
+      responseMap: { status: 'status' }, statusMap: { '200': 'ok' }
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: |-
+      import { CapabilityNotResolvedForObservationError } from '../../../errors/capability-not-resolved-for-observation.error.js';
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: |-
+      import { CapabilityNotResolvedForObservationError } from '../../../errors/capability-not-resolved-for-observation.error.js';
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: >-
+      the ok-observation field-filtering tests, e.g. lines 503-521 and 918-938
+    evidence: |-
+      it("keys the ok observation by the capability's own output_schema property names, dropping a response-map field the schema does not declare, and never surfacing the response's own raw field name", async () => {
+        ...
+        expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ equipment_state: 'operational' }) });
+        expect(outcome.result === 'ok' ? outcome.observation : '').not.toContain('raw_vendor');
+      });
+      ...
+      it('carries exactly the field whose name is at once a responseMap key and a declared output-schema property with a resolving path, excluding a schema-only property, a responseMap-only key and a key whose own path fails to resolve, all present in the same call', async () => {
+        ...
+        expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ matched_field: 'resolved-value' }) });
+      });
+looked_past: >-
+  the test asserting the adapter imports no third-party HTTP client package and reaches the
+  network only through the platform global fetch is a dependency/architecture concern rather than
+  a domain fact, so it is left to whatever pass reviews implementation choices rather than
+  specification conformance.
+candidates_opened:
+  - constraints/evidence-normalization-is-an-anticorruption-layer
+  - constraints/the-domain-depends-on-no-infrastructure
+  - contracts/integration/concept-observation
+  - contracts/integration/corporate-records-source
+  - contracts/investigation/observation-source
+  - contracts/system/corporate-records
+  - domain/integration/capability
+  - domain/investigation/evidence-result
+  - rules/integration/an-http-connector-configuration-declares-its-call
+  - rules/integration/an-unclassified-status-ends-unavailable
+  - rules/integration/an-unreachable-connector-ends-unavailable
+  - rules/integration/an-unresolvable-observation-ends-unavailable
+  - rules/integration/evidence-arrives-in-the-glossary-vocabulary
+  - rules/investigation/collection-has-its-own-budget-within-the-total
+  - rules/investigation/collection-runs-in-the-requester-scope
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+  - scenarios/investigation/a-collection-timeout-degrades-to-no-data
+  - scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+  - rules/integration/an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable
+  - rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+  - rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+  - rules/integration/a-diagnostic-response-masks-a-resolved-credential

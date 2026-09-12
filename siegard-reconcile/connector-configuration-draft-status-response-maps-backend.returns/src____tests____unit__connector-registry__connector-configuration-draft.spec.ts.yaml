@@ -1,0 +1,123 @@
+findings:
+  - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+    where: "the it() title at line 32, `refuses an unresolved item whose reason is not one of the four vocabulary values`"
+    evidence: |-
+      it('refuses an unresolved item whose reason is not one of the four vocabulary values', () => {
+    cost: >-
+      A reader who takes this test's own title as an account of the vocabulary's size is told it
+      holds four values; domain/integration/connector-configuration-draft-unresolved-reason holds
+      exactly three, and the very next lines of this same file (the array in the preceding test,
+      line 22-30) enumerate only three. The title is the one place in this file that states the
+      vocabulary's size in words, and it disagrees with both the node and the file's own data.
+    kind: contradicts
+    correction: "Change 'four' to 'three' in the test title."
+    node: domain/integration/connector-configuration-draft-unresolved-reason
+
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: "the expectTypeOf<ConnectorConfigurationDraft> assertion, lines 74-83"
+    evidence: |-
+      expectTypeOf<ConnectorConfigurationDraft>().toEqualTypeOf<{
+        readonly connector: string;
+        readonly configuration: string;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+        readonly generated_credentials: readonly ConnectorConfigurationDraftGeneratedCredential[];
+        readonly method_mismatch?: ConnectorConfigurationDraftMethodMismatch;
+        readonly status_readings: readonly ConnectorConfigurationDraftStatusReading[];
+        readonly response_fields: readonly ConnectorConfigurationDraftResponseField[];
+        readonly reading_notes: readonly ConnectorConfigurationDraftReadingNote[];
+      }>();
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: "the expectTypeOf<ConnectorConfigurationDraftReadingNote> assertion, lines 145-149"
+    evidence: |-
+      expectTypeOf<ConnectorConfigurationDraftReadingNote>().toEqualTypeOf<{
+        readonly kind: ConnectorConfigurationDraftReadingNoteKind;
+        readonly subject: string;
+        readonly detail?: string;
+      }>();
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: "the expectTypeOf<ConnectorConfigurationDraftReadingNoteKind> assertion, lines 153-163"
+    evidence: |-
+      expectTypeOf<ConnectorConfigurationDraftReadingNoteKind>().toEqualTypeOf<
+        | 'default-response-not-drafted'
+        | 'status-range-not-drafted'
+        | 'non-json-success-content-not-read'
+        | 'envelope-read-through'
+        | 'variants-united'
+        | 'repeated-field-name-path-not-taken'
+        | 'no-responses-declared'
+        | 'no-success-response-schema'
+        | 'success-schema-declares-no-properties'
+      >();
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: "the expectTypeOf<ConnectorConfigurationDraftResponseField> assertion, lines 134-141"
+    evidence: |-
+      expectTypeOf<ConnectorConfigurationDraftResponseField>().toEqualTypeOf<{
+        readonly name: string;
+        readonly path: string;
+        readonly status: string;
+        readonly declared_type?: string;
+        readonly declared_required?: boolean;
+        readonly envelope?: string;
+      }>();
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: "the expectTypeOf<ConnectorConfigurationDraftStatusReading> assertion, lines 126-130"
+    evidence: |-
+      expectTypeOf<ConnectorConfigurationDraftStatusReading>().toEqualTypeOf<{
+        readonly status: string;
+        readonly ending: EvidenceResult;
+        readonly declared_as?: string;
+      }>();
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: >-
+      the only assertion touching reading notes in this file is the kind-vocabulary type check at
+      lines 152-164 (`types a reading note's kind by exactly the nine kinds the specification
+      enumerates`); nothing in this file exercises the invariant's own content — one note per
+      kind/subject pairing, range-key case-folding, out-of-range digit keys, or a
+      repeated-field-name-path-not-taken note's detail ordering.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: "the expectTypeOf<ConnectorConfigurationDraft> assertion, lines 73-84"
+    evidence: |-
+      it('declares no capability field on the draft, so a generator resolves any number of capability references — including none — without the type ever exposing the count', () => {
+        expectTypeOf<ConnectorConfigurationDraft>().toEqualTypeOf<{
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: nowhere
+    evidence: >-
+      the only response-map-related assertion in this file is the response-field type shape at
+      lines 133-142; no test here drafts a responseMap from success response schemas, reads
+      through $refs or allOf/oneOf, or resolves a lowest-status field.
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: >-
+      the only status-map-related assertion in this file is the status-reading type shape at
+      lines 125-131; no test here derives a statusMap entry's ending from a declared status.
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: nowhere
+    evidence: >-
+      this file declares no parameter-reading behavior at all; it asserts only the draft,
+      unresolved-item, generated-credential and method-mismatch type shapes.
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: nowhere
+    evidence: >-
+      the file's only reference to an envelope is the optional `envelope?: string` field in the
+      response-field type shape at lines 133-142; no test here exercises envelope descent, the
+      single-property test, or the no-properties-keyword case.
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      this file contains no reference to an observation, a responseMap key resolving in a body,
+      or a capability's output schema; its scope is the draft's own value-object shapes.
+
+looked_past: >-
+  The file-level comment at line 1 ("a suppressed `@ts-expect-error` line executes as ordinary,
+  harmless JavaScript") and the module-export-shape assertion at lines 118-123 are about the
+  file's own testing technique and the module's runtime surface, not a domain fact the
+  specification holds or omits, so they are left to whatever judgment covers source-comment and
+  code-structure conventions rather than this one.
+
+candidates_opened:
+  - domain/integration/connector-configuration-draft-unresolved-reason
+  - domain/integration/connector-configuration-draft-unresolved-item
+  - domain/integration/connector-configuration-draft-generated-credential
+  - domain/integration/connector-configuration-draft-method-mismatch

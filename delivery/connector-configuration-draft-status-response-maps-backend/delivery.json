@@ -144,6 +144,32 @@
       "title": "Success response schema field reading -- proof",
       "summary": "Thirteen tests added to openapi-operation-reader.spec.ts cover every criterion of success-response-schema-fields and the one underdetermined entry a test could be written against; the five implemented specification nodes are each left untested because this task's own REMAINDER/UNDERDETERMINED notes bound it to only part of each node's fact.",
       "task": "task/connector-configuration-draft-maps/success-response-schema-fields"
+    },
+    {
+      "id": "review/connector-configuration-draft-status-response-maps-backend",
+      "kind": "review",
+      "file": "review/connector-configuration-draft-status-response-maps-backend.md",
+      "title": "Connector-configuration draft status/response maps -- backend review",
+      "summary": "The four independent passes over the nine backend tasks that extended the connector-configuration draft with drafted statusMap/responseMap disclosure, closed-vocabulary reading notes, and the response schema that surfaces them.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A single top-level property that is an object declaring an empty properties keyword is read through as an envelope and yields no field, and a success schema whose top-level properties keyword is absent or empty yields no field.",
+        "A status reading's ending is typed by the four endings ok, unavailable, denied and timeout.",
+        "A success response schema reached through a $ref is read through the module's existing resolveRef rather than through a second resolver.",
+        "A success response schema whose root declares oneOf or anyOf yields the properties of every variant united into one set of fields.",
+        "A success schema whose oneOf or anyOf variants were united yields one note of kind variants-united naming that response.",
+        "Each yielded key carries the description the document declares for that response.",
+        "No drafted key is renamed to any name a capability's output schema declares.",
+        "The answer's set of fields is the same whether no capability, one or several are registered against the connector.",
+        "The controller passes the generated draft's status readings, response fields and reading notes through unchanged.",
+        "The delivery changes no behavior of observationOf in src/src/investigation/http-declarative-observation-source.adapter.ts.",
+        "The reading resolves any $ref it meets through the module's existing resolveRef rather than through a second resolver."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -464,6 +490,60 @@
       "to": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/success-response-schema-fields",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/drafted-status-map",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/drafted-response-map",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/draft-reading-notes",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/draft-answer-shape",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-backend",
+      "to": "task/connector-configuration-draft-maps/observation-output-schema-filter-conformance",
+      "kind": "reviews",
+      "at": "tasks[8]"
     }
   ]
 }

@@ -1,0 +1,71 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          types a reading note's kind by exactly the nine kinds the specification enumerates, and no other value
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          declares a reading note as exactly a kind typed by the reading-note-kind vocabulary and a subject, with detail optional
+      - file: src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts
+        name: >-
+          exports no runtime guard function alongside the closed vocabulary — only the vocabulary array itself carries a runtime value
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          parses reading_notes.kind %s as valid only when it is one of the declared nine values (expected valid: %s)
+      - file: src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts
+        name: >-
+          declares exactly kind, subject and detail as reading_notes' own attributes, kind and subject required and detail optional
+    why: >-
+      The node states two things: that the set of nine names is closed, and what condition each
+      name denotes. Only the first is bound, and only in part.
+
+      Membership: the sole place the nine names are spelled out is the type-level assertion
+      `expectTypeOf<ConnectorConfigurationDraftReadingNoteKind>().toEqualTypeOf<...>()`, which
+      would fail on an added, removed or renamed value. No runtime assertion spells them — in
+      contrast to the sibling vocabulary in the same file, whose first test asserts
+      `[...CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS].sort()` against the literal names.
+      The DTO file's `it.each` derives its cases from
+      `CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS` itself, so it passes unchanged if a value
+      is dropped from the array (one case fewer, all still passing), if one is renamed, or if a
+      tenth the node does not declare is added; nothing in it asserts the count nine despite its
+      name saying so. It binds the DTO schema to whatever the array holds, not the array to the
+      node.
+
+      Meaning: nothing in the offered proof drafts a configuration from an operation at all. No
+      test presents a response keyed `default`, a response keyed by a status range, a success
+      response declaring no application/json media type, a schema with a single object property, a
+      schema with oneOf/anyOf variants, a field name read under differing paths across two success
+      statuses, an operation declaring no responses object, an operation with no application/json
+      success response schema, or a finally-read level whose `properties` is absent or empty, and
+      asserts which kind the resulting note carries. If the code emitted `envelope-read-through`
+      where the node says `variants-united`, or emitted `success-schema-declares-no-properties`
+      off the top level where the node says the envelope's own inner object is the level finally
+      read, every test in the proof still passes.
+
+      One over-assertion to route, not to settle: `exports no runtime guard function alongside the
+      closed vocabulary` asserts `Object.keys(connectorConfigurationDraftModule)` equals exactly
+      two export names. This node names one vocabulary; the test claims totality over the whole
+      module, and breaks the day a sibling node legitimately adds a third export beside it.
+    remainder: testable
+    remainder_why: >-
+      The declared value set is finite, so the remainder is a table over what the offered tests
+      leave out. Two assertions close it. First, a runtime assertion that
+      `[...CONNECTOR_CONFIGURATION_DRAFT_READING_NOTE_KINDS].sort()` equals the nine names spelled
+      as literals in the test — the same assertion the unresolved-reasons vocabulary already
+      carries — so that a dropped or renamed value fails at run time and not only under a
+      type-check pass. Second, one draft per kind: an operation whose responses are keyed `default`
+      asserting a `default-response-not-drafted` note and no statusMap entry for it; one keyed
+      `2XX` with no observation status equal to it asserting `status-range-not-drafted` and no
+      statusMap entry; a success response whose content declares only a non-JSON media type
+      asserting `non-json-success-content-not-read` and no field read; a success schema of one
+      object property asserting `envelope-read-through` and fields read from the inner object; a
+      success schema with oneOf or anyOf asserting `variants-united` and the union of variant
+      fields; one field name under differing paths in a 200 and a 201 schema asserting
+      `repeated-field-name-path-not-taken` against the higher status with the lower status's path
+      drafted; an operation with no responses object asserting `no-responses-declared`; one whose
+      responses carry no application/json success schema asserting `no-success-response-schema`;
+      and one whose finally-read level — top level with no envelope read through, and the inner
+      object where one was — declares `properties` absent or empty, asserting
+      `success-schema-declares-no-properties` with no field read from it.
