@@ -5255,6 +5255,31 @@ entries:
     property, while the default key names a response by name rather than by status and the numeric-status
     class is the one already refused it -- so read as any other class, or as none, a key the document plainly
     declares would stand with neither a statusMap entry nor a note accounting for the difference.
+- location: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope.md
+  field: statement
+  unstated: Cross-check, surfaced by an execution-contract-binder isolated to task success-response-envelope-read-through
+    during the connector-configuration-draft-status-response-maps-backend plan-work invocation. This rule's own
+    "otherwise" clause and domain/integration/connector-configuration-draft-reading-note-kind's description of
+    success-schema-declares-no-properties decide one concrete case differently -- a success response schema whose
+    single top-level property is itself an object with no properties keyword at all (e.g. {"type":"object"} with
+    no "properties" key). This rule's precondition for descending as an envelope -- "an object declaring a
+    properties object" -- read literally does not admit that property (it declares no properties keyword), so the
+    "otherwise" clause reads it as the schema's own top-level property, yielded as one field at its own name. The
+    reading-note kind's description named the same schema shape -- "declares no properties object at either the
+    top level or inside a single-property envelope" -- as one that yields no field at all, an outcome the two
+    criteria drawn from each node could not jointly satisfy.
+  decided: The envelope precondition is exactly whether the single property's own schema explicitly declares the
+    properties keyword, empty or not; where it does not, that property is read as one field at the top level,
+    never descended into, and never counted as declaring no properties. success-schema-declares-no-properties is
+    reserved for the level the draft finally reads (top level with no envelope candidate, or the envelope's own
+    inner object once descended into) declaring the properties keyword absent or empty -- never for an object
+    read as an ordinary field because it was not, by this same rule, treated as an envelope at all.
+  why: The two nodes named one schema shape and answered for it in opposite directions only because the envelope
+    precondition's own boundary -- "declaring a properties object" -- was ambiguous between "holds the keyword"
+    and "holds at least one entry"; fixing it to the keyword's mere presence makes the "otherwise" clause and the
+    no-properties condition partition every case without overlap, the narrowest reading that still lets the draft
+    read a document declaring an object field with no schema of its own as an ordinary field rather than silently
+    dropping it.
 
 ---
 
@@ -5644,7 +5669,7 @@ variants-united is a success response schema whose oneOf or anyOf variants were 
 repeated-field-name-path-not-taken is a field name read under differing paths from more than one success response schema, of which the path from the lowest status was drafted and this one was not.
 no-responses-declared is an operation declaring no responses object at all.
 no-success-response-schema is an operation whose responses declare no success response schema under application/json.
-success-schema-declares-no-properties is a success response schema that declares no properties object at either the top level or inside a single-property envelope.
+success-schema-declares-no-properties is the level a connector configuration draft finally reads — the top level, where no single-property envelope was read through, or the envelope's own inner object, where one was — declaring a properties keyword that is absent or empty, so no field is read from it.
 
 ## Responsibility
 
@@ -8895,11 +8920,13 @@ type: invariant
 statement: >-
   The response fields a connector configuration draft reads from one success response schema are,
   where that schema's top-level properties object holds exactly one property whose own schema is
-  an object declaring a properties object, the properties of that inner object, each at the path
-  made of the outer property's name, a dot and the field's own name, and otherwise the schema's
-  own top-level properties, each at the path that is its own name — the reading never descending
-  below that one envelope, and a schema declaring no properties object at the level it is read at
-  yielding no field.
+  an object explicitly declaring a properties keyword, the entries that keyword's own object
+  holds, each at the path made of the outer property's name, a dot and the field's own name; and
+  otherwise the schema's own top-level properties, each at the path that is its own name, the
+  single property read as one field there rather than descended into wherever its own schema is
+  not itself an object declaring a properties keyword; the reading never descending below that one
+  envelope, and the properties keyword holding no entry, whether absent or empty, at the level
+  finally read yielding no field.
 constrains:
   - domain/integration/connector-configuration-draft
 ---
@@ -8908,6 +8935,7 @@ constrains:
 
 Many documents wrap a response's fields in one enveloping property, and read literally such a schema yields a single field named after the envelope, which no capability would read a value from.
 Reading through exactly one single-property object envelope is the narrowest reading that reaches the fields such a document declares without guessing at anything deeper: a schema with two or more top-level properties is read as it stands, and nothing below the envelope is ever flattened, since a nested field's path is the operator's own choice to write.
+Whether the single top-level property counts as an envelope turns on the properties keyword alone — an object without one is not descended into and is instead read, at the top level, as the one field it already is; an object with one, empty or not, is what the reading descends into.
 That the envelope was read through, and by what name, is named to the operator as a reading note.
 
 === rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface

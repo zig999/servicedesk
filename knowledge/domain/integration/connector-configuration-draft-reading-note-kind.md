@@ -23,7 +23,7 @@ variants-united is a success response schema whose oneOf or anyOf variants were 
 repeated-field-name-path-not-taken is a field name read under differing paths from more than one success response schema, of which the path from the lowest status was drafted and this one was not.
 no-responses-declared is an operation declaring no responses object at all.
 no-success-response-schema is an operation whose responses declare no success response schema under application/json.
-success-schema-declares-no-properties is a success response schema that declares no properties object at either the top level or inside a single-property envelope.
+success-schema-declares-no-properties is the level a connector configuration draft finally reads — the top level, where no single-property envelope was read through, or the envelope's own inner object, where one was — declaring a properties keyword that is absent or empty, so no field is read from it.
 
 ## Responsibility
 

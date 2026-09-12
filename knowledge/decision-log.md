@@ -4631,5 +4631,30 @@ entries:
     property, while the default key names a response by name rather than by status and the numeric-status
     class is the one already refused it -- so read as any other class, or as none, a key the document plainly
     declares would stand with neither a statusMap entry nor a note accounting for the difference.
+- location: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope.md
+  field: statement
+  unstated: Cross-check, surfaced by an execution-contract-binder isolated to task success-response-envelope-read-through
+    during the connector-configuration-draft-status-response-maps-backend plan-work invocation. This rule's own
+    "otherwise" clause and domain/integration/connector-configuration-draft-reading-note-kind's description of
+    success-schema-declares-no-properties decide one concrete case differently -- a success response schema whose
+    single top-level property is itself an object with no properties keyword at all (e.g. {"type":"object"} with
+    no "properties" key). This rule's precondition for descending as an envelope -- "an object declaring a
+    properties object" -- read literally does not admit that property (it declares no properties keyword), so the
+    "otherwise" clause reads it as the schema's own top-level property, yielded as one field at its own name. The
+    reading-note kind's description named the same schema shape -- "declares no properties object at either the
+    top level or inside a single-property envelope" -- as one that yields no field at all, an outcome the two
+    criteria drawn from each node could not jointly satisfy.
+  decided: The envelope precondition is exactly whether the single property's own schema explicitly declares the
+    properties keyword, empty or not; where it does not, that property is read as one field at the top level,
+    never descended into, and never counted as declaring no properties. success-schema-declares-no-properties is
+    reserved for the level the draft finally reads (top level with no envelope candidate, or the envelope's own
+    inner object once descended into) declaring the properties keyword absent or empty -- never for an object
+    read as an ordinary field because it was not, by this same rule, treated as an envelope at all.
+  why: The two nodes named one schema shape and answered for it in opposite directions only because the envelope
+    precondition's own boundary -- "declaring a properties object" -- was ambiguous between "holds the keyword"
+    and "holds at least one entry"; fixing it to the keyword's mere presence makes the "otherwise" clause and the
+    no-properties condition partition every case without overlap, the narrowest reading that still lets the draft
+    read a document declaring an object field with no schema of its own as an ordinary field rather than silently
+    dropping it.
 
 ---
