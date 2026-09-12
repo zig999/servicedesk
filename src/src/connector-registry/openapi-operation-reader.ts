@@ -37,6 +37,7 @@ export type OpenApiSuccessResponseField = {
   readonly status: string;
   readonly declaredType?: string;
   readonly declaredRequired?: boolean;
+  readonly envelope?: string;
 };
 
 export type OpenApiOperationReading = {
@@ -200,9 +201,30 @@ function schemaFieldsAt(
   status: string,
 ): readonly OpenApiSuccessResponseField[] {
   const merged = mergedSchemaProperties(schemaPropertySources(document, schema));
-  return Object.keys(merged.properties).map((name) =>
-    responseField({ name, propertySchema: merged.properties[name], requiredNames: merged.requiredNames, status }),
+  const topLevelNames = Object.keys(merged.properties);
+  const envelopeSchema =
+    topLevelNames.length === 1 ? envelopeSchemaOf(document, merged.properties[topLevelNames[0]]) : undefined;
+  if (envelopeSchema === undefined) {
+    return topLevelNames.map((name) =>
+      responseField({ name, propertySchema: merged.properties[name], requiredNames: merged.requiredNames, status }),
+    );
+  }
+  const envelope = topLevelNames[0];
+  const enveloped = mergedSchemaProperties(schemaPropertySources(document, envelopeSchema));
+  return Object.keys(enveloped.properties).map((name) =>
+    responseField({
+      name,
+      propertySchema: enveloped.properties[name],
+      requiredNames: enveloped.requiredNames,
+      status,
+      envelope,
+    }),
   );
+}
+
+function envelopeSchemaOf(document: PlainObject, propertySchema: unknown): PlainObject | undefined {
+  const resolved = resolveRef(document, propertySchema);
+  return isPlainObject(resolved) && Object.prototype.hasOwnProperty.call(resolved, 'properties') ? resolved : undefined;
 }
 
 function schemaPropertySources(document: PlainObject, schema: PlainObject): readonly PlainObject[] {
@@ -245,11 +267,15 @@ function responseField(input: {
   readonly propertySchema: unknown;
   readonly requiredNames: readonly string[] | undefined;
   readonly status: string;
+  readonly envelope?: string;
 }): OpenApiSuccessResponseField {
-  const { name, propertySchema, requiredNames, status } = input;
+  const { name, propertySchema, requiredNames, status, envelope } = input;
+  const path = envelope === undefined ? name : `${envelope}.${name}`;
   const declaredType = declaredTypeOf(propertySchema);
   const declaredRequired = requiredNames === undefined ? undefined : requiredNames.includes(name);
-  const withType = declaredType === undefined ? { name, path: name, status } : { name, path: name, status, declaredType };
+  const withPath: OpenApiSuccessResponseField =
+    envelope === undefined ? { name, path, status } : { name, path, status, envelope };
+  const withType = declaredType === undefined ? withPath : { ...withPath, declaredType };
   return declaredRequired === undefined ? withType : { ...withType, declaredRequired };
 }
 

@@ -2625,7 +2625,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
+          "digest": "sha256:b017ab7f4fdbd2d5b357ee111490335dbfb26f012030f702dc947532a962557a"
         }
       ]
     },
@@ -5845,7 +5845,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
+          "digest": "sha256:b017ab7f4fdbd2d5b357ee111490335dbfb26f012030f702dc947532a962557a"
         }
       ]
     },

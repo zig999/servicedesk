@@ -808,3 +808,60 @@ it('contributes fields only from response keys within 200 through 299, excluding
   const names = reading.successResponseFields.map((field) => field.name).sort();
   expect(names).toEqual(['highBoundary', 'lowBoundary']);
 });
+
+function documentWithSuccessSchemas(schemasByStatus: Readonly<Record<string, unknown>>): string {
+  return JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: Object.fromEntries(
+            Object.entries(schemasByStatus).map(([status, schema]) => [status, { content: { 'application/json': { schema } } }]),
+          ),
+        },
+      },
+    },
+  });
+}
+
+it('reads through the single-object-property envelope invariant exactly as the rule states it, across every branch it distinguishes', () => {
+  const documentText = documentWithSuccessSchemas({
+    '200': { properties: { data: { properties: { id: { type: 'string' } } } } },
+    '201': { properties: { a: { type: 'string' }, b: { type: 'string' } } },
+    '202': { properties: { value: { type: 'string' } } },
+    '203': { properties: { wrapper: { properties: { child: { type: 'object', properties: { deep: { type: 'string' } } } } } } },
+    '204': { properties: { data: { properties: {} } } },
+    '205': { type: 'object' },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const triples = reading.successResponseFields.map((field) => ({ name: field.name, path: field.path, envelope: field.envelope }));
+  expect(triples).toEqual([
+    { name: 'id', path: 'data.id', envelope: 'data' },
+    { name: 'a', path: 'a', envelope: undefined },
+    { name: 'b', path: 'b', envelope: undefined },
+    { name: 'value', path: 'value', envelope: undefined },
+    { name: 'child', path: 'wrapper.child', envelope: 'wrapper' },
+  ]);
+});
+
+it('omits the envelope attribute entirely from a field not read through an envelope, rather than carrying it as undefined', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/widgets': {
+        get: {
+          responses: {
+            '200': { content: { 'application/json': { schema: { properties: { a: { type: 'string' }, b: { type: 'string' } } } } } },
+          },
+        },
+      },
+    },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const aField = reading.successResponseFields.find((field) => field.name === 'a');
+  expect(Object.prototype.hasOwnProperty.call(aField, 'envelope')).toBe(false);
+});

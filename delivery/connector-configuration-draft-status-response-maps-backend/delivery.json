@@ -10,6 +10,14 @@
       "task": "task/connector-configuration-draft-maps/openapi-responses-reading"
     },
     {
+      "id": "implementation/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/success-response-envelope-read-through.md",
+      "title": "Envelope descent for a success response schema's single object property",
+      "summary": "openapi-operation-reader.ts now reads a success response schema's exactly-one top-level object property that itself declares a properties keyword one level down, yielding the inner object's fields at outer.field paths carrying the outer name as their envelope, while every other shape keeps the existing top-level reading unchanged.",
+      "task": "task/connector-configuration-draft-maps/success-response-envelope-read-through"
+    },
+    {
       "id": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
       "kind": "implementation",
       "file": "implementation/connector-configuration-draft-maps/success-response-schema-fields.md",
@@ -24,6 +32,14 @@
       "title": "OpenAPI operation reader's response-key reading",
       "summary": "Extends the existing openapi-operation-reader unit spec with tests over the new responses field -- classification, description carrying, the no-responses-object and $ref-through-resolveRef paths, and the two range-key cases the specification's lower-case and digits-only-out-of-range facts add.",
       "task": "task/connector-configuration-draft-maps/openapi-responses-reading"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/success-response-envelope-read-through.md",
+      "title": "Envelope descent for a success response schema's single object property -- proof",
+      "summary": "Two tests added to openapi-operation-reader.spec.ts prove every criterion of the envelope-descent task and demonstrate the envelope rule's own invariant whole; the domain field's cross-file 'read by no observation' clause and three behavior inferences the implementation left open are recorded as untested rather than pinned.",
+      "task": "task/connector-configuration-draft-maps/success-response-envelope-read-through"
     },
     {
       "id": "proof/connector-configuration-draft-maps/success-response-schema-fields",
@@ -72,6 +88,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "to": "rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "to": "task/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-draft-maps/success-response-schema-fields",
       "to": "domain/integration/connector-configuration-draft",
       "kind": "encodes",
@@ -110,6 +144,12 @@
     {
       "from": "proof/connector-configuration-draft-maps/openapi-responses-reading",
       "to": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/success-response-envelope-read-through",
+      "to": "implementation/connector-configuration-draft-maps/success-response-envelope-read-through",
       "kind": "proves",
       "at": "the path"
     },
