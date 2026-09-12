@@ -4441,5 +4441,195 @@ entries:
   decided: declared_as is not required; a status whose response declares no description carries none.
   why: OpenAPI 3.x requires a description on a response object and documents in the wild omit it, and inventing one would put
     text the document never stated beside the very status the operator is asked to judge by it.
+- location: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs.md
+  field: statement
+  unstated: No node states whether a response the chosen operation's responses object declares as a $ref to a
+    reusable response object, rather than as an inline response object, is read through to the response it
+    targets. This rule reads a $ref through at a parameter, a request-body schema and a security scheme and
+    names no response; a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    reads a success response schema "read through its $refs", which is the reference standing at the schema
+    inside an already-read response and not one standing at the response itself;
+    a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses reads each key
+    of the responses object without saying what its value may be; and
+    a-paths-ref-is-read-through-before-a-documents-operations-are-listed settles the reference at the path, one
+    level above.
+  decided: A response declared in the operation's responses object as a $ref is read through to the response
+    object it targets, including one under the document's components/responses section, before that response's
+    description or content is read, so the status key it stands under is classified and its description and application/json
+    schema are read exactly as if that response object stood inline; recorded by naming a response among the
+    declarations this rule's $ref clause already reads through, and by naming a description among what is read
+    from a target only after the reference is followed.
+  why: OpenAPI 3.x itself fixes a $ref as the declaration it targets read as though written where the reference
+    sits, so a responses object read as its literal values would draft an empty statusMap entry set or an empty
+    responseMap for a document that plainly declares both — a reading of a document other than the one the
+    operator named, and the failure mode the draft exists to avoid, since a map shorter than the document is
+    exactly what the reading notes promise never happens silently. It is stated on this node rather than on a
+    new one because the reference stands inside the chosen operation, the same reading this rule already governs
+    for a parameter, a request-body schema and a security scheme, unlike the paths reference that earned its own
+    node by standing one level above everything this rule reaches.
+- location: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses.md
+  field: statement
+  unstated: No node states which keys of the chosen operation's responses object count as numeric HTTP status
+    codes — the rule drafts one statusMap entry per numeric status key and the reading-note kinds name only a
+    default key and a status-range key, leaving a purely numeric key such as 42 or 600 belonging to neither side
+    of that reading.
+  decided: A key of the responses object is a numeric HTTP status code when it is a three-digit decimal number
+    from 100 through 599, and a purely numeric key outside that range is not one and is drafted into no
+    statusMap entry.
+  why: 100 through 599 is the whole of the space an observation's own status can fall in, so an entry drafted
+    for a key outside it is one the runtime status match can never reach — the same reason a 2XX range key is
+    drafted into no entry — while a three-digit decimal bound is decidable from the key's text alone, as the
+    draft reads every other key of the responses object.
+- location: domain/integration/connector-configuration-draft-reading-note.md
+  field: attributes.subject
+  unstated: The note's subject is required and its definition names only the response key, the media type, the
+    property or the field a condition was met at, while the kind vocabulary holds two conditions —
+    no-responses-declared and no-success-response-schema — that are met at none of those but at the chosen
+    operation as a whole, leaving those notes' subject with nothing stated to carry.
+  decided: A note of a condition met at the chosen operation as a whole names that operation as its subject —
+    its method upper-cased followed by the path the document declares it under.
+  why: The subject exists so an operator reads what each condition was met at, and the only thing the document
+    names these two conditions at is the operation itself; an operation is named in this specification by
+    exactly that pair, the path it is declared under and its upper-cased method, which
+    domain/integration/openapi-operation discloses and an-openapi-operations-method-is-upper-cased and the
+    method mismatch's two method names already hold to, so the note spells it the one way the rest of the draft
+    spells an operation and the operator reconciles no second spelling. The path alone would not say which
+    operation of that path was read, and a blank or a literal marker would make a required field carry a
+    placeholder, which a note read beside its fellows — each named by what it was met at — cannot be read by.
+- location: domain/integration/connector-configuration-draft-reading-note.md
+  field: attributes.subject
+  unstated: No node states which thing a reading note carries as its subject for the kinds
+    non-json-success-content-not-read, variants-united and success-schema-declares-no-properties — the
+    response's own status key or the media type the response's content declares — the reading-note element
+    naming a response key, a media type, a property and a field as things a subject may name and assigning none
+    of them to a kind.
+  decided: The subject of a note of those three kinds is the key of the response the condition was met at,
+    exactly as the responses object declares that key, and no note's subject is a media type.
+  why: All three conditions are exhibited by one whole success response rather than by a media type — for
+    variants-united and success-schema-declares-no-properties the media type read is always application/json,
+    so a media-type subject would be a constant naming nothing, and for non-json-success-content-not-read the
+    declared media types are neither unique within the document nor able to say which response was read past —
+    while the response key is unique within the responses object and is already the name the drafted statusMap
+    entry and the response fields read from that response carry, so an operator reads the note against the rest
+    of the disclosure without returning to the document, exactly as default-response-not-drafted and
+    status-range-not-drafted are already subjected at their response keys.
+- location: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits.md
+  field: statement
+  unstated: No node said whether a reading condition met at one and the same subject in two of the chosen
+    operation's success response schemas — the same envelope property name read through in each — is named by
+    one note or by one note per schema.
+  decided: One note per kind-and-subject pairing, so two success response schemas exhibiting one condition at
+    the same subject are named by that single note.
+  why: A reading note carries only kind, subject and detail and no status, so a second note for the second
+    schema would be indistinguishable from the first, and an-answered-draft-request-states-its-draft-to-the-operator
+    discloses each note by its kind and its subject — two identical lines would tell the operator nothing the
+    one line does not already tell them.
+- location: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits.md
+  field: statement
+  unstated: The material's own worked case for a repeated field name shows two success response schemas ("id
+    appears in 200 as data.id and in 201 as id; the one from 200 was used"), and the note kind's own definition
+    speaks of the drafted path and "this one" that was not, so no node states what a
+    repeated-field-name-path-not-taken note's detail carries when a field name is read under three or more
+    differing paths and more than one path was therefore not drafted.
+  decided: The note's detail names every path not drafted for that field name — all of them where three or more
+    differing paths were read, each beside the success status it was read from, in ascending order of that
+    status, none omitted and none standing for the rest.
+  why: The rule already names one note per kind and subject, and the subject of this kind is the field name, so
+    three differing paths are one condition met at one field name and cannot become three notes without
+    breaking that count; the draft exists to hand the operator the most the document states
+    (a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas), and
+    the operator's act on this note is to decide which path the field should be read under, which a detail
+    naming only the next-lowest path would make blind — the same reading that made each unresolved item carry
+    its own reason rather than a count, and the statuses are carried with the paths because a path alone does
+    not say which response answers with it.
+- location: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas.md
+  field: statement
+  unstated: This rule already decides which path a field name read under differing paths from more than one
+    success response schema is drafted with, and domain/integration/connector-configuration-draft-response-field
+    requires each drafted field to carry one success status it was read from, but no node stated which status
+    that is where more than one success response schema declares the same field name at the same path, a case
+    the reading-note kind repeated-field-name-path-not-taken does not cover because no path was passed over.
+  decided: The response field carries the lowest of the success statuses whose schema declares it at the
+    drafted path.
+  why: The lowest status is already the status whose reading this rule keeps where two schemas declare one name
+    under differing paths, so carrying it here too makes one reading answer both cases, whereas any other
+    choice would disclose a field under a status the drafted path was not preferentially read from.
+- location: domain/integration/connector-configuration-draft-reading-note.md
+  field: attributes.subject
+  unstated: Not a fact left unstated by the material -- two unstated-fact deciders, spawned in parallel and each
+    blind to the other, independently decided distinct facts about this same node's subject definition -- one
+    decided what a whole-operation-level note's subject names (the operation's method and path), the other
+    decided that no note's subject is ever a media type, narrowing the same sentence's list of what a subject
+    may name. Both decisions are logged separately above, at their own entries; this entry discloses only that
+    applying both to one file required merging their prose by hand rather than writing either verbatim over the
+    other.
+  decided: The merged Description carries both -- the response-key/property/field list with "the media type"
+    removed, the operation-as-a-whole exception spelled as method-upper-cased-then-path, and the standing
+    "no note's subject is ever a media type" sentence.
+  why: Neither decision contradicts the other -- one is about what a whole-operation condition's subject holds,
+    the other about what a per-response condition's subject never is -- so the merge is a transcription of two
+    already-decided facts onto one file, not a third decision.
+- location: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits.md
+  field: statement
+  unstated: Not a fact left unstated by the material -- three unstated-fact deciders, spawned in parallel and
+    each blind to the others, independently decided distinct facts about this same rule's statement -- one
+    decided that a recurring condition at one subject is named by one note rather than many, the second decided
+    what a repeated-field-name-path-not-taken note's detail carries past two paths, the third decided which
+    thing three of the note kinds carry as their subject. All three decisions are logged separately above, at
+    their own entries; this entry discloses only that applying all three to one file required merging their
+    prose by hand rather than writing any one verbatim over the others.
+  decided: The merged statement and Description carry all three -- one note per kind-and-subject pairing, that
+    pairing's subject rule for the three response-level kinds, and the detail-naming rule for three or more
+    repeated paths.
+  why: No two of the three decisions speak to the same question -- deduplication, subject content and detail
+    content are three different fields of the same note -- so the merge is a transcription of three
+    already-decided facts onto one file, not a fourth decision.
+- location: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas.md
+  field: statement
+  unstated: This rule already decides which path a repeated field name is drafted with and which success status
+    the disclosed response field carries, and domain/integration/connector-configuration-draft-response-field
+    declares declared_type and declared_required as what the schema declares about the field, but no node stated
+    which schema those two are read from where more than one success response schema declares the same field
+    name at the same path while declaring different types for it or listing it as required in one and not in
+    another -- a case the reading-note kind repeated-field-name-path-not-taken does not cover, because no path
+    was passed over.
+  decided: The declared type and the required listing the single disclosed response field carries are those the
+    schema of the lowest success status declaring the field at that path declares, whatever another success
+    response schema declaring the field at the same path declares for either.
+  why: The lowest status is already the status this rule keeps the path from where two schemas declare one name
+    under differing paths, and already the status the disclosed response field carries, so reading the type and
+    the required listing from that same schema makes one reading answer the whole of the field's disclosure; any
+    other choice would hand the operator a field whose disclosed status, type and required listing came from
+    different responses, an account the document itself never states anywhere, while the operator's act here is
+    to judge one drafted path against what one response declares at it.
+- location: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits.md
+  field: statement
+  unstated: No node states whether a responses key spelled in lower case, such as 2xx, is a status range at all --
+    the reading-note kind names a status range "such as 2XX" and the statusMap rule drafts an entry only for a
+    three-digit decimal key from 100 through 599, so a lower-case spelling draws no statusMap entry under either
+    reading and belongs to the status-range-not-drafted condition under neither statement.
+  decided: A responses key spelling a status range in lower case names the same status range its upper-case
+    spelling names, exhibits status-range-not-drafted, and is named by a note whose subject is that key exactly
+    as the responses object declares it.
+  why: Neither reading drafts a statusMap entry, so the whole of what this decides is whether the operator is
+    told the key was passed over; read as no range at all, a key the document plainly declares would leave the
+    draft with a map shorter than the document and no note accounting for the difference, which is the one
+    thing the reading notes promise never happens.
+- location: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits.md
+  field: statement
+  unstated: No node states which of the three classes a responses key is read as -- a numeric status, a status
+    range or the default key -- a key made only of digits that is not a three-digit number from 100 through
+    599 falls into. a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    already settles that such a key is no numeric status and draws no statusMap entry, and the reading-note
+    kind names a status range "such as 2XX", so a key like 42 or 600 belongs to no class and exhibits no note
+    kind.
+  decided: A responses key made only of digits that is not a three-digit number from 100 through 599, such as
+    42 or 600, is read as a status range, exhibits status-range-not-drafted, and is named by a note whose
+    subject is that key exactly as the responses object declares it.
+  why: The defining property of the range class is naming no status an observation's own status can ever equal
+    and therefore drawing no statusMap entry, and a digits-only key outside 100 through 599 has exactly that
+    property, while the default key names a response by name rather than by status and the numeric-status
+    class is the one already refused it -- so read as any other class, or as none, a key the document plainly
+    declares would stand with neither a statusMap entry nor a note accounting for the difference.
 
 ---
