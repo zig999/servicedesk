@@ -149,6 +149,20 @@ function ConnectorConfigurationDraftDisclosure({
           </p>
         </section>
       )}
+
+      {draft.statusReadings.length > 0 && (
+        <section className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-foreground">Status readings</p>
+          <ul className="flex flex-col gap-1">
+            {draft.statusReadings.map((reading) => (
+              <li key={reading.status} className="text-sm">
+                <span className="font-medium">Status {reading.status}</span> — ending: {reading.ending}
+                {reading.declaredAs !== undefined && <> (declared as: {reading.declaredAs})</>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

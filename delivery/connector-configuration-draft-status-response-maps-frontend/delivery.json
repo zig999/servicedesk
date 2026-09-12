@@ -10,12 +10,28 @@
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/status-readings-stated",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/status-readings-stated.md",
+      "title": "Status readings stated in the Configuration Helper's answer disclosure",
+      "summary": "Adds a \"Status readings\" section to the Configuration Helper's drafted-answer disclosure, stating each status reading's status, ending and declared_as (where present), fed from the existing ConnectorConfigurationDraft.status_readings array.",
+      "task": "task/drafted-answer-disclosure/status-readings-stated"
+    },
+    {
       "id": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "kind": "proof",
       "file": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface.md",
       "title": "The grown draft answer's parts round-trip through the frontend's reading, whole -- proof",
       "summary": "Four new tests over a new sibling spec file prove that status readings, response fields and reading notes each survive the reading with their required attributes always present and their optional ones present exactly when carried, and that the reading-note kind vocabulary is exactly the closed set of nine.",
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/status-readings-stated",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/status-readings-stated.md",
+      "title": "Proof for drafted-answer-disclosure/status-readings-stated",
+      "summary": "Tests the Configuration Helper's disclosure of status readings -- each stated with its status, its ending and, where carried, what the document declared it as, distinguishably and with no status the answer did not carry -- at both the projection layer and the rendered surface.",
+      "task": "task/drafted-answer-disclosure/status-readings-stated"
     }
   ],
   "edges": [
@@ -62,8 +78,38 @@
       "at": "the path"
     },
     {
+      "from": "implementation/drafted-answer-disclosure/status-readings-stated",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/status-readings-stated",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/status-readings-stated",
+      "to": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/status-readings-stated",
+      "to": "task/drafted-answer-disclosure/status-readings-stated",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/status-readings-stated",
+      "to": "implementation/drafted-answer-disclosure/status-readings-stated",
       "kind": "proves",
       "at": "the path"
     }

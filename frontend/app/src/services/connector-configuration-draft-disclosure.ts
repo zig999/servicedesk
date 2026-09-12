@@ -20,11 +20,18 @@ export type MethodMismatchDisclosure = {
   readonly operation: string;
 };
 
+export type StatusReadingDisclosure = {
+  readonly status: string;
+  readonly ending: string;
+  readonly declaredAs: string | undefined;
+};
+
 export type DraftDisclosure = {
   readonly configuration: string;
   readonly unresolved: readonly UnresolvedItemDisclosure[];
   readonly generatedCredentials: readonly GeneratedCredentialDisclosure[];
   readonly methodMismatch: MethodMismatchDisclosure | undefined;
+  readonly statusReadings: readonly StatusReadingDisclosure[];
 };
 
 export type ConnectorConfigurationHelperDisclosureState =
@@ -60,6 +67,11 @@ function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosur
       securityScheme: credential.security_scheme,
     })),
     methodMismatch: draft.method_mismatch,
+    statusReadings: (draft.status_readings ?? []).map((reading) => ({
+      status: reading.status,
+      ending: reading.ending,
+      declaredAs: reading.declared_as,
+    })),
   };
 }
 

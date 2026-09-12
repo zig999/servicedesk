@@ -182,6 +182,52 @@ describe("ConnectorConfigurationHelperFields -- no method mismatch is disclosed 
   });
 });
 
+describe("ConnectorConfigurationHelperFields -- every status reading the answer carries is stated with its status, its ending and, where the document declared one, its declared description, and no status the answer did not carry (criteria 1, 2, 3, 5; rule's status_readings clause; scenario's status-readings clause)", () => {
+  it("renders exactly the given status readings, each by its own status, its own ending and its declared_as where carried", () => {
+    const outcome: DraftConnectorConfigurationRequestOutcome = {
+      kind: "drafted",
+      draft: {
+        ...BASE_DRAFT,
+        status_readings: [
+          { status: "200", ending: "record-stub-response", declared_as: "Successful profile retrieval" },
+          { status: "403", ending: "forbidden-not-drafted" },
+          { status: "503", ending: "unavailable-not-drafted" },
+        ],
+      },
+    };
+
+    renderHelperFields(outcome);
+
+    const items = screen.getAllByRole("listitem").map(normalized);
+    expect(items).toEqual([
+      "Status 200 — ending: record-stub-response (declared as: Successful profile retrieval)",
+      "Status 403 — ending: forbidden-not-drafted",
+      "Status 503 — ending: unavailable-not-drafted",
+    ]);
+  });
+});
+
+describe("ConnectorConfigurationHelperFields -- a status reading's status and its ending are distinguishable from one another, neither standing for the other (criterion 4)", () => {
+  it("renders the status and the ending under their own distinct labels, so neither could be read as the other", () => {
+    const outcome: DraftConnectorConfigurationRequestOutcome = {
+      kind: "drafted",
+      draft: { ...BASE_DRAFT, status_readings: [{ status: "422", ending: "validation-error-passed-through" }] },
+    };
+
+    renderHelperFields(outcome);
+
+    expect(normalized(screen.getByRole("listitem"))).toBe("Status 422 — ending: validation-error-passed-through");
+  });
+});
+
+describe("ConnectorConfigurationHelperFields -- no status the answer did not carry is stated when the draft carries none (criterion 5)", () => {
+  it("renders no status reading at all", () => {
+    renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
+
+    expect(screen.queryAllByRole("listitem")).toHaveLength(0);
+  });
+});
+
 describe("ConnectorConfigurationHelperFields -- a fetch refusal is disclosed as an alert with no draft part beside it (criterion 9)", () => {
   it("shows the fetch-refusal message as an alert and no drafted disclosure", () => {
     renderHelperFields(FETCH_REFUSAL);

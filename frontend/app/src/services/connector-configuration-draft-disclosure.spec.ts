@@ -170,6 +170,33 @@ describe("disclosureStateForOutcome -- no method mismatch is disclosed when the 
   });
 });
 
+describe("disclosureStateForOutcome -- each status reading is projected into its own status, ending and declared_as, one-to-one and unmodified (criteria 1, 2, 3; domain/integration/connector-configuration-draft-status-reading)", () => {
+  it("carries status and ending through unchanged for every reading, and carries declaredAs as undefined for a reading with no declared_as", () => {
+    const draft: ConnectorConfigurationDraft = {
+      ...BASE_DRAFT,
+      status_readings: [
+        { status: "200", ending: "record-stub-response", declared_as: "Successful profile retrieval" },
+        { status: "403", ending: "skip-endpoint" },
+      ],
+    };
+
+    const state = drafted(disclosureStateForOutcome({ kind: "drafted", draft }));
+
+    expect(state.draft.statusReadings).toEqual([
+      { status: "200", ending: "record-stub-response", declaredAs: "Successful profile retrieval" },
+      { status: "403", ending: "skip-endpoint", declaredAs: undefined },
+    ]);
+  });
+});
+
+describe("disclosureStateForOutcome -- an empty status_readings list projects no status reading (criterion 5)", () => {
+  it("carries through an empty array rather than inventing a status reading", () => {
+    const state = drafted(disclosureStateForOutcome({ kind: "drafted", draft: BASE_DRAFT }));
+
+    expect(state.draft.statusReadings).toEqual([]);
+  });
+});
+
 describe("disclosureStateForOutcome -- a fetch refusal names its own failure kind (criterion 9; UNDERDETERMINED note 1)", () => {
   it("names a network failure", () => {
     const outcome: DraftConnectorConfigurationRequestOutcome = {

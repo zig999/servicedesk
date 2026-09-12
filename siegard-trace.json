@@ -2700,6 +2700,14 @@
           "digest": "sha256:ec1d3d383b0c628d91627140bfdb4a41f7e994c0ab5df6e9475b44e30b9bca61"
         },
         {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:a1a2e14134e2bacad700400715b815d97edcf15e7650811e52ee07ee5ad8ce4f"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
+          "digest": "sha256:4a1d9690fa3e9d818e0c064575cca31c7d3b145053518bbbf0a2405305458c82"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
           "digest": "sha256:baa740321142d970b79e5e6d647039ee562aec92915064be69db296fdac1b42c"
         },
@@ -6045,15 +6053,15 @@
     },
     {
       "node": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
-      "digest": "sha256:87e73eb1251f073bce8504402792d273576e078f155e4f3e997251a6de729bb6",
+      "digest": "sha256:1d6cd774ef6a86ac04dceac7e14bbaaa29c94517b77f380357941aa4faac2723",
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:8db69f345b689f97c859e5efcc7aa3c59f74b03dbd14d7ca5b85133603f133bc"
+          "digest": "sha256:a1a2e14134e2bacad700400715b815d97edcf15e7650811e52ee07ee5ad8ce4f"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
-          "digest": "sha256:4a965bbd01c02cfdf789ca4c79932ce9ccfa1ed2986b9f7bf7a9ef9c77d421fa"
+          "digest": "sha256:4a1d9690fa3e9d818e0c064575cca31c7d3b145053518bbbf0a2405305458c82"
         }
       ]
     },
@@ -8404,6 +8412,20 @@
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
           "digest": "sha256:148cd63eab6955c74ce5f0f967d98373bbe3d47c94ffea5fa2021f53a3cec231"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "digest": "sha256:b6e46e11d08ffc6da988307e158901a250fd6234050264ff68832c2db014651f",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:a1a2e14134e2bacad700400715b815d97edcf15e7650811e52ee07ee5ad8ce4f"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
+          "digest": "sha256:4a1d9690fa3e9d818e0c064575cca31c7d3b145053518bbbf0a2405305458c82"
         }
       ]
     },
