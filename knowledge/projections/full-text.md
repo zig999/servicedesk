@@ -5280,6 +5280,36 @@ entries:
     no-properties condition partition every case without overlap, the narrowest reading that still lets the draft
     read a document declaring an object field with no schema of its own as an ordinary field rather than silently
     dropping it.
+- location: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation.md
+  field: statement
+  unstated: Whether a Connector field whose content is whitespace alone holds a connector name or holds none —
+    the rule offered the draft-requesting act only over a non-empty connector name, and no node said which side
+    of that a field holding only spaces falls on.
+  decided: Whitespace alone is no connector name — a Connector field holding only whitespace holds none, so the
+    act stays unoffered and the surface names the connector as what the request waits on, exactly as for an
+    empty field.
+  why: Nothing is registered under whitespace, so a draft requested over such a field resolves against no
+    capability and names every parameter unresolved with reason no-capability-registered — the true-statement-
+    about-the-wrong-cause this rule exists to prevent — which is the same outcome an empty name produces and
+    which this specification already answers by reading an empty attribute as an absence
+    (a-connector-configuration-names-its-connector treats an empty string as no name at all).
+- location: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text.md
+  field: statement
+  unstated: Whether a connector configuration draft's own configuration is guaranteed to be well-formed JSON
+    object text. domain/integration/connector-configuration-draft declares the attribute only as a string, while
+    an-apply-confirmation-states-what-the-draft-would-change itemises what applying a draft would change only
+    where the field's unsubmitted content and the draft's configuration are both well-formed JSON object text,
+    and names an outcome for the field's content failing that test but none for the draft's.
+  decided: A connector configuration draft's configuration is always well-formed JSON object text — parsing, and
+    parsing to a JSON object rather than to a null, an array, a string, a number or a boolean — for every
+    operation of every document, recorded as a new invariant constraining
+    domain/integration/connector-configuration-draft.
+  why: Everything a draft states about the call it read is stated as a key of that text — a method, an address,
+    a statusMap and a responseMap drafted even where they hold no entry, and the query, headers and body an
+    operation's own parts occupy — so a configuration that was not JSON object text would be a draft stating
+    nothing at all, and no operation the generation admits can leave it short of one; declaring the guarantee
+    rather than leaving it to the generator is what makes the apply confirmation's itemisation total over every
+    draft it can meet.
 
 ---
 
@@ -7236,6 +7266,27 @@ Whether that value is ever taken from what is currently registered instead is `a
 
 The case is raised because upper-case is the vocabulary the executing connector holds a method to — GET, POST, PUT, PATCH or DELETE — while an OpenAPI 3.x document names its operations under lower-case path-item keys. Drafting the document's spelling verbatim would generate a configuration that issues no call and ends unavailable the moment it were registered and observed, reporting a MalformedHttpConnectorConfigurationError over a method the draft itself had miscased. Only the case is changed: the verb is never substituted, defaulted or dropped.
 
+=== rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+---
+type: invariant
+statement: >-
+  A connector configuration draft's configuration is always well-formed JSON object text —
+  text that parses, and parses to a JSON object rather than to a null, an array, a string,
+  a number or a boolean — for every operation of every document a draft is generated from,
+  an operation declaring no responses, no parameters, no request body and no security
+  requirement included.
+constrains:
+  - domain/integration/connector-configuration-draft
+---
+
+## Description
+
+A draft exists to be applied into the one field a connector configuration carries, and that field is only ever registered as well-formed JSON object text; a draft handing the operator anything else would be material no registration could take and no reader could open by key.
+Everything a draft states about the call it read stands as a key of this text — the method and the address, the two maps drafted even where they hold no entry, and the query, the headers and the body the operation's own parts occupy — so text that did not parse to an object would state none of it, and every rule that fixes where one of those parts sits reads this as its premise rather than stating it.
+
+This is a guarantee of generation rather than a refusal, and it is not the registry's own well-formedness judgment repeated over something the registry never sees: a draft registers nothing, the two conditions under which no draft is stated at all belong to a-malformed-or-unsupported-openapi-document-refuses-the-draft, and a document too sparse to draft object text does not exist — an operation declaring nothing but its path is still drafted with a method, an address and two empty maps.
+What this buys is that every reader of a stated draft — the surface that discloses it, the confirmation that asks before it replaces an unsubmitted edit — may parse the configuration it carries without first asking whether it parses, and so never owes the operator an account of a draft it could not read.
+
 === rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered
 ---
 type: policy
@@ -7854,9 +7905,9 @@ The details stop there. `constraints/a-domain-error-unmapped-by-status-is-refuse
 type: invariant
 statement: >-
   The Configuration Helper offers the act requesting a connector configuration draft only while
-  the surface's Connector field holds a non-empty connector name and an operation stands chosen
-  from the fetched document's listing, stating in the act's place, while either is missing, which
-  of the two the request waits on.
+  the surface's Connector field holds a connector name that is neither empty nor whitespace
+  alone and an operation stands chosen from the fetched document's listing, stating in the act's
+  place, while either is missing, which of the two the request waits on.
 constrains:
   - domain/integration/connector-configuration
 ---
@@ -7864,6 +7915,7 @@ constrains:
 ## Description
 
 A draft resolves its subject placeholders by the capabilities registered against the connector name, so a request made under an empty name names every parameter unresolved with reason no-capability-registered, a true statement about the wrong cause.
+A field holding whitespace alone holds no name and lands in that same wrong cause: nothing is registered under whitespace, so the capabilities looked up under it are none, and the operator who typed a space would be told the connector has no capability rather than that they have named no connector — the reading a-connector-configuration-names-its-connector already gives an empty string, carried to the one content that looks filled on the surface and is not.
 A request made before an operation is chosen names no path and no method, and the only answer it can have is the refusal an-openapi-document-declaring-no-such-operation-refuses-the-draft states for a pairing the operator never chose.
 Withholding the act until both stand, and saying which is missing, follows a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed: an act whose outcome is already known on the surface is not offered to fail.
 

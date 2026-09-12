@@ -1,0 +1,756 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/configuration-readiness",
+      "kind": "epic",
+      "file": "epic/configuration-readiness.md",
+      "title": "What the surface states about the Configuration field's own content",
+      "summary": "The readiness side -- the entry's guidance, the HTTP-connector departures, the subject and credential placeholder statements, the responseMap-against-output-schema coverage, and the one act any of them is allowed to withhold."
+    },
+    {
+      "id": "epic/drafted-answer-disclosure",
+      "kind": "epic",
+      "file": "epic/drafted-answer-disclosure.md",
+      "title": "What the Configuration Helper states about a draft request and its answer",
+      "summary": "The Helper's side of the change -- the grown answer reaching the surface, the status readings, response fields, reading notes and unresolved reasons stated over it, the gate on requesting one, the operations-read states, the staleness marking, and the apply confirmation's itemisation."
+    },
+    {
+      "id": "inventory/connector-configuration-helper-frontend",
+      "kind": "inventory",
+      "file": "inventory/connector-configuration-helper-frontend.md",
+      "title": "Configuration Helper screen -- frontend",
+      "summary": "The existing Configuration Helper screen, its draft-fetching hook, its draft disclosure/rendering, its i18n and layering conventions, and what a readiness panel plus a status/response disclosure table must reuse."
+    },
+    {
+      "id": "task/configuration-readiness/configuration-entry-guidance",
+      "kind": "task",
+      "file": "task/configuration-readiness/configuration-entry-guidance.md",
+      "title": "The Configuration entry states what the HTTP connector reads from it",
+      "summary": "Beside the field, the entry says that what is entered is a JSON object, which keys the connector reads, and the three forms a placeholder is written in.",
+      "epic": "configuration-readiness"
+    },
+    {
+      "id": "task/configuration-readiness/credential-placeholder-statement",
+      "kind": "task",
+      "file": "task/configuration-readiness/credential-placeholder-statement.md",
+      "title": "The surface promises no check of a credential placeholder",
+      "summary": "For each ${credential:X} the field's well-formed content embeds, the surface names it and says it resolves server-side at a test or an observation and is checked by nothing here.",
+      "epic": "configuration-readiness"
+    },
+    {
+      "id": "task/configuration-readiness/http-departure-statements",
+      "kind": "task",
+      "file": "task/configuration-readiness/http-departure-statements.md",
+      "title": "The surface states what the HTTP connector would refuse in the field's content",
+      "summary": "Over well-formed configuration text, each departure from the method and status vocabulary, from what the call must declare, and from the three placeholder forms is stated by the key that departs.",
+      "epic": "configuration-readiness"
+    },
+    {
+      "id": "task/configuration-readiness/response-map-capability-coverage",
+      "kind": "task",
+      "file": "task/configuration-readiness/response-map-capability-coverage.md",
+      "title": "The surface states which responseMap keys a registered capability reads",
+      "summary": "Over the field's content and over a stated draft's configuration alike, each key that reaches a capability field, each key that reaches none, and each expected field no key names are stated.",
+      "epic": "configuration-readiness"
+    },
+    {
+      "id": "task/configuration-readiness/subject-placeholder-statements",
+      "kind": "task",
+      "file": "task/configuration-readiness/subject-placeholder-statements.md",
+      "title": "The surface states a subject placeholder no registered capability declares",
+      "summary": "For each ${subject:x} the field's well-formed content embeds, the surface says whether every capability registered under the connector declares that attribute, and says so cannot be checked where none is registered.",
+      "epic": "configuration-readiness"
+    },
+    {
+      "id": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "kind": "task",
+      "file": "task/configuration-readiness/submission-withheld-only-on-well-formedness.md",
+      "title": "Readiness statements withhold nothing but the one act well-formedness withholds",
+      "summary": "The act submitting a registration is withheld exactly while the surface's judgment finds the field's content not a well-formed JSON object, and by no other readiness statement.",
+      "epic": "configuration-readiness"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/apply-confirmation-diff.md",
+      "title": "The apply confirmation itemises what it would change",
+      "summary": "Before an unsubmitted edit is replaced, the confirmation names each top-level key and each statusMap, responseMap, query and headers key the apply would add, remove or change.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface.md",
+      "title": "The grown draft answer reaches the surface whole",
+      "summary": "The frontend's own reading of a draft answer admits the status readings, response fields and reading notes it now carries, instead of dropping them.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/draft-request-gate",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/draft-request-gate.md",
+      "title": "A draft is requested only over a named connector and a chosen operation",
+      "summary": "The act requesting a draft stands only while the Connector field holds a name and an operation is chosen, and says which of the two it waits on otherwise.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/operations-read-states",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/operations-read-states.md",
+      "title": "The Helper distinguishes an outstanding operations read from a document declaring none",
+      "summary": "The listing says that operations are being read, or that the fetched document declares none, each apart from the other and from every refusal of that read.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/pt-br-message-module",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/pt-br-message-module.md",
+      "title": "One pt-BR home for this surface's operator-facing wording",
+      "summary": "The wording the Configuration Helper and the configuration form state to the operator is written in pt-BR and read from one module rather than inlined at the control that renders it.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/reading-notes-stated",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/reading-notes-stated.md",
+      "title": "The Helper states the draft's reading notes, each kind apart",
+      "summary": "Every condition the draft met while reading the operation's responses is stated by its kind and its subject, none presented as another.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/response-fields-stated",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/response-fields-stated.md",
+      "title": "The Helper states the draft's response fields",
+      "summary": "Each field the answer carries is stated with its name, its path, the status it was read from and what the schema declared about it.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/stale-draft-marking",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/stale-draft-marking.md",
+      "title": "A stated draft is marked stale once the surface moves away from it",
+      "summary": "The draft carries the link, the operation and the connector name it was generated for, and reads as stale from the moment any of the three differs, the act applying it still offered.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/status-readings-stated",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/status-readings-stated.md",
+      "title": "The Helper states the draft's status readings",
+      "summary": "Each status the answer carries is stated with the ending drafted for it and with what the document declared that status as.",
+      "epic": "drafted-answer-disclosure"
+    },
+    {
+      "id": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "kind": "task",
+      "file": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart.md",
+      "title": "An unresolved item is stated by one of exactly three reasons",
+      "summary": "Each unresolved item carries its name and its reason, the three reasons the draft's vocabulary holds stand apart from one another, and no reason outside those three is named.",
+      "epic": "drafted-answer-disclosure"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/configuration-readiness",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/configuration-readiness",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/a-connector-configuration-draft-response-carries-no-capability",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/an-apply-confirmation-states-what-the-draft-would-change",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/a-connector-configuration-draft-registers-nothing",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/drafted-answer-disclosure",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/configuration-readiness/configuration-entry-guidance",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/configuration-readiness/configuration-entry-guidance",
+      "to": "rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/configuration-readiness/credential-placeholder-statement",
+      "to": "rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/configuration-readiness/credential-placeholder-statement",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/configuration-readiness/http-departure-statements",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/configuration-readiness/http-departure-statements",
+      "to": "rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/configuration-readiness/http-departure-statements",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/configuration-readiness/http-departure-statements",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/configuration-readiness/http-departure-statements",
+      "to": "rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/configuration-readiness/http-departure-statements",
+      "to": "scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/configuration-readiness/response-map-capability-coverage",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/configuration-readiness/response-map-capability-coverage",
+      "to": "rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/configuration-readiness/response-map-capability-coverage",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/configuration-readiness/response-map-capability-coverage",
+      "to": "scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/configuration-readiness/subject-placeholder-statements",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/configuration-readiness/subject-placeholder-statements",
+      "to": "rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/configuration-readiness/subject-placeholder-statements",
+      "to": "rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/configuration-readiness/subject-placeholder-statements",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "task/configuration-readiness/http-departure-statements",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "task/configuration-readiness/subject-placeholder-statements",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "task/configuration-readiness/credential-placeholder-statement",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "task/configuration-readiness/response-map-capability-coverage",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "rules/integration/an-apply-confirmation-states-what-the-draft-would-change",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "rules/integration/a-connector-configuration-draft-response-carries-no-capability",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/draft-request-gate",
+      "to": "rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/operations-read-states",
+      "to": "rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/operations-read-states",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/operations-read-states",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/reading-notes-stated",
+      "to": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/reading-notes-stated",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/reading-notes-stated",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/reading-notes-stated",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/reading-notes-stated",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/reading-notes-stated",
+      "to": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/response-fields-stated",
+      "to": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/response-fields-stated",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/response-fields-stated",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/response-fields-stated",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/response-fields-stated",
+      "to": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/stale-draft-marking",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/stale-draft-marking",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/stale-draft-marking",
+      "to": "rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/status-readings-stated",
+      "to": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/status-readings-stated",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/status-readings-stated",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/status-readings-stated",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/status-readings-stated",
+      "to": "scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}

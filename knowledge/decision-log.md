@@ -4656,5 +4656,35 @@ entries:
     no-properties condition partition every case without overlap, the narrowest reading that still lets the draft
     read a document declaring an object field with no schema of its own as an ordinary field rather than silently
     dropping it.
+- location: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation.md
+  field: statement
+  unstated: Whether a Connector field whose content is whitespace alone holds a connector name or holds none —
+    the rule offered the draft-requesting act only over a non-empty connector name, and no node said which side
+    of that a field holding only spaces falls on.
+  decided: Whitespace alone is no connector name — a Connector field holding only whitespace holds none, so the
+    act stays unoffered and the surface names the connector as what the request waits on, exactly as for an
+    empty field.
+  why: Nothing is registered under whitespace, so a draft requested over such a field resolves against no
+    capability and names every parameter unresolved with reason no-capability-registered — the true-statement-
+    about-the-wrong-cause this rule exists to prevent — which is the same outcome an empty name produces and
+    which this specification already answers by reading an empty attribute as an absence
+    (a-connector-configuration-names-its-connector treats an empty string as no name at all).
+- location: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text.md
+  field: statement
+  unstated: Whether a connector configuration draft's own configuration is guaranteed to be well-formed JSON
+    object text. domain/integration/connector-configuration-draft declares the attribute only as a string, while
+    an-apply-confirmation-states-what-the-draft-would-change itemises what applying a draft would change only
+    where the field's unsubmitted content and the draft's configuration are both well-formed JSON object text,
+    and names an outcome for the field's content failing that test but none for the draft's.
+  decided: A connector configuration draft's configuration is always well-formed JSON object text — parsing, and
+    parsing to a JSON object rather than to a null, an array, a string, a number or a boolean — for every
+    operation of every document, recorded as a new invariant constraining
+    domain/integration/connector-configuration-draft.
+  why: Everything a draft states about the call it read is stated as a key of that text — a method, an address,
+    a statusMap and a responseMap drafted even where they hold no entry, and the query, headers and body an
+    operation's own parts occupy — so a configuration that was not JSON object text would be a draft stating
+    nothing at all, and no operation the generation admits can leave it short of one; declaring the guarantee
+    rather than leaving it to the generator is what makes the apply confirmation's itemisation total over every
+    draft it can meet.
 
 ---
