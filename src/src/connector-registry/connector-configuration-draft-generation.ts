@@ -8,11 +8,16 @@ import type { SubjectPlaceholderPlacement } from './subject-placeholder-resoluti
 import { registeredMethodMismatch } from './registered-method-comparison.js';
 import type { RegisteredConnectorConfigurationReader } from './registered-method-comparison.js';
 import { readOpenApiOperation } from './openapi-operation-reader.js';
-import type { OpenApiOperationParameter, OpenApiOperationReading } from './openapi-operation-reader.js';
+import type {
+  OpenApiOperationParameter,
+  OpenApiOperationReading,
+  OpenApiOperationResponse,
+} from './openapi-operation-reader.js';
 import type { IOpenApiDocumentFetcher } from './openapi-document-fetcher.port.js';
 import type { ICapabilitiesReader } from './capabilities-reader.port.js';
 import type {
   ConnectorConfigurationDraft,
+  ConnectorConfigurationDraftStatusReading,
   ConnectorConfigurationDraftUnresolvedItem,
   ConnectorConfigurationDraftUnresolvedReason,
 } from './connector-configuration-draft.js';
@@ -20,6 +25,9 @@ import type {
 const COOKIE_HEADER_NAME = 'Cookie';
 const COOKIE_SEGMENT_SEPARATOR = '; ';
 const OCCUPIED_REASON: ConnectorConfigurationDraftUnresolvedReason = 'drafted-key-occupied-by-another-security-scheme';
+const DENIED_STATUSES: ReadonlySet<string> = new Set(['401', '403', '407']);
+const OK_STATUS_RANGE_MIN = 200;
+const OK_STATUS_RANGE_MAX = 299;
 
 export type GenerateConnectorConfigurationDraftOptions = {
   readonly connector: string;
@@ -74,7 +82,7 @@ export async function generateConnectorConfigurationDraft(
     configuration: draftedConfigurationText({ reading, subjectPlacement, credentialPlacement, displaced }),
     unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
     generated_credentials: credentialPlacement.generatedCredentials,
-    status_readings: [],
+    status_readings: draftedStatusReadings(reading.responses),
     response_fields: [],
     reading_notes: [],
     ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
@@ -91,8 +99,38 @@ function draftedConfigurationText(input: DraftedConfigurationInput): string {
     ...(Object.keys(query).length > 0 ? { query } : {}),
     ...(Object.keys(headers).length > 0 ? { headers } : {}),
     ...(Object.keys(subjectPlacement.body).length > 0 ? { body: subjectPlacement.body } : {}),
+    statusMap: draftedStatusMap(reading.responses),
   };
   return JSON.stringify(configuration);
+}
+
+function statusResponses(responses: readonly OpenApiOperationResponse[]): readonly OpenApiOperationResponse[] {
+  return responses.filter((response) => response.kind === 'status');
+}
+
+function statusEnding(status: string): ConnectorConfigurationDraftStatusReading['ending'] {
+  if (DENIED_STATUSES.has(status)) {
+    return 'denied';
+  }
+  const numericStatus = Number(status);
+  return numericStatus >= OK_STATUS_RANGE_MIN && numericStatus <= OK_STATUS_RANGE_MAX ? 'ok' : 'unavailable';
+}
+
+function draftedStatusMap(responses: readonly OpenApiOperationResponse[]): Readonly<Record<string, string>> {
+  return Object.fromEntries(statusResponses(responses).map((response) => [response.key, statusEnding(response.key)]));
+}
+
+function draftedStatusReadings(
+  responses: readonly OpenApiOperationResponse[],
+): readonly ConnectorConfigurationDraftStatusReading[] {
+  return statusResponses(responses).map(statusReadingOf);
+}
+
+function statusReadingOf(response: OpenApiOperationResponse): ConnectorConfigurationDraftStatusReading {
+  const ending = statusEnding(response.key);
+  return response.description === undefined
+    ? { status: response.key, ending }
+    : { status: response.key, ending, declared_as: response.description };
 }
 
 function draftedHeaders(input: DraftedHeadersInput): Readonly<Record<string, string>> {

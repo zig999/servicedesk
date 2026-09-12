@@ -10,6 +10,14 @@
       "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
     },
     {
+      "id": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/drafted-status-map.md",
+      "title": "Drafted statusMap and its status readings",
+      "summary": "The generator now always states a statusMap key built from the operation's declared numeric-status responses, paired one-for-one with status_readings, and three pre-existing tests were updated to match this replacement of the revoked never-drafted rule.",
+      "task": "task/connector-configuration-draft-maps/drafted-status-map"
+    },
+    {
       "id": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
       "kind": "implementation",
       "file": "implementation/connector-configuration-draft-maps/openapi-responses-reading.md",
@@ -40,6 +48,14 @@
       "title": "Draft disclosure type shapes proven at compile time",
       "summary": "Adds compile-time type assertions for the three new value-object shapes and the closed nine-kind reading-note vocabulary that the existing, mechanically widened tests do not already establish.",
       "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/drafted-status-map",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/drafted-status-map.md",
+      "title": "Drafted statusMap classification and status-reading disclosure -- proof",
+      "summary": "Seven new unit tests over generateConnectorConfigurationDraft prove the statusMap's ok/denied/unavailable classification at its boundaries, its exclusion of default- and range-keyed responses, the one-reading-per-entry pairing, and the declared_as disclosure rule; one criterion was already fully proved by the implementation's own updated pre-existing test.",
+      "task": "task/connector-configuration-draft-maps/drafted-status-map"
     },
     {
       "id": "proof/connector-configuration-draft-maps/openapi-responses-reading",
@@ -100,6 +116,36 @@
     {
       "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
       "to": "task/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "to": "rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "to": "rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-status-map",
+      "to": "task/connector-configuration-draft-maps/drafted-status-map",
       "kind": "implements",
       "at": "the path"
     },
@@ -196,6 +242,12 @@
     {
       "from": "proof/connector-configuration-draft-maps/draft-disclosure-type",
       "to": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/drafted-status-map",
+      "to": "implementation/connector-configuration-draft-maps/drafted-status-map",
       "kind": "proves",
       "at": "the path"
     },

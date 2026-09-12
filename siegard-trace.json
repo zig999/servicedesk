@@ -2541,7 +2541,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
-          "digest": "sha256:4cabb8d7fef1a525a80b449fc94de9f2a7f1ce0490cebf4bceec03c74e63b3cd"
+          "digest": "sha256:856496c73db51ebf65e606cfe2f12f72d656464c201077f914e3110b72120f46"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
@@ -2651,6 +2651,10 @@
       "node": "domain/integration/connector-configuration-draft-status-reading",
       "digest": "sha256:1128c81035635a3a66ed7d1ef71e83c58f9310cc18c9617f5db6402badad2821",
       "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
+          "digest": "sha256:856496c73db51ebf65e606cfe2f12f72d656464c201077f914e3110b72120f46"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
           "digest": "sha256:99eb7aa68852791cf6b223757fbb2051dfc9b271201a1313a6d3fcf8349de9ad"
@@ -5278,6 +5282,18 @@
       "digest": "sha256:944c77dc3550713648113f6dbcbf9ba79399760ca6541346f004ad904f7ef123",
       "files": [
         {
+          "path": "src/src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts",
+          "digest": "sha256:b54b7d2976f343edfed0186734b0295c383218ec5e7481a8052da5c7202a4b48"
+        },
+        {
+          "path": "src/src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts",
+          "digest": "sha256:d030d5d8382db63bb29b77c1d98a91e0522dde509b2db2c10dddd85886e762ed"
+        },
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
+          "digest": "sha256:856496c73db51ebf65e606cfe2f12f72d656464c201077f914e3110b72120f46"
+        },
+        {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
         }
@@ -5311,6 +5327,10 @@
       "node": "rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs",
       "digest": "sha256:e9babc0c8ec329d21e45343f2a423c2cc73137a5829608907a3fcc0641a45581",
       "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
+          "digest": "sha256:856496c73db51ebf65e606cfe2f12f72d656464c201077f914e3110b72120f46"
+        },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"

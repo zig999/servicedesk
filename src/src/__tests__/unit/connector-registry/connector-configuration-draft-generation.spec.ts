@@ -240,12 +240,73 @@ it("places a resolved request-body field at its own top-level body key", async (
   expect(configurationOf(draft).body).toEqual({ billing_address: '${subject:billing_address}' });
 });
 
-it('never states a responseMap or a statusMap key, however much of the draft resolves', async () => {
+it("always states a statusMap key drafted from the operation's declared responses -- empty when it declares none -- never states a responseMap key, and pairs an empty status_readings list with that empty statusMap", async () => {
   const draft = await generateConnectorConfigurationDraft(positionsOptions());
 
   const configuration = configurationOf(draft);
   expect('responseMap' in configuration).toBe(false);
-  expect('statusMap' in configuration).toBe(false);
+  expect(configuration.statusMap).toEqual({});
+  expect(draft.status_readings).toEqual([]);
+});
+
+function responsesOptions(responses: Record<string, unknown>): GenerateConnectorConfigurationDraftOptions {
+  return options({
+    documentFetcher: fetcherFor({ openapi: '3.0.0', paths: { '/widgets': { get: { responses } } } }),
+  });
+}
+
+it('drafts the ok ending for a status at each end of the 200-through-299 range', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '200': {}, '299': {} }));
+
+  expect(configurationOf(draft).statusMap).toEqual({ '200': 'ok', '299': 'ok' });
+});
+
+it('drafts the denied ending for exactly the statuses 401, 403 and 407', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '401': {}, '403': {}, '407': {} }));
+
+  expect(configurationOf(draft).statusMap).toEqual({ '401': 'denied', '403': 'denied', '407': 'denied' });
+});
+
+it('drafts the unavailable ending for a status immediately outside each end of the 200-through-299 range', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '199': {}, '300': {} }));
+
+  expect(configurationOf(draft).statusMap).toEqual({ '199': 'unavailable', '300': 'unavailable' });
+});
+
+it('drafts the unavailable ending, never timeout, for the statuses HTTP itself names as a timeout', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '408': {}, '504': {} }));
+
+  expect(configurationOf(draft).statusMap).toEqual({ '408': 'unavailable', '504': 'unavailable' });
+});
+
+it('produces no statusMap entry and no status reading for a default-keyed or a range-keyed response', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ default: {}, '5XX': {} }));
+
+  expect(configurationOf(draft).statusMap).toEqual({});
+  expect(draft.status_readings).toEqual([]);
+});
+
+it("carries exactly one status reading per drafted statusMap entry, each holding that entry's own status and ending", async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '210': {}, '407': {}, '450': {} }));
+
+  expect(configurationOf(draft).statusMap).toEqual({ '210': 'ok', '407': 'denied', '450': 'unavailable' });
+  expect(draft.status_readings).toEqual([
+    { status: '210', ending: 'ok' },
+    { status: '407', ending: 'denied' },
+    { status: '450', ending: 'unavailable' },
+  ]);
+});
+
+it("carries the document's own description as declared_as on a status reading, and omits declared_as entirely where the document declares no description", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({ '201': { description: 'Widget created' }, '404': {} }),
+  );
+
+  expect(draft.status_readings).toEqual([
+    { status: '201', ending: 'ok', declared_as: 'Widget created' },
+    { status: '404', ending: 'unavailable' },
+  ]);
+  expect('declared_as' in draft.status_readings[1]).toBe(false);
 });
 
 it('omits the query, headers and body keys entirely when the operation declares no parameter or request-body field for any of them', async () => {

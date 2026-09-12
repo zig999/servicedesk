@@ -85,7 +85,7 @@ it(
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual({
       connector: 'a-connector',
-      configuration: JSON.stringify({ method: 'GET', address: '/widgets' }),
+      configuration: JSON.stringify({ method: 'GET', address: '/widgets', statusMap: {} }),
       unresolved: [],
       generated_credentials: [],
       status_readings: [],
@@ -112,7 +112,7 @@ it(
     expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual({
       connector: 'a-connector',
-      configuration: JSON.stringify({ method: 'GET', address: '/widgets' }),
+      configuration: JSON.stringify({ method: 'GET', address: '/widgets', statusMap: {} }),
       unresolved: [],
       generated_credentials: [],
       status_readings: [],
