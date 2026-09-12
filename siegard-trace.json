@@ -5702,6 +5702,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation",
+      "digest": "sha256:6347a07351d31167abd2b471caedb76cd94013fbdc1a262d2824783ba4173036",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:1239d7ad0f2ced62b1c1fc5a9bef4cbf987d2decc2ca3feaef6eecabaa434b6c"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:e1c9b0cf5b07d72dcf804887aef9e9d17a87f61d351a71b4a8892f395e7e0b21"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-drafted-connector-configuration-is-answered-as-a-read",
       "digest": "sha256:04e630856fa5db4156d80cff2edabf9ef11037a0ced8cfaba5864a24a785546b",
       "files": [

@@ -37,6 +37,9 @@ export function ConnectorConfigurationHelperFields({
       ? ""
       : operationSelectValue({ path: state.path, method: state.method });
 
+  const connectorNameMissing = (state.connector ?? "").trim() === "";
+  const operationMissing = state.path === "" && state.method === "";
+
   const onOperationSelected = (value: string): void => {
     const chosen = state.operations.find((operation) => operationSelectValue(operation) === value);
     if (chosen !== undefined) {
@@ -66,13 +69,19 @@ export function ConnectorConfigurationHelperFields({
         </Label>
       </div>
       <div className="flex justify-end">
-        <Button
-          type="button"
-          onClick={state.onRequestDraft}
-          disabled={state.outcome.kind === "pending"}
-        >
-          Request Draft
-        </Button>
+        {connectorNameMissing ? (
+          <p className="text-sm text-muted-foreground">The request waits on a connector name.</p>
+        ) : operationMissing ? (
+          <p className="text-sm text-muted-foreground">The request waits on a chosen operation.</p>
+        ) : (
+          <Button
+            type="button"
+            onClick={state.onRequestDraft}
+            disabled={state.outcome.kind === "pending"}
+          >
+            Request Draft
+          </Button>
+        )}
       </div>
       <div aria-live="polite" className="flex flex-col gap-4">
         {disclosure.kind === "pending" && <p>Drafting the connector configuration…</p>}

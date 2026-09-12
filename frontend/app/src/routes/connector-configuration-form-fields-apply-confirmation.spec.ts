@@ -85,6 +85,10 @@ async function mountCreateReady(): Promise<{
 }
 
 async function offerDraft(): Promise<void> {
+  const connectorField = screen.queryByLabelText<HTMLInputElement>("Connector");
+  if (connectorField !== null && connectorField.value.trim() === "") {
+    fireEvent.change(connectorField, { target: { value: CONNECTOR } });
+  }
   fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
   await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
   fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));

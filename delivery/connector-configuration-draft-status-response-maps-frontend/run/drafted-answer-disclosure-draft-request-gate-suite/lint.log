@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-configuration-helper-fields-draft-request-gate.spec.ts
+  32:11  error  `missingConnectorEmpty` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`       testing-library/render-result-naming-convention
+  39:11  error  `missingConnectorWhitespace` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+  46:11  error  `missingOperation` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`            testing-library/render-result-naming-convention
+  53:11  error  `bothSatisfied` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`               testing-library/render-result-naming-convention
+
+✖ 4 problems (4 errors, 0 warnings)
+

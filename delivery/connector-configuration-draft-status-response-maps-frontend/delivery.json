@@ -10,6 +10,14 @@
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/draft-request-gate",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/draft-request-gate.md",
+      "title": "Gate the Configuration Helper's draft-request act on a named connector and a chosen operation",
+      "summary": "The Request Draft control is now offered only while the Connector field holds a non-blank name and an operation stands chosen, stating in its place which of the two the request still waits on otherwise.",
+      "task": "task/drafted-answer-disclosure/draft-request-gate"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/reading-notes-stated",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/reading-notes-stated.md",
@@ -48,6 +56,14 @@
       "title": "The grown draft answer's parts round-trip through the frontend's reading, whole -- proof",
       "summary": "Four new tests over a new sibling spec file prove that status readings, response fields and reading notes each survive the reading with their required attributes always present and their optional ones present exactly when carried, and that the reading-note kind vocabulary is exactly the closed set of nine.",
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/draft-request-gate",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/draft-request-gate.md",
+      "title": "The draft-request act is gated on a named connector and a chosen operation -- proof",
+      "summary": "Proves the five criteria of drafted-answer-disclosure/draft-request-gate and the invariant node they implement, whole, through one comprehensive rendering test; corrects the three pre-existing specs whose premise the new gate supersedes so each keeps proving what it always meant to prove.",
+      "task": "task/drafted-answer-disclosure/draft-request-gate"
     },
     {
       "id": "proof/drafted-answer-disclosure/reading-notes-stated",
@@ -122,6 +138,18 @@
     {
       "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-request-gate",
+      "to": "rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-request-gate",
+      "to": "task/drafted-answer-disclosure/draft-request-gate",
       "kind": "implements",
       "at": "the path"
     },
@@ -224,6 +252,12 @@
     {
       "from": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/draft-request-gate",
+      "to": "implementation/drafted-answer-disclosure/draft-request-gate",
       "kind": "proves",
       "at": "the path"
     },

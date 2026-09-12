@@ -10,6 +10,7 @@ import {
 } from "./use-openapi-document-operations";
 
 export type ConnectorConfigurationHelperState = {
+  readonly connector?: string;
   readonly link: string;
   readonly onLinkChange: (value: string) => void;
   readonly operations: readonly OpenApiOperation[];
@@ -41,6 +42,7 @@ export function useConnectorConfigurationHelper(
   const { outcome: operationsOutcome } = useOpenApiDocumentOperations(link);
 
   return {
+    connector,
     link,
     onLinkChange: setLink,
     operations: operationsOfferedFor(operationsOutcome),

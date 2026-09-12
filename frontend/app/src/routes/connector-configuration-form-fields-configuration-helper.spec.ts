@@ -188,7 +188,9 @@ describe("ConnectorConfigurationFormFields -- requesting a draft issues no reque
   it("never calls fetch with the operator's own link, only with the published draft route", async () => {
     const fetchMock = await mountCreateScreenWithHelper();
 
+    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
     fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
     fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
 
     await waitFor(() => {
@@ -214,6 +216,7 @@ describe("ConnectorConfigurationFormFields -- nothing the section offers submits
     expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
 
     fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
     fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
 
     await waitFor(() => {
@@ -249,9 +252,16 @@ describe("ConnectorConfigurationFormFields -- Request Draft is disabled only whi
     const pendingResponse = new Promise<Response>((resolve) => {
       resolveDraft = resolve;
     });
-    const fetchMock = createCreateScreenFetchStub({ [DRAFT_ROUTE]: () => pendingResponse });
+    const fetchMock = createCreateScreenFetchStub({
+      [DRAFT_ROUTE]: () => pendingResponse,
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
+    });
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await screen.findByLabelText("Configuration");
+
+    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
     const requestDraftButton = screen.getByRole("button", { name: "Request Draft" });
     expect(requestDraftButton.hasAttribute("disabled")).toBe(false);
@@ -266,9 +276,14 @@ describe("ConnectorConfigurationFormFields -- Request Draft is disabled only whi
   it("re-enables Request Draft after a refused draft request, rather than leaving it disabled", async () => {
     const fetchMock = createCreateScreenFetchStub({
       [DRAFT_ROUTE]: () => errorResponse("OpenApiDocumentNotReadableError"),
+      [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await screen.findByLabelText("Configuration");
+
+    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
     const requestDraftButton = screen.getByRole("button", { name: "Request Draft" });
     fireEvent.click(requestDraftButton);

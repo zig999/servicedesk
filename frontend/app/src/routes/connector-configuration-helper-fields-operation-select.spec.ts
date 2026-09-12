@@ -113,8 +113,8 @@ describe("ConnectorConfigurationHelperFields -- no path or method value can be s
 });
 
 describe("ConnectorConfigurationHelperFields -- the OpenAPI document link field and the draft request control stay on the surface (criterion 7)", () => {
-  it("still renders the OpenAPI document link input and the Request Draft button", () => {
-    renderFields(stateWith());
+  it("still renders the OpenAPI document link input and the Request Draft button, once the request-gate's own preconditions stand", () => {
+    renderFields(stateWith({ connector: "deepl-connector", path: "/v2/translate", method: "POST" }));
 
     expect(screen.getByLabelText("OpenAPI document link")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Request Draft" })).toBeTruthy();
