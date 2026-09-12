@@ -26,12 +26,22 @@ export type StatusReadingDisclosure = {
   readonly declaredAs: string | undefined;
 };
 
+export type ResponseFieldDisclosure = {
+  readonly name: string;
+  readonly path: string;
+  readonly status: string;
+  readonly declaredType: string | undefined;
+  readonly declaredRequired: boolean | undefined;
+  readonly envelope: string | undefined;
+};
+
 export type DraftDisclosure = {
   readonly configuration: string;
   readonly unresolved: readonly UnresolvedItemDisclosure[];
   readonly generatedCredentials: readonly GeneratedCredentialDisclosure[];
   readonly methodMismatch: MethodMismatchDisclosure | undefined;
   readonly statusReadings: readonly StatusReadingDisclosure[];
+  readonly responseFields: readonly ResponseFieldDisclosure[];
 };
 
 export type ConnectorConfigurationHelperDisclosureState =
@@ -71,6 +81,14 @@ function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosur
       status: reading.status,
       ending: reading.ending,
       declaredAs: reading.declared_as,
+    })),
+    responseFields: (draft.response_fields ?? []).map((field) => ({
+      name: field.name,
+      path: field.path,
+      status: field.status,
+      declaredType: field.declared_type,
+      declaredRequired: field.declared_required,
+      envelope: field.envelope,
     })),
   };
 }

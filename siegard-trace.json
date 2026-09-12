@@ -2537,7 +2537,7 @@
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
-          "digest": "sha256:4a965bbd01c02cfdf789ca4c79932ce9ccfa1ed2986b9f7bf7a9ef9c77d421fa"
+          "digest": "sha256:f8ed4712a9c46702090e83d1c96d2cf9a5cb7a7a7f88543d7f87bfbd6e53e41a"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
@@ -2672,6 +2672,14 @@
         {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
           "digest": "sha256:ec1d3d383b0c628d91627140bfdb4a41f7e994c0ab5df6e9475b44e30b9bca61"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:174976e449441a21a149d4b61d2c123dbdc3cf71abbd620d21815bca2fd6fc87"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
+          "digest": "sha256:f8ed4712a9c46702090e83d1c96d2cf9a5cb7a7a7f88543d7f87bfbd6e53e41a"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft-generation.ts",
@@ -6057,11 +6065,11 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
-          "digest": "sha256:a1a2e14134e2bacad700400715b815d97edcf15e7650811e52ee07ee5ad8ce4f"
+          "digest": "sha256:174976e449441a21a149d4b61d2c123dbdc3cf71abbd620d21815bca2fd6fc87"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
-          "digest": "sha256:4a1d9690fa3e9d818e0c064575cca31c7d3b145053518bbbf0a2405305458c82"
+          "digest": "sha256:f8ed4712a9c46702090e83d1c96d2cf9a5cb7a7a7f88543d7f87bfbd6e53e41a"
         }
       ]
     },

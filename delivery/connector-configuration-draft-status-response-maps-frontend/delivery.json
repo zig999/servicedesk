@@ -10,6 +10,14 @@
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/response-fields-stated",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/response-fields-stated.md",
+      "title": "State the drafted answer's response fields",
+      "summary": "Adds a \"Response fields\" section to the Configuration Helper's draft disclosure, stating each response field's name, path, status and (where carried) declared_type, declared_required and envelope.",
+      "task": "task/drafted-answer-disclosure/response-fields-stated"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/status-readings-stated",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/status-readings-stated.md",
@@ -24,6 +32,14 @@
       "title": "The grown draft answer's parts round-trip through the frontend's reading, whole -- proof",
       "summary": "Four new tests over a new sibling spec file prove that status readings, response fields and reading notes each survive the reading with their required attributes always present and their optional ones present exactly when carried, and that the reading-note kind vocabulary is exactly the closed set of nine.",
       "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/response-fields-stated",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/response-fields-stated.md",
+      "title": "Response fields the answer carries are stated by name, path, status and their carried declarations -- proof",
+      "summary": "Proves the drafted responseMap's per-field disclosure at both the projection layer and the rendered surface -- name, path and success status always stated, declared_type/declared_required/envelope stated only where the answer carried them (declared_required: false treated as a real carried value), and no field the answer did not carry is invented.",
+      "task": "task/drafted-answer-disclosure/response-fields-stated"
     },
     {
       "id": "proof/drafted-answer-disclosure/status-readings-stated",
@@ -78,6 +94,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/drafted-answer-disclosure/response-fields-stated",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/response-fields-stated",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/response-fields-stated",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/response-fields-stated",
+      "to": "task/drafted-answer-disclosure/response-fields-stated",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/drafted-answer-disclosure/status-readings-stated",
       "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
       "kind": "encodes",
@@ -104,6 +144,12 @@
     {
       "from": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/response-fields-stated",
+      "to": "implementation/drafted-answer-disclosure/response-fields-stated",
       "kind": "proves",
       "at": "the path"
     },

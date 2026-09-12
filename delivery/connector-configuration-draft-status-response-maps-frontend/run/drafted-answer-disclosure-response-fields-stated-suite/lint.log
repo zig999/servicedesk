@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-configuration-helper-fields.spec.ts
+  362:1  error  File has too many lines (336). Maximum allowed is 300  max-lines
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/services/connector-configuration-draft-disclosure.spec.ts
+  371:1  error  File has too many lines (301). Maximum allowed is 300  max-lines
+
+✖ 2 problems (2 errors, 0 warnings)
+

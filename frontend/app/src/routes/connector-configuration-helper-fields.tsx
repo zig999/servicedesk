@@ -163,6 +163,24 @@ function ConnectorConfigurationDraftDisclosure({
           </ul>
         </section>
       )}
+
+      {draft.responseFields.length > 0 && (
+        <section className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-foreground">Response fields</p>
+          <ul className="flex flex-col gap-1">
+            {draft.responseFields.map((field) => (
+              <li key={`${field.status}:${field.path}:${field.name}`} className="text-sm">
+                <span className="font-medium">{field.name}</span> — path: {field.path}, status: {field.status}
+                {field.declaredType !== undefined && <> (declared type: {field.declaredType})</>}
+                {field.declaredRequired !== undefined && (
+                  <> (declared required: {field.declaredRequired ? "yes" : "no"})</>
+                )}
+                {field.envelope !== undefined && <> (envelope: {field.envelope})</>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
