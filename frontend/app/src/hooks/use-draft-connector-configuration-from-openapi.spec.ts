@@ -29,6 +29,9 @@ const FULL_DRAFT: ConnectorConfigurationDraft = {
   unresolved: [{ name: "api-key", reason: "no-capability-registered" }],
   generated_credentials: [{ name: "api-key", security_scheme: "apiKey" }],
   method_mismatch: { registered: "GET", operation: "POST" },
+  status_readings: [],
+  response_fields: [],
+  reading_notes: [],
 };
 
 const DRAFT_WITHOUT_METHOD_MISMATCH: ConnectorConfigurationDraft = {
@@ -36,6 +39,9 @@ const DRAFT_WITHOUT_METHOD_MISMATCH: ConnectorConfigurationDraft = {
   configuration: "{}",
   unresolved: [],
   generated_credentials: [],
+  status_readings: [],
+  response_fields: [],
+  reading_notes: [],
 };
 
 function jsonResponse(body: unknown, status = 200): Response {

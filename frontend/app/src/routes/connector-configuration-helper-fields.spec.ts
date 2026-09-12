@@ -40,6 +40,9 @@ const BASE_DRAFT: ConnectorConfigurationDraft = {
   configuration: "{}",
   unresolved: [],
   generated_credentials: [],
+  status_readings: [],
+  response_fields: [],
+  reading_notes: [],
 };
 
 const DISTINCTIVE_CONFIGURATION_TEXT = '{"address":"https://api.example.com/v2/translate","distinctive":true}';

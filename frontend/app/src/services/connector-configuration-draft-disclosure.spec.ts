@@ -11,6 +11,9 @@ const BASE_DRAFT: ConnectorConfigurationDraft = {
   configuration: '{"address":"https://api.example.com/v2/translate"}',
   unresolved: [],
   generated_credentials: [],
+  status_readings: [],
+  response_fields: [],
+  reading_notes: [],
 };
 
 function drafted(state: ReturnType<typeof disclosureStateForOutcome>) {

@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface.md",
+      "title": "The grown draft answer reaches the surface whole",
+      "summary": "use-draft-connector-configuration-from-openapi.ts's ConnectorConfigurationDraft type and its pickConnectorConfigurationDraftFields allow-list now admit status_readings, response_fields and reading_notes whole, instead of silently dropping them.",
+      "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface.md",
+      "title": "The grown draft answer's parts round-trip through the frontend's reading, whole -- proof",
+      "summary": "Four new tests over a new sibling spec file prove that status readings, response fields and reading notes each survive the reading with their required attributes always present and their optional ones present exactly when carried, and that the reading-note kind vocabulary is exactly the closed set of nine.",
+      "task": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-reading-note",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "to": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

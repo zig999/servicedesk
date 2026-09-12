@@ -38,6 +38,9 @@ const BASE_DRAFT: ConnectorConfigurationDraft = {
   configuration: "{}",
   unresolved: [],
   generated_credentials: [],
+  status_readings: [],
+  response_fields: [],
+  reading_notes: [],
 };
 
 const DISTINCTIVE_CONFIGURATION_TEXT =

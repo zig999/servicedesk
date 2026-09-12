@@ -1,0 +1,9 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-draft-connector-configuration-from-openapi.spec.ts(26,7): error TS2739: Type '{ connector: string; configuration: string; unresolved: { name: string; reason: string; }[]; generated_credentials: { name: string; security_scheme: string; }[]; method_mismatch: { registered: string; operation: string; }; }' is missing the following properties from type 'ConnectorConfigurationDraft': status_readings, response_fields, reading_notes
+src/hooks/use-draft-connector-configuration-from-openapi.spec.ts(34,7): error TS2739: Type '{ connector: string; configuration: string; unresolved: never[]; generated_credentials: never[]; }' is missing the following properties from type 'ConnectorConfigurationDraft': status_readings, response_fields, reading_notes
+src/routes/connector-configuration-helper-fields-apply.spec.ts(36,7): error TS2739: Type '{ connector: string; configuration: string; unresolved: never[]; generated_credentials: never[]; }' is missing the following properties from type 'ConnectorConfigurationDraft': status_readings, response_fields, reading_notes
+src/routes/connector-configuration-helper-fields.spec.ts(38,7): error TS2739: Type '{ connector: string; configuration: string; unresolved: never[]; generated_credentials: never[]; }' is missing the following properties from type 'ConnectorConfigurationDraft': status_readings, response_fields, reading_notes
+src/services/connector-configuration-draft-disclosure.spec.ts(9,7): error TS2739: Type '{ connector: string; configuration: string; unresolved: never[]; generated_credentials: never[]; }' is missing the following properties from type 'ConnectorConfigurationDraft': status_readings, response_fields, reading_notes
