@@ -34,6 +34,14 @@
       "task": "task/drafted-answer-disclosure/status-readings-stated"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart.md",
+      "title": "Unresolved-reason label dictionary corrected to the closed three-value vocabulary",
+      "summary": "Removes the orphaned \"no-matching-input-schema-property\" entry from UNRESOLVED_REASON_LABEL in the draft disclosure service, so the surface's reason vocabulary matches the domain's closed three-reason enumeration exactly.",
+      "task": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart"
+    },
+    {
       "id": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "kind": "proof",
       "file": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface.md",
@@ -64,6 +72,14 @@
       "title": "Proof for drafted-answer-disclosure/status-readings-stated",
       "summary": "Tests the Configuration Helper's disclosure of status readings -- each stated with its status, its ending and, where carried, what the document declared it as, distinguishably and with no status the answer did not carry -- at both the projection layer and the rendered surface.",
       "task": "task/drafted-answer-disclosure/status-readings-stated"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/unresolved-reasons-stated-apart.md",
+      "title": "Unresolved-item reason vocabulary closed to exactly three, distinguishably -- proof",
+      "summary": "Proves that each unresolved item's name and reason are carried through unmodified, the three closed-vocabulary reasons render pairwise-distinct labels, a reason outside that vocabulary -- including the one this task's fix removed from the dictionary -- is never given an invented label, and no unresolved item the answer did not carry is stated.",
+      "task": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart"
     }
   ],
   "edges": [
@@ -188,6 +204,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "kind": "proves",
@@ -208,6 +242,12 @@
     {
       "from": "proof/drafted-answer-disclosure/status-readings-stated",
       "to": "implementation/drafted-answer-disclosure/status-readings-stated",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "to": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
       "kind": "proves",
       "at": "the path"
     }

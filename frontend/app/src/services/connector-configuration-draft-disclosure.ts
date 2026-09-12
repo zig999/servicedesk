@@ -60,8 +60,6 @@ export type ConnectorConfigurationHelperDisclosureState =
 
 const UNRESOLVED_REASON_LABEL: Readonly<Record<string, string>> = {
   "no-capability-registered": "No capability is currently registered naming this connector.",
-  "no-matching-input-schema-property":
-    "No registered capability's input schema names a matching property.",
   "security-scheme-not-reducible-to-a-credential":
     "This security scheme cannot be reduced to a single credential value.",
   "drafted-key-occupied-by-another-security-scheme":

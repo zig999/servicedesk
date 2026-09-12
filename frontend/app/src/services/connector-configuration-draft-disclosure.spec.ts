@@ -74,35 +74,34 @@ describe("disclosureStateForOutcome -- an empty unresolved list discloses no unr
   });
 });
 
-describe("disclosureStateForOutcome -- each of the four named unresolved reasons gets its own distinct label (UNDERDETERMINED note 2)", () => {
-  const FOUR_NAMED_REASONS = [
+describe("disclosureStateForOutcome -- each of the three named unresolved reasons gets its own distinct label, and a reason outside that vocabulary is never given one of theirs (criteria 3 and 4)", () => {
+  const THREE_NAMED_REASONS = [
     "no-capability-registered",
-    "no-matching-input-schema-property",
     "security-scheme-not-reducible-to-a-credential",
     "drafted-key-occupied-by-another-security-scheme",
   ];
 
-  it("produces four pairwise-distinct labels for the four closed-set reason values", () => {
+  it("produces three pairwise-distinct labels for the three closed-set reason values", () => {
     const draft: ConnectorConfigurationDraft = {
       ...BASE_DRAFT,
-      unresolved: FOUR_NAMED_REASONS.map((reason, index) => ({ name: `item-${index}`, reason })),
+      unresolved: THREE_NAMED_REASONS.map((reason, index) => ({ name: `item-${index}`, reason })),
     };
 
     const state = drafted(disclosureStateForOutcome({ kind: "drafted", draft }));
 
     const labels = state.draft.unresolved.map((item) => item.reasonLabel);
-    expect(new Set(labels).size).toBe(FOUR_NAMED_REASONS.length);
+    expect(new Set(labels).size).toBe(THREE_NAMED_REASONS.length);
   });
 
-  it("falls back to the raw reason string for a reason value outside the four named ones (inference)", () => {
+  it("falls back to its own raw reason string for a reason outside the three-value vocabulary, including the reason this dictionary no longer names", () => {
     const draft: ConnectorConfigurationDraft = {
       ...BASE_DRAFT,
-      unresolved: [{ name: "api-key", reason: "a-reason-the-closed-four-value-set-does-not-name" }],
+      unresolved: [{ name: "api-key", reason: "no-matching-input-schema-property" }],
     };
 
     const state = drafted(disclosureStateForOutcome({ kind: "drafted", draft }));
 
-    expect(state.draft.unresolved[0]?.reasonLabel).toBe("a-reason-the-closed-four-value-set-does-not-name");
+    expect(state.draft.unresolved[0]?.reasonLabel).toBe("no-matching-input-schema-property");
   });
 });
 

@@ -2801,7 +2801,7 @@
       "files": [
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
-          "digest": "sha256:4a965bbd01c02cfdf789ca4c79932ce9ccfa1ed2986b9f7bf7a9ef9c77d421fa"
+          "digest": "sha256:55964b88d69cea815bea0212b25bf96b72cf2258aaa46dc8a0a2a8911342f8c8"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
@@ -6081,7 +6081,7 @@
         },
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
-          "digest": "sha256:8a78993f7f7404cc96e48e2b4997f269a72bab615f7faabbe4d986228332f87e"
+          "digest": "sha256:55964b88d69cea815bea0212b25bf96b72cf2258aaa46dc8a0a2a8911342f8c8"
         }
       ]
     },
