@@ -10,6 +10,14 @@
       "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
     },
     {
+      "id": "implementation/connector-configuration-draft-maps/drafted-response-map",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/drafted-response-map.md",
+      "title": "Draft the responseMap and disclose each field",
+      "summary": "connector-configuration-draft-generation.ts now always emits a responseMap keyed by each success-response field's own name alongside one response_field per entry, with three spec files updated to match the now-always-present key.",
+      "task": "task/connector-configuration-draft-maps/drafted-response-map"
+    },
+    {
       "id": "implementation/connector-configuration-draft-maps/drafted-status-map",
       "kind": "implementation",
       "file": "implementation/connector-configuration-draft-maps/drafted-status-map.md",
@@ -48,6 +56,14 @@
       "title": "Draft disclosure type shapes proven at compile time",
       "summary": "Adds compile-time type assertions for the three new value-object shapes and the closed nine-kind reading-note vocabulary that the existing, mechanically widened tests do not already establish.",
       "task": "task/connector-configuration-draft-maps/draft-disclosure-type"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/drafted-response-map",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/drafted-response-map.md",
+      "title": "Draft the responseMap and disclose each field -- proof",
+      "summary": "12 new unit tests over generateConnectorConfigurationDraft prove the responseMap's always-present-and-possibly-empty key, its by-name keying, its lowest-status dedup across differing and equal paths, the key-never-renamed guarantee, and the response_fields disclosure's exact shape and conditional declared_type/declared_required/envelope carriage.",
+      "task": "task/connector-configuration-draft-maps/drafted-response-map"
     },
     {
       "id": "proof/connector-configuration-draft-maps/drafted-status-map",
@@ -116,6 +132,36 @@
     {
       "from": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
       "to": "task/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-response-map",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-response-map",
+      "to": "domain/integration/connector-configuration-draft-response-field",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-response-map",
+      "to": "rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-response-map",
+      "to": "rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/drafted-response-map",
+      "to": "task/connector-configuration-draft-maps/drafted-response-map",
       "kind": "implements",
       "at": "the path"
     },
@@ -242,6 +288,12 @@
     {
       "from": "proof/connector-configuration-draft-maps/draft-disclosure-type",
       "to": "implementation/connector-configuration-draft-maps/draft-disclosure-type",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/drafted-response-map",
+      "to": "implementation/connector-configuration-draft-maps/drafted-response-map",
       "kind": "proves",
       "at": "the path"
     },

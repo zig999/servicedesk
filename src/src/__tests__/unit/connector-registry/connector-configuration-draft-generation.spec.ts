@@ -240,11 +240,11 @@ it("places a resolved request-body field at its own top-level body key", async (
   expect(configurationOf(draft).body).toEqual({ billing_address: '${subject:billing_address}' });
 });
 
-it("always states a statusMap key drafted from the operation's declared responses -- empty when it declares none -- never states a responseMap key, and pairs an empty status_readings list with that empty statusMap", async () => {
+it("always states a statusMap key drafted from the operation's declared responses -- empty when it declares none -- always states a responseMap key too, empty when no success response schema field is read, and pairs an empty status_readings list with that empty statusMap", async () => {
   const draft = await generateConnectorConfigurationDraft(positionsOptions());
 
   const configuration = configurationOf(draft);
-  expect('responseMap' in configuration).toBe(false);
+  expect(configuration.responseMap).toEqual({});
   expect(configuration.statusMap).toEqual({});
   expect(draft.status_readings).toEqual([]);
 });
@@ -307,6 +307,187 @@ it("carries the document's own description as declared_as on a status reading, a
     { status: '404', ending: 'unavailable' },
   ]);
   expect('declared_as' in draft.status_readings[1]).toBe(false);
+});
+
+it("keys each drafted responseMap entry by the field's own name and values it with the path the reading gave it, through an envelope", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': {
+            schema: { properties: { payload: { type: 'object', properties: { order_id: {}, order_status: {} } } } },
+          },
+        },
+      },
+    }),
+  );
+
+  expect(configurationOf(draft).responseMap).toEqual({
+    order_id: 'payload.order_id',
+    order_status: 'payload.order_status',
+  });
+});
+
+it('states an empty responseMap object -- never an absent key -- and no response fields, for a success response from which no field is read', async () => {
+  const draft = await generateConnectorConfigurationDraft(responsesOptions({ '204': {} }));
+
+  expect(configurationOf(draft).responseMap).toEqual({});
+  expect(draft.response_fields).toEqual([]);
+});
+
+it('drafts the path read from the lowest success status when a field name repeats under differing paths', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { content: { 'application/json': { schema: { properties: { id: {}, extra: {} } } } } },
+      '201': {
+        content: {
+          'application/json': { schema: { properties: { wrapper: { type: 'object', properties: { id: {} } } } } },
+        },
+      },
+    }),
+  );
+
+  expect(configurationOf(draft).responseMap).toEqual({ id: 'id', extra: 'extra' });
+});
+
+it('drafts one responseMap entry for a field name read under the same path from more than one success response schema', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: { 'application/json': { schema: { properties: { id: { type: 'string' } }, required: ['id'] } } },
+      },
+      '201': { content: { 'application/json': { schema: { properties: { id: { type: 'integer' } } } } } },
+    }),
+  );
+
+  expect(configurationOf(draft).responseMap).toEqual({ id: 'id' });
+});
+
+it("discloses the lowest success status's own account for a field whose path already agrees across success response schemas", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: { 'application/json': { schema: { properties: { id: { type: 'string' } }, required: ['id'] } } },
+      },
+      '201': { content: { 'application/json': { schema: { properties: { id: { type: 'integer' } } } } } },
+    }),
+  );
+
+  expect(draft.response_fields).toEqual([
+    { name: 'id', path: 'id', status: '200', declared_type: 'string', declared_required: true },
+  ]);
+});
+
+it("carries exactly one response field per drafted responseMap entry, holding that entry's own name, path and success status", async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': { content: { 'application/json': { schema: { properties: { alpha: {} } } } } },
+      '201': { content: { 'application/json': { schema: { properties: { beta: {} } } } } },
+    }),
+  );
+
+  const byName = new Map(draft.response_fields.map((field) => [field.name, field]));
+  expect(byName).toEqual(
+    new Map([
+      ['alpha', { name: 'alpha', path: 'alpha', status: '200' }],
+      ['beta', { name: 'beta', path: 'beta', status: '201' }],
+    ]),
+  );
+  expect(draft.response_fields).toHaveLength(2);
+  expect(Object.keys(configurationOf(draft).responseMap as Record<string, string>)).toHaveLength(2);
+});
+
+it('carries the declared type and the declared required listing on a response field when the schema declares both', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: { 'application/json': { schema: { properties: { qty: { type: 'integer' } }, required: ['qty'] } } },
+      },
+    }),
+  );
+
+  expect(draft.response_fields).toEqual([
+    { name: 'qty', path: 'qty', status: '200', declared_type: 'integer', declared_required: true },
+  ]);
+});
+
+it('carries neither declared_type nor declared_required on a response field when the schema declares neither', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({ '200': { content: { 'application/json': { schema: { properties: { qty: {} } } } } } }),
+  );
+
+  const [field] = draft.response_fields;
+  expect(field).toEqual({ name: 'qty', path: 'qty', status: '200' });
+  expect('declared_type' in field).toBe(false);
+  expect('declared_required' in field).toBe(false);
+});
+
+it('carries declared_required as false, rather than omitting it, for a field a declared required listing exists but does not name', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': {
+            schema: { properties: { qty: { type: 'string' }, other: { type: 'string' } }, required: ['other'] },
+          },
+        },
+      },
+    }),
+  );
+
+  const field = draft.response_fields.find((entry) => entry.name === 'qty');
+  expect(field).toEqual({ name: 'qty', path: 'qty', status: '200', declared_type: 'string', declared_required: false });
+});
+
+it('carries the envelope name on a response field read through a single-property envelope', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': { schema: { properties: { data: { type: 'object', properties: { token: {} } } } } },
+        },
+      },
+    }),
+  );
+
+  expect(draft.response_fields).toEqual([{ name: 'token', path: 'data.token', status: '200', envelope: 'data' }]);
+});
+
+it("keeps a drafted responseMap key as the field's own name, never a name a registered capability's schema declares instead", async () => {
+  const draft = await generateConnectorConfigurationDraft({
+    ...responsesOptions({ '200': { content: { 'application/json': { schema: { properties: { id: {} } } } } } }),
+    capabilitiesReader: { readCapabilities: async () => [capabilityGranting(['identifier'])] },
+  });
+
+  expect(configurationOf(draft).responseMap).toEqual({ id: 'id' });
+});
+
+it('carries, whole, the response field shape the specification declares -- required name/path/status always present, and declared_type, declared_required and envelope present only where the schema declares them', async () => {
+  const draft = await generateConnectorConfigurationDraft(
+    responsesOptions({
+      '200': {
+        content: {
+          'application/json': {
+            schema: {
+              properties: { data: { type: 'object', properties: { rich: { type: 'string' } }, required: ['rich'] } },
+            },
+          },
+        },
+      },
+      '201': { content: { 'application/json': { schema: { properties: { minimal: {} } } } } },
+    }),
+  );
+
+  const byName = new Map(draft.response_fields.map((field) => [field.name, field]));
+  expect(byName).toEqual(
+    new Map([
+      [
+        'rich',
+        { name: 'rich', path: 'data.rich', status: '200', declared_type: 'string', declared_required: true, envelope: 'data' },
+      ],
+      ['minimal', { name: 'minimal', path: 'minimal', status: '201' }],
+    ]),
+  );
 });
 
 it('omits the query, headers and body keys entirely when the operation declares no parameter or request-body field for any of them', async () => {

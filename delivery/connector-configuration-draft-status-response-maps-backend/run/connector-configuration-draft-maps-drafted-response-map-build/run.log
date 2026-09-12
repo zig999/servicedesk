@@ -1,0 +1,319 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (3 moderate, 2 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> servicedeskn1@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test-unit :: node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit :: failed =====
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/src
+
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (46 tests) 41ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (40 tests) 30ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (39 tests) 55ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (48 tests) 52ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (46 tests) 22ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (60 tests) 18ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (53 tests) 17ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (36 tests) 17ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (44 tests) 587ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (27 tests) 15ms
+ ✓ src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts (55 tests) 16ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (35 tests) 50ms
+ ❯ src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts (44 tests | 1 failed) 23ms
+   ✓ produces a configuration text that parses as a well-formed JSON object 2ms
+   ✓ upper-cases the operation's own method however the caller requested it 1ms
+   ✓ composes the address from the operation's own first server entry over the path item's and the document's, trimming a trailing slash 0ms
+   ✓ falls back to the path item's own first server entry when the operation declares none 0ms
+   ✓ falls back to the document's own top-level first server entry when neither the operation nor the path item declares one 0ms
+   ✓ composes the address from the path alone when no servers array is in effect anywhere 0ms
+   ✓ uses only the first entry of the servers array in effect when it lists more than one 0ms
+   ✓ treats the operation's own explicitly empty servers array as in effect, composing the path alone rather than falling back to the path item's own servers 0ms
+   ✓ treats a servers entry declaring no url as absent, using the next entry that declares one 0ms
+   ✓ embeds a resolved path parameter inside the drafted address at its own position 1ms
+   ✓ places a resolved query parameter at its own query key 0ms
+   ✓ places a resolved header parameter at its own header key 0ms
+   ✓ places a resolved cookie parameter inside the joined Cookie header value 0ms
+   ✓ places a resolved request-body field at its own top-level body key 0ms
+   × always states a statusMap key drafted from the operation's declared responses -- empty when it declares none -- never states a responseMap key, and pairs an empty status_readings list with that empty statusMap 6ms
+     → expected true to be false // Object.is equality
+   ✓ drafts the ok ending for a status at each end of the 200-through-299 range 1ms
+   ✓ drafts the denied ending for exactly the statuses 401, 403 and 407 0ms
+   ✓ drafts the unavailable ending for a status immediately outside each end of the 200-through-299 range 0ms
+   ✓ drafts the unavailable ending, never timeout, for the statuses HTTP itself names as a timeout 0ms
+   ✓ produces no statusMap entry and no status reading for a default-keyed or a range-keyed response 0ms
+   ✓ carries exactly one status reading per drafted statusMap entry, each holding that entry's own status and ending 0ms
+   ✓ carries the document's own description as declared_as on a status reading, and omits declared_as entirely where the document declares no description 0ms
+   ✓ omits the query, headers and body keys entirely when the operation declares no parameter or request-body field for any of them 0ms
+   ✓ leaves an unresolved parameter at its own position holding its own name in brace form 0ms
+   ✓ resolves every parameter and request-body field name to a placeholder once a capability is registered for the connector, whatever its own input schema names, while a security scheme that cannot reduce to a credential still lists unresolved 1ms
+   ✓ embeds a header-located security-scheme credential at the header key the scheme declares 0ms
+   ✓ embeds a query-located security-scheme credential at the query key the scheme declares 0ms
+   ✓ embeds a cookie-located security-scheme credential inside the Cookie header value even when no cookie parameter is declared 0ms
+   ✓ holds every generated credential paired with its own security scheme's name, unmodified from the credential generation 0ms
+   ✓ states a method_mismatch exactly as the method-comparison task computed it, when the operation's method differs from what is registered 0ms
+   ✓ states no method_mismatch field at all when nothing is registered for the connector 0ms
+   ✓ names the connector it was generated for, exactly as passed in 0ms
+   ✓ generates and returns a draft, rather than refusing, when every parameter resolves to nothing and no security scheme reduces to a credential 0ms
+   ✓ leaves every connector configuration registered before a draft is generated byte-identical after it, issuing no register-connector call 0ms
+   ✓ creates no connector configuration record under any name -- registered or not -- merely by generating a draft 0ms
+   ✓ propagates the fetch failure rather than generating a draft when the document link cannot be fetched 0ms
+   ✓ propagates the document-reading failure rather than generating a draft when the fetched text does not parse as a well-formed OpenAPI 3.x document 2ms
+   ✓ propagates the operation-not-found failure rather than generating a draft when the document declares no operation at the requested path and method 0ms
+   ✓ embeds a parameter reached only through the operation-reading task's own $ref resolution 0ms
+   ✓ resolves a security-scheme/parameter key collision by replacing whatever the subject resolution produced for that name -- a successful placeholder or an unresolved entry for a different reason -- with the drafted-key-occupied reason, never duplicating either entry 1ms
+   ✓ rebuilds the joined Cookie header from the subject resolution's own segments, dropping only a displaced parameter's own segment and appending the credential's own segment 0ms
+   ✓ exports generateConnectorConfigurationDraft as a plain function taking one options object, not a class 0ms
+   ✓ propagates a failure the injected capabilities reader raises, rather than swallowing it 0ms
+   ✓ propagates a failure the injected registry raises, rather than swallowing it 0ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (63 tests) 11ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (28 tests) 8ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (31 tests) 7ms
+ ✓ src/__tests__/unit/http/register-capability.routes.spec.ts (26 tests) 124ms
+ ✓ src/__tests__/unit/http/test-connector.routes.spec.ts (16 tests) 178ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (23 tests) 12ms
+ ❯ src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts (20 tests | 2 failed) 154ms
+   × answers 200 with exactly connector, configuration, unresolved and generated_credentials — and no method_mismatch key at all — for an operation with no parameters, no security scheme and no configuration currently registered for the connector 100ms
+     → expected { connector: 'a-connector', …(6) } to deeply equal { connector: 'a-connector', …(6) }
+   × adds method_mismatch, alongside exactly the same four other fields and no other key, when a different method is currently registered for the connector 4ms
+     → expected { connector: 'a-connector', …(7) } to deeply equal { connector: 'a-connector', …(7) }
+   ✓ carries a generated credential naming only its own generated name and security scheme — never a value field — when the operation requires an apiKey security scheme 5ms
+   ✓ names the unresolved parameter by its own name and reason, unchanged, when no capability is registered for the connector at all 2ms
+   ✓ carries no capability name, version or count anywhere in the response, even though two capabilities are registered against the drafted connector 2ms
+   ✓ reaches its own controller and answers only through the injected document fetcher and registry — never a fetcher or registry it constructs itself — for a link that resolves to nothing over a real network 2ms
+   ✓ accepts a method field naming no standard HTTP verb, matching it case-insensitively against the document's own declared operation key 2ms
+   ✓ refuses with 400, code VALIDATION_ERROR and a non-empty details list when connector is missing from the body, without reaching the document fetcher 2ms
+   ✓ refuses with 400, code VALIDATION_ERROR and a non-empty details list when link is missing from the body, without reaching the document fetcher 6ms
+   ✓ refuses with 400, code VALIDATION_ERROR and a non-empty details list when path is missing from the body, without reaching the document fetcher 5ms
+   ✓ refuses with 400, code VALIDATION_ERROR and a non-empty details list when method is missing from the body, without reaching the document fetcher 2ms
+   ✓ refuses with 400 and a non-empty details list for a request whose body is empty entirely 1ms
+   ✓ refuses with 400 a request whose connector is an empty string 2ms
+   ✓ answers 422 reporting OpenApiDocumentNotFetchedError with exactly link and kind — no status key — when the link cannot be reached at all 2ms
+   ✓ answers 422 reporting OpenApiDocumentNotFetchedError with exactly link and kind — no status key — when the link times out 2ms
+   ✓ answers 422 reporting OpenApiDocumentNotFetchedError with exactly link, kind and the answered status when the link answers outside 2xx 1ms
+   ✓ answers 422 reporting OpenApiDocumentNotReadableError naming what failed to parse, when the fetched text does not parse to a document 1ms
+   ✓ answers 422 reporting OpenApiDocumentNotReadableError naming the declared version, when the document declares an unsupported OpenAPI version 3ms
+   ✓ answers 422 reporting OpenApiDocumentNotReadableError naming that no version was declared, when the document declares neither openapi nor swagger 6ms
+   ✓ answers 422 reporting OpenApiOperationNotFoundError naming exactly the requested path and method, when the document declares no such operation 2ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 5ms
+ ✓ src/__tests__/unit/http/diagnose.controller.spec.ts (12 tests) 9ms
+ ✓ src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts (18 tests) 107ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 7ms
+ ✓ src/__tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts (11 tests) 15ms
+ ✓ src/__tests__/unit/factories/simulate.factory.spec.ts (14 tests) 8ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (29 tests) 7ms
+ ✓ src/__tests__/unit/connector-registry/generated-credential-placeholders.spec.ts (22 tests) 6ms
+ ✓ src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts (17 tests) 12ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (17 tests) 29ms
+ ✓ src/__tests__/unit/investigation/investigation-pipeline.spec.ts (5 tests) 10ms
+ ✓ src/__tests__/unit/http/simulate-case.controller.spec.ts (11 tests) 13ms
+ ✓ src/__tests__/unit/http/revise-hypothesis.routes.spec.ts (14 tests) 99ms
+ ✓ src/__tests__/unit/http/dto/simulate-case.dto.spec.ts (25 tests) 12ms
+ ✓ src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts (10 tests) 7ms
+ ✓ src/__tests__/unit/case/case-input-requirements.spec.ts (14 tests) 6ms
+ ✓ src/__tests__/unit/factories/production-simulate.factory.spec.ts (12 tests) 14ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 5ms
+ ✓ src/__tests__/unit/http/list-vocabulary-terms.routes.spec.ts (21 tests) 132ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 5ms
+ ✓ src/__tests__/unit/http/update-draft.routes.spec.ts (10 tests) 131ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (10 tests) 7ms
+ ✓ src/__tests__/unit/errors/status-map.spec.ts (30 tests) 6ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (10 tests) 135ms
+ ✓ src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts (15 tests) 7ms
+ ✓ src/__tests__/unit/http/list-case-versions.routes.spec.ts (16 tests) 117ms
+ ✓ src/__tests__/unit/http/list-hypotheses.routes.spec.ts (16 tests) 115ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (14 tests) 10ms
+ ✓ src/__tests__/unit/factories/production-simulate-hypothesis.factory.spec.ts (12 tests) 16ms
+ ✓ src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts (11 tests) 123ms
+ ✓ src/__tests__/unit/http/register-connector.routes.spec.ts (11 tests) 115ms
+ ✓ src/__tests__/unit/http/list-connector-configurations.routes.spec.ts (13 tests) 109ms
+ ✓ src/__tests__/unit/http/list-capabilities.routes.spec.ts (15 tests) 108ms
+ ✓ src/__tests__/unit/http/release.routes.spec.ts (9 tests) 107ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/http/register-concept.routes.spec.ts (11 tests) 168ms
+ ✓ src/__tests__/unit/http/read-case.routes.spec.ts (10 tests) 127ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (12 tests) 5ms
+ ✓ src/__tests__/unit/http/place-hypothesis.routes.spec.ts (12 tests) 115ms
+ ✓ src/__tests__/unit/http/diagnose.routes.spec.ts (6 tests) 112ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 118ms
+ ✓ src/__tests__/unit/http/list-concepts.routes.spec.ts (13 tests) 109ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts (10 tests) 159ms
+ ✓ src/__tests__/unit/http/create-draft.routes.spec.ts (9 tests) 120ms
+ ✓ src/__tests__/unit/investigation/field-semantics.spec.ts (22 tests) 9ms
+ ✓ src/__tests__/unit/http/release-hypothesis-revision.routes.spec.ts (10 tests) 111ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (10 tests) 6ms
+ ✓ src/__tests__/unit/connector-registry/registered-method-comparison.spec.ts (13 tests) 4ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (7 tests) 9ms
+ ✓ src/__tests__/unit/http/list-cases.routes.spec.ts (13 tests) 108ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (7 tests) 6ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts (15 tests) 5ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (13 tests) 14ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.routes.spec.ts (9 tests) 117ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (7 tests) 7ms
+ ✓ src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts (12 tests) 104ms
+ ✓ src/__tests__/unit/http/dto/simulate-hypothesis.dto.spec.ts (14 tests) 8ms
+ ✓ src/__tests__/unit/connector-registry/openapi-document-fetcher.adapter.spec.ts (10 tests) 14ms
+ ✓ src/__tests__/unit/http/remove-hypothesis.routes.spec.ts (9 tests) 112ms
+ ✓ src/__tests__/unit/http/test-connector.controller.spec.ts (4 tests) 9ms
+ ✓ src/__tests__/unit/http/read-concept.routes.spec.ts (7 tests) 163ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (7 tests) 6ms
+ ✓ src/__tests__/unit/http/discard.routes.spec.ts (8 tests) 106ms
+ ✓ src/__tests__/unit/http/error-handler.middleware.spec.ts (9 tests) 99ms
+ ✓ src/__tests__/unit/http/read-capability.routes.spec.ts (6 tests) 98ms
+ ✓ src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts (7 tests) 4ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/http/case-input-requirements.routes.spec.ts (6 tests) 104ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts (7 tests) 238ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 16ms
+ ✓ src/__tests__/unit/connector-registry/connector-placeholder-declaration-check.spec.ts (11 tests) 7ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 6ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 29ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 32ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 10ms
+ ✓ src/__tests__/unit/config/env.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/http/dto/evidence.dto.spec.ts (9 tests) 6ms
+ ✓ src/__tests__/unit/capability-registry/capability-input-schema-shape.spec.ts (13 tests) 4ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 15ms
+ ✓ src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts (6 tests) 8ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 9ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (3 tests) 34ms
+ ✓ src/__tests__/unit/seed.spec.ts (6 tests) 8ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 12ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 7ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (3 tests) 135ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 5ms
+ ✓ src/__tests__/unit/connector-registry/openapi-document-reader.spec.ts (5 tests) 5ms
+ ✓ src/__tests__/unit/fixtures/concept-fixture-declares-descriptions.spec.ts (2 tests) 8ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.controller.spec.ts (3 tests) 4ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts (3 tests) 4ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (4 tests) 16ms
+ ✓ src/__tests__/unit/investigation/investigation.spec.ts (4 tests) 2ms
+ ✓ src/__tests__/unit/types/pagination.spec.ts (7 tests) 3ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (6 tests) 7ms
+ ✓ src/__tests__/unit/errors/openapi-document-not-fetched.error.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/errors/openapi-document-not-readable.error.spec.ts (6 tests) 3ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 11ms
+ ✓ src/__tests__/unit/case/hypothesis-revision-release-state.port.spec.ts (2 tests) 5ms
+ ✓ src/__tests__/unit/case/hypothesis-revision-own-state.port.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/case/hypothesis-revision-release.port.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/errors/connector-unreachable.error.spec.ts (4 tests) 6ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 62ms
+ ✓ src/__tests__/unit/http/dto/register-concept.dto.spec.ts (3 tests) 2ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 9ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 3ms
+ ✓ src/__tests__/unit/errors/hypothesis-revision-not-draft-at-release.error.spec.ts (2 tests) 2ms
+ ✓ src/__tests__/unit/errors/openapi-operation-not-found.error.spec.ts (2 tests) 2ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts > always states a statusMap key drafted from the operation's declared responses -- empty when it declares none -- never states a responseMap key, and pairs an empty status_readings list with that empty statusMap
+AssertionError: expected true to be false // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+ ❯ src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts:247:42
+    245| 
+    246|   const configuration = configurationOf(draft);
+    247|   expect('responseMap' in configuration).toBe(false);
+       |                                          ^
+    248|   expect(configuration.statusMap).toEqual({});
+    249|   expect(draft.status_readings).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts > answers 200 with exactly connector, configuration, unresolved and generated_credentials — and no method_mismatch key at all — for an operation with no parameters, no security scheme and no configuration currently registered for the connector
+AssertionError: expected { connector: 'a-connector', …(6) } to deeply equal { connector: 'a-connector', …(6) }
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,7 +1,7 @@[39m
+[2m  {[22m
+[32m-   "configuration": "{\"method\":\"GET\",\"address\":\"/widgets\",\"statusMap\":{}}",[39m
+[31m+   "configuration": "{\"method\":\"GET\",\"address\":\"/widgets\",\"statusMap\":{},\"responseMap\":{}}",[39m
+[2m    "connector": "a-connector",[22m
+[2m    "generated_credentials": [],[22m
+[2m    "reading_notes": [],[22m
+[2m    "response_fields": [],[22m
+[2m    "status_readings": [],[22m
+
+ ❯ src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts:86:29
+     84| 
+     85|     expect(response.statusCode).toBe(200);
+     86|     expect(response.json()).toEqual({
+       |                             ^
+     87|       connector: 'a-connector',
+     88|       configuration: JSON.stringify({ method: 'GET', address: '/widget…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts > adds method_mismatch, alongside exactly the same four other fields and no other key, when a different method is currently registered for the connector
+AssertionError: expected { connector: 'a-connector', …(7) } to deeply equal { connector: 'a-connector', …(7) }
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,7 +1,7 @@[39m
+[2m  {[22m
+[32m-   "configuration": "{\"method\":\"GET\",\"address\":\"/widgets\",\"statusMap\":{}}",[39m
+[31m+   "configuration": "{\"method\":\"GET\",\"address\":\"/widgets\",\"statusMap\":{},\"responseMap\":{}}",[39m
+[2m    "connector": "a-connector",[22m
+[2m    "generated_credentials": [],[22m
+[2m    "method_mismatch": {[22m
+[2m      "operation": "GET",[22m
+[2m      "registered": "POST",[22m
+
+ ❯ src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts:113:29
+    111| 
+    112|     expect(response.statusCode).toBe(200);
+    113|     expect(response.json()).toEqual({
+       |                             ^
+    114|       connector: 'a-connector',
+    115|       configuration: JSON.stringify({ method: 'GET', address: '/widget…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 128 passed (130)
+      Tests  3 failed | 1800 passed (1803)
+   Start at  15:46:55
+   Duration  33.26s (transform 1.76s, setup 0ms, collect 6.98s, tests 6.08s, environment 22ms, prepare 6.62s)
+
+

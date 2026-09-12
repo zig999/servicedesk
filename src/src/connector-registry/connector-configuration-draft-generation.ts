@@ -12,11 +12,13 @@ import type {
   OpenApiOperationParameter,
   OpenApiOperationReading,
   OpenApiOperationResponse,
+  OpenApiSuccessResponseField,
 } from './openapi-operation-reader.js';
 import type { IOpenApiDocumentFetcher } from './openapi-document-fetcher.port.js';
 import type { ICapabilitiesReader } from './capabilities-reader.port.js';
 import type {
   ConnectorConfigurationDraft,
+  ConnectorConfigurationDraftResponseField,
   ConnectorConfigurationDraftStatusReading,
   ConnectorConfigurationDraftUnresolvedItem,
   ConnectorConfigurationDraftUnresolvedReason,
@@ -83,7 +85,7 @@ export async function generateConnectorConfigurationDraft(
     unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
     generated_credentials: credentialPlacement.generatedCredentials,
     status_readings: draftedStatusReadings(reading.responses),
-    response_fields: [],
+    response_fields: draftedResponseFields(reading.successResponseFields),
     reading_notes: [],
     ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
   };
@@ -100,8 +102,44 @@ function draftedConfigurationText(input: DraftedConfigurationInput): string {
     ...(Object.keys(headers).length > 0 ? { headers } : {}),
     ...(Object.keys(subjectPlacement.body).length > 0 ? { body: subjectPlacement.body } : {}),
     statusMap: draftedStatusMap(reading.responses),
+    responseMap: draftedResponseMap(reading.successResponseFields),
   };
   return JSON.stringify(configuration);
+}
+
+function lowestStatusSuccessFieldsOf(
+  fields: readonly OpenApiSuccessResponseField[],
+): readonly OpenApiSuccessResponseField[] {
+  const byName = new Map<string, OpenApiSuccessResponseField>();
+  for (const field of fields) {
+    const current = byName.get(field.name);
+    if (current === undefined || Number(field.status) < Number(current.status)) {
+      byName.set(field.name, field);
+    }
+  }
+  return [...byName.values()];
+}
+
+function draftedResponseMap(fields: readonly OpenApiSuccessResponseField[]): Readonly<Record<string, string>> {
+  return Object.fromEntries(lowestStatusSuccessFieldsOf(fields).map((field) => [field.name, field.path]));
+}
+
+function draftedResponseFields(
+  fields: readonly OpenApiSuccessResponseField[],
+): readonly ConnectorConfigurationDraftResponseField[] {
+  return lowestStatusSuccessFieldsOf(fields).map(responseFieldOf);
+}
+
+function responseFieldOf(field: OpenApiSuccessResponseField): ConnectorConfigurationDraftResponseField {
+  const { name, path, status, declaredType, declaredRequired, envelope } = field;
+  return {
+    name,
+    path,
+    status,
+    ...(declaredType === undefined ? {} : { declared_type: declaredType }),
+    ...(declaredRequired === undefined ? {} : { declared_required: declaredRequired }),
+    ...(envelope === undefined ? {} : { envelope }),
+  };
 }
 
 function statusResponses(responses: readonly OpenApiOperationResponse[]): readonly OpenApiOperationResponse[] {
