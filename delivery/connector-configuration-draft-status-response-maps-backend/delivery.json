@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-draft-maps/openapi-responses-reading.md",
+      "title": "OpenAPI operation reader exposes the chosen operation's declared response keys",
+      "summary": "Extends readOpenApiOperation with a responses field that yields every key of the chosen operation's responses object, classified as a numeric status, a range key or the default key, each carrying the document's own description where one is declared.",
+      "task": "task/connector-configuration-draft-maps/openapi-responses-reading"
+    },
+    {
+      "id": "proof/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "proof",
+      "file": "proof/connector-configuration-draft-maps/openapi-responses-reading.md",
+      "title": "OpenAPI operation reader's response-key reading",
+      "summary": "Extends the existing openapi-operation-reader unit spec with tests over the new responses field -- classification, description carrying, the no-responses-object and $ref-through-resolveRef paths, and the two range-key cases the specification's lower-case and digits-only-out-of-range facts add.",
+      "task": "task/connector-configuration-draft-maps/openapi-responses-reading"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "domain/integration/connector-configuration-draft-status-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "task/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-draft-maps/openapi-responses-reading",
+      "to": "implementation/connector-configuration-draft-maps/openapi-responses-reading",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

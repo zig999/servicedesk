@@ -393,3 +393,120 @@ it('reads a document served as YAML exactly as one served as JSON, deciding the 
 
   expect(fromYaml).toEqual(fromJson);
 });
+
+it('yields a status entry for each of three declared numeric response keys', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': {}, '403': {}, '503': {} } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const keysAndKinds = new Set(reading.responses.map((response) => `${response.key}|${response.kind}`));
+  expect(keysAndKinds).toEqual(new Set(['200|status', '403|status', '503|status']));
+  expect(reading.responses).toHaveLength(3);
+});
+
+it('carries the description the document declares for a response', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': { description: 'Widget created' } } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.responses).toEqual([{ key: '200', kind: 'status', description: 'Widget created' }]);
+});
+
+it('omits the description property for a response declaring none, rather than carrying an empty one', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': {} } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.responses).toEqual([{ key: '200', kind: 'status' }]);
+  expect(Object.prototype.hasOwnProperty.call(reading.responses[0], 'description')).toBe(false);
+});
+
+it('classifies a response keyed default apart from any numeric status key', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': {}, default: {} } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const defaultEntry = reading.responses.find((response) => response.key === 'default');
+  const statusEntry = reading.responses.find((response) => response.key === '200');
+  expect(defaultEntry?.kind).toBe('default');
+  expect(statusEntry?.kind).toBe('status');
+});
+
+it('classifies a response keyed by an upper-case status range apart from any numeric status key', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': {}, '4XX': {} } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const rangeEntry = reading.responses.find((response) => response.key === '4XX');
+  expect(rangeEntry?.kind).toBe('range');
+});
+
+it('yields no response key and raises nothing when the operation declares no responses object', () => {
+  const documentText = JSON.stringify({ openapi: '3.0.0', paths: { '/widgets': { get: {} } } });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.responses).toEqual([]);
+});
+
+it("follows a response's $ref to its target before reading its description", () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': { $ref: '#/components/responses/Created' } } } } },
+    components: { responses: { Created: { description: 'The widget was created' } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.responses).toEqual([{ key: '200', kind: 'status', description: 'The widget was created' }]);
+});
+
+it('refuses (as OpenApiDocumentNotReadableError) a response whose $ref points nowhere the document declares', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '200': { $ref: '#/components/responses/Missing' } } } } },
+  });
+
+  const error = readableErrorThrownBy(() => readOpenApiOperation(documentText, '/widgets', 'get'));
+
+  expect(error.context.kind).toBe('unparseable');
+});
+
+it('classifies a lower-case status range key the same as its upper-case spelling', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '2xx': {} } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  expect(reading.responses).toEqual([{ key: '2xx', kind: 'range' }]);
+});
+
+it('classifies a digits-only response key outside 100 through 599 as a range key', () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: { '/widgets': { get: { responses: { '42': {}, '600': {} } } } },
+  });
+
+  const reading = readOpenApiOperation(documentText, '/widgets', 'get');
+
+  const kinds = new Set(reading.responses.map((response) => response.kind));
+  expect(kinds).toEqual(new Set(['range']));
+  expect(reading.responses).toHaveLength(2);
+});

@@ -23,12 +23,21 @@ export type OpenApiRequiredSecurityScheme =
 
 export type OpenApiSecuritySchemeKind = OpenApiRequiredSecurityScheme['kind'];
 
+export type OpenApiResponseKeyKind = 'status' | 'range' | 'default';
+
+export type OpenApiOperationResponse = {
+  readonly key: string;
+  readonly kind: OpenApiResponseKeyKind;
+  readonly description?: string;
+};
+
 export type OpenApiOperationReading = {
   readonly method: string;
   readonly parameters: readonly OpenApiOperationParameter[];
   readonly requestBodyFieldNames: readonly string[];
   readonly requiredSecuritySchemes: readonly OpenApiRequiredSecurityScheme[];
   readonly serversInEffect: readonly string[];
+  readonly responses: readonly OpenApiOperationResponse[];
 };
 
 type OperationEntry = {
@@ -51,6 +60,7 @@ export function readOpenApiOperation(documentText: string, path: string, method:
     requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
     requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
     serversInEffect: serversInEffectOf(pathItem, operation, document),
+    responses: responsesOf(document, operation),
   };
 }
 
@@ -121,6 +131,28 @@ function requestBodyFieldNamesOf(document: PlainObject, operation: PlainObject):
   const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
   const schema = isPlainObject(mediaType) ? resolveRef(document, mediaType.schema) : undefined;
   return isPlainObject(schema) && isPlainObject(schema.properties) ? Object.keys(schema.properties) : [];
+}
+
+function responsesOf(document: PlainObject, operation: PlainObject): readonly OpenApiOperationResponse[] {
+  const responses = operation.responses;
+  if (!isPlainObject(responses)) {
+    return [];
+  }
+  return Object.keys(responses).map((key) => responseReading(document, key, responses[key]));
+}
+
+function responseReading(document: PlainObject, key: string, rawResponse: unknown): OpenApiOperationResponse {
+  const response = resolveRef(document, rawResponse);
+  const description = isPlainObject(response) && typeof response.description === 'string' ? response.description : undefined;
+  const kind = responseKeyKind(key);
+  return description === undefined ? { key, kind } : { key, kind, description };
+}
+
+function responseKeyKind(key: string): OpenApiResponseKeyKind {
+  if (key === 'default') {
+    return 'default';
+  }
+  return /^[1-5][0-9]{2}$/.test(key) ? 'status' : 'range';
 }
 
 function requiredSecuritySchemesOf(

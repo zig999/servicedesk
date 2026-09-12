@@ -2606,6 +2606,26 @@
       ]
     },
     {
+      "node": "domain/integration/connector-configuration-draft-reading-note-kind",
+      "digest": "sha256:c0bfcce7a49ae4ac99924cb6f3ede65febf06173435ddf9df60e7f8942c6eafb",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-draft-status-reading",
+      "digest": "sha256:1128c81035635a3a66ed7d1ef71e83c58f9310cc18c9617f5db6402badad2821",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+        }
+      ]
+    },
+    {
       "node": "domain/integration/connector-configuration-draft-unresolved-item",
       "digest": "sha256:744281a7ed8930dec86be4e318aff85fb29b19ece83b9ad375e90f378b4f1270",
       "files": [
@@ -5166,6 +5186,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits",
+      "digest": "sha256:b443d625db079d7b902e41fedbf54ae024b7d2cce03a51d0b6f31bd1860ec594",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it",
       "digest": "sha256:ea69394bf2e460836b58fb88b7e1c58fb335dd9f4a6a59682bee3b20b466010e",
       "files": [
@@ -5198,6 +5228,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses",
+      "digest": "sha256:944c77dc3550713648113f6dbcbf9ba79399760ca6541346f004ad904f7ef123",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method",
       "digest": "sha256:53a8a24793226ec370978a7ff99b3364249d32e38fd58427b7a343541c6ce005",
       "files": [
@@ -5218,6 +5258,16 @@
         {
           "path": "src/src/connector-registry/registered-method-comparison.ts",
           "digest": "sha256:4192f715d05de2d8f4947b93ac4044fdad6ae3441ad5df72a80ccb84492c89d6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs",
+      "digest": "sha256:e9babc0c8ec329d21e45343f2a423c2cc73137a5829608907a3fcc0641a45581",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:5ab993088d44432c609ba65b92bc1e3332f247bd00b8c430a45e9af562e895cd"
         }
       ]
     },
