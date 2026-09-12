@@ -169,35 +169,7 @@ it('joins two cookie-carried parameters into one Cookie header value separated b
   expect(placement.headers.Cookie).toBe('session_id=${subject:session_id}; tenant_id=${subject:tenant_id}');
 });
 
-it('names a name unresolved with no-matching-input-schema-property when the one registered capability does not declare that property', async () => {
-  const registered = capability({ input_schema: JSON.stringify({ properties: { contract_number: {} } }) });
-
-  const placement = await resolveSubjectPlaceholders(
-    options({
-      parameters: [{ name: 'order_id', location: 'query' }],
-      capabilitiesReader: { readCapabilities: async () => [registered] },
-    }),
-  );
-
-  expect(placement.unresolved).toEqual([{ name: 'order_id', reason: 'no-matching-input-schema-property' }]);
-  expect(placement.query).toEqual({ order_id: '{order_id}' });
-});
-
-it('names a name unresolved with no-matching-input-schema-property when only one of two registered capabilities fails to declare it', async () => {
-  const declares = capability({ input_schema: JSON.stringify({ properties: { order_id: {} } }) });
-  const doesNotDeclare = capability({ input_schema: JSON.stringify({ properties: { unrelated: {} } }) });
-
-  const placement = await resolveSubjectPlaceholders(
-    options({
-      parameters: [{ name: 'order_id', location: 'query' }],
-      capabilitiesReader: { readCapabilities: async () => [declares, doesNotDeclare] },
-    }),
-  );
-
-  expect(placement.unresolved).toEqual([{ name: 'order_id', reason: 'no-matching-input-schema-property' }]);
-});
-
-it("treats customerId as unresolved against a declared customer_id, generating no placeholder", async () => {
+it('resolves customerId as ${subject:customerId} even though the one registered capability declares only customer_id, never withholding it for the mismatch', async () => {
   const registered = capability({ input_schema: JSON.stringify({ properties: { customer_id: {} } }) });
 
   const placement = await resolveSubjectPlaceholders(
@@ -207,8 +179,8 @@ it("treats customerId as unresolved against a declared customer_id, generating n
     }),
   );
 
-  expect(placement.unresolved).toEqual([{ name: 'customerId', reason: 'no-matching-input-schema-property' }]);
-  expect(placement.query.customerId).toBe('{customerId}');
+  expect(placement.query).toEqual({ customerId: '${subject:customerId}' });
+  expect(placement.unresolved).toEqual([]);
 });
 
 it('names a name occupying two positions exactly once in the unresolved list, holding the brace form at both of its positions', async () => {

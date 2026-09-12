@@ -2635,13 +2635,13 @@
         },
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
-          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+          "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
         }
       ]
     },
     {
       "node": "domain/integration/connector-configuration-draft-unresolved-reason",
-      "digest": "sha256:d9fa93d3ce2e353ef490e7c25ee0d266db2d14de3aef2b9cd8e06ea81662eb83",
+      "digest": "sha256:5f9493ece803f77d257e15a7b60e6992e14db0feadd055d37727379bf157aa34",
       "files": [
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
@@ -2649,7 +2649,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-draft.ts",
-          "digest": "sha256:83f2979a7fb57db838d885ca993f0cdf9c8e8b67954c6932ca46672f9343e50d"
+          "digest": "sha256:589869809fecfdc7dc13c8cd2dc6aed257d70418deeb6f5e289d255fb43882d7"
         },
         {
           "path": "src/src/connector-registry/generated-credential-placeholders.ts",
@@ -2657,7 +2657,7 @@
         },
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
-          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+          "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
         }
       ]
     },
@@ -5157,11 +5157,11 @@
     },
     {
       "node": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
-      "digest": "sha256:d1cbdfccfd56bcbe8dd5f5008e0c57b9f5e8050fac25b6f40a7cf1a38b680bfd",
+      "digest": "sha256:a51c2a4e9324783766c332b4410999d87a35f82179a15b0b5e7055d68e790d7c",
       "files": [
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
-          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+          "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
         }
       ]
     },
@@ -8150,6 +8150,16 @@
       ]
     },
     {
+      "node": "scenarios/integration/a-mismatched-parameter-name-resolves-regardless",
+      "digest": "sha256:d1a6f179a07ba130523171402e704fcedf329af00c02d6ca0f3fbd9aa812d566",
+      "files": [
+        {
+          "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
+          "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
+        }
+      ]
+    },
+    {
       "node": "scenarios/integration/a-swagger-2-document-refuses-the-draft",
       "digest": "sha256:5b158a45715f9e124eac8475e0276130bcd54ce3fa0fe8cf6999f77b078e363f",
       "files": [
@@ -8229,7 +8239,7 @@
         },
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
-          "digest": "sha256:883ed76bfa0bb77a5be4af2b2391463e2fbc4a8612091bc0e2f98268290cff05"
+          "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
         }
       ]
     },

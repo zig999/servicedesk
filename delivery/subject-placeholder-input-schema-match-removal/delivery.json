@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "kind": "implementation",
+      "file": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema.md",
+      "title": "Subject placeholder resolution drops the input_schema name match",
+      "summary": "outcomeFor() in subject-placeholder-resolution.ts now resolves any candidate name to a ${subject:<name>} placeholder whenever at least one capability is registered for the connector, and the retired no-matching-input-schema-property reason is gone from both the resolver and the closed reason enumeration.",
+      "task": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema"
+    },
+    {
+      "id": "proof/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "kind": "proof",
+      "file": "proof/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema.md",
+      "title": "Subject placeholder resolution proof — resolves regardless of input_schema match",
+      "summary": "Proves outcomeFor() resolves any candidate name to ${subject:<name>} whenever at least one capability is registered for the connector, refuses only with no-capability-registered when none is, and never produces the retired no-matching-input-schema-property reason — across the resolver's own unit tests and the two pre-existing spec files the retired reason also reached.",
+      "task": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "domain/integration/connector-configuration-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "domain/integration/connector-configuration-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "scenarios/integration/a-mismatched-parameter-name-resolves-regardless",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "task/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "to": "implementation/subject-placeholder-input-schema-match-removal/resolve-regardless-of-input-schema",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

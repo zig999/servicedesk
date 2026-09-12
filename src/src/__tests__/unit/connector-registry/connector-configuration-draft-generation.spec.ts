@@ -294,18 +294,18 @@ function unresolvedMixOptions(): GenerateConnectorConfigurationDraftOptions {
   });
 }
 
-it('lists exactly the parameters, request-body fields and security schemes that resolved to no placeholder, and nothing that resolved', async () => {
+it('resolves every parameter and request-body field name to a placeholder once a capability is registered for the connector, whatever its own input schema names, while a security scheme that cannot reduce to a credential still lists unresolved', async () => {
   const draft = await generateConnectorConfigurationDraft(unresolvedMixOptions());
 
+  const configuration = configurationOf(draft);
+  expect(configuration.query).toEqual({ resolved_param: '${subject:resolved_param}' });
+  const headers = configuration.headers as Record<string, string>;
+  expect(headers.unresolved_param).toBe('${subject:unresolved_param}');
+  expect(configuration.body).toEqual({ unresolved_field: '${subject:unresolved_field}' });
+
   const byName = new Map(draft.unresolved.map((item) => [item.name, item.reason]));
-  expect(byName).toEqual(
-    new Map([
-      ['unresolved_param', 'no-matching-input-schema-property'],
-      ['unresolved_field', 'no-matching-input-schema-property'],
-      ['NotReducible', 'security-scheme-not-reducible-to-a-credential'],
-    ]),
-  );
-  expect(draft.unresolved).toHaveLength(3);
+  expect(byName).toEqual(new Map([['NotReducible', 'security-scheme-not-reducible-to-a-credential']]));
+  expect(draft.unresolved).toHaveLength(1);
 });
 
 it('embeds a header-located security-scheme credential at the header key the scheme declares', async () => {

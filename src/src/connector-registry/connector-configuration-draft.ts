@@ -1,6 +1,5 @@
 export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
   'no-capability-registered',
-  'no-matching-input-schema-property',
   'security-scheme-not-reducible-to-a-credential',
   'drafted-key-occupied-by-another-security-scheme',
 ] as const;

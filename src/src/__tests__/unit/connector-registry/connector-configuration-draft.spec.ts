@@ -14,10 +14,9 @@ import type {
   ConnectorConfigurationDraftUnresolvedItem,
 } from '../../../connector-registry/connector-configuration-draft.js';
 
-it('admits exactly the four vocabulary reasons the specification enumerates, and no other value', () => {
+it('admits exactly the three vocabulary reasons the specification enumerates, and no other value', () => {
   const expected = [
     'no-capability-registered',
-    'no-matching-input-schema-property',
     'security-scheme-not-reducible-to-a-credential',
     'drafted-key-occupied-by-another-security-scheme',
   ];

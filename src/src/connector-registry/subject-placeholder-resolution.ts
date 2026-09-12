@@ -1,4 +1,3 @@
-import { declaredInputSchemaShape } from '../capability-registry/capability-input-schema-shape.js';
 import type { ICapabilitiesReader, RegisteredCapabilityForPlaceholderCheck } from './capabilities-reader.port.js';
 import type {
   ConnectorConfigurationDraftUnresolvedItem,
@@ -8,8 +7,6 @@ import type { OpenApiOperationParameter, OpenApiParameterLocation } from './open
 
 const SUBJECT_PLACEHOLDER_KIND = 'subject';
 const NO_CAPABILITY_REGISTERED: ConnectorConfigurationDraftUnresolvedReason = 'no-capability-registered';
-const NO_MATCHING_INPUT_SCHEMA_PROPERTY: ConnectorConfigurationDraftUnresolvedReason =
-  'no-matching-input-schema-property';
 const COOKIE_HEADER_NAME = 'Cookie';
 const COOKIE_SEGMENT_SEPARATOR = '; ';
 
@@ -65,15 +62,9 @@ function outcomesByName(
 }
 
 function outcomeFor(name: string, registered: readonly RegisteredCapabilityForPlaceholderCheck[]): NameOutcome {
-  if (registered.length === 0) {
-    return { resolved: false, reason: NO_CAPABILITY_REGISTERED };
-  }
-  const everyCapabilityDeclaresIt = registered.every((capability) =>
-    declaredInputSchemaShape(capability.input_schema).properties.includes(name),
-  );
-  return everyCapabilityDeclaresIt
-    ? { resolved: true, value: `\${${SUBJECT_PLACEHOLDER_KIND}:${name}}` }
-    : { resolved: false, reason: NO_MATCHING_INPUT_SCHEMA_PROPERTY };
+  return registered.length === 0
+    ? { resolved: false, reason: NO_CAPABILITY_REGISTERED }
+    : { resolved: true, value: `\${${SUBJECT_PLACEHOLDER_KIND}:${name}}` };
 }
 
 function positionValue(name: string, outcomes: ReadonlyMap<string, NameOutcome>): string {
