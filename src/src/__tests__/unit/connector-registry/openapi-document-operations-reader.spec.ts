@@ -225,3 +225,39 @@ it('keeps a fetch failure and an unreadable document as two distinguishable refu
   expect(unfetchableRefusal).not.toBeInstanceOf(OpenApiDocumentNotReadableError);
   expect(unreadableRefusal).not.toBeInstanceOf(OpenApiDocumentNotFetchedError);
 });
+
+it("resolves a path-item $ref to its target before reading operations, whether the target sits under #/components/pathItems or elsewhere in the document, upper-casing each method exactly as an inline path item would", async () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/items': { $ref: '#/components/pathItems/Items' },
+      '/widgets': { $ref: '#/definitions/customPathItems/Widgets' },
+    },
+    components: { pathItems: { Items: { Get: {}, PoSt: {} } } },
+    definitions: { customPathItems: { Widgets: { get: {} } } },
+  });
+
+  const result = await readOpenApiDocumentOperations({ link: A_LINK, documentFetcher: fetcherResolvingWith(documentText) });
+
+  expect(result.operations).toEqual([
+    { path: '/items', method: 'GET' },
+    { path: '/items', method: 'POST' },
+    { path: '/widgets', method: 'GET' },
+  ]);
+});
+
+it("lists no operation for a path whose $ref names no target in the document or a target that is not a path item, without refusing the read of the document's other operations", async () => {
+  const documentText = JSON.stringify({
+    openapi: '3.0.0',
+    paths: {
+      '/dangling': { $ref: '#/components/pathItems/Missing' },
+      '/wrong-type': { $ref: '#/components/pathItems/NotAPathItem' },
+      '/valid': { get: {} },
+    },
+    components: { pathItems: { NotAPathItem: 'just a string, not a path item' } },
+  });
+
+  const result = await readOpenApiDocumentOperations({ link: A_LINK, documentFetcher: fetcherResolvingWith(documentText) });
+
+  expect(result.operations).toEqual([{ path: '/valid', method: 'GET' }]);
+});

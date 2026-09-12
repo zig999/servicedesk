@@ -1097,7 +1097,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
-          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
+          "digest": "sha256:d7c8b6e3bde318ea5516fa986acf19e7dee08e4329a0b804657c08fdbaf2c816"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -2717,7 +2717,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
-          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
+          "digest": "sha256:d7c8b6e3bde318ea5516fa986acf19e7dee08e4329a0b804657c08fdbaf2c816"
         },
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
@@ -2763,7 +2763,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
-          "digest": "sha256:99268c67576b17203a2ed349ecd6ea170727a724918bd95044f8c0455d652c5e"
+          "digest": "sha256:d7c8b6e3bde318ea5516fa986acf19e7dee08e4329a0b804657c08fdbaf2c816"
         },
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
@@ -5580,6 +5580,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed",
+      "digest": "sha256:f05ad742690b685c4136aeb7fbbca858d42b525c55bdbeea61fe5c3cabfa6ce4",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:d7c8b6e3bde318ea5516fa986acf19e7dee08e4329a0b804657c08fdbaf2c816"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
       "digest": "sha256:1386d73793992a0ed815e8235b96e4d6b9963367f225dc2a16cae0585d0ae079",
       "files": [
@@ -6028,6 +6038,16 @@
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:38f071ffa063e01559319a2be36bc37f66114bf497ae13f230d186a9e6ff45ec"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read",
+      "digest": "sha256:8f021616de4797b1917d2ffed4c83525e72e9b6e6b455ac43c6d1620fe597000",
+      "files": [
+        {
+          "path": "src/src/connector-registry/openapi-document-operations-reader.ts",
+          "digest": "sha256:d7c8b6e3bde318ea5516fa986acf19e7dee08e4329a0b804657c08fdbaf2c816"
         }
       ]
     },

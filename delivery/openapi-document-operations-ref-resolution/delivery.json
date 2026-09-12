@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "kind": "implementation",
+      "file": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref.md",
+      "title": "operationsAt() resolves a path-item-level $ref before listing operations",
+      "summary": "readOpenApiDocumentOperations now reads a path-item-level $ref through to its target before listing a path's operations, contributing nothing (and refusing nothing) when that reference is unresolvable, and the module imports isPlainObject from openapi-document-reader.ts instead of declaring its own copy.",
+      "task": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref"
+    },
+    {
+      "id": "proof/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "kind": "proof",
+      "file": "proof/openapi-document-operations-ref-resolution/resolve-path-item-ref.md",
+      "title": "operationsAt() resolves a path-item-level $ref before listing operations — proof",
+      "summary": "Two new tests over the untouched openapi-document-operations-reader.spec.ts prove path-item $ref resolution at both the canonical and an arbitrary document location, and prove an unresolvable or non-path-item ref contributes nothing without refusing the document's other operations; the two governing rule nodes are each demonstrated whole, criterion 2 by an unmodified pre-existing test, and criterion 4 and both behavioral inferences are left unpinned.",
+      "task": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "domain/integration/openapi-document-operations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "domain/integration/openapi-operation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "task/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "to": "implementation/openapi-document-operations-ref-resolution/resolve-path-item-ref",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

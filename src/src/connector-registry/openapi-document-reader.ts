@@ -57,6 +57,6 @@ function notReadable(detail: string, cause?: unknown): OpenApiDocumentNotReadabl
   return new OpenApiDocumentNotReadableError({ kind: 'unparseable', detail }, cause === undefined ? undefined : { cause });
 }
 
-function isPlainObject(value: unknown): value is OpenApiDocument {
+export function isPlainObject(value: unknown): value is OpenApiDocument {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
