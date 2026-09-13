@@ -91,7 +91,11 @@ export function ConnectorConfigurationHelperFields({
           </p>
         )}
         {disclosure.kind === "drafted" && (
-          <ConnectorConfigurationDraftDisclosure draft={disclosure.draft} onApply={onApply} />
+          <ConnectorConfigurationDraftDisclosure
+            draft={disclosure.draft}
+            stale={state.stale ?? false}
+            onApply={onApply}
+          />
         )}
         {operationsReadDisclosure.kind === "pending" && (
           <p className="text-sm text-muted-foreground">The named link&apos;s operations are being read…</p>
@@ -111,9 +115,11 @@ export function ConnectorConfigurationHelperFields({
 
 function ConnectorConfigurationDraftDisclosure({
   draft,
+  stale,
   onApply,
 }: {
   readonly draft: DraftDisclosure;
+  readonly stale: boolean;
   readonly onApply: (configurationText: string) => void;
 }): JSX.Element {
   return (
@@ -125,6 +131,12 @@ function ConnectorConfigurationDraftDisclosure({
             Apply
           </Button>
         </div>
+        {stale && (
+          <p className="text-sm text-muted-foreground">
+            This draft is stale: the link, the operation or the connector name has changed since
+            this draft was requested.
+          </p>
+        )}
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
           {draft.configuration}
         </pre>

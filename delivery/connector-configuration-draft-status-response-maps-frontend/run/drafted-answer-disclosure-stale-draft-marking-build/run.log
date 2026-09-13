@@ -1,0 +1,55 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+> case-authoring-console@0.1.0 postinstall
+> node scripts/dedupe-tui-react.mjs
+
+dedupe-tui-react: react already deduped
+dedupe-tui-react: react-dom already deduped
+
+added 577 packages, and audited 578 packages in 8s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+2 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/connector-configuration-helper-fields-apply.spec.ts(12,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+src/routes/connector-configuration-helper-fields-draft-request-gate.spec.ts(10,3): error TS2322: Type '{ connector?: string; link: string; onLinkChange: (value: string) => void; operations: readonly OpenApiOperation[]; operationsOutcome: OpenApiDocumentOperationsReadOutcome; ... 7 more ...; stale?: boolean | undefined; }' is not assignable to type 'ConnectorConfigurationHelperState'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/connector-configuration-helper-fields-operation-select.spec.ts(15,3): error TS2322: Type '{ connector?: string; link: string; onLinkChange: (value: string) => void; operations: readonly OpenApiOperation[]; operationsOutcome: OpenApiDocumentOperationsReadOutcome; ... 7 more ...; stale?: boolean | undefined; }' is not assignable to type 'ConnectorConfigurationHelperState'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/connector-configuration-helper-fields-operations-read-disclosure.spec.ts(10,3): error TS2322: Type '{ connector?: string; link: string; onLinkChange: (value: string) => void; operations: readonly OpenApiOperation[]; operationsOutcome: OpenApiDocumentOperationsReadOutcome; ... 7 more ...; stale?: boolean | undefined; }' is not assignable to type 'ConnectorConfigurationHelperState'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/connector-configuration-helper-fields-reading-notes.spec.ts(16,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+src/routes/connector-configuration-helper-fields-response-fields.spec.ts(16,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+src/routes/connector-configuration-helper-fields.spec.ts(17,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   useDraftConnectorConfigurationFromOpenApi,
+  type ConnectorConfigurationDraftStatedFor,
   type DraftConnectorConfigurationRequestOutcome,
 } from "./use-draft-connector-configuration-from-openapi";
 import {
@@ -22,6 +23,7 @@ export type ConnectorConfigurationHelperState = {
   readonly onMethodChange: (value: string) => void;
   readonly onRequestDraft: () => void;
   readonly outcome: DraftConnectorConfigurationRequestOutcome;
+  readonly stale?: boolean;
 };
 
 function operationsOfferedFor(
@@ -30,10 +32,26 @@ function operationsOfferedFor(
   return operationsOutcome.kind === "operations" ? operationsOutcome.operations : [];
 }
 
+function draftIsStale(
+  outcome: DraftConnectorConfigurationRequestOutcome,
+  statedFor: ConnectorConfigurationDraftStatedFor | undefined,
+  current: { readonly link: string; readonly path: string; readonly method: string; readonly connector: string },
+): boolean {
+  if (outcome.kind !== "drafted" || statedFor === undefined) {
+    return false;
+  }
+  return (
+    statedFor.link !== current.link ||
+    statedFor.path !== current.path ||
+    statedFor.method !== current.method ||
+    statedFor.connector !== current.connector
+  );
+}
+
 export function useConnectorConfigurationHelper(
   connector: string,
 ): ConnectorConfigurationHelperState {
-  const { requestDraft, outcome } = useDraftConnectorConfigurationFromOpenApi(connector);
+  const { requestDraft, outcome, statedFor } = useDraftConnectorConfigurationFromOpenApi(connector);
 
   const [link, setLink] = useState("");
   const [path, setPath] = useState("");
@@ -59,5 +77,6 @@ export function useConnectorConfigurationHelper(
       requestDraft({ link, path, method });
     },
     outcome,
+    stale: draftIsStale(outcome, statedFor, { link, path, method, connector }),
   };
 }

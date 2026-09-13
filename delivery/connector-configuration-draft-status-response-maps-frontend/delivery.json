@@ -42,6 +42,14 @@
       "task": "task/drafted-answer-disclosure/response-fields-stated"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/stale-draft-marking",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/stale-draft-marking.md",
+      "title": "Stale-draft marking for the Configuration Helper's stated draft",
+      "summary": "A stated draft now carries what it was generated for (link, operation, connector) via the request hook's own variables, and the Helper surface computes and shows staleness reactively without touching the Apply act.",
+      "task": "task/drafted-answer-disclosure/stale-draft-marking"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/status-readings-stated",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/status-readings-stated.md",
@@ -96,6 +104,14 @@
       "title": "Response fields the answer carries are stated by name, path, status and their carried declarations -- proof",
       "summary": "Proves the drafted responseMap's per-field disclosure at both the projection layer and the rendered surface -- name, path and success status always stated, declared_type/declared_required/envelope stated only where the answer carried them (declared_required: false treated as a real carried value), and no field the answer did not carry is invented.",
       "task": "task/drafted-answer-disclosure/response-fields-stated"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/stale-draft-marking",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/stale-draft-marking.md",
+      "title": "Stale-draft marking proof for the Configuration Helper's stated draft",
+      "summary": "Proves the draft's mark (link, operation, connector), the three independent staleness triggers, and the act applying it staying offered while stale, through new sibling spec files at both hook levels and the rendered surface, plus one test over the widened-answer alternative the task's UNDERDETERMINED entry refuses.",
+      "task": "task/drafted-answer-disclosure/stale-draft-marking"
     },
     {
       "id": "proof/drafted-answer-disclosure/status-readings-stated",
@@ -236,6 +252,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/drafted-answer-disclosure/stale-draft-marking",
+      "to": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/stale-draft-marking",
+      "to": "rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/stale-draft-marking",
+      "to": "task/drafted-answer-disclosure/stale-draft-marking",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/drafted-answer-disclosure/status-readings-stated",
       "to": "rules/integration/an-answered-draft-request-states-its-draft-to-the-operator",
       "kind": "encodes",
@@ -304,6 +338,12 @@
     {
       "from": "proof/drafted-answer-disclosure/response-fields-stated",
       "to": "implementation/drafted-answer-disclosure/response-fields-stated",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/stale-draft-marking",
+      "to": "implementation/drafted-answer-disclosure/stale-draft-marking",
       "kind": "proves",
       "at": "the path"
     },

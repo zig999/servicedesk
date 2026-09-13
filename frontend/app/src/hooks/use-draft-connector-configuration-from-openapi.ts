@@ -71,6 +71,8 @@ type DraftConnectorConfigurationFromOpenApiRequestBody = DraftConnectorConfigura
   readonly connector: string;
 };
 
+export type ConnectorConfigurationDraftStatedFor = DraftConnectorConfigurationFromOpenApiRequestBody;
+
 export type OpenApiDocumentFetchFailure =
   | { readonly kind: "network-failure" }
   | { readonly kind: "timeout" }
@@ -96,6 +98,7 @@ export type DraftConnectorConfigurationRequestOutcome =
 export type UseDraftConnectorConfigurationFromOpenApiResult = {
   readonly outcome: DraftConnectorConfigurationRequestOutcome;
   readonly requestDraft: (request: DraftConnectorConfigurationFromOpenApiRequest) => void;
+  readonly statedFor: ConnectorConfigurationDraftStatedFor | undefined;
 };
 
 function fetchFailureFromDetails(details: Record<string, unknown>): OpenApiDocumentFetchFailure | undefined {
@@ -226,5 +229,6 @@ export function useDraftConnectorConfigurationFromOpenApi(
   return {
     outcome: outcomeFromMutation(mutation),
     requestDraft,
+    statedFor: mutation.variables,
   };
 }

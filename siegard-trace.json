@@ -5219,7 +5219,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
-          "digest": "sha256:ea2a0de07441b6c33356ed26dcfeed0b327c9113c87449b017508e0d883f8388"
+          "digest": "sha256:63d37bec026ea6d55bfe965c846a15e514ead3f9ee6462a54a50bd6b45faa4e3"
         },
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
@@ -5958,6 +5958,24 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes",
+      "digest": "sha256:51948b9cc14eda1c7e628a3e096aa54104475fce21f9cdf605ebdf60ed36e585",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
+          "digest": "sha256:63d37bec026ea6d55bfe965c846a15e514ead3f9ee6462a54a50bd6b45faa4e3"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
+          "digest": "sha256:747bd49e3cd124daf2aa72d2efd2edf4a4f81c5087c2b5504af7610acd114225"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:1168bc38cc2e7345d573a1b0535497792af2c9b553de4759bc2b75d99ca6ea17"
         }
       ]
     },

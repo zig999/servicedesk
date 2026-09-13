@@ -1,0 +1,10 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/hooks/use-connector-configuration-helper-stale-draft-marking.spec.ts
+  52:9  error  `rendered` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+✖ 1 problem (1 error, 0 warnings)
+

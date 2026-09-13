@@ -1,0 +1,20 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/connector-configuration-helper-fields-apply.spec.ts(12,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+src/routes/connector-configuration-helper-fields-draft-request-gate.spec.ts(10,3): error TS2322: Type '{ connector?: string; link: string; onLinkChange: (value: string) => void; operations: readonly OpenApiOperation[]; operationsOutcome: OpenApiDocumentOperationsReadOutcome; ... 7 more ...; stale?: boolean | undefined; }' is not assignable to type 'ConnectorConfigurationHelperState'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/connector-configuration-helper-fields-operation-select.spec.ts(15,3): error TS2322: Type '{ connector?: string; link: string; onLinkChange: (value: string) => void; operations: readonly OpenApiOperation[]; operationsOutcome: OpenApiDocumentOperationsReadOutcome; ... 7 more ...; stale?: boolean | undefined; }' is not assignable to type 'ConnectorConfigurationHelperState'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/connector-configuration-helper-fields-operations-read-disclosure.spec.ts(10,3): error TS2322: Type '{ connector?: string; link: string; onLinkChange: (value: string) => void; operations: readonly OpenApiOperation[]; operationsOutcome: OpenApiDocumentOperationsReadOutcome; ... 7 more ...; stale?: boolean | undefined; }' is not assignable to type 'ConnectorConfigurationHelperState'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/connector-configuration-helper-fields-reading-notes.spec.ts(16,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+src/routes/connector-configuration-helper-fields-response-fields.spec.ts(16,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
+src/routes/connector-configuration-helper-fields.spec.ts(17,3): error TS2741: Property 'stale' is missing in type '{ link: string; onLinkChange: () => void; operations: never[]; operationsOutcome: { kind: "idle"; }; onChooseOperation: () => void; path: string; onPathChange: () => void; method: string; onMethodChange: () => void; onRequestDraft: () => void; outcome: DraftConnectorConfigurationRequestOutcome; }' but required in type 'ConnectorConfigurationHelperState'.
