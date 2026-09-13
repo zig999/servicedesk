@@ -18,6 +18,14 @@
       "task": "task/drafted-answer-disclosure/draft-request-gate"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/operations-read-states",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/operations-read-states.md",
+      "title": "Configuration Helper distinguishes an outstanding operations read from a document declaring none",
+      "summary": "Two new operations-read disclosure states -- an outstanding read and a document declaring no operation -- are derived and rendered, each apart from one another and from every refusal.",
+      "task": "task/drafted-answer-disclosure/operations-read-states"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/reading-notes-stated",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/reading-notes-stated.md",
@@ -64,6 +72,14 @@
       "title": "The draft-request act is gated on a named connector and a chosen operation -- proof",
       "summary": "Proves the five criteria of drafted-answer-disclosure/draft-request-gate and the invariant node they implement, whole, through one comprehensive rendering test; corrects the three pre-existing specs whose premise the new gate supersedes so each keeps proving what it always meant to prove.",
       "task": "task/drafted-answer-disclosure/draft-request-gate"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/operations-read-states",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/operations-read-states.md",
+      "title": "Configuration Helper distinguishes an outstanding operations read from a document declaring none -- proof",
+      "summary": "Proves the two new operations-read disclosure states -- an outstanding read and a document declaring no operation -- at the projection layer and at the rendered surface, each apart from the other and from every refusal, via new tests added to the two existing sibling spec files, and corrects one pre-existing test whose literal expectation this task's legitimate change made stale.",
+      "task": "task/drafted-answer-disclosure/operations-read-states"
     },
     {
       "id": "proof/drafted-answer-disclosure/reading-notes-stated",
@@ -150,6 +166,18 @@
     {
       "from": "implementation/drafted-answer-disclosure/draft-request-gate",
       "to": "task/drafted-answer-disclosure/draft-request-gate",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/operations-read-states",
+      "to": "rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/operations-read-states",
+      "to": "task/drafted-answer-disclosure/operations-read-states",
       "kind": "implements",
       "at": "the path"
     },
@@ -258,6 +286,12 @@
     {
       "from": "proof/drafted-answer-disclosure/draft-request-gate",
       "to": "implementation/drafted-answer-disclosure/draft-request-gate",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/operations-read-states",
+      "to": "implementation/drafted-answer-disclosure/operations-read-states",
       "kind": "proves",
       "at": "the path"
     },

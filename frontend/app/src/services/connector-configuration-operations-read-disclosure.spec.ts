@@ -10,12 +10,12 @@ function refused(state: ReturnType<typeof operationsReadDisclosureStateForOutcom
 }
 
 describe("operationsReadDisclosureStateForOutcome -- no refusal is stated before the operation answers (criterion 6, demonstrates no-operations-read-refusal-is-stated-before-the-operation-answers)", () => {
-  it("maps both idle and pending to exactly {kind: 'none'}", () => {
+  it("maps idle to {kind: 'none'} and pending to {kind: 'pending'}, neither ever a refusal", () => {
     const idle: OpenApiDocumentOperationsReadOutcome = { kind: "idle" };
     const pending: OpenApiDocumentOperationsReadOutcome = { kind: "pending" };
 
     expect(operationsReadDisclosureStateForOutcome(idle)).toEqual({ kind: "none" });
-    expect(operationsReadDisclosureStateForOutcome(pending)).toEqual({ kind: "none" });
+    expect(operationsReadDisclosureStateForOutcome(pending)).toEqual({ kind: "pending" });
   });
 });
 
@@ -73,5 +73,32 @@ describe("operationsReadDisclosureStateForOutcome -- an unrecognised refusal is 
     expect(state.message).toContain("does not recognise");
     expect(state.message).not.toContain("could not be fetched");
     expect(state.message).not.toContain("could not be read as an OpenAPI 3.x document");
+  });
+});
+
+describe("operationsReadDisclosureStateForOutcome -- an outstanding read and a document declaring no operation are read at the projection layer (drafted-answer-disclosure/operations-read-states criteria 1, 2)", () => {
+  it("maps the pending outcome to the pending disclosure state", () => {
+    expect(operationsReadDisclosureStateForOutcome({ kind: "pending" })).toEqual({ kind: "pending" });
+  });
+
+  it("maps an operations outcome carrying zero operations to the empty disclosure state", () => {
+    expect(
+      operationsReadDisclosureStateForOutcome({ kind: "operations", operations: [] }),
+    ).toEqual({ kind: "empty" });
+  });
+});
+
+describe("operationsReadDisclosureStateForOutcome -- the boundaries the two new states do not cross stay at none (regression)", () => {
+  it("maps an operations outcome carrying one operation to the none disclosure state, not empty", () => {
+    expect(
+      operationsReadDisclosureStateForOutcome({
+        kind: "operations",
+        operations: [{ path: "/widgets", method: "get" }],
+      }),
+    ).toEqual({ kind: "none" });
+  });
+
+  it("maps the idle outcome to the none disclosure state, not pending", () => {
+    expect(operationsReadDisclosureStateForOutcome({ kind: "idle" })).toEqual({ kind: "none" });
   });
 });

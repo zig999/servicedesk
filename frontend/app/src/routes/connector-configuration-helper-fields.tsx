@@ -93,6 +93,12 @@ export function ConnectorConfigurationHelperFields({
         {disclosure.kind === "drafted" && (
           <ConnectorConfigurationDraftDisclosure draft={disclosure.draft} onApply={onApply} />
         )}
+        {operationsReadDisclosure.kind === "pending" && (
+          <p className="text-sm text-muted-foreground">The named link&apos;s operations are being read…</p>
+        )}
+        {operationsReadDisclosure.kind === "empty" && (
+          <p className="text-sm text-muted-foreground">The fetched document declares no operation.</p>
+        )}
         {operationsReadDisclosure.kind === "refused" && (
           <p role="alert" className="text-sm text-destructive">
             {operationsReadDisclosure.message}

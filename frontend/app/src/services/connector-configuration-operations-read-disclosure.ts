@@ -3,6 +3,8 @@ import type { OpenApiDocumentOperationsReadOutcome } from "../hooks/use-openapi-
 
 export type OperationsReadDisclosureState =
   | { readonly kind: "none" }
+  | { readonly kind: "pending" }
+  | { readonly kind: "empty" }
   | { readonly kind: "refused"; readonly message: string };
 
 function fetchFailureLabel(failure: OpenApiDocumentFetchFailure): string {
@@ -21,9 +23,11 @@ export function operationsReadDisclosureStateForOutcome(
 ): OperationsReadDisclosureState {
   switch (outcome.kind) {
     case "idle":
-    case "pending":
-    case "operations":
       return { kind: "none" };
+    case "pending":
+      return { kind: "pending" };
+    case "operations":
+      return outcome.operations.length === 0 ? { kind: "empty" } : { kind: "none" };
     case "openapi-document-not-fetched":
       return {
         kind: "refused",

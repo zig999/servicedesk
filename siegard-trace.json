@@ -6380,6 +6380,20 @@
       ]
     },
     {
+      "node": "rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation",
+      "digest": "sha256:7e6d77fac436cacb2f2f8ce68610ffd98cb7ac140033b9bf3033f3aabc45d891",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:f1cfef2d61f79554c874c2848708eccc397b8c68a4cb1d5f6b677548cfd6e282"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
+          "digest": "sha256:be952c80a40e53be8955d5a7e85555cb7ca2fa364ce4b08867352878a02dd36b"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
       "digest": "sha256:ca4b60f1d2048384a627f2bdbaf038eea60f679519b2e1d0644d54b887cf2e83",
       "files": [
