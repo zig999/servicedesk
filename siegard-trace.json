@@ -5675,7 +5675,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
-          "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
+          "digest": "sha256:682d36f8dacf21671fb8db022970db3d621e740129c84e03672adabc5dc10656"
         }
       ]
     },
@@ -5769,7 +5769,11 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
-          "digest": "sha256:c45659d0ea2c131162cfa2fd4dea7a9f5d2180b0b3cb8251cd6728ea40aae9ea"
+          "digest": "sha256:682d36f8dacf21671fb8db022970db3d621e740129c84e03672adabc5dc10656"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:011bceb50f69f34516fce7d4cd322272322820447582e6990134694bb1b3ff46"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-response-map-capability-coverage-view.tsx",

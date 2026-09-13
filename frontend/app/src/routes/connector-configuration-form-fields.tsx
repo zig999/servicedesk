@@ -14,6 +14,7 @@ import {
 } from "@tui/ui/dialog";
 import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
+import { isPlainRecord } from "../shared/services/plain-record";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import { CredentialPlaceholderStatements } from "./connector-configuration-credential-placeholder-statements-view";
 import { HttpConnectorDeparturesStatement } from "./connector-configuration-http-connector-departures-view";
@@ -42,6 +43,7 @@ import {
   CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE,
   CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE,
   CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE,
+  CONFIGURATION_NOT_A_JSON_OBJECT_MESSAGE,
   FORM_CONFIGURATION_FIELD_LABEL,
   FORM_CONNECTOR_FIELD_LABEL,
   FORM_SAVE_BUTTON,
@@ -134,6 +136,27 @@ function KeyChangeList({
         ))}
       </ul>
     </div>
+  );
+}
+
+function configurationTextParsesToNonObject(text: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return false;
+  }
+  return !isPlainRecord(parsed);
+}
+
+function ConfigurationNotAnObjectStatement({ text }: { text: string }): JSX.Element | null {
+  if (!configurationTextParsesToNonObject(text)) {
+    return null;
+  }
+  return (
+    <p role="alert" className="text-sm text-destructive">
+      {CONFIGURATION_NOT_A_JSON_OBJECT_MESSAGE}
+    </p>
   );
 }
 
@@ -252,6 +275,7 @@ export function ConnectorConfigurationFormFields({
         onChange={configuration.onChange}
         disabled={isSubmitting}
       />
+      <ConfigurationNotAnObjectStatement text={configuration.value} />
       <ConfigurationEntryGuidance />
       <HttpConnectorDeparturesStatement departures={httpConnectorDepartures} />
       <SubjectPlaceholderStatements statements={subjectPlaceholderStatements} />

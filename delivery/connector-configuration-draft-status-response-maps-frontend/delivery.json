@@ -42,6 +42,14 @@
       "task": "task/configuration-readiness/subject-placeholder-statements"
     },
     {
+      "id": "implementation/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "kind": "implementation",
+      "file": "implementation/configuration-readiness/submission-withheld-only-on-well-formedness.md",
+      "title": "Bound the withheld-submission act to well-formedness alone, and close the one narrow statement gap",
+      "summary": "Verified across all four sibling readiness statements and the request-draft/apply flows that only well-formedness withholds the registration act, and added the one missing statement for content that is valid JSON but not an object.",
+      "task": "task/configuration-readiness/submission-withheld-only-on-well-formedness"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/apply-confirmation-diff.md",
@@ -160,6 +168,14 @@
       "title": "Subject-placeholder readiness statement proof",
       "summary": "Proves the pure judgment service's three-branch policy and its scoping boundaries at the service layer, and the surface's rendering of each branch plus its non-gating of Save and its single capability-registry read, through two new sibling spec files.",
       "task": "task/configuration-readiness/subject-placeholder-statements"
+    },
+    {
+      "id": "proof/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "kind": "proof",
+      "file": "proof/configuration-readiness/submission-withheld-only-on-well-formedness.md",
+      "title": "Submission withheld only on well-formedness -- the bound over all five readiness statements",
+      "summary": "Proves the one closed well-formedness statement gap and its Save-withholding partition (parse-failure, parses-to-non-object, well-formed), plus one combined test showing an HTTP departure, an undeclared subject placeholder, a credential placeholder, a responseMap key read by no capability and an unnamed output-schema property all standing at once withhold nothing, and one Helper-area test showing the responseMap-coverage statement leaves the draft-request and Apply acts untouched, through two new sibling spec files.",
+      "task": "task/configuration-readiness/submission-withheld-only-on-well-formedness"
     },
     {
       "id": "proof/drafted-answer-disclosure/apply-confirmation-diff",
@@ -372,6 +388,24 @@
     {
       "from": "implementation/configuration-readiness/subject-placeholder-statements",
       "to": "task/configuration-readiness/subject-placeholder-statements",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
       "kind": "implements",
       "at": "the path"
     },
@@ -612,6 +646,12 @@
     {
       "from": "proof/configuration-readiness/subject-placeholder-statements",
       "to": "implementation/configuration-readiness/subject-placeholder-statements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "to": "implementation/configuration-readiness/submission-withheld-only-on-well-formedness",
       "kind": "proves",
       "at": "the path"
     },

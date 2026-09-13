@@ -161,6 +161,9 @@ export const APPLY_DIFF_NOT_ITEMISABLE_MESSAGE =
   "Configuração não contém um texto de objeto JSON bem formado.";
 export const APPLY_DIFF_EMPTY_MESSAGE = "Aplicar este rascunho não mudaria nada.";
 
+export const CONFIGURATION_NOT_A_JSON_OBJECT_MESSAGE =
+  "O texto é JSON válido, mas não é um objeto: um objeto JSON é exigido aqui.";
+
 export const CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE =
   "O que é digitado aqui é um objeto JSON.";
 export const CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE =
