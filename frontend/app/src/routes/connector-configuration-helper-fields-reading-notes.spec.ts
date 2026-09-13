@@ -1,12 +1,17 @@
 import { createElement } from "react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectorConfigurationHelperFields } from "./connector-configuration-helper-fields";
 import type { ConnectorConfigurationHelperState } from "../hooks/use-connector-configuration-helper";
 import type {
   ConnectorConfigurationDraft,
   DraftConnectorConfigurationRequestOutcome,
 } from "../hooks/use-draft-connector-configuration-from-openapi";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 function normalized(element: HTMLElement): string {
   return (element.textContent ?? "").replace(/\s+/g, " ").trim();
@@ -29,8 +34,17 @@ function baseState(outcome: DraftConnectorConfigurationRequestOutcome): Connecto
 }
 
 function renderHelperFields(outcome: DraftConnectorConfigurationRequestOutcome) {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response(JSON.stringify({ data: [] }), { status: 200 })),
+  );
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
-    createElement(ConnectorConfigurationHelperFields, { state: baseState(outcome), onApply: () => {} }),
+    createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      createElement(ConnectorConfigurationHelperFields, { state: baseState(outcome), onApply: () => {} }),
+    ),
   );
 }
 

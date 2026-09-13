@@ -2430,6 +2430,10 @@
           "digest": "sha256:753d1cbbf4a3e3a21b26e2811f38af0b138a04681b221678e1501e2f99332f17"
         },
         {
+          "path": "frontend/app/src/hooks/use-response-map-capability-coverage.ts",
+          "digest": "sha256:bc0661a35f714117678e465a69b990d3e1c6da8aaf277f3839c7fddb815870b8"
+        },
+        {
           "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
           "digest": "sha256:bd014117eb3181ff770a7f76caded86f71f8b2600b7a2d1a72825da167bb4d5e"
         },
@@ -2450,6 +2454,14 @@
           "digest": "sha256:7a2dd7f450c449df3fb0a4e4adea790446a060d6bfdb93c64868f8e24f2a4677"
         },
         {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:4b8faef43cb3264000401fe7914cb32aa68b7a745b65a0f23840c512ba1f1587"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:011bceb50f69f34516fce7d4cd322272322820447582e6990134694bb1b3ff46"
+        },
+        {
           "path": "frontend/app/src/routes/connector-configurations-screen.tsx",
           "digest": "sha256:aa458dbc0983a3aa59243bd97687b86c007e58f971c14c9cb7bf3b11f8c52c1d"
         },
@@ -2468,6 +2480,10 @@
         {
           "path": "frontend/app/src/services/connector-configuration-messages.ts",
           "digest": "sha256:607a25097b5a01128681ca946bac70905bddec82a3add2bf57b44bc8402509c8"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-response-map-capability-coverage.ts",
+          "digest": "sha256:15347e81f9fbd3b3ca772f46ba35abe72a957cc4e4260ffbfd23e0744af12847"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-subject-placeholder-statements.ts",
@@ -5722,12 +5738,42 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads",
+      "digest": "sha256:94e82b3687620fb4aa54756f30ee3138a6acd0cf1c3c4c9f4a6d6bc5764d52f0",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-response-map-capability-coverage.ts",
+          "digest": "sha256:bc0661a35f714117678e465a69b990d3e1c6da8aaf277f3839c7fddb815870b8"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:4b8faef43cb3264000401fe7914cb32aa68b7a745b65a0f23840c512ba1f1587"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
+          "digest": "sha256:011bceb50f69f34516fce7d4cd322272322820447582e6990134694bb1b3ff46"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-response-map-capability-coverage-view.tsx",
+          "digest": "sha256:4858786e1f42e3081be828ebfa573b90d88a8a60027dda79e0b74d266e92a6d7"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-response-map-capability-coverage.ts",
+          "digest": "sha256:15347e81f9fbd3b3ca772f46ba35abe72a957cc4e4260ffbfd23e0744af12847"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
       "digest": "sha256:8c84cc6b4001ef8fd20bfb4690e3bf0ceacd1e800fc96d7fb139be45f32eaad0",
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
           "digest": "sha256:c45659d0ea2c131162cfa2fd4dea7a9f5d2180b0b3cb8251cd6728ea40aae9ea"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-response-map-capability-coverage-view.tsx",
+          "digest": "sha256:4858786e1f42e3081be828ebfa573b90d88a8a60027dda79e0b74d266e92a6d7"
         }
       ]
     },
@@ -8592,6 +8638,20 @@
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
           "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects",
+      "digest": "sha256:9dc9cf871a734316eef58009291bce9b8d48475590b1a4ec754fc46f7e618bb4",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-response-map-capability-coverage-view.tsx",
+          "digest": "sha256:4858786e1f42e3081be828ebfa573b90d88a8a60027dda79e0b74d266e92a6d7"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-response-map-capability-coverage.ts",
+          "digest": "sha256:15347e81f9fbd3b3ca772f46ba35abe72a957cc4e4260ffbfd23e0744af12847"
         }
       ]
     },

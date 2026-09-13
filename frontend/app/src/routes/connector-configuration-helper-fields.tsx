@@ -5,6 +5,8 @@ import { Select, type SelectOption } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
 import type { ConnectorConfigurationHelperState } from "../hooks/use-connector-configuration-helper";
 import type { OpenApiOperation } from "../hooks/use-openapi-document-operations";
+import { useResponseMapCapabilityCoverage } from "../hooks/use-response-map-capability-coverage";
+import { ResponseMapCapabilityCoverageStatement } from "./connector-configuration-response-map-capability-coverage-view";
 import {
   disclosureStateForOutcome,
   type DraftDisclosure,
@@ -126,6 +128,7 @@ export function ConnectorConfigurationHelperFields({
         )}
         {disclosure.kind === "drafted" && (
           <ConnectorConfigurationDraftDisclosure
+            connector={state.connector ?? ""}
             draft={disclosure.draft}
             stale={state.stale ?? false}
             onApply={onApply}
@@ -148,14 +151,18 @@ export function ConnectorConfigurationHelperFields({
 }
 
 function ConnectorConfigurationDraftDisclosure({
+  connector,
   draft,
   stale,
   onApply,
 }: {
+  readonly connector: string;
   readonly draft: DraftDisclosure;
   readonly stale: boolean;
   readonly onApply: (configurationText: string) => void;
 }): JSX.Element {
+  const responseMapCapabilityCoverage = useResponseMapCapabilityCoverage(connector, draft.configuration);
+
   return (
     <div className="flex flex-col gap-4">
       <section className="flex flex-col gap-1">
@@ -169,6 +176,7 @@ function ConnectorConfigurationDraftDisclosure({
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
           {draft.configuration}
         </pre>
+        <ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />
       </section>
 
       {draft.unresolved.length > 0 && (

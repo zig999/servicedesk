@@ -17,9 +17,11 @@ import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import { CredentialPlaceholderStatements } from "./connector-configuration-credential-placeholder-statements-view";
 import { HttpConnectorDeparturesStatement } from "./connector-configuration-http-connector-departures-view";
+import { ResponseMapCapabilityCoverageStatement } from "./connector-configuration-response-map-capability-coverage-view";
 import { SubjectPlaceholderStatements } from "./connector-configuration-subject-placeholder-statements-view";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import type { ConfigurationFieldState } from "../hooks/use-connector-configuration-form";
+import { useResponseMapCapabilityCoverage } from "../hooks/use-response-map-capability-coverage";
 import { useSubjectPlaceholderStatements } from "../hooks/use-subject-placeholder-statements";
 import {
   applyConfirmationDiffIsEmpty,
@@ -206,6 +208,8 @@ export function ConnectorConfigurationFormFields({
     [configuration.value],
   );
 
+  const responseMapCapabilityCoverage = useResponseMapCapabilityCoverage(connector, configuration.value);
+
   function handleApply(configurationText: string): void {
     if (!hasUnsavedEdit) {
       configuration.onChange(configurationText, true);
@@ -252,6 +256,7 @@ export function ConnectorConfigurationFormFields({
       <HttpConnectorDeparturesStatement departures={httpConnectorDepartures} />
       <SubjectPlaceholderStatements statements={subjectPlaceholderStatements} />
       <CredentialPlaceholderStatements credentialNames={credentialPlaceholderStatements} />
+      <ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />
 
       <ConnectorConfigurationHelper connector={connector} onApply={handleApply} />
 

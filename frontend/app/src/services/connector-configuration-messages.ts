@@ -257,3 +257,27 @@ export function credentialPlaceholderStatementText(name: string): string {
     "servidor no momento de um teste ou de uma observação; nada nesta superfície a verifica."
   );
 }
+
+export const RESPONSE_MAP_COVERAGE_HEADING = "O que as chaves do responseMap desta configuração leem";
+
+export const RESPONSE_MAP_COVERAGE_CANNOT_BE_READ_MESSAGE =
+  "Nenhuma capacidade está registrada para este conector: quais campos uma observação traria " +
+  "não pode ser lido.";
+
+export function responseMapKeyReadText(key: string, capabilityLabels: readonly string[]): string {
+  return `A chave ${key} do responseMap é lida por: ${capabilityLabels.join(", ")}.`;
+}
+
+export function responseMapKeyReadByNoneText(key: string): string {
+  return (
+    `A chave ${key} do responseMap não é lida por nenhuma capacidade registrada para este ` +
+    "conector."
+  );
+}
+
+export const RESPONSE_MAP_EXPECTED_FIELDS_HEADING =
+  "Quais campos esperados nenhuma chave do responseMap nomeia";
+
+export function responseMapExpectedFieldText(capabilityLabel: string, fieldName: string): string {
+  return `${capabilityLabel} espera o campo ${fieldName}, que nenhuma chave do responseMap nomeia.`;
+}

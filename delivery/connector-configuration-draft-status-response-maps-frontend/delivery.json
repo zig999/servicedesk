@@ -26,6 +26,14 @@
       "task": "task/configuration-readiness/http-departure-statements"
     },
     {
+      "id": "implementation/configuration-readiness/response-map-capability-coverage",
+      "kind": "implementation",
+      "file": "implementation/configuration-readiness/response-map-capability-coverage.md",
+      "title": "ResponseMap capability coverage statement over the field's text and the drafted configuration",
+      "summary": "A shared pure judgment service states, over the Configuration field's own text and over a stated draft's configuration text alike, which responseMap keys a connector-filtered capability's output schema reads, which reach none, and which of a capability's own expected fields no key names.",
+      "task": "task/configuration-readiness/response-map-capability-coverage"
+    },
+    {
       "id": "implementation/configuration-readiness/subject-placeholder-statements",
       "kind": "implementation",
       "file": "implementation/configuration-readiness/subject-placeholder-statements.md",
@@ -136,6 +144,14 @@
       "title": "HTTP connector configuration departure statements proof",
       "summary": "Proves each of the eight criteria over the pure judgment service, the two rendered complements (a departure showing, none showing) plus the governing scenario's own read/write pair on the surface, and the two node facts a finite test can decide whole, through two new sibling spec files.",
       "task": "task/configuration-readiness/http-departure-statements"
+    },
+    {
+      "id": "proof/configuration-readiness/response-map-capability-coverage",
+      "kind": "proof",
+      "file": "proof/configuration-readiness/response-map-capability-coverage.md",
+      "title": "ResponseMap capability-coverage statement, over the field's text and a stated draft's configuration",
+      "summary": "Proves the pure coverage service's four-outcome classification, the fsm-http/tech-profile scenario whole, and the surface's rendering of every outcome over both the Configuration field's content and a stated draft's configuration, together with its single capability-registry read and its refusal to gate Save, through one new service spec and two new sibling route spec files.",
+      "task": "task/configuration-readiness/response-map-capability-coverage"
     },
     {
       "id": "proof/configuration-readiness/subject-placeholder-statements",
@@ -296,6 +312,36 @@
     {
       "from": "implementation/configuration-readiness/http-departure-statements",
       "to": "task/configuration-readiness/http-departure-statements",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/configuration-readiness/response-map-capability-coverage",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/configuration-readiness/response-map-capability-coverage",
+      "to": "rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/configuration-readiness/response-map-capability-coverage",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/configuration-readiness/response-map-capability-coverage",
+      "to": "scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/configuration-readiness/response-map-capability-coverage",
+      "to": "task/configuration-readiness/response-map-capability-coverage",
       "kind": "implements",
       "at": "the path"
     },
@@ -554,6 +600,12 @@
     {
       "from": "proof/configuration-readiness/http-departure-statements",
       "to": "implementation/configuration-readiness/http-departure-statements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/configuration-readiness/response-map-capability-coverage",
+      "to": "implementation/configuration-readiness/response-map-capability-coverage",
       "kind": "proves",
       "at": "the path"
     },

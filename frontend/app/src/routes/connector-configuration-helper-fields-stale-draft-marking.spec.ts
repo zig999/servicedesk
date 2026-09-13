@@ -1,9 +1,14 @@
 import { createElement } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectorConfigurationHelperFields } from "./connector-configuration-helper-fields";
 import type { ConnectorConfigurationHelperState } from "../hooks/use-connector-configuration-helper";
 import type { ConnectorConfigurationDraft } from "../hooks/use-draft-connector-configuration-from-openapi";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 const DISTINCTIVE_CONFIGURATION_TEXT = '{"address":"https://api.example.com/v2/translate","distinctive":true}';
 
@@ -39,7 +44,18 @@ function renderFields(
   state: ConnectorConfigurationHelperState,
   onApply: (configurationText: string) => void = () => {},
 ) {
-  return render(createElement(ConnectorConfigurationHelperFields, { state, onApply }));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response(JSON.stringify({ data: [] }), { status: 200 })),
+  );
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      createElement(ConnectorConfigurationHelperFields, { state, onApply }),
+    ),
+  );
 }
 
 describe("ConnectorConfigurationHelperFields -- a stale drafted disclosure states its staleness beside the drafted configuration (criteria 4, 5, 6)", () => {
