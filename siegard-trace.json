@@ -2462,6 +2462,10 @@
           "digest": "sha256:a03814f8fec0b76b7681408b3fae70870a0cb0437699e77b44be64c8565fdb0a"
         },
         {
+          "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
+          "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
+        },
+        {
           "path": "frontend/app/src/services/connector-configuration-messages.ts",
           "digest": "sha256:607a25097b5a01128681ca946bac70905bddec82a3add2bf57b44bc8402509c8"
         },
@@ -5560,6 +5564,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms",
+      "digest": "sha256:4de0d65c687f1a3f9b6cfe9ba7920135d1fe67c248ed924f6568c2a5fbd1a98b",
+      "files": [
+        {
+          "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
+          "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
       "digest": "sha256:f53596f1337236466201a8abb395af6b7ede034982414f873b0d658f16104f36",
       "files": [
@@ -5638,6 +5652,24 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
           "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content",
+      "digest": "sha256:e9e2506f11f42dca538236294a84bc9400bf2336d2c93bd94c569c1436844e19",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:519a71206f9a1fa2d287ec89661b462c9ef1505755921936276b1ce29fc9cc18"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
+          "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-messages.ts",
+          "digest": "sha256:597d3bb32dd19ead2cf7567a382bb9ca2e0697e486eae46576d32eb2002ef1bc"
         }
       ]
     },
@@ -6161,11 +6193,15 @@
     },
     {
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
-      "digest": "sha256:e6ff30654d5bf586d8c14a3693ee64b592fdf31c083bd4148e9ebed3df5cb4b2",
+      "digest": "sha256:ee6ff892be9915e633fa16d39f511cd4a9085550e41ef109aff3f9cf47e02efe",
       "files": [
         {
           "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
           "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
+          "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
@@ -6182,6 +6218,16 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "digest": "sha256:5cd6eb67acfa5712bf4534130f2fdba6d92482a317c6c4f1ad2c54093683d0bf",
+      "files": [
+        {
+          "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
+          "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
         }
       ]
     },
@@ -8488,6 +8534,20 @@
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
           "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write",
+      "digest": "sha256:f2a59ee23320ffc539b15d0c531f81c55cc5592d3af61d4f7ef6d8de9e279c1a",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:519a71206f9a1fa2d287ec89661b462c9ef1505755921936276b1ce29fc9cc18"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
+          "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
         }
       ]
     },

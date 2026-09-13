@@ -169,3 +169,57 @@ export const CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE =
   "O conector HTTP lê uma query, headers e um body onde a configuração os declarar.";
 export const CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE =
   "Um placeholder é escrito como ${subject:<attribute-name>}, ${requester} ou ${credential:<name>}.";
+
+export const HTTP_CONNECTOR_DEPARTURES_HEADING =
+  "O que o conector HTTP recusaria nesta configuração";
+
+export const HTTP_CONNECTOR_STATUS_MAP_NOT_AN_OBJECT_MESSAGE =
+  "O statusMap está ausente ou não é um objeto.";
+export const HTTP_CONNECTOR_RESPONSE_MAP_DEPARTURE_MESSAGE =
+  "O responseMap está ausente, não é um objeto, ou contém um valor que não é texto.";
+export const HTTP_CONNECTOR_ADDRESS_DEPARTURE_MESSAGE =
+  "O address está ausente ou não contém texto.";
+
+function formatHttpConnectorDepartureValueText(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+export function httpConnectorMethodDepartureText(
+  value: unknown,
+  admittedMethods: readonly string[],
+): string {
+  return (
+    `O method declarado (${formatHttpConnectorDepartureValueText(value)}) está fora do ` +
+    `vocabulário admitido: ${admittedMethods.join(", ")}.`
+  );
+}
+
+export function httpConnectorStatusMapEndingDepartureText(
+  statusMapKey: string,
+  value: unknown,
+  admittedEndings: readonly string[],
+): string {
+  return (
+    `O statusMap para ${statusMapKey} declara um desfecho ` +
+    `(${formatHttpConnectorDepartureValueText(value)}) fora do vocabulário admitido: ` +
+    `${admittedEndings.join(", ")}.`
+  );
+}
+
+export function httpConnectorQueryOrHeadersDepartureText(key: "query" | "headers"): string {
+  return `O ${key} declarado não é um objeto de valores em texto.`;
+}
+
+export function httpConnectorPlaceholderDepartureText(placeholder: string): string {
+  return (
+    `O placeholder ${placeholder} não está escrito em nenhuma das três formas admitidas: ` +
+    "${subject:<attribute-name>}, ${requester} ou ${credential:<name>}."
+  );
+}

@@ -19,7 +19,16 @@ const WELL_FORMED_CONFIGURATION_TEXT = '{"method":"GET"}';
 const NOT_WELL_FORMED_CONFIGURATION_TEXT = "{not valid json";
 
 function guidanceListItems(): string[] {
-  const guidanceList = screen.getByRole("list");
+  const guidanceList = screen
+    .getAllByRole("list")
+    .find((list) =>
+      within(list).queryByText(CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE) !== null,
+    );
+  if (guidanceList === undefined) {
+    throw new Error(
+      "configuration-entry-guidance proof: expected a rendered list carrying the guidance messages",
+    );
+  }
   return within(guidanceList)
     .getAllByRole("listitem")
     .map((item) => item.textContent ?? "");

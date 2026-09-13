@@ -1,0 +1,15 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-configuration-form-fields.tsx
+  190:20  error  Do not use Array index in keys                         react/no-array-index-key
+  327:1   error  File has too many lines (312). Maximum allowed is 300  max-lines
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/services/connector-configuration-http-departures.ts
+  61:37  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  81:8   error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 4 problems (4 errors, 0 warnings)
+
