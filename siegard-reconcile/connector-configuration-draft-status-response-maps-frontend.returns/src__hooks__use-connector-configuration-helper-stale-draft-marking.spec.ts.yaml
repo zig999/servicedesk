@@ -1,0 +1,177 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      nowhere — this file never issues a request to an OpenAPI document's own URL; it stubs
+      `fetch` globally and answers every call itself.
+    evidence: |-
+      vi.stubGlobal("fetch", fetchMock);
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      the stubbed handler for DRAFT_ROUTE, exercised through onRequestDraft in
+      mountWithStatedDraft.
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      nowhere for status_readings, response_fields, method_mismatch and reading_notes — the
+      stubbed draft answer this file mounts with carries only connector, configuration,
+      unresolved and generated_credentials.
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: >-
+      the stubbed draft answer's empty unresolved array, never populated or asserted on by
+      this file.
+    evidence: |-
+      unresolved: []
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      unresolved: []
+  - node: domain/integration/openapi-document-operations
+    held_at: >-
+      the stubbed handler for OPERATIONS_READ_ROUTE_PREFIX, which this file always answers
+      with an empty operations list.
+    evidence: |-
+      return jsonResponse({ operations: [] });
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      nowhere — mountWithStatedDraft calls onChooseOperation directly with a literal
+      path/method pair rather than choosing it from a listing the hook fetched (the stub
+      answers that fetch with no operations at all), so this file exercises the hook's
+      onChooseOperation entry point rather than the listing-driven choice the rule states.
+    evidence: |-
+      view.result.current.onChooseOperation({ path: PATH, method: METHOD });
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: >-
+      the stubbed draft's configuration text, "{}", which is well-formed JSON object text,
+      though this file never judges or asserts on that well-formedness itself.
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: >-
+      the ordering mountWithStatedDraft follows — the link and the chosen operation are set
+      before onRequestDraft is called — though this file never asserts that the request is
+      withheld while either is missing.
+    evidence: |-
+      act(() => {
+          view.result.current.onLinkChange(LINK);
+          view.result.current.onChooseOperation({ path: PATH, method: METHOD });
+        });
+        act(() => {
+          view.result.current.onRequestDraft();
+        });
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: >-
+      the three describe/it blocks asserting `result.current.stale` toggles from false to
+      true once the link, then the chosen operation, then the connector name each change in
+      isolation from the request that produced the standing draft.
+    evidence: |-
+      act(() => {
+          result.current.onLinkChange("https://api.example.com/a-different-openapi.json");
+        });
+
+        expect(result.current.stale).toBe(true);
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      nowhere — this file waits on `outcome.kind` reaching "drafted" but asserts nothing
+      about the parts an answered draft states (configuration, unresolved items, generated
+      credentials, status readings, response fields, reading notes, method mismatch).
+    evidence: |-
+      await waitFor(() => expect(view.result.current.outcome.kind).toBe("drafted"));
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: |-
+      await waitFor(() => expect(view.result.current.outcome.kind).toBe("drafted"));
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: |-
+      await waitFor(() => expect(view.result.current.outcome.kind).toBe("drafted"));
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: >-
+      nowhere — the stubbed operations read always answers immediately with an empty list,
+      and this file asserts nothing about an outstanding-read state or a no-operation state.
+    evidence: |-
+      return jsonResponse({ operations: [] });
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: |-
+      configuration: "{}"
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [] });
+looked_past: >-
+  The stubbed draft answer omits status_readings, response_fields and reading_notes, which
+  domain/integration/connector-configuration-draft declares required, and the test never
+  asserts that changing an input leaves the apply act still offered while stale — both are
+  coverage gaps in a file scoped to the staleness criteria alone, not a stated domain fact,
+  so they are left for whichever file's tests actually exercise those disclosures.

@@ -1,0 +1,126 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      the file never issues or mocks a fetch of an OpenAPI document; it only supplies a pre-built
+      operationsOutcome value to the component under test.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      every override in the file only sets outcome to { kind:"idle" } or
+      { kind:"openapi-document-not-readable" }; no draft-connector-configuration-from-openapi
+      answer shape is ever supplied.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: the stateWith fixture never sets configuration/path/method beyond unrelated defaults.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: the fixture never populates a draft's connector, configuration, unresolved, generated_credentials, method_mismatch, status_readings, response_fields or reading_notes.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: no test sets a reading-note-bearing outcome or asserts on a note's kind, subject or detail.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: no reading-note kind value appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: no response-field value appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: no status-reading value appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: no unresolved-item name or reason appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: none of the three reason values appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: operations is only ever supplied as an empty fixture array; no test reads or asserts on the operations list itself.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: onChooseOperation is a no-op never invoked or asserted on.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: no capability reference or capability-derived field appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: no draft configuration text is asserted well-formed or otherwise.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: no assertion mentions method, address, statusMap, responseMap, query, headers, body or placeholder forms.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: no placeholder text appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: the file never renders a submission control or asserts on its presence or absence.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: no credential placeholder or resolution statement appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: no subject placeholder or capability-coverage statement appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: no method or statusMap-departure statement appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: no responseMap-key or capability-coverage statement appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: the file tests only operations-read disclosure; none of the four readiness statements this invariant bounds is exercised.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: onRequestDraft is a fixture no-op never invoked or asserted on.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: no staleness statement or link/operation/connector-name change is exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: the only outcome values the file ever sets are idle and openapi-document-not-readable.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: onApply is a no-op the tests never invoke, and no confirmation text is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: no address, query, headers or body statement appears anywhere in the file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: no method or statusMap vocabulary statement appears anywhere in the file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: no unsaved-edit or confirmation behavior is exercised anywhere in the file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: the "outstanding-read" and "no-operations-declared" test blocks
+    evidence: |-
+      it("renders the outstanding-read message with no alert role", () => {
+        renderFields(stateWith({ operationsOutcome: { kind: "pending" } }));
+        expect(screen.getByText("As operações do link informado estão sendo lidas…")).toBeTruthy();
+        expect(screen.queryByRole("alert")).toBeNull();
+      });
+      it("renders the no-operations-declared message with no alert role", () => {
+        renderFields(stateWith({ operationsOutcome: { kind: "operations", operations: [] } }));
+        expect(screen.getByText("O documento obtido não declara nenhuma operação.")).toBeTruthy();
+      });
+      it("renders five pairwise-distinct statements across the outstanding read, the no-operations document, and the three refusals, only the refusals as alerts", () => {
+        expect(new Set(texts).size).toBe(texts.length);
+      });
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: no responseMap or capability-coverage scenario is exercised anywhere in the file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: no statusMap-ending scenario is exercised anywhere in the file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: 'the file''s only non-idle outcome value is { kind: "openapi-document-not-readable" }.'
+looked_past: >-
+  The file also enforces the alert role and CSS classes on refusal messages, and withholds the
+  alert role from the outstanding-read and no-operations-declared statements; every relevant
+  node explicitly leaves control choice, wording and placement to the interface, so this is a
+  presentation/styling choice rather than a domain fact for this pass to weigh.
+candidates_opened:
+  - rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+  - rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  - rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers

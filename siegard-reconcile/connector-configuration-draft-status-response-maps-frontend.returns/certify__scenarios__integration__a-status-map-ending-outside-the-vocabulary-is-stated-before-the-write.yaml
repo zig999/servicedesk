@@ -1,0 +1,17 @@
+certified:
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-form-fields-http-departure-statements.spec.ts
+        name: states the statusMap entry's own departure naming 200 and the four admitted endings, and leaves Save enabled while that departure stands
+    why: >-
+      The "act stays offered" then-clause is exercised whole. The "names the ending outside the
+      vocabulary and the four admitted endings" then-clause is only exercised as to presence: the
+      expected text is computed via the same production formatter and constant the surface
+      itself uses, so a change to the formatter's wording or to the vocabulary constant leaves
+      expected and actual moving together and the test still green.
+    remainder: testable
+    remainder_why: >-
+      The same input, asserted against literal text spelled in the test itself (200, "lies
+      outside the vocabulary", and the four ending names ok/denied/timeout/unavailable) rather
+      than read from the production formatter/constant.

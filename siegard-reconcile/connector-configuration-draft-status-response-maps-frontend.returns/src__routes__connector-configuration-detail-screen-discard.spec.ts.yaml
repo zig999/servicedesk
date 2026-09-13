@@ -1,0 +1,167 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file imports only LOADED_CONFIGURATION, UPDATED_CONFIGURATION, baseHandlers,
+      createFetchStub, mountConnectorConfigurationDetailScreen, prettyPrinted, putCallCount and
+      exercises only the Discard flow; no OpenAPI document, no Configuration Helper and no fetch
+      of a document link appears anywhere in the file.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No test in this file requests, mocks or asserts on draft-connector-configuration-from-openapi
+      or any draft answer; every describe block here concerns the discard flow alone.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      The file never asserts on a connector attribute or on the configuration's well-formedness;
+      it only reads and resets the "Configuração" textarea's value.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No unresolved, generated_credentials, method_mismatch, status_readings, response_fields or
+      reading_notes attribute is referenced anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      No reading note, kind or subject is stated or asserted anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      None of the enumerated reading-note kinds is named anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      No response field, path, status, declared_type, declared_required or envelope is asserted
+      anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      No status reading, ending or declared_as value is asserted anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      No unresolved item, name or reason is asserted anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      None of the closed set of unresolved reasons is named anywhere in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      No OpenAPI operation or operations listing is fetched, mocked or asserted anywhere in this
+      file.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      The Configuration Helper's operation-choosing flow is not exercised; the whole file mounts
+      mountConnectorConfigurationDetailScreen and interacts only with the Discard control and its
+      confirmation dialog.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      No draft answer or capability reference is read or asserted anywhere in this file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      No draft's configuration text is generated, parsed or asserted anywhere in this file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      No statement about what the HTTP connector reads from the Configuration field is asserted
+      anywhere in this file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      No placeholder form is referenced anywhere in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The Salvar button's disabled state is only ever tied here to whether an edit was made; no
+      test drives malformed content and checks submission withholding.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      No credential placeholder or statement about its resolution is asserted anywhere in this
+      file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      No subject placeholder or capability-registration statement is asserted anywhere in this
+      file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      No departure from the HTTP connector's method/status/placeholder vocabulary is asserted
+      anywhere in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      No responseMap key or capability coverage statement is asserted anywhere in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      None of the readiness statements this node bounds is exercised anywhere in this file.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      No draft request, connector field or chosen operation is exercised anywhere in this file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      No draft staleness or link/operation/connector-name change is asserted anywhere in this
+      file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No draft answer's configuration, unresolved items, generated credentials, status readings,
+      response fields, reading notes or method mismatch is stated or asserted anywhere in this
+      file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      The dialog tested here is titled "Discard changes?" and states only a plain unsaved-change
+      warning; no dialog itemizing which keys applying a draft would add, remove or change is
+      exercised anywhere in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      No address, query, headers or body shape is asserted anywhere in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      No method or statusMap vocabulary is asserted anywhere in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      The confirmation dialog exercised here gates a plain reset to the last-read/last-saved
+      configuration, not applying a generated draft; no draft is requested or applied anywhere in
+      this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      No operations read, outstanding state or empty-document statement is exercised anywhere in
+      this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      No responseMap key, capability or field-name statement matching this scenario is exercised
+      anywhere in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      No statusMap ending or vocabulary statement is exercised anywhere in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      No status readings, response fields or reading notes of an answered draft are exercised
+      anywhere in this file.
+looked_past: >-
+  The behaviors this file actually exercises — withholding and enabling the Discard control on
+  whether an edit exists, gating the reset with a plain confirmation dialog, leaving the edit
+  untouched on "Keep editing", and falling back to the just-saved configuration — read as
+  conformant to rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+  and rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface,
+  neither in this delegation's node set, so no finding is reported against either; the dialog's
+  exact wording and its button styling are left to the interface by those same nodes and by the
+  surface rules in this set.

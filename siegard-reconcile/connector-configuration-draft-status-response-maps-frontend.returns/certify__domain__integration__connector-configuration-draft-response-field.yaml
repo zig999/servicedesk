@@ -1,0 +1,21 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-response-field
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-connector-configuration-from-openapi-reading-parts.spec.ts
+        name: carries declared_type, declared_required and envelope through when the answer named them, and carries none of the three when it named none
+      - file: src/services/connector-configuration-draft-disclosure-response-fields.spec.ts
+        name: carries name, path and status through unchanged for every field, and carries declaredType, declaredRequired and envelope as undefined for a field carrying none of them, or as the field's own value where it does
+      - file: src/services/connector-configuration-draft-disclosure-response-fields.spec.ts
+        name: carries declaredRequired as false rather than undefined when the field's own declared_required is false
+      - file: src/services/connector-configuration-draft-disclosure-response-fields.spec.ts
+        name: carries through an empty array rather than inventing a response field
+    why: >-
+      The six attributes are exercised whole in both directions. Two parts go unexercised: that
+      the field is drafted as one responseMap entry (name as key, path as value) -- no fixture
+      holds a responseMap at all; and that type/required/envelope are read by no observation, a
+      negative not covered by the disclosure-boundary tests offered.
+    remainder: untestable
+    remainder_why: >-
+      The responseMap correspondence is testable with one assertion; "read by no observation" is
+      a totality over every observation in the system and cannot be closed by a finite test.

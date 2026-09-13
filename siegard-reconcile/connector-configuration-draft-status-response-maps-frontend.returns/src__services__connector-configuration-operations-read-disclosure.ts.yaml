@@ -1,0 +1,125 @@
+read:
+  - node: rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+    held_at: the three "refused" branches of the switch, each returning a distinct message for a distinct named condition
+    evidence: |-
+      case "openapi-document-not-fetched": return { kind: "refused", message: operationsNotListedFetchFailureMessage(openApiFetchFailureText(outcome.failure)) };
+      case "openapi-document-not-readable": case "openapi-document-declares-no-version": return { kind: "refused", message: OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE };
+      case "unrecognized-failure": return { kind: "refused", message: OPERATIONS_NOT_LISTED_UNRECOGNIZED_FAILURE_MESSAGE };
+  - node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: >-
+      the separation between the "openapi-document-not-fetched" case and the combined
+      "openapi-document-not-readable"/"openapi-document-declares-no-version" case
+    evidence: |-
+      case "openapi-document-not-fetched": return { kind: "refused", message: operationsNotListedFetchFailureMessage(openApiFetchFailureText(outcome.failure)) };
+      case "openapi-document-not-readable": case "openapi-document-declares-no-version": return { kind: "refused", message: OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE };
+  - node: rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers
+    held_at: the "idle" and "pending" cases, which return before any refusal case is reached
+    evidence: |-
+      case "idle": return { kind: "none" };
+      case "pending": return { kind: "pending" };
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: the "pending" case and the "operations" case's length check
+    evidence: |-
+      case "pending": return { kind: "pending" };
+      case "operations": return outcome.operations.length === 0 ? { kind: "empty" } : { kind: "none" };
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: 'import type { OpenApiDocumentOperationsReadOutcome } from "../hooks/use-openapi-document-operations";'
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: 'export function operationsReadDisclosureStateForOutcome(outcome: OpenApiDocumentOperationsReadOutcome): OperationsReadDisclosureState {'
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'export type OperationsReadDisclosureState = ...'
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: the file's single function switches only on outcome.kind values, none of which is a draft.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: the file never references unresolved items, generated credentials, status readings, response fields or reading notes.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: same as above.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: same as above.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: same as above.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: same as above.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: same as above.
+  - node: domain/integration/openapi-document-operations
+    held_at: the "operations" case's length check
+    evidence: 'case "operations": return outcome.operations.length === 0 ? { kind: "empty" } : { kind: "none" };'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: the file produces a disclosure state only; it never chooses, lists or names an operation pair.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: the file never references a capability or a draft answer's fields.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: the file never references a draft's configuration text.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: the file never references a Configuration field entry.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: the file never references a placeholder of any form.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: the file never references a submission act or well-formedness judgment.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: the file never references a credential placeholder.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: the file never references a subject placeholder or a registered capability.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: the file never references the HTTP connector's method or statusMap vocabulary.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: the file never references a responseMap key or a capability's output schema.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: the file states none of the four readiness statements this node bounds.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: the file never references a connector name field or a draft request act.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: the file never references staleness.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: the file never references a draft answer's parts.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: the file never references an apply confirmation or a diff.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: the file never references an address, query, headers or body.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: the file never references a method, statusMap or MalformedHttpConnectorConfigurationError.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: the file never references the Configuration field's unsubmitted content or an apply act.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: the file never references a responseMap key or a capability.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: the file never references a statusMap ending or a registration write.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: the file never references status readings, response fields or reading notes.
+looked_past: >-
+  Most nodes in this pack govern other files in this batch — this file's own scope is the four
+  operations-read-disclosure nodes it is bound to, and it is consistent with all four; the actual
+  wording of imported message constants and the finer-grained fetch-failure distinction live
+  outside this file set.

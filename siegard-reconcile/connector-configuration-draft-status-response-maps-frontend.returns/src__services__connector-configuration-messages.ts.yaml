@@ -1,0 +1,152 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: FORM_CONNECTOR_FIELD_LABEL, FORM_CONFIGURATION_FIELD_LABEL and surrounding messages throughout the file
+    evidence: |-
+      export const FORM_CONNECTOR_FIELD_LABEL = "Conector";
+      export const FORM_CONFIGURATION_FIELD_LABEL = "Configuração";
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: >-
+      CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE, CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE,
+      CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE and CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE
+    evidence: |-
+      export const CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE = "O que é digitado aqui é um objeto JSON.";
+      export const CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE = "O conector HTTP lê o method, address, statusMap e responseMap da configuração.";
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: credentialPlaceholderStatementText
+    evidence: |-
+      export function credentialPlaceholderStatementText(name: string): string {
+        return `A credencial \${credential:${name}} é resolvida a partir da configuração do próprio servidor no momento de um teste ou de uma observação; nada nesta superfície a verifica.`;
+      }
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: SUBJECT_PLACEHOLDER_CANNOT_BE_CHECKED_MESSAGE, subjectPlaceholderDeclaredText and subjectPlaceholderUndeclaredText
+    evidence: |-
+      export const SUBJECT_PLACEHOLDER_CANNOT_BE_CHECKED_MESSAGE = "Nenhuma capacidade está registrada para este conector: os placeholders de assunto desta configuração não podem ser verificados.";
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: HTTP_CONNECTOR_DEPARTURES_HEADING and the httpConnector*DepartureText functions
+    evidence: |-
+      export function httpConnectorMethodDepartureText(value: unknown, admittedMethods: readonly string[]): string {
+        return `O method declarado (${formatHttpConnectorDepartureValueText(value)}) está fora do vocabulário admitido: ${admittedMethods.join(", ")}.`;
+      }
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file only imports the OpenApiDocumentFetchFailure type and formats already-computed failure kinds.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No call to draft-connector-configuration-from-openapi is made or referenced here.
+  - node: domain/integration/connector-configuration-draft
+    held_at: the DRAFT_DISCLOSURE_* labels, one per attribute the draft carries
+    evidence: |-
+      export const DRAFT_DISCLOSURE_CONFIGURATION_LABEL = "Configuração rascunhada";
+      export const DRAFT_DISCLOSURE_UNRESOLVED_LABEL = "Não resolvidos";
+      export const DRAFT_DISCLOSURE_GENERATED_CREDENTIALS_LABEL = "Credenciais geradas";
+      export const DRAFT_DISCLOSURE_METHOD_MISMATCH_LABEL = "Divergência de método";
+      export const DRAFT_DISCLOSURE_STATUS_READINGS_LABEL = "Leituras de status";
+      export const DRAFT_DISCLOSURE_RESPONSE_FIELDS_LABEL = "Campos de resposta";
+      export const DRAFT_DISCLOSURE_READING_NOTES_LABEL = "Notas de leitura";
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: readingNoteDetailText and READING_NOTE_KIND_MESSAGES/readingNoteKindMessage
+    evidence: |-
+      export function readingNoteDetailText(detail: string): string { return `(detalhe: ${detail})`; }
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: READING_NOTE_KIND_MESSAGES
+    evidence: |-
+      const READING_NOTE_KIND_MESSAGES: Readonly<Record<string, string>> = { "default-response-not-drafted": "Resposta padrão, não rascunhada no mapa de status", ... };
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: responseFieldPathStatusText, declaredTypeText, declaredRequiredText, envelopeText
+    evidence: |-
+      export function responseFieldPathStatusText(path: string, status: string): string { return `— caminho: ${path}, status: ${status}`; }
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: statusReadingStatusText, statusReadingEndingText, declaredAsText
+    evidence: |-
+      export function statusReadingEndingText(ending: string): string { return `— desfecho: ${ending}`; }
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: DRAFT_DISCLOSURE_UNRESOLVED_LABEL together with unresolvedReasonMessage
+    evidence: 'export const DRAFT_DISCLOSURE_UNRESOLVED_LABEL = "Não resolvidos";'
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: UNRESOLVED_REASON_MESSAGES
+    evidence: |-
+      const UNRESOLVED_REASON_MESSAGES: Readonly<Record<string, string>> = { "no-capability-registered": "Nenhuma capacidade está atualmente registrada para este conector.", ... };
+  - node: domain/integration/openapi-document-operations
+    held_at: CONFIGURATION_HELPER_OPERATION_LABEL, CONFIGURATION_HELPER_OPERATION_PLACEHOLDER, OPERATIONS_READ_PENDING_MESSAGE, OPERATIONS_READ_EMPTY_MESSAGE
+    evidence: |-
+      export const OPERATIONS_READ_PENDING_MESSAGE = "As operações do link informado estão sendo lidas…";
+      export const OPERATIONS_READ_EMPTY_MESSAGE = "O documento obtido não declara nenhuma operação.";
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: CONFIGURATION_HELPER_OPERATION_PLACEHOLDER
+    evidence: 'export const CONFIGURATION_HELPER_OPERATION_PLACEHOLDER = "Selecione uma operação";'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: This file holds no answer-shape logic; it only formats already-produced values.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No message here asserts or checks the draft's own well-formedness.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE and httpConnectorPlaceholderDepartureText
+    evidence: |-
+      export function httpConnectorPlaceholderDepartureText(placeholder: string): string { return `O placeholder ${placeholder} não está escrito em nenhuma das três formas admitidas: ...`; }
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: CONFIGURATION_NOT_A_JSON_OBJECT_MESSAGE
+    evidence: 'export const CONFIGURATION_NOT_A_JSON_OBJECT_MESSAGE = "O texto é JSON válido, mas não é um objeto: um objeto JSON é exigido aqui.";'
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: RESPONSE_MAP_COVERAGE_HEADING, RESPONSE_MAP_COVERAGE_CANNOT_BE_READ_MESSAGE, responseMapKeyReadText, responseMapKeyReadByNoneText, RESPONSE_MAP_EXPECTED_FIELDS_HEADING and responseMapExpectedFieldText
+    evidence: |-
+      export function responseMapKeyReadByNoneText(key: string): string { return `A chave ${key} do responseMap não é lida por nenhuma capacidade registrada para este conector.`; }
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the phrasing of subjectPlaceholderUndeclaredText, httpConnectorMethodDepartureText and responseMapKeyReadByNoneText, none of which states a refusal
+    evidence: |-
+      export function subjectPlaceholderUndeclaredText(attributeName: string, nonDeclaringCapabilityLabels: readonly string[]): string { return `O placeholder \${subject:${attributeName}} não é declarado no esquema de entrada de: ${nonDeclaringCapabilityLabels.join(", ")}.`; }
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE, CONFIGURATION_HELPER_WAITING_ON_OPERATION_MESSAGE
+    evidence: |-
+      export const CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE = "A solicitação aguarda um nome de conector.";
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: DRAFT_DISCLOSURE_STALE_MESSAGE
+    evidence: |-
+      export const DRAFT_DISCLOSURE_STALE_MESSAGE = "Este rascunho está desatualizado: o link, a operação ou o nome do conector mudou desde que este rascunho foi solicitado.";
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the DRAFT_DISCLOSURE_* labels together with methodMismatchText, statusReadingStatusText, statusReadingEndingText, declaredAsText, responseFieldPathStatusText, declaredTypeText, declaredRequiredText, envelopeText and readingNoteDetailText
+    evidence: |-
+      export function methodMismatchText(registered: string, operation: string): string { return `Registrado: ${registered} · Rascunhado: ${operation}`; }
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: KEY_CHANGE_* constants and APPLY_DIFF_NOT_ITEMISABLE_MESSAGE
+    evidence: |-
+      export const KEY_CHANGE_ADDED_PREFIX = "Adicionado: ";
+      export const APPLY_DIFF_NOT_ITEMISABLE_MESSAGE = "O que a aplicação deste rascunho mudaria não pode ser detalhado por itens...";
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: HTTP_CONNECTOR_ADDRESS_DEPARTURE_MESSAGE and httpConnectorQueryOrHeadersDepartureText
+    evidence: |-
+      export const HTTP_CONNECTOR_ADDRESS_DEPARTURE_MESSAGE = "O address está ausente ou não contém texto.";
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: HTTP_CONNECTOR_STATUS_MAP_NOT_AN_OBJECT_MESSAGE, HTTP_CONNECTOR_RESPONSE_MAP_DEPARTURE_MESSAGE, httpConnectorMethodDepartureText and httpConnectorStatusMapEndingDepartureText
+    evidence: |-
+      export const HTTP_CONNECTOR_STATUS_MAP_NOT_AN_OBJECT_MESSAGE = "O statusMap está ausente ou não é um objeto.";
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: APPLY_OVER_UNSAVED_EDIT_DESCRIPTION, APPLY_CONFIRMATION_DIALOG_TITLE, APPLY_CONFIRMATION_KEEP_EDITING_BUTTON, APPLY_CONFIRMATION_CONFIRM_BUTTON
+    evidence: |-
+      export const APPLY_OVER_UNSAVED_EDIT_DESCRIPTION = "Aplicar esta configuração rascunhada substituirá a edição não salva no campo Configuração. Isso não pode ser desfeito.";
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: OPERATIONS_READ_PENDING_MESSAGE, OPERATIONS_READ_EMPTY_MESSAGE
+    evidence: |-
+      export const OPERATIONS_READ_PENDING_MESSAGE = "As operações do link informado estão sendo lidas…";
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: responseMapKeyReadText, responseMapKeyReadByNoneText, responseMapExpectedFieldText
+    evidence: |-
+      export function responseMapExpectedFieldText(capabilityLabel: string, fieldName: string): string { return `${capabilityLabel} espera o campo ${fieldName}, que nenhuma chave do responseMap nomeia.`; }
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: httpConnectorStatusMapEndingDepartureText
+    evidence: |-
+      export function httpConnectorStatusMapEndingDepartureText(statusMapKey: string, value: unknown, admittedEndings: readonly string[]): string { return `O statusMap para ${statusMapKey} declara um desfecho ...`; }
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: the DRAFT_DISCLOSURE_* labels together with the status-reading, response-field and reading-note formatting functions
+    evidence: |-
+      export function declaredAsText(declaredAs: string): string { return `(declarado como: ${declaredAs})`; }
+looked_past: >-
+  The vocabulary tables UNRESOLVED_REASON_MESSAGES and READING_NOTE_KIND_MESSAGES re-enumerate,
+  as object keys, the same closed sets already held by their governing nodes; both fall back to
+  the raw key on a miss, read as a translation-table implementation of distinguishability rather
+  than a re-derived domain decision. The fetch-failure vocabulary and refusal message builders
+  are left to whichever review reaches the hook and operations-read-disclosure files, since their
+  governing nodes are not in this file's own pack.
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content

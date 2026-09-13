@@ -1,0 +1,149 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: the whole file exercises only computeHttpConnectorDepartures over a configuration object.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: nothing here calls or asserts on draft-connector-configuration-from-openapi.
+  - node: domain/integration/connector-configuration
+    held_at: the departuresFor/baseConfig helpers
+    evidence: |-
+      function departuresFor(config: Record<string, unknown>): ReturnType<typeof computeHttpConnectorDepartures> { return computeHttpConnectorDepartures(JSON.stringify(config)); }
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No test constructs or asserts a connector-configuration-draft value.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reading-note kind, subject or detail is constructed or asserted anywhere.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumeration's values appears anywhere.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response_field-shaped object is constructed or asserted anywhere.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status_reading-shaped object is constructed or asserted anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved-item-shaped object is constructed or asserted anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reason values appears anywhere.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations list or openapi-operation value is constructed or read anywhere.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No operation choice appears anywhere; every configuration under test is hand-built.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No capability reference or draft answer shape is constructed or asserted anywhere.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: This file tests over hand-built configurations, never a generated draft's own configuration text.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-level statement is exercised.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: the "criterion 7" describe block
+    evidence: |-
+      const departures = departuresFor(baseConfig({ address: "https://api.example.com/${subject:accountId}", headers: { Authorization: "Bearer ${credential:api-key}" }, body: { nested: { list: ["${requester}", "${not-a-form}"] } } }));
+      expect(departures).toEqual([{ kind: "placeholder-outside-forms", key: "placeholder", placeholder: "${not-a-form}" }]);
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The file asserts only the departures array; it never asserts submission offered/withheld.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: Credential placeholders appear only as well-formed example text; no resolution statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: Subject placeholders appear only as well-formed example text; no capability statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: throughout — every describe block asserts departures for method/statusMap/responseMap/address/query/headers/placeholder
+    evidence: |-
+      describe("computeHttpConnectorDepartures -- no departure is stated anywhere the surface's own judgment finds none, over a fully valid configuration (criterion 8)", () => {
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: The responseMap-departure cases test only well-formedness, never coverage against a capability's output schema.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: Nothing asserts whether a submitting act is withheld or offered alongside a stated departure.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No connector name, chosen operation or draft-request act is exercised anywhere.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft, link, operation or staleness state is constructed or asserted anywhere.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft answer or its parts is constructed or asserted anywhere.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No confirmation, diff or comparison is exercised anywhere.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: the address/query/headers/body describe blocks
+    evidence: |-
+      describe("computeHttpConnectorDepartures -- an address that is absent is stated as a departure naming address (criterion 5)", () => {
+        it("states an address-absent-or-empty departure when the address key is absent", () => { const departures = departuresFor(withoutKey(baseConfig(), "address")); expect(departures).toEqual([{ kind: "address-absent-or-empty", key: "address" }]); });
+      });
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: the method and statusMap describe blocks — but only for a present-and-wrong value; an absent method key is asserted to draw no departure at all
+    evidence: |-
+      describe("computeHttpConnectorDepartures -- an absent method key states no method departure (the task's own resolved reading of criterion 1)", () => {
+        it("returns no departures for an otherwise well-formed configuration declaring no method key at all", () => { const departures = departuresFor(withoutKey(baseConfig(), "method")); expect(departures).toEqual([]); });
+      });
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No edit-versus-draft precedence or confirmation act is exercised anywhere.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No operations-read state is constructed or asserted anywhere.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: The responseMap tests assert only absence or a non-string value, never capability coverage.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: the "criterion 2" describe block
+    evidence: |-
+      describe("computeHttpConnectorDepartures -- a statusMap ending outside the vocabulary is stated as a departure naming that entry's own key and the admitted endings (criterion 2)", () => {
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft answer, status reading, response field or reading note is constructed or asserted anywhere.
+findings:
+  - file: src/services/connector-configuration-http-departures.spec.ts
+    where: 'the describe/it block "an absent method key states no method departure (the task''s own resolved reading of criterion 1)"'
+    evidence: |-
+      describe("computeHttpConnectorDepartures -- an absent method key states no method departure (the task's own resolved reading of criterion 1)", () => {
+        it("returns no departures for an otherwise well-formed configuration declaring no method key at all", () => { const departures = departuresFor(withoutKey(baseConfig(), "method")); expect(departures).toEqual([]); });
+      });
+    cost: >-
+      The node states an observation reaching a configuration lacking any of the three (method,
+      responseMap, statusMap) issues no call and ends unavailable — treating an absent method
+      exactly as it treats an absent responseMap or statusMap, both of which this same file DOES
+      assert as departures. By instead asserting zero departures for an absent method, an operator
+      who leaves out statusMap/responseMap/address is warned but one who leaves out method is not.
+    kind: contradicts
+    node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    correction: >-
+      Either the function (and this test) should state a departure for an absent method key on
+      the same footing as absent statusMap/responseMap/address, or the node should say method is
+      treated differently — decided into the specification rather than left to the task's own
+      resolved reading.
+  - file: src/services/connector-configuration-http-departures.spec.ts
+    where: 'the describe/it block "a statusMap key that is not a valid HTTP-status-shaped string draws no departure of its own"'
+    evidence: |-
+      describe("computeHttpConnectorDepartures -- a statusMap key that is not a valid HTTP-status-shaped string draws no departure of its own, only its ending value is judged (the task's own resolved reading)", () => {
+        it("returns no departures for a statusMap entry keyed 'notAStatus' whose value is an admitted ending", () => { const departures = departuresFor(baseConfig({ statusMap: { notAStatus: "ok" } })); expect(departures).toEqual([]); });
+      });
+    cost: >-
+      The vocabulary node says nothing about what to do when a statusMap key is not itself shaped
+      like an HTTP status; this test asserts a specific resolution and its own title concedes it
+      is "the task's own resolved reading" rather than something any node states.
+    kind: unstated
+    node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    correction: >-
+      Decide, into the vocabulary node, whether a statusMap key not shaped as an HTTP status is
+      itself a departure, and disclose that decision in the decision log.
+looked_past: >-
+  The file's own describe-per-single-it structure and its numbered "criterion N" labeling are a
+  test-authoring convention, not a domain fact.

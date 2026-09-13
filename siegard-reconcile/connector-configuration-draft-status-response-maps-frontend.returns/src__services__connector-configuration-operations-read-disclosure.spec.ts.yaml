@@ -1,0 +1,112 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file only exercises a pure mapping over an already-produced outcome; it issues no fetch itself.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: The file never imports or references draft-connector-configuration-from-openapi or any draft-shaped value.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: No connector/configuration value-object attribute is constructed or asserted anywhere.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft attribute appears in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reading-note fixture is built or asserted here.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumeration's values appear in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response-field fixture appears here.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status-reading fixture appears here.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved-item fixture appears here.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reasons appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: the lines constructing the operations outcome variant
+    evidence: |-
+      operationsReadDisclosureStateForOutcome({ kind: "operations", operations: [] }),
+      operationsReadDisclosureStateForOutcome({ kind: "operations", operations: [{ path: "/widgets", method: "get" }] }),
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No operation-choosing act is exercised; the file only maps a read outcome to a disclosure state.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer or capability reference is constructed or asserted.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No configuration text is generated or checked here.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No Configuration field entry statement is exercised here.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder form appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No submission/registration act is present.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder statement is present.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder statement is present.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No HTTP-connector-departure statement is present.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap/capability-coverage statement is present.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: No readiness statement of the kind this rule bounds is present.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request offering condition is exercised.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft staleness condition is exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No answered-draft disclosure is exercised; the file covers only operations-read outcome states.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation content is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No HTTP-connector call shape is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is exercised.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply-over-unsaved-edit behavior is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: the "outstanding read"/"document declaring no operation" describe block
+    evidence: |-
+      it("maps the pending outcome to the pending disclosure state", () => { expect(operationsReadDisclosureStateForOutcome({ kind: "pending" })).toEqual({ kind: "pending" }); });
+      it("maps an operations outcome carrying zero operations to the empty disclosure state", () => { expect(operationsReadDisclosureStateForOutcome({ kind: "operations", operations: [] })).toEqual({ kind: "empty" }); });
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No capability/responseMap fixture is present.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap-ending fixture is present.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft-answer fixture with status readings, response fields or reading notes is present.
+looked_past: >-
+  The file's assertions naming exact refusal wording and status/kind distinctions are governed by
+  candidate rules outside this file's own node set, all consistent with the test's behavior; the
+  exact hardcoded Portuguese substrings are wording the specification leaves to the interface.
+candidates_opened:
+  - rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  - rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+  - rules/integration/no-operations-read-refusal-is-stated-before-the-operation-answers

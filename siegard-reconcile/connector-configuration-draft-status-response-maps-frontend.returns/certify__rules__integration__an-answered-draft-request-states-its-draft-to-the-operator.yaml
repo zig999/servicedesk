@@ -1,0 +1,33 @@
+certified:
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: renders the draft's own configuration text unmodified
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: shows the item's name and a reason label that is not the raw reason string
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: shows the credential's own name and security scheme
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: shows no leaked value even when the answered credential smuggles one in
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: shows the registered and drafted methods, neither in place of the other
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: renders exactly the given status readings, each by its own status, its own ending and its declared_as where carried
+      - file: src/routes/connector-configuration-helper-fields-response-fields.spec.ts
+        name: renders exactly the given response fields, each by its own name, path and status, and the optional attributes only where each is carried
+      - file: src/routes/connector-configuration-helper-fields-reading-notes.spec.ts
+        name: renders each note's own subject paired with a translated kind label, and the detail only for the note that carries one
+    why: >-
+      Configuration text, status readings, response fields, generated credentials, and both
+      halves of method mismatch are exercised with failing assertions on omission. Unexercised:
+      the three unresolved reasons distinguished pairwise (only one reason value is ever
+      rendered); reading notes' kind stated at all and distinguished pairwise (only subject/detail
+      absence is asserted, not the kind label itself); and the Configuration field's content
+      being unchanged across the answer's arrival (deferred to a sibling node, not tested here).
+    remainder: testable
+    remainder_why: >-
+      One render per finite vocabulary: an unresolved list carrying all three reasons, asserting
+      each states its own name and a pairwise-distinct reason statement; and a reading-notes list
+      carrying all nine kinds, asserting each states a non-empty, pairwise-distinct kind
+      statement never equal to the raw token.

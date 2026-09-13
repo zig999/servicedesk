@@ -1,0 +1,145 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: "const CAPABILITIES_PATH = \"/v1/capabilities\";"
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      const fetchMock = createFetchStub({
+        [CAPABILITIES_PATH]: () => jsonResponse({ data: capabilities }),
+      });
+  - node: domain/integration/connector-configuration
+    held_at: the typeConnector/typeConfiguration helpers, which drive the Connector and Configuration fields
+    evidence: |-
+      async function typeConnector(connector: string): Promise<void> { ... }
+      async function typeConfiguration(text: string): Promise<void> { ... }
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: the file contains no request for, and no assertion about, a connector configuration draft
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: no reading note is referenced anywhere in the file
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: no reading-note kind is referenced anywhere in the file
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: no response field is referenced anywhere in the file
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: no status reading is referenced anywhere in the file
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: no unresolved item is referenced anywhere in the file
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: no unresolved reason is referenced anywhere in the file
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: no OpenAPI document or operation listing is fetched or referenced in the file
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: the file never mounts or interacts with the Configuration Helper's operation listing
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: the file makes no draft request and inspects no draft answer
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: the file never generates or inspects a draft's configuration
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: the file asserts nothing about an entry statement of the HTTP connector's read keys
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: the ${subject:<attribute-name>} literal embedded in every typeConfiguration call
+    evidence: |-
+      await typeConfiguration(JSON.stringify({ address: "${subject:account-id}" }));
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: every Configuration value the tests type is well-formed JSON object text
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: no ${credential:<name>} placeholder appears anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: the first describe block's three tests (declared, undeclared, cannot-be-checked)
+    evidence: |-
+      expect(await screen.findByText(subjectPlaceholderDeclaredText("account-id"))).toBeTruthy();
+      expect(await screen.findByText(subjectPlaceholderUndeclaredText("account-id", ["billing-capability (2.0.0)"]))).toBeTruthy();
+      expect(await screen.findByText(SUBJECT_PLACEHOLDER_CANNOT_BE_CHECKED_MESSAGE)).toBeTruthy();
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: no departure-from-vocabulary statement is asserted anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: no responseMap key or coverage statement is asserted anywhere in the file
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the second describe block's test that Save stays enabled while the undeclared statement stands
+    evidence: |-
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: the file never asserts anything about when a draft-request act is offered
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: the file has no draft and no staleness assertion
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: the file never requests or states a draft answer
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: the file contains no apply-confirmation flow
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: the address key is incidental scaffolding to carry the placeholder; no test asserts the address/query/headers/body shape
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: no method or statusMap vocabulary is asserted anywhere in the file
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: the file contains no draft-apply act at all
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: the file never mounts the Configuration Helper's operations listing
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: the file asserts nothing about responseMap keys or capability output-schema coverage
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: the file asserts nothing about a statusMap ending
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: the file never requests or inspects an answered draft
+findings:
+  - file: src/routes/connector-configuration-form-fields-subject-placeholder-statements.spec.ts
+    where: >-
+      the third describe block ("the subject-placeholder statement is read from the capability
+      list this area already holds, adding no second registry read (criterion 5)") and its single
+      test
+    evidence: |-
+      it("issues a single request to the capability registry despite repeated edits to the Configuration field", async () => {
+        const fetchMock = await mountWithCapabilities([capability()]);
+        await typeConnector(CONNECTOR);
+        await typeConfiguration(JSON.stringify({ address: "${subject:account-id}" }));
+        await screen.findByText(subjectPlaceholderDeclaredText("account-id"));
+        await typeConfiguration(JSON.stringify({ address: "${subject:account-id}", extra: "x" }));
+        await screen.findByText(subjectPlaceholderDeclaredText("account-id"));
+        const capabilitiesCalls = fetchMock.mock.calls.filter(
+          ([input]) => (typeof input === "string" ? input : input.toString()) === CAPABILITIES_PATH,
+        );
+        expect(capabilitiesCalls).toHaveLength(1);
+      });
+    cost: >-
+      This pins a specific caching/consistency guarantee — that the capability registry is read
+      once and reused across every edit to the Configuration field — as a binding behavioral
+      contract. Neither this node pack nor a specification-wide search surfaces any node that
+      requires this. A future implementer who re-reads the registry on each edit would be breaking
+      a guarantee that exists only in this test file, with no specification account of why it
+      holds or how far it may be relaxed.
+    kind: unstated
+    correction: >-
+      State, in the governing rule or a sibling node, whether and when the capability list
+      backing this statement may be re-read, so this test enforces a decided fact rather than an
+      undocumented one.
+looked_past: >-
+  The Portuguese control labels and the exact wording of imported message constants are interface
+  choices several nodes in the pack explicitly leave to the interface's own discretion, not domain
+  facts for this pass.

@@ -1,0 +1,125 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      no request to an OpenAPI document's own URL appears in this file; the only stubbed network
+      call is a generic fetch mock returning { data: [] }.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      the file imports the ConnectorConfigurationDraft and
+      DraftConnectorConfigurationRequestOutcome types but never exercises the
+      draft-connector-configuration-from-openapi operation itself.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file never asserts on a registered connector/configuration pair; BASE_DRAFT.configuration
+      is fixed literal text "{}" used only as draft scaffolding.
+  - node: domain/integration/connector-configuration-draft
+    held_at: the BASE_DRAFT fixture
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = {
+        connector: "deepl-connector",
+        configuration: "{}",
+        unresolved: [],
+        generated_credentials: [],
+        status_readings: [],
+        response_fields: [],
+        reading_notes: [],
+      };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: reading_notes is only ever set to [] via BASE_DRAFT; no assertion on kind, subject or detail.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: none of the enumeration's values is named anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: the response_fields assertions in all three it blocks
+    evidence: |-
+      response_fields: [
+        { name: "email", path: "data.email", status: "200" },
+        { name: "role", path: "data.roles[0].name", status: "200", declared_type: "string", declared_required: true, envelope: "data" },
+      ],
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: status_readings is only ever set to [] via BASE_DRAFT.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: unresolved is only ever set to [] via BASE_DRAFT.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: none of the enumeration's values is named anywhere in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: 'baseState''s operations: [] and operationsOutcome: { kind: "idle" } are set but never exercised by an assertion.'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: onChooseOperation is stubbed but never invoked or asserted on.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: no assertion checks a capability name, version or count present or absent.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: configuration is fixed literal text never parsed or judged for well-formedness.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: no entry-level statement is asserted.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: no placeholder literal form appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: no submission act or well-formedness judgment is exercised.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: no credential placeholder statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: no subject placeholder statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: no departure-from-vocabulary statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: no responseMap/capability coverage statement is exercised.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: no readiness-statement withholding behavior is exercised.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: onRequestDraft is stubbed but never invoked, and no assertion checks whether it is offered or withheld.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: no staleness assertion is made.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the response-fields clause of the three describe/it blocks
+    evidence: "renders exactly the given response fields, each by its own name, path and status, and the optional attributes only where each is carried"
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: onApply is stubbed but never invoked; no confirmation content is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: no address/query/headers/body vocabulary is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: no method or statusMap vocabulary is asserted.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: no unsaved-edit or confirmation gate is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: operationsOutcome is fixed and never varied, and no such statement is asserted.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: no capability/responseMap coverage statement appears.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: no statusMap-ending departure statement appears.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      this file exercises only response_fields; it never sets or asserts status_readings,
+      reading_notes or method_mismatch together as the scenario's given/then requires.
+looked_past: >-
+  the test-scaffolding (react-query provider, stubbed global fetch, whitespace-normalizing
+  helper) is test-harness wiring rather than an asserted domain fact.

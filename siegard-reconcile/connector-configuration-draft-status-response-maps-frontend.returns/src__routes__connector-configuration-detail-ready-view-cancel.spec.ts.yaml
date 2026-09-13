@@ -1,0 +1,150 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The only fetch stubbing is `createFetchStub(baseHandlers(LOADED_CONFIGURATION))`, and its
+      only imports are Cancel/PUT/navigation helpers; no OpenAPI document link or operations read
+      is exercised anywhere in this file.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      import { LOADED_CONFIGURATION, baseHandlers, createFetchStub,
+      mountConnectorConfigurationDetailScreen, putCallCount } from
+      "./connector-configuration-detail-screen.test-support";
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      fireEvent.change(configurationField, { target: { value: '{"key":"changed"}' } });
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      The test never requests, states or applies a draft; no draft-shaped object or
+      Configuration Helper interaction appears in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      No reading note, kind or subject is stated or asserted anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      No reading-note kind vocabulary appears in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      No response field, path or status is read or asserted in this file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      No status reading is stated or asserted in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      No unresolved item is stated or asserted in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      No unresolved reason is stated or asserted in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      No OpenAPI operation listing is fetched, chosen or asserted in this file.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      The file exercises only the Cancel button and PUT/navigation assertions.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      No draft answer or capability reference is read in this file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      No draft configuration text is generated or judged in this file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      No entry-guidance statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      fireEvent.change(configurationField, { target: { value: '{"key":"changed"}' } }); carries
+      no placeholder, and no placeholder form is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The test asserts putCallCount(fetchMock) is 0 only as a consequence of clicking Cancel,
+      never as a consequence of well-formedness judgment.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      No credential placeholder statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      No subject placeholder statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      No HTTP-connector departure statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      No response-map capability coverage statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      No readiness statement is asserted in this file; the test asserts only navigation and
+      absence of a PUT call.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      No draft request is offered, named or asserted in this file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      No draft staleness is stated or asserted in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No draft answer is stated in this file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      No apply-draft confirmation is exercised in this file; the only confirmation-adjacent act
+      tested is Cancel, which asserts issues no PUT at all.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      No method, address, query, headers or body content is asserted in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      No method or statusMap vocabulary is asserted in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      An unsaved edit is created, but the test never applies a draft over it — it clicks Cancel,
+      so this node's own condition is never reached here.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      No operations-read state is asserted in this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      No responseMap or capability coverage scenario is exercised in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      No statusMap judgment is exercised in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      No draft answer, reading or note is exercised in this file.
+looked_past: >-
+  The file's actual subject — Cancel abandoning authoring without registering and landing on
+  "/connectors" — is governed by
+  rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering and
+  rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing,
+  outside this set, and the test's assertions agree with what those nodes state for a surface
+  with no origin to return to, so nothing is reported against them.

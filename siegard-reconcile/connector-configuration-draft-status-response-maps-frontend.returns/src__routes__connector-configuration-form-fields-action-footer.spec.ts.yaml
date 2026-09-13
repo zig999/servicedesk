@@ -1,0 +1,121 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file only mounts already-stubbed screens and asserts on the rendered footer group; it
+      makes no assertion about where an OpenAPI document fetch runs.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No assertion in the file reads a draft-connector-configuration-from-openapi answer or any
+      of its attributes.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      The file never inspects a Configuration field's content or well-formedness; it only
+      locates screen.findByLabelText("Configuração") to wait for the form to render.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft attribute is referenced anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The file contains no reference to a reading note.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumeration's values appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response field assertion appears anywhere.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status reading assertion appears anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved item assertion appears anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the reason enumeration's values appears anywhere.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations listing assertion appears anywhere.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      The file contains no Configuration Helper interaction; it only mounts already-loaded
+      create/detail screens and inspects the footer.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer or capability assertion appears anywhere.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No draft configuration text is inspected in the file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      The file asserts only screen.findByLabelText("Configuração") to wait for the field to
+      render; it never asserts the entry's own descriptive statement.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder form is referenced in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The file asserts the Save button's presence and label but never asserts on withholding for
+      ill-formed content.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No departure statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap-coverage statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: The file makes no assertion about any readiness statement's claim.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: The file makes no assertion about whether a draft-request act is offered or withheld.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: The file makes no assertion about draft staleness.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      The file never requests or answers a draft; it only asserts on the footer group already
+      rendered by an already-loaded screen.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation content is asserted anywhere.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: The file makes no assertion about a configuration's address, query, headers or body.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: The file makes no assertion about a configuration's method or statusMap vocabulary.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      The Discard changes button is only located for its presence in the footer; the file
+      asserts nothing about applying a draft over an unsaved edit or a confirmation gate.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No operations-read state is asserted anywhere in the file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No responseMap key coverage statement is asserted anywhere.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap ending or vocabulary statement is asserted anywhere.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft, status reading or reading note is asserted anywhere.
+looked_past: >-
+  The whole file tests the footer's Actions-group structure and its controls' accessible
+  names/labels/href — control choice, wording and placement that several nodes in this pack
+  explicitly leave to "the interface's own"; that is presentation/structure, not a domain fact
+  this pass judges.

@@ -1,0 +1,165 @@
+read:
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere — this file never calls draft-connector-configuration-from-openapi itself; it only consumes the already-resolved outcome through props
+    evidence: |-
+      const disclosure = disclosureStateForOutcome(state.outcome);
+  - node: domain/integration/connector-configuration
+    held_at: the connector name passed into the draft-disclosure subtree and the drafted configuration text rendered from it
+    evidence: |-
+      <ConnectorConfigurationDraftDisclosure connector={state.connector ?? ""} draft={disclosure.draft} .../>
+      <pre>{draft.configuration}</pre>
+  - node: domain/integration/connector-configuration-draft
+    held_at: ConnectorConfigurationDraftDisclosure, rendering the draft's own attributes in full
+    evidence: |-
+      function ConnectorConfigurationDraftDisclosure({ connector, draft, stale, onApply }: { readonly draft: DraftDisclosure; ... }): JSX.Element
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: the generated-credentials list inside the draft disclosure
+    evidence: |-
+      {draft.generatedCredentials.map((credential) => (<li key={`${credential.name}:${credential.securityScheme}`}>{credential.name}: {credential.securityScheme}</li>))}
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: the method-mismatch section, rendered only when the draft carries one
+    evidence: |-
+      {draft.methodMismatch !== undefined && (<section><p>{DRAFT_DISCLOSURE_METHOD_MISMATCH_LABEL}</p><p>{methodMismatchText(draft.methodMismatch.registered, draft.methodMismatch.operation)}</p></section>)}
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the reading-notes list inside the draft disclosure
+    evidence: |-
+      {draft.readingNotes.map((note) => (<li key={`${note.kind}:${note.subject}`}>{note.subject}{note.kindLabel}{note.detail !== undefined && <>{readingNoteDetailText(note.detail)}</>}</li>))}
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: the response-fields list inside the draft disclosure
+    evidence: |-
+      {draft.responseFields.map((field) => (<li key={`${field.status}:${field.path}:${field.name}`}>{field.name} {responseFieldPathStatusText(field.path, field.status)}...</li>))}
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: the status-readings list inside the draft disclosure
+    evidence: |-
+      {draft.statusReadings.map((reading) => (<li key={reading.status}>{statusReadingStatusText(reading.status)} {statusReadingEndingText(reading.ending)}...</li>))}
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: the unresolved-items list inside the draft disclosure
+    evidence: |-
+      {draft.unresolved.map((item) => (<li key={`${item.name}:${item.reason}`}>{item.name}: {item.reasonLabel}</li>))}
+  - node: domain/integration/openapi-document-operations
+    held_at: the operation-options list built from state.operations, and the operations-read disclosure branches
+    evidence: |-
+      const operationOptions: SelectOption[] = state.operations.map((operation) => ({ ... }));
+      {operationsReadDisclosure.kind === "empty" && (<p>{OPERATIONS_READ_EMPTY_MESSAGE}</p>)}
+  - node: domain/integration/openapi-operation
+    held_at: operationSelectValue and the option label built from an operation's path and method
+    evidence: |-
+      function operationSelectValue(entry: Pick<OpenApiOperation, "path" | "method">): string { return `${entry.method.toUpperCase()} ${entry.path}`; }
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: the operation Select bound to operationOptions, with no free-text path/method entry offered
+    evidence: |-
+      <Select options={operationOptions} value={selectedOperationValue} onChange={onOperationSelected} placeholder={CONFIGURATION_HELPER_OPERATION_PLACEHOLDER} />
+  - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+    held_at: the whole component — link field, operation field and request-draft act
+    evidence: |-
+      <Input id="configuration-helper-link" value={state.link} onChange={(event) => state.onLinkChange(event.target.value)} />
+      <Button type="button" onClick={state.onRequestDraft} disabled={state.outcome.kind === "pending"}>{CONFIGURATION_HELPER_REQUEST_DRAFT_BUTTON}</Button>
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: the coverage hook wired against the draft's configuration and rendered beside it
+    evidence: |-
+      const responseMapCapabilityCoverage = useResponseMapCapabilityCoverage(connector, draft.configuration);
+      <ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the request-draft Button's disabled condition, which turns on the outstanding request alone
+    evidence: 'disabled={state.outcome.kind === "pending"}'
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: connectorNameMissing/operationMissing and the three-way branch stating which one the request waits on
+    evidence: |-
+      const connectorNameMissing = (state.connector ?? "").trim() === "";
+      const operationMissing = state.path === "" && state.method === "";
+      {connectorNameMissing ? (<p>{CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE}</p>) : operationMissing ? (<p>{CONFIGURATION_HELPER_WAITING_ON_OPERATION_MESSAGE}</p>) : (<Button ...>...)}
+  - node: rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
+    held_at: the disclosure.kind === "refused" branch
+    evidence: |-
+      {disclosure.kind === "refused" && (<p role="alert">{disclosure.message}</p>)}
+  - node: rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+    held_at: the operationsReadDisclosure.kind === "refused" branch
+    evidence: |-
+      {operationsReadDisclosure.kind === "refused" && (<p role="alert">{operationsReadDisclosure.message}</p>)}
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: the stale prop passed through and the stale message
+    evidence: |-
+      stale={state.stale ?? false}
+      {stale && <p>{DRAFT_DISCLOSURE_STALE_MESSAGE}</p>}
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the disclosure.kind === "drafted" branch and the whole ConnectorConfigurationDraftDisclosure body
+    evidence: |-
+      {disclosure.kind === "drafted" && (<ConnectorConfigurationDraftDisclosure connector={state.connector ?? ""} draft={disclosure.draft} stale={state.stale ?? false} onApply={onApply} />)}
+  - node: rules/integration/an-openapi-operations-method-is-upper-cased
+    held_at: the option label and the select-value builder
+    evidence: |-
+      label: `${operation.path} — ${operation.method.toUpperCase()}`
+      return `${entry.method.toUpperCase()} ${entry.path}`;
+  - node: rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+    held_at: the Apply button, which forwards the draft's configuration text through the onApply callback
+    evidence: '<Button type="button" onClick={() => onApply(draft.configuration)}>{DRAFT_DISCLOSURE_APPLY_BUTTON}</Button>'
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: the operationsReadDisclosure "pending" and "empty" branches
+    evidence: |-
+      {operationsReadDisclosure.kind === "pending" && (<p>{OPERATIONS_READ_PENDING_MESSAGE}</p>)}
+      {operationsReadDisclosure.kind === "empty" && (<p>{OPERATIONS_READ_EMPTY_MESSAGE}</p>)}
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: the same status-readings, response-fields and reading-notes sections
+    evidence: |-
+      {draft.statusReadings.length > 0 && (<section>{DRAFT_DISCLOSURE_STATUS_READINGS_LABEL}</section>)}
+      {draft.responseFields.length > 0 && (<section>{DRAFT_DISCLOSURE_RESPONSE_FIELDS_LABEL}</section>)}
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere — this file issues no fetch of any kind, direct or otherwise
+    evidence: |-
+      import type { ConnectorConfigurationHelperState } from "../hooks/use-connector-configuration-helper";
+      import type { OpenApiOperation } from "../hooks/use-openapi-document-operations";
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere — the file renders note.kindLabel, a value already resolved elsewhere
+    evidence: '{note.kindLabel}'
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere — the file renders item.reasonLabel, a value already resolved elsewhere
+    evidence: '<span>{item.name}</span>: {item.reasonLabel}'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere in this file directly — consistent with it, no capability name/version/count is rendered from the draft
+    evidence: |-
+      const responseMapCapabilityCoverage = useResponseMapCapabilityCoverage(connector, draft.configuration);
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere — generation happens in the hook/backend, this file only displays draft.configuration
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere — no Configuration-field entry guidance is rendered by this file
+    evidence: 'export type ConnectorConfigurationHelperFieldsProps = { readonly state: ConnectorConfigurationHelperState; readonly onApply: (configurationText: string) => void; };'
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere — no placeholder form is stated or checked in this file
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere — this file has no register-connector submission act at all
+    evidence: 'export function ConnectorConfigurationHelperFields({ state, onApply }: ConnectorConfigurationHelperFieldsProps): JSX.Element {'
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere — no credential-placeholder statement is rendered by this file
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere — no subject-placeholder statement is rendered by this file
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere — no HTTP-departure statement is rendered by this file
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere — onApply is invoked directly with no diff/confirmation content produced here
+    evidence: '<Button type="button" onClick={() => onApply(draft.configuration)}>{DRAFT_DISCLOSURE_APPLY_BUTTON}</Button>'
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere — no method/address/query/headers/body vocabulary is stated by this file
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere — no method or status vocabulary is stated or checked by this file
+    evidence: '<pre>{draft.configuration}</pre>'
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere — Apply is unconditional in this file; no confirmation gate is implemented here
+    evidence: '<Button type="button" onClick={() => onApply(draft.configuration)}>{DRAFT_DISCLOSURE_APPLY_BUTTON}</Button>'
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: the wiring point invoking the coverage hook and rendering its statement component
+    evidence: |-
+      const responseMapCapabilityCoverage = useResponseMapCapabilityCoverage(connector, draft.configuration);
+      <ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere — no statusMap-ending departure statement is rendered by this file
+    evidence: '<pre>{draft.configuration}</pre>'
+looked_past: >-
+  operationSelectValue and the option label each re-apply .toUpperCase() to the operation's
+  method independently, a small duplication of formatting logic rather than a domain fact
+  restated, which is a code-quality question and not this pass's to raise.

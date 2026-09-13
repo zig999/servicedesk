@@ -1,0 +1,107 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: fetch is stubbed only to satisfy react-query's client; asserts nothing about who issues an OpenAPI document fetch.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: BASE_DRAFT is a literal object passed in as already-resolved state; the operation is never called.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: No assertion concerns the connector-configuration value object's own shape or its configuration/connector attributes as such.
+  - node: domain/integration/connector-configuration-draft
+    held_at: BASE_DRAFT
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: DISTINCTIVE_CONFIGURATION_TEXT, unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: 'reading_notes: [] — always empty; no note is asserted.'
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: reading_notes stays empty throughout.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: 'response_fields: [] — never populated or asserted on.'
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: 'status_readings: [] — never populated or asserted on.'
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: 'unresolved: [] — never populated or asserted on.'
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: unresolved stays empty throughout.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: 'operations: [] — set as a default and never asserted on.'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: onChooseOperation is a stub never invoked or asserted against; path and method are literal defaults.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No assertion concerns capability disclosure on the draft's answer.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: DISTINCTIVE_CONFIGURATION_TEXT is well-formed by construction but no test judges well-formedness.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-statement text is rendered or asserted.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text or form is asserted.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No submission-withholding assertion appears; the file only asserts the Apply button is enabled.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder statement is rendered or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder statement is rendered or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No departure statement is rendered or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No response-map coverage statement is rendered or asserted.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: No readiness-claim assertion appears.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: connector/path/method are fixed non-empty literals; onRequestDraft never invoked or asserted on.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: the three describe blocks driving state.stale
+    evidence: |-
+      it("renders a staleness statement when state.stale is true", () => { renderFields(stateWith({ stale: true })); expect(screen.getByText(/desatualizado/i)).toBeTruthy(); });
+      it("keeps the drafted configuration visible, offers the Apply act enabled, and applies the draft's own unchanged configuration text, even while the draft is stale", () => { ... });
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the third it block's assertion that the drafted configuration text is displayed even while the draft is stale
+    evidence: 'expect(screen.getByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeTruthy();'
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No confirmation dialog or diff statement is rendered or asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No assertion concerns the HTTP connector's own declared call shape.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is asserted.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: The single click in the third test invokes onApply directly with no unsaved-edit content and no confirmation step tested.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: 'operationsOutcome: { kind: "idle" } is a default and never asserted on.'
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No response-map/capability-coverage scenario is exercised.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap-vocabulary scenario is exercised.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: status_readings, response_fields and reading_notes are all empty; none of the three tests asserts on readings or notes.
+looked_past: >-
+  The describe titles carry parenthetical labels ("criteria 4, 5, 6", "criterion 7") that read as
+  cross-references to an external acceptance-criteria/plan document rather than a specification
+  node; that is a traceability/labeling concern, not a domain-fact judgment.

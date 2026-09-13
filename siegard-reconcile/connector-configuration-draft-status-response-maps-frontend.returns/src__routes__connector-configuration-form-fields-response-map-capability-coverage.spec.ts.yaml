@@ -1,0 +1,142 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file only stubs /v1/capabilities and never fetches, mocks or references an OpenAPI
+      document URL anywhere in its four describe blocks.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No call to draft-connector-configuration-from-openapi, and no draft-shaped fixture,
+      appears; the only network stub is /v1/capabilities.
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      typeConnector/typeConfiguration helpers and their use against the
+      REPRESENTATIVE_CONFIGURATION fixture
+    evidence: |-
+      const REPRESENTATIVE_CONFIGURATION = JSON.stringify({
+        responseMap: { covered: "$.covered", orphan: "$.orphan" },
+      });
+      await typeConnector(CONNECTOR);
+      await typeConfiguration(REPRESENTATIVE_CONFIGURATION);
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No unresolved, generated_credentials, method_mismatch, status_readings, response_fields or
+      reading_notes attribute is constructed, imported or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reading-note kind, subject or detail is referenced anywhere.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumerated kinds appears as a literal or an import in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      The file asserts responseMap coverage over a hand-typed Configuration field, never a
+      drafted response_fields collection.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status, ending or declared_as value is asserted anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved-item name/reason pair is constructed or asserted.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reason values appears in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      No operations listing, and no Configuration Helper interaction, is mounted or asserted
+      here; the mount helper used is mountConnectorConfigurationCreateScreen.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No operation choice, path or method selection appears anywhere.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      No draft answer is constructed or read from; the capabilities fixture here is a
+      registry-read stub, not a draft's own capability reference.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: REPRESENTATIVE_CONFIGURATION is authored directly as the field's own typed content.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No statement about what the HTTP connector reads is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder literal appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      Every configuration typed in this file is well-formed; no malformed text is typed and no
+      withheld-submission case is exercised.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder or resolution statement is typed or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder or capability-declaration statement is typed or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No method or statusMap-ending departure statement is asserted anywhere; the only statements checked concern responseMap coverage.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: >-
+      the first and second describe/it blocks
+    evidence: |-
+      expect(await screen.findByText(responseMapKeyReadText("covered", ["acme-lookup (1.0.0)"]))).toBeTruthy();
+      expect(screen.getByText(responseMapKeyReadByNoneText("orphan"))).toBeTruthy();
+      expect(screen.getByText(responseMapExpectedFieldText("acme-lookup (1.0.0)", "expectedOnly"))).toBeTruthy();
+      expect(await screen.findByText(RESPONSE_MAP_COVERAGE_CANNOT_BE_READ_MESSAGE)).toBeTruthy();
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the third describe/it block
+    evidence: |-
+      await screen.findByText(responseMapKeyReadByNoneText("orphan"));
+      await screen.findByText(responseMapExpectedFieldText("acme-lookup (1.0.0)", "expectedOnly"));
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request act, and no waiting-on-connector-or-operation statement, is exercised.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft is ever stated or marked stale in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft answer is stated anywhere in this file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation act or diff statement appears anywhere.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address, query, headers or body departure is asserted; the fixture declares only a responseMap.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary statement is asserted anywhere.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply-draft act, and no unsubmitted-edit-preservation check, appears anywhere.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No Configuration Helper, operations read, or related statement is mounted or asserted.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: >-
+      the first describe/it block, with its own fixture data in place of the scenario's
+      tech-profile/fsm-http example
+    evidence: |-
+      await mountWithCapabilities([capability()]);
+      await typeConnector(CONNECTOR);
+      await typeConfiguration(REPRESENTATIVE_CONFIGURATION);
+      expect(await screen.findByText(responseMapKeyReadText("covered", ["acme-lookup (1.0.0)"]))).toBeTruthy();
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap entry or vocabulary-departure statement appears anywhere.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft answer, status readings or reading notes are constructed or asserted anywhere.
+looked_past: >-
+  The fourth describe block asserts that typing the Configuration field twice results in exactly
+  one call to the capabilities endpoint — a request-deduplication/caching property of the
+  implementation rather than a business fact any node in this set states a threshold for, so it
+  is left to whatever pass judges implementation efficiency rather than reported here.
+candidates_opened:
+  - constraints/the-capability-identity-read-is-rate-limited

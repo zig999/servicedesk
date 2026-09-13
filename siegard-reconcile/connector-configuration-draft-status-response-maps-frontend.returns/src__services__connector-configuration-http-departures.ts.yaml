@@ -1,0 +1,129 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'export function computeHttpConnectorDepartures(configurationText: string): readonly HttpConnectorDeparture[] {'
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: ADMITTED_PLACEHOLDER_PATTERN and placeholderDepartures
+    evidence: 'const ADMITTED_PLACEHOLDER_PATTERN = /^\$\{(subject:[^}]+|requester|credential:[^}]+)\}$/;'
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: the HttpConnectorDeparture union and computeHttpConnectorDepartures
+    evidence: |-
+      const method = methodDeparture(configuration);
+      if (method !== null) { departures.push(method); }
+      departures.push(...statusMapDepartures(configuration));
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: addressDeparture, objectOfTextsDeparture and placeholderDepartures
+    evidence: |-
+      if (typeof address === "string" && address.length > 0) { return null; }
+      return { kind: "address-absent-or-empty", key: "address" };
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: HTTP_CONNECTOR_METHODS, HTTP_CONNECTOR_STATUS_MAP_ENDINGS, methodDeparture, statusMapDepartures and responseMapDeparture — but see the finding below
+    evidence: |-
+      export const HTTP_CONNECTOR_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"] as const;
+      export const HTTP_CONNECTOR_STATUS_MAP_ENDINGS = ["ok", "denied", "timeout", "unavailable"] as const;
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: statusMapDepartures
+    evidence: |-
+      departures.push({ kind: "status-map-ending-outside-vocabulary", key: "statusMap", statusMapKey, value, admittedEndings: HTTP_CONNECTOR_STATUS_MAP_ENDINGS });
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: 'export function computeHttpConnectorDepartures(configurationText: string): readonly HttpConnectorDeparture[] {'
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: 'function parseConfigurationObject(configurationText: string): Record<string, unknown> | null {'
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: 'function parseConfigurationObject(configurationText: string): Record<string, unknown> | null {'
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: 'function parseConfigurationObject(configurationText: string): Record<string, unknown> | null {'
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: 'function responseMapDeparture(configuration: Record<string, unknown>): HttpConnectorDeparture | null {'
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: 'function statusMapDepartures(configuration: Record<string, unknown>): readonly HttpConnectorDeparture[] {'
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: 'function parseConfigurationObject(configurationText: string): Record<string, unknown> | null {'
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: 'function parseConfigurationObject(configurationText: string): Record<string, unknown> | null {'
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: 'export function computeHttpConnectorDepartures(configurationText: string): readonly HttpConnectorDeparture[] {'
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: 'function parseConfigurationObject(configurationText: string): Record<string, unknown> | null {'
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: 'export function computeHttpConnectorDepartures(configurationText: string): readonly HttpConnectorDeparture[] {'
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: 'export function computeHttpConnectorDepartures(configurationText: string): readonly HttpConnectorDeparture[] {'
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: 'if (ADMITTED_PLACEHOLDER_PATTERN.test(placeholder) || seen.has(placeholder)) { continue; }'
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: 'if (ADMITTED_PLACEHOLDER_PATTERN.test(placeholder) || seen.has(placeholder)) { continue; }'
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: 'function responseMapDeparture(configuration: Record<string, unknown>): HttpConnectorDeparture | null {'
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: 'export function computeHttpConnectorDepartures(configurationText: string): readonly HttpConnectorDeparture[] {'
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: 'function responseMapDeparture(configuration: Record<string, unknown>): HttpConnectorDeparture | null {'
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: 'import { isPlainRecord } from "../shared/services/plain-record";'
+findings:
+  - file: src/services/connector-configuration-http-departures.ts
+    where: methodDeparture
+    evidence: |-
+      function methodDeparture(configuration: Record<string, unknown>): HttpConnectorDeparture | null {
+        if (!("method" in configuration)) { return null; }
+    cost: >-
+      an-http-connector-configuration-declares-its-method-and-status-vocabulary requires method,
+      responseMap and statusMap alike, stating that an observation reaching a configuration
+      lacking any of the three issues no call and ends unavailable with a
+      MalformedHttpConnectorConfigurationError. statusMapDepartures and responseMapDeparture both
+      report a departure when their own key is absent, but methodDeparture returns null — no
+      departure — when the method key is missing entirely.
+    kind: contradicts
+    node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    correction: >-
+      methodDeparture should treat an absent method key as a departure, as statusMapDepartures
+      and responseMapDeparture already do for statusMap and responseMap.
+looked_past: >-
+  The collectStrings/placeholderDepartures traversal walks array elements and object values
+  equally when hunting placeholder text, which is a traversal-shape choice, not a domain fact.

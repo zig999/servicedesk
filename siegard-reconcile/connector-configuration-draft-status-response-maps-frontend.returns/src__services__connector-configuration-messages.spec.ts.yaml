@@ -1,0 +1,147 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file contains no network, fetch, or dependency-related assertion.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No test invokes or asserts anything about the draft-connector-configuration-from-openapi operation itself.
+  - node: domain/integration/connector-configuration
+    held_at: '["FORM_CONNECTOR_FIELD_LABEL", FORM_CONNECTOR_FIELD_LABEL, "Conector"], ["FORM_CONFIGURATION_FIELD_LABEL", FORM_CONFIGURATION_FIELD_LABEL, "Configuração"],'
+    evidence: '["FORM_CONNECTOR_FIELD_LABEL", FORM_CONNECTOR_FIELD_LABEL, "Conector"],'
+  - node: domain/integration/connector-configuration-draft
+    held_at: the DRAFT_DISCLOSURE_* inventory rows
+    evidence: '["DRAFT_DISCLOSURE_CONFIGURATION_LABEL", DRAFT_DISCLOSURE_CONFIGURATION_LABEL, "rascunhada"],'
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: '["readingNoteDetailText", readingNoteDetailText("x"), "detalhe"], plus NINE_READING_NOTE_KINDS and readingNoteKindMessage inventory rows'
+    evidence: '["readingNoteDetailText", readingNoteDetailText("x"), "detalhe"],'
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: 'const NINE_READING_NOTE_KINDS = [ ... ] as const, and the nine readingNoteKindMessage inventory rows'
+    evidence: |-
+      const NINE_READING_NOTE_KINDS = ["default-response-not-drafted", "status-range-not-drafted", "non-json-success-content-not-read", "envelope-read-through", "variants-united", "repeated-field-name-path-not-taken", "no-responses-declared", "no-success-response-schema", "success-schema-declares-no-properties"] as const;
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: responseFieldPathStatusText, declaredTypeText, declaredRequiredText and envelopeText inventory rows
+    evidence: '["responseFieldPathStatusText", responseFieldPathStatusText("p", "s"), "caminho"],'
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: statusReadingStatusText, statusReadingEndingText and declaredAsText inventory rows
+    evidence: '["statusReadingStatusText", statusReadingStatusText("200"), "Status 200"],'
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: DRAFT_DISCLOSURE_UNRESOLVED_LABEL and the three unresolvedReasonMessage inventory rows
+    evidence: '["DRAFT_DISCLOSURE_UNRESOLVED_LABEL", DRAFT_DISCLOSURE_UNRESOLVED_LABEL, "Não resolvidos"],'
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: 'const THREE_UNRESOLVED_REASONS = [ ... ] as const, and its use in the distinctness test'
+    evidence: |-
+      const THREE_UNRESOLVED_REASONS = ["no-capability-registered", "security-scheme-not-reducible-to-a-credential", "drafted-key-occupied-by-another-security-scheme"] as const;
+  - node: domain/integration/openapi-document-operations
+    held_at: OPERATIONS_READ_PENDING_MESSAGE / OPERATIONS_READ_EMPTY_MESSAGE inventory rows and the describe block asserting they differ
+    evidence: 'expect(OPERATIONS_READ_PENDING_MESSAGE).not.toBe(OPERATIONS_READ_EMPTY_MESSAGE);'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: CONFIGURATION_HELPER_OPERATION_LABEL and CONFIGURATION_HELPER_OPERATION_PLACEHOLDER inventory rows
+    evidence: '["CONFIGURATION_HELPER_OPERATION_LABEL", CONFIGURATION_HELPER_OPERATION_LABEL, "Operação"],'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No capability name, version or count is asserted anywhere in this file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No assertion in this file parses or judges configuration JSON text.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No exported name matching an entry-statement message is imported or exercised.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder-form message is imported or exercised here.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No submission-offer message is imported or exercised here.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder-resolution message is imported or exercised here.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder-declaration message is imported or exercised here.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No departure-statement message is imported or exercised here.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No response-map-coverage message is imported or exercised here.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: Nothing in this file asserts a withholding/claim posture.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE, CONFIGURATION_HELPER_WAITING_ON_OPERATION_MESSAGE and CONFIGURATION_HELPER_REQUEST_DRAFT_BUTTON inventory rows
+    evidence: '["CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE", CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE, "conector"],'
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: '["DRAFT_DISCLOSURE_STALE_MESSAGE", DRAFT_DISCLOSURE_STALE_MESSAGE, "desatualizado"],'
+    evidence: '["DRAFT_DISCLOSURE_STALE_MESSAGE", DRAFT_DISCLOSURE_STALE_MESSAGE, "desatualizado"],'
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: The two distinctness describe blocks explicitly citing this rule, plus the broad DRAFT_DISCLOSURE_* inventory rows
+    evidence: |-
+      describe("connector-configuration-messages -- the three unresolved-reason messages are pairwise distinct (UNDERDETERMINED entry over rules/integration/an-answered-draft-request-states-its-draft-to-the-operator)", () => {
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: KEY_CHANGE_ADDED_PREFIX / KEY_CHANGE_REMOVED_PREFIX / KEY_CHANGE_CHANGED_PREFIX / KEY_CHANGE_LIST_TOP_LEVEL_LABEL / APPLY_DIFF_NOT_ITEMISABLE_MESSAGE / APPLY_DIFF_EMPTY_MESSAGE inventory rows
+    evidence: '["KEY_CHANGE_ADDED_PREFIX", KEY_CHANGE_ADDED_PREFIX, "Adicionado"],'
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address/query/headers/body-declaration message is imported or exercised here.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method/status-vocabulary message is imported or exercised here.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: APPLY_OVER_UNSAVED_EDIT_DESCRIPTION, APPLY_CONFIRMATION_DIALOG_TITLE, APPLY_CONFIRMATION_KEEP_EDITING_BUTTON and APPLY_CONFIRMATION_CONFIRM_BUTTON inventory rows
+    evidence: '["APPLY_OVER_UNSAVED_EDIT_DESCRIPTION", APPLY_OVER_UNSAVED_EDIT_DESCRIPTION, "substituirá"],'
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: The final describe block, explicitly citing this rule, asserting the pending/empty messages differ
+    evidence: |-
+      describe("connector-configuration-messages -- the outstanding-read message and the no-operations-declared message are distinct from one another (UNDERDETERMINED entry over rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation)", () => {
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No response-map-coverage scenario assertion appears in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap-departure scenario assertion appears in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: This file tests individual message units, not the composed disclosure scenario.
+findings:
+  - file: src/services/connector-configuration-messages.spec.ts
+    where: the comment claiming criterion-3 coverage and the describe/it block asserting every INVENTORY entry
+    evidence: |-
+      // proving criterion 3 ("every message the module holds is written in pt-BR") over the module's whole, finite inventory, not a sample of it.
+      it.each(INVENTORY)("%s is non-empty and carries its expected pt-BR wording", (_label, value, expectedFragment) => { expect(value.length).toBeGreaterThan(0); expect(value).toContain(expectedFragment); });
+    cost: >-
+      Every INVENTORY entry is asserted against a Portuguese fragment, making "the operator-facing
+      vocabulary is authored in Brazilian Portuguese" a hard requirement — yet no node in the
+      specification states any language or locale requirement for these surfaces.
+    kind: unstated
+    correction: >-
+      State the pt-BR (or whichever locale) requirement as a node the specification holds, and
+      let this test verify that node's requirement rather than being its sole record.
+  - file: src/services/connector-configuration-messages.spec.ts
+    where: NINE_READING_NOTE_KINDS
+    evidence: |-
+      const NINE_READING_NOTE_KINDS = ["default-response-not-drafted", "status-range-not-drafted", "non-json-success-content-not-read", "envelope-read-through", "variants-united", "repeated-field-name-path-not-taken", "no-responses-declared", "no-success-response-schema", "success-schema-declares-no-properties"] as const;
+    cost: >-
+      The closed set of reading-note kinds is retyped here as a bare string-literal array with no
+      link back to the module's own type, so a specification change would not be caught by this
+      test.
+    kind: contradicts
+    node: domain/integration/connector-configuration-draft-reading-note-kind
+    correction: >-
+      Derive NINE_READING_NOTE_KINDS from the module's own exported type instead of re-listing
+      the nine literal strings.
+  - file: src/services/connector-configuration-messages.spec.ts
+    where: THREE_UNRESOLVED_REASONS
+    evidence: |-
+      const THREE_UNRESOLVED_REASONS = ["no-capability-registered", "security-scheme-not-reducible-to-a-credential", "drafted-key-occupied-by-another-security-scheme"] as const;
+    cost: >-
+      The closed set of unresolved reasons is retyped here rather than read from the module's own
+      type, so a reason added, renamed or removed would not be caught by comparing against it.
+    kind: contradicts
+    node: domain/integration/connector-configuration-draft-unresolved-reason
+    correction: >-
+      Derive THREE_UNRESOLVED_REASONS from the module's own exported type instead of re-listing
+      the three literal strings.
+looked_past: >-
+  The single large parameterized INVENTORY table exercising every export through one it.each
+  loop is a code-review concern about test design rather than a conformance question.
+candidates_opened: []

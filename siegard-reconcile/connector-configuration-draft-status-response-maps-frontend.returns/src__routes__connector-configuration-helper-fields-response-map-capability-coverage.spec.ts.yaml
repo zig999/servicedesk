@@ -1,0 +1,109 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The only fetch mocked is the capabilities read; no OpenAPI document URL is exercised.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: The file never calls or mocks draft-connector-configuration-from-openapi; BASE_DRAFT is a static fixture.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: draftConfiguration is fixture input to the responseMap-coverage statement, not a claim about this value-object.
+  - node: domain/integration/connector-configuration-draft
+    held_at: BASE_DRAFT
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: CONNECTOR, configuration: "{}", unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: reading_notes is fixed to an empty array and never populated or asserted against.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No reading-note kind is named or exercised anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: response_fields is fixed to an empty array and never populated or read from.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: status_readings is fixed to an empty array and never populated or read from.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: unresolved is fixed to an empty array and never populated or asserted against.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved reason value is named or exercised anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: operations:[] is an unused fixture default; no assertion reads or depends on the listing.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: onChooseOperation, path and method are stub defaults never exercised.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: The test never inspects the draft answer's own shape for capability data.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No assertion turns on whether a configuration parses or fails to parse.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-level statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: The only path-like value used is "$.installations", a JSON path, not a placeholder form.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No submission act, register-connector call, or well-formedness judgment is exercised.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder statement appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: The draftConfiguration used declares only a responseMap, no subject placeholder.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No method or statusMap-ending departure statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: the single it() block, via the describe title itself
+    evidence: |-
+      it("renders the read statement for a responseMap key the draft's own configuration declares"
+      expect(await screen.findByText(responseMapKeyReadText("installations", ["tech-profile (1.0.0)"]))).toBeTruthy();
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: No act-withholding or refusal behavior is exercised.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: onRequestDraft is a stub default never invoked or asserted against.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: link, path and method are fixed empty defaults never changed within the test.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: The test asserts only the responseMap coverage statement, not the broader disclosure this rule governs.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: onApply is a no-op stub never invoked; no confirmation or diff statement is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address, query, headers or body declaration is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is asserted anywhere.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: onApply is a no-op stub never invoked.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: operationsOutcome is fixed to idle and never varied within the test.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      The test's capability output_schema declares only installations, which the responseMap
+      does name; the "not read"/"expects but missing" halves of this scenario are unexercised.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: The fixture configuration declares only a responseMap, no statusMap.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: BASE_DRAFT's status_readings and reading_notes are both empty arrays.
+looked_past: >-
+  The capability() fixture's non-responseMap fields mirror an already-established domain node
+  outside this pack rather than asserting anything new here; the hard-coded CAPABILITIES_PATH
+  fetch mock is test scaffolding, not a fact this file states as its own.

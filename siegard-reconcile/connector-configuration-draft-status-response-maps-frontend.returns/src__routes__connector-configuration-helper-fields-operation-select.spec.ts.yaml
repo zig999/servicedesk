@@ -1,0 +1,145 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file never issues or asserts a fetch; it drives ConnectorConfigurationHelperFields
+      purely through the injected ConnectorConfigurationHelperState.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No test requests or asserts on a draft answer; outcome:{kind:"idle"} is never inspected.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: The connector override is UI plumbing for rendering the surface; no test asserts anything about a connector configuration's own shape.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft attribute is constructed or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The file contains no reading-note fixture or assertion.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: The file contains no reading-note-kind fixture or assertion.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: The file contains no response-field fixture or assertion.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: The file contains no status-reading fixture or assertion.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: The file contains no unresolved-item fixture or assertion.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: The file contains no unresolved-reason fixture or assertion.
+  - node: domain/integration/openapi-document-operations
+    held_at: the test verifying the Select surfaces every entry of state.operations
+    evidence: |-
+      renderFields(stateWith({ operations: [operation("/items", "GET"), operation("/items", "POST")] }));
+      expect(options).toHaveLength(2);
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      the block of tests exercising the operation Select: offering exactly the listed operations,
+      invoking onChooseOperation with the exact chosen entry, rendering no free-text path or
+      method control, and offering no option when the list is empty
+    evidence: |-
+      expect(onChooseOperation).toHaveBeenCalledWith(chosen);
+      expect(screen.queryByRole("textbox", { name: /path/i })).toBeNull();
+      expect(screen.queryByRole("textbox", { name: /method/i })).toBeNull();
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: The file never constructs or asserts on a capability reference or a draft answer.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No configuration text is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-statement text is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text is constructed or asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No submission/registration act is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No HTTP-connector departure statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap-coverage statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: No readiness statement or submission-withholding behavior is exercised in this file.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      The "criterion 7" test only asserts that the link input and the request-draft button exist
+      once connector/path/method are already set; it never exercises withholding of that act.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness state is constructed or asserted in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft answer is constructed or asserted in this file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation state is exercised in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No HTTP-connector call shape is asserted in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method/status vocabulary is asserted in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply-over-unsaved-edit behavior is exercised in this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      operationsOutcome:{kind:"idle"} is the only operations-read outcome ever set, and no test
+      asserts a "reading" or "no operations declared" statement.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No responseMap/capability scenario is exercised in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap scenario is exercised in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No answered-draft scenario is exercised in this file.
+findings:
+  - file: src/routes/connector-configuration-helper-fields-operation-select.spec.ts
+    where: >-
+      the describe block "a listed operation's method is not upper-cased when the state's own
+      entry names it lower-case (UNDERDETERMINED, from
+      rules/integration/an-openapi-operations-method-is-upper-cased)"
+    evidence: |-
+      describe("...UNDERDETERMINED, from rules/integration/an-openapi-operations-method-is-upper-cased)", () => {
+        it("states the method upper-cased on the option regardless of the case the entry itself holds", () => {
+          renderFields(stateWith({ operations: [operation("/items", "get")] }));
+          expect(label).toContain("GET");
+        });
+      });
+    cost: >-
+      The candidate node an-openapi-operations-method-is-upper-cased already settles this as an
+      invariant, and this file's own assertion enforces exactly that. The describe title
+      nonetheless calls the behavior "UNDERDETERMINED" and says the method "is not upper-cased" —
+      a reader who trusts the label is told the specification leaves this open and that the code
+      does the opposite of what it actually does.
+    kind: contradicts
+    node: rules/integration/an-openapi-operations-method-is-upper-cased
+    correction: >-
+      Rename the describe title to state the method is upper-cased per the node it cites,
+      removing "UNDERDETERMINED" and "is not upper-cased".
+looked_past: >-
+  The file duplicates test setup across many describe blocks rather than sharing helpers more
+  tightly, and several describe titles use a "(criterion N)" numbering scheme; neither is a
+  domain-fact departure.
+candidates_opened:
+  - domain/integration/openapi-operation
+  - rules/integration/an-openapi-operations-method-is-upper-cased

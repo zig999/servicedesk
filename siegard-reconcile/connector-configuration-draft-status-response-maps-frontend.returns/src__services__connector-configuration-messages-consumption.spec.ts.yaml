@@ -1,0 +1,130 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: the fetch stub interception of the backend's own operations-read route rather than a direct fetch of the operator-named OpenAPI link
+    evidence: '[operationsReadRoute(OPERATOR_LINK)]: () => jsonResponse({ operations: [HELPER_OPERATION] }),'
+  - node: contracts/integration/connector-configuration-draft
+    held_at: the DRAFT_ROUTE constant and its mocked handler
+    evidence: 'const DRAFT_ROUTE = "/v1/draft-connector-configuration-from-openapi";'
+  - node: domain/integration/connector-configuration
+    held_at: the Configuration field's edited text and the mocked draft's connector/configuration fields
+    evidence: 'fireEvent.change(configurationField, { target: { value: ''{"typed":"not-submitted"}'' } });'
+  - node: domain/integration/connector-configuration-draft
+    held_at: the mocked draft answer, but only for connector, configuration, unresolved and generated_credentials
+    evidence: |-
+      jsonResponse({ connector: "deepl-connector", configuration: '{"distinctive":true}', unresolved: [], generated_credentials: [] }),
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: the empty unresolved collection of the mocked draft answer
+    evidence: "unresolved: [],"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: domain/integration/openapi-document-operations
+    held_at: the mocked operations-read answer
+    evidence: '[operationsReadRoute(OPERATOR_LINK)]: () => jsonResponse({ operations: [HELPER_OPERATION] }),'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: the flow choosing the operation from a rendered option rather than typing a path or method
+    evidence: |-
+      fireEvent.click(screen.getByLabelText("Operação"));
+      const option = await screen.findByRole("option", { name: `${HELPER_OPERATION.path} — ${HELPER_OPERATION.method}` });
+      fireEvent.mouseDown(option);
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: the mocked draft answer, which carries no capability-naming field
+    evidence: |-
+      jsonResponse({ connector: "deepl-connector", configuration: '{"distinctive":true}', unresolved: [], generated_credentials: [] }),
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: the drafted configuration text used in the mock, which is well-formed JSON object text
+    evidence: 'configuration: ''{"distinctive":true}'','
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: the two ConnectorConfigurationHelperFields tests checking the waiting message with an empty connector and the Request Draft button once connector and operation both stand
+    evidence: |-
+      state: stateWith({ connector: "", path: "/v2/translate", method: "POST" }),
+      expect(screen.getByText(CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE)).toBeTruthy();
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: the flow that edits the Configuration field, requests and applies a draft over that unsubmitted edit, and finds a confirmation dialog rather than a silent overwrite
+    evidence: |-
+      fireEvent.change(configurationField, { target: { value: '{"typed":"not-submitted"}' } });
+      fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
+      const dialog = await screen.findByRole("dialog");
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: "not exercised in this file"
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: "not exercised in this file"
+findings:
+  - file: src/services/connector-configuration-messages-consumption.spec.ts
+    where: the DRAFT_ROUTE fetch stub's mocked draft answer
+    evidence: |-
+      jsonResponse({ connector: "deepl-connector", configuration: '{"distinctive":true}', unresolved: [], generated_credentials: [] }),
+    cost: >-
+      This is the file's one stand-in for what draft-connector-configuration-from-openapi
+      answers, and it models a complete, successful draft with only four of the seven attributes
+      domain/integration/connector-configuration-draft declares required (status_readings,
+      response_fields and reading_notes are absent, not even as empty arrays).
+    kind: contradicts
+    node: domain/integration/connector-configuration-draft
+    correction: >-
+      Include status_readings, response_fields and reading_notes in the mocked answer (each
+      required, so an empty array where the scenario has nothing to disclose).
+looked_past: >-
+  Tests 1-3 check that UI labels come from the shared messages module while other labels used in
+  the same file are hard-coded Portuguese strings not sourced from any constants module; wording,
+  control labels and their placement are left to the interface by every surface rule in this
+  pack, so this asymmetry is a code/test-consistency matter rather than a domain-fact one.

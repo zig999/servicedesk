@@ -1,0 +1,138 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      import type { ConnectorConfigurationDraft, ConnectorConfigurationDraftGeneratedCredential, DraftConnectorConfigurationRequestOutcome } from "../hooks/use-draft-connector-configuration-from-openapi";
+  - node: domain/integration/connector-configuration
+    held_at: the BASE_DRAFT fixture and the configuration character-for-character test
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: '{"address":"https://api.example.com/v2/translate"}', ... };
+      expect(state.draft.configuration).toBe(BASE_DRAFT.configuration);
+  - node: domain/integration/connector-configuration-draft
+    held_at: the BASE_DRAFT fixture and the tests projecting each of unresolved, generated_credentials, method_mismatch and status_readings
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: '{"address":"https://api.example.com/v2/translate"}', unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: "reading_notes: [],"
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: "reading_notes: [],"
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: "response_fields: [],"
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: the status-readings projection test
+    evidence: |-
+      status_readings: [{ status: "200", ending: "record-stub-response", declared_as: "Successful profile retrieval" }, { status: "403", ending: "skip-endpoint" }],
+      expect(state.draft.statusReadings).toEqual([{ status: "200", ending: "record-stub-response", declaredAs: "Successful profile retrieval" }, { status: "403", ending: "skip-endpoint", declaredAs: undefined }]);
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: the unresolved-item projection test
+    evidence: |-
+      unresolved: [{ name: "api-key", reason: "no-capability-registered" }],
+      expect(state.draft.unresolved[0]?.name).toBe("api-key");
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: the THREE_NAMED_REASONS test and its fallback-for-an-outside-vocabulary-reason test
+    evidence: |-
+      const THREE_NAMED_REASONS = ["no-capability-registered", "security-scheme-not-reducible-to-a-credential", "drafted-key-occupied-by-another-security-scheme"];
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: '{"address":"https://api.example.com/v2/translate"}' };
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the "drafted" describe blocks projecting configuration, unresolved, generated_credentials, method_mismatch and status_readings
+    evidence: |-
+      const state = drafted(disclosureStateForOutcome({ kind: "drafted", draft }));
+      expect(state.draft.unresolved[0]?.name).toBe("api-key");
+      expect(state.draft.generatedCredentials).toEqual([{ name: "api-key", securityScheme: "apiKey" }]);
+      expect(state.draft.methodMismatch).toEqual({ registered: "GET", operation: "POST" });
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: partially, in the status-readings and method-mismatch projection tests
+    evidence: |-
+      expect(state.draft.statusReadings).toEqual([{ status: "200", ending: "record-stub-response", declaredAs: "Successful profile retrieval" }, { status: "403", ending: "skip-endpoint", declaredAs: undefined }]);
+findings:
+  - file: src/services/connector-configuration-draft-disclosure.spec.ts
+    where: "each status reading is projected into its own status, ending and declared_as, one-to-one and unmodified"
+    evidence: |-
+      status_readings: [{ status: "200", ending: "record-stub-response", declared_as: "Successful profile retrieval" }, { status: "403", ending: "skip-endpoint" }],
+    cost: >-
+      The fixture presents "record-stub-response" and "skip-endpoint" as ordinary drafted
+      statusMap endings, but connector-configuration-draft-status-reading types its "ending"
+      attribute as a closed enumeration of exactly ok, unavailable, denied and timeout. A reader
+      or later test-writer has no way to tell these two strings are not real evidence-result
+      endings a draft could ever carry.
+    kind: contradicts
+    node: domain/integration/connector-configuration-draft-status-reading
+    correction: >-
+      Replace "record-stub-response" and "skip-endpoint" with two of the four evidence-result
+      values the ending attribute is actually typed against, e.g. "ok" and "denied".
+looked_past: >-
+  The response_fields and reading_notes arrays never carry test content beyond the empty-array
+  cases, so disclosure of a response field's declared_type/declared_required/envelope and a
+  reading note's kind/subject/detail go untested in this file; a coverage gap, not a stated fact.
+candidates_opened:
+  - domain/integration/connector-configuration-draft-generated-credential
+  - rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator

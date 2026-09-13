@@ -1,0 +1,19 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-status-reading
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-connector-configuration-from-openapi-reading-parts.spec.ts
+        name: carries declared_as through when the answer named one, and carries no declared_as key at all when it named none
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: carries status and ending through unchanged for every reading, and carries declaredAs as undefined for a reading with no declared_as
+    why: >-
+      Presence and carriage of status/ending/declared_as is exercised. That ending is typed as an
+      evidence-result is not -- the two files together use four mutually distinct ending strings
+      with no assertion constraining the vocabulary. The pairing (ending mapped from the draft's
+      own statusMap for that status) is also unexercised -- both proofs fabricate readings beside
+      a configuration with no statusMap at all.
+    remainder: testable
+    remainder_why: >-
+      A type-level refusal assertion for an ending outside the evidence-result vocabulary
+      (mirroring the reading-note-kind proof's own pattern), plus one drafted case pairing a
+      statusMap-declared ending with its status and asserting the disclosed reading matches it.

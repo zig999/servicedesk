@@ -1,0 +1,113 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The stub exists only to satisfy react-query's provider plumbing; no assertion addresses
+      where an OpenAPI document is fetched from.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: Only the answer's shape is consumed here, never the operation this contract publishes.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: connector and configuration appear only inside BASE_DRAFT, never as a standalone registered connector configuration.
+  - node: domain/integration/connector-configuration-draft
+    held_at: BASE_DRAFT constant
+    evidence: |-
+      connector: "deepl-connector", configuration: "{}", unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [],
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the reading_notes fixture
+    evidence: |-
+      { kind: "envelope-read-through", subject: "data", detail: "single-property envelope" }, { kind: "default-response-not-drafted", subject: "default" },
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: the reading_notes fixture
+    evidence: 'kind: "envelope-read-through" ... kind: "default-response-not-drafted"'
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: "response_fields: [], — the fixture never carries a populated response field."
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: "status_readings: [], — the fixture never carries a populated status reading."
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "unresolved: [], — the fixture never carries an unresolved item."
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: no reason value appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: "operations: [], operationsOutcome: { kind: 'idle' }, — set once and never asserted on."
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: "onChooseOperation: () => {}, — a no-op stub."
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: the fixture carries no capability-shaped field at all.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: "configuration: '{}', present as fixture text but never judged for well-formedness."
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: no entry-level statement text is rendered or asserted.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: no placeholder text appears in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: "onApply: () => {}, a no-op stub."
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: no credential-placeholder statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: no subject-placeholder statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: no HTTP-connector-departure statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: no responseMap-coverage statement is asserted.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: no readiness-statement claim is asserted.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: whether the act is offered or withheld is never asserted.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: no staleness assertion appears in the file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the two it blocks
+    evidence: |-
+      expect(items[0]).toContain("data"); expect(items[0]).not.toContain("envelope-read-through");
+      expect(items[0]).toContain("(detalhe: single-property envelope)");
+      expect(screen.queryByText("Notas de leitura")).toBeNull();
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: no apply-confirmation content is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: no address/query/headers/body declaration is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: no method/statusMap vocabulary is exercised.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: no unsaved-edit/apply-confirmation interaction is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: "operationsOutcome: { kind: 'idle' }, set once and never asserted on."
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: no capability or responseMap coverage scenario is exercised.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: no statusMap-vocabulary scenario is exercised.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: the reading-notes assertions
+    evidence: |-
+      reading_notes: [ { kind: "envelope-read-through", subject: "data", detail: "single-property envelope" }, { kind: "default-response-not-drafted", subject: "default" } ]
+      expect(items[0]).toContain("data"); expect(items[1]).toContain("default");
+looked_past: >-
+  The test asserts a specific rendered format for a carried detail and a specific section
+  heading; the specification leaves wording, placement and control choice to the interface, so
+  this is a UI-presentation judgment rather than a domain-conformance one.

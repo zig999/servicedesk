@@ -1,0 +1,112 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: mountWithCapabilities stubs fetch only for CAPABILITIES_PATH and throws for any other URL; no OpenAPI document request is exercised.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: 'The draft is supplied directly through state.outcome = { kind:"drafted", draft: BASE_DRAFT } rather than through the published operation.'
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: No registered connector-configuration entity is constructed or read by this file.
+  - node: domain/integration/connector-configuration-draft
+    held_at: the BASE_DRAFT fixture
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: CONNECTOR, configuration: JSON.stringify({ responseMap: { orphan: "$.orphan" } }), unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: "reading_notes: [] — no reading note's kind, subject or detail is exercised."
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No reading-note kind value appears anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: "response_fields: [] on BASE_DRAFT."
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: "status_readings: [] on BASE_DRAFT."
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "unresolved: [] on BASE_DRAFT."
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved-reason value appears anywhere in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: "stateWith() sets operations: [] and never populates or asserts on that listing."
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: onChooseOperation is stubbed as a no-op and never invoked or asserted against.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: This file builds ConnectorConfigurationDraft fixtures directly and never inspects an answer's shape.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: BASE_DRAFT.configuration is well-formed by fixture construction, but no assertion checks well-formedness itself.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-level guidance text is asserted in this file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text appears in BASE_DRAFT.configuration or is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The test never sets the field's content to non-well-formed text and never checks a
+      submission/register act being withheld.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder appears in BASE_DRAFT.configuration or is asserted on.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder appears in BASE_DRAFT.configuration or is asserted on.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No method or statusMap-ending departure is authored into BASE_DRAFT.configuration or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: the mountWithCapabilities/capability() setup and the findByText assertion
+    evidence: |-
+      expect(await screen.findByText(responseMapKeyReadByNoneText("orphan"))).toBeTruthy();
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the two button assertions
+    evidence: |-
+      expect(screen.getByRole("button", { name: "Solicitar rascunho" }).hasAttribute("disabled")).toBe(false);
+      expect(screen.getByRole("button", { name: "Aplicar" }).hasAttribute("disabled")).toBe(false);
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: connector, path and method are all held fixed and non-empty throughout.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness state or change to link/operation/connector is exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: The draft's unresolved, generated_credentials, status_readings, response_fields and reading_notes are all empty.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No confirmation dialog or itemized diff is rendered or asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address/query/headers/body content is authored or asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is authored or asserted.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: This component's state carries no separate unsubmitted-edit content; no confirmation flow is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: "stateWith() sets operationsOutcome: { kind:'idle' } and no assertion checks an outstanding or no-operation message."
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      The fixture (one key "orphan", one capability declaring only "installations") only asserts
+      the "read by no capability" branch, not the "expects a field no key names" branch.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: BASE_DRAFT.configuration carries no statusMap at all.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: status_readings, response_fields and reading_notes are all empty arrays in BASE_DRAFT.
+looked_past: >-
+  The describe() title's parenthetical about a task's own UNDERDETERMINED entry is process
+  narration about the planning artifact this test was written to settle, not a domain-fact claim
+  in source.

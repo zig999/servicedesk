@@ -1,0 +1,141 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: fetch is stubbed generically for react-query plumbing; the file never exercises an OpenAPI-document fetch path.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: only the answer's shape is imported as a type; the operation itself is never invoked.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: no ConnectorConfiguration (registered configuration) value is constructed or asserted on anywhere in the file.
+  - node: domain/integration/connector-configuration-draft
+    held_at: BASE_DRAFT constant
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: "{}", unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: 'reading_notes: [] kept empty in every scenario; no reading note''s kind, subject or detail is exercised.'
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: no note kind from the vocabulary appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: no response field is constructed or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: no status reading is constructed or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: no unresolved item is constructed or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: no unresolved reason value appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: 'operations: [] in baseState() — the listing is always empty and never populated or read from.'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: no choice of an operation from a listing is exercised or asserted.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: unresolved and generated_credentials stay empty in BASE_DRAFT; no capability-reference behavior is exercised.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: 'configuration: "{}" happens to be well-formed but the file never judges or asserts well-formedness.'
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: no entry-level statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: no placeholder text or form is constructed or asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: no submission/register-connector act is rendered, stubbed beyond onApply, or asserted.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: no credential placeholder statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: no subject placeholder statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: no HTTP-connector-departure statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: no response-map/capability-coverage statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: no readiness statement or submission-withholding behavior is exercised in the file.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: 'onRequestDraft is a stub never invoked or asserted on; whether the act is offered under empty connector name is not tested.'
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: Both rerender scenarios keep link, path and method identical and vary only the outcome to pending; the node's own trigger is never exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the assertion verifying the Configuration field's content is identical before and after a draft answer arrives
+    evidence: |-
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(INDEPENDENT_CONFIGURATION_TEXT);
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: onApply is a no-op stub throughout; no confirmation content is rendered or asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: no method/address/query/headers/body content is constructed or asserted anywhere in the file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: no method or statusMap vocabulary check is exercised anywhere in the file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: onApply is never invoked; no unsaved-edit/confirmation flow is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: operationsOutcome is fixed for every scenario; outstanding-read and no-operation-declared states are never exercised.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: no responseMap/capability content is constructed anywhere in the file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: no statusMap content is constructed anywhere in the file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: status_readings, response_fields and reading_notes stay empty in every BASE_DRAFT-derived scenario.
+findings:
+  - file: src/routes/connector-configuration-helper-fields-independent-content-and-staleness.spec.ts
+    where: describe block "a stale drafted disclosure clears the moment a new request begins (UNDERDETERMINED note 3)"
+    evidence: |-
+      expect(screen.getByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeTruthy();
+      expect(screen.queryByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeNull();
+      expect(screen.getByText("Rascunhando a configuração do conector…")).toBeTruthy();
+      expect(screen.queryByRole("alert")).toBeNull();
+    cost: >-
+      The test fixes, as a passing assertion, exactly what the surface presents once a new
+      draft request begins over an earlier answered draft. Two nodes touching this file both say
+      this is not decided ("What that surface states while a draft request is outstanding is not
+      decided here"). A future node deciding this differently would leave this test the one
+      place disagreeing with the specification.
+    kind: unstated
+    correction: >-
+      Decide, in a node constraining domain/integration/connector-configuration-draft, what the
+      Configuration Helper states while a new draft request is outstanding over an earlier
+      answered draft, then align this test to that decision.
+  - file: src/routes/connector-configuration-helper-fields-independent-content-and-staleness.spec.ts
+    where: describe block "a stale refusal clears the moment a new request begins (UNDERDETERMINED note 3)"
+    evidence: |-
+      expect(screen.getByRole("alert")).toBeTruthy();
+      expect(screen.queryByRole("alert")).toBeNull();
+      expect(screen.getByText("Rascunhando a configuração do conector…")).toBeTruthy();
+    cost: >-
+      Same gap as the sibling block above, over a refused rather than an answered draft request.
+    kind: unstated
+    correction: >-
+      Decide, in a node constraining domain/integration/connector-configuration-draft, what the
+      Configuration Helper states while a new draft request is outstanding over an earlier
+      refused request, then align this test to that decision.
+looked_past: >-
+  The file is narrowly scoped to two behaviors; the many other node facts this pack carries are
+  each bound, per the candidate index, to other spec files covering this same component.
+candidates_opened:
+  - rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
+  - rules/integration/a-refused-operations-read-states-its-refusal-to-the-operator
+  - rules/integration/no-draft-refusal-is-stated-before-the-operation-answers

@@ -1,0 +1,21 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    state: partial
+    tests:
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: copies the item's name unmodified and pairs it with a non-empty reason label
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: produces three pairwise-distinct labels for the three closed-set reason values
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: falls back to its own raw reason string for a reason outside the three-value vocabulary, including the reason this dictionary no longer names
+    why: >-
+      The pairing the node states -- one name carried beside one reason -- is exercised. Three
+      stated parts go unexercised: the name is not proven to come exactly from the OpenAPI
+      document itself (every draft is a literal fixture); neither attribute's required-ness is
+      exercised (no test omits name or reason); and the fallback test establishes tolerance of an
+      out-of-vocabulary reason rather than exercising the typing itself.
+    remainder: testable
+    remainder_why: >-
+      Three assertions close it: an item whose name is the document's own parameter/scheme name
+      character for character; an item with an out-of-vocabulary reason expected to be refused
+      rather than disclosed; and items missing name or missing reason, each expected refused.

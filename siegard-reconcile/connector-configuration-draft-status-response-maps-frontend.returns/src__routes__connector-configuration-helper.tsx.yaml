@@ -1,0 +1,114 @@
+read:
+  - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+    held_at: the component's own render, which mounts the Configuration Helper as the composed heading and fields
+    evidence: |
+      <h3 className="text-lg font-semibold text-foreground">{CONFIGURATION_HELPER_HEADING}</h3>
+      <ConnectorConfigurationHelperFields state={state} onApply={onApply} />
+  - node: rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+    held_at: the onApply prop's type, which admits only a configuration text string
+    evidence: |
+      readonly onApply: (configurationText: string) => void;
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: This file issues no fetch of any kind; it only renders a heading and delegates state to useConnectorConfigurationHelper.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: This file makes no call and declares no operation.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: This file declares no configuration shape or attributes.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: This file holds no draft attributes; state is opaque, sourced from the hook.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reading-note attribute appears in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No note-kind vocabulary appears in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response-field attribute appears in this file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status-reading attribute appears in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved-item attribute appears in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved-reason vocabulary appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations listing is read or held in this file.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: This file contains no operation-choosing control or logic.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: This file reads no draft answer and carries no capability reference.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No configuration text is generated, parsed or checked in this file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: This file states no claim about what the HTTP connector reads.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder form is stated or referenced in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: This file carries no submission act or well-formedness judgment.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder statement appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder statement appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No departure statement appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap coverage statement appears in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: This file carries none of the four readiness statements at all.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request act or its gating condition appears in this file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness state or comparison appears in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: This file states nothing of a draft's own parts; it only forwards opaque state.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No confirmation or diff statement appears in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address/query/headers/body declaration appears in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method/statusMap vocabulary appears in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      This file forwards onApply directly with no confirmation gate of its own; the confirmation
+      logic, if any, sits in whatever implements onApply outside this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No outstanding-read or empty-listing statement appears in this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: This scenario's subject rule is not implemented in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: This scenario's subject rule is not implemented in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: This scenario's subject rule is not implemented in this file.
+looked_past: >-
+  The file's own layout classes are presentation form the pack itself disclaims as belonging to
+  the interface, not to any node.

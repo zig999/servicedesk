@@ -1,0 +1,117 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file never issues or mocks a request to any OpenAPI document URL, and mocks only
+      CONFIGURATION_PATH, CAPABILITIES_PATH and SUBJECT_TYPE_PATH; this node's fact is not
+      exercised here.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No call to draft-connector-configuration-from-openapi or any draft endpoint appears.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      The file exercises the Configuração field and a PUT to CONFIGURATION_PATH only as a black
+      box to test save-outcome messaging; it states nothing about the value object's own
+      attributes or replace-whole semantics.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft object, its attributes or its disclosure appear in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper, listing or operation choice appears in this file.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The two refusal tests submit well-formed JSON and the refusal comes back from the mocked
+      server response, not from a client-side withholding of the submit act.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder appears anywhere in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder or capability reading appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No draft-apply-over-unsaved-edit scenario appears in this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: Not referenced in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: Not referenced in this file.
+looked_past: >-
+  This file's actual subject — a successful save reporting through the pre-existing inline
+  status with no toast, a refusal naming ConnectorConfigurationNotWellFormedError, and an
+  unrecognised refusal shown with a fallback message — is governed by
+  rules/integration/a-submitted-registration-states-its-outcome-to-the-operator, a candidate
+  outside this pack; I opened it and found the file's behavior consistent with what it states,
+  leaving exact wording and control choice to the interface.
+candidates_opened:
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator

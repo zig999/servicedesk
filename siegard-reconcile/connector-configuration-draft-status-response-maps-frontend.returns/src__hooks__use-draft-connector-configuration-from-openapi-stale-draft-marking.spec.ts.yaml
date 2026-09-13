@@ -1,0 +1,158 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file's only stubbed network target is the draft-request route: `const DRAFT_ROUTE =
+      "/v1/draft-connector-configuration-from-openapi";` and `stubFetch` throws if the URL is
+      anything else.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      mount(), lines 47-49
+    evidence: >-
+      return renderHook(() => useDraftConnectorConfigurationFromOpenApi(CONNECTOR), { wrapper: createWrapper() }).result;
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      `configuration: "{}"` appears only inside the stubbed draft body, as the draft's own
+      `configuration` attribute; the file never constructs or asserts a registered
+      connector-configuration entity.
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      the second test, lines 92-94
+    evidence: >-
+      for (const key of ["link", "path", "method"]) {
+        expect(Object.prototype.hasOwnProperty.call(outcome.draft, key)).toBe(false);
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      Neither test's stubbed body nor its assertions mention reading_notes.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      No reading-note kind is referenced or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      No response_fields are stubbed or asserted.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      No status_readings are stubbed or asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      `unresolved: []` is supplied in both stubbed bodies but no assertion ever inspects its shape or content.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      No unresolved reason value is referenced anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      The file never fetches or asserts an operations listing.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      `DRAFT_REQUEST` is a literal test fixture, not a value read from a document's listing.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      No capability name, version or count is stubbed into either response body.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      `configuration: "{}"` is well-formed by construction, but the file never asserts
+      well-formedness as a property of the outcome.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      The file tests a hook, not a presenting/editing surface; no entry-level statement is
+      exercised.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      No placeholder text of any form appears in the stubbed configuration.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      No submission/registration act is exercised in this file at all.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      No credential placeholder or credential-resolution statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      No subject placeholder or capability-reading statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      No departure-from-vocabulary statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      No responseMap-key-to-capability statement is exercised in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      No surface readiness statement is exercised; this file tests the hook alone.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      `result.current.requestDraft(DRAFT_REQUEST)` is called directly without testing any gating
+      on an empty connector name or an unchosen operation.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: >-
+      the first test's assertion, lines 61-66 (the "generated for" mark only)
+    evidence: >-
+      expect(result.current.statedFor).toEqual({
+        link: DRAFT_REQUEST.link,
+        path: DRAFT_REQUEST.path,
+        method: DRAFT_REQUEST.method,
+        connector: CONNECTOR,
+      });
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      This file tests a hook's return value, never a surface's statement to an operator.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      No apply or confirmation act is exercised in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      The stubbed configuration is bare `"{}"`; no address, query, headers or body is stubbed or
+      asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      No method or statusMap vocabulary is stubbed or asserted in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      No Configuration field, unsaved edit, or apply act is modeled in this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      No operations-read state is exercised in this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      No responseMap or capability reading is exercised in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      No statusMap value is exercised in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      No status readings, response fields or reading notes are stubbed or asserted in this file.
+looked_past: >-
+  The file only exercises the "generated for" half of rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+  (statedFor equals the request that produced the draft) and the second test's own describe title
+  flags the widen-vs-separate-field question as "UNDERDETERMINED, from the specification" — neither
+  the staleness-transition coverage gap nor the accuracy of that self-assessed label rose to a
+  quotable, confident misstatement of a node's content, so both are left for whichever pass judges
+  test completeness and test-authored rationale rather than filed here.

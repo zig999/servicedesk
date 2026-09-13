@@ -1,0 +1,115 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file tests only computeResponseMapCapabilityCoverage over a configurationText string and a capabilities array; it fetches nothing.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: The file contains no reference to draft-connector-configuration-from-openapi or to a generated draft.
+  - node: domain/integration/connector-configuration
+    held_at: the configurationText value exercised across every test
+    evidence: |-
+      const configurationText = JSON.stringify({ responseMap: { covered: "$.covered", orphan: "$.orphan" } });
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft value-object attribute appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The file never constructs or asserts a reading note.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the nine reading-note-kind values appears in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: The file never asserts a response field's path, status, declared_type or envelope.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: The file never asserts a status reading or an evidence-result ending.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: The file never asserts an unresolved item's name or reason.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three unresolved-reason values appears in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: The file never constructs or asserts an operations listing.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: The file contains no Configuration Helper or operation-choosing behavior.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: The file never asserts anything about a draft answer's shape.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: The well-formedness check is over a plain connector-configuration configurationText passed straight to the function, never over a generated draft.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: The file asserts no entry-level statement about method/address/statusMap/responseMap keys or placeholder forms.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text appears in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The file asserts no submission-offering behavior at all.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No method/statusMap-vocabulary departure statement is asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: The whole file — computeResponseMapCapabilityCoverage's four criteria are exercised end to end
+    evidence: |-
+      expect(computeResponseMapCapabilityCoverage(configurationText, capabilities)).toEqual({
+        kind: "coverage",
+        keyStatements: [{ kind: "read", key: "covered", capabilityLabels: ["acme-lookup (1.0.0)"] }, { kind: "read-by-none", key: "orphan" }],
+        expectedFieldStatements: [],
+      });
+      expect(computeResponseMapCapabilityCoverage(configurationText, [])).toEqual({ kind: "cannot-be-read" });
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: The file never asserts anything about withholding or offering a submission act.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: The file asserts no draft-request-offering behavior.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: The file never references staleness.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: The file never asserts what a surface states upon a draft answer arriving.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: The file never references an apply confirmation or a diff of keys.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: The file never asserts address/query/headers/body declarations.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: The file never asserts a method or statusMap vocabulary check.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: The file never references applying a draft over an unsubmitted edit.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: The file never references an operations read.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: The final describe block reproduces the scenario's given/when/then exactly
+    evidence: |-
+      expect(computeResponseMapCapabilityCoverage(configurationText, capabilities)).toEqual({
+        kind: "coverage",
+        keyStatements: [{ kind: "read-by-none", key: "id" }, { kind: "read", key: "installations", capabilityLabels: ["tech-profile (1.0.0)"] }, { kind: "read-by-none", key: "syncEvents" }],
+        expectedFieldStatements: [{ capabilityLabel: "tech-profile (1.0.0)", fieldName: "login" }],
+      });
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: The file never references a statusMap ending.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: The file never references status readings, response fields or reading notes.
+looked_past: >-
+  The capabilityLabels/capabilityLabel strings fix a "name (version)" display format that no node
+  in this set states; the governing node itself leaves wording to the interface.

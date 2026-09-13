@@ -1,0 +1,16 @@
+certified:
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-helper-fields-draft-request-gate.spec.ts
+        name: renders no act and states which precondition is missing for each way the gate can be unmet, and renders the enabled act once both stand
+    why: >-
+      The connector half is exercised whole (empty, whitespace, and named). The operation half is
+      exercised only at its two extremes (both empty, both held) -- a half-given pairing (path
+      held, method empty, or vice versa) is unexercised, and the pairing is never bound to the
+      fetched document's listing (the enabled case carries an empty operations array).
+    remainder: testable
+    remainder_why: >-
+      A half-given path/method pairing expecting the operation-waiting statement; and a chosen
+      pairing absent from the fetched listing expecting the act withheld, against the same
+      pairing present in the listing expecting it enabled.

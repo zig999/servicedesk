@@ -1,0 +1,108 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file makes no network or fetch call and never references an OpenAPI document URL.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No reference to the draft-connector-configuration-from-openapi operation appears.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No operations-read state (outstanding or empty-document) is asserted anywhere in this file; the file tests only reading-note projection.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: The file never exercises the connector-configuration value object's own rules.
+  - node: domain/integration/connector-configuration-draft
+    held_at: the BASE_DRAFT fixture
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: '{"address":"https://api.example.com/v2/translate"}', unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the first describe/it block
+    evidence: |-
+      expect(state.draft.readingNotes[0]).toMatchObject({ kind: "envelope-read-through", subject: "data", detail: "single-property envelope" });
+      expect(state.draft.readingNotes[1]?.detail).toBeUndefined();
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: the NINE_READING_NOTE_KINDS constant and the second describe/it block
+    evidence: |-
+      const NINE_READING_NOTE_KINDS = ["default-response-not-drafted", "status-range-not-drafted", "non-json-success-content-not-read", "envelope-read-through", "variants-united", "repeated-field-name-path-not-taken", "no-responses-declared", "no-success-response-schema", "success-schema-declares-no-properties"] as const;
+      expect(new Set(labels).size).toBe(NINE_READING_NOTE_KINDS.length);
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: response_fields is left empty in every fixture used by this file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: status_readings is left empty in every fixture used by this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: unresolved is left empty in every fixture used by this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved-reason value appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: The file contains no reference to an operations listing.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper operation-selection behavior is exercised.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No capability reference or capability-count assertion appears.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: The configuration string on BASE_DRAFT is never parsed or judged for well-formedness.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-guidance statement is exercised here.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No submission-offer behavior is exercised.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No HTTP-departure statement is exercised.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No response-map capability-coverage statement is exercised.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: No readiness-statement behavior is exercised.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request-offer behavior is exercised.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness behavior is exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the two reading-note describe/it blocks
+    evidence: |-
+      expect(state.draft.readingNotes[1]?.kindLabel.length).toBeGreaterThan(0);
+      expect(new Set(labels).size).toBe(NINE_READING_NOTE_KINDS.length);
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation behavior is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No method/address/query/headers/body departure assertions appear.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary assertions appear.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No unsaved-edit/apply-confirmation behavior is exercised.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No response-map/capability scenario is exercised.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap-ending scenario is exercised.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: the two reading-note describe/it blocks
+    evidence: |-
+      it("copies kind and subject through unchanged for every note, carries a carried detail through, and carries no detail for a note naming none", ...)

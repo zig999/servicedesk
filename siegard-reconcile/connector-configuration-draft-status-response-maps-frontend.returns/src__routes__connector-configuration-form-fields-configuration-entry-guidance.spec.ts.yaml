@@ -1,0 +1,126 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      This file exercises only the Configuration entry's guidance list and the Save button's
+      disabled state; no fetch of an OpenAPI document is referenced.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft-connector-configuration-from-openapi call appears anywhere in this file.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      The connector and configuration fields are exercised as form controls but neither field's
+      required-ness or type is asserted by this file.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft attribute is read or asserted here.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: This file asserts nothing about a reading note's kind, subject or detail.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No reading-note kind value appears in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response field is asserted here.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status reading is asserted here.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved item is asserted here.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved-reason value appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations listing is read or asserted in this file.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper operation-choosing behavior is exercised in this file.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer or capability-carrying assertion appears in this file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      The well-formed/not-well-formed text constants here belong to the operator-typed
+      Configuration field, not to a generated draft.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: >-
+      the test rendering exactly the four guidance messages, in that order, as the guidance
+      list's own items
+    evidence: |-
+      expect(guidanceListItems()).toEqual([
+        CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE,
+        CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE,
+        CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE,
+        CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE,
+      ]);
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: >-
+      indirectly, as the fourth item asserted in the guidance-order test
+    evidence: |-
+      expect(guidanceListItems()).toEqual([... CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE]);
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: the second describe block's single it
+    evidence: |-
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No ${credential:<name>} placeholder or its resolution statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No ${subject:<attribute-name>} placeholder statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No departure statement is asserted here.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap-key/capability-coverage statement is asserted in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: This file asserts only the Save button's disabled attribute, not any readiness-statement claim.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request offering/withholding is exercised in this file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft staleness behavior is exercised in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft answer or its stated parts are exercised in this file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation content is exercised in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: >-
+      indirectly, as part of the combined guidance-order assertion
+    evidence: |-
+      expect(guidanceListItems()).toEqual([..., CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE, ...]);
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: >-
+      indirectly, as part of the combined guidance-order assertion
+    evidence: |-
+      expect(guidanceListItems()).toEqual([..., CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE, ...]);
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply-draft-over-unsaved-edit behavior is exercised in this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No operations-read-outstanding or no-operation statement is exercised in this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: This file has no capability registration or responseMap-key scenario.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: This file asserts nothing about a statusMap ending.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft answer, status reading, response field or reading note is exercised in this file.
+looked_past: >-
+  The exact wording each CONFIGURATION_ENTRY_GUIDANCE_*_MESSAGE constant carries is not stated in
+  this file — it only imports the constants and asserts their identity and order — so whether that
+  wording itself stays within the rules it maps to is a question over
+  src/services/connector-configuration-messages.ts, outside this file set.

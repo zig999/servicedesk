@@ -1,0 +1,156 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      Eight describe blocks concerning register-connector dispatch, blocking dispatch on empty
+      connector name or invalid JSON, refusal messages, and successful-save navigation; none
+      fetches or mocks an OpenAPI document.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      Every fetch stub in the file only ever answers a PUT to connectorPutPath; no draft request
+      is mocked.
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      fillAndSave and the criterion-6 test
+    evidence: >-
+      const connectorInput = await screen.findByLabelText<HTMLInputElement>("Conector");
+      const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
+      expect(parsedPutBody(fetchMock)).toEqual({ configuration: "{}" });
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No drafted configuration, unresolved items, generated credentials, status readings, response
+      fields or reading notes is read or asserted.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      No reading note of any kind is asserted anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      No reading-note kind is named or asserted.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      No response field, path, status, declared type/required or envelope is asserted.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      No status reading or evidence-result ending is asserted.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      No unresolved item, name or reason is asserted.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      None of the three unresolved reasons appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      No operations listing is read or rendered by any test here.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      The file never mounts or exercises a Configuration Helper or an operation choice.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      No draft answer, and therefore no capability reference, is ever read here.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      The well-formedness checks in the file run over the Configuration field's own typed
+      content, not over a generated draft's configuration.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      No stated claim about the connector configuration entry's own JSON-object/method/statusMap/
+      responseMap/query/headers/body shape is asserted.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      No placeholder is written, read or asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: >-
+      criterion-9 test and the describe.each block over invalid JSON, a JSON array and JSON null
+    evidence: >-
+      await fillAndSave("deepl-connector", "{not valid json");
+      expect(putCallCount(fetchMock)).toBe(0);
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      No credential placeholder is stated or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      No subject placeholder or capability-registration reading is stated or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      No method or statusMap-ending departure is stated or asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      No responseMap key or capability output-schema coverage is stated or asserted.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      None of the four readiness statements this node bounds is exercised here.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      No draft-request act is offered or withheld anywhere in the file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      No draft is stated, so none is marked stale.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No draft answer is stated to the operator.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      No apply-confirmation is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      No address, query, headers or body declaration is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      No method or statusMap vocabulary is asserted.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      No apply-draft act, confirmed or unconfirmed, occurs here.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      No operations read, outstanding or answering with none, is stated here.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      This scenario's capability/responseMap reading is not exercised.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      No statusMap ending is judged or stated here.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      No draft answer, status reading or reading note is stated here.
+looked_past: >-
+  The describe.each block's title carries an "UNDERDETERMINED note" pointing at
+  rules/integration/a-connector-configuration-holds-a-well-formed-object; that node does settle
+  the array/null case, so the guard is grounded rather than underdetermined — a test-labeling
+  concern for another pass, not a domain-fact drift. Similarly, the connector-name and
+  successful-save-destination behavior is governed by
+  rules/integration/a-connector-configuration-names-its-connector,
+  rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+  and rules/integration/a-submitted-registration-states-its-outcome-to-the-operator, found by
+  searching the specification root and each consistent with what the test asserts.
+candidates_opened:
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object

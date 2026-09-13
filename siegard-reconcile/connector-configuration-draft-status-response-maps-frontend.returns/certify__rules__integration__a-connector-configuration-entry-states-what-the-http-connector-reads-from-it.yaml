@@ -1,0 +1,17 @@
+certified:
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-form-fields-configuration-entry-guidance.spec.ts
+        name: renders exactly the four guidance messages, in that order, as the guidance list's own items
+      - file: src/routes/connector-configuration-form-fields-configuration-entry-guidance.spec.ts
+        name: keeps Save disabled while the Configuration field holds text that is not well-formed JSON object text, even though the guidance itself renders in full
+    why: >-
+      The shape is exercised (four items, in order, unconditional). The content is not: both
+      assertions compare against the application's own message constants, so expected and actual
+      move together -- if a message stopped stating its claim, the list would still equal the
+      constants and pass.
+    remainder: testable
+    remainder_why: >-
+      Four literal-text assertions, one per guidance item, over what each item actually says
+      rather than over the constants that produce it.

@@ -1,0 +1,136 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: the draftDisclosureFrom function, which maps every attribute the element declares
+    evidence: |-
+      function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosure {
+        return {
+          configuration: draft.configuration,
+          unresolved: draft.unresolved.map((item) => ({ ... })),
+          readingNotes: (draft.reading_notes ?? []).map((note) => ({ kind: note.kind, kindLabel: readingNoteKindLabel(note.kind), subject: note.subject, detail: note.detail })),
+        };
+      }
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: the generatedCredentials mapping inside draftDisclosureFrom
+    evidence: |-
+      generatedCredentials: draft.generated_credentials.map((credential) => ({ name: credential.name, securityScheme: credential.security_scheme })),
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the readingNotes mapping inside draftDisclosureFrom
+    evidence: |-
+      readingNotes: (draft.reading_notes ?? []).map((note) => ({ kind: note.kind, kindLabel: readingNoteKindLabel(note.kind), subject: note.subject, detail: note.detail })),
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      function readingNoteKindLabel(kind: string): string { return readingNoteKindMessage(kind); }
+      — kind is typed as a bare string forwarded to an external label lookup.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: the responseFields mapping inside draftDisclosureFrom
+    evidence: |-
+      responseFields: (draft.response_fields ?? []).map((field) => ({ name: field.name, path: field.path, status: field.status, declaredType: field.declared_type, declaredRequired: field.declared_required, envelope: field.envelope })),
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: the statusReadings mapping inside draftDisclosureFrom
+    evidence: |-
+      statusReadings: (draft.status_readings ?? []).map((reading) => ({ status: reading.status, ending: reading.ending, declaredAs: reading.declared_as })),
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: the unresolved mapping inside draftDisclosureFrom
+    evidence: |-
+      unresolved: draft.unresolved.map((item) => ({ name: item.name, reason: item.reason, reasonLabel: unresolvedReasonLabel(item.reason) })),
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      function unresolvedReasonLabel(reason: string): string { return unresolvedReasonMessage(reason); }
+      — reason is typed as a bare string forwarded to an external label lookup.
+  - node: rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
+    held_at: the "refused" branch of ConnectorConfigurationHelperDisclosureState and the four refusal cases of disclosureStateForOutcome
+    evidence: |-
+      | { readonly kind: "refused"; readonly message: string };
+      case "openapi-document-not-fetched": return { kind: "refused", message: draftNotGeneratedFetchFailureMessage(openApiFetchFailureText(outcome.failure)) };
+      case "openapi-document-not-readable": return { kind: "refused", message: DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE };
+      case "openapi-operation-not-found": return { kind: "refused", message: draftNotGeneratedOperationNotFoundMessage(outcome.method, outcome.path) };
+      case "unrecognized-failure": return { kind: "refused", message: DRAFT_NOT_GENERATED_UNRECOGNIZED_FAILURE_MESSAGE };
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: the "drafted" case of disclosureStateForOutcome, delegating to draftDisclosureFrom
+    evidence: |-
+      case "drafted": return { kind: "drafted", draft: draftDisclosureFrom(outcome.draft) };
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: the statusReadings, responseFields and readingNotes mappings, and the direct pass-through of methodMismatch
+    evidence: |-
+      methodMismatch: draft.method_mismatch,
+      statusReadings: (draft.status_readings ?? []).map((reading) => ({ status: reading.status, ending: reading.ending, declaredAs: reading.declared_as })),
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file issues no network call anywhere; its only imports are types and message functions.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: The file only consumes the already-produced DraftConnectorConfigurationRequestOutcome type.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'configuration: draft.configuration, — passed through untouched, no connector-configuration rule engaged.'
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: The file has no reference to openapi-document-operations anywhere.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: The file never reads or names a chosen path/method pairing.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: the DraftDisclosure type declaration
+    evidence: |-
+      export type DraftDisclosure = { readonly configuration: string; readonly unresolved: readonly UnresolvedItemDisclosure[]; ... };
+      No field names, versions or counts a capability.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: 'configuration: draft.configuration, — carried through as opaque text with no parse check.'
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: The file has no entry-guidance text.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: The file contains no reference to placeholder literal forms.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The file declares no submission act.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: The file has no statement about credential placeholder resolution.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: The file has no reference to subject placeholders.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: The file has no departure-checking logic.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: The file has no reference to responseMap keys.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: The file makes no readiness statement of any kind.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: The file never reads a connector name or an operation selection.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: ConnectorConfigurationHelperDisclosureState carries no staleness flag.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: The file has no key-diff or confirmation logic.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: The file has no reference to address, query, headers or body.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: The file has no reference to method or statusMap vocabulary.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: The file has no apply act and no confirmation logic.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: These cases concern the draft request's own outstanding/idle state, not the operations-read outcome.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: The file has no reference to responseMap keys.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: The file has no reference to statusMap endings.
+looked_past: >-
+  UnresolvedItemDisclosure.reason and ReadingNoteDisclosure.kind are typed as bare string rather
+  than a literal union, so nothing in this file's own types enforces closure; a code-quality
+  question, not a domain fact.

@@ -1,0 +1,126 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      import { LOADED_CONFIGURATION, UPDATED_CONFIGURATION, baseHandlers, createFetchStub,
+      mountConnectorConfigurationDetailScreen, parsedPutBody, prettyPrinted, putCallCount } from
+      "./connector-configuration-detail-screen.test-support";
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      The file's only network assertions concern a PUT; no draft request is issued or asserted.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      expect(parsedPutBody(fetchMock)).toEqual({ configuration: UPDATED_CONFIGURATION });
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      The two describe blocks are titled "Save is gated on isDirty (criterion 4)" and "a
+      successful save (criterion 7)"; neither exercises a draft.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reference to a reading note, kind or subject appears anywhere.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No reference to a reading-note kind appears anywhere.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No reference to a response field appears anywhere.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No reference to a status reading appears anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No reference to an unresolved item appears anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reason values appears anywhere.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No reference to an OpenAPI document's operations listing appears anywhere.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No reference to the Configuration Helper or an operation choice appears anywhere.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft response, and no capability reference, is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      The file exercises the Configuration field directly through fireEvent.change with fixed
+      constants, never through a generated draft.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No entry-guidance text is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text is asserted or exercised anywhere.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      Every configuration value the tests use is JSON-parsed successfully; no test drives the
+      field to malformed text.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder or resolution statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder or capability-coverage statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No method/statusMap-departure statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap-coverage statement is asserted anywhere.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      None of the four readiness statements this node bounds is asserted anywhere; the only
+      gating tested is the Save button's disabled attribute tied to edit state.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No Connector field, operation choice, or draft-request act is asserted anywhere.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft, and no staleness statement, is asserted anywhere.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft request or disclosure of any part is asserted anywhere.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation act or diff statement is asserted anywhere.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address, query, headers or body key is asserted anywhere.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is asserted anywhere.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      No draft-apply act, and no confirmation gate over it, is exercised; the only unsubmitted-
+      edit concern tested is Save's disabled state.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No Configuration Helper, and no operations-read state, is asserted anywhere.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No capability, responseMap key or coverage statement is asserted anywhere.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap ending, and no pre-write departure statement, is asserted anywhere.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft answer, status readings, response fields or reading notes are asserted anywhere.
+looked_past: >-
+  This file's actual content (Save gated on edit state, and a successful-save acknowledgement)
+  sits outside the pack's 33 OpenAPI-draft-domain nodes. Searching the specification root turned
+  up rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+  for the Save-disabled-when-unedited behavior and the candidate
+  rules/integration/a-submitted-registration-states-its-outcome-to-the-operator for the post-save
+  acknowledgement; neither yielded a quotable finding — the field-reset-on-load question turns on
+  files outside this set, and the acknowledgement's clearing-on-further-edit is explicitly left to
+  the interface by the outcome-statement node's own text.
+candidates_opened:
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator

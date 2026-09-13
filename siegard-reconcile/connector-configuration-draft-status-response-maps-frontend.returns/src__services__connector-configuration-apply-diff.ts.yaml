@@ -1,0 +1,136 @@
+read:
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: the parseJsonObject helper, applied to both the field's text and the draft's text
+    evidence: |-
+      function parseJsonObject(text: string): Record<string, unknown> | null {
+        let parsed: unknown;
+        try { parsed = JSON.parse(text); } catch { return null; }
+        return isPlainRecord(parsed) ? parsed : null;
+      }
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: computeApplyConfirmationDiff, together with NESTED_OBJECT_KEYS naming statusMap, responseMap, query and headers
+    evidence: |-
+      const topLevel = objectKeyChangeSet(fieldObject, draftObject);
+      const nested: NestedKeyDiff[] = [];
+      for (const key of NESTED_OBJECT_KEYS) {
+        const fromNested = fieldObject[key];
+        const toNested = draftObject[key];
+        if (isPlainRecord(fromNested) && isPlainRecord(toNested)) { nested.push({ key, diff: objectKeyChangeSet(fromNested, toNested) }); }
+      }
+      return { kind: "itemisable", topLevel, nested };
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file issues no network request of any kind.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: The file declares no operation and calls no draft-generation endpoint.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: Neither a connector nor a configuration attribute is read or produced here.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: None of unresolved, generated_credentials, method_mismatch, status_readings, response_fields or reading_notes appears anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The file has no kind/subject/detail structure of any note.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumerated kinds appears in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response-field structure appears here.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status/ending/declared_as structure appears here.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No name/reason pairing for an unresolved item appears here.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reason values appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: The file has no notion of an OpenAPI document or its operations.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: The file has no operation-choosing logic at all.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: The file never reads or excludes a capability field.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: The file states nothing to an operator.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder syntax is parsed or checked here.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The file offers no submission act at all.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: The file makes no statement about credential resolution.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: The file makes no statement about subject placeholders or registered capabilities.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: The file makes no judgment about method/status vocabulary departures.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: The nested responseMap handling is a generic key diff, not a comparison against any capability's output schema.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: The file states no readiness claim and withholds no act.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: The file has no notion of offering a draft request.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: The file has no notion of staleness, a link, a chosen operation or a connector name.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: The file states nothing to an operator; it returns a plain diff structure to its caller.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: query, headers, statusMap and responseMap are all treated as opaque objects for key-diffing purposes only.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: The file never inspects a method value or a statusMap ending against any vocabulary.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: The file computes what a confirmation would itemize; it contains no gating of the apply act itself.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: The file has no notion of an operations read or its outstanding/empty states.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: The file reads no capability and states no such statement.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: The file makes no statusMap-ending vocabulary judgment.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: The file carries no status_readings, response_fields or reading_notes disclosure.
+findings:
+  - file: src/services/connector-configuration-apply-diff.ts
+    where: the draftObject === null branch inside computeApplyConfirmationDiff
+    evidence: |-
+      const draftObject = parseJsonObject(draftText);
+      if (draftObject === null) { return { kind: "not-itemisable" }; }
+    cost: >-
+      an-apply-confirmation-states-what-the-draft-would-change conditions "cannot be itemized"
+      solely on the field's own content failing to be well-formed, and
+      a-connector-configuration-drafts-configuration-is-well-formed-object-text declares a
+      draft's configuration is always well-formed — so no node describes what should happen if
+      the draft's own text ever failed to parse. This branch folds that unaddressed case into the
+      same "not-itemisable" outcome as an ordinary malformed edit.
+    kind: unstated
+    node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    correction: >-
+      Either extend the node to state what the confirmation shows when the draft's own
+      configuration is not well-formed, or drop this branch and trust the invariant that a
+      generated draft's configuration is always well-formed.
+looked_past: >-
+  The nested-key diff only records an entry for statusMap/responseMap/query/headers when both
+  sides are plain objects, so a key present as a non-object or missing on one side surfaces only
+  in the top-level set and never as a nested breakdown — an edge case neither node specifies.

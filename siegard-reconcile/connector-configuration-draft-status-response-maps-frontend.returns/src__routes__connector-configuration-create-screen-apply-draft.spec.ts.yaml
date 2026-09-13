@@ -1,0 +1,184 @@
+read:
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      chooseHelperOperation, which names the operation by selecting a listed option rather than
+      typing a path or a method
+    evidence: |
+      fireEvent.click(screen.getByLabelText("Operação"));
+      const option = await screen.findByRole("option", { name: `${path} — ${method}` });
+      fireEvent.mouseDown(option);
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the fetch stub, which routes the operations read through a backend endpoint keyed by the
+      link rather than fetching the link itself
+    evidence: |
+      function operationsReadRoute(link: string): string {
+        return `/v1/read-openapi-document-operations?link=${encodeURIComponent(link)}`;
+      }
+  - node: contracts/integration/connector-configuration-draft
+    held_at: DRAFT_ENDPOINT_PATH and draftResponse(), stubbing that operation's answer
+    evidence: |
+      const DRAFT_ENDPOINT_PATH = "/v1/draft-connector-configuration-from-openapi";
+  - node: domain/integration/connector-configuration
+    held_at: the Configuração field's applied text and the Conector field's held name
+    evidence: |
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
+        WELL_FORMED_APPLIED_TEXT,
+      );
+      expect(screen.getByLabelText<HTMLInputElement>("Conector").value).toBe(CONNECTOR_NAME);
+  - node: domain/integration/connector-configuration-draft
+    held_at: draftResponse()'s object literal
+    evidence: |
+      return jsonResponse({
+        connector: CONNECTOR_NAME,
+        configuration: configurationText,
+        unresolved: [],
+        generated_credentials: [],
+      });
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      draftResponse() carries only connector, configuration, unresolved and generated_credentials
+      — no reading_notes field appears anywhere in the file
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      no reading-note kind is named anywhere in the file; the mocked draft answer carries no
+      reading_notes at all
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      the mocked draft answer in draftResponse() carries no response_fields entry
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      the mocked draft answer in draftResponse() carries no status_readings entry
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: draftResponse()'s empty unresolved array
+    evidence: |
+      unresolved: [],
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      unresolved is always stubbed empty (`unresolved: []`), so no reason value is ever named
+  - node: domain/integration/openapi-document-operations
+    held_at: operationsReadJsonResponse()
+    evidence: |
+      function operationsReadJsonResponse(): Response {
+        return jsonResponse({ operations: [HELPER_OPERATION] });
+      }
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: draftResponse()'s object literal, which carries no capability field
+    evidence: |
+      return jsonResponse({
+        connector: CONNECTOR_NAME,
+        configuration: configurationText,
+        unresolved: [],
+        generated_credentials: [],
+      });
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: WELL_FORMED_APPLIED_TEXT, used as the drafted configuration in four of the five scenarios
+    evidence: |
+      const WELL_FORMED_APPLIED_TEXT = JSON.stringify({ distinctive: true }, null, 2);
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      the file exercises only the Apply flow and the Save enablement; no entry-guidance text is
+      asserted anywhere
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      no placeholder text or placeholder-form assertion appears anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: the assertion that Save stays disabled after a non-object draft is applied
+    evidence: |
+      expect(screen.getByRole<HTMLButtonElement>("button", { name: "Salvar" }).disabled).toBe(true);
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      no credential placeholder is present in either applied text, and no such statement is
+      asserted
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      no subject placeholder or capability-coverage statement is asserted anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      neither applied text exercises a method/statusMap departure statement, and none is asserted
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      no responseMap-coverage statement is asserted anywhere in the file
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the assertion that Save flips to enabled once a well-formed draft is applied
+    evidence: |
+      await waitFor(() =>
+        expect(screen.getByRole<HTMLButtonElement>("button", { name: "Salvar" }).disabled).toBe(false),
+      );
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: fillHelperRequestFields, which fills Conector, the link and the chosen operation before the draft is requested
+    evidence: |
+      async function fillHelperRequestFields(): Promise<void> {
+        fireEvent.change(await screen.findByLabelText<HTMLInputElement>("Conector"), {
+          target: { value: CONNECTOR_NAME },
+        });
+        fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
+        await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
+      }
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      no scenario in the file changes the link, operation or connector name after a draft is
+      answered, so staleness is never exercised
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: waiting for the Aplicar control once the draft's answer arrives
+    evidence: |
+      await screen.findByRole("button", { name: "Aplicar" });
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      applyAnsweredDraft always starts from an untouched Configuration field, so no confirmation
+      is ever triggered or asserted
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      no address, query, headers or body key is asserted anywhere in the file
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      no method or statusMap value is asserted anywhere in the file
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      applyAnsweredDraft always applies over a field with no prior unsubmitted edit, so this
+      protection is never exercised
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      the operations read is always stubbed to answer immediately with one operation; no
+      outstanding or empty-document state is asserted
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      no capability, responseMap key or field-expectation statement appears anywhere in the file
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      no statusMap value is asserted anywhere in the file
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      draftResponse() never carries status_readings, response_fields or reading_notes, so none
+      of those disclosures is exercised here
+looked_past: >-
+  The title "despite the wiring passing a valid hint" on the criterion-6 test describes an
+  internal implementation assumption about how Save's disabled state gets computed; the test
+  itself asserts only the resulting disabled/enabled state, so that phrase is a test-authoring
+  note rather than a domain fact, and weighing it is a code-quality judgment, not this pass's.
+candidates_opened:
+  - rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+  - rules/integration/a-drafted-connector-configuration-is-answered-as-a-read
+  - rules/integration/the-configuration-field-is-untouched-by-a-drafts-arrival
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - rules/integration/a-connector-configuration-draft-registers-nothing

@@ -1,0 +1,112 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: parseConfigurationObject, which treats the Configuration field's content as JSON object text and requires it to parse to an object
+    evidence: |-
+      parsed = JSON.parse(configurationText); ... return isPlainRecord(parsed) ? parsed : null;
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: the SUBJECT_PLACEHOLDER_PATTERN constant, recognizing only the Subject-attribute form
+    evidence: |-
+      const SUBJECT_PLACEHOLDER_PATTERN = /\$\{subject:([^}]+)\}/g;
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: computeSubjectPlaceholderStatements
+    evidence: |-
+      if (connectorCapabilities.length === 0) { return [{ kind: "cannot-be-checked" }]; }
+      return attributeNames.map((attributeName) => {
+        const nonDeclaringCapabilityLabels = capabilityPropertyNames.filter((entry) => !entry.propertyNames.has(attributeName)).map((entry) => entry.label);
+        if (nonDeclaringCapabilityLabels.length === 0) { return { kind: "declared", attributeName }; }
+        return { kind: "undeclared", attributeName, nonDeclaringCapabilityLabels };
+      });
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: the file issues no fetch of any kind.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: the file declares no draft-connector-configuration-from-openapi call and no draft-shaped value.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: no field named connector, configuration, unresolved, generated_credentials, method_mismatch, status_readings, response_fields or reading_notes appears anywhere.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: the file defines no reading-note construct.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: the only enumeration this file declares is SubjectPlaceholderStatement's own kind values.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: no name/path/status/declared_type/declared_required/envelope structure is produced anywhere.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: no status/ending/declared_as structure is produced anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: no name/reason unresolved-item structure is produced anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: none of the three reason values appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: the file holds no operations list and reads no OpenAPI document.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: the file offers no operation-choosing act.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: the file reads no draft answer and returns no such answer.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: the file generates no draft configuration; it only judges text it is given.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: the file states nothing to an operator about method/address/statusMap/responseMap or placeholder forms as a whole.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: 'the file offers no submission act; on malformed text it silently returns an empty array.'
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: the file never matches or discloses a ${credential:<name>} placeholder.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: the file states nothing about method or statusMap vocabulary departures.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: the file never reads or names a responseMap key.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: the file withholds no act and makes no readiness claim.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: the file offers no draft-request act and reads no Connector field or chosen operation.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: the file tracks no draft, no link, no chosen operation and no staleness state.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: the file states nothing to an operator; it returns a plain array with no notion of a draft answer.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: the file contains no confirmation, no diff and no comparison.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: the file names no address, query, headers or body key.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: no method, statusMap or responseMap vocabulary is named or checked anywhere.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: the file holds no Configuration field state and performs no apply.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: the file reads no operations list and states no outstanding/empty-listing condition.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: the file never inspects a responseMap or an output schema property.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: the file never inspects a statusMap entry or evidence-result ending vocabulary.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: the file has no notion of a draft answer, a status reading or a reading note.
+looked_past: >-
+  capabilityLabel formats a non-declaring capability as "name (version)"; no node in this set is
+  contradicted by including the version, and exact wording/format is left to the interface
+  throughout this batch of nodes.

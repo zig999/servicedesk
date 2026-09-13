@@ -1,0 +1,18 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-reading-note
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-connector-configuration-from-openapi-reading-parts.spec.ts
+        name: carries detail through when the answer named one, and carries no detail key at all when it named none
+      - file: src/services/connector-configuration-draft-disclosure-reading-notes.spec.ts
+        name: copies kind and subject through unchanged for every note, carries a carried detail through, and carries no detail for a note naming none
+    why: >-
+      The attribute half (kind, subject, detail presence) is exercised. What each subject names,
+      and what each detail carries, is unexercised -- both files pass subject/detail through from
+      their own fixtures, including fixtures that contradict the node's own subject/detail rules
+      without failing any assertion.
+    remainder: testable
+    remainder_why: >-
+      Assertions over drafted notes at each of the node's subject-determining conditions
+      (operation-as-a-whole vs. response key/property/field), and over the repeated-field-name
+      detail naming the actual path not taken.

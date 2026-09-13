@@ -1,0 +1,170 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the capability filter, line 15
+    evidence: >-
+      capabilities.filter((capability) => capability.connector === connector)
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: >-
+      the hook body, lines 14-22 — it derives the capabilities currently registered naming the
+      connector and hands them, with the configuration text, to the coverage computation the rule's
+      statement is built from
+    evidence: |-
+      const connectorCapabilities = useMemo(
+        () => capabilities.filter((capability) => capability.connector === connector),
+        [capabilities, connector],
+      );
+
+      return useMemo(
+        () => computeResponseMapCapabilityCoverage(configurationText, connectorCapabilities),
+        [configurationText, connectorCapabilities],
+      );
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      import { useCapabilities } from "./use-capabilities";
+      import {
+        computeResponseMapCapabilityCoverage,
+        type ResponseMapCapabilityCoverage,
+      } from "../services/connector-configuration-response-map-capability-coverage";
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      the whole file imports only useCapabilities and computeResponseMapCapabilityCoverage; nothing
+      names draft-connector-configuration-from-openapi or a draft
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      the file declares no draft-shaped value; its only parameters are connector: string and
+      configurationText: string
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      no reference to a reading note, its kind or its subject appears anywhere in the file
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      no enumeration of reading-note kinds appears anywhere in the file
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      no reference to a drafted response field, its path, status or envelope appears anywhere in the
+      file
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      no reference to a status reading or an evidence-result ending appears anywhere in the file
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      no reference to an unresolved item or its reason appears anywhere in the file
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      no enumeration of unresolved reasons appears anywhere in the file
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      no reference to an OpenAPI document or its operations appears anywhere in the file
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      the file has no operation-choice logic; its only inputs are connector: string and
+      configurationText: string
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      the file reads capabilities from useCapabilities and filters them by connector, but never
+      constructs or reads a draft answer
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      configurationText is passed straight through to computeResponseMapCapabilityCoverage with no
+      well-formedness judgment made in this file
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      the file states nothing to an operator; it returns a value, ResponseMapCapabilityCoverage |
+      null, from a hook
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      no reference to a ${subject:...}, ${requester} or ${credential:...} placeholder form appears
+      anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      the file offers no act at all; it is a data-computing hook with no submission logic
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      no reference to a credential placeholder or its resolution appears anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      no reference to a subject placeholder or an input schema property appears anywhere in the file
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      the file makes no judgment of method, statusMap or placeholder-form departures; it only
+      filters capabilities and delegates
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      the file withholds no act and states nothing; it has no submission-readiness logic at all
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      the file offers no request act; connector is taken as given and used only to filter
+      capabilities.connector === connector
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      no reference to staleness, a link, or a chosen operation appears anywhere in the file
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      no reference to a draft answer, its configuration, unresolved items or generated credentials
+      appears anywhere in the file
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      no reference to applying a draft or a confirmation appears anywhere in the file
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      no reference to an address, a query, headers or a body appears anywhere in the file
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      no reference to a method, a statusMap or an evidence-result ending appears anywhere in the file
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      no reference to an unsubmitted edit or applying a draft appears anywhere in the file
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      no reference to an operations read, its outstanding state, or a document declaring no
+      operation appears anywhere in the file
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      return useMemo(
+        () => computeResponseMapCapabilityCoverage(configurationText, connectorCapabilities),
+        [configurationText, connectorCapabilities],
+      );
+      — the hook only returns the computed coverage value; it states nothing to an operator itself
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      no reference to a statusMap entry or its ending appears anywhere in the file
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      no reference to status readings, response fields or reading notes appears anywhere in the file
+looked_past: >-
+  Whether useCapabilities returns only capabilities "currently registered" as the response-map rule
+  requires, and whether computeResponseMapCapabilityCoverage itself states the rule's four
+  disclosures correctly, are both settled by files outside this one and are not this file's own
+  behavior to answer for.

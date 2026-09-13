@@ -1,0 +1,113 @@
+read:
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: >-
+      the SubjectPlaceholderStatements component's per-kind switch, rendering
+      SUBJECT_PLACEHOLDER_CANNOT_BE_CHECKED_MESSAGE for "cannot-be-checked" and naming the
+      attribute and the non-declaring capabilities for "undeclared"
+    evidence: |-
+      case "cannot-be-checked":
+            return SUBJECT_PLACEHOLDER_CANNOT_BE_CHECKED_MESSAGE;
+          case "declared":
+            return subjectPlaceholderDeclaredText(statement.attributeName);
+          case "undeclared":
+            return subjectPlaceholderUndeclaredText(statement.attributeName, statement.nonDeclaringCapabilityLabels);
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: the file issues no fetch and reads no OpenAPI document at all.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: no draft-related type or call appears.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'The component takes only statements: readonly SubjectPlaceholderStatement[] as props.'
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No attribute of a draft is referenced anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: no reading-note kind, subject or detail appears.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: none of the reading-note-kind enumeration values appear.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No field name, path, status, declared_type, declared_required or envelope is read or rendered.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status, ending or declared_as value is read or rendered.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved-item name/reason pair is read or rendered.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No reason value appears anywhere in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: The file declares no operations listing.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: There is no Configuration Helper, operation listing or operation-choice control in this file.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft response or capability-reference value is read here at all.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: The file performs no JSON parsing or well-formedness judgment of any configuration text.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: The file states no schema of what the HTTP connector reads.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder literal form is stated or validated; it only names an attributeName already resolved elsewhere.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The file offers no submission act, no register-connector call and no control of any kind beyond a div/ul/li list.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder or credential-resolution statement appears anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: The file states nothing about method or statusMap vocabulary departures.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap key or capability output-schema-property statement is read or rendered.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: The component makes no readiness or submission-withholding decision.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request act, Connector field or chosen-operation state is read here.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness state or comparison appears in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft configuration text, unresolved item, generated credential, status reading, response field or reading note is stated.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No confirmation dialog or key-level diff is present.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address, query, headers or body value is stated by this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is stated by this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply act, Configuration field edit-state or confirmation gate is present.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No operations-read outstanding state or empty-listing statement is present.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No responseMap key or capability field-expectation statement appears.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap ending or vocabulary statement appears.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No status reading, response field or reading note is stated; its rendered union carries only subject-placeholder statement kinds.
+looked_past: >-
+  The switch statements over statement.kind rely on TypeScript's exhaustiveness check rather than
+  a default branch, and the component's own presentational choices are code-shape concerns this
+  pass does not judge.

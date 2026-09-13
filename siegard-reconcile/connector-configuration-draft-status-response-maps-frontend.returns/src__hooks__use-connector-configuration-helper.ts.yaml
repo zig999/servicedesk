@@ -1,0 +1,177 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the delegation to the two data hooks rather than any direct request — line 54 and line 60
+    evidence: >-
+      const { requestDraft, outcome, statedFor } = useDraftConnectorConfigurationFromOpenApi(connector); ... const { outcome: operationsOutcome } = useOpenApiDocumentOperations(link);
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      the requestDraft call inside onRequestDraft, lines 76-78
+    evidence: >-
+      onRequestDraft: () => { requestDraft({ link, path, method }); },
+  - node: contracts/integration/openapi-document-operations
+    held_at: >-
+      the call to useOpenApiDocumentOperations(link), line 60
+    evidence: >-
+      const { outcome: operationsOutcome } = useOpenApiDocumentOperations(link);
+  - node: domain/integration/openapi-document-operations
+    held_at: >-
+      operationsOfferedFor, lines 29-33
+    evidence: >-
+      return operationsOutcome.kind === "operations" ? operationsOutcome.operations : [];
+  - node: domain/integration/openapi-operation
+    held_at: >-
+      onChooseOperation, lines 68-71
+    evidence: >-
+      onChooseOperation: (operation) => { setPath(operation.path); setMethod(operation.method); },
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      partially: onChooseOperation (lines 68-71) sets path and method only from a chosen OpenApiOperation
+    evidence: >-
+      onChooseOperation: (operation) => { setPath(operation.path); setMethod(operation.method); },
+  - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+    held_at: nowhere
+    evidence: >-
+      export function useConnectorConfigurationHelper(connector: string): ConnectorConfigurationHelperState { — a state hook, with no surface placement of any kind
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      onRequestDraft: () => { requestDraft({ link, path, method }); }, — invoked unconditionally, with no check of connector, path or method and no "waiting on" state exposed
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: >-
+      draftIsStale, lines 35-49, applied at line 80
+    evidence: >-
+      statedFor.link !== current.link || statedFor.path !== current.path || statedFor.method !== current.method || statedFor.connector !== current.connector
+  - node: scenarios/integration/an-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      onChooseOperation, lines 68-71
+    evidence: >-
+      onChooseOperation: (operation) => { setPath(operation.path); setMethod(operation.method); },
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      connector, — the connector name is only passed through; no configuration text is read or held here
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      outcome, — the draft's own attributes are never unpacked, only the whole DraftConnectorConfigurationRequestOutcome value is forwarded
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      outcome, — reading notes are never read out of the outcome in this file
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      outcome, — no reading-note kind is read or compared in this file
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      outcome, — response fields are never read out of the outcome in this file
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      outcome, — status readings are never read out of the outcome in this file
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      outcome, — unresolved items are never read out of the outcome in this file
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      outcome, — no unresolved reason is read or compared in this file
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      outcome, — the answer's shape is opaque here; this file states nothing about what it carries or omits
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      outcome, — the draft's configuration text is never read, parsed or judged in this file
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      this file exports only useConnectorConfigurationHelper and its state type, with no entry-field statement of any kind
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      this file contains no reference to placeholder text of any form
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      this file exposes no register-connector submission act at all
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      this file contains no reference to a credential placeholder
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      this file contains no reference to a subject placeholder or a capability
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      this file never reads the Configuration field's content or judges it against the HTTP connector's vocabulary
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      this file contains no reference to a responseMap or a capability's output schema
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      this file makes none of the four readiness statements this rule bounds
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      outcome, — the outcome is handed back whole; nothing in this file discloses its configuration, unresolved items, credentials, readings or notes to an operator
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      this file contains no confirmation or diff logic of any kind
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      this file never reads a configuration's address, query, headers or body
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      this file never reads or judges a configuration's method or statusMap
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      this file contains no Configuration field state or apply act at all
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      operationsOutcome, operations: operationsOfferedFor(operationsOutcome), — the raw outcome and derived list are exposed, but nothing here states to an operator that a read is outstanding or that the document declares no operation
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      this file contains no responseMap or capability-coverage logic
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      this file contains no statusMap logic
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      outcome, — the drafted configuration, status readings, response fields and reading notes the scenario expects stated are never unpacked or stated in this file
+findings:
+  - file: src/hooks/use-connector-configuration-helper.ts
+    where: >-
+      the ConnectorConfigurationHelperState type (lines 21 and 23) and its implementation in the hook's return (lines 73 and 75)
+    evidence: |-
+      readonly onPathChange: (value: string) => void;
+      readonly onMethodChange: (value: string) => void;
+      ...
+      onPathChange: setPath,
+      ...
+      onMethodChange: setMethod,
+    cost: >-
+      a consumer of this hook can set path or method to any typed string through onPathChange/onMethodChange, independently of onChooseOperation; the request onRequestDraft then issues — requestDraft({ link, path, method }) — would name a path or a method the operator typed rather than one chosen from the fetched document's own listing, which the rule states never happens, and nothing else in this file withholds that capability.
+    kind: contradicts
+    node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    correction: >-
+      drop onPathChange and onMethodChange from the hook's returned state (keep setPath/setMethod internal, reachable only through onChooseOperation) so path and method can only ever be set from a chosen operation of the fetched listing.
+looked_past: >-
+  Whether the draft-request act itself is withheld while the connector name is empty or whitespace or no operation is chosen, and the widened optionality of `connector` and `stale` in the returned type against always-present values, are left to the consuming surface (connector-configuration-helper-fields.tsx) and to a code-quality reading rather than reported here.
+candidates_opened: []

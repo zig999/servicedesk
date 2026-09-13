@@ -1,0 +1,110 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: No fetch of an OpenAPI document appears; the only stubbed reads are CAPABILITIES_PATH and SUBJECT_TYPE_PATH.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No call to draft-connector-configuration-from-openapi appears in this file.
+  - node: domain/integration/connector-configuration
+    held_at: the "Add attribute" test's edit of the Configuration field
+    evidence: |-
+      fireEvent.change(within(dialog).getByLabelText("Configuração"), { target: { value: '{"address":"https://api.example.com/${subject:picker-panel-subject-id}"}' } });
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft-related attribute is referenced.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reading note of any kind is referenced.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumerated kinds appears in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response field disclosure is exercised.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status reading disclosure is exercised.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved item is exercised.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved reason value appears.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations listing of a fetched document is exercised.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper or operation-choosing interaction appears.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer is inspected in this file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No draft configuration text is asserted on.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No assertion checks a stated entry claim about method/address/statusMap/responseMap keys.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: the same "Add attribute" test's Configuration field value
+    evidence: '{"address":"https://api.example.com/${subject:picker-panel-subject-id}"}'
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The only submission-related assertion runs over content that is already well-formed, never
+      asserting anything about a not-well-formed case.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No assertion checks a stated claim about a subject placeholder's declaration by a capability's input schema.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No departure statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap coverage statement is asserted.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: No readiness-statement/submission-withholding behavior beyond well-formedness is exercised.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request act is exercised.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft staleness is exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No answered draft is stated or inspected.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-draft confirmation is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: the same "Add attribute" test's Configuration field value, an address embedding a subject placeholder
+    evidence: '{"address":"https://api.example.com/${subject:picker-panel-subject-id}"}'
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: The configuration text set declares no method and no statusMap.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply-draft-over-unsaved-edit interaction is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No Configuration Helper operations-read state is exercised.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: This scenario's given/then facts do not appear.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap ending is asserted.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft answer with status readings, response fields or reading notes is exercised.
+looked_past: >-
+  The mix of Portuguese and English labels within the same dialog is an interface-consistency
+  matter, not a domain fact. The file's substantive behavior (capability picker filtering,
+  composite name+version key, Add-attribute reconciliation) traces to
+  rules/integration/a-connector-configuration-is-tested-through-a-registered-capability, a node
+  outside this pack found by full-text search; the file's assertions are consistent with it, so
+  no finding is raised.

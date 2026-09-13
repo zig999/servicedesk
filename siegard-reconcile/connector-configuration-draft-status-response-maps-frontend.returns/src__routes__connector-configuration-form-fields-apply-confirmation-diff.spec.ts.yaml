@@ -1,0 +1,155 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the fetch stub wiring in mountCreateReady, which only intercepts backend routes and never
+      the operator-supplied OpenAPI link itself
+    evidence: |-
+      const fetchMock = createFetchStub({
+        [DRAFT_ROUTE]: () => draftResponse(draftConfigurationText),
+        [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
+      });
+  - node: contracts/integration/connector-configuration-draft
+    held_at: the DRAFT_ROUTE constant and the draftResponse fixture it is stubbed to answer
+    evidence: |-
+      const DRAFT_ROUTE = "/v1/draft-connector-configuration-from-openapi";
+  - node: domain/integration/connector-configuration
+    held_at: the Configuration and Conector fields exercised in openApplyConfirmation
+    evidence: |-
+      fireEvent.change(configurationField, { target: { value: fieldText } });
+      fireEvent.change(screen.getByLabelText("Conector"), { target: { value: CONNECTOR } });
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      the draftResponse fixture, partially — only connector, configuration, unresolved and
+      generated_credentials are populated
+    evidence: |-
+      function draftResponse(configurationText: string): Response {
+        return jsonResponse({
+          connector: CONNECTOR,
+          configuration: configurationText,
+          unresolved: [],
+          generated_credentials: [],
+        });
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The draftResponse fixture carries no reading_notes field.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No reading-note kind appears anywhere.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: The draftResponse fixture carries no response_fields field.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: The draftResponse fixture carries no status_readings field.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "unresolved: [],"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "unresolved: [],"
+  - node: domain/integration/openapi-document-operations
+    held_at: operationsReadJsonResponse, answering the operations-read route with one operation
+    evidence: |-
+      function operationsReadJsonResponse(): Response {
+        return jsonResponse({ operations: [HELPER_OPERATION] });
+      }
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: chooseHelperOperation, which selects a listed option rather than typing a path or method
+    evidence: |-
+      async function chooseHelperOperation(path: string, method: string): Promise<void> {
+        fireEvent.click(screen.getByLabelText("Operação"));
+        const option = await screen.findByRole("option", { name: `${path} — ${method}` });
+        fireEvent.mouseDown(option);
+      }
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: the draftResponse fixture, which carries no capability-related field
+    evidence: |-
+      return jsonResponse({ connector: CONNECTOR, configuration: configurationText, unresolved: [], generated_credentials: [] });
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: the draft configuration texts passed through openApplyConfirmation, each well-formed JSON object text
+    evidence: |-
+      const dialog = await openApplyConfirmation('{"a":1,"b":2}', '{"b":3,"c":4}');
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: describe title concerning apply-confirmation key itemization only.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text appears in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: |-
+      const dialog = await openApplyConfirmation("not json at all", '{"a":1}');
+      expect(within(dialog).getByText(/detalhado por itens/)).toBeTruthy();
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: >-
+      openApplyConfirmation, which sets the connector name and chooses an operation before
+      clicking the request-draft act
+    evidence: |-
+      fireEvent.change(screen.getByLabelText("Conector"), { target: { value: CONNECTOR } });
+      fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
+      await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
+      fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      await screen.findByRole("button", { name: "Aplicar" });
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: >-
+      the three describe/it blocks, which drive the confirmation dialog and assert its itemized
+      keys and its not-itemizable statement
+    evidence: |-
+      expect(listItem(dialog, "Adicionado: c")).toBeTruthy();
+      expect(listItem(dialog, "Removido: a")).toBeTruthy();
+      expect(listItem(dialog, "Alterado: b")).toBeTruthy();
+      expect(within(dialog).getByText(/detalhado por itens/)).toBeTruthy();
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: Not exercised beyond the statusMap-diff test.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: |-
+      const dialog = await openApplyConfirmation('{"statusMap":{"200":"ok","404":"missing"}}', '{"statusMap":{"200":"ok","500":"error"}}');
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: >-
+      openApplyConfirmation, where clicking Aplicar over an already-edited field opens a dialog
+      rather than replacing the field directly
+    evidence: |-
+      fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
+      return screen.findByRole("dialog");
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: operationsReadJsonResponse always answers immediately with one operation.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: Not exercised by this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: Not exercised by this file.
+looked_past: >-
+  The statusMap test (criterion 4) exercises only one nested object among the four the rule
+  names (responseMap, query and headers untested here); the ending values used are arbitrary
+  fixture data for key-diffing rather than an assertion about the status-vocabulary rule; exact
+  route paths and Portuguese UI wording are implementation and interface detail no node in this
+  pack fixes.

@@ -1,0 +1,20 @@
+certified:
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-helper-fields-operations-read-disclosure.spec.ts
+        name: renders the outstanding-read message with no alert role
+      - file: src/routes/connector-configuration-helper-fields-operations-read-disclosure.spec.ts
+        name: renders the no-operations-declared message with no alert role
+      - file: src/routes/connector-configuration-helper-fields-operations-read-disclosure.spec.ts
+        name: renders five pairwise-distinct statements across the outstanding read, the no-operations document, and the three refusals, only the refusals as alerts
+    why: >-
+      Both halves the node states are exercised by exact text, each apart from the other and
+      apart from three named refusal variants. Unexercised: the not-fetched refusal's other
+      failure-kind variants are never instantiated, so a collision between one of them and either
+      statement would not be caught; and the five-outcome enumeration is drawn from the state
+      type rather than from the refusal node itself.
+    remainder: testable
+    remainder_why: >-
+      One input per remaining failure-kind variant of the not-fetched refusal, asserted distinct
+      from both statements and from every other refusal variant, disclosed as an alert.

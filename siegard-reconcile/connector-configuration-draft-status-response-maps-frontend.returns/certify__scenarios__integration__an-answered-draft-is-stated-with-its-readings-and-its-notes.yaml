@@ -1,0 +1,23 @@
+certified:
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    state: partial
+    tests:
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: renders the draft's own configuration text unmodified
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: renders exactly the given status readings, each by its own status, its own ending and its declared_as where carried
+      - file: src/routes/connector-configuration-helper-fields.spec.ts
+        name: renders no Method mismatch section
+    why: >-
+      Three of six then-clauses are exercised (configuration text, three status readings,
+      no-method-mismatch). Unexercised: response fields (every fixture leaves them empty); the
+      reading note (likewise empty in every fixture, and its distinguishing "apart from every
+      other kind" clause untested); and the Configuration field's content before/after the
+      answer arrives (this file never renders that field at all). One gap inside an exercised
+      clause: declared_as is supplied only for the 200 reading, not for 403/503.
+    remainder: testable
+    remainder_why: >-
+      One assertion per remaining clause: an answer with seven response fields each stated with
+      name/path/status/envelope; an answer with a reading note stated by kind and subject,
+      distinguishable from a different note's kind; and a render of the field-owning component
+      showing the field's content is unchanged across the answer's arrival.

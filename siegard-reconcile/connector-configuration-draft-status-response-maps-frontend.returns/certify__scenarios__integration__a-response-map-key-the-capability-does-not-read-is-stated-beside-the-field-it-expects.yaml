@@ -1,0 +1,22 @@
+certified:
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    state: partial
+    tests:
+      - file: src/services/connector-configuration-response-map-capability-coverage.spec.ts
+        name: states every one of the scenario's three findings from a single call
+      - file: src/services/connector-configuration-response-map-capability-coverage.spec.ts
+        name: classifies a matching responseMap key as read by the capability that declares it, and a non-matching key as read by none
+      - file: src/services/connector-configuration-response-map-capability-coverage.spec.ts
+        name: lists only the output-schema property no responseMap key names, excluding the one a key does name
+    why: >-
+      The three then-clauses are exercised as pure data. Two parts are unexercised: the "when" --
+      capabilities registered naming the connector -- is never actually filtered by connector in
+      any test; and the "surface states... beside the field" half is never rendered -- no test
+      mounts the authoring surface, so whether the statement reaches the operator, and where, is
+      unproven.
+    remainder: testable
+    remainder_why: >-
+      Render the authoring surface with a capability registered under the right connector
+      alongside one registered under a different connector, and assert the three statements
+      render, positioned beside the Configuration field, with the unrelated capability
+      contributing nothing.

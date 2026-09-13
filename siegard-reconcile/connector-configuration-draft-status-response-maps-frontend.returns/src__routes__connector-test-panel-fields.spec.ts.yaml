@@ -1,0 +1,125 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file's whole scope is four describe blocks about the Test panel's Attribute field; none fetches, mocks or discusses an OpenAPI document.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft-connector-configuration-from-openapi call, no draft object, and no Configuration Helper appear.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: The connector-configuration value object's own attributes are never read or asserted; treated as an opaque fixture string.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft, unresolved item, generated_credentials, method_mismatch, status_readings, response_fields or reading_notes appear anywhere.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: Nothing in this file names a reading note, its kind, its subject or its detail.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the closed set of reading-note kinds is named or exercised here.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response field, path, status, declared_type, declared_required or envelope is read or asserted.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No statusMap or status reading is present.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved item, its name, or its reason is named.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reasons is referenced here.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No OpenAPI operation listing appears.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper, no operation picker, and no document listing are exercised.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer, and no capability reference on one, is read or asserted here.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: This file asserts nothing about a draft's own configuration text.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No authoring-surface entry statement is rendered or asserted in this file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: 'The literal ${subject:not-a-glossary-held-attribute} form appears only as inert fixture text; no assertion is made about placeholder forms.'
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: No register-connector submission, and no well-formedness judgment gating one, appears in this file.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder or credential-resolution statement is present.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: The file never asserts a stated warning about a placeholder no registered capability declares.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No statement about a method or statusMap ending outside vocabulary is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap statement appears.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: None of the four readiness statements this node bounds is rendered or asserted.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft request, Connector field, or chosen-operation gating is present.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft, and no staleness marking, is present.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft answer is stated or asserted anywhere.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation dialog or diff statement appears.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: The file never asserts what an HTTP connector configuration must declare.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary check is asserted.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No draft, and no apply act, is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No Configuration Helper or operations-read state is rendered or asserted.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: This scenario's own given/when/then is absent from this file entirely.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: This scenario's own statusMap case is absent from this file entirely.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: This scenario's own draft, status readings, response fields and reading note are absent from this file entirely.
+findings:
+  - file: src/routes/connector-test-panel-fields.spec.ts
+    where: the fourth describe/it block's own titles
+    evidence: |-
+      describe("ConnectorTestPanelFields — a subject attribute-value naming an attribute the glossary does not hold still reaches the outbound Test call (UNDERDETERMINED, from rules/investigation/a-subject-attribute-is-drawn-from-the-glossary)", () => {
+        it("dispatches POST /v1/test-connector carrying a subject attribute-value whose name is not a glossary-held subject attribute, rather than refusing it", async () => {
+    cost: >-
+      A reader who trusts this title over the specification learns that whether a Test-panel
+      subject attribute must be glossary-held is unsettled, and goes looking for a decision that
+      was in fact already made in a node this title does not cite for this surface.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    correction: >-
+      Remove the "(UNDERDETERMINED, from rules/investigation/a-subject-attribute-is-drawn-from-the-glossary)"
+      qualifier and the "rather than refusing it" framing; state instead what
+      rules/integration/a-connector-configuration-is-tested-through-a-registered-capability already
+      decides.
+looked_past: >-
+  The it()-title's own claim does not even match what the test's assertion establishes
+  (toHaveLength(0), i.e. no call reached TEST_CONNECTOR_PATH); whether that assertion is itself
+  sound is a test-correctness question about this file's own internal consistency, not a domain
+  fact, and is left to whichever pass judges test quality.
+candidates_opened:
+  - rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+  - rules/investigation/a-subject-attribute-is-drawn-from-the-glossary

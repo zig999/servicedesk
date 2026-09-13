@@ -1,0 +1,125 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: The file only imports computeApplyConfirmationDiff and ApplyConfirmationDiff and tests pure JSON-diffing.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: The file never calls or references draft-connector-configuration-from-openapi.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'The strings passed in (e.g. ''{"a":1,"b":2}'') are bare JSON fixtures, not connector configurations.'
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: None of the draft's declared attributes appear in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The file contains no reading-note fixture or assertion of any kind.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumerated kinds appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: The file asserts no response-field shape.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: The file asserts no status-reading shape.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: The file asserts no unresolved-item shape.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the enumerated reasons appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: The file has no operations listing or openapi-operation fixture.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: The file has no Configuration Helper, listing or operation-choice logic.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: The file asserts nothing about a draft answer's fields or a capability reference.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      The "not well-formed" cases are all malformed field texts paired with a well-formed draft;
+      the file never exercises or asserts that a generated draft's own configuration is always
+      well-formed.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: The file contains no surface entry, statement text or field-level claim.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text appears in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The file tests no submission-offering behavior; it is a pure diff-computation unit test.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder statement is tested here.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder statement is tested here.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No HTTP-connector-departure statement is tested here.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No capability/response-map-coverage statement is tested here.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: The file makes no readiness-statement assertion at all.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: The file contains no connector-name field, no chosen-operation state and no draft-request offering logic.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness state is tested here.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: The file never states a draft to an operator; it computes a diff between two raw text strings.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: the whole file, which is the spec's own unit test of computeApplyConfirmationDiff
+    evidence: |-
+      expect(diff.topLevel).toEqual({ added: ["c"], removed: ["a"], changed: ["b"] });
+      expect(diff.nested).toEqual([{ key, diff: { added: ["added"], removed: ["dropped"], changed: [] } }]);
+      expect(computeApplyConfirmationDiff(fieldText, '{"a":1}').kind).toBe("not-itemisable");
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: The file asserts nothing about method/address/query/headers/body declaration rules.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary check is present in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: The file tests no confirmation-gating behavior, only the diff itself.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: The file has no Configuration Helper or operations-read state.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No capability or responseMap-coverage scenario appears in this file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap-ending-vocabulary scenario appears in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft-answer disclosure scenario appears in this file.
+findings:
+  - file: src/services/connector-configuration-apply-diff.spec.ts
+    where: 'const NESTED_KEYS = ["statusMap", "responseMap", "query", "headers"] as const;'
+    evidence: |-
+      const NESTED_KEYS = ["statusMap", "responseMap", "query", "headers"] as const;
+    cost: >-
+      The four-key vocabulary this node names is already exported from the implementation as
+      NESTED_OBJECT_KEYS, but this test re-declares the same four literals independently rather
+      than importing that export. If the node's set of itemised keys ever changes, the
+      implementation's own constant and this spec's local list are two places that both have to
+      be edited in step.
+    kind: contradicts
+    node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    correction: >-
+      Import NESTED_OBJECT_KEYS from ./connector-configuration-apply-diff and iterate over it in
+      the it.each, instead of re-declaring the four key names as a local literal array.
+looked_past: >-
+  The vocabulary "itemisable"/"not-itemisable" and the test's own criteria-numbering in describe
+  titles are naming choices internal to this test and the module it exercises, not a domain fact.

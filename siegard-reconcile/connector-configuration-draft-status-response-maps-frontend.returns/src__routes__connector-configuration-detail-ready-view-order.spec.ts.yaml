@@ -1,0 +1,152 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file issues no fetch and names no OpenAPI document; its only calls are
+      mountConnectorConfigurationDetailScreen(fetchMock) and screen.findByLabelText("Configuração"),
+      neither touching a document link or an operations read.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      The test never requests or asserts a draft; it only checks
+      screen.getByRole("heading", { name: "Test" }) and the "Actions" group's contents.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      No configuration attribute is read or asserted anywhere in the file; the only field
+      referenced is found by label "Configuração" and never inspected for content.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to a draft, its configuration, its unresolved items, its
+      generated credentials, its status readings, its response fields or its reading notes.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      No reading note, kind, subject or detail is read or asserted; the file's only assertions
+      concern heading and group roles.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      The file names no reading-note kind of any of the nine values this enumeration holds.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      No response field name, path, status, declared type, declared_required or envelope appears
+      in the file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      No status, ending or declared_as value is read or asserted anywhere in the test.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      No unresolved item's name or reason is read or asserted in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      None of the three unresolved reasons is named or checked anywhere in the test.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      The file never reads or lists an OpenAPI document's operations.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      There is no Configuration Helper interaction, operation listing or chosen-operation act in
+      this file.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      No draft answer or capability reference is inspected in the file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      No draft configuration text is read, parsed or asserted well-formed in this file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      The Configuration field is only located by label and never checked for any stated claim
+      about method, address, statusMap, responseMap or placeholder forms.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      No placeholder text or form is read or asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The file asserts nothing about a submission act being offered or withheld; it only checks
+      the "Actions" group's membership.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      No credential placeholder or resolution statement is read or asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: >-
+      No subject placeholder or capability-declaration statement is read or asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      No departure statement about method, statusMap or placeholder vocabulary is read or
+      asserted here.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      No responseMap key or capability coverage statement is read or asserted in this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      The file asserts nothing about a readiness statement's claim or lack of one.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      No draft-request act, connector name field or chosen operation is exercised in this file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      No draft staleness marker or link/operation/connector-name change is exercised in this file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No draft answer or any of its stated parts is checked in this file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      No apply confirmation or itemized key-change statement is read or asserted in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      No address, query, headers or body declaration is read or asserted in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      No method, responseMap or statusMap vocabulary is read or asserted in this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      No apply-draft act or confirmation gate over an unsubmitted edit is exercised in this file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      No outstanding-read or no-operation statement is read or asserted in this file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      No responseMap key, capability name or expected-field statement is read or asserted in this
+      file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      No statusMap entry or ending-vocabulary statement is read or asserted in this file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      No status readings, response fields or reading notes from an answered draft are read or
+      asserted in this file; the only assertions are about heading and group placement.
+looked_past: >-
+  The file asserts a purely structural/layout fact — that the "Test" heading renders outside the
+  "Actions" group — which every node in this set that speaks to surface presentation explicitly
+  leaves to "the interface's own"; no node in the set or reachable from it governs footer/heading
+  arrangement, so this is a surface-arrangement test outside this pass's domain-fact judgment
+  rather than a gap in the specification.

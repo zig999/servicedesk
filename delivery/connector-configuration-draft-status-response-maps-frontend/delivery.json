@@ -256,6 +256,46 @@
       "title": "Unresolved-item reason vocabulary closed to exactly three, distinguishably -- proof",
       "summary": "Proves that each unresolved item's name and reason are carried through unmodified, the three closed-vocabulary reasons render pairwise-distinct labels, a reason outside that vocabulary -- including the one this task's fix removed from the dictionary -- is never given an invented label, and no unresolved item the answer did not carry is stated.",
       "task": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart"
+    },
+    {
+      "id": "review/connector-configuration-draft-status-response-maps-frontend",
+      "kind": "review",
+      "file": "review/connector-configuration-draft-status-response-maps-frontend.md",
+      "title": "Review: connector configuration draft, status readings and response-map capability coverage disclosure",
+      "summary": "Four passes over the 16 tasks of the drafted-answer-disclosure and configuration-readiness epics and the 75 files they touched: whether the tests prove the tasks' own criteria, whether the source states only what the specification holds, whether it follows the project's own standard, and why a captured run failed. The whole-delivery suite captured clean, so the failures pass found nothing to diagnose.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A placeholder written in none of the three forms is stated as a departure naming that placeholder.",
+        "A query or headers the content declares that is not an object of texts is stated as a departure naming the key that departs.",
+        "A responseMap that is absent, is not an object, or holds a value that is not text is stated as a departure naming the responseMap key.",
+        "A statusMap that is absent or is not an object is stated as a departure naming the statusMap key.",
+        "An address that is absent or holds no text is stated as a departure naming the address key.",
+        "Each of the nine kinds the draft's reading-note vocabulary holds is stated distinguishably from every other, none presented as another.",
+        "Each reading note the answer carries is stated with the kind that note names.",
+        "Each unresolved item is stated with the reason that answer named for it.",
+        "Every message the module holds is written in pt-BR.",
+        "No operator-facing wording of this surface is held anywhere under this area but that module.",
+        "No statement on the surface reports a result of having checked whether a credential placeholder resolves.",
+        "The entry states that a placeholder is written as ${subject:<attribute-name>}, ${requester} or ${credential:<name>}.",
+        "The entry states that the HTTP connector reads a configuration's method, address, statusMap and responseMap.",
+        "The entry states that the HTTP connector reads a query, headers and a body where the configuration declares them.",
+        "The entry states that what is entered is a JSON object.",
+        "The frontend's reading admits each of the nine kinds the draft's reading-note vocabulary holds and no kind outside it.",
+        "The route components of the Configuration Helper render no operator-facing wording of their own; each is read from the message module.",
+        "The route components of the configuration form render no operator-facing wording of their own; each is read from the message module.",
+        "The statement is made over the content the Configuration field currently holds, whether that content was typed, applied from a draft or carried by a read.",
+        "The statement says the credential is checked by nothing on this surface.",
+        "The statement says the credential is resolved from the server's own configuration at the moment of a test or an observation.",
+        "Under the same condition, the confirmation states each key of the statusMap, responseMap, query and headers objects the apply would add, remove or change in value.",
+        "Where no capability is registered naming the connector, the surface states that the field's subject placeholders cannot be checked.",
+        "Where no capability is registered naming the connector, the surface states that which fields an observation would carry cannot be read.",
+        "While that act is withheld, the statement that judgment owes stands in the act's place."
+      ],
+      "findings": 22
     }
   ],
   "edges": [
@@ -714,6 +754,102 @@
       "to": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/configuration-readiness/configuration-entry-guidance",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/pt-br-message-module",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/reading-notes-stated",
+      "kind": "reviews",
+      "at": "tasks[11]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/response-fields-stated",
+      "kind": "reviews",
+      "at": "tasks[12]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/stale-draft-marking",
+      "kind": "reviews",
+      "at": "tasks[13]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/status-readings-stated",
+      "kind": "reviews",
+      "at": "tasks[14]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
+      "kind": "reviews",
+      "at": "tasks[15]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/configuration-readiness/credential-placeholder-statement",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/configuration-readiness/http-departure-statements",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/configuration-readiness/response-map-capability-coverage",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/configuration-readiness/subject-placeholder-statements",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/configuration-readiness/submission-withheld-only-on-well-formedness",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/draft-request-gate",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/connector-configuration-draft-status-response-maps-frontend",
+      "to": "task/drafted-answer-disclosure/operations-read-states",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }

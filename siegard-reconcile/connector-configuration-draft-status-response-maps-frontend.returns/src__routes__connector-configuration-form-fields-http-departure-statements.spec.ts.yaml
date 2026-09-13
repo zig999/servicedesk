@@ -1,0 +1,125 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file never asserts anything about where an OpenAPI document is fetched from; its fetch
+      stub is only a generic mount dependency.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No test in this file requests or asserts on a draft; all three tests type text directly.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: The file exercises the Configuration field's content-judgment output, not the value-object's own attributes.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft-related assertion appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: No reading-note assertion appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No reading-note-kind assertion appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response-field assertion appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status-reading assertion appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved-item assertion appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved-reason assertion appears anywhere in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations-listing assertion appears anywhere in the file.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper operation-choice assertion appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer, capability reference or related assertion appears in the file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No draft-generation assertion appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      The file asserts on departure statements about specific content, not on the surface's
+      standing entry claims.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder-form assertion appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      Every configuration typed in this file is valid JSON object text; no test types
+      malformed content.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential-placeholder assertion appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject-placeholder assertion appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: >-
+      the three it blocks asserting the departures heading and the method/statusMap-ending
+      departure texts render (or do not) per the field's own judgment
+    evidence: |-
+      expect(screen.getByText(HTTP_CONNECTOR_DEPARTURES_HEADING)).toBeTruthy();
+      expect(screen.getByText(httpConnectorMethodDepartureText("get", HTTP_CONNECTOR_METHODS))).toBeTruthy();
+      expect(screen.queryByText(HTTP_CONNECTOR_DEPARTURES_HEADING)).toBeNull();
+      expect(screen.getByText(httpConnectorStatusMapEndingDepartureText("200", "OK", HTTP_CONNECTOR_STATUS_MAP_ENDINGS))).toBeTruthy();
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap-key/capability-coverage assertion appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: the third it block's assertion on the Save button
+    evidence: |-
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft-request-offered assertion appears anywhere in the file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness assertion appears anywhere in the file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft-answer disclosure assertion appears anywhere in the file.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation assertion appears anywhere in the file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      The file's fixture objects include an address field but no test asserts anything about
+      address, query, headers, body or placeholder mechanics governed by this node.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: >-
+      the same three assertions as the departure-statement rule above, checked against the
+      imported vocabulary constants
+    evidence: |-
+      httpConnectorMethodDepartureText("get", HTTP_CONNECTOR_METHODS)
+      httpConnectorStatusMapEndingDepartureText("200", "OK", HTTP_CONNECTOR_STATUS_MAP_ENDINGS)
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No apply/overwrite assertion appears anywhere in the file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No operations-read-state assertion appears anywhere in the file.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No capability-coverage-of-responseMap-keys assertion appears anywhere in the file.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: the third describe/it block in full
+    evidence: |-
+      JSON.stringify({ method: "GET", statusMap: { "200": "OK" }, responseMap: { id: "value" }, address: "https://api.example.com" })
+      expect(screen.getByText(httpConnectorStatusMapEndingDepartureText("200", "OK", HTTP_CONNECTOR_STATUS_MAP_ENDINGS))).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft-answer scenario assertion appears anywhere in the file.
+looked_past: >-
+  The heading text and the "Salvar" button label are interface wording the specification's own
+  sibling rules leave to the interface, not a domain fact for this pass to weigh.

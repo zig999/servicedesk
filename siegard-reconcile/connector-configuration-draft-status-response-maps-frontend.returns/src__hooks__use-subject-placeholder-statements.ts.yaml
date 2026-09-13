@@ -1,0 +1,160 @@
+read:
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: >-
+      the capability selection and the delegated computation, lines 14-22
+    evidence: |-
+      const connectorCapabilities = useMemo(
+          () => capabilities.filter((capability) => capability.connector === connector),
+          [capabilities, connector],
+        );
+
+        return useMemo(
+          () => computeSubjectPlaceholderStatements(configurationValue, connectorCapabilities),
+          [configurationValue, connectorCapabilities],
+        );
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The hook imports only `useCapabilities` and
+      `computeSubjectPlaceholderStatements`; nothing in it fetches, names, or refers to an
+      OpenAPI document or its URL.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      The hook takes `connector` and `configurationValue` and returns
+      `readonly SubjectPlaceholderStatement[]`; it never calls
+      `draft-connector-configuration-from-openapi` or handles a draft.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      `configurationValue: string` is received as a parameter and passed straight to
+      `computeSubjectPlaceholderStatements`; the hook declares no connector-configuration
+      shape or attribute of its own.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No attribute of a draft (unresolved, generated_credentials, method_mismatch,
+      status_readings, response_fields, reading_notes) appears anywhere in this file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: >-
+      The file holds no reference to a reading note, its kind, subject or detail.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: >-
+      No enumeration of reading-note kinds is named or used in this file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: >-
+      No response field (name, path, status, declared_type, declared_required, envelope)
+      is read or stated by this file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: >-
+      No status reading (status, ending, declared_as) is read or stated by this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      No unresolved item (name, reason) is read or stated by this file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      None of the unresolved-reason values appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      The file has no notion of an OpenAPI operation listing.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      The hook has no parameter or logic concerning a chosen operation or the
+      Configuration Helper.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: >-
+      The hook never calls or handles the answer of `draft-connector-configuration-from-openapi`.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      The hook does not generate or judge a draft's configuration text; it passes
+      `configurationValue` straight through to `computeSubjectPlaceholderStatements`.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: >-
+      The hook renders nothing and states no entry-level guidance to an operator.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: >-
+      No placeholder literal form is parsed, matched, or asserted in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      The hook offers no act at all — it is a pure data hook with no submission control.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: >-
+      The file makes no statement about credential placeholders or their resolution.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      The file judges nothing about method, statusMap or placeholder-form departures.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: >-
+      No responseMap key or output-schema property is read or stated by this file.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      The hook makes no readiness statement of any kind; it only returns computed
+      statement data.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      The hook offers no draft-request act and has no notion of a chosen operation.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      The file has no draft state and no staleness tracking.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      The hook never receives or states a draft answer.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: >-
+      No confirmation, diff, or apply act appears in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      No address, query, headers or body handling appears in this file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: >-
+      No method or statusMap vocabulary is read, validated or stated by this file.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: >-
+      The hook holds no edit state and performs no apply act.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: >-
+      The file has no notion of an operations read, outstanding or otherwise.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: >-
+      This scenario concerns responseMap keys, which this file never reads or states.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: >-
+      This scenario concerns statusMap endings, which this file never reads or states.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: >-
+      This scenario concerns a stated draft's readings and notes, none of which this
+      file reads, holds, or states.
+looked_past: >-
+  The actual matching of `${subject:<attribute-name>}` placeholders against a capability's
+  input-schema properties, and the wording of the resulting statements, is implemented in
+  `computeSubjectPlaceholderStatements` inside
+  ../services/connector-configuration-subject-placeholder-statements.ts, which is outside
+  this delegation's file set and is not judged here.

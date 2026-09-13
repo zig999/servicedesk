@@ -1,0 +1,167 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      nowhere — this file wires the form's submit to an injected handler but does not itself
+      declare or call read-connector-configuration, list-connector-configurations or
+      register-connector
+    evidence: |-
+      <form id={CONNECTOR_CONFIGURATION_FORM_ID} onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+  - node: domain/integration/connector-configuration
+    held_at: the Connector and Configuration form fields
+    evidence: |-
+      <Input {...register("connector")} disabled={isEditingIdentity || isSubmitting} .../>
+      <JsonTextareaField id="configuration" label={FORM_CONFIGURATION_FIELD_LABEL} value={configuration.value} onChange={configuration.onChange} disabled={isSubmitting} />
+  - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+    held_at: the ConnectorConfigurationHelper rendered beneath the Configuration field's statements
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: the CONFIGURATION_ENTRY_GUIDANCE_MESSAGES list and ConfigurationEntryGuidance
+    evidence: |-
+      const CONFIGURATION_ENTRY_GUIDANCE_MESSAGES: readonly string[] = [
+        CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE,
+        CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE,
+        CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE,
+        CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE,
+      ];
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: configurationTextParsesToNonObject and ConfigurationNotAnObjectStatement
+    evidence: |-
+      function configurationTextParsesToNonObject(text: string): boolean {
+        let parsed: unknown;
+        try { parsed = JSON.parse(text); } catch { return false; }
+        return !isPlainRecord(parsed);
+      }
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: isSaveDisabled and the Save Button's disabled prop, beside the not-an-object statement
+    evidence: "const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;"
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: the httpConnectorDepartures computation and HttpConnectorDeparturesStatement render
+    evidence: |-
+      const httpConnectorDepartures = useMemo(() => computeHttpConnectorDepartures(configuration.value), [configuration.value]);
+      <HttpConnectorDeparturesStatement departures={httpConnectorDepartures} />
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: the responseMapCapabilityCoverage hook call and ResponseMapCapabilityCoverageStatement render
+    evidence: |-
+      const responseMapCapabilityCoverage = useResponseMapCapabilityCoverage(connector, configuration.value);
+      <ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: >-
+      the isSaveDisabled expression, which withholds only for submitting-well-formedness and
+      dirtiness, never for the departures, subject-placeholder, credential-placeholder or
+      response-map-coverage statements rendered beside it
+    evidence: "const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;"
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: nowhere — this file states no outcome of a submission; it only wires onSubmit
+    evidence: |-
+      <Button type="submit" form={CONNECTOR_CONFIGURATION_FORM_ID} loading={isSubmitting} disabled={isSaveDisabled}>{FORM_SAVE_BUTTON}</Button>
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: ApplyConfirmationDiffBody
+    evidence: |-
+      if (diff.kind === "not-itemisable") { return <p>{APPLY_DIFF_NOT_ITEMISABLE_MESSAGE}</p>; }
+      <KeyChangeList label={KEY_CHANGE_LIST_TOP_LEVEL_LABEL} changes={diff.topLevel} />
+      {diff.nested.map((entry) => (<KeyChangeList key={entry.key} label={entry.key} changes={entry.diff} />))}
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: handleApply, the confirmation Dialog and handleConfirmApply
+    evidence: |-
+      function handleApply(configurationText: string): void {
+        if (!hasUnsavedEdit) { configuration.onChange(configurationText, true); return; }
+        setPendingApplyText(configurationText);
+      }
+  - node: rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
+    held_at: handleApply and handleConfirmApply, both calling only configuration.onChange
+    evidence: |-
+      function handleConfirmApply(): void {
+        if (pendingApplyText !== null) { configuration.onChange(pendingApplyText, true); }
+        setPendingApplyText(null);
+      }
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: the same httpConnectorDepartures wiring as its subject rule
+    evidence: "<HttpConnectorDeparturesStatement departures={httpConnectorDepartures} />"
+  - node: scenarios/integration/applying-a-draft-over-an-unsaved-edit-asks-for-confirmation
+    held_at: the same handleApply/Dialog flow as its subject rule
+    evidence: |-
+      <Dialog open={pendingApplyText !== null} onOpenChange={(open) => { if (!open) { setPendingApplyText(null); } }}>
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere — this file issues no fetch of any kind
+    evidence: the file contains no fetch, XHR or network call of any form
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere — the draft-connector-configuration-from-openapi call is made by ConnectorConfigurationHelper, not this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: >-
+      nowhere in this file — the literal placeholder forms are stated by the imported message
+      text, not by anything this file writes
+    evidence: "CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE,"
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: the credentialPlaceholderStatements computation and CredentialPlaceholderStatements render
+    evidence: |-
+      const credentialPlaceholderStatements = useMemo(() => computeCredentialPlaceholderStatements(configuration.value), [configuration.value]);
+      <CredentialPlaceholderStatements credentialNames={credentialPlaceholderStatements} />
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: the subjectPlaceholderStatements hook call and SubjectPlaceholderStatements render
+    evidence: |-
+      const subjectPlaceholderStatements = useSubjectPlaceholderStatements(connector, configuration.value);
+      <SubjectPlaceholderStatements statements={subjectPlaceholderStatements} />
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere in this file — the criterion is applied inside computeHttpConnectorDepartures, not here
+    evidence: "const httpConnectorDepartures = useMemo(() => computeHttpConnectorDepartures(configuration.value), [configuration.value]);"
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere in this file — the vocabulary is applied inside computeHttpConnectorDepartures, not here
+    evidence: "const httpConnectorDepartures = useMemo(() => computeHttpConnectorDepartures(configuration.value), [configuration.value]);"
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: the same responseMapCapabilityCoverage wiring as its subject rule
+    evidence: "<ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />"
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere in this file
+    evidence: "<ConnectorConfigurationHelper connector={connector} onApply={handleApply} />"
+looked_past: >-
+  Noted but not reported: whether the injected isDirty (used for both hasUnsavedEdit and
+  isSaveDisabled) reflects the whole form or the Configuration field alone, and whether
+  configurationTextParsesToNonObject's local re-parse agrees with configuration.isValid, both
+  turn on hooks computed outside this file and read here as ordinary code-organization overlap
+  rather than a domain-fact conflict.

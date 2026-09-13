@@ -1,0 +1,24 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-connector-configuration-from-openapi-reading-parts.spec.ts
+        name: carries all nine kinds through unmodified, in order, and refuses a tenth kind at the type level
+      - file: src/services/connector-configuration-draft-disclosure-reading-notes.spec.ts
+        name: produces nine pairwise-distinct labels for the nine closed-set kind values
+      - file: src/services/connector-configuration-draft-disclosure-reading-notes.spec.ts
+        name: copies kind and subject through unchanged for every note, carries a carried detail through, and carries no detail for a note naming none
+      - file: src/hooks/use-draft-connector-configuration-from-openapi-reading-parts.spec.ts
+        name: carries detail through when the answer named one, and carries no detail key at all when it named none
+    why: >-
+      Admission of the nine values, and their distinct downstream recognition, is proven. Closure
+      ("no kind outside them") is not exercised at runtime -- the "refuses a tenth kind" assertion
+      is a tautology on a literal (typeof check), and closure would only bind if the suite's own
+      test step also typechecks, which the offered proof does not establish. What each of the
+      nine values actually means (which drafting condition earns which kind) is also unexercised;
+      both proof files inject already-formed notes rather than driving the drafting decision.
+    remainder: testable
+    remainder_why: >-
+      A runtime set-equality assertion over the implementation's own kind-to-label projection
+      keys against the nine, so a tenth added upstream fails without editing the test; plus one
+      drafted operation per kind asserting the note emitted names the subject the node describes.

@@ -1,0 +1,125 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The file never issues or mocks a fetch; stateWith only supplies operations: [] and
+      operationsOutcome: { kind: "idle" } as inert state, never a call to an OpenAPI document's
+      URL.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      onRequestDraft: () => {} is a no-op stub; the test never invokes it nor inspects any
+      answer of draft-connector-configuration-from-openapi.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      The only trace of a connector name is the state override connector: "deepl-connector"
+      used purely to satisfy the gate; the file never exercises the value-object's own
+      configuration attribute.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No draft object, nor any of its attributes, appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: The file asserts only button presence and two waiting messages.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: No note kind appears.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: No response field appears.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: No status reading appears.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved item appears.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: No unresolved reason appears.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: "operations: [] is default state used only as an inert prop."
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: >-
+      The "operation chosen" state is represented only by non-empty path/method overrides; the
+      file never asserts the operation came from a fetched listing rather than free-hand entry.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer, and no capability reference, appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: No configuration text is generated, read or asserted anywhere in the file.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: No Configuration field entry statement appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder text of any form appears anywhere in the file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: The only offered/withheld act is the draft-request button; no register-connector act is referenced.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder or resolution statement appears anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder or capability-coverage statement appears anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: No HTTP-connector departure statement appears anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap key or capability-coverage statement appears anywhere.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: >-
+      None of the four readiness statements this node bounds is exercised here; the file's only
+      withheld act is the draft-request gate.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: the single it() block, testing the four render/assert sequences over connector, path and method
+    evidence: |-
+      stateWith({ connector: "", path: "/v2/translate", method: "POST" });
+      expect(screen.queryByRole("button", { name: "Solicitar rascunho" })).toBeNull();
+      expect(screen.getByText("A solicitação aguarda um nome de conector.")).toBeTruthy();
+      stateWith({ connector: "deepl-connector", path: "", method: "" });
+      expect(screen.getByText("A solicitação aguarda uma operação escolhida.")).toBeTruthy();
+      stateWith({ connector: "deepl-connector", path: "/v2/translate", method: "POST" });
+      expect(button.hasAttribute("disabled")).toBe(false);
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No staleness assertion, and no draft state at all, appears anywhere.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No answered draft, and none of its disclosed parts, appears anywhere.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply confirmation, and no onApply invocation, is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No call shape is asserted anywhere in the file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary check is asserted anywhere.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No unsaved-edit or confirmation scenario is exercised anywhere.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: operationsOutcome is fixed to idle; the file asserts nothing about an outstanding read.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No responseMap or capability coverage scenario is exercised anywhere.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap ending or write-time judgment is exercised anywhere.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No answered draft, status readings, response fields or reading notes appear anywhere.
+looked_past: >-
+  The describe title labels the whitespace-connector case "UNDERDETERMINED whitespace entry"
+  while the governing rule's own description explicitly settles that a whitespace-only Connector
+  field is treated the same as empty; the test's own assertions conform to that settled reading,
+  so the mislabel is a documentation/citation inaccuracy in the test's own title rather than a
+  domain fact the code states.

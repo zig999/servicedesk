@@ -1,0 +1,189 @@
+findings:
+  - file: src/hooks/use-draft-connector-configuration-from-openapi.spec.ts
+    where: "the describe/it text and literal fixture value at lines 255-262"
+    evidence: |-
+      describe("ConnectorConfigurationDraftUnresolvedItem -- reason is a plain string, not narrowed to the closed set of four reason literals (inference)", () => {
+        it("type-checks a reason value outside the closed reason set", () => {
+          const buildItem = (): ConnectorConfigurationDraftUnresolvedItem => ({
+            name: "api-key",
+            reason: "a-reason-the-closed-four-value-set-does-not-name",
+          });
+    cost: A reader trusting this test's own description learns the unresolved reason vocabulary has four members; the specification's own enumeration has three (no-capability-registered, security-scheme-not-reducible-to-a-credential, drafted-key-occupied-by-another-security-scheme), so the next person who adds or checks a fourth reason against this test's account is working from a count the specification never gave.
+    kind: contradicts
+    node: domain/integration/connector-configuration-draft-unresolved-reason
+    correction: "Restate the describe title and the literal fixture value against the three-member set the node actually holds, rather than a four-member one."
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the criterion-2/11/12 test's assertion that the only network call made is to the published
+      draft route
+    evidence: |-
+      expect(calls.map((call) => call.url)).toEqual([DRAFT_ROUTE]);
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      the DRAFT_ROUTE constant and every dispatch/response fixture exercising
+      draft-connector-configuration-from-openapi through the hook
+    evidence: |-
+      const DRAFT_ROUTE = "/v1/draft-connector-configuration-from-openapi";
+  - node: domain/integration/connector-configuration
+    held_at: the configuration field of FULL_DRAFT, held as opaque JSON object text
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: domain/integration/connector-configuration-draft
+    held_at: the FULL_DRAFT and DRAFT_WITHOUT_METHOD_MISMATCH fixtures, enumerating every attribute
+    evidence: |-
+      const FULL_DRAFT: ConnectorConfigurationDraft = {
+        connector: CONNECTOR,
+        configuration: '{"address":"https://api.example.com/v2/translate"}',
+        unresolved: [{ name: "api-key", reason: "no-capability-registered" }],
+        generated_credentials: [{ name: "api-key", security_scheme: "apiKey" }],
+        method_mismatch: { registered: "GET", operation: "POST" },
+        status_readings: [],
+        response_fields: [],
+        reading_notes: [],
+      };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: |-
+      reading_notes: [],
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      reading_notes: [],
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: |-
+      response_fields: [],
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      status_readings: [],
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: the unresolved field of FULL_DRAFT and the ConnectorConfigurationDraftUnresolvedItem type-check test
+    evidence: |-
+      unresolved: [{ name: "api-key", reason: "no-capability-registered" }],
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: >-
+      the describe/it text and literal reason value at lines 255-262 (see findings — the count
+      stated there disagrees with this node)
+    evidence: |-
+      reason: "a-reason-the-closed-four-value-set-does-not-name",
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: |-
+      path: "/v2/translate",
+      method: "POST",
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      the criterion-1 test's assertion that the dispatched body carries the request's own path
+      and method unchanged
+    evidence: |-
+      expect(parsedBody(calls[0])).toEqual({
+        connector: CONNECTOR,
+        link: DRAFT_REQUEST.link,
+        path: DRAFT_REQUEST.path,
+        method: DRAFT_REQUEST.method,
+      });
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: >-
+      the criterion-5 test's hasOwnProperty checks for name, version and count on a response body
+      that carried them
+    evidence: |-
+      for (const key of ["name", "version", "count"]) {
+        expect(Object.prototype.hasOwnProperty.call(outcome.draft, key)).toBe(false);
+      }
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: |-
+      generated_credentials: [{ name: "api-key", security_scheme: "apiKey" }],
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: |-
+      function mount() {
+        return renderHook(() => useDraftConnectorConfigurationFromOpenApi(CONNECTOR), { wrapper: createWrapper() }).result;
+      }
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the criterion-3 tests exposing every carried field unmodified, and the test asserting the
+      Configuration field's own local state stands untouched by the answer's arrival
+    evidence: |-
+      expect(result.current.outcome).toEqual({ kind: "drafted", draft: FULL_DRAFT });
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: |-
+      describe("useDraftConnectorConfigurationFromOpenApi -- never writes to the Configuration field's own local state (per the task's UNDERDETERMINED note)", () => {
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: |-
+      import { useDraftConnectorConfigurationFromOpenApi } from "./use-draft-connector-configuration-from-openapi";
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: |-
+      configuration: '{"address":"https://api.example.com/v2/translate"}',
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: |-
+      status_readings: [],
+      response_fields: [],
+      reading_notes: [],
+looked_past: >-
+  The concurrent-dispatch guard test (a second requestDraft call while one is in flight issuing
+  exactly one network call) and the untested statedFor field are engineering/coverage concerns
+  rather than a domain fact stated or contradicted, so they are left to whatever judgment reviews
+  test design rather than reported here.
+candidates_opened:
+  - rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
+  - rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  - rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft

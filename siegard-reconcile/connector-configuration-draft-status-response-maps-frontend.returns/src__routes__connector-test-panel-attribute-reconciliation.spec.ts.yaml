@@ -1,0 +1,138 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      function baseHandlers(): Record<string, () => Response> {
+        return { [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([testCapability()])), [SUBJECT_TYPE_PATH]: () => jsonResponse(subjectTypeTermsPage(["billing-dispute"])) };
+      }
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: |-
+      import { CAPABILITIES_PATH, SUBJECT_TYPE_PATH, capabilitiesPage, jsonResponse, mountTestPanelInEditMode, subjectTypeTermsPage, testCapability } from "./connector-test-panel.test-support";
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      function setConfigurationText(dialog: HTMLElement, text: string): void {
+        fireEvent.change(within(dialog).getByLabelText("Configuração"), { target: { value: text } });
+      }
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: not exercised
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: |-
+      setConfigurationText(dialog, "{not valid json");
+      clickAddAttribute(dialog);
+      expect(attributeValues(dialog)).toEqual(["account-id"]);
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: '{"address":"https://api.example.com/${requester}/${credential:api-key}/${subject:account-id}"},'
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: |-
+      setConfigurationText(dialog, "{not valid json");
+      clickAddAttribute(dialog);
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: 'describe(''ConnectorTestPanel — "Add attribute" excludes ${requester} and ${credential:...} placeholders (criterion 4)'', () => {'
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: '[CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([testCapability()])),'
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: '[CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([testCapability()])),'
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: |-
+      async function saveConfiguration(dialog: HTMLElement): Promise<void> {
+        const saveButton = within(dialog).getByRole("button", { name: "Salvar" });
+        fireEvent.click(saveButton);
+        await waitFor(() => { expect(saveButton.hasAttribute("disabled")).toBe(true); });
+      }
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: '{"address":"https://api.example.com/${subject:account-id}","body":{"region":"${subject:region}"}},'
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: not exercised
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: |-
+      async function saveConfiguration(dialog: HTMLElement): Promise<void> {
+        const saveButton = within(dialog).getByRole("button", { name: "Salvar" });
+        fireEvent.click(saveButton);
+      }
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: not exercised
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: '[CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([testCapability()])),'
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: not exercised
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: not exercised
+looked_past: >-
+  The file's real subject — an "Add attribute" row reconciliation against ${subject:<name>}
+  placeholders of the Test panel's Configuration field, excluding ${requester} and
+  ${credential:<name>} and deduplicating a repeated name — is governed by
+  rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+  and rules/integration/a-connector-configuration-is-tested-through-a-registered-capability,
+  neither in this file's node pack; every test that requires a new placeholder set to take
+  effect first drives it through saveConfiguration, consistent with those nodes' requirement
+  that the attribute set is read from the presented/registered answer rather than an unsubmitted
+  edit, so no contradiction is reported. Three tests labelled "disclosed inference" (DOM-identity
+  preservation, naming-collision survivor, row order) are interaction/session-state mechanics no
+  node addresses.
+candidates_opened:
+  - rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+  - rules/integration/a-presented-connector-configuration-offers-its-test-on-the-reading-that-answered
+  - rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+  - rules/integration/a-further-connector-configuration-answer-becomes-what-a-screen-holding-no-edit-presents

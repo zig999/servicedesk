@@ -1,0 +1,141 @@
+read:
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: >-
+      the criterion-5 and criterion-6 tests, together with the chooseHelperOperation helper
+      that drives the choice by option selection
+    evidence: |-
+      const option = await screen.findByRole("option", { name: `${path} — ${method}` });
+      fireEvent.mouseDown(option);
+      expect(JSON.parse(rawBody)).toEqual({
+        connector: "deepl-connector",
+        link: OPERATOR_LINK,
+        path: HELPER_OPERATION.path,
+        method: HELPER_OPERATION.method,
+      });
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the "never calls fetch with the operator's own link, only with the published draft
+      route" test
+    evidence: |-
+      expect(fetchMock.mock.calls.some(([input]) => input === DRAFT_ROUTE)).toBe(true);
+      expect(fetchMock.mock.calls.some(([input]) => input === OPERATOR_LINK)).toBe(false);
+  - node: contracts/integration/connector-configuration-draft
+    held_at: the DRAFT_ROUTE constant and the draftJsonResponse fixture
+    evidence: |-
+      const DRAFT_ROUTE = "/v1/draft-connector-configuration-from-openapi";
+  - node: domain/integration/connector-configuration
+    held_at: the Conector and Configuração field interactions exercised throughout the file
+    evidence: |-
+      fireEvent.change(screen.getByLabelText("Conector"), { target: { value: "deepl-connector" } });
+      fireEvent.change(screen.getByLabelText("Configuração"), { target: { value: "{}" } });
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      partially, in the draftJsonResponse fixture — only connector, configuration, unresolved
+      and generated_credentials are represented
+    evidence: |-
+      function draftJsonResponse(): Response {
+        return jsonResponse({
+          connector: "any-connector",
+          configuration: "{}",
+          unresolved: [],
+          generated_credentials: [],
+        });
+      }
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: no reference to a reading note in this file
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: no reference to a reading-note kind in this file
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: no reference to a response field in this file
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: no reference to a status reading in this file
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: only an empty unresolved array appears in the draft fixture, never an item
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: no reference to an unresolved reason in this file
+  - node: domain/integration/openapi-document-operations
+    held_at: the operationsReadJsonResponse fixture
+    evidence: |-
+      function operationsReadJsonResponse(): Response {
+        return jsonResponse({ operations: [HELPER_OPERATION] });
+      }
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: no assertion checks the draft answer for absence of a capability field
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: the draft fixture's configuration "{}" is well-formed but no test asserts the rule
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: not tested in this file
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: no placeholder text is exercised in this file
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: no test drives a not-well-formed Configuration field
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: no departure statement is exercised
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: no responseMap coverage statement is exercised
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: none of the readiness statements this node bounds are exercised
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: >-
+      every test sets a connector name and chooses an operation before requesting a draft; none
+      tests withholding the act when either is absent
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: no staleness behavior is exercised
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      this file asserts only the request dispatched and the button's own disabled state; no
+      test checks a stated disclosure of the draft's parts
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: not exercised in this file
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: not exercised in this file
+looked_past: >-
+  The "Request Draft is disabled only while its own request is pending" tests assert a specific
+  disable/re-enable timing the specification explicitly leaves to the interface ("what that
+  surface states while a draft request is outstanding is not decided here"), so this is not
+  reported as an unstated-fact finding.
+candidates_opened:
+  - rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper

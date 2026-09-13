@@ -1,0 +1,20 @@
+certified:
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    state: partial
+    tests:
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: produces three pairwise-distinct labels for the three closed-set reason values
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: falls back to its own raw reason string for a reason outside the three-value vocabulary, including the reason this dictionary no longer names
+      - file: src/services/connector-configuration-draft-disclosure.spec.ts
+        name: copies the item's name unmodified and pairs it with a non-empty reason label
+    why: >-
+      Only the closure (a value outside the three falls back) is bound. Membership of the three
+      named values is not: dropping one of the three still yields distinct labels, so the
+      distinctness test would still pass. What each of the three values means (which condition
+      yields which value) is wholly unexercised.
+    remainder: testable
+    remainder_why: >-
+      A set-equality assertion over the three values against their own raw strings, plus one
+      drafted case per condition (no capability registered, security scheme not reducible, key
+      already occupied) each expecting its corresponding named value.

@@ -1,0 +1,28 @@
+certified:
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    state: partial
+    tests:
+      - file: src/services/connector-configuration-http-departures.spec.ts
+        name: >-
+          states one placeholder-outside-forms departure for a malformed placeholder nested deep
+          in the body, alongside well-formed subject, requester and credential placeholders held
+          elsewhere
+      - file: src/services/connector-configuration-http-departures.spec.ts
+        name: >-
+          returns an empty array when method, statusMap, responseMap, address, query, headers and
+          every placeholder are all well-formed
+    why: >-
+      The admitting half of the fact is exercised whole: both tests submit ${subject:accountId},
+      ${requester} and ${credential:api-key} and assert no departure is stated over any of them.
+      The excluding half is exercised only for a kind outside the three -- ${not-a-form} -- and
+      the node states more than the kind: it states the argument each kind carries. Nothing in
+      the offered proof submits ${requester:anything}, a bare ${subject}/${subject:}, or a bare
+      ${credential}/${credential:}, so those parts of the fact go unexercised. A surface that read
+      only the kind token and ignored the argument entirely would pass every assertion in this
+      file.
+    remainder: testable
+    remainder_why: >-
+      The remainder is the table over the malformed-argument pairings the offered tests leave
+      out: ${requester:anything}, a bare ${subject}, and a bare ${credential}, each against a
+      placeholder-outside-forms departure naming that exact placeholder text. Three inputs close
+      the fact whole.

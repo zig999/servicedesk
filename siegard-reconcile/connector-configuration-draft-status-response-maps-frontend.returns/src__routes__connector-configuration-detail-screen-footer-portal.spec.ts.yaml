@@ -1,0 +1,126 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The only network surface this file stubs is baseHandlers(LOADED_CONFIGURATION) and the
+      CONFIGURATION_PATH PUT/GET handlers; no OpenAPI document URL, operations read, or draft
+      request appear anywhere.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      No import, mock or assertion names draft-connector-configuration-from-openapi; the file's
+      only registry call is the PUT asserted at expect(putCall?.[0]).toBe(CONFIGURATION_PATH).
+  - node: domain/integration/connector-configuration
+    held_at: the PUT-body assertion and the post-save heading assertion
+    evidence: |-
+      expect(parsedPutBody(fetchMock)).toEqual({ configuration: UPDATED_CONFIGURATION });
+      expect(screen.getByRole("heading", { name: `Connector ${CONNECTOR}` })).toBeTruthy();
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: No unresolved, generated_credentials, status_readings, response_fields or reading_notes attribute is referenced.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: This file states no reading note of any kind.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: None of the enumeration's values appears anywhere.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: This file asserts no response field.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: This file states no status reading.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: No unresolved item, name or reason is asserted anywhere.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: None of the three reason values appears in this file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: No operations listing or OpenAPI operation object is referenced.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: No Configuration Helper, operation choice, or document listing is exercised.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: No draft answer or capability reference is asserted.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: >-
+      This file never generates or inspects a draft's configuration text; its only
+      well-formedness-adjacent scenario is a server-side 422 refusal.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: This file asserts no entry statement about method, address, statusMap, responseMap or placeholder forms.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: No placeholder is referenced in this file.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: >-
+      This file never asserts that Save is withheld because content is not well-formed; the
+      only disabled-state assertion is while a PUT is outstanding, a different condition.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: No credential placeholder statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: No subject placeholder or capability-coverage statement is asserted.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: >-
+      This file states only two registration-refusal messages from the mocked registry, never
+      a client-side departure statement.
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: No responseMap key or capability-coverage statement is asserted.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: This file asserts no readiness statement of the kind this node bounds.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: No draft request or waiting-on-connector-or-operation statement is exercised.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: No draft or staleness statement is exercised.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: No draft answer of any part is stated or asserted.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: No apply-confirmation or comparison against unsubmitted content is exercised.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: No address, query, headers or body shape is asserted.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: No method or statusMap vocabulary is referenced.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: No draft application or confirmation gate is exercised.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: No Configuration Helper, operations read, or empty-document statement is exercised.
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: No capability, responseMap key, or coverage statement is exercised.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: No statusMap ending or pre-write statement is exercised.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: No draft answer, status reading, response field or reading note is exercised.
+looked_past: >-
+  The form-owner/portal DOM wiring test and the button/label wording are technical/UI
+  implementation and interface-wording concerns rather than domain facts a node governs, and are
+  left to a different pass.
+candidates_opened:
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+  - rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
+  - rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  - rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing
+  - rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+  - rules/integration/a-return-to-origin-with-no-surface-to-return-to-lands-on-the-registrys-listing
+  - rules/integration/a-return-to-origin-routes-presence-turns-on-nothing-further
+  - rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface

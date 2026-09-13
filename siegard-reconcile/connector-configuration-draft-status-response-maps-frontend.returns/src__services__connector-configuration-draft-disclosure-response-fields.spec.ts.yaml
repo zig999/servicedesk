@@ -1,0 +1,115 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";
+      import type { ConnectorConfigurationDraft } from "../hooks/use-draft-connector-configuration-from-openapi";
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: 'import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";'
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: domain/integration/connector-configuration-draft
+    held_at: the BASE_DRAFT fixture
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: '{"address":"https://api.example.com/v2/translate"}', unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: "reading_notes: [],"
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: "reading_notes: [],"
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: the describe block asserting all six attributes, and the declared_required-false and empty-array describes
+    evidence: |-
+      expect(state.draft.responseFields).toEqual([
+        { name: "email", path: "data.email", status: "200", declaredType: undefined, declaredRequired: undefined, envelope: undefined },
+        { name: "role", path: "data.roles[0].name", status: "200", declaredType: "string", declaredRequired: true, envelope: "data" },
+      ]);
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: "status_readings: [],"
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: "unresolved: [],"
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "unresolved: [],"
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: 'import type { ConnectorConfigurationDraft } from "../hooks/use-draft-connector-configuration-from-openapi";'
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: 'import type { ConnectorConfigurationDraft } from "../hooks/use-draft-connector-configuration-from-openapi";'
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: |-
+      const BASE_DRAFT: ConnectorConfigurationDraft = { connector: "deepl-connector", configuration: '{"address":"https://api.example.com/v2/translate"}', unresolved: [], generated_credentials: [], status_readings: [], response_fields: [], reading_notes: [] };
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: 'connector: "deepl-connector",'
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: 'connector: "deepl-connector",'
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: partially — only the response-field portion of this rule
+    evidence: |-
+      expect(state.draft.responseFields[0]?.declaredRequired).toBe(false);
+      expect(state.draft.responseFields).toEqual([]);
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: 'import type { ConnectorConfigurationDraft } from "../hooks/use-draft-connector-configuration-from-openapi";'
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: 'configuration: ''{"address":"https://api.example.com/v2/translate"}'','
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere as a whole scenario — only its response-field-projection aspect overlaps
+    evidence: |-
+      status_readings: [], response_fields: [], reading_notes: [],
+looked_past: >-
+  The camelCase key names the file asserts are a presentation-shape choice the rule leaves to
+  the interface, and correctness of the disclosure function's own implementation is that file's
+  own review, not this one's.

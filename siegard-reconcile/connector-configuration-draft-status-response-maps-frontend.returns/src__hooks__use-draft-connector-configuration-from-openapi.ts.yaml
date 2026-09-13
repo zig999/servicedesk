@@ -1,0 +1,249 @@
+findings:
+  - file: src/hooks/use-draft-connector-configuration-from-openapi.ts
+    where: the isDispatchingRef guard inside requestDraft, lines 211-218
+    evidence: |-
+      const requestDraft = (request: DraftConnectorConfigurationFromOpenApiRequest): void => {
+          if (isDispatchingRef.current) {
+            return;
+          }
+          isDispatchingRef.current = true;
+
+          mutation.reset();
+    cost: >-
+      An operator who invokes requestDraft again while an earlier draft request for this same
+      helper is still outstanding has the second request silently dropped: no call reaches the
+      backend, isDispatchingRef.current stays true until the first call's onSettled fires, and
+      nothing in the returned outcome or statedFor changes to tell the operator their second
+      click did nothing. The node this file otherwise implements says only that what a surface
+      states while a draft request is outstanding "is not decided here" — so the choice to drop
+      rather than queue, replace or refuse a repeated request was made here, in code, and the
+      specification is silent on it.
+    kind: unstated
+    correction: >-
+      Decide, in the specification, what a repeated draft request does while an earlier one for
+      the same connector/operation is still outstanding — dropped, queued, or refused — and let
+      this guard follow that decision rather than stand as the only place it is made.
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the mutationFn, which calls the backend's own draft endpoint and never the OpenAPI
+      document's own URL
+    evidence: |-
+      mutationFn: (body: DraftConnectorConfigurationFromOpenApiRequestBody) =>
+            apiFetch<ConnectorConfigurationDraft>("/v1/draft-connector-configuration-from-openapi", {
+              method: "POST",
+  - node: contracts/integration/connector-configuration-draft
+    held_at: the same mutationFn, naming the published operation's own route
+    evidence: |-
+      apiFetch<ConnectorConfigurationDraft>("/v1/draft-connector-configuration-from-openapi", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            }),
+  - node: domain/integration/connector-configuration-draft
+    held_at: the ConnectorConfigurationDraft type declaration
+    evidence: |-
+      export type ConnectorConfigurationDraft = {
+        readonly connector: string;
+        readonly configuration: string;
+        readonly unresolved: readonly ConnectorConfigurationDraftUnresolvedItem[];
+        readonly generated_credentials: readonly ConnectorConfigurationDraftGeneratedCredential[];
+        readonly method_mismatch?: ConnectorConfigurationDraftMethodMismatch;
+        readonly status_readings: readonly ConnectorConfigurationDraftStatusReading[];
+        readonly response_fields: readonly ConnectorConfigurationDraftResponseField[];
+        readonly reading_notes: readonly ConnectorConfigurationDraftReadingNote[];
+      };
+  - node: domain/integration/connector-configuration-draft-generated-credential
+    held_at: the ConnectorConfigurationDraftGeneratedCredential type
+    evidence: |-
+      export type ConnectorConfigurationDraftGeneratedCredential = {
+        readonly name: string;
+        readonly security_scheme: string;
+      };
+  - node: domain/integration/connector-configuration-draft-method-mismatch
+    held_at: the ConnectorConfigurationDraftMethodMismatch type
+    evidence: |-
+      export type ConnectorConfigurationDraftMethodMismatch = {
+        readonly registered: string;
+        readonly operation: string;
+      };
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: the ConnectorConfigurationDraftReadingNote type
+    evidence: |-
+      export type ConnectorConfigurationDraftReadingNote = {
+        readonly kind: ConnectorConfigurationDraftReadingNoteKind;
+        readonly subject: string;
+        readonly detail?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: the ConnectorConfigurationDraftReadingNoteKind union type
+    evidence: |-
+      export type ConnectorConfigurationDraftReadingNoteKind =
+        | "default-response-not-drafted"
+        | "status-range-not-drafted"
+        | "non-json-success-content-not-read"
+        | "envelope-read-through"
+        | "variants-united"
+        | "repeated-field-name-path-not-taken"
+        | "no-responses-declared"
+        | "no-success-response-schema"
+        | "success-schema-declares-no-properties";
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: the ConnectorConfigurationDraftResponseField type
+    evidence: |-
+      export type ConnectorConfigurationDraftResponseField = {
+        readonly name: string;
+        readonly path: string;
+        readonly status: string;
+        readonly declared_type?: string;
+        readonly declared_required?: boolean;
+        readonly envelope?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: the ConnectorConfigurationDraftStatusReading type
+    evidence: |-
+      export type ConnectorConfigurationDraftStatusReading = {
+        readonly status: string;
+        readonly ending: string;
+        readonly declared_as?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: the ConnectorConfigurationDraftUnresolvedItem type
+    evidence: |-
+      export type ConnectorConfigurationDraftUnresolvedItem = {
+        readonly name: string;
+        readonly reason: string;
+      };
+  - node: rules/integration/a-connector-configuration-authoring-surface-offers-a-configuration-helper
+    held_at: nowhere
+    evidence: >-
+      the file exports only a data hook, with no rendering of a Configuration Helper or any other
+      control
+  - node: rules/integration/a-refused-draft-request-states-its-refusal-to-the-operator
+    held_at: >-
+      outcomeForRefusal and its helpers, which turn each of the three named error codes, and any
+      other code, into the outcome kind a consuming surface reads
+    evidence: |-
+      switch (error.code) {
+          case "OpenApiDocumentNotFetchedError":
+            return outcomeForNotFetchedError(error.details);
+          case "OpenApiDocumentNotReadableError":
+            return { kind: "openapi-document-not-readable" };
+          case "OpenApiOperationNotFoundError":
+            return outcomeForOperationNotFoundError(error.details);
+          default:
+            return { kind: "unrecognized-failure" };
+        }
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: >-
+      the statedFor field of the hook's return value
+    evidence: "statedFor: mutation.variables,"
+  - node: domain/integration/connector-configuration
+    held_at: the connector parameter threaded into every request body
+    evidence: |-
+      export function useDraftConnectorConfigurationFromOpenApi(
+        connector: string,
+      ): UseDraftConnectorConfigurationFromOpenApiResult {
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: "readonly reason: string;"
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: >-
+      the file carries no operations listing type at all, only the already-chosen path and
+      method
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: |-
+      export type DraftConnectorConfigurationFromOpenApiRequest = {
+        readonly link: string;
+        readonly path: string;
+        readonly method: string;
+      };
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: pickConnectorConfigurationDraftFields
+    evidence: |-
+      function pickConnectorConfigurationDraftFields(data: ConnectorConfigurationDraft): ConnectorConfigurationDraft {
+        const {
+          connector,
+          configuration,
+          unresolved,
+          generated_credentials: generatedCredentials,
+          method_mismatch: methodMismatch,
+          status_readings: statusReadings,
+          response_fields: responseFields,
+          reading_notes: readingNotes,
+        } = data;
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: "readonly configuration: string;"
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: the file carries no operator-facing statement text of any kind
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: the file produces no placeholder text
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: the file issues no register-connector call and offers no submission act
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: the file states nothing about a credential placeholder's resolution
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: the file reads no capability and states nothing about a subject placeholder
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: the file judges no Configuration field content
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: nowhere
+    evidence: the file reads no capability and states nothing about a responseMap key
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: the file makes none of the four readiness statements this invariant bounds
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: |-
+      const requestDraft = (request: DraftConnectorConfigurationFromOpenApiRequest): void => {
+          if (isDispatchingRef.current) {
+            return;
+          }
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the "drafted" branch of outcomeFromMutation together with pickConnectorConfigurationDraftFields
+    evidence: |-
+      case "success":
+            return { kind: "drafted", draft: pickConnectorConfigurationDraftFields(mutation.data) };
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: the file states no confirmation and computes no diff
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: the file declares no address, query, headers or body of a connector configuration
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: the file states no method or statusMap vocabulary
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: the file never applies a draft to a Configuration field
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: the file states nothing about an operations read; it only requests a draft
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: nowhere
+    evidence: the file reads no capability and states no responseMap coverage
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: the file judges no statusMap content
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: >-
+      the "drafted" outcome, whose ConnectorConfigurationDraft carries status_readings,
+      response_fields and reading_notes through unchanged from the answer
+    evidence: |-
+      readonly status_readings: readonly ConnectorConfigurationDraftStatusReading[];
+        readonly response_fields: readonly ConnectorConfigurationDraftResponseField[];
+        readonly reading_notes: readonly ConnectorConfigurationDraftReadingNote[];
+looked_past: >-
+  The manual isDispatchingRef bookkeeping duplicates state TanStack Query's own mutation.status
+  already tracks (idle/pending/success/error); that redundancy is a code-quality question
+  separate from the concurrency-drop behavior reported above and is not this pass's to weigh.

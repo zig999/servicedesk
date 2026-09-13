@@ -1,0 +1,112 @@
+read:
+  - node: domain/integration/connector-configuration
+    held_at: nowhere — this file receives configuration text as an opaque parameter and never holds, names or replaces a connector configuration itself
+    evidence: |-
+      export function computeResponseMapCapabilityCoverage(configurationText: string, connectorCapabilities: readonly Capability[]): ResponseMapCapabilityCoverage | null {
+        const configuration = parseConfigurationObject(configurationText);
+  - node: rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads
+    held_at: computeResponseMapCapabilityCoverage
+    evidence: |-
+      if (connectorCapabilities.length === 0) { return { kind: "cannot-be-read" }; }
+      if (readingCapabilityLabels.length === 0) { return { kind: "read-by-none", key }; }
+      return { kind: "read", key, capabilityLabels: readingCapabilityLabels };
+      if (!responseMapKeySet.has(fieldName)) { expectedFieldStatements.push({ capabilityLabel: entry.label, fieldName }); }
+  - node: scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects
+    held_at: the same key/expected-field computation
+    evidence: |-
+      const readingCapabilityLabels = capabilityPropertyNames.filter((entry) => entry.propertyNames.has(key)).map((entry) => entry.label);
+      if (readingCapabilityLabels.length === 0) { return { kind: "read-by-none", key }; }
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: the file issues no network call and reads no OpenAPI document at all.
+  - node: contracts/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: this file has no reference to a draft or to draft-connector-configuration-from-openapi.
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: no draft attribute appears anywhere in the file.
+  - node: domain/integration/connector-configuration-draft-reading-note
+    held_at: nowhere
+    evidence: no reading-note kind, subject or detail is referenced.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: none of the enumeration's values appear in the file.
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: nowhere
+    evidence: no response-field attribute appears in the file.
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: no status-reading attribute appears in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-item
+    held_at: nowhere
+    evidence: no unresolved-item attribute appears in the file.
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: nowhere
+    evidence: none of the reason enumeration values appear in the file.
+  - node: domain/integration/openapi-document-operations
+    held_at: nowhere
+    evidence: the file never reads or represents an OpenAPI document's operations.
+  - node: rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
+    held_at: nowhere
+    evidence: the file has no Connector field, no document listing and no operation choice.
+  - node: rules/integration/a-connector-configuration-draft-response-carries-no-capability
+    held_at: nowhere
+    evidence: the file computes coverage over capabilities already supplied to it; it answers no draft request.
+  - node: rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text
+    held_at: nowhere
+    evidence: the file judges only the responseMap shape of an arbitrary configuration text, never a draft's own generation guarantee.
+  - node: rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it
+    held_at: nowhere
+    evidence: the file makes no statement about method, address, statusMap or responseMap keys the HTTP connector reads.
+  - node: rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms
+    held_at: nowhere
+    evidence: no placeholder literal form is read or written here.
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: nowhere
+    evidence: the file offers no act and withholds no submission.
+  - node: rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution
+    held_at: nowhere
+    evidence: no credential placeholder is read or stated anywhere.
+  - node: rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares
+    held_at: nowhere
+    evidence: the file reads output_schema properties, not subject placeholders or input schema properties.
+  - node: rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content
+    held_at: nowhere
+    evidence: the file states nothing about method, statusMap vocabulary or placeholder-form departures.
+  - node: rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides
+    held_at: nowhere
+    evidence: the file withholds no act and makes no refusal.
+  - node: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+    held_at: nowhere
+    evidence: no Connector field or chosen-operation gating appears in the file.
+  - node: rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: no staleness or generated-for tracking appears in the file.
+  - node: rules/integration/an-answered-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: the file states no draft content, unresolved items, generated credentials, status readings, response fields or reading notes.
+  - node: rules/integration/an-apply-confirmation-states-what-the-draft-would-change
+    held_at: nowhere
+    evidence: no apply-confirmation or key-diff appears in the file.
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: the file never inspects address, query, headers or body.
+  - node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    held_at: nowhere
+    evidence: the file never inspects method or statusMap.
+  - node: rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation
+    held_at: nowhere
+    evidence: no edit-versus-draft comparison or confirmation gating appears in the file.
+  - node: rules/integration/the-configuration-helper-states-an-operations-read-outstanding-and-a-document-declaring-no-operation
+    held_at: nowhere
+    evidence: the file makes no statement about an operations read being outstanding or a document declaring none.
+  - node: scenarios/integration/a-status-map-ending-outside-the-vocabulary-is-stated-before-the-write
+    held_at: nowhere
+    evidence: no statusMap ending or vocabulary check appears in the file.
+  - node: scenarios/integration/an-answered-draft-is-stated-with-its-readings-and-its-notes
+    held_at: nowhere
+    evidence: no draft, status reading or reading note is stated by this file.
+looked_past: >-
+  capabilityLabel's exact wording is a presentation choice the specification leaves to the
+  interface; the early-return null when both statement lists are empty is a display-shaping
+  choice, not a domain rule this pass adjudicates.
