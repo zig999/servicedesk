@@ -2470,6 +2470,10 @@
           "digest": "sha256:607a25097b5a01128681ca946bac70905bddec82a3add2bf57b44bc8402509c8"
         },
         {
+          "path": "frontend/app/src/services/connector-configuration-subject-placeholder-statements.ts",
+          "digest": "sha256:793cb24ebb7dd35084d2de1164f85ca7458369c5d34e7bce17d633935ed112f7"
+        },
+        {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
           "digest": "sha256:5b13db258706cbcbadb33471240d66492337049c11075aae8cdc48f232d3b635"
         },
@@ -5570,6 +5574,10 @@
         {
           "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
           "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-subject-placeholder-statements.ts",
+          "digest": "sha256:793cb24ebb7dd35084d2de1164f85ca7458369c5d34e7bce17d633935ed112f7"
         }
       ]
     },
@@ -5656,6 +5664,28 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares",
+      "digest": "sha256:530fe689a4ad1049fea739cd4438c8d69cd6b187ee426ebb82fb708d0c96d298",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-subject-placeholder-statements.ts",
+          "digest": "sha256:c1fe1c3062df8a9dca4abf2766e40a35c637cf90aaa91d55781045d3449e3462"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-subject-placeholder-statements-view.tsx",
+          "digest": "sha256:e1540585f649aa8c02b64673a9ac44f357687d8f0abbd953d7bbee3c9d14b018"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-messages.ts",
+          "digest": "sha256:498fa7ed738a5e3261ec85461c6a3d5bba7e6c194f32192027bb1602ab17e5fc"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-subject-placeholder-statements.ts",
+          "digest": "sha256:793cb24ebb7dd35084d2de1164f85ca7458369c5d34e7bce17d633935ed112f7"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-surface-states-what-the-http-connector-would-refuse-in-its-configuration-fields-content",
       "digest": "sha256:e9e2506f11f42dca538236294a84bc9400bf2336d2c93bd94c569c1436844e19",
       "files": [
@@ -5670,6 +5700,16 @@
         {
           "path": "frontend/app/src/services/connector-configuration-messages.ts",
           "digest": "sha256:597d3bb32dd19ead2cf7567a382bb9ca2e0697e486eae46576d32eb2002ef1bc"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "digest": "sha256:8c84cc6b4001ef8fd20bfb4690e3bf0ceacd1e800fc96d7fb139be45f32eaad0",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:c45659d0ea2c131162cfa2fd4dea7a9f5d2180b0b3cb8251cd6728ea40aae9ea"
         }
       ]
     },

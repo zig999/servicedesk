@@ -223,3 +223,27 @@ export function httpConnectorPlaceholderDepartureText(placeholder: string): stri
     "${subject:<attribute-name>}, ${requester} ou ${credential:<name>}."
   );
 }
+
+export const SUBJECT_PLACEHOLDER_STATEMENTS_HEADING =
+  "O que os placeholders de assunto desta configuração declaram";
+
+export const SUBJECT_PLACEHOLDER_CANNOT_BE_CHECKED_MESSAGE =
+  "Nenhuma capacidade está registrada para este conector: os placeholders de assunto desta " +
+  "configuração não podem ser verificados.";
+
+export function subjectPlaceholderDeclaredText(attributeName: string): string {
+  return (
+    `O placeholder \${subject:${attributeName}} é declarado no esquema de entrada de todas as ` +
+    "capacidades registradas para este conector."
+  );
+}
+
+export function subjectPlaceholderUndeclaredText(
+  attributeName: string,
+  nonDeclaringCapabilityLabels: readonly string[],
+): string {
+  return (
+    `O placeholder \${subject:${attributeName}} não é declarado no esquema de entrada de: ` +
+    `${nonDeclaringCapabilityLabels.join(", ")}.`
+  );
+}

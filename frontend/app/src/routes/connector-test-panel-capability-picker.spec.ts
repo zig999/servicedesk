@@ -144,7 +144,7 @@ describe("ConnectorTestPanel — Add attribute reconciles to a row already named
 });
 
 describe("ConnectorConfigurationCreateScreen — the Test section renders only in edit mode", () => {
-  it("renders no Test section, and issues no read for it, on the routed create screen", async () => {
+  it("renders no Test section, and issues no read of the Test panel's own subject-type terms, on the routed create screen", async () => {
     const fetchMock = createConnectorConfigurationCreateScreenFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await screen.findByLabelText("Configuração");
@@ -153,7 +153,6 @@ describe("ConnectorConfigurationCreateScreen — the Test section renders only i
     const requestedPaths = fetchMock.mock.calls.map(([input]) =>
       typeof input === "string" ? input : input.toString(),
     );
-    expect(requestedPaths).not.toContain(CAPABILITIES_PATH);
     expect(requestedPaths).not.toContain(SUBJECT_TYPE_PATH);
   });
 });

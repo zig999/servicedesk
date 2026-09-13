@@ -16,8 +16,10 @@ import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import { HttpConnectorDeparturesStatement } from "./connector-configuration-http-connector-departures-view";
+import { SubjectPlaceholderStatements } from "./connector-configuration-subject-placeholder-statements-view";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
 import type { ConfigurationFieldState } from "../hooks/use-connector-configuration-form";
+import { useSubjectPlaceholderStatements } from "../hooks/use-subject-placeholder-statements";
 import {
   applyConfirmationDiffIsEmpty,
   computeApplyConfirmationDiff,
@@ -180,6 +182,8 @@ export function ConnectorConfigurationFormFields({
   const hasUnsavedEdit = isDirty ?? configuration.value !== "";
   const [pendingApplyText, setPendingApplyText] = useState<string | null>(null);
 
+  const connector = watch("connector");
+
   const applyConfirmationDiff = useMemo<ApplyConfirmationDiff | null>(
     () =>
       pendingApplyText === null
@@ -192,6 +196,8 @@ export function ConnectorConfigurationFormFields({
     () => computeHttpConnectorDepartures(configuration.value),
     [configuration.value],
   );
+
+  const subjectPlaceholderStatements = useSubjectPlaceholderStatements(connector, configuration.value);
 
   function handleApply(configurationText: string): void {
     if (!hasUnsavedEdit) {
@@ -237,8 +243,9 @@ export function ConnectorConfigurationFormFields({
       />
       <ConfigurationEntryGuidance />
       <HttpConnectorDeparturesStatement departures={httpConnectorDepartures} />
+      <SubjectPlaceholderStatements statements={subjectPlaceholderStatements} />
 
-      <ConnectorConfigurationHelper connector={watch("connector")} onApply={handleApply} />
+      <ConnectorConfigurationHelper connector={connector} onApply={handleApply} />
 
       <Dialog
         open={pendingApplyText !== null}

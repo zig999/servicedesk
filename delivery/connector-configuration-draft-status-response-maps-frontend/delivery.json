@@ -18,6 +18,14 @@
       "task": "task/configuration-readiness/http-departure-statements"
     },
     {
+      "id": "implementation/configuration-readiness/subject-placeholder-statements",
+      "kind": "implementation",
+      "file": "implementation/configuration-readiness/subject-placeholder-statements.md",
+      "title": "Subject-placeholder readiness statement for connector configuration",
+      "summary": "A new pure judgment service, hook and view state, for each distinct ${subject:<attribute-name>} placeholder the Configuration field's well-formed JSON text embeds, whether every capability registered under the connector declares that attribute -- naming the ones that don't, or stating the check cannot be made when no capability is registered.",
+      "task": "task/configuration-readiness/subject-placeholder-statements"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/apply-confirmation-diff.md",
@@ -112,6 +120,14 @@
       "title": "HTTP connector configuration departure statements proof",
       "summary": "Proves each of the eight criteria over the pure judgment service, the two rendered complements (a departure showing, none showing) plus the governing scenario's own read/write pair on the surface, and the two node facts a finite test can decide whole, through two new sibling spec files.",
       "task": "task/configuration-readiness/http-departure-statements"
+    },
+    {
+      "id": "proof/configuration-readiness/subject-placeholder-statements",
+      "kind": "proof",
+      "file": "proof/configuration-readiness/subject-placeholder-statements.md",
+      "title": "Subject-placeholder readiness statement proof",
+      "summary": "Proves the pure judgment service's three-branch policy and its scoping boundaries at the service layer, and the surface's rendering of each branch plus its non-gating of Save and its single capability-registry read, through two new sibling spec files.",
+      "task": "task/configuration-readiness/subject-placeholder-statements"
     },
     {
       "id": "proof/drafted-answer-disclosure/apply-confirmation-diff",
@@ -252,6 +268,36 @@
     {
       "from": "implementation/configuration-readiness/http-departure-statements",
       "to": "task/configuration-readiness/http-departure-statements",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/configuration-readiness/subject-placeholder-statements",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/configuration-readiness/subject-placeholder-statements",
+      "to": "rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/configuration-readiness/subject-placeholder-statements",
+      "to": "rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/configuration-readiness/subject-placeholder-statements",
+      "to": "rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/configuration-readiness/subject-placeholder-statements",
+      "to": "task/configuration-readiness/subject-placeholder-statements",
       "kind": "implements",
       "at": "the path"
     },
@@ -474,6 +520,12 @@
     {
       "from": "proof/configuration-readiness/http-departure-statements",
       "to": "implementation/configuration-readiness/http-departure-statements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/configuration-readiness/subject-placeholder-statements",
+      "to": "implementation/configuration-readiness/subject-placeholder-statements",
       "kind": "proves",
       "at": "the path"
     },
