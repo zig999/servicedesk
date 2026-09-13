@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/apply-confirmation-diff.md",
+      "title": "Apply confirmation states its diff, key by key",
+      "summary": "A new pure diff service computes the top-level and four nested-object key itemisation the apply-over-unsaved-edit confirmation owes, and the confirmation dialog now renders it (or the not-itemisable statement) instead of only the fixed sentence.",
+      "task": "task/drafted-answer-disclosure/apply-confirmation-diff"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface.md",
@@ -64,6 +72,14 @@
       "title": "Unresolved-reason label dictionary corrected to the closed three-value vocabulary",
       "summary": "Removes the orphaned \"no-matching-input-schema-property\" entry from UNRESOLVED_REASON_LABEL in the draft disclosure service, so the surface's reason vocabulary matches the domain's closed three-reason enumeration exactly.",
       "task": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/apply-confirmation-diff",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/apply-confirmation-diff.md",
+      "title": "Apply confirmation diff proof",
+      "summary": "Proves the pure diff service's top-level and four-nested-key itemisation, its not-itemisable fallback, and their rendering in the apply-over-unsaved-edit confirmation dialog, through two new sibling spec files; criterion 6 is already proven by a pre-existing test cited rather than duplicated.",
+      "task": "task/drafted-answer-disclosure/apply-confirmation-diff"
     },
     {
       "id": "proof/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
@@ -131,6 +147,30 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "rules/integration/an-apply-confirmation-states-what-the-draft-would-change",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "rules/integration/an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "task/drafted-answer-disclosure/apply-confirmation-diff",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/drafted-answer-disclosure/draft-answer-parts-reach-the-surface",
       "to": "contracts/integration/connector-configuration-draft",
@@ -309,6 +349,12 @@
       "from": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
       "to": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/apply-confirmation-diff",
+      "to": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
+      "kind": "proves",
       "at": "the path"
     },
     {

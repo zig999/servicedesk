@@ -5418,6 +5418,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-drafts-configuration-is-well-formed-object-text",
+      "digest": "sha256:8b06ead7d4729523424e991e8658d90021f5891a6d481835d2ef1c975146d872",
+      "files": [
+        {
+          "path": "frontend/app/src/services/connector-configuration-apply-diff.ts",
+          "digest": "sha256:abeef56ca668f85911b4c209dcc4f768d4ba9a543a0af780b4cd0ac7db363885"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-drafts-method-is-compared-against-what-is-currently-registered",
       "digest": "sha256:0353873fc45dcf685ceed2b18cdb958c0cb4a16e9e1c76733da3fcf48d6afbff",
       "files": [
@@ -6118,6 +6128,20 @@
       ]
     },
     {
+      "node": "rules/integration/an-apply-confirmation-states-what-the-draft-would-change",
+      "digest": "sha256:6fc14ecf0102d2578be397f77b3fe057f60aeeaaa43265bc6d7e350b9d7aba4b",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:b751eb59cbbc2ea7a47c181050cfd4f257e525e9e6f11579494d81c085223d73"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-apply-diff.ts",
+          "digest": "sha256:abeef56ca668f85911b4c209dcc4f768d4ba9a543a0af780b4cd0ac7db363885"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
       "digest": "sha256:e6ff30654d5bf586d8c14a3693ee64b592fdf31c083bd4148e9ebed3df5cb4b2",
       "files": [
@@ -6313,7 +6337,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
-          "digest": "sha256:b865c39b3f70acc8622356638f0fbaa770e4f3398ec66df93c13ca67a31793e7"
+          "digest": "sha256:b751eb59cbbc2ea7a47c181050cfd4f257e525e9e6f11579494d81c085223d73"
         }
       ]
     },
