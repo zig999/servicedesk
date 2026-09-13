@@ -247,3 +247,13 @@ export function subjectPlaceholderUndeclaredText(
     `${nonDeclaringCapabilityLabels.join(", ")}.`
   );
 }
+
+export const CREDENTIAL_PLACEHOLDER_STATEMENTS_HEADING =
+  "O que os placeholders de credencial desta configuração declaram";
+
+export function credentialPlaceholderStatementText(name: string): string {
+  return (
+    `A credencial \${credential:${name}} é resolvida a partir da configuração do próprio ` +
+    "servidor no momento de um teste ou de uma observação; nada nesta superfície a verifica."
+  );
+}

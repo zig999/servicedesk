@@ -1,0 +1,12 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-configuration-form-fields-credential-placeholder-statement.spec.ts
+  102:30  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  102:30  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  104:20  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+✖ 3 problems (3 errors, 0 warnings)
+

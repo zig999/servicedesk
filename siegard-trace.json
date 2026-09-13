@@ -5664,6 +5664,24 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-surface-promises-no-check-of-a-credential-placeholders-resolution",
+      "digest": "sha256:6a6b1120511701673613ca5b4d111b7cbb306e641b19d136323c71a08507d417",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-credential-placeholder-statements-view.tsx",
+          "digest": "sha256:b19703dc5d8e2ee30f7b1ded2ebd70c5f3adafe43dbe2f9fb8f602a9d8119698"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-credential-placeholder-statements.ts",
+          "digest": "sha256:0da742807664445ab6e9b344ba568c874c3174c824092b1d0c5533a8851ab860"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-messages.ts",
+          "digest": "sha256:558c2869980212c5d9aa19cf2a68b902da09cc63b956a30f6d8683cb06cd8544"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares",
       "digest": "sha256:530fe689a4ad1049fea739cd4438c8d69cd6b187ee426ebb82fb708d0c96d298",
       "files": [

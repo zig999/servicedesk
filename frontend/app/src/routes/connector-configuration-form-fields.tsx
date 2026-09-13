@@ -15,6 +15,7 @@ import {
 import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
+import { CredentialPlaceholderStatements } from "./connector-configuration-credential-placeholder-statements-view";
 import { HttpConnectorDeparturesStatement } from "./connector-configuration-http-connector-departures-view";
 import { SubjectPlaceholderStatements } from "./connector-configuration-subject-placeholder-statements-view";
 import type { ConnectorConfigurationFormValues } from "../services/connector-configuration-form-schema";
@@ -26,6 +27,7 @@ import {
   type ApplyConfirmationDiff,
   type KeyChangeSet,
 } from "../services/connector-configuration-apply-diff";
+import { computeCredentialPlaceholderStatements } from "../services/connector-configuration-credential-placeholder-statements";
 import { computeHttpConnectorDepartures } from "../services/connector-configuration-http-departures";
 import {
   APPLY_CONFIRMATION_CONFIRM_BUTTON,
@@ -199,6 +201,11 @@ export function ConnectorConfigurationFormFields({
 
   const subjectPlaceholderStatements = useSubjectPlaceholderStatements(connector, configuration.value);
 
+  const credentialPlaceholderStatements = useMemo(
+    () => computeCredentialPlaceholderStatements(configuration.value),
+    [configuration.value],
+  );
+
   function handleApply(configurationText: string): void {
     if (!hasUnsavedEdit) {
       configuration.onChange(configurationText, true);
@@ -244,6 +251,7 @@ export function ConnectorConfigurationFormFields({
       <ConfigurationEntryGuidance />
       <HttpConnectorDeparturesStatement departures={httpConnectorDepartures} />
       <SubjectPlaceholderStatements statements={subjectPlaceholderStatements} />
+      <CredentialPlaceholderStatements credentialNames={credentialPlaceholderStatements} />
 
       <ConnectorConfigurationHelper connector={connector} onApply={handleApply} />
 
