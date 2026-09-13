@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/configuration-readiness/configuration-entry-guidance",
+      "kind": "implementation",
+      "file": "implementation/configuration-readiness/configuration-entry-guidance.md",
+      "title": "Fixed pt-BR configuration entry guidance beside the Configuration field",
+      "summary": "Adds a standing, ungated pt-BR guidance list beside the connector-configuration form's Configuration textarea, stating the four facts the governing rule bounds it to and nothing else.",
+      "task": "task/configuration-readiness/configuration-entry-guidance"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/apply-confirmation-diff.md",
@@ -80,6 +88,14 @@
       "title": "Unresolved-reason label dictionary corrected to the closed three-value vocabulary",
       "summary": "Removes the orphaned \"no-matching-input-schema-property\" entry from UNRESOLVED_REASON_LABEL in the draft disclosure service, so the surface's reason vocabulary matches the domain's closed three-reason enumeration exactly.",
       "task": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart"
+    },
+    {
+      "id": "proof/configuration-readiness/configuration-entry-guidance",
+      "kind": "proof",
+      "file": "proof/configuration-readiness/configuration-entry-guidance.md",
+      "title": "Configuration entry guidance proof",
+      "summary": "Proves the fixed four-claim pt-BR guidance list beside the Configuration field renders unconditionally and exhaustively over every content class, that the well-formedness gate on Save stands untouched by its presence, and cites the pre-existing Helper-position and Save-toggle tests that already show the rest of \"withholds no act\" holds.",
+      "task": "task/configuration-readiness/configuration-entry-guidance"
     },
     {
       "id": "proof/drafted-answer-disclosure/apply-confirmation-diff",
@@ -163,6 +179,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/configuration-readiness/configuration-entry-guidance",
+      "to": "rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/configuration-readiness/configuration-entry-guidance",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/configuration-readiness/configuration-entry-guidance",
+      "to": "task/configuration-readiness/configuration-entry-guidance",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/drafted-answer-disclosure/apply-confirmation-diff",
       "to": "rules/integration/an-apply-confirmation-states-what-the-draft-would-change",
@@ -371,6 +405,12 @@
       "from": "implementation/drafted-answer-disclosure/unresolved-reasons-stated-apart",
       "to": "task/drafted-answer-disclosure/unresolved-reasons-stated-apart",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/configuration-readiness/configuration-entry-guidance",
+      "to": "implementation/configuration-readiness/configuration-entry-guidance",
+      "kind": "proves",
       "at": "the path"
     },
     {

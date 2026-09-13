@@ -30,6 +30,10 @@ import {
   APPLY_DIFF_EMPTY_MESSAGE,
   APPLY_DIFF_NOT_ITEMISABLE_MESSAGE,
   APPLY_OVER_UNSAVED_EDIT_DESCRIPTION,
+  CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE,
+  CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE,
+  CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE,
+  CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE,
   FORM_CONFIGURATION_FIELD_LABEL,
   FORM_CONNECTOR_FIELD_LABEL,
   FORM_SAVE_BUTTON,
@@ -38,6 +42,13 @@ import {
   KEY_CHANGE_LIST_TOP_LEVEL_LABEL,
   KEY_CHANGE_REMOVED_PREFIX,
 } from "../services/connector-configuration-messages";
+
+const CONFIGURATION_ENTRY_GUIDANCE_MESSAGES: readonly string[] = [
+  CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE,
+  CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE,
+  CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE,
+  CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE,
+];
 
 export const CONNECTOR_CONFIGURATION_FORM_ID = "connector-configuration-form";
 
@@ -115,6 +126,16 @@ function KeyChangeList({
         ))}
       </ul>
     </div>
+  );
+}
+
+function ConfigurationEntryGuidance(): JSX.Element {
+  return (
+    <ul className="flex flex-col gap-1 text-sm text-muted-foreground">
+      {CONFIGURATION_ENTRY_GUIDANCE_MESSAGES.map((message) => (
+        <li key={message}>{message}</li>
+      ))}
+    </ul>
   );
 }
 
@@ -207,6 +228,7 @@ export function ConnectorConfigurationFormFields({
         onChange={configuration.onChange}
         disabled={isSubmitting}
       />
+      <ConfigurationEntryGuidance />
 
       <ConnectorConfigurationHelper connector={watch("connector")} onApply={handleApply} />
 

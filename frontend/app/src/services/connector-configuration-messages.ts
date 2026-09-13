@@ -160,3 +160,12 @@ export const APPLY_DIFF_NOT_ITEMISABLE_MESSAGE =
   "O que a aplicação deste rascunho mudaria não pode ser detalhado por itens: o campo " +
   "Configuração não contém um texto de objeto JSON bem formado.";
 export const APPLY_DIFF_EMPTY_MESSAGE = "Aplicar este rascunho não mudaria nada.";
+
+export const CONFIGURATION_ENTRY_GUIDANCE_IS_JSON_OBJECT_MESSAGE =
+  "O que é digitado aqui é um objeto JSON.";
+export const CONFIGURATION_ENTRY_GUIDANCE_READS_KEYS_MESSAGE =
+  "O conector HTTP lê o method, address, statusMap e responseMap da configuração.";
+export const CONFIGURATION_ENTRY_GUIDANCE_READS_CALL_PARTS_MESSAGE =
+  "O conector HTTP lê uma query, headers e um body onde a configuração os declarar.";
+export const CONFIGURATION_ENTRY_GUIDANCE_PLACEHOLDER_FORMS_MESSAGE =
+  "Um placeholder é escrito como ${subject:<attribute-name>}, ${requester} ou ${credential:<name>}.";

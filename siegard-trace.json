@@ -2462,6 +2462,10 @@
           "digest": "sha256:a03814f8fec0b76b7681408b3fae70870a0cb0437699e77b44be64c8565fdb0a"
         },
         {
+          "path": "frontend/app/src/services/connector-configuration-messages.ts",
+          "digest": "sha256:607a25097b5a01128681ca946bac70905bddec82a3add2bf57b44bc8402509c8"
+        },
+        {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
           "digest": "sha256:5b13db258706cbcbadb33471240d66492337049c11075aae8cdc48f232d3b635"
         },
@@ -5448,6 +5452,20 @@
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
           "digest": "sha256:7b6fdbeec031124cfece518c6a95b19241d9d5111485a370d2cdc09fd9346a65"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-entry-states-what-the-http-connector-reads-from-it",
+      "digest": "sha256:bf40b1db4d8aa35415423a2273448c73418d4a51faa2de89afa32914b8f923e8",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:faa79b138fb5c29aed838806462dcf3645d2c6ac3606c6af793a3533875e05cd"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-messages.ts",
+          "digest": "sha256:607a25097b5a01128681ca946bac70905bddec82a3add2bf57b44bc8402509c8"
         }
       ]
     },
