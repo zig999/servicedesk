@@ -50,7 +50,7 @@ function operationsReadJsonResponse(): Response {
 }
 
 async function chooseHelperOperation(path: string, method: string): Promise<void> {
-  fireEvent.click(screen.getByLabelText("Operation"));
+  fireEvent.click(screen.getByLabelText("Operação"));
   const option = await screen.findByRole("option", { name: `${path} — ${method}` });
   fireEvent.mouseDown(option);
 }
@@ -66,7 +66,7 @@ async function mountDetailReady(): Promise<{
     }),
   );
   await mountConnectorConfigurationDetailScreen(fetchMock);
-  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
   await waitFor(() => expect(configurationField.value).toBe(prettyPrinted(LOADED_CONFIGURATION)));
   return { fetchMock, configurationField };
 }
@@ -80,23 +80,23 @@ async function mountCreateReady(): Promise<{
     [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
   });
   await mountConnectorConfigurationCreateScreen(fetchMock);
-  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
   return { fetchMock, configurationField };
 }
 
 async function offerDraft(): Promise<void> {
-  const connectorField = screen.queryByLabelText<HTMLInputElement>("Connector");
+  const connectorField = screen.queryByLabelText<HTMLInputElement>("Conector");
   if (connectorField !== null && connectorField.value.trim() === "") {
     fireEvent.change(connectorField, { target: { value: CONNECTOR } });
   }
-  fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+  fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
   await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
-  fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
-  await screen.findByRole("button", { name: "Apply" });
+  fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
+  await screen.findByRole("button", { name: "Aplicar" });
 }
 
 function clickOuterApply(): void {
-  fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+  fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
 }
 
 function confirmationDialog(): HTMLElement {
@@ -104,11 +104,11 @@ function confirmationDialog(): HTMLElement {
 }
 
 function confirmApplyButton(): HTMLElement {
-  return within(confirmationDialog()).getByRole("button", { name: "Apply" });
+  return within(confirmationDialog()).getByRole("button", { name: "Aplicar" });
 }
 
 function keepEditingButton(): HTMLElement {
-  return within(confirmationDialog()).getByRole("button", { name: "Keep editing" });
+  return within(confirmationDialog()).getByRole("button", { name: "Continuar editando" });
 }
 
 describe("ConnectorConfigurationFormFields -- on the ready detail view, applying a draft over a differing unsaved edit opens a confirmation dialog rather than replacing anything yet (criteria 1 and 6)", () => {
@@ -120,7 +120,7 @@ describe("ConnectorConfigurationFormFields -- on the ready detail view, applying
     clickOuterApply();
 
     await screen.findByRole("dialog");
-    expect(within(confirmationDialog()).getByText("Apply drafted configuration?")).toBeTruthy();
+    expect(within(confirmationDialog()).getByText("Aplicar configuração rascunhada?")).toBeTruthy();
     expect(configurationField.value).toBe(UNSAVED_DETAIL_EDIT_TEXT);
   });
 });
@@ -195,10 +195,10 @@ describe("ConnectorConfigurationFormFields -- the apply confirmation dialog's ow
     await screen.findByRole("dialog");
 
     const dialog = confirmationDialog();
-    expect(within(dialog).getByText("Apply drafted configuration?")).toBeTruthy();
+    expect(within(dialog).getByText("Aplicar configuração rascunhada?")).toBeTruthy();
     expect(
       within(dialog).getByText(
-        "Applying this drafted configuration will replace the edit you have not saved in the Configuration field. This cannot be undone.",
+        "Aplicar esta configuração rascunhada substituirá a edição não salva no campo Configuração. Isso não pode ser desfeito.",
       ),
     ).toBeTruthy();
     expect(confirmApplyButton().className).toMatch(/destructive/);
@@ -215,7 +215,7 @@ describe("ConnectorConfigurationFormFields -- on the create screen, applying a d
     clickOuterApply();
 
     await screen.findByRole("dialog");
-    expect(within(confirmationDialog()).getByText("Apply drafted configuration?")).toBeTruthy();
+    expect(within(confirmationDialog()).getByText("Aplicar configuração rascunhada?")).toBeTruthy();
     expect(configurationField.value).toBe(OPERATOR_TYPED_TEXT);
   });
 });

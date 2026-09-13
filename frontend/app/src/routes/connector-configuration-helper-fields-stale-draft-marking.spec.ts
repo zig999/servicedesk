@@ -46,7 +46,7 @@ describe("ConnectorConfigurationHelperFields -- a stale drafted disclosure state
   it("renders a staleness statement when state.stale is true", () => {
     renderFields(stateWith({ stale: true }));
 
-    expect(screen.getByText(/stale/i)).toBeTruthy();
+    expect(screen.getByText(/desatualizado/i)).toBeTruthy();
   });
 });
 
@@ -54,7 +54,7 @@ describe("ConnectorConfigurationHelperFields -- a drafted disclosure that is not
   it("renders no staleness statement when state.stale is false", () => {
     renderFields(stateWith({ stale: false }));
 
-    expect(screen.queryByText(/stale/i)).toBeNull();
+    expect(screen.queryByText(/desatualizado/i)).toBeNull();
   });
 });
 
@@ -65,7 +65,7 @@ describe("ConnectorConfigurationHelperFields -- a stale draft is not discarded a
 
     expect(screen.getByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeTruthy();
 
-    const button = screen.getByRole("button", { name: "Apply" });
+    const button = screen.getByRole("button", { name: "Aplicar" });
     expect(button.hasAttribute("disabled")).toBe(false);
 
     button.click();

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { disclosureStateForOutcome } from "./connector-configuration-draft-disclosure";
+import {
+  DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE,
+  openApiFetchFailureText,
+} from "./connector-configuration-messages";
 import type {
   ConnectorConfigurationDraft,
   ConnectorConfigurationDraftGeneratedCredential,
@@ -206,7 +210,7 @@ describe("disclosureStateForOutcome -- a fetch refusal names its own failure kin
 
     const state = refused(disclosureStateForOutcome(outcome));
 
-    expect(state.message).toContain("network failure");
+    expect(state.message).toContain(openApiFetchFailureText({ kind: "network-failure" }));
   });
 
   it("names a timeout, distinctly from a network failure", () => {
@@ -218,8 +222,8 @@ describe("disclosureStateForOutcome -- a fetch refusal names its own failure kin
 
     const state = refused(disclosureStateForOutcome(outcome));
 
-    expect(state.message).toContain("timeout");
-    expect(state.message).not.toContain("network failure");
+    expect(state.message).toContain(openApiFetchFailureText({ kind: "timeout" }));
+    expect(state.message).not.toContain(openApiFetchFailureText({ kind: "network-failure" }));
   });
 
   it("names the status when the fetch failed with a status outside the 2xx range", () => {
@@ -252,7 +256,7 @@ describe("disclosureStateForOutcome -- a document-not-readable refusal is its ow
   it("states that the document could not be read", () => {
     const state = refused(disclosureStateForOutcome({ kind: "openapi-document-not-readable" }));
 
-    expect(state.message).toContain("could not be read");
+    expect(state.message).toContain(DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE);
   });
 });
 
@@ -271,9 +275,9 @@ describe("disclosureStateForOutcome -- an unrecognised failure is its own fallba
   it("states an unrecognised reason, reusing none of the three named refusal sentences", () => {
     const state = refused(disclosureStateForOutcome({ kind: "unrecognized-failure" }));
 
-    expect(state.message).not.toContain("could not be fetched");
-    expect(state.message).not.toContain("could not be read");
-    expect(state.message).not.toContain("no operation for method");
+    expect(state.message).not.toContain("não foi possível obter o link");
+    expect(state.message).not.toContain(DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE);
+    expect(state.message).not.toContain("não declara nenhuma operação");
   });
 });
 

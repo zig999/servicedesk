@@ -1,22 +1,16 @@
-import type { OpenApiDocumentFetchFailure } from "../hooks/use-draft-connector-configuration-from-openapi";
 import type { OpenApiDocumentOperationsReadOutcome } from "../hooks/use-openapi-document-operations";
+import {
+  openApiFetchFailureText,
+  operationsNotListedFetchFailureMessage,
+  OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE,
+  OPERATIONS_NOT_LISTED_UNRECOGNIZED_FAILURE_MESSAGE,
+} from "./connector-configuration-messages";
 
 export type OperationsReadDisclosureState =
   | { readonly kind: "none" }
   | { readonly kind: "pending" }
   | { readonly kind: "empty" }
   | { readonly kind: "refused"; readonly message: string };
-
-function fetchFailureLabel(failure: OpenApiDocumentFetchFailure): string {
-  switch (failure.kind) {
-    case "network-failure":
-      return "a network failure";
-    case "timeout":
-      return "a timeout";
-    case "status-outside-2xx":
-      return `a response outside the 2xx range (status ${failure.status})`;
-  }
-}
 
 export function operationsReadDisclosureStateForOutcome(
   outcome: OpenApiDocumentOperationsReadOutcome,
@@ -31,24 +25,18 @@ export function operationsReadDisclosureStateForOutcome(
     case "openapi-document-not-fetched":
       return {
         kind: "refused",
-        message:
-          "No operations were listed: the named OpenAPI document link could not be fetched " +
-          `(${fetchFailureLabel(outcome.failure)}).`,
+        message: operationsNotListedFetchFailureMessage(openApiFetchFailureText(outcome.failure)),
       };
     case "openapi-document-not-readable":
     case "openapi-document-declares-no-version":
       return {
         kind: "refused",
-        message:
-          "No operations were listed: the fetched document could not be read as an OpenAPI " +
-          "3.x document.",
+        message: OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE,
       };
     case "unrecognized-failure":
       return {
         kind: "refused",
-        message:
-          "No operations were listed: the request failed for a reason this helper does not " +
-          "recognise.",
+        message: OPERATIONS_NOT_LISTED_UNRECOGNIZED_FAILURE_MESSAGE,
       };
   }
 }

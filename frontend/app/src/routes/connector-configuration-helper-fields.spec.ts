@@ -64,9 +64,9 @@ describe("ConnectorConfigurationHelperFields -- idle renders neither a refusal n
   it("shows no drafting line, no alert and no drafted disclosure while idle", () => {
     renderHelperFields({ kind: "idle" });
 
-    expect(screen.queryByText("Drafting the connector configuration…")).toBeNull();
+    expect(screen.queryByText("Rascunhando a configuração do conector…")).toBeNull();
     expect(screen.queryByRole("alert")).toBeNull();
-    expect(screen.queryByText("Drafted configuration")).toBeNull();
+    expect(screen.queryByText("Configuração rascunhada")).toBeNull();
   });
 });
 
@@ -74,9 +74,9 @@ describe("ConnectorConfigurationHelperFields -- a pending request shows a drafti
   it("shows the drafting line and neither an alert nor a drafted disclosure while pending", () => {
     renderHelperFields({ kind: "pending" });
 
-    expect(screen.getByText("Drafting the connector configuration…")).toBeTruthy();
+    expect(screen.getByText("Rascunhando a configuração do conector…")).toBeTruthy();
     expect(screen.queryByRole("alert")).toBeNull();
-    expect(screen.queryByText("Drafted configuration")).toBeNull();
+    expect(screen.queryByText("Configuração rascunhada")).toBeNull();
   });
 });
 
@@ -112,7 +112,7 @@ describe("ConnectorConfigurationHelperFields -- an empty unresolved list disclos
   it("renders no Unresolved section", () => {
     renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
 
-    expect(screen.queryByText("Unresolved")).toBeNull();
+    expect(screen.queryByText("Não resolvidos")).toBeNull();
   });
 });
 
@@ -155,7 +155,7 @@ describe("ConnectorConfigurationHelperFields -- an empty generated-credentials l
   it("renders no Generated credentials section", () => {
     renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
 
-    expect(screen.queryByText("Generated credentials")).toBeNull();
+    expect(screen.queryByText("Credenciais geradas")).toBeNull();
   });
 });
 
@@ -168,9 +168,9 @@ describe("ConnectorConfigurationHelperFields -- a method mismatch discloses both
 
     renderHelperFields(outcome);
 
-    const line = normalized(screen.getByText(/Registered/));
-    expect(line).toContain("Registered: GET");
-    expect(line).toContain("Drafted: POST");
+    const line = normalized(screen.getByText(/Registrado/));
+    expect(line).toContain("Registrado: GET");
+    expect(line).toContain("Rascunhado: POST");
   });
 });
 
@@ -178,7 +178,7 @@ describe("ConnectorConfigurationHelperFields -- no method mismatch is disclosed 
   it("renders no Method mismatch section", () => {
     renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
 
-    expect(screen.queryByText("Method mismatch")).toBeNull();
+    expect(screen.queryByText("Divergência de método")).toBeNull();
   });
 });
 
@@ -200,9 +200,9 @@ describe("ConnectorConfigurationHelperFields -- every status reading the answer 
 
     const items = screen.getAllByRole("listitem").map(normalized);
     expect(items).toEqual([
-      "Status 200 — ending: record-stub-response (declared as: Successful profile retrieval)",
-      "Status 403 — ending: forbidden-not-drafted",
-      "Status 503 — ending: unavailable-not-drafted",
+      "Status 200 — desfecho: record-stub-response (declarado como: Successful profile retrieval)",
+      "Status 403 — desfecho: forbidden-not-drafted",
+      "Status 503 — desfecho: unavailable-not-drafted",
     ]);
   });
 });
@@ -216,7 +216,7 @@ describe("ConnectorConfigurationHelperFields -- a status reading's status and it
 
     renderHelperFields(outcome);
 
-    expect(normalized(screen.getByRole("listitem"))).toBe("Status 422 — ending: validation-error-passed-through");
+    expect(normalized(screen.getByRole("listitem"))).toBe("Status 422 — desfecho: validation-error-passed-through");
   });
 });
 
@@ -232,8 +232,8 @@ describe("ConnectorConfigurationHelperFields -- a fetch refusal is disclosed as 
   it("shows the fetch-refusal message as an alert and no drafted disclosure", () => {
     renderHelperFields(FETCH_REFUSAL);
 
-    expect(screen.getByRole("alert").textContent).toContain("could not be fetched");
-    expect(screen.queryByText("Drafted configuration")).toBeNull();
+    expect(screen.getByRole("alert").textContent).toContain("não foi possível obter o link");
+    expect(screen.queryByText("Configuração rascunhada")).toBeNull();
   });
 });
 
@@ -241,8 +241,8 @@ describe("ConnectorConfigurationHelperFields -- a document-not-readable refusal 
   it("shows the document-not-readable message as an alert and no drafted disclosure", () => {
     renderHelperFields(NOT_READABLE_REFUSAL);
 
-    expect(screen.getByRole("alert").textContent).toContain("could not be read");
-    expect(screen.queryByText("Drafted configuration")).toBeNull();
+    expect(screen.getByRole("alert").textContent).toContain("não pôde ser lido como um documento OpenAPI 3.x");
+    expect(screen.queryByText("Configuração rascunhada")).toBeNull();
   });
 });
 
@@ -253,7 +253,7 @@ describe("ConnectorConfigurationHelperFields -- an operation-not-found refusal i
     const alertText = screen.getByRole("alert").textContent ?? "";
     expect(alertText).toContain("PATCH");
     expect(alertText).toContain("/v2/translate");
-    expect(screen.queryByText("Drafted configuration")).toBeNull();
+    expect(screen.queryByText("Configuração rascunhada")).toBeNull();
   });
 });
 
@@ -262,10 +262,10 @@ describe("ConnectorConfigurationHelperFields -- an unrecognised failure is discl
     renderHelperFields(UNRECOGNIZED_REFUSAL);
 
     const alertText = screen.getByRole("alert").textContent ?? "";
-    expect(alertText).not.toContain("could not be fetched");
-    expect(alertText).not.toContain("could not be read");
-    expect(alertText).not.toContain("no operation for method");
-    expect(screen.queryByText("Drafted configuration")).toBeNull();
+    expect(alertText).not.toContain("não foi possível obter o link");
+    expect(alertText).not.toContain("não pôde ser lido como um documento OpenAPI 3.x");
+    expect(alertText).not.toContain("não declara nenhuma operação");
+    expect(screen.queryByText("Configuração rascunhada")).toBeNull();
   });
 });
 
@@ -325,7 +325,7 @@ describe("ConnectorConfigurationHelperFields -- a stale drafted disclosure clear
     );
 
     expect(screen.queryByText(DISTINCTIVE_CONFIGURATION_TEXT)).toBeNull();
-    expect(screen.getByText("Drafting the connector configuration…")).toBeTruthy();
+    expect(screen.getByText("Rascunhando a configuração do conector…")).toBeTruthy();
     expect(screen.queryByRole("alert")).toBeNull();
   });
 });
@@ -343,6 +343,6 @@ describe("ConnectorConfigurationHelperFields -- a stale refusal clears the momen
     );
 
     expect(screen.queryByRole("alert")).toBeNull();
-    expect(screen.getByText("Drafting the connector configuration…")).toBeTruthy();
+    expect(screen.getByText("Rascunhando a configuração do conector…")).toBeTruthy();
   });
 });

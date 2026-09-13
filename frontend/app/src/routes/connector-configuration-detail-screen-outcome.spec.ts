@@ -25,10 +25,10 @@ describe("ConnectorConfigurationDetailScreen -- a successful save states its out
   it("saves successfully with no toast call at all -- a stray toast.success on this surface would throw against this file's own sonner stub, which declares no success function", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     expect(await screen.findByText("Saved.")).toBeTruthy();
     expect(toast.error).not.toHaveBeenCalled();
@@ -46,10 +46,10 @@ describe("ConnectorConfigurationDetailScreen -- a refused save states a distingu
       }),
     );
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await waitFor(() =>
       expect(toast.error).toHaveBeenCalledWith(
@@ -68,10 +68,10 @@ describe("ConnectorConfigurationDetailScreen -- a refused save states a distingu
       }),
     );
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await waitFor(() =>
       expect(toast.error).toHaveBeenCalledWith(

@@ -80,7 +80,7 @@ describe("ConnectorConfigurationDetailScreen -- the return-to-origin control lan
       "/origin-surface-a",
       `/connectors/${CONNECTOR}`,
     ]);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
@@ -93,7 +93,7 @@ describe("ConnectorConfigurationDetailScreen -- the presence of both controls tu
   it("renders both controls when reached from one surface that is not the listing", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountWithHistory(fetchMock, ["/origin-surface-a", `/connectors/${CONNECTOR}`]);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.getByRole("button", { name: "Cancel" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Connectors" })).toBeTruthy();
@@ -102,7 +102,7 @@ describe("ConnectorConfigurationDetailScreen -- the presence of both controls tu
   it("renders both controls when reached from a different surface that is not the listing", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountWithHistory(fetchMock, ["/origin-surface-b", `/connectors/${CONNECTOR}`]);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.getByRole("button", { name: "Cancel" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Connectors" })).toBeTruthy();
@@ -111,7 +111,7 @@ describe("ConnectorConfigurationDetailScreen -- the presence of both controls tu
   it("renders both controls when reached from the connector-configurations listing itself", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountWithHistory(fetchMock, ["/connectors", `/connectors/${CONNECTOR}`]);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.getByRole("button", { name: "Cancel" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Connectors" })).toBeTruthy();
@@ -165,7 +165,7 @@ describe("ConnectorConfigurationDetailScreen -- the return-to-origin control fal
   it("navigates to /connectors and issues no PUT when Cancel is clicked with no edits once the configuration is shown", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
 

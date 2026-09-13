@@ -16,7 +16,7 @@ describe("ConnectorConfigurationDetailReadyView -- the footer's Cancel abandons 
   it("issues no PUT and returns to the connector-configurations listing when Cancel is clicked, even with unsaved edits -- a Cancel wired to submit before navigating would fail this", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: '{"key":"changed"}' } });
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));

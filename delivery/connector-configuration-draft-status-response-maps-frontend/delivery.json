@@ -34,6 +34,14 @@
       "task": "task/drafted-answer-disclosure/operations-read-states"
     },
     {
+      "id": "implementation/drafted-answer-disclosure/pt-br-message-module",
+      "kind": "implementation",
+      "file": "implementation/drafted-answer-disclosure/pt-br-message-module.md",
+      "title": "pt-BR message module for the Configuration Helper and configuration form",
+      "summary": "Every operator-facing string the Configuration Helper and the connector configuration form state is relocated into one new pt-BR message module, and the two draft/operations-read disclosure services and the three route components now read from it instead of inlining English literals.",
+      "task": "task/drafted-answer-disclosure/pt-br-message-module"
+    },
+    {
       "id": "implementation/drafted-answer-disclosure/reading-notes-stated",
       "kind": "implementation",
       "file": "implementation/drafted-answer-disclosure/reading-notes-stated.md",
@@ -104,6 +112,14 @@
       "title": "Configuration Helper distinguishes an outstanding operations read from a document declaring none -- proof",
       "summary": "Proves the two new operations-read disclosure states -- an outstanding read and a document declaring no operation -- at the projection layer and at the rendered surface, each apart from the other and from every refusal, via new tests added to the two existing sibling spec files, and corrects one pre-existing test whose literal expectation this task's legitimate change made stale.",
       "task": "task/drafted-answer-disclosure/operations-read-states"
+    },
+    {
+      "id": "proof/drafted-answer-disclosure/pt-br-message-module",
+      "kind": "proof",
+      "file": "proof/drafted-answer-disclosure/pt-br-message-module.md",
+      "title": "pt-BR message module proof, and the corrected literal expectations it made stale",
+      "summary": "Proves the module's whole finite inventory is non-empty pt-BR text, refutes the one candidate the task's UNDERDETERMINED note names (a single shared text collapsing the three unresolved reasons, the nine reading-note kinds, or the two operations-read states), demonstrates by same-string-reference that four representative rendered surfaces read from the module rather than duplicate its text, and corrects every pre-existing test whose literal English assertion this task's translation made stale.",
+      "task": "task/drafted-answer-disclosure/pt-br-message-module"
     },
     {
       "id": "proof/drafted-answer-disclosure/reading-notes-stated",
@@ -234,6 +250,12 @@
     {
       "from": "implementation/drafted-answer-disclosure/operations-read-states",
       "to": "task/drafted-answer-disclosure/operations-read-states",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/drafted-answer-disclosure/pt-br-message-module",
+      "to": "task/drafted-answer-disclosure/pt-br-message-module",
       "kind": "implements",
       "at": "the path"
     },
@@ -372,6 +394,12 @@
     {
       "from": "proof/drafted-answer-disclosure/operations-read-states",
       "to": "implementation/drafted-answer-disclosure/operations-read-states",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/drafted-answer-disclosure/pt-br-message-module",
+      "to": "implementation/drafted-answer-disclosure/pt-br-message-module",
       "kind": "proves",
       "at": "the path"
     },

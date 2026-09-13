@@ -19,7 +19,7 @@ import {
 import { mountConnectorConfigurationDetailScreenWithFooterSlot } from "./connector-configuration-detail-screen-footer-portal.test-support";
 import { CONNECTOR_CONFIGURATION_FORM_ID } from "./connector-configuration-form-fields";
 
-const SAVE_BUTTON = { name: "Save" };
+const SAVE_BUTTON = { name: "Salvar" };
 const CANCEL_BUTTON = { name: "Cancel" };
 
 afterEach(() => {
@@ -34,7 +34,7 @@ async function mountReadyWithFooterSlot(entries?: readonly string[]): Promise<{
 }> {
   const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
   const router = await mountConnectorConfigurationDetailScreenWithFooterSlot(fetchMock, entries);
-  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
   return { fetchMock, configurationField, router };
 }
 
@@ -93,7 +93,7 @@ describe("no outcome is stated before the registry answers, even with the footer
       }),
     );
     await mountConnectorConfigurationDetailScreenWithFooterSlot(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
     fireEvent.click(screen.getByRole("button", SAVE_BUTTON));
@@ -123,7 +123,7 @@ describe("a refused registration with the footer slot present states that nothin
       }),
     );
     await mountConnectorConfigurationDetailScreenWithFooterSlot(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
     fireEvent.click(screen.getByRole("button", SAVE_BUTTON));
@@ -148,7 +148,7 @@ describe("a refusal naming no condition this surface recognises is stated as a g
       }),
     );
     await mountConnectorConfigurationDetailScreenWithFooterSlot(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
     fireEvent.click(screen.getByRole("button", SAVE_BUTTON));
@@ -180,7 +180,7 @@ describe("activating abandon with the footer slot present returns to the screen 
       "/origin-surface",
       `/connectors/${CONNECTOR}`,
     ]);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     fireEvent.click(screen.getByRole("button", CANCEL_BUTTON));
 

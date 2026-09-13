@@ -36,16 +36,16 @@ function operationsReadJsonResponse(): Response {
 }
 
 async function chooseHelperOperation(path: string, method: string): Promise<void> {
-  fireEvent.click(screen.getByLabelText("Operation"));
+  fireEvent.click(screen.getByLabelText("Operação"));
   const option = await screen.findByRole("option", { name: `${path} — ${method}` });
   fireEvent.mouseDown(option);
 }
 
 async function fillHelperRequestFields(): Promise<void> {
-  fireEvent.change(await screen.findByLabelText<HTMLInputElement>("Connector"), {
+  fireEvent.change(await screen.findByLabelText<HTMLInputElement>("Conector"), {
     target: { value: CONNECTOR_NAME },
   });
-  fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+  fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
   await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 }
 
@@ -60,10 +60,10 @@ async function applyAnsweredDraft(configurationText: string): Promise<{
   const router = await mountConnectorConfigurationCreateScreen(fetchMock);
 
   await fillHelperRequestFields();
-  fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
+  fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
 
-  await screen.findByRole("button", { name: "Apply" });
-  fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+  await screen.findByRole("button", { name: "Aplicar" });
+  fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
 
   return { fetchMock, router };
 }
@@ -73,7 +73,7 @@ describe("ConnectorConfigurationCreateScreen -- applying an answered draft write
     await applyAnsweredDraft(WELL_FORMED_APPLIED_TEXT);
 
     await waitFor(() =>
-      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
         WELL_FORMED_APPLIED_TEXT,
       ),
     );
@@ -85,7 +85,7 @@ describe("ConnectorConfigurationCreateScreen -- applying an answered draft dispa
     const { fetchMock } = await applyAnsweredDraft(WELL_FORMED_APPLIED_TEXT);
 
     await waitFor(() =>
-      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
         WELL_FORMED_APPLIED_TEXT,
       ),
     );
@@ -98,7 +98,7 @@ describe("ConnectorConfigurationCreateScreen -- applying an answered draft leave
     const { router } = await applyAnsweredDraft(WELL_FORMED_APPLIED_TEXT);
 
     await waitFor(() =>
-      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
         WELL_FORMED_APPLIED_TEXT,
       ),
     );
@@ -111,11 +111,11 @@ describe("ConnectorConfigurationCreateScreen -- applying an answered draft leave
     await applyAnsweredDraft(WELL_FORMED_APPLIED_TEXT);
 
     await waitFor(() =>
-      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
         WELL_FORMED_APPLIED_TEXT,
       ),
     );
-    expect(screen.getByLabelText<HTMLInputElement>("Connector").value).toBe(CONNECTOR_NAME);
+    expect(screen.getByLabelText<HTMLInputElement>("Conector").value).toBe(CONNECTOR_NAME);
   });
 });
 
@@ -124,11 +124,11 @@ describe("ConnectorConfigurationCreateScreen -- applying a draft whose text is n
     await applyAnsweredDraft(NOT_AN_OBJECT_APPLIED_TEXT);
 
     await waitFor(() =>
-      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+      expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
         NOT_AN_OBJECT_APPLIED_TEXT,
       ),
     );
-    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Save" }).disabled).toBe(true);
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Salvar" }).disabled).toBe(true);
   });
 });
 
@@ -140,15 +140,15 @@ describe("ConnectorConfigurationCreateScreen -- applying a well-formed draft's t
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
 
-    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Save" }).disabled).toBe(true);
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "Salvar" }).disabled).toBe(true);
 
     await fillHelperRequestFields();
-    fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
-    await screen.findByRole("button", { name: "Apply" });
-    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+    fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
+    await screen.findByRole("button", { name: "Aplicar" });
+    fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
 
     await waitFor(() =>
-      expect(screen.getByRole<HTMLButtonElement>("button", { name: "Save" }).disabled).toBe(false),
+      expect(screen.getByRole<HTMLButtonElement>("button", { name: "Salvar" }).disabled).toBe(false),
     );
   });
 });

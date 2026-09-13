@@ -1,8 +1,16 @@
 import type {
   ConnectorConfigurationDraft,
   DraftConnectorConfigurationRequestOutcome,
-  OpenApiDocumentFetchFailure,
 } from "../hooks/use-draft-connector-configuration-from-openapi";
+import {
+  draftNotGeneratedFetchFailureMessage,
+  DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE,
+  draftNotGeneratedOperationNotFoundMessage,
+  DRAFT_NOT_GENERATED_UNRECOGNIZED_FAILURE_MESSAGE,
+  openApiFetchFailureText,
+  readingNoteKindMessage,
+  unresolvedReasonMessage,
+} from "./connector-configuration-messages";
 
 export type UnresolvedItemDisclosure = {
   readonly name: string;
@@ -58,32 +66,12 @@ export type ConnectorConfigurationHelperDisclosureState =
   | { readonly kind: "drafted"; readonly draft: DraftDisclosure }
   | { readonly kind: "refused"; readonly message: string };
 
-const UNRESOLVED_REASON_LABEL: Readonly<Record<string, string>> = {
-  "no-capability-registered": "No capability is currently registered naming this connector.",
-  "security-scheme-not-reducible-to-a-credential":
-    "This security scheme cannot be reduced to a single credential value.",
-  "drafted-key-occupied-by-another-security-scheme":
-    "This drafted key is already occupied by another security scheme.",
-};
-
 function unresolvedReasonLabel(reason: string): string {
-  return UNRESOLVED_REASON_LABEL[reason] ?? reason;
+  return unresolvedReasonMessage(reason);
 }
 
-const READING_NOTE_KIND_LABEL: Readonly<Record<string, string>> = {
-  "default-response-not-drafted": "Default response, not drafted into the status map",
-  "status-range-not-drafted": "Status range, not drafted into the status map",
-  "non-json-success-content-not-read": "Non-JSON success content, not read",
-  "envelope-read-through": "Single-property envelope, read through",
-  "variants-united": "oneOf/anyOf variants, united into one field set",
-  "repeated-field-name-path-not-taken": "Repeated field name; this path was not taken",
-  "no-responses-declared": "No responses object declared",
-  "no-success-response-schema": "No success response schema under application/json",
-  "success-schema-declares-no-properties": "No properties declared; no field read",
-};
-
 function readingNoteKindLabel(kind: string): string {
-  return READING_NOTE_KIND_LABEL[kind] ?? kind;
+  return readingNoteKindMessage(kind);
 }
 
 function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosure {
@@ -121,17 +109,6 @@ function draftDisclosureFrom(draft: ConnectorConfigurationDraft): DraftDisclosur
   };
 }
 
-function fetchFailureLabel(failure: OpenApiDocumentFetchFailure): string {
-  switch (failure.kind) {
-    case "network-failure":
-      return "a network failure";
-    case "timeout":
-      return "a timeout";
-    case "status-outside-2xx":
-      return `a response outside the 2xx range (status ${failure.status})`;
-  }
-}
-
 export function disclosureStateForOutcome(
   outcome: DraftConnectorConfigurationRequestOutcome,
 ): ConnectorConfigurationHelperDisclosureState {
@@ -145,30 +122,22 @@ export function disclosureStateForOutcome(
     case "openapi-document-not-fetched":
       return {
         kind: "refused",
-        message:
-          "No configuration draft was generated: the named OpenAPI document link could not be " +
-          `fetched (${fetchFailureLabel(outcome.failure)}).`,
+        message: draftNotGeneratedFetchFailureMessage(openApiFetchFailureText(outcome.failure)),
       };
     case "openapi-document-not-readable":
       return {
         kind: "refused",
-        message:
-          "No configuration draft was generated: the fetched document could not be read as an " +
-          "OpenAPI 3.x document.",
+        message: DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE,
       };
     case "openapi-operation-not-found":
       return {
         kind: "refused",
-        message:
-          "No configuration draft was generated: the document declares no operation for method " +
-          `${outcome.method} at path ${outcome.path}.`,
+        message: draftNotGeneratedOperationNotFoundMessage(outcome.method, outcome.path),
       };
     case "unrecognized-failure":
       return {
         kind: "refused",
-        message:
-          "No configuration draft was generated: the request failed for a reason this helper " +
-          "does not recognise.",
+        message: DRAFT_NOT_GENERATED_UNRECOGNIZED_FAILURE_MESSAGE,
       };
   }
 }

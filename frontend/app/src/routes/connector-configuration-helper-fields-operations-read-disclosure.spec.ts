@@ -35,7 +35,7 @@ describe("ConnectorConfigurationHelperFields -- a refused operations read is dis
 
     const alert = screen.getByRole("alert");
 
-    expect(alert.textContent).toContain("could not be read as an OpenAPI 3.x document");
+    expect(alert.textContent).toContain("não pôde ser lido como um documento OpenAPI 3.x");
     expect(alert.className).toContain("text-sm");
     expect(alert.className).toContain("text-destructive");
   });
@@ -60,9 +60,9 @@ describe("ConnectorConfigurationHelperFields -- the operations-read refusal and 
     const alerts = screen.getAllByRole("alert");
 
     expect(alerts).toHaveLength(2);
-    expect(alerts.some((alert) => (alert.textContent ?? "").includes("could not be fetched"))).toBe(true);
+    expect(alerts.some((alert) => (alert.textContent ?? "").includes("não foi possível obter o link"))).toBe(true);
     expect(
-      alerts.some((alert) => (alert.textContent ?? "").includes("could not be read as an OpenAPI 3.x document")),
+      alerts.some((alert) => (alert.textContent ?? "").includes("não pôde ser lido como um documento OpenAPI 3.x")),
     ).toBe(true);
   });
 });
@@ -71,7 +71,7 @@ describe("ConnectorConfigurationHelperFields -- the outstanding-read statement i
   it("renders the outstanding-read message with no alert role", () => {
     renderFields(stateWith({ operationsOutcome: { kind: "pending" } }));
 
-    expect(screen.getByText("The named link's operations are being read…")).toBeTruthy();
+    expect(screen.getByText("As operações do link informado estão sendo lidas…")).toBeTruthy();
     expect(screen.queryByRole("alert")).toBeNull();
   });
 });
@@ -80,7 +80,7 @@ describe("ConnectorConfigurationHelperFields -- the no-operations-declared state
   it("renders the no-operations-declared message with no alert role", () => {
     renderFields(stateWith({ operationsOutcome: { kind: "operations", operations: [] } }));
 
-    expect(screen.getByText("The fetched document declares no operation.")).toBeTruthy();
+    expect(screen.getByText("O documento obtido não declara nenhuma operação.")).toBeTruthy();
     expect(screen.queryByRole("alert")).toBeNull();
   });
 });

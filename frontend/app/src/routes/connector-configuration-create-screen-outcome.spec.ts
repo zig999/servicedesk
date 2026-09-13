@@ -17,9 +17,9 @@ afterEach(() => {
 });
 
 async function fillForm(connector: string, configuration: string): Promise<void> {
-  const connectorInput = await screen.findByLabelText<HTMLInputElement>("Connector");
+  const connectorInput = await screen.findByLabelText<HTMLInputElement>("Conector");
   fireEvent.change(connectorInput, { target: { value: connector } });
-  const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
   fireEvent.change(configurationField, { target: { value: configuration } });
 }
 
@@ -32,7 +32,7 @@ describe("ConnectorConfigurationCreateScreen -- a successful registration states
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await fillForm("deepl-connector", "{}");
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await waitFor(() =>
       expect(toast.success).toHaveBeenCalledWith("Connector configuration deepl-connector registered."),
@@ -52,9 +52,9 @@ describe("ConnectorConfigurationCreateScreen -- states no outcome before the reg
     await mountConnectorConfigurationCreateScreen(fetchMock);
     await fillForm("deepl-connector", "{}");
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true),
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true),
     );
     expect(toast.success).not.toHaveBeenCalled();
 

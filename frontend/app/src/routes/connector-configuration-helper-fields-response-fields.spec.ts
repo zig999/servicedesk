@@ -68,8 +68,8 @@ describe("ConnectorConfigurationHelperFields -- every response field the answer 
 
     const items = screen.getAllByRole("listitem").map(normalized);
     expect(items).toEqual([
-      "email — path: data.email, status: 200",
-      "role — path: data.roles[0].name, status: 200 (declared type: string) (declared required: yes) (envelope: data)",
+      "email — caminho: data.email, status: 200",
+      "role — caminho: data.roles[0].name, status: 200 (tipo declarado: string) (obrigatório declarado: sim) (envelope: data)",
     ]);
   });
 });
@@ -87,7 +87,7 @@ describe("ConnectorConfigurationHelperFields -- a response field's declared_requ
     renderHelperFields(outcome);
 
     expect(normalized(screen.getByRole("listitem"))).toBe(
-      "active — path: data.active, status: 200 (declared required: no)",
+      "active — caminho: data.active, status: 200 (obrigatório declarado: não)",
     );
   });
 });
@@ -96,6 +96,6 @@ describe("ConnectorConfigurationHelperFields -- no response field the answer did
   it("renders no Response fields section", () => {
     renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
 
-    expect(screen.queryByText("Response fields")).toBeNull();
+    expect(screen.queryByText("Campos de resposta")).toBeNull();
   });
 });

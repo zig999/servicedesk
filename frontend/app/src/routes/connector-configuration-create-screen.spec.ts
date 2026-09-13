@@ -35,7 +35,7 @@ describe("ConnectorConfigurationCreateScreen -- the connector field is editable 
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
 
-    const connectorInput = await screen.findByLabelText<HTMLInputElement>("Connector");
+    const connectorInput = await screen.findByLabelText<HTMLInputElement>("Conector");
     expect(connectorInput.disabled).toBe(false);
   });
 });
@@ -44,11 +44,11 @@ describe("ConnectorConfigurationCreateScreen -- composes the shared form-fields 
   it("links the Connector field's validation error through aria-describedby, exactly as ConnectorConfigurationFormFields' own FormField renders it", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    const connectorInput = await screen.findByLabelText<HTMLInputElement>("Connector");
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+    const connectorInput = await screen.findByLabelText<HTMLInputElement>("Conector");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: "{}" } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await screen.findByText("String must contain at least 1 character(s)");
     expect(connectorInput.getAttribute("aria-invalid")).toBe("true");
@@ -60,9 +60,9 @@ describe("ConnectorConfigurationCreateScreen -- the shared create/edit hook's ow
   it("disables Save by default when the screen first mounts, since a blank configuration is not valid JSON either", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
   });
 });
 
@@ -71,7 +71,7 @@ describe("ConnectorConfigurationCreateScreen -- no loading or load-error phase (
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
 
-    expect(screen.getByLabelText("Configuration")).toBeTruthy();
+    expect(screen.getByLabelText("Configuração")).toBeTruthy();
     expect(screen.queryByText(/loading/i)).toBeNull();
   });
 });
@@ -80,7 +80,7 @@ describe("ConnectorConfigurationCreateScreen -- a route back to the list (criter
   it("renders the footer's Connectors link to /connectors", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     const footer = screen.getByRole("group", { name: "Actions" });
     const link = within(footer).getByRole("link", { name: "Connectors" });
@@ -92,7 +92,7 @@ describe("ConnectorConfigurationCreateScreen -- the footer Connectors link regis
   it("navigates to /connectors on Connectors without issuing any PUT request -- an implementation that submits register-connector before navigating would fail this", async () => {
     const fetchMock = createFetchStub();
     const router = await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     const footer = screen.getByRole("group", { name: "Actions" });
     fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
@@ -106,7 +106,7 @@ describe("ConnectorConfigurationCreateScreen -- the route does not turn on how t
   it("renders the footer's Connectors link when the screen is loaded directly at /connectors/new, carrying no navigation state recording arrival from the listing -- an implementation that renders the route only on an arrival-from-listing state would fail this", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock, "/connectors/new");
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     const footer = screen.getByRole("group", { name: "Actions" });
     expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();
@@ -117,7 +117,7 @@ describe("ConnectorConfigurationCreateScreen -- carries no discard control (UNDE
   it("renders no Discard changes control", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.queryByRole("button", { name: "Discard changes" })).toBeNull();
   });
@@ -127,7 +127,7 @@ describe("ConnectorConfigurationCreateScreen -- renders no connector test panel 
   it("renders no Test section", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.queryByRole("heading", { name: "Test" })).toBeNull();
   });

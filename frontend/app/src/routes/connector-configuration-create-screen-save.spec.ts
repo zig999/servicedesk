@@ -19,11 +19,11 @@ afterEach(() => {
 });
 
 async function fillAndSave(connector: string, configuration: string): Promise<void> {
-  const connectorInput = await screen.findByLabelText<HTMLInputElement>("Connector");
+  const connectorInput = await screen.findByLabelText<HTMLInputElement>("Conector");
   fireEvent.change(connectorInput, { target: { value: connector } });
-  const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
   fireEvent.change(configurationField, { target: { value: configuration } });
-  fireEvent.click(screen.getByRole("button", { name: "Save" }));
+  fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 }
 
 describe("ConnectorConfigurationCreateScreen -- dispatches register-connector under the typed name (criterion 6)", () => {
@@ -45,10 +45,10 @@ describe("ConnectorConfigurationCreateScreen -- blocks dispatch while the connec
   it("issues no PUT when Save is clicked with the connector name left blank", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: "{}" } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await screen.findByText("String must contain at least 1 character(s)");
     expect(putCallCount(fetchMock)).toBe(0);

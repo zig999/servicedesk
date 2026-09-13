@@ -48,13 +48,13 @@ describe("ConnectorConfigurationDetailScreen -- an answer already held by the cl
       configuration: LOADED_CONFIGURATION,
     });
 
-    expect(screen.getByLabelText<HTMLInputElement>("Connector").value).toBe(CONNECTOR);
-    expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+    expect(screen.getByLabelText<HTMLInputElement>("Conector").value).toBe(CONNECTOR);
+    expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
       prettyPrinted(LOADED_CONFIGURATION),
     );
     expect(screen.queryByText(`Loading connector configuration ${CONNECTOR}…`)).toBeNull();
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Save" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Salvar" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Discard changes" })).toBeTruthy();
   });
 });
@@ -68,7 +68,7 @@ describe("ConnectorConfigurationDetailScreen -- an already-held well-formed conf
       configuration: LOADED_CONFIGURATION,
     });
 
-    expect(screen.getByLabelText<HTMLTextAreaElement>("Configuration").value).toBe(
+    expect(screen.getByLabelText<HTMLTextAreaElement>("Configuração").value).toBe(
       prettyPrinted(LOADED_CONFIGURATION),
     );
     expect(screen.queryByText(INVALID_CONFIGURATION_WARNING)).toBeNull();
@@ -84,7 +84,7 @@ describe("ConnectorConfigurationDetailScreen -- an already-held answer with no e
       configuration: LOADED_CONFIGURATION,
     });
 
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
     expect(
       screen.getByRole("button", { name: "Discard changes" }).hasAttribute("disabled"),
     ).toBe(true);
@@ -99,7 +99,7 @@ describe("ConnectorConfigurationDetailScreen -- discarding an edit made over an 
       connector: CONNECTOR,
       configuration: LOADED_CONFIGURATION,
     });
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
     await openDiscardDialog();
@@ -134,7 +134,7 @@ describe("ConnectorConfigurationDetailScreen -- discard returns to the surface's
       connector: CONNECTOR,
       configuration: LOADED_CONFIGURATION,
     });
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
 
     await waitFor(() =>
       expect(configurationField.value).toBe(prettyPrinted(SUPERSEDING_CONFIGURATION)),

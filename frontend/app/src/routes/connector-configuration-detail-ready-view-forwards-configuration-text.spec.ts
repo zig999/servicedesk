@@ -30,7 +30,7 @@ describe("ConnectorConfigurationDetailReadyView — Add attribute reconciles aga
   it("keeps reconciling against the last registered text after Configuration is edited but not saved", async () => {
     const fetchMock = createFetchStub(baseHandlers(CONFIGURATION_WITH_ACCOUNT_ID_PLACEHOLDER));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 
     clickAddAttribute();
     expect(attributeNames()).toEqual(["account-id"]);
@@ -49,7 +49,7 @@ describe("ConnectorConfigurationDetailReadyView — Add attribute reconciles aga
   it("reconciles against the newly saved text the next time Add attribute is clicked after a successful save", async () => {
     const fetchMock = createFetchStub(baseHandlers(CONFIGURATION_WITH_ACCOUNT_ID_PLACEHOLDER));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 
     clickAddAttribute();
     expect(attributeNames()).toEqual(["account-id"]);
@@ -57,7 +57,7 @@ describe("ConnectorConfigurationDetailReadyView — Add attribute reconciles aga
     fireEvent.change(configurationField, {
       target: { value: CONFIGURATION_WITH_REGION_PLACEHOLDER },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
     await screen.findByText("Saved.");
 

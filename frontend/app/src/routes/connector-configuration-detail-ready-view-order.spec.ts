@@ -15,7 +15,7 @@ describe("ConnectorConfigurationDetailReadyView -- the Actions footer holds only
   it("renders the Test heading outside the Actions group, alongside Save rather than inside it", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.getByRole("heading", { name: "Test" })).toBeTruthy();
     const footer = screen.getByRole("group", { name: "Actions" });

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { operationsReadDisclosureStateForOutcome } from "./connector-configuration-operations-read-disclosure";
+import {
+  OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE,
+  OPERATIONS_NOT_LISTED_UNRECOGNIZED_FAILURE_MESSAGE,
+  openApiFetchFailureText,
+} from "./connector-configuration-messages";
 import type { OpenApiDocumentOperationsReadOutcome } from "../hooks/use-openapi-document-operations";
 
 function refused(state: ReturnType<typeof operationsReadDisclosureStateForOutcome>) {
@@ -28,8 +33,8 @@ describe("operationsReadDisclosureStateForOutcome -- an unfetchable link names t
       }),
     );
 
-    expect(state.message).toContain("could not be fetched");
-    expect(state.message).toContain("network failure");
+    expect(state.message).toContain("não foi possível obter o link");
+    expect(state.message).toContain(openApiFetchFailureText({ kind: "network-failure" }));
   });
 
   it("names a timeout as the reason the link could not be fetched", () => {
@@ -40,8 +45,8 @@ describe("operationsReadDisclosureStateForOutcome -- an unfetchable link names t
       }),
     );
 
-    expect(state.message).toContain("could not be fetched");
-    expect(state.message).toContain("timeout");
+    expect(state.message).toContain("não foi possível obter o link");
+    expect(state.message).toContain(openApiFetchFailureText({ kind: "timeout" }));
   });
 
   it("names status-outside-2xx together with the answered status", () => {
@@ -52,7 +57,7 @@ describe("operationsReadDisclosureStateForOutcome -- an unfetchable link names t
       }),
     );
 
-    expect(state.message).toContain("could not be fetched");
+    expect(state.message).toContain("não foi possível obter o link");
     expect(state.message).toContain("503");
   });
 });
@@ -61,8 +66,8 @@ describe("operationsReadDisclosureStateForOutcome -- an unreadable document is s
   it("states the fetched document could not be read as an OpenAPI 3.x document", () => {
     const state = refused(operationsReadDisclosureStateForOutcome({ kind: "openapi-document-not-readable" }));
 
-    expect(state.message).toContain("could not be read as an OpenAPI 3.x document");
-    expect(state.message).not.toContain("could not be fetched");
+    expect(state.message).toContain(OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE);
+    expect(state.message).not.toContain("não foi possível obter o link");
   });
 });
 
@@ -70,9 +75,9 @@ describe("operationsReadDisclosureStateForOutcome -- an unrecognised refusal is 
   it("states a reason this helper does not recognise, naming neither the fetch nor the readability wording", () => {
     const state = refused(operationsReadDisclosureStateForOutcome({ kind: "unrecognized-failure" }));
 
-    expect(state.message).toContain("does not recognise");
-    expect(state.message).not.toContain("could not be fetched");
-    expect(state.message).not.toContain("could not be read as an OpenAPI 3.x document");
+    expect(state.message).toBe(OPERATIONS_NOT_LISTED_UNRECOGNIZED_FAILURE_MESSAGE);
+    expect(state.message).not.toContain("não foi possível obter o link");
+    expect(state.message).not.toContain(OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE);
   });
 });
 

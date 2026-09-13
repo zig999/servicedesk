@@ -75,7 +75,7 @@ describe("ConnectorTestPanelFields — a subject attribute-value naming an attri
       [TEST_CONNECTOR_PATH]: () => jsonResponse(testConnectorResult()),
     });
 
-    fireEvent.change(within(dialog).getByLabelText("Configuration"), {
+    fireEvent.change(within(dialog).getByLabelText("Configuração"), {
       target: {
         value: '{"address":"https://api.example.com/${subject:not-a-glossary-held-attribute}"}',
       },

@@ -21,7 +21,7 @@ async function mountReady(): Promise<{
 }> {
   const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
   await mountConnectorConfigurationDetailScreen(fetchMock);
-  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
   return { fetchMock, configurationField };
 }
 
@@ -29,7 +29,7 @@ describe("ConnectorConfigurationDetailScreen -- Save is gated on isDirty (criter
   it("disables Save immediately after load, before any edit", async () => {
     await mountReady();
 
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
   });
 
   it("enables Save once the configuration is edited to a materially different value", async () => {
@@ -37,20 +37,20 @@ describe("ConnectorConfigurationDetailScreen -- Save is gated on isDirty (criter
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
   });
 
   it("re-disables Save once the edited configuration is returned to its exact originally loaded value", async () => {
     const { configurationField } = await mountReady();
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
 
     fireEvent.change(configurationField, {
       target: { value: prettyPrinted(LOADED_CONFIGURATION) },
     });
 
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
   });
 });
 
@@ -59,7 +59,7 @@ describe("ConnectorConfigurationDetailScreen -- a successful save (criterion 7)"
     const { configurationField, fetchMock } = await mountReady();
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
     expect(parsedPutBody(fetchMock)).toEqual({ configuration: UPDATED_CONFIGURATION });
@@ -73,17 +73,17 @@ describe("ConnectorConfigurationDetailScreen -- a successful save (criterion 7)"
     const { configurationField } = await mountReady();
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
 
     await screen.findByText("Saved.");
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
   });
 
   it("clears the acknowledgement once the operator edits again, so it never outlives the values it acknowledged", async () => {
     const { configurationField } = await mountReady();
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
     await screen.findByText("Saved.");
 
     fireEvent.change(configurationField, { target: { value: '{"key":"further"}' } });

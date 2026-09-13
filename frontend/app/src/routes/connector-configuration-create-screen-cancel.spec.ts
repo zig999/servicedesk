@@ -91,7 +91,7 @@ describe("ConnectorConfigurationCreateScreen -- offers no discard control, havin
   it("renders no Discard changes control", async () => {
     const fetchMock = createFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.queryByRole("button", { name: "Discard changes" })).toBeNull();
   });
@@ -104,9 +104,9 @@ describe("ConnectorConfigurationCreateScreen -- the footer's Cancel abandons aut
         jsonResponse({ connector: "deepl-connector", configuration: "{}" }),
     });
     const router = await mountConnectorConfigurationCreateScreen(fetchMock);
-    const connectorInput = await screen.findByLabelText<HTMLInputElement>("Connector");
+    const connectorInput = await screen.findByLabelText<HTMLInputElement>("Conector");
     fireEvent.change(connectorInput, { target: { value: "deepl-connector" } });
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
     fireEvent.change(configurationField, { target: { value: "{}" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));

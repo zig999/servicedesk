@@ -31,7 +31,7 @@ function operationsReadJsonResponse(): Response {
 }
 
 async function chooseHelperOperation(path: string, method: string): Promise<void> {
-  fireEvent.click(screen.getByLabelText("Operation"));
+  fireEvent.click(screen.getByLabelText("Operação"));
   const option = await screen.findByRole("option", { name: `${path} — ${method}` });
   fireEvent.mouseDown(option);
 }
@@ -55,7 +55,7 @@ async function mountCreateScreenWithHelper() {
     [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
   });
   await mountConnectorConfigurationCreateScreen(fetchMock);
-  await screen.findByLabelText("Configuration");
+  await screen.findByLabelText("Configuração");
   return fetchMock;
 }
 
@@ -67,7 +67,7 @@ async function mountDetailScreenWithHelper() {
     }),
   );
   await mountConnectorConfigurationDetailScreen(fetchMock);
-  await screen.findByLabelText("Configuration");
+  await screen.findByLabelText("Configuração");
   return fetchMock;
 }
 
@@ -75,8 +75,8 @@ describe("ConnectorConfigurationFormFields -- the Configuration Helper section s
   it("places the Configuration Helper heading after the Configuration field in document order", async () => {
     await mountCreateScreenWithHelper();
 
-    const configurationField = screen.getByLabelText("Configuration");
-    const helperHeading = screen.getByRole("heading", { name: "Configuration Helper" });
+    const configurationField = screen.getByLabelText("Configuração");
+    const helperHeading = screen.getByRole("heading", { name: "Assistente de Configuração" });
 
     expect(
       Boolean(
@@ -90,8 +90,8 @@ describe("ConnectorConfigurationFormFields -- the Configuration Helper section s
   it("places the Configuration Helper heading after the Configuration field in document order", async () => {
     await mountDetailScreenWithHelper();
 
-    const configurationField = screen.getByLabelText("Configuration");
-    const helperHeading = screen.getByRole("heading", { name: "Configuration Helper" });
+    const configurationField = screen.getByLabelText("Configuração");
+    const helperHeading = screen.getByRole("heading", { name: "Assistente de Configuração" });
 
     expect(
       Boolean(
@@ -108,10 +108,10 @@ describe("ConnectorConfigurationFormFields -- the Configuration Helper is render
       [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     const router = await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
-    const linkInput = screen.getByLabelText<HTMLInputElement>("OpenAPI document link");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
+    const linkInput = screen.getByLabelText<HTMLInputElement>("Link do documento OpenAPI");
 
     expect(linkInput.form).not.toBeNull();
     expect(linkInput.form).toBe(configurationField.form);
@@ -124,8 +124,8 @@ describe("ConnectorConfigurationFormFields -- the Configuration Helper is render
   it("shares the Configuration field's own owning <form> and opens no dialog, on the ready detail view", async () => {
     await mountDetailScreenWithHelper();
 
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
-    const linkInput = screen.getByLabelText<HTMLInputElement>("OpenAPI document link");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
+    const linkInput = screen.getByLabelText<HTMLInputElement>("Link do documento OpenAPI");
 
     expect(linkInput.form).not.toBeNull();
     expect(linkInput.form).toBe(configurationField.form);
@@ -137,7 +137,7 @@ describe("ConnectorConfigurationFormFields -- the section offers a control namin
   it("renders an editable OpenAPI document link control that holds what the operator types", async () => {
     await mountCreateScreenWithHelper();
 
-    const linkInput = screen.getByLabelText<HTMLInputElement>("OpenAPI document link");
+    const linkInput = screen.getByLabelText<HTMLInputElement>("Link do documento OpenAPI");
     fireEvent.change(linkInput, { target: { value: OPERATOR_LINK } });
 
     expect(linkInput.value).toBe(OPERATOR_LINK);
@@ -148,10 +148,10 @@ describe("ConnectorConfigurationFormFields -- the section offers a control namin
   it("renders an Operation Select whose value reflects the entry the operator chooses", async () => {
     await mountCreateScreenWithHelper();
 
-    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
     await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
-    const operationSelect = screen.getByLabelText("Operation");
+    const operationSelect = screen.getByLabelText("Operação");
     expect(operationSelect.textContent).toContain(HELPER_OPERATION.path);
     expect(operationSelect.textContent).toContain(HELPER_OPERATION.method);
   });
@@ -161,11 +161,11 @@ describe("ConnectorConfigurationFormFields -- the section's control dispatches t
   it("issues a POST to the draft route carrying the current connector, link, path and method, when Request Draft is clicked", async () => {
     const fetchMock = await mountCreateScreenWithHelper();
 
-    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
-    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    fireEvent.change(screen.getByLabelText("Conector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
     await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
-    fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
 
     await waitFor(() => {
       expect(fetchMock.mock.calls.filter(([input]) => input === DRAFT_ROUTE)).toHaveLength(1);
@@ -188,10 +188,10 @@ describe("ConnectorConfigurationFormFields -- requesting a draft issues no reque
   it("never calls fetch with the operator's own link, only with the published draft route", async () => {
     const fetchMock = await mountCreateScreenWithHelper();
 
-    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
-    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    fireEvent.change(screen.getByLabelText("Conector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
     await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
-    fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
 
     await waitFor(() => {
       expect(fetchMock.mock.calls.some(([input]) => input === DRAFT_ROUTE)).toBe(true);
@@ -209,15 +209,15 @@ describe("ConnectorConfigurationFormFields -- nothing the section offers submits
       [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
-    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
-    fireEvent.change(screen.getByLabelText("Configuration"), { target: { value: "{}" } });
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+    fireEvent.change(screen.getByLabelText("Conector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("Configuração"), { target: { value: "{}" } });
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
 
-    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
     await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
-    fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
 
     await waitFor(() => {
       expect(fetchMock.mock.calls.some(([input]) => input === DRAFT_ROUTE)).toBe(true);
@@ -230,19 +230,19 @@ describe("ConnectorConfigurationFormFields -- the Connector field, the Configura
   it("keeps Connector, Configuration and the Actions group's Save control reachable by their existing labels on the create screen", async () => {
     await mountCreateScreenWithHelper();
 
-    expect(screen.getByLabelText("Connector")).toBeTruthy();
-    expect(screen.getByLabelText("Configuration")).toBeTruthy();
+    expect(screen.getByLabelText("Conector")).toBeTruthy();
+    expect(screen.getByLabelText("Configuração")).toBeTruthy();
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("button", { name: "Save" })).toBeTruthy();
+    expect(within(footer).getByRole("button", { name: "Salvar" })).toBeTruthy();
   });
 
   it("keeps Connector, Configuration and the Actions group's Save control reachable by their existing labels on the ready detail view", async () => {
     await mountDetailScreenWithHelper();
 
-    expect(screen.getByLabelText("Connector")).toBeTruthy();
-    expect(screen.getByLabelText("Configuration")).toBeTruthy();
+    expect(screen.getByLabelText("Conector")).toBeTruthy();
+    expect(screen.getByLabelText("Configuração")).toBeTruthy();
     const footer = screen.getByRole("group", { name: "Actions" });
-    expect(within(footer).getByRole("button", { name: "Save" })).toBeTruthy();
+    expect(within(footer).getByRole("button", { name: "Salvar" })).toBeTruthy();
   });
 });
 
@@ -257,13 +257,13 @@ describe("ConnectorConfigurationFormFields -- Request Draft is disabled only whi
       [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
-    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
-    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    fireEvent.change(screen.getByLabelText("Conector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
     await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
-    const requestDraftButton = screen.getByRole("button", { name: "Request Draft" });
+    const requestDraftButton = screen.getByRole("button", { name: "Solicitar rascunho" });
     expect(requestDraftButton.hasAttribute("disabled")).toBe(false);
 
     fireEvent.click(requestDraftButton);
@@ -279,13 +279,13 @@ describe("ConnectorConfigurationFormFields -- Request Draft is disabled only whi
       [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
     });
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
-    fireEvent.change(screen.getByLabelText("Connector"), { target: { value: "deepl-connector" } });
-    fireEvent.change(screen.getByLabelText("OpenAPI document link"), { target: { value: OPERATOR_LINK } });
+    fireEvent.change(screen.getByLabelText("Conector"), { target: { value: "deepl-connector" } });
+    fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: OPERATOR_LINK } });
     await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
 
-    const requestDraftButton = screen.getByRole("button", { name: "Request Draft" });
+    const requestDraftButton = screen.getByRole("button", { name: "Solicitar rascunho" });
     fireEvent.click(requestDraftButton);
 
     await waitFor(() => expect(fetchMock.mock.calls.some(([input]) => input === DRAFT_ROUTE)).toBe(true));

@@ -38,11 +38,11 @@ async function mountCreateReady(draftConfigurationText: string): Promise<HTMLTex
     [operationsReadRoute(OPERATOR_LINK)]: operationsReadJsonResponse,
   });
   await mountConnectorConfigurationCreateScreen(fetchMock);
-  return screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+  return screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 }
 
 async function chooseHelperOperation(path: string, method: string): Promise<void> {
-  fireEvent.click(screen.getByLabelText("Operation"));
+  fireEvent.click(screen.getByLabelText("Operação"));
   const option = await screen.findByRole("option", { name: `${path} — ${method}` });
   fireEvent.mouseDown(option);
 }
@@ -54,15 +54,15 @@ async function openApplyConfirmation(
   const configurationField = await mountCreateReady(draftConfigurationText);
   fireEvent.change(configurationField, { target: { value: fieldText } });
 
-  fireEvent.change(screen.getByLabelText("Connector"), { target: { value: CONNECTOR } });
-  fireEvent.change(screen.getByLabelText("OpenAPI document link"), {
+  fireEvent.change(screen.getByLabelText("Conector"), { target: { value: CONNECTOR } });
+  fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), {
     target: { value: OPERATOR_LINK },
   });
   await chooseHelperOperation(HELPER_OPERATION.path, HELPER_OPERATION.method);
-  fireEvent.click(screen.getByRole("button", { name: "Request Draft" }));
-  await screen.findByRole("button", { name: "Apply" });
+  fireEvent.click(screen.getByRole("button", { name: "Solicitar rascunho" }));
+  await screen.findByRole("button", { name: "Aplicar" });
 
-  fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+  fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
   return screen.findByRole("dialog");
 }
 
@@ -82,9 +82,9 @@ describe("ConnectorConfigurationFormFields -- the apply confirmation itemises th
   it("lists the added, removed and changed top-level keys between the unsaved edit and the draft", async () => {
     const dialog = await openApplyConfirmation('{"a":1,"b":2}', '{"b":3,"c":4}');
 
-    expect(listItem(dialog, "Added: c")).toBeTruthy();
-    expect(listItem(dialog, "Removed: a")).toBeTruthy();
-    expect(listItem(dialog, "Changed: b")).toBeTruthy();
+    expect(listItem(dialog, "Adicionado: c")).toBeTruthy();
+    expect(listItem(dialog, "Removido: a")).toBeTruthy();
+    expect(listItem(dialog, "Alterado: b")).toBeTruthy();
   });
 });
 
@@ -95,8 +95,8 @@ describe("ConnectorConfigurationFormFields -- the apply confirmation itemises a 
       '{"statusMap":{"200":"ok","500":"error"}}',
     );
 
-    expect(listItem(dialog, "Added: 500")).toBeTruthy();
-    expect(listItem(dialog, "Removed: 404")).toBeTruthy();
+    expect(listItem(dialog, "Adicionado: 500")).toBeTruthy();
+    expect(listItem(dialog, "Removido: 404")).toBeTruthy();
   });
 });
 
@@ -104,6 +104,6 @@ describe("ConnectorConfigurationFormFields -- the apply confirmation states that
   it("shows the not-itemisable statement instead of any added, removed or changed key", async () => {
     const dialog = await openApplyConfirmation("not json at all", '{"a":1}');
 
-    expect(within(dialog).getByText(/cannot be itemised/)).toBeTruthy();
+    expect(within(dialog).getByText(/detalhado por itens/)).toBeTruthy();
   });
 });

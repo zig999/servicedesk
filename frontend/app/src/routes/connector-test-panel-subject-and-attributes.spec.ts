@@ -57,14 +57,14 @@ describe("ConnectorTestPanel — attribute-values are typed by hand, never selec
   it("removes exactly the row whose own Remove action was clicked, leaving the other rows' own values intact (stable-row-identity inference)", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
 
-    fireEvent.change(within(dialog).getByLabelText("Configuration"), {
+    fireEvent.change(within(dialog).getByLabelText("Configuração"), {
       target: {
         value:
           '{"address":"https://api.example.com/${subject:first-attribute}","query":{"a":"${subject:second-attribute}"},"headers":{"h":"${subject:third-attribute}"}}',
       },
     });
 
-    const saveButton = within(dialog).getByRole("button", { name: "Save" });
+    const saveButton = within(dialog).getByRole("button", { name: "Salvar" });
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(saveButton.hasAttribute("disabled")).toBe(true);

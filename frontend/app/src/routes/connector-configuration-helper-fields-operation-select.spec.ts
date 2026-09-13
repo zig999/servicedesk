@@ -33,7 +33,7 @@ function renderFields(state: ConnectorConfigurationHelperState) {
 }
 
 function openOperationSelect(): void {
-  fireEvent.click(screen.getByLabelText("Operation"));
+  fireEvent.click(screen.getByLabelText("Operação"));
 }
 
 describe("ConnectorConfigurationHelperFields -- the Select offers every operation the state lists, none dropped (criterion 1, domain/integration/openapi-document-operations)", () => {
@@ -116,8 +116,8 @@ describe("ConnectorConfigurationHelperFields -- the OpenAPI document link field 
   it("still renders the OpenAPI document link input and the Request Draft button, once the request-gate's own preconditions stand", () => {
     renderFields(stateWith({ connector: "deepl-connector", path: "/v2/translate", method: "POST" }));
 
-    expect(screen.getByLabelText("OpenAPI document link")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Request Draft" })).toBeTruthy();
+    expect(screen.getByLabelText("Link do documento OpenAPI")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Solicitar rascunho" })).toBeTruthy();
   });
 });
 

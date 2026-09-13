@@ -1,0 +1,162 @@
+import type { OpenApiDocumentFetchFailure } from "../hooks/use-draft-connector-configuration-from-openapi";
+
+export const CONFIGURATION_HELPER_HEADING = "Assistente de Configuração";
+export const CONFIGURATION_HELPER_LINK_LABEL = "Link do documento OpenAPI";
+export const CONFIGURATION_HELPER_OPERATION_LABEL = "Operação";
+export const CONFIGURATION_HELPER_OPERATION_PLACEHOLDER = "Selecione uma operação";
+export const CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE =
+  "A solicitação aguarda um nome de conector.";
+export const CONFIGURATION_HELPER_WAITING_ON_OPERATION_MESSAGE =
+  "A solicitação aguarda uma operação escolhida.";
+export const CONFIGURATION_HELPER_REQUEST_DRAFT_BUTTON = "Solicitar rascunho";
+export const CONFIGURATION_HELPER_DRAFTING_PENDING_MESSAGE =
+  "Rascunhando a configuração do conector…";
+
+export const OPERATIONS_READ_PENDING_MESSAGE = "As operações do link informado estão sendo lidas…";
+export const OPERATIONS_READ_EMPTY_MESSAGE = "O documento obtido não declara nenhuma operação.";
+
+export const DRAFT_DISCLOSURE_CONFIGURATION_LABEL = "Configuração rascunhada";
+export const DRAFT_DISCLOSURE_APPLY_BUTTON = "Aplicar";
+export const DRAFT_DISCLOSURE_STALE_MESSAGE =
+  "Este rascunho está desatualizado: o link, a operação ou o nome do conector mudou desde que " +
+  "este rascunho foi solicitado.";
+export const DRAFT_DISCLOSURE_UNRESOLVED_LABEL = "Não resolvidos";
+export const DRAFT_DISCLOSURE_GENERATED_CREDENTIALS_LABEL = "Credenciais geradas";
+export const DRAFT_DISCLOSURE_METHOD_MISMATCH_LABEL = "Divergência de método";
+export const DRAFT_DISCLOSURE_STATUS_READINGS_LABEL = "Leituras de status";
+export const DRAFT_DISCLOSURE_RESPONSE_FIELDS_LABEL = "Campos de resposta";
+export const DRAFT_DISCLOSURE_READING_NOTES_LABEL = "Notas de leitura";
+export const DRAFT_DISCLOSURE_SUBJECT_KIND_SEPARATOR = " — ";
+
+export function methodMismatchText(registered: string, operation: string): string {
+  return `Registrado: ${registered} · Rascunhado: ${operation}`;
+}
+
+export function statusReadingStatusText(status: string): string {
+  return `Status ${status}`;
+}
+
+export function statusReadingEndingText(ending: string): string {
+  return `— desfecho: ${ending}`;
+}
+
+export function declaredAsText(declaredAs: string): string {
+  return `(declarado como: ${declaredAs})`;
+}
+
+export function responseFieldPathStatusText(path: string, status: string): string {
+  return `— caminho: ${path}, status: ${status}`;
+}
+
+export function declaredTypeText(declaredType: string): string {
+  return `(tipo declarado: ${declaredType})`;
+}
+
+export function declaredRequiredText(declaredRequired: boolean): string {
+  return `(obrigatório declarado: ${declaredRequired ? "sim" : "não"})`;
+}
+
+export function envelopeText(envelope: string): string {
+  return `(envelope: ${envelope})`;
+}
+
+export function readingNoteDetailText(detail: string): string {
+  return `(detalhe: ${detail})`;
+}
+
+const UNRESOLVED_REASON_MESSAGES: Readonly<Record<string, string>> = {
+  "no-capability-registered": "Nenhuma capacidade está atualmente registrada para este conector.",
+  "security-scheme-not-reducible-to-a-credential":
+    "Este esquema de segurança não pode ser reduzido a um único valor de credencial.",
+  "drafted-key-occupied-by-another-security-scheme":
+    "Esta chave rascunhada já está ocupada por outro esquema de segurança.",
+};
+
+export function unresolvedReasonMessage(reason: string): string {
+  return UNRESOLVED_REASON_MESSAGES[reason] ?? reason;
+}
+
+const READING_NOTE_KIND_MESSAGES: Readonly<Record<string, string>> = {
+  "default-response-not-drafted": "Resposta padrão, não rascunhada no mapa de status",
+  "status-range-not-drafted": "Faixa de status, não rascunhada no mapa de status",
+  "non-json-success-content-not-read": "Conteúdo de sucesso não JSON, não lido",
+  "envelope-read-through": "Envelope de propriedade única, atravessado na leitura",
+  "variants-united": "Variantes oneOf/anyOf, unidas em um único conjunto de campos",
+  "repeated-field-name-path-not-taken": "Nome de campo repetido; este caminho não foi seguido",
+  "no-responses-declared": "Nenhum objeto de respostas declarado",
+  "no-success-response-schema": "Nenhum esquema de resposta de sucesso sob application/json",
+  "success-schema-declares-no-properties": "Nenhuma propriedade declarada; nenhum campo lido",
+};
+
+export function readingNoteKindMessage(kind: string): string {
+  return READING_NOTE_KIND_MESSAGES[kind] ?? kind;
+}
+
+export function openApiFetchFailureText(failure: OpenApiDocumentFetchFailure): string {
+  switch (failure.kind) {
+    case "network-failure":
+      return "uma falha de rede";
+    case "timeout":
+      return "um tempo limite excedido";
+    case "status-outside-2xx":
+      return `uma resposta fora da faixa 2xx (status ${failure.status})`;
+  }
+}
+
+export function draftNotGeneratedFetchFailureMessage(failureText: string): string {
+  return (
+    "Nenhum rascunho de configuração foi gerado: não foi possível obter o link do documento " +
+    `OpenAPI informado (${failureText}).`
+  );
+}
+
+export const DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE =
+  "Nenhum rascunho de configuração foi gerado: o documento obtido não pôde ser lido como um " +
+  "documento OpenAPI 3.x.";
+
+export function draftNotGeneratedOperationNotFoundMessage(method: string, path: string): string {
+  return (
+    "Nenhum rascunho de configuração foi gerado: o documento não declara nenhuma operação para " +
+    `o método ${method} no caminho ${path}.`
+  );
+}
+
+export const DRAFT_NOT_GENERATED_UNRECOGNIZED_FAILURE_MESSAGE =
+  "Nenhum rascunho de configuração foi gerado: a solicitação falhou por um motivo que este " +
+  "assistente não reconhece.";
+
+export function operationsNotListedFetchFailureMessage(failureText: string): string {
+  return (
+    "Nenhuma operação foi listada: não foi possível obter o link do documento OpenAPI " +
+    `informado (${failureText}).`
+  );
+}
+
+export const OPERATIONS_NOT_LISTED_NOT_READABLE_MESSAGE =
+  "Nenhuma operação foi listada: o documento obtido não pôde ser lido como um documento " +
+  "OpenAPI 3.x.";
+
+export const OPERATIONS_NOT_LISTED_UNRECOGNIZED_FAILURE_MESSAGE =
+  "Nenhuma operação foi listada: a solicitação falhou por um motivo que este assistente não " +
+  "reconhece.";
+
+export const FORM_CONNECTOR_FIELD_LABEL = "Conector";
+export const FORM_CONFIGURATION_FIELD_LABEL = "Configuração";
+export const FORM_SAVE_BUTTON = "Salvar";
+
+export const APPLY_OVER_UNSAVED_EDIT_DESCRIPTION =
+  "Aplicar esta configuração rascunhada substituirá a edição não salva no campo Configuração. " +
+  "Isso não pode ser desfeito.";
+export const APPLY_CONFIRMATION_DIALOG_TITLE = "Aplicar configuração rascunhada?";
+export const APPLY_CONFIRMATION_KEEP_EDITING_BUTTON = "Continuar editando";
+export const APPLY_CONFIRMATION_CONFIRM_BUTTON = "Aplicar";
+
+export const KEY_CHANGE_LIST_TOP_LEVEL_LABEL = "Chaves de nível superior";
+export const KEY_CHANGE_ADDED_PREFIX = "Adicionado: ";
+export const KEY_CHANGE_REMOVED_PREFIX = "Removido: ";
+export const KEY_CHANGE_CHANGED_PREFIX = "Alterado: ";
+
+export const APPLY_DIFF_NOT_ITEMISABLE_MESSAGE =
+  "O que a aplicação deste rascunho mudaria não pode ser detalhado por itens: o campo " +
+  "Configuração não contém um texto de objeto JSON bem formado.";
+export const APPLY_DIFF_EMPTY_MESSAGE = "Aplicar este rascunho não mudaria nada.";

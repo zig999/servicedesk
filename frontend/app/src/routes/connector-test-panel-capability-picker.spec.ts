@@ -125,13 +125,13 @@ describe("ConnectorTestPanel — Add attribute reconciles to a row already named
       [SUBJECT_TYPE_PATH]: () => jsonResponse(subjectTypeTermsPage(["billing-dispute"])),
     });
 
-    fireEvent.change(within(dialog).getByLabelText("Configuration"), {
+    fireEvent.change(within(dialog).getByLabelText("Configuração"), {
       target: {
         value: '{"address":"https://api.example.com/${subject:picker-panel-subject-id}"}',
       },
     });
 
-    const saveButton = within(dialog).getByRole("button", { name: "Save" });
+    const saveButton = within(dialog).getByRole("button", { name: "Salvar" });
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(saveButton.hasAttribute("disabled")).toBe(true);
@@ -147,7 +147,7 @@ describe("ConnectorConfigurationCreateScreen — the Test section renders only i
   it("renders no Test section, and issues no read for it, on the routed create screen", async () => {
     const fetchMock = createConnectorConfigurationCreateScreenFetchStub();
     await mountConnectorConfigurationCreateScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.queryByRole("heading", { name: "Test" })).toBeNull();
     const requestedPaths = fetchMock.mock.calls.map(([input]) =>

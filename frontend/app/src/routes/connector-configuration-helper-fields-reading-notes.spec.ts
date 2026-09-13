@@ -64,11 +64,11 @@ describe("ConnectorConfigurationHelperFields -- every reading note the answer ca
 
     expect(items[0]).toContain("data");
     expect(items[0]).not.toContain("envelope-read-through");
-    expect(items[0]).toContain("(detail: single-property envelope)");
+    expect(items[0]).toContain("(detalhe: single-property envelope)");
 
     expect(items[1]).toContain("default");
     expect(items[1]).not.toContain("default-response-not-drafted");
-    expect(items[1]).not.toContain("(detail:");
+    expect(items[1]).not.toContain("(detalhe:");
   });
 });
 
@@ -76,6 +76,6 @@ describe("ConnectorConfigurationHelperFields -- no reading note the answer did n
   it("renders no Reading notes section", () => {
     renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
 
-    expect(screen.queryByText("Reading notes")).toBeNull();
+    expect(screen.queryByText("Notas de leitura")).toBeNull();
   });
 });

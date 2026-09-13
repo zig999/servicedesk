@@ -10,6 +10,36 @@ import {
   type DraftDisclosure,
 } from "../services/connector-configuration-draft-disclosure";
 import { operationsReadDisclosureStateForOutcome } from "../services/connector-configuration-operations-read-disclosure";
+import {
+  CONFIGURATION_HELPER_DRAFTING_PENDING_MESSAGE,
+  CONFIGURATION_HELPER_LINK_LABEL,
+  CONFIGURATION_HELPER_OPERATION_LABEL,
+  CONFIGURATION_HELPER_OPERATION_PLACEHOLDER,
+  CONFIGURATION_HELPER_REQUEST_DRAFT_BUTTON,
+  CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE,
+  CONFIGURATION_HELPER_WAITING_ON_OPERATION_MESSAGE,
+  declaredAsText,
+  declaredRequiredText,
+  declaredTypeText,
+  DRAFT_DISCLOSURE_APPLY_BUTTON,
+  DRAFT_DISCLOSURE_CONFIGURATION_LABEL,
+  DRAFT_DISCLOSURE_GENERATED_CREDENTIALS_LABEL,
+  DRAFT_DISCLOSURE_METHOD_MISMATCH_LABEL,
+  DRAFT_DISCLOSURE_READING_NOTES_LABEL,
+  DRAFT_DISCLOSURE_RESPONSE_FIELDS_LABEL,
+  DRAFT_DISCLOSURE_STALE_MESSAGE,
+  DRAFT_DISCLOSURE_STATUS_READINGS_LABEL,
+  DRAFT_DISCLOSURE_SUBJECT_KIND_SEPARATOR,
+  DRAFT_DISCLOSURE_UNRESOLVED_LABEL,
+  envelopeText,
+  methodMismatchText,
+  OPERATIONS_READ_EMPTY_MESSAGE,
+  OPERATIONS_READ_PENDING_MESSAGE,
+  readingNoteDetailText,
+  responseFieldPathStatusText,
+  statusReadingEndingText,
+  statusReadingStatusText,
+} from "../services/connector-configuration-messages";
 
 export type ConnectorConfigurationHelperFieldsProps = {
   readonly state: ConnectorConfigurationHelperState;
@@ -51,7 +81,7 @@ export function ConnectorConfigurationHelperFields({
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-1">
-          <Label htmlFor="configuration-helper-link">OpenAPI document link</Label>
+          <Label htmlFor="configuration-helper-link">{CONFIGURATION_HELPER_LINK_LABEL}</Label>
           <Input
             id="configuration-helper-link"
             value={state.link}
@@ -59,32 +89,36 @@ export function ConnectorConfigurationHelperFields({
           />
         </div>
         <Label className="flex flex-col gap-1">
-          Operation
+          {CONFIGURATION_HELPER_OPERATION_LABEL}
           <Select
             options={operationOptions}
             value={selectedOperationValue}
             onChange={onOperationSelected}
-            placeholder="Select an operation"
+            placeholder={CONFIGURATION_HELPER_OPERATION_PLACEHOLDER}
           />
         </Label>
       </div>
       <div className="flex justify-end">
         {connectorNameMissing ? (
-          <p className="text-sm text-muted-foreground">The request waits on a connector name.</p>
+          <p className="text-sm text-muted-foreground">
+            {CONFIGURATION_HELPER_WAITING_ON_CONNECTOR_NAME_MESSAGE}
+          </p>
         ) : operationMissing ? (
-          <p className="text-sm text-muted-foreground">The request waits on a chosen operation.</p>
+          <p className="text-sm text-muted-foreground">
+            {CONFIGURATION_HELPER_WAITING_ON_OPERATION_MESSAGE}
+          </p>
         ) : (
           <Button
             type="button"
             onClick={state.onRequestDraft}
             disabled={state.outcome.kind === "pending"}
           >
-            Request Draft
+            {CONFIGURATION_HELPER_REQUEST_DRAFT_BUTTON}
           </Button>
         )}
       </div>
       <div aria-live="polite" className="flex flex-col gap-4">
-        {disclosure.kind === "pending" && <p>Drafting the connector configuration…</p>}
+        {disclosure.kind === "pending" && <p>{CONFIGURATION_HELPER_DRAFTING_PENDING_MESSAGE}</p>}
         {disclosure.kind === "refused" && (
           <p role="alert" className="text-sm text-destructive">
             {disclosure.message}
@@ -98,10 +132,10 @@ export function ConnectorConfigurationHelperFields({
           />
         )}
         {operationsReadDisclosure.kind === "pending" && (
-          <p className="text-sm text-muted-foreground">The named link&apos;s operations are being read…</p>
+          <p className="text-sm text-muted-foreground">{OPERATIONS_READ_PENDING_MESSAGE}</p>
         )}
         {operationsReadDisclosure.kind === "empty" && (
-          <p className="text-sm text-muted-foreground">The fetched document declares no operation.</p>
+          <p className="text-sm text-muted-foreground">{OPERATIONS_READ_EMPTY_MESSAGE}</p>
         )}
         {operationsReadDisclosure.kind === "refused" && (
           <p role="alert" className="text-sm text-destructive">
@@ -126,17 +160,12 @@ function ConnectorConfigurationDraftDisclosure({
     <div className="flex flex-col gap-4">
       <section className="flex flex-col gap-1">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-muted-foreground">Drafted configuration</p>
+          <p className="text-sm text-muted-foreground">{DRAFT_DISCLOSURE_CONFIGURATION_LABEL}</p>
           <Button type="button" onClick={() => onApply(draft.configuration)}>
-            Apply
+            {DRAFT_DISCLOSURE_APPLY_BUTTON}
           </Button>
         </div>
-        {stale && (
-          <p className="text-sm text-muted-foreground">
-            This draft is stale: the link, the operation or the connector name has changed since
-            this draft was requested.
-          </p>
-        )}
+        {stale && <p className="text-sm text-muted-foreground">{DRAFT_DISCLOSURE_STALE_MESSAGE}</p>}
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
           {draft.configuration}
         </pre>
@@ -144,7 +173,7 @@ function ConnectorConfigurationDraftDisclosure({
 
       {draft.unresolved.length > 0 && (
         <section className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">Unresolved</p>
+          <p className="text-sm font-medium text-foreground">{DRAFT_DISCLOSURE_UNRESOLVED_LABEL}</p>
           <ul className="flex flex-col gap-1">
             {draft.unresolved.map((item) => (
               <li key={`${item.name}:${item.reason}`} className="text-sm">
@@ -157,7 +186,9 @@ function ConnectorConfigurationDraftDisclosure({
 
       {draft.generatedCredentials.length > 0 && (
         <section className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">Generated credentials</p>
+          <p className="text-sm font-medium text-foreground">
+            {DRAFT_DISCLOSURE_GENERATED_CREDENTIALS_LABEL}
+          </p>
           <ul className="flex flex-col gap-1">
             {draft.generatedCredentials.map((credential) => (
               <li key={`${credential.name}:${credential.securityScheme}`} className="text-sm">
@@ -170,21 +201,22 @@ function ConnectorConfigurationDraftDisclosure({
 
       {draft.methodMismatch !== undefined && (
         <section className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">Method mismatch</p>
+          <p className="text-sm font-medium text-foreground">{DRAFT_DISCLOSURE_METHOD_MISMATCH_LABEL}</p>
           <p className="text-sm">
-            Registered: {draft.methodMismatch.registered} · Drafted: {draft.methodMismatch.operation}
+            {methodMismatchText(draft.methodMismatch.registered, draft.methodMismatch.operation)}
           </p>
         </section>
       )}
 
       {draft.statusReadings.length > 0 && (
         <section className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">Status readings</p>
+          <p className="text-sm font-medium text-foreground">{DRAFT_DISCLOSURE_STATUS_READINGS_LABEL}</p>
           <ul className="flex flex-col gap-1">
             {draft.statusReadings.map((reading) => (
               <li key={reading.status} className="text-sm">
-                <span className="font-medium">Status {reading.status}</span> — ending: {reading.ending}
-                {reading.declaredAs !== undefined && <> (declared as: {reading.declaredAs})</>}
+                <span className="font-medium">{statusReadingStatusText(reading.status)}</span>{" "}
+                {statusReadingEndingText(reading.ending)}
+                {reading.declaredAs !== undefined && <> {declaredAsText(reading.declaredAs)}</>}
               </li>
             ))}
           </ul>
@@ -193,16 +225,17 @@ function ConnectorConfigurationDraftDisclosure({
 
       {draft.responseFields.length > 0 && (
         <section className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">Response fields</p>
+          <p className="text-sm font-medium text-foreground">{DRAFT_DISCLOSURE_RESPONSE_FIELDS_LABEL}</p>
           <ul className="flex flex-col gap-1">
             {draft.responseFields.map((field) => (
               <li key={`${field.status}:${field.path}:${field.name}`} className="text-sm">
-                <span className="font-medium">{field.name}</span> — path: {field.path}, status: {field.status}
-                {field.declaredType !== undefined && <> (declared type: {field.declaredType})</>}
+                <span className="font-medium">{field.name}</span>{" "}
+                {responseFieldPathStatusText(field.path, field.status)}
+                {field.declaredType !== undefined && <> {declaredTypeText(field.declaredType)}</>}
                 {field.declaredRequired !== undefined && (
-                  <> (declared required: {field.declaredRequired ? "yes" : "no"})</>
+                  <> {declaredRequiredText(field.declaredRequired)}</>
                 )}
-                {field.envelope !== undefined && <> (envelope: {field.envelope})</>}
+                {field.envelope !== undefined && <> {envelopeText(field.envelope)}</>}
               </li>
             ))}
           </ul>
@@ -211,12 +244,14 @@ function ConnectorConfigurationDraftDisclosure({
 
       {draft.readingNotes.length > 0 && (
         <section className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">Reading notes</p>
+          <p className="text-sm font-medium text-foreground">{DRAFT_DISCLOSURE_READING_NOTES_LABEL}</p>
           <ul className="flex flex-col gap-1">
             {draft.readingNotes.map((note) => (
               <li key={`${note.kind}:${note.subject}`} className="text-sm">
-                <span className="font-medium">{note.subject}</span> — {note.kindLabel}
-                {note.detail !== undefined && <> (detail: {note.detail})</>}
+                <span className="font-medium">{note.subject}</span>
+                {DRAFT_DISCLOSURE_SUBJECT_KIND_SEPARATOR}
+                {note.kindLabel}
+                {note.detail !== undefined && <> {readingNoteDetailText(note.detail)}</>}
               </li>
             ))}
           </ul>

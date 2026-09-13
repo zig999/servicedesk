@@ -31,9 +31,9 @@ describe("ConnectorConfigurationDetailScreen -- shows the loaded record (criteri
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
     expect(await screen.findByRole("heading", { name: `Connector ${CONNECTOR}` })).toBeTruthy();
-    const connectorInput = screen.getByLabelText<HTMLInputElement>("Connector");
+    const connectorInput = screen.getByLabelText<HTMLInputElement>("Conector");
     expect(connectorInput.value).toBe(CONNECTOR);
-    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = screen.getByLabelText<HTMLTextAreaElement>("Configuração");
     await waitFor(() =>
       expect(configurationField.value).toBe(prettyPrinted(LOADED_CONFIGURATION)),
     );
@@ -48,7 +48,7 @@ describe("ConnectorConfigurationDetailScreen -- a control returns to the list (c
   it("navigates back to the connector-configurations list when the footer's Connectors link is clicked", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     const footer = screen.getByRole("group", { name: "Actions" });
     fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
@@ -73,7 +73,7 @@ describe("ConnectorConfigurationDetailScreen -- the ready phase's route register
   it("issues no PUT request when the footer's Connectors link is clicked -- an implementation that submits register-connector before navigating would fail this", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     const router = await mountConnectorConfigurationDetailScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     const footer = screen.getByRole("group", { name: "Actions" });
     fireEvent.click(within(footer).getByRole("link", { name: "Connectors" }));
@@ -87,7 +87,7 @@ describe("ConnectorConfigurationDetailScreen -- exactly one link renders once th
   it("renders exactly one link, the ready view's Connectors link, during the ready phase", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     expect(screen.getAllByRole("link")).toHaveLength(1);
   });
@@ -122,9 +122,9 @@ describe("ConnectorConfigurationDetailScreen -- reuses the existing form fields 
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
-    await screen.findByLabelText("Configuration");
-    expect(screen.getByLabelText("Connector")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Save" })).toBeTruthy();
+    await screen.findByLabelText("Configuração");
+    expect(screen.getByLabelText("Conector")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Salvar" })).toBeTruthy();
 
     expect(await screen.findByRole("heading", { name: "Test" })).toBeTruthy();
     await waitFor(() =>
@@ -141,7 +141,7 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
     const fetchMock = createFetchStub(baseHandlers(INVALID_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
     expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
   });
 
@@ -149,14 +149,14 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
     expect(screen.queryByText(INVALID_CONFIGURATION_WARNING)).toBeNull();
   });
 
   it("shows the same plain warning once a valid loaded configuration is edited into unparsable text, and disables Save while it stays that way", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 
     fireEvent.change(configurationField, { target: { value: INVALID_CONFIGURATION } });
 
@@ -164,15 +164,15 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
 
     const alerts = screen.getAllByRole("alert");
     expect(alerts.some((alert) => alert.textContent?.startsWith("Invalid JSON:"))).toBe(true);
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
     expect(putCallCount(fetchMock)).toBe(0);
   });
 
   it("edits away the warning once the text is corrected back to valid JSON", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
-    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 
     fireEvent.change(configurationField, { target: { value: INVALID_CONFIGURATION } });
     expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
@@ -193,7 +193,7 @@ describe.each([
       const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
       await mountConnectorConfigurationDetailScreen(fetchMock);
       const configurationField =
-        await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+        await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 
       fireEvent.change(configurationField, { target: { value: text } });
 
@@ -203,8 +203,8 @@ describe.each([
           "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
         ),
       ).toBeNull();
-      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
-      fireEvent.click(screen.getByRole("button", { name: "Save" }));
+      expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
+      fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
       expect(putCallCount(fetchMock)).toBe(0);
     });
   },

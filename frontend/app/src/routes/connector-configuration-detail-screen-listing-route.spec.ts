@@ -38,7 +38,7 @@ describe("ConnectorConfigurationDetailScreen -- the route does not turn on how t
   it("renders the footer's Connectors link when the screen is loaded directly at its own address, carrying no navigation state recording arrival from the listing -- an implementation that renders the route only on an arrival-from-listing state would fail this", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock, `/connectors/${CONNECTOR}`);
-    await screen.findByLabelText("Configuration");
+    await screen.findByLabelText("Configuração");
 
     const footer = screen.getByRole("group", { name: "Actions" });
     expect(within(footer).getByRole("link", { name: "Connectors" })).toBeTruthy();

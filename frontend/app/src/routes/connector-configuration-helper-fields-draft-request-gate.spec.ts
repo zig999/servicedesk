@@ -32,31 +32,31 @@ describe("ConnectorConfigurationHelperFields -- the draft-request act stands onl
     const { unmount: unmountMissingConnectorEmpty } = renderFields(
       stateWith({ connector: "", path: "/v2/translate", method: "POST" }),
     );
-    expect(screen.queryByRole("button", { name: "Request Draft" })).toBeNull();
-    expect(screen.getByText("The request waits on a connector name.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Solicitar rascunho" })).toBeNull();
+    expect(screen.getByText("A solicitação aguarda um nome de conector.")).toBeTruthy();
     unmountMissingConnectorEmpty();
 
     const { unmount: unmountMissingConnectorWhitespace } = renderFields(
       stateWith({ connector: "   ", path: "/v2/translate", method: "POST" }),
     );
-    expect(screen.queryByRole("button", { name: "Request Draft" })).toBeNull();
-    expect(screen.getByText("The request waits on a connector name.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Solicitar rascunho" })).toBeNull();
+    expect(screen.getByText("A solicitação aguarda um nome de conector.")).toBeTruthy();
     unmountMissingConnectorWhitespace();
 
     const { unmount: unmountMissingOperation } = renderFields(
       stateWith({ connector: "deepl-connector", path: "", method: "" }),
     );
-    expect(screen.queryByRole("button", { name: "Request Draft" })).toBeNull();
-    expect(screen.getByText("The request waits on a chosen operation.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Solicitar rascunho" })).toBeNull();
+    expect(screen.getByText("A solicitação aguarda uma operação escolhida.")).toBeTruthy();
     unmountMissingOperation();
 
     const { unmount: unmountBothSatisfied } = renderFields(
       stateWith({ connector: "deepl-connector", path: "/v2/translate", method: "POST" }),
     );
-    const button = screen.getByRole("button", { name: "Request Draft" });
+    const button = screen.getByRole("button", { name: "Solicitar rascunho" });
     expect(button.hasAttribute("disabled")).toBe(false);
-    expect(screen.queryByText("The request waits on a connector name.")).toBeNull();
-    expect(screen.queryByText("The request waits on a chosen operation.")).toBeNull();
+    expect(screen.queryByText("A solicitação aguarda um nome de conector.")).toBeNull();
+    expect(screen.queryByText("A solicitação aguarda uma operação escolhida.")).toBeNull();
     unmountBothSatisfied();
   });
 });

@@ -22,7 +22,7 @@ function baseHandlers(): Record<string, () => Response> {
 }
 
 function setConfigurationText(dialog: HTMLElement, text: string): void {
-  fireEvent.change(within(dialog).getByLabelText("Configuration"), {
+  fireEvent.change(within(dialog).getByLabelText("Configuração"), {
     target: { value: text },
   });
 }
@@ -44,7 +44,7 @@ function clickAddAttribute(dialog: HTMLElement): void {
 }
 
 async function saveConfiguration(dialog: HTMLElement): Promise<void> {
-  const saveButton = within(dialog).getByRole("button", { name: "Save" });
+  const saveButton = within(dialog).getByRole("button", { name: "Salvar" });
   fireEvent.click(saveButton);
   await waitFor(() => {
     expect(saveButton.hasAttribute("disabled")).toBe(true);

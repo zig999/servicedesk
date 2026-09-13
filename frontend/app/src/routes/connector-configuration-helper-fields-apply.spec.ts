@@ -50,7 +50,7 @@ describe("ConnectorConfigurationHelperFields -- no Apply is offered while idle (
   it("renders no Apply button while the outcome is idle", () => {
     renderHelperFields({ kind: "idle" });
 
-    expect(screen.queryByRole("button", { name: "Apply" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Aplicar" })).toBeNull();
   });
 });
 
@@ -58,7 +58,7 @@ describe("ConnectorConfigurationHelperFields -- no Apply is offered while a requ
   it("renders no Apply button while the outcome is pending", () => {
     renderHelperFields({ kind: "pending" });
 
-    expect(screen.queryByRole("button", { name: "Apply" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Aplicar" })).toBeNull();
   });
 });
 
@@ -66,7 +66,7 @@ describe("ConnectorConfigurationHelperFields -- no Apply is offered over a refus
   it("renders no Apply button when the outcome is a refusal", () => {
     renderHelperFields({ kind: "openapi-document-not-readable" });
 
-    expect(screen.queryByRole("button", { name: "Apply" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Aplicar" })).toBeNull();
   });
 });
 
@@ -74,7 +74,7 @@ describe("ConnectorConfigurationHelperFields -- Apply is offered once a draft ha
   it("renders an Apply button once the outcome is drafted", () => {
     renderHelperFields({ kind: "drafted", draft: BASE_DRAFT });
 
-    expect(screen.getByRole("button", { name: "Apply" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Aplicar" })).toBeTruthy();
   });
 });
 
@@ -86,7 +86,7 @@ describe("ConnectorConfigurationHelperFields -- clicking Apply carries the draft
       onApply,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+    fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
 
     expect(onApply).toHaveBeenCalledTimes(1);
     expect(onApply).toHaveBeenCalledWith(DISTINCTIVE_CONFIGURATION_TEXT);
@@ -99,7 +99,7 @@ describe("ConnectorConfigurationHelperFields -- a prior drafted Apply affordance
       kind: "drafted",
       draft: { ...BASE_DRAFT, configuration: DISTINCTIVE_CONFIGURATION_TEXT },
     });
-    expect(screen.getByRole("button", { name: "Apply" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Aplicar" })).toBeTruthy();
 
     rerender(
       createElement(ConnectorConfigurationHelperFields, {
@@ -108,6 +108,6 @@ describe("ConnectorConfigurationHelperFields -- a prior drafted Apply affordance
       }),
     );
 
-    expect(screen.queryByRole("button", { name: "Apply" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Aplicar" })).toBeNull();
   });
 });

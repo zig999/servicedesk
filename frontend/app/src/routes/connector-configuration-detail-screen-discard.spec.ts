@@ -20,7 +20,7 @@ async function mountReady(): Promise<{
 }> {
   const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
   await mountConnectorConfigurationDetailScreen(fetchMock);
-  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+  const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuração");
 
   await waitFor(() => expect(configurationField.value).toBe(prettyPrinted(LOADED_CONFIGURATION)));
   return { fetchMock, configurationField };
@@ -93,7 +93,7 @@ describe("ConnectorConfigurationDetailScreen -- confirming Discard resets the fo
 
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(configurationField.value).toBe(prettyPrinted(LOADED_CONFIGURATION));
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(true);
     expect(
       screen.getByRole("button", { name: "Discard changes" }).hasAttribute("disabled"),
     ).toBe(true);
@@ -110,7 +110,7 @@ describe("ConnectorConfigurationDetailScreen -- cancelling the Discard confirmat
 
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(configurationField.value).toBe(UPDATED_CONFIGURATION);
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+    expect(screen.getByRole("button", { name: "Salvar" }).hasAttribute("disabled")).toBe(false);
   });
 });
 
@@ -146,7 +146,7 @@ describe("ConnectorConfigurationDetailScreen -- discard falls back to what was j
     const { configurationField, fetchMock } = await mountReady();
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
     await screen.findByText("Saved.");
 
