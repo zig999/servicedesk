@@ -4686,5 +4686,21 @@ entries:
     nothing at all, and no operation the generation admits can leave it short of one; declaring the guarantee
     rather than leaving it to the generator is what makes the apply confirmation's itemisation total over every
     draft it can meet.
+- location: constraints/the-diagnosis-and-simulation-routes-are-rate-limited.md
+  field: statement
+  unstated: The material asked for a rate limit over diagnose, simulate-case and simulate-hypothesis without assuming
+    the existing capability-identity read's own 60-per-minute figure carries over, and without saying what one caller
+    means, what window applies, whether the three routes share one count or count apart, or what a refusal names.
+  decided: 10 requests per minute per caller, counted independently per route rather than pooled across the three;
+    one caller is one source IP address; a request over the limit is refused with an HTTP 429 response carrying a
+    Retry-After value.
+  why: The three routes run collection, LLM judgment and persistence within a shared 20-second deadline for one attendant
+    or curator working one case at a time, unlike the capability-identity read's own plain lookup — so a ceiling an
+    order of magnitude below that read's 60 still comfortably serves genuine sequential use while bounding how far
+    an unbounded loop can drive the LLM and the database through any one of the three. Counting the three routes apart
+    keeps a burst against one from starving the others, which a shared count would not. `no-route-enforces-authentication`
+    already holds that no caller's claimed identity is verified anywhere in this build, so the caller here is the
+    connection's own source address, the same property the sibling capability-identity-read constraint already
+    keys on for the same reason.
 
 ---

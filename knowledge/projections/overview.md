@@ -45,6 +45,7 @@ Derived by spec.py from the specification files; never edited.
 - the-consolidation-prompt-is-closed (investigation)
 - the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
+- the-diagnosis-and-simulation-routes-are-rate-limited (investigation)
 - the-domain-depends-on-no-infrastructure (system)
 - the-evidence-cache-admits-only-ok-results (investigation)
 - the-judgment-prompt-is-closed (investigation)
@@ -53,4 +54,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-288 decision(s) disclosed, 1 fact(s) recorded as read in the decision log.
+289 decision(s) disclosed, 1 fact(s) recorded as read in the decision log.

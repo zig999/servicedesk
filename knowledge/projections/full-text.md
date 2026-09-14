@@ -200,6 +200,17 @@ fitness: A load test at saturation shows no response later than the declared tot
 
 Summing stage budgets and calling the sum a deadline leaves nothing for the overhead between stages; a stage finishing early returns its balance to the next, a late one takes from those that follow, and the last to run pays.
 
+=== constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+---
+statement: The diagnose, simulate-case and simulate-hypothesis routes each accept at most 10 requests per minute from one caller, counted independently per route, where one caller is one source IP address; a request beyond that limit is refused with an HTTP 429 response carrying a Retry-After value naming when the caller may retry.
+scope: investigation
+fitness: An automated test issues more than 10 requests within one minute against each of diagnose, simulate-case and simulate-hypothesis from one caller and asserts that the response past the limit is HTTP 429 and carries a value naming when the caller may retry, and that a caller over the limit on one route is answered ordinarily on another.
+---
+
+## Description
+
+Nothing else in this build tells a caller of diagnose, simulate-case or simulate-hypothesis to slow down, so an unbounded loop against any of the three drives the same collection, judgment and persistence work the engine runs for a legitimate call — the LLM calls and the database writes an attendant or curator would otherwise spend one case at a time. The limit is confined to these three routes rather than every route the api publishes, because these are the ones the material names — a system-wide limit is a separate decision this constraint does not make. `no-route-enforces-authentication` already holds that no caller's claimed identity is verified anywhere in this build, so this constraint's own caller identity is the connection's own source address, counted separately per route: a caller within the minute's window for diagnose is not thereby counted against simulate-case or simulate-hypothesis.
+
 === constraints/the-domain-depends-on-no-infrastructure
 ---
 statement: The domain layer — case behavior, investigation factory, evaluation, vocabulary — imports no framework, no driver and no provider client; infrastructure reaches it only through ports.
@@ -5310,6 +5321,22 @@ entries:
     nothing at all, and no operation the generation admits can leave it short of one; declaring the guarantee
     rather than leaving it to the generator is what makes the apply confirmation's itemisation total over every
     draft it can meet.
+- location: constraints/the-diagnosis-and-simulation-routes-are-rate-limited.md
+  field: statement
+  unstated: The material asked for a rate limit over diagnose, simulate-case and simulate-hypothesis without assuming
+    the existing capability-identity read's own 60-per-minute figure carries over, and without saying what one caller
+    means, what window applies, whether the three routes share one count or count apart, or what a refusal names.
+  decided: 10 requests per minute per caller, counted independently per route rather than pooled across the three;
+    one caller is one source IP address; a request over the limit is refused with an HTTP 429 response carrying a
+    Retry-After value.
+  why: The three routes run collection, LLM judgment and persistence within a shared 20-second deadline for one attendant
+    or curator working one case at a time, unlike the capability-identity read's own plain lookup — so a ceiling an
+    order of magnitude below that read's 60 still comfortably serves genuine sequential use while bounding how far
+    an unbounded loop can drive the LLM and the database through any one of the three. Counting the three routes apart
+    keeps a burst against one from starving the others, which a shared count would not. `no-route-enforces-authentication`
+    already holds that no caller's claimed identity is verified anywhere in this build, so the caller here is the
+    connection's own source address, the same property the sibling capability-identity-read constraint already
+    keys on for the same reason.
 
 ---
 
