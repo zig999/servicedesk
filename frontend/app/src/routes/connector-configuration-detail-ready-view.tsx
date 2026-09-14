@@ -37,10 +37,6 @@ export function ConnectorConfigurationDetailReadyView({
           {INVALID_CONFIGURATION_WARNING}
         </p>
       )}
-      <ConnectorTestPanel
-        connector={connector}
-        configurationText={state.registeredConfigurationText}
-      />
       <ConnectorConfigurationFormFields
         form={state.form}
         configuration={state.configuration}
@@ -48,6 +44,12 @@ export function ConnectorConfigurationDetailReadyView({
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
         isDirty={state.isDirty}
+        testPanel={
+          <ConnectorTestPanel
+            connector={connector}
+            configurationText={state.registeredConfigurationText}
+          />
+        }
         trailingActions={
           <>
             <Dialog>

@@ -73,6 +73,8 @@ export type ConnectorConfigurationFormFieldsProps = {
   readonly isDirty?: boolean;
 
   readonly trailingActions?: ReactNode;
+
+  readonly testPanel?: ReactNode;
 };
 
 function FormField({
@@ -197,6 +199,7 @@ export function ConnectorConfigurationFormFields({
   onSubmit,
   isDirty,
   trailingActions,
+  testPanel,
 }: ConnectorConfigurationFormFieldsProps): JSX.Element {
   const {
     register,
@@ -281,6 +284,8 @@ export function ConnectorConfigurationFormFields({
       <SubjectPlaceholderStatements statements={subjectPlaceholderStatements} />
       <CredentialPlaceholderStatements credentialNames={credentialPlaceholderStatements} />
       <ResponseMapCapabilityCoverageStatement coverage={responseMapCapabilityCoverage} />
+
+      {testPanel}
 
       <ConnectorConfigurationHelper connector={connector} onApply={handleApply} />
 
