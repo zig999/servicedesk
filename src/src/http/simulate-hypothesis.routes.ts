@@ -1,11 +1,21 @@
 import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
 import { simulateHypothesisRequestSchema } from './dto/simulate-hypothesis.dto.js';
+import { createRateLimitHook } from './rate-limit.middleware.js';
 
 const API_PREFIX = '/v1';
+const RATE_LIMIT_MAX_REQUESTS_PER_MINUTE = 10;
+const RATE_LIMIT_WINDOW_MS = 60_000;
 
 export function createSimulateHypothesisRoutesPlugin(dependencies: SimulateHypothesisControllerDependencies): FastifyPluginAsync {
   return async function simulateHypothesisRoutesPlugin(app: FastifyInstance): Promise<void> {
+    app.addHook(
+      'onRequest',
+      createRateLimitHook({
+        maxRequestsPerWindow: RATE_LIMIT_MAX_REQUESTS_PER_MINUTE,
+        windowMs: RATE_LIMIT_WINDOW_MS,
+      }),
+    );
     app.post(`${API_PREFIX}/simulate/hypothesis`, (request, reply) => simulateHypothesisHandler(dependencies, request, reply));
   };
 }

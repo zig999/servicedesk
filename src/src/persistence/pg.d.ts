@@ -1,7 +1,12 @@
 declare module 'pg' {
 
   export class Pool {
-    public constructor(config: { connectionString: string });
+    public constructor(config: {
+      connectionString: string;
+      max?: number;
+      idleTimeoutMillis?: number;
+      statement_timeout?: number;
+    });
 
     public query<R = Record<string, unknown>>(
       text: string,

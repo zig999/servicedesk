@@ -170,7 +170,7 @@ it("createDiagnoseHttpServer's own exported function takes exactly one parameter
   const source = await readFile(join(FACTORIES_DIRECTORY, 'diagnose-server.factory.ts'), 'utf8');
 
   expect(source).toMatch(/export async function createDiagnoseHttpServer\(\s*env:\s*Env\s*\)/);
-  expect(source).toMatch(/createDatabaseConnection\(\s*env\.DATABASE_URL\s*\)/);
+  expect(source).toMatch(/createDatabaseConnection\(\s*env\.DATABASE_URL\s*(,[^)]*)?\)/);
   expect(source).not.toMatch(/DataDirectory/i);
 });
 

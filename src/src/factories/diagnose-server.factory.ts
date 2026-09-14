@@ -6,7 +6,11 @@ import type { SimulateCaseControllerDependencies } from '../http/simulate-case.c
 import type { SimulateHypothesisControllerDependencies } from '../http/simulate-hypothesis.controller.js';
 import { HttpDeclarativeObservationSource } from '../investigation/http-declarative-observation-source.adapter.js';
 import type { IObservationSource } from '../investigation/observation-source.port.js';
-import { createDatabaseConnection, type DatabaseConnection } from '../persistence/database-connection.js';
+import {
+  createDatabaseConnection,
+  type DatabaseConnection,
+  type IDatabaseConnectionPoolOptions,
+} from '../persistence/database-connection.js';
 import { buildAppDependencies } from './build-app.factory.js';
 import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createCaseInputRequirementsQuery } from './case-input-requirements.factory.js';
@@ -21,7 +25,8 @@ import {
 import { createProductionSimulationRunner, type ProductionSimulationDependencies } from './production-simulate.factory.js';
 
 export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstance> {
-  const connection = createDatabaseConnection(env.DATABASE_URL);
+  const poolOptions = databasePoolOptionsFrom(env);
+  const connection = createDatabaseConnection(env.DATABASE_URL, poolOptions);
   const observationSource = new HttpDeclarativeObservationSource({
     capabilities: createCapabilityQuery(connection),
     connectorConfigurations: createConnectorConfigurationRegistry(connection),
@@ -45,6 +50,14 @@ export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstanc
     runSimulateHypothesis,
   };
   return buildApp(buildAppDependencies({ env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis }));
+}
+
+function databasePoolOptionsFrom(env: Env): IDatabaseConnectionPoolOptions {
+  return {
+    maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS,
+    idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+    statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS,
+  };
 }
 
 function runnerDependencies(

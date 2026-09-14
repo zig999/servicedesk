@@ -260,6 +260,18 @@
         {
           "path": "src/src/config/env.ts",
           "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
+        },
+        {
+          "path": "src/src/factories/diagnose-server.factory.ts",
+          "digest": "sha256:fffa6d99c69f9e45669b08950b2cf91e1b1d22874099a4794942325f53d7a299"
+        },
+        {
+          "path": "src/src/persistence/database-connection.ts",
+          "digest": "sha256:6e01b2a4703c54070688392d462ad7017de6e086b267d6c4b541e4ab9772c962"
+        },
+        {
+          "path": "src/src/persistence/pg.d.ts",
+          "digest": "sha256:9a97a1df811f5baf538c342a3b55f761559abd1dd61a1ce0afc7eaa0ebed1e7d"
         }
       ]
     },
@@ -283,7 +295,7 @@
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
-          "digest": "sha256:ad97eba955741c07e452d3854c639300338981a66307a9e7cc456b2b68cad5b2"
+          "digest": "sha256:fffa6d99c69f9e45669b08950b2cf91e1b1d22874099a4794942325f53d7a299"
         },
         {
           "path": "src/src/migrate.ts",
@@ -291,7 +303,7 @@
         },
         {
           "path": "src/src/persistence/database-connection.ts",
-          "digest": "sha256:e5d722ec56bded77f7118f9d27de8bb75d264738666eb27c22072bbe43a9bc82"
+          "digest": "sha256:6e01b2a4703c54070688392d462ad7017de6e086b267d6c4b541e4ab9772c962"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -330,8 +342,20 @@
       "digest": "sha256:13c2e5151a55d6de5178e58dbde32ecdc1fb4687fa3151f4faab91e4bab289e3",
       "files": [
         {
+          "path": "src/src/http/diagnose.routes.ts",
+          "digest": "sha256:6f2f282aef13ba6c6ea801aeaf68f146021101cb0e64dd45769642192216f081"
+        },
+        {
           "path": "src/src/http/rate-limit.middleware.ts",
           "digest": "sha256:fc3ff8669bff748caded789746e84cc5c31709629cdb6f4ed1960df037338f30"
+        },
+        {
+          "path": "src/src/http/simulate-case.routes.ts",
+          "digest": "sha256:96923c41b1c22fd14feab4254ab919fbfa10ab41c7dfe877101d772a48e811c9"
+        },
+        {
+          "path": "src/src/http/simulate-hypothesis.routes.ts",
+          "digest": "sha256:ca65a13bb1a5ffc750a7c93d77134f94d51b8c65ebed0402cc160a79310e33fe"
         }
       ]
     },
@@ -686,6 +710,10 @@
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
           "digest": "sha256:8c4482281452e277b95f2ac64b207fcde0ec6e4614c4b2caaaeecc426b4837ab"
+        },
+        {
+          "path": "src/src/persistence/database-connection.ts",
+          "digest": "sha256:6e01b2a4703c54070688392d462ad7017de6e086b267d6c4b541e4ab9772c962"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",

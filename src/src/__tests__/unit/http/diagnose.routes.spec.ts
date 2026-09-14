@@ -1,5 +1,5 @@
-import Fastify, { type FastifyInstance } from 'fastify';
-import { afterEach, expect, it, vi } from 'vitest';
+import Fastify, { type FastifyInstance, type LightMyRequestResponse } from 'fastify';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { CaseInputRequirementsResult } from '../../../case/case-input-requirements.js';
 import type { ICaseInputRequirementsQuery } from '../../../case/case-input-requirements.port.js';
@@ -82,7 +82,12 @@ function buildTestApp(
 
 let app: FastifyInstance | undefined;
 
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+});
+
 afterEach(async () => {
+  vi.useRealTimers();
   await app?.close();
   app = undefined;
 });
@@ -193,4 +198,74 @@ it('answers 200 with the resolved assessment narrowed to the response DTO\'s fou
     referral: { action: 'an-action', recipient: 'a-recipient' },
     text: 'a text',
   });
+});
+
+const RATE_LIMIT_SOURCE_IP = '203.0.113.10';
+const REQUESTS_WITHIN_RATE_LIMIT = 10;
+
+function buildRateLimitTestApp(): { app: FastifyInstance; runDiagnose: RunDiagnoseMock } {
+  const built = buildTestApp(heldCase({ state: 'released' }));
+  built.runDiagnose.mockResolvedValue({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  });
+  return built;
+}
+
+async function sendDiagnoseRequests(
+  testApp: FastifyInstance,
+  count: number,
+  remoteAddress: string,
+): Promise<LightMyRequestResponse[]> {
+  const responses: LightMyRequestResponse[] = [];
+  for (let i = 0; i < count; i += 1) {
+    responses.push(await testApp.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY, remoteAddress }));
+  }
+  return responses;
+}
+
+it('answers every one of the first 10 requests within a minute from one source address with its ordinary 200 response, none of them refused', async () => {
+  const built = buildRateLimitTestApp();
+  app = built.app;
+
+  const responses = await sendDiagnoseRequests(app, REQUESTS_WITHIN_RATE_LIMIT, RATE_LIMIT_SOURCE_IP);
+
+  expect(responses.map((response) => response.statusCode)).toEqual(Array(REQUESTS_WITHIN_RATE_LIMIT).fill(200));
+});
+
+it('answers the 11th request within one minute from that same source address with HTTP 429', async () => {
+  const built = buildRateLimitTestApp();
+  app = built.app;
+
+  await sendDiagnoseRequests(app, REQUESTS_WITHIN_RATE_LIMIT, RATE_LIMIT_SOURCE_IP);
+  const [over] = await sendDiagnoseRequests(app, 1, RATE_LIMIT_SOURCE_IP);
+
+  expect(over.statusCode).toBe(429);
+});
+
+it('names, in that 429 response, a Retry-After value the caller may retry after', async () => {
+  const built = buildRateLimitTestApp();
+  app = built.app;
+
+  await sendDiagnoseRequests(app, REQUESTS_WITHIN_RATE_LIMIT, RATE_LIMIT_SOURCE_IP);
+  const [over] = await sendDiagnoseRequests(app, 1, RATE_LIMIT_SOURCE_IP);
+
+  expect(over.headers['retry-after']).toBe('60');
+});
+
+it("keeps refusing the same source address past its own ten-request window even once the wall clock crosses into the next calendar minute, never resetting the count on the clock face alone", async () => {
+  const built = buildRateLimitTestApp();
+  app = built.app;
+  vi.setSystemTime(new Date('2024-01-01T00:00:55.000Z'));
+
+  await sendDiagnoseRequests(app, REQUESTS_WITHIN_RATE_LIMIT, RATE_LIMIT_SOURCE_IP);
+  vi.setSystemTime(new Date('2024-01-01T00:01:05.000Z'));
+  const [over] = await sendDiagnoseRequests(app, 1, RATE_LIMIT_SOURCE_IP);
+
+  expect(over.statusCode).toBe(429);
 });

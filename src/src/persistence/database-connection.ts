@@ -2,6 +2,24 @@ import { Pool } from 'pg';
 
 export type DatabaseConnection = Pool;
 
-export function createDatabaseConnection(connectionUrl: string): DatabaseConnection {
-  return new Pool({ connectionString: connectionUrl });
+export interface IDatabaseConnectionPoolOptions {
+  readonly maxConnections: number;
+  readonly idleTimeoutMs: number;
+  readonly statementTimeoutMs: number;
+}
+
+export function createDatabaseConnection(
+  connectionUrl: string,
+  poolOptions?: IDatabaseConnectionPoolOptions,
+): DatabaseConnection {
+  return new Pool({
+    connectionString: connectionUrl,
+    ...(poolOptions === undefined
+      ? {}
+      : {
+          max: poolOptions.maxConnections,
+          idleTimeoutMillis: poolOptions.idleTimeoutMs,
+          statement_timeout: poolOptions.statementTimeoutMs,
+        }),
+  });
 }

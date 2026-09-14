@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/database-pool-configuration/pool-construction-applies-settings",
+      "kind": "implementation",
+      "file": "implementation/database-pool-configuration/pool-construction-applies-settings.md",
+      "title": "Postgres pool construction applies the three configured bounds",
+      "summary": "createDatabaseConnection now accepts an optional pool-options argument and, when the production HTTP server's factory supplies it, sets pg's max, idleTimeoutMillis and statement_timeout Pool options from the already-defaulted env values instead of leaving them to the driver.",
+      "task": "task/database-pool-configuration/pool-construction-applies-settings"
+    },
+    {
       "id": "implementation/database-pool-configuration/pool-settings-in-env-schema",
       "kind": "implementation",
       "file": "implementation/database-pool-configuration/pool-settings-in-env-schema.md",
       "title": "Pool settings declared in the environment schema",
       "summary": "Adds three defaulted, positive-integer-validated environment variables for the connection pool's max connections, idle timeout and statement timeout to the existing envSchema, and repairs five integration/e2e test fixtures whose hand-typed Env literals became incomplete under the new required output fields.",
       "task": "task/database-pool-configuration/pool-settings-in-env-schema"
+    },
+    {
+      "id": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "kind": "implementation",
+      "file": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits.md",
+      "title": "Rate limiting wired onto diagnose, simulate-case and simulate-hypothesis routes",
+      "summary": "Each of the three route plugins registers its own onRequest rate-limit hook, built from the already-delivered createRateLimitHook(10, 60_000), so each route refuses its own callers past ten requests a minute independently of the other two.",
+      "task": "task/route-rate-limiting/diagnose-and-simulation-route-limits"
     },
     {
       "id": "implementation/route-rate-limiting/parameterized-rate-limit-hook",
@@ -18,12 +34,28 @@
       "task": "task/route-rate-limiting/parameterized-rate-limit-hook"
     },
     {
+      "id": "proof/database-pool-configuration/pool-construction-applies-settings",
+      "kind": "proof",
+      "file": "proof/database-pool-configuration/pool-construction-applies-settings.md",
+      "title": "Postgres pool construction applies the three configured bounds — proof",
+      "summary": "Unit tests over createDatabaseConnection's optional second argument and its mapping onto pg's max/idleTimeoutMillis/statement_timeout, plus the two pre-existing tree-wide checks brought into line with the new two-argument call shape and a new tree-wide single-pool-construction check.",
+      "task": "task/database-pool-configuration/pool-construction-applies-settings"
+    },
+    {
       "id": "proof/database-pool-configuration/pool-settings-in-env-schema",
       "kind": "proof",
       "file": "proof/database-pool-configuration/pool-settings-in-env-schema.md",
       "title": "Pool settings declared in the environment schema — proof",
       "summary": "Four tests added to the existing env.spec.ts prove the six stated criteria and decide constraints/the-pool-bounds-are-positive-integers whole; the pooling clause and the specific default figures are left unproven and named as such.",
       "task": "task/database-pool-configuration/pool-settings-in-env-schema"
+    },
+    {
+      "id": "proof/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "kind": "proof",
+      "file": "proof/route-rate-limiting/diagnose-and-simulation-route-limits.md",
+      "title": "Rate-limit wiring on diagnose, simulate-case and simulate-hypothesis routes — proof",
+      "summary": "Per-route, per-source-address 429/Retry-After enforcement at the ten-request-per-minute boundary is proven independently for each of the three routes, and their cross-route and cross-caller independence is proven by standing all three plugins up together; the accepted non-rolling-but-caller-anchored window design is proven against the one implementation the task's own Notes name as a specification-refusing pass.",
+      "task": "task/route-rate-limiting/diagnose-and-simulation-route-limits"
     },
     {
       "id": "proof/route-rate-limiting/parameterized-rate-limit-hook",
@@ -35,6 +67,30 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/database-pool-configuration/pool-construction-applies-settings",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/database-pool-configuration/pool-construction-applies-settings",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/database-pool-configuration/pool-construction-applies-settings",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/database-pool-configuration/pool-construction-applies-settings",
+      "to": "task/database-pool-configuration/pool-construction-applies-settings",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/database-pool-configuration/pool-settings-in-env-schema",
       "to": "constraints/the-pool-bounds-are-positive-integers",
@@ -54,6 +110,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "to": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "to": "task/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/route-rate-limiting/parameterized-rate-limit-hook",
       "to": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
       "kind": "encodes",
@@ -66,8 +134,20 @@
       "at": "the path"
     },
     {
+      "from": "proof/database-pool-configuration/pool-construction-applies-settings",
+      "to": "implementation/database-pool-configuration/pool-construction-applies-settings",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/database-pool-configuration/pool-settings-in-env-schema",
       "to": "implementation/database-pool-configuration/pool-settings-in-env-schema",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "to": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits",
       "kind": "proves",
       "at": "the path"
     },

@@ -41,7 +41,14 @@ it('the tree contains no Dockerfile, docker-compose file, Terraform script or Pr
 
 const CONNECTION_URL_LITERAL_PATTERN = /postgres(?:ql)?:\/\//;
 const CONNECTION_CONSTRUCTION_PATTERN = /createDatabaseConnection\(\s*([^)]*?)\s*\)/g;
+const POOL_CONSTRUCTION_PATTERN = /new Pool\(/g;
 const SUITE_HARNESS_BASENAME = 'vitest-global-setup.ts';
+
+const EXPECTED_CONNECTION_FACTORY_CALL_ARGUMENTS = [
+  'connectionUrl: string, poolOptions?: IDatabaseConnectionPoolOptions,',
+  'env.DATABASE_URL',
+  'env.DATABASE_URL, poolOptions',
+].sort();
 
 async function* everyDeployedSourceFile(root: string): AsyncGenerator<IDeployedFile> {
   const entries = await readdir(root, { withFileTypes: true });
@@ -71,10 +78,19 @@ it('builds every connection the deployment opens from env.DATABASE_URL, naming n
   const constructionArguments: string[] = [];
   for await (const { source } of everyDeployedSourceFile(TARGET_SOURCE_ROOT)) {
     for (const match of source.matchAll(CONNECTION_CONSTRUCTION_PATTERN)) {
-      constructionArguments.push(match[1] ?? '');
+      constructionArguments.push((match[1] ?? '').replace(/\s+/g, ' ').trim());
     }
   }
 
   expect(constructionArguments.length).toBeGreaterThan(0);
-  expect([...new Set(constructionArguments)]).toEqual(['env.DATABASE_URL', 'connectionUrl: string']);
+  expect([...new Set(constructionArguments)].sort()).toEqual(EXPECTED_CONNECTION_FACTORY_CALL_ARGUMENTS);
+});
+
+it('constructs the pg Pool in exactly one place across the entire deployed tree', async () => {
+  let poolConstructionCount = 0;
+  for await (const { source } of everyDeployedSourceFile(TARGET_SOURCE_ROOT)) {
+    poolConstructionCount += (source.match(POOL_CONSTRUCTION_PATTERN) ?? []).length;
+  }
+
+  expect(poolConstructionCount).toBe(1);
 });
