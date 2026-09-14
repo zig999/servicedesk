@@ -9,6 +9,13 @@
       "summary": "The explicit connection-pool settings the persistence layer applies and the environment configuration they are read from."
     },
     {
+      "id": "epic/pool-options-required-corrective",
+      "kind": "epic",
+      "file": "epic/pool-options-required-corrective.md",
+      "title": "Postgres pool options are mandatory at construction",
+      "summary": "Corrects createDatabaseConnection so it can never build a Pool without an explicit max/idleTimeoutMillis/statement_timeout, closing the path where omitting poolOptions handed the three bounds to the driver's own implicit defaults."
+    },
+    {
       "id": "epic/route-rate-limiting",
       "kind": "epic",
       "file": "epic/route-rate-limiting.md",
@@ -37,6 +44,14 @@
       "title": "Pool settings declared in the environment schema",
       "summary": "The three pool parameters as validated environment variables with defaults carried by the schema itself.",
       "epic": "database-pool-configuration"
+    },
+    {
+      "id": "task/pool-options-required-corrective/pool-options-required",
+      "kind": "task",
+      "file": "task/pool-options-required-corrective/pool-options-required.md",
+      "title": "Postgres pool options are mandatory at construction",
+      "summary": "createDatabaseConnection can no longer build a Pool without an explicit max, idleTimeoutMillis and statement_timeout.",
+      "epic": "pool-options-required-corrective"
     },
     {
       "id": "task/route-rate-limiting/diagnose-and-simulation-route-limits",
@@ -103,6 +118,24 @@
       "to": "constraints/the-pool-bounds-are-positive-integers",
       "kind": "covers",
       "at": "covers[7]"
+    },
+    {
+      "from": "epic/pool-options-required-corrective",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/pool-options-required-corrective",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/pool-options-required-corrective",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[2]"
     },
     {
       "from": "epic/route-rate-limiting",
@@ -313,6 +346,12 @@
       "to": "constraints/the-pool-bounds-are-positive-integers",
       "kind": "implements",
       "at": "implements[1]"
+    },
+    {
+      "from": "task/pool-options-required-corrective/pool-options-required",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/route-rate-limiting/diagnose-and-simulation-route-limits",

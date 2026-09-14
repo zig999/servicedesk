@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/deadline-test-value-corrective",
+      "kind": "epic",
+      "file": "epic/deadline-test-value-corrective.md",
+      "title": "The persistence-deadline test's injected total deadline matches the declared total",
+      "summary": "The one corrective task deriving the test's injected total deadline from the specification's own declared total (20 seconds) instead of a locally chosen figure (30 seconds)."
+    },
+    {
+      "id": "task/deadline-test-value-corrective/deadline-test-value-corrective",
+      "kind": "task",
+      "file": "task/deadline-test-value-corrective/deadline-test-value-corrective.md",
+      "title": "The persistence-deadline test's injected total deadline matches the specification's declared total",
+      "summary": "Derives the test's injected deadline from the specification's own declared total instead of a locally chosen figure that happens to diverge from it.",
+      "epic": "deadline-test-value-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/deadline-test-value-corrective",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/deadline-test-value-corrective",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/deadline-test-value-corrective",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/deadline-test-value-corrective/deadline-test-value-corrective",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
