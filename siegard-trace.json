@@ -254,6 +254,16 @@
       ]
     },
     {
+      "node": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "digest": "sha256:26ec4c15f7e3e38983f454a1155238595e7c74cae10e13a395462366e15d57d2",
+      "files": [
+        {
+          "path": "src/src/config/env.ts",
+          "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-consolidation-prompt-is-closed",
       "digest": "sha256:c3ddbcc0cf1d4bbd09456fdfa4627f95f377361dfa1beb0afacb091a18b9ce4b",
       "files": [
@@ -312,6 +322,16 @@
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
           "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
+        }
+      ]
+    },
+    {
+      "node": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
+      "digest": "sha256:13c2e5151a55d6de5178e58dbde32ecdc1fb4687fa3151f4faab91e4bab289e3",
+      "files": [
+        {
+          "path": "src/src/http/rate-limit.middleware.ts",
+          "digest": "sha256:fc3ff8669bff748caded789746e84cc5c31709629cdb6f4ed1960df037338f30"
         }
       ]
     },
@@ -498,6 +518,16 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.spec.ts",
           "digest": "sha256:16fe1cd3f3c7c660d7e50046bec44bd4e9bb34f365447505ae04adef5948be52"
+        }
+      ]
+    },
+    {
+      "node": "constraints/the-pool-bounds-are-positive-integers",
+      "digest": "sha256:3727dc96a11e3d5be0380c7fe25a08356b381e4369ebfd05017eb2b98128a415",
+      "files": [
+        {
+          "path": "src/src/config/env.ts",
+          "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
         }
       ]
     },

@@ -14,6 +14,9 @@ const envSchema = z.object({
   PROMPT_VERSION: z.string().min(1),
   PAGINATION_DEFAULT_LIMIT: z.coerce.number().int().positive(),
   PAGINATION_MAX_LIMIT: z.coerce.number().int().positive(),
+  DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+  DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+  DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
 });
 
 export type Env = z.infer<typeof envSchema>;

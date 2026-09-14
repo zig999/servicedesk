@@ -95,3 +95,91 @@ it('throws InvalidEnvironmentError naming DATABASE_URL when it is set to an empt
   const issues = (caught as InvalidEnvironmentError).context.issues;
   expect(issues.some((issue) => issue.includes('DATABASE_URL'))).toBe(true);
 });
+
+it('yields a defaulted value for each of the three pool variables when the existing required-variable fixture names none of them', () => {
+  const env = loadEnv(validEnvSource());
+
+  expect(Number.isFinite(env.DATABASE_POOL_MAX_CONNECTIONS)).toBe(true);
+  expect(Number.isFinite(env.DATABASE_POOL_IDLE_TIMEOUT_MS)).toBe(true);
+  expect(Number.isFinite(env.DATABASE_POOL_STATEMENT_TIMEOUT_MS)).toBe(true);
+});
+
+it('parses a configured value for each of the three pool variables as a number, distinct from their defaults', () => {
+  const env = loadEnv(
+    validEnvSource({
+      DATABASE_POOL_MAX_CONNECTIONS: '25',
+      DATABASE_POOL_IDLE_TIMEOUT_MS: '5000',
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: '45000',
+    }),
+  );
+
+  expect(env.DATABASE_POOL_MAX_CONNECTIONS).toBe(25);
+  expect(env.DATABASE_POOL_IDLE_TIMEOUT_MS).toBe(5000);
+  expect(env.DATABASE_POOL_STATEMENT_TIMEOUT_MS).toBe(45000);
+});
+
+it('throws InvalidEnvironmentError naming the field when a pool variable is set to a non-numeric value', () => {
+  const nonNumeric = validEnvSource({ DATABASE_POOL_MAX_CONNECTIONS: 'ten' });
+
+  let caught: unknown;
+  try {
+    loadEnv(nonNumeric);
+  } catch (error) {
+    caught = error;
+  }
+
+  expect(caught).toBeInstanceOf(InvalidEnvironmentError);
+  const issues = (caught as InvalidEnvironmentError).context.issues;
+  expect(issues.some((issue) => issue.includes('DATABASE_POOL_MAX_CONNECTIONS'))).toBe(true);
+});
+
+type PoolBoundField =
+  | 'DATABASE_POOL_MAX_CONNECTIONS'
+  | 'DATABASE_POOL_IDLE_TIMEOUT_MS'
+  | 'DATABASE_POOL_STATEMENT_TIMEOUT_MS';
+
+interface IPoolBoundCase {
+  description: string;
+  field: PoolBoundField;
+  value: string;
+  valid: boolean;
+}
+
+const poolBoundCases: IPoolBoundCase[] = [
+  {
+    description: 'refuses a non-integer value',
+    field: 'DATABASE_POOL_STATEMENT_TIMEOUT_MS',
+    value: '2.5',
+    valid: false,
+  },
+  { description: 'refuses a zero value', field: 'DATABASE_POOL_IDLE_TIMEOUT_MS', value: '0', valid: false },
+  { description: 'refuses a negative value', field: 'DATABASE_POOL_MAX_CONNECTIONS', value: '-5', valid: false },
+  {
+    description: 'admits a positive integer value',
+    field: 'DATABASE_POOL_MAX_CONNECTIONS',
+    value: '7',
+    valid: true,
+  },
+];
+
+it.each(poolBoundCases)('$description for $field', ({ field, value, valid }) => {
+  const source = validEnvSource({ [field]: value });
+
+  if (!valid) {
+    let caught: unknown;
+    try {
+      loadEnv(source);
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).toBeInstanceOf(InvalidEnvironmentError);
+    const issues = (caught as InvalidEnvironmentError).context.issues;
+    expect(issues.some((issue) => issue.includes(field))).toBe(true);
+    return;
+  }
+
+  const env = loadEnv(source);
+  expect(Number.isInteger(env[field])).toBe(true);
+  expect(env[field]).toBeGreaterThan(0);
+});
