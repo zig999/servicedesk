@@ -1,0 +1,121 @@
+findings:
+  - file: src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+    where: "the TOTAL_DEADLINE_BUDGET_MS constant (line 39) and its use to construct the deadline handed to the runner in buildDelayedTestApp (line 297)"
+    evidence: |-
+      const TOTAL_DEADLINE_BUDGET_MS = 30_000;
+      ...
+      const now = Date.now();
+      return runner({ ...call, now, deadline: now + TOTAL_DEADLINE_BUDGET_MS });
+    cost: >-
+      A reader of this integration test learns the system's declared total deadline for a diagnose
+      call is thirty seconds; the specification's own node states it as twenty (two of overhead and
+      margin, seven of collection, five of judgment, four of writing and two of persistence). Because
+      this file computes and injects the deadline itself rather than exercising the production
+      computation, the test keeps passing under either figure, so nobody is alerted if this
+      thirty-second belief and the specification's twenty-second decision ever diverge further.
+    kind: contradicts
+    node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+    correction: >-
+      derive the injected deadline from the specification's own declared total (twenty seconds)
+      instead of a locally chosen thirty.
+  - file: src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+    where: "assertDeadlineExceeded, lines 353-362"
+    evidence: |-
+      const body = options.response.json() as { error: { code: string; message: string; details?: { id: string; remainingMs: number } } };
+      expect(body.error.code).toBe('InvestigationWriteDeadlineExceededError');
+      expect(body.error.details).toBeDefined();
+      const remainingMs = (body.error.details as { id: string; remainingMs: number }).remainingMs;
+      expect(body.error.details).toEqual({ id, remainingMs });
+      expect(remainingMs).toBeGreaterThan(0);
+      expect(remainingMs).toBeLessThanOrEqual(2_000);
+      expect(body.error.message).toBe(
+        `the investigation with id "${id}" could not be written within the ${remainingMs}ms remaining of the declared deadline, so no assessment is returned without a corresponding record`,
+      );
+    cost: >-
+      rules/investigation/no-stage-aborts-on-its-deadline and the decision log entry that named
+      InvestigationWriteDeadlineExceededError settle only its HTTP status and its identity ("Status:
+      500 ... Name: InvestigationWriteDeadlineExceededError"), never what its details carry or its
+      exact wording. This file is the only place that states the details carry an id and a
+      remainingMs figure and the only place that fixes the message's exact sentence, so the next
+      reader who wants to know what this refusal discloses to a caller has to read this test rather
+      than the specification.
+    kind: unstated
+    node: rules/investigation/no-stage-aborts-on-its-deadline
+    correction: >-
+      decide, in the specification, what InvestigationWriteDeadlineExceededError's details carry
+      (the investigation id and a remaining-time figure) and its message wording, so this assertion
+      follows a decided shape rather than being the shape's only home.
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      reviseHypothesis's call (lines 169-176) and releaseRevisionDirectly's call to
+      releaseHypothesisRevision (line 130)
+    evidence: |-
+      const revised = await lifecycle.reviseHypothesis({
+        slug: fixture.slug,
+        hypothesis_name: 'h1',
+        criterion: fixture.hypothesisCriterion,
+        collects: [fixture.concept],
+        resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
+        subject: fixture.subjectType,
+      });
+      ...
+      await createCaseLifecycle(connection).releaseHypothesisRevision(identity.slug, identity.hypothesisName, identity.revision);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "the second it() block, lines 456-458"
+    evidence: |-
+      const refusal = await releaseRevisionDirectly(connection, identity).catch((error: unknown) => error);
+
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: |-
+      it(
+        'answers a named 500 reporting InvestigationWriteDeadlineExceededError, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline',
+      ...
+      it(
+        "refuses releaseRevisionDirectly's own second call against a hypothesis-revision it already released, " +
+          'with HypothesisRevisionNotDraftAtReleaseError, rather than silently rewriting its already-released state',
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+      DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+      ...
+      connection = createDatabaseConnection(requireDatabaseUrl());
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+      DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: "requireDatabaseUrl, lines 27-33"
+    evidence: |-
+      function requireDatabaseUrl(): string {
+        const url = process.env.DATABASE_URL;
+        if (!url) {
+          throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+        }
+        return url;
+      }
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "the single shared connection declared at module scope and reused throughout (lines 376-388)"
+    evidence: |-
+      let connection: DatabaseConnection;
+      let fixture: IFixture;
+
+      beforeAll(async () => {
+        connection = createDatabaseConnection(requireDatabaseUrl());
+        fixture = freshFixture();
+        await seedFixture(connection, fixture);
+      });
+looked_past: >-
+  The Proxy-based delayed-connection wrapper (wrapClient, delayedConnect, createDelayingConnection)
+  and the test-only timing constants (WRITE_DELAY_MS, CLEANUP_WAIT_MS) are engineering mechanism
+  with no domain-fact content of their own, so they are left to a code-quality reading rather than
+  reported here.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - rules/investigation/an-answer-arrives-within-the-declared-deadline

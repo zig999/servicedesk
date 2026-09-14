@@ -1,0 +1,42 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: >-
+      const STORE_WIRING_FACTORY_FILES = [
+        'case-store.factory.ts',
+        'glossary.factory.ts',
+        'capability-registry.factory.ts',
+        'investigation-store.factory.ts',
+        'case-query.factory.ts',
+        'diagnose.factory.ts',
+        'production-diagnose.factory.ts',
+      ];
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      POOL_SIZE: '3',
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      POOL_SIZE: '3',
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: >-
+      the assertion in "createDiagnoseHttpServer's own exported function takes exactly one
+      parameter, env, and builds its one connection from env.DATABASE_URL alone, naming no
+      data-directory field of Env"
+    evidence: >-
+      expect(source).toMatch(/export async function createDiagnoseHttpServer\(\s*env:\s*Env\s*\)/);
+      expect(source).toMatch(/createDatabaseConnection\(\s*env\.DATABASE_URL\s*(,[^)]*)?\)/);
+      expect(source).not.toMatch(/DataDirectory/i);
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the leaf-factory-signature assertions and the "no store-wiring factory's own source declares
+      a data-directory parameter or field, anywhere" test
+    evidence: >-
+      expect(parameters).toMatch(/:\s*DatabaseConnection\b/);
+      expect(parameters).not.toMatch(/DataDirectory/i);
+looked_past: >-
+  The hardcoded file-name lists (REMOVED_MODULE_BASENAMES, LEAF_FACTORY_FILES,
+  STORE_WIRING_FACTORY_FILES) and the recursive directory-walk helper are structural test
+  scaffolding, not domain facts, so their duplication/verbosity is a code-review concern rather
+  than a conformance one.

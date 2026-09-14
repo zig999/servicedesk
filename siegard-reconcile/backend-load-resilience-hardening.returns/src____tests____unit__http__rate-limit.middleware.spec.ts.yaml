@@ -1,0 +1,37 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the test suite for `createRateLimitHook` in
+      src/src/__tests__/unit/http/rate-limit.middleware.spec.ts — verifying the 429 refusal past a
+      configured threshold, the Retry-After value, per-source-IP counting, and independent counting
+      per route (per hook instance)
+    evidence: >-
+      expect(over.statusCode).toBe(429); ... expect(over.headers['retry-after']).toBe('10'); ...
+      "enforces the threshold each hook was constructed with: one route refuses at its own boundary
+      while a route built with a higher threshold does not" ... "does not refuse, on a second hook's
+      own route, a source address already refused by a first hook built separately"
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to a connection pool, pool bounds, or configuration of
+      simultaneous connections, idle timeout or statement timeout; it only imports and exercises
+      createRateLimitHook from rate-limit.middleware.js.
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      The file contains no assertion about integer, zero or negative pool-bound values; its only
+      numeric parameters are maxRequestsPerWindow and windowMs passed to createRateLimitHook.
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to database provisioning or a connection URL; it builds a
+      Fastify app with an in-memory rate-limit hook only.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to persistence, records, or a relational store; it tests only
+      the rate-limit hook's in-memory counting behavior.
+looked_past: >-
+  The hook's fixed-window reset strategy and its Map-based per-source-IP storage are an
+  implementation choice the tests exercise structurally; whether that shape is the best design is
+  a code-review concern, not a domain-fact conformance question, so it is not reported here.

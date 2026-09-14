@@ -1,0 +1,34 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the two `it` blocks, via `sendRequests(app, { request: DIAGNOSE_REQUEST, count: REQUESTS_WITHIN_LIMIT + 1,
+      remoteAddress: OVER_LIMIT_ADDRESS })` followed by requests on the other two routes and on a second
+      remoteAddress, asserting `expect(onOtherRoutes.map((response) => response?.statusCode)).toEqual([200, 200])`
+      and `expect(forSecondAddress.map((response) => response?.statusCode)).toEqual([200, 200, 200])`
+    evidence: >-
+      "await sendRequests(app, { request: DIAGNOSE_REQUEST, count: REQUESTS_WITHIN_LIMIT + 1, remoteAddress:
+      OVER_LIMIT_ADDRESS });" and "expect(onOtherRoutes.map((response) => response?.statusCode)).toEqual([200, 200]);"
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to a connection pool, any pool bound, or configuration of one; it only
+      builds a Fastify app from the diagnose, simulate-case and simulate-hypothesis route plugins.
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to pool bound values, integer validation, or startup refusal; its only
+      subject is per-route, per-address rate-limit independence.
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to a database connection URL or database provisioning; all dependencies
+      are constructed as in-memory vi.fn() mocks (e.g. "caseQuery: freshCaseQuery()").
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      The file contains no reference to persistence or a relational store; `readCase`, `runDiagnose`,
+      `runSimulate` and `runSimulateHypothesis` are all mocked with `vi.fn().mockResolvedValue(...)`.
+looked_past: >-
+  The test does not itself assert the 429/Retry-After half of the rate-limit constraint's fitness criterion
+  (it only exercises the cross-route/cross-caller independence half), which is a scope question for whoever
+  reads the suite as a whole rather than a conformance finding against this file.

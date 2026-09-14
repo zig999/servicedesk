@@ -1,0 +1,42 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: |-
+      import { createDatabaseConnection, type IDatabaseConnectionPoolOptions } from '../../../persistence/database-connection.js';
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: |-
+      the mapping assertions for maxConnections/idleTimeoutMs/statementTimeoutMs (lines 46-62) and the no-hardcoded-literal assertion for those same three options (lines 64-70)
+    evidence: |-
+      expect(poolMock).toHaveBeenCalledWith(expect.objectContaining({ max: A_MAX_CONNECTIONS }));
+      ...
+      expect(MAX_CONNECTIONS_NUMERIC_LITERAL.test(source)).toBe(false);
+      expect(IDLE_TIMEOUT_NUMERIC_LITERAL.test(source)).toBe(false);
+      expect(STATEMENT_TIMEOUT_NUMERIC_LITERAL.test(source)).toBe(false);
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      const SOME_POOL_OPTIONS: IDatabaseConnectionPoolOptions = {
+        maxConnections: A_MAX_CONNECTIONS,
+        idleTimeoutMs: AN_IDLE_TIMEOUT_MS,
+        statementTimeoutMs: A_STATEMENT_TIMEOUT_MS,
+      };
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: |-
+      the connectionString-only construction assertion (lines 39-44) and the literal-endpoint absence assertions (lines 72-94)
+    evidence: |-
+      expect(poolMock).toHaveBeenCalledWith({ connectionString: A_CONNECTION_URL });
+      ...
+      expect(EMBEDDED_CREDENTIAL_LITERAL.test(source)).toBe(false);
+      ...
+      expect(source).not.toMatch(/localhost/i);
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: |-
+      the single-construction assertion (lines 96-102)
+    evidence: |-
+      const poolConstructions = source.match(/new Pool\(/g) ?? [];
+
+        expect(poolConstructions).toHaveLength(1);
+looked_past: >-
+  the regexes guarding against hardcoded ports, IPv4 hosts, embedded credentials and 'localhost'
+  (lines 23-33, 72-94) are a testing technique in service of the externally-provisioned node
+  rather than a domain fact of their own, and I did not report them as such.

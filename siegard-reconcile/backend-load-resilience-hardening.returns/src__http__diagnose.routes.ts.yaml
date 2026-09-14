@@ -1,0 +1,73 @@
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: >-
+      the diagnoseHandler function (lines 23-35): it awaits the assessment and sends it back
+      within the same request-response cycle, with no job, queue or polling construct anywhere
+      in the file
+    evidence: |-
+      const assessment = await handleDiagnoseRequest(dependencies, parsed.data);
+        return reply.code(200).send(assessment);
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the onRequest hook registered in createDiagnoseRoutesPlugin (lines 12-18), configured with
+      the module-level constants at lines 7-8
+    evidence: |-
+      const RATE_LIMIT_MAX_REQUESTS_PER_MINUTE = 10;
+      const RATE_LIMIT_WINDOW_MS = 60_000;
+      ...
+      createRateLimitHook({
+            maxRequestsPerWindow: RATE_LIMIT_MAX_REQUESTS_PER_MINUTE,
+            windowMs: RATE_LIMIT_WINDOW_MS,
+          }),
+  - node: contracts/investigation/diagnosis
+    held_at: >-
+      the POST /v1/diagnose registration and its handler's response (lines 19 and 33-34): body
+      validated against diagnoseRequestSchema, then the assessment sent back as the response
+    evidence: |-
+      app.post(`${API_PREFIX}/diagnose`, (request, reply) => diagnoseHandler(dependencies, request, reply));
+      ...
+      const assessment = await handleDiagnoseRequest(dependencies, parsed.data);
+      return reply.code(200).send(assessment);
+  - node: contracts/system/guided-diagnosis
+    held_at: nowhere
+    evidence: >-
+      the whole diagnoseHandler only parses the body, calls handleDiagnoseRequest and forwards
+      whatever it returns as `assessment`; none of the capability's own terms — outcome,
+      referral, text, degraded, deadline — appear anywhere in this file, so what is exposed here
+      is the endpoint wiring and not the capability's content
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: |-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from './diagnose.controller.js';
+      import { diagnoseRequestSchema } from './dto/diagnose.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from './diagnose.controller.js';
+      import { diagnoseRequestSchema } from './dto/diagnose.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: |-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from './diagnose.controller.js';
+      import { diagnoseRequestSchema } from './dto/diagnose.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from './diagnose.controller.js';
+      import { diagnoseRequestSchema } from './dto/diagnose.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+looked_past: >-
+  The concrete 429/Retry-After enforcement lives in rate-limit.middleware.ts and the exact input
+  field shape (case, subject, narrative, requester, optional ticket reference) lives in
+  dto/diagnose.dto.ts and diagnose.controller.ts — both outside this file set, so I did not
+  judge them here; I also noticed the hardcoded VALIDATION_ERROR response shape matches
+  constraints/a-malformed-request-is-refused-with-a-validation-error (a node outside my set,
+  opened only to confirm attribution, with no discrepancy found), which is a different judgment
+  than a code-quality read of this small routing file.

@@ -1,0 +1,47 @@
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      the three `DATABASE_POOL_*` fields in the zod schema, each declaring a default
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+      DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: >-
+      the `DATABASE_URL` field, read only from environment configuration
+    evidence: >-
+      DATABASE_URL: z.string().min(1),
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: >-
+      the `.int().positive()` validators on the three pool-bound fields, combined with
+      `loadEnv`'s refusal to return on a failed parse
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+      DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+      ...
+      const parsed = envSchema.safeParse(source);
+        if (!parsed.success) {
+          const issues = parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+          throw new InvalidEnvironmentError(issues);
+        }
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the schema declares exactly one connection field, `DATABASE_URL: z.string().min(1),`, and
+      no field or branch in `envSchema` states that all records land in one store or that no
+      record is held in a file — the file only shapes configuration, it does not declare the
+      persistence behavior the node describes
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: >-
+      the full `envSchema` object (PORT, DATABASE_URL, EVALUATOR_MODEL, EVALUATOR_MAX_TOKENS,
+      CONSOLIDATOR_MODEL, CONSOLIDATOR_MAX_TOKENS, POOL_SIZE, DEFAULT_CONSOLIDATION_REGISTER,
+      PROMPT_VERSION, PAGINATION_DEFAULT_LIMIT, PAGINATION_MAX_LIMIT, and the three
+      DATABASE_POOL_* fields) carries no field for a request rate, a window or a per-route
+      limit; `env.ts` has no relation to route rate limiting
+looked_past: >-
+  the `POOL_SIZE` field (line 12, no default, used elsewhere as evaluator/consolidator runner
+  concurrency rather than the database connection pool) and the unrelated EVALUATOR_*,
+  CONSOLIDATOR_*, PROMPT_VERSION and PAGINATION_* fields are outside the five nodes under
+  review and are not judged here.

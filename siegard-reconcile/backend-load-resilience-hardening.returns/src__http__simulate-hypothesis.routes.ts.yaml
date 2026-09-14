@@ -1,0 +1,63 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the `onRequest` hook registration, which wires the shared rate-limit
+      factory with this route's own max-per-window and window-length values
+    evidence: >-
+      const RATE_LIMIT_MAX_REQUESTS_PER_MINUTE = 10;
+      const RATE_LIMIT_WINDOW_MS = 60_000;
+      ...
+      app.addHook(
+        'onRequest',
+        createRateLimitHook({
+          maxRequestsPerWindow: RATE_LIMIT_MAX_REQUESTS_PER_MINUTE,
+          windowMs: RATE_LIMIT_WINDOW_MS,
+        }),
+      );
+  - node: contracts/investigation/case-simulation
+    held_at: >-
+      the POST route registration naming the operation's own path and
+      dispatching to the controller that runs the narrowed, no-outcome,
+      no-persistence collection the node describes; this file itself decides
+      none of that behavior, only the wiring to it
+    evidence: >-
+      app.post(`${API_PREFIX}/simulate/hypothesis`, (request, reply) => simulateHypothesisHandler(dependencies, request, reply));
+      ...
+      const result = await handleSimulateHypothesisRequest(dependencies, parsed.data);
+      return reply.code(200).send(result);
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
+      import { simulateHypothesisRequestSchema } from './dto/simulate-hypothesis.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
+      import { simulateHypothesisRequestSchema } from './dto/simulate-hypothesis.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: >-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
+      import { simulateHypothesisRequestSchema } from './dto/simulate-hypothesis.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
+      import { simulateHypothesisRequestSchema } from './dto/simulate-hypothesis.dto.js';
+      import { createRateLimitHook } from './rate-limit.middleware.js';
+looked_past: >-
+  The route's own 400 handling (fixed VALIDATION_ERROR shape, message naming "the request body")
+  duplicates a pattern that a candidate node (constraints/a-malformed-request-is-refused-with-a-validation-error)
+  says should be stated once for the whole surface, and the same inline construction likely repeats across
+  the other route files; the content matches that node exactly, so this is a style/duplication question for
+  another pass rather than a domain-fact departure this one reports.
+candidates_opened:
+  - constraints/a-malformed-request-is-refused-with-a-validation-error

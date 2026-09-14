@@ -1,0 +1,104 @@
+findings:
+  - file: src/__tests__/integration/factories/diagnose-server.factory.spec.ts
+    where: the IInvestigationRow interface, lines 272-281
+    evidence: |-
+      readonly durations_writing: number;
+    cost: >-
+      investigationsFor is a general-purpose reader of the investigations table, not one scoped
+      to runs that reached consolidation; typing durations_writing as an always-present, non-null
+      number tells the next reader of this row shape that writing is unconditionally there, so a
+      caller building on this same type for a run that never reaches consolidation — where the
+      column is actually absent — reads a shape that promises a value the specification says is
+      never recorded for that run, and looks to this type rather than to
+      domain/investigation/durations for what "writing" means.
+    kind: contradicts
+    correction: >-
+      type durations_writing as optional/nullable (e.g. `number | null` or an optional property),
+      matching the attribute's conditional presence in domain/investigation/durations, which lists
+      writing without `required: true` unlike collection, judgment and total.
+    node: domain/investigation/durations
+
+read:
+  - node: domain/investigation/durations
+    held_at: >-
+      the IInvestigationRow interface (lines 272-281) and the assertions on the written row
+      (lines 415-420)
+    evidence: |-
+      expect(written?.durations_total).toBeGreaterThanOrEqual(
+        (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
+      );
+  - node: domain/knowledge/hypothesis-revision
+    held_at: placeFixtureHypotheses and releaseManifestedRevisions (lines 155-190)
+    evidence: |-
+      const revised = await lifecycle.reviseHypothesis({
+        slug: fixture.slug,
+        hypothesis_name: entry.hypothesis_name,
+        criterion: entry.criterion,
+        collects: entry.collects,
+        resolution: entry.resolution,
+        subject: fixture.subject,
+      });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the state assertion at lines 372-373
+    evidence: |-
+      expect(manifestEntries.length).toBeGreaterThan(0);
+      expect(states).toEqual(manifestEntries.map(() => 'released'));
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: nowhere
+    evidence: |-
+      expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+      expect(written?.durations_writing).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+      expect(written?.durations_collection).toBeGreaterThan(0);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the alreadyStored guard and release ordering in insertFixtureCase (lines 192-213)
+    evidence: |-
+      const alreadyStored = await store.assembleVersion(SLUG, VERSION);
+      if (alreadyStored !== undefined) {
+        return;
+      }
+      ...
+      const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+      await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
+      await lifecycle.release(fixture.slug, draft.version);
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: the release ordering in insertFixtureCase (lines 210-212)
+    evidence: |-
+      const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+      await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
+      await lifecycle.release(fixture.slug, draft.version);
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: |-
+      const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+      DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+      DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: |-
+      function requireDatabaseUrl(): string {
+        const url = process.env.DATABASE_URL;
+        if (!url) {
+          throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+        }
+        return url;
+      }
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      seedingConnection = createDatabaseConnection(requireDatabaseUrl());
+      await ensureFixtureSeeded(seedingConnection);
+
+looked_past: >-
+  The repeated shape of insertTerms/deleteTolerantly across many tables and the duplicated
+  read-fixture-then-query pattern in ensureFixtureSeeded/cleanupFixtureSeeded are structural test
+  concerns, not a domain fact the specification does or doesn't hold.

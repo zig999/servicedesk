@@ -1,0 +1,52 @@
+certified:
+  - node: constraints/the-pool-bounds-are-positive-integers
+    state: partial
+    tests:
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: >-
+          refuses a non-integer value for DATABASE_POOL_STATEMENT_TIMEOUT_MS
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: >-
+          refuses a zero value for DATABASE_POOL_IDLE_TIMEOUT_MS
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: >-
+          refuses a negative value for DATABASE_POOL_MAX_CONNECTIONS
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: >-
+          admits a positive integer value for DATABASE_POOL_MAX_CONNECTIONS
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: >-
+          throws InvalidEnvironmentError naming the field when a pool variable is set to a non-numeric value
+    why: >-
+      The fact binds all three bounds against all three rejected shapes, and the offered proof
+      walks only a diagonal of that table: non-integer is exercised on the statement timeout
+      alone, zero on the idle timeout alone, and negative on the maximum connections alone. So
+      the maximum connections stopping its refusal of a non-integer or a zero, the idle timeout
+      stopping its refusal of a non-integer or a negative, and the statement timeout stopping its
+      refusal of a zero or a negative are each a way the fact stops holding with every named test
+      still passing. The admitting half is thinner still: only DATABASE_POOL_MAX_CONNECTIONS is
+      asserted to be an integer greater than zero on a started deployment, so the fitness clause
+      that every value a started deployment holds for the three is a positive integer is
+      unexercised for the idle timeout and the statement timeout. The defaults test ("yields a
+      defaulted value for each of the three pool variables when the existing required-variable
+      fixture names none of them") does not close that gap and is worth naming to a reader who
+      opens the file expecting it to: it asserts only Number.isFinite on each of the three, which
+      holds for 2.5, for 0 and for -1, so a default silently changed to a non-integer, zero or
+      negative value passes it. Finally, the refusal the node states is at startup — the
+      deployment serves no request — whereas every named test asserts only that loadEnv throws
+      InvalidEnvironmentError; nothing in the offered proof binds that throw to a deployment
+      failing to start, so a startup path that caught or bypassed loadEnv would leave the fact
+      broken and the proof green.
+    remainder: testable
+    remainder_why: >-
+      The shape is finite — three named bounds against three rejected value classes plus the
+      admitted one — so the remainder is the rest of that table over the same loadEnv entry
+      point the existing cases already use: for each of DATABASE_POOL_MAX_CONNECTIONS,
+      DATABASE_POOL_IDLE_TIMEOUT_MS and DATABASE_POOL_STATEMENT_TIMEOUT_MS, a source naming a
+      non-integer, a zero and a negative value yields InvalidEnvironmentError whose issues name
+      that field, and a source naming a positive integer yields an Env whose value for that field
+      is an integer greater than zero. The defaults clause closes with the same assertion applied
+      to loadEnv over a source naming none of the three: Number.isInteger and greater than zero
+      for each, in place of Number.isFinite. The startup clause closes with one assertion against
+      the process entry point rather than loadEnv: an environment carrying one out-of-shape bound
+      makes startup fail with the configuration error and bind no listener.

@@ -1,0 +1,68 @@
+findings:
+  - file: src/http/rate-limit.middleware.ts
+    where: refuseOverLimit(), lines 52-56
+    evidence: |-
+      code: 'RATE_LIMIT_EXCEEDED',
+              message: 'too many requests from this source; retry after the given number of seconds',
+              details: { retryAfterSeconds },
+    cost: >-
+      Every other refusal in this build has its caller-facing code and wording decided in a node —
+      VALIDATION_ERROR and INTERNAL_ERROR are named system-wide, and each domain refusal
+      (CapabilityIdentityNotFoundError, CaseNotFoundError, and the rest) is named in its own rule
+      or constraint — but the decision log for both rate-limit constraints (this one and its
+      60-per-minute sibling) stops at "an HTTP 429 response carrying a Retry-After value" and never
+      names an error code or message. RATE_LIMIT_EXCEEDED and its exact wording exist only in this
+      file, so a reader who wants to know what a rate-limited caller is told has nowhere in the
+      specification to find it and would not know the code owns that decision unread.
+    kind: unstated
+    correction: >-
+      Decide the rate-limit refusal's error code, message text and body shape in
+      constraints/the-diagnosis-and-simulation-routes-are-rate-limited (as the sibling
+      the-capability-identity-read-is-rate-limited, VALIDATION_ERROR and INTERNAL_ERROR each
+      already do for their own refusals), then read it from there.
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      createRateLimitHook's returned hook (lines 19-33) and refuseOverLimit (lines 48-58)
+    evidence: |-
+      const sourceIp = request.ip;
+          const window = windows.get(sourceIp);
+          ...
+          window.requestCount += 1;
+          if (window.requestCount > options.maxRequestsPerWindow) {
+            const retryAfterSeconds = computeRetryAfterSeconds(window, now, options.windowMs);
+            await refuseOverLimit(reply, retryAfterSeconds);
+          }
+      ...
+      await reply
+          .header('Retry-After', String(retryAfterSeconds))
+          .code(429)
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      The file's only exports are createRateLimitHook and its two private helpers
+      (pruneExpiredWindows, computeRetryAfterSeconds, refuseOverLimit); none reads a connection
+      pool, a maximum-connections bound, an idle timeout or a statement timeout.
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      Nothing in the file validates or reads any of the three pool bounds; its only numeric
+      option is maxRequestsPerWindow, a rate-limit count rather than a pool bound.
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: >-
+      The file has no import, option or reference naming a database, a connection URL or a
+      provisioning concern; it operates only on an in-memory Map keyed by source IP.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      The rate-limit state lives only in the local `windows` Map inside createRateLimitHook;
+      the file performs no read or write against any store.
+looked_past: >-
+  pruneExpiredWindows scans every tracked IP's window on each request and the counters live only
+  in this process's in-memory Map rather than a shared store — scalability and multi-instance
+  concerns, not domain facts, so they belong to a code-quality pass rather than this one.
+candidates_opened:
+  - constraints/the-capability-identity-read-is-rate-limited
+  - constraints/a-malformed-request-is-refused-with-a-validation-error
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

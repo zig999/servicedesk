@@ -1,0 +1,57 @@
+findings:
+  - file: src/persistence/database-connection.ts
+    where: the optional `poolOptions` parameter and its `undefined` branch, lines 13 and 17-19
+    evidence: |-
+      poolOptions?: IDatabaseConnectionPoolOptions,
+      ...
+      ...(poolOptions === undefined
+            ? {}
+            : {
+    cost: >-
+      When createDatabaseConnection is called with no poolOptions, the Pool is constructed with
+      no `max`, no `idleTimeoutMillis` and no `statement_timeout` at all, so all three bounds fall
+      through to pg's own built-in defaults (driver max 10, driver idle timeout, no statement
+      timeout) rather than to any declared default — exactly the case the constraint calls out by
+      name, and a reader checking this file for "how do the three bounds get their fallback" finds
+      a path that hands the outcome to the driver instead.
+    kind: contradicts
+    node: constraints/the-connection-pool-is-bounded-by-configuration
+    correction: >-
+      make poolOptions (and each of its three fields) required for createDatabaseConnection, so a
+      Pool can never be built without an explicit max/idleTimeoutMillis/statement_timeout — with
+      any "deployment stated none" case resolved to a declared default before this function is
+      called, never inside it.
+
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      the conditional spread that maps poolOptions onto the Pool constructor when poolOptions is
+      provided, lines 17-23 — the only branch where the three bounds actually reach the pool.
+    evidence: |-
+      max: poolOptions.maxConnections,
+      idleTimeoutMillis: poolOptions.idleTimeoutMs,
+      statement_timeout: poolOptions.statementTimeoutMs,
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: the `connectionString` field passed to `new Pool`, line 16, fed from the function's `connectionUrl` parameter
+    evidence: "connectionString: connectionUrl,"
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: the `DatabaseConnection` type alias and the single `Pool` the function constructs, lines 3 and 15
+    evidence: |-
+      export type DatabaseConnection = Pool;
+      ...
+      return new Pool({
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: |-
+      export function createDatabaseConnection(
+        connectionUrl: string,
+        poolOptions?: IDatabaseConnectionPoolOptions,
+      ): DatabaseConnection {
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      readonly maxConnections: number;
+      readonly idleTimeoutMs: number;
+      readonly statementTimeoutMs: number;
+
+looked_past: the conditional-spread construction used to attach the three pool options to the Pool constructor call is an awkward pattern for a simple optional-object merge, but that is a style matter, not a domain fact, so it is not reported.

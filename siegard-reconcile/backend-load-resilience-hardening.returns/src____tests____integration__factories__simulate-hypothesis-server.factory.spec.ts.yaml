@@ -1,0 +1,49 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      nowhere
+    evidence: >-
+      beforeEach(async () => {
+        requester = `simulate-hypothesis-server-factory-requester-${randomUUID()}`;
+        anthropicConstructorMock.mockClear();
+        fetchMock.mockClear();
+        app = await createDiagnoseHttpServer(baseEnv());
+      });
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      baseEnv(), in the DATABASE_POOL_* fields fed to createDiagnoseHttpServer to build the real
+      server and its pool for every test in this file
+    evidence: >-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+          DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+          DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: >-
+      baseEnv(), the same three DATABASE_POOL_* fields, each a positive integer
+    evidence: >-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+          DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+          DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: >-
+      requireDatabaseUrl(), read from process.env.DATABASE_URL and passed as the DATABASE_URL
+      field of baseEnv() and to createDatabaseConnection for the seeding connection
+    evidence: >-
+      const url = process.env.DATABASE_URL;
+        if (!url) {
+          throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+        }
+        return url;
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the single seedingConnection created once in beforeAll and reused for every fixture
+      insert, cleanup delete and the investigation-count assertion
+    evidence: >-
+      seedingConnection = createDatabaseConnection(requireDatabaseUrl());
+looked_past: >-
+  The sequential per-record insert/delete loops in the fixture seeding and cleanup helpers
+  (insertTerms, insertConcepts, insertCapabilities, cleanupGlossaryAndCapabilities) are a
+  performance/style pattern rather than a domain-fact question, so it is left for a different
+  pass.
+candidates_opened:
+  - contracts/investigation/case-simulation

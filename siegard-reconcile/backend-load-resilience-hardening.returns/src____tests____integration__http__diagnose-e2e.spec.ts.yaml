@@ -1,0 +1,39 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY });
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      connection = createDatabaseConnection(requireDatabaseUrl());
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      DATABASE_POOL_MAX_CONNECTIONS: 10,
+      DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: 30_000,
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: the requireDatabaseUrl() function and its use in beforeAll
+    evidence: >-
+      function requireDatabaseUrl(): string {
+        const url = process.env.DATABASE_URL;
+        if (!url) {
+          throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+        }
+        return url;
+      }
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: the store read-back and the connection.query-driven fixture setup/teardown
+    evidence: >-
+      const store = new RelationalInvestigationStore(connection);
+      const stored = await store.read(investigationId as string);
+looked_past: >-
+  the second it() (checking that no file among COMPOSITION_FILES_UNDER_TEST imports @anthropic-ai/sdk) is a
+  code-composition assertion rather than a domain fact tied to any node in this set, so it is left to another
+  judgment.
+candidates_opened:
+  - constraints/diagnosis-answers-synchronously
+  - domain/investigation/durations
+  - contracts/investigation/diagnosis
+  - contracts/system/guided-diagnosis

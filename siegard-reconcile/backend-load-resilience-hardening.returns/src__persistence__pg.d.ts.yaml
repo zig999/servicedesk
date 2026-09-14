@@ -1,0 +1,40 @@
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      the Pool constructor's config type, which declares the three bounds as
+      optional fields rather than required ones
+    evidence: >-
+      max?: number;
+      idleTimeoutMillis?: number;
+      statement_timeout?: number;
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: >-
+      declare module 'pg' {
+        export class Pool { ... }
+        export class PoolClient { ... }
+      }
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      max?: number;
+      idleTimeoutMillis?: number;
+      statement_timeout?: number;
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: >-
+      the Pool constructor config's required connectionString field
+    evidence: 'connectionString: string;'
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      export class Pool {
+        public constructor(config: { connectionString: string; max?: number; idleTimeoutMillis?: number; statement_timeout?: number; });
+        public query<R = Record<string, unknown>>(text: string, params?: readonly unknown[]): Promise<{ rows: R[] }>;
+        public end(): Promise<void>;
+        public connect(): Promise<PoolClient>;
+      }
+looked_past: >-
+  the type declares statement_timeout and idleTimeoutMillis as plain `number` with no integer or
+  positivity constraint at the type level, which is a type-system limitation rather than a stated
+  domain fact, and the enforcement of that constraint belongs to the files that read configuration
+  at runtime (outside this set).

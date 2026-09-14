@@ -64,6 +64,32 @@
       "title": "Parameterized rate-limit hook proof",
       "summary": "Tests createRateLimitHook's per-source-address counting, refusal, Retry-After, independence across constructions and window reset, and confirms the untouched read-capability-by-identity limiter's regression criterion through its own existing suite.",
       "task": "task/route-rate-limiting/parameterized-rate-limit-hook"
+    },
+    {
+      "id": "review/backend-load-resilience-hardening",
+      "kind": "review",
+      "file": "review/backend-load-resilience-hardening.md",
+      "title": "Backend load resilience hardening — review",
+      "summary": "Whether rate limiting on diagnose/simulate-case/simulate-hypothesis and Postgres pool tuning across four tasks prove their criteria, state only what the specification holds, follow the project's own standard, and ran clean.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A non-numeric value for any of the three is refused with the invalid-environment error the schema already raises.",
+        "A source address over the limit on one of the three routes is answered ordinarily on each of the other two within the same window.",
+        "A zero or negative value for any of the three is refused with the invalid-environment error.",
+        "Every default is stated in the schema declaration itself rather than at a reading site.",
+        "None of those three values is written literally in the persistence module.",
+        "The limit on each of the three routes reaches that route's own requests and no request of any other route.",
+        "The pool is constructed with a maximum-connections option equal to the configured value.",
+        "The pool is constructed with a statement-timeout option equal to the configured value.",
+        "The pool is constructed with an idle-timeout option equal to the configured value.",
+        "The threshold and the window a hook counts by come from the arguments its construction was given, not from a constant fixed in the hook's own module.",
+        "The tree holds no assertion that the pool is constructed with the connection string as its only option."
+      ],
+      "findings": 13
     }
   ],
   "edges": [
@@ -156,6 +182,30 @@
       "to": "implementation/route-rate-limiting/parameterized-rate-limit-hook",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/backend-load-resilience-hardening",
+      "to": "task/route-rate-limiting/parameterized-rate-limit-hook",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/backend-load-resilience-hardening",
+      "to": "task/route-rate-limiting/diagnose-and-simulation-route-limits",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/backend-load-resilience-hardening",
+      "to": "task/database-pool-configuration/pool-settings-in-env-schema",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/backend-load-resilience-hardening",
+      "to": "task/database-pool-configuration/pool-construction-applies-settings",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

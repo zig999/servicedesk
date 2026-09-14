@@ -1,0 +1,49 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the three `it` blocks (lines 97-121): the within-limit assertion, the over-limit 429
+      assertion, and the Retry-After assertion
+    evidence: |-
+      expect(responses.map((response) => response.statusCode)).toEqual(Array(REQUESTS_WITHIN_LIMIT).fill(200));
+      expect(over.statusCode).toBe(429);
+      expect(over.headers['retry-after']).toBe('60');
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: |-
+      import Fastify, { type FastifyInstance, type LightMyRequestResponse } from 'fastify';
+      import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+      import type { Case } from '../../../case/case.js';
+      import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
+      import type { IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
+      import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
+      import type { SimulateHypothesisRequestDto } from '../../../http/dto/simulate-hypothesis.dto.js';
+      import type { SimulateHypothesisControllerDependencies } from '../../../http/simulate-hypothesis.controller.js';
+      import { createSimulateHypothesisRoutesPlugin } from '../../../http/simulate-hypothesis.routes.js';
+      import type { SimulateHypothesisPipelineResult } from '../../../investigation/simulate-hypothesis-pipeline.js';
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      import Fastify, { type FastifyInstance, type LightMyRequestResponse } from 'fastify';
+      import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: |-
+      const dependencies: SimulateHypothesisControllerDependencies = {
+        caseQuery,
+        glossary,
+        runSimulateHypothesis: vi.fn().mockResolvedValue(minimalHypothesisSimulationResult()),
+      };
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      const caseQuery: ICaseQuery = {
+        readCase: vi.fn().mockResolvedValue(readCaseResult),
+        listCases: vi.fn(),
+        listCaseVersions: vi.fn(),
+        listHypotheses: vi.fn(),
+        listHypothesisRevisions: vi.fn(),
+      };
+looked_past: >-
+  The file mocks caseQuery, glossary and the simulation pipeline rather than exercising real
+  persistence or pool wiring, which is expected for a unit spec of this route and is a test-design
+  question rather than a specification-conformance one.

@@ -1,0 +1,111 @@
+findings:
+  - file: src/__tests__/unit/http/diagnose.routes.spec.ts
+    where: >-
+      the test "keeps refusing the same source address past its own ten-request window even once
+      the wall clock crosses into the next calendar minute, never resetting the count on the
+      clock face alone" (lines 261-271)
+    evidence: |-
+      it("keeps refusing the same source address past its own ten-request window even once the wall clock crosses into the next calendar minute, never resetting the count on the clock face alone", async () => {
+        const built = buildRateLimitTestApp();
+        app = built.app;
+        vi.setSystemTime(new Date('2024-01-01T00:00:55.000Z'));
+
+        await sendDiagnoseRequests(app, REQUESTS_WITHIN_RATE_LIMIT, RATE_LIMIT_SOURCE_IP);
+        vi.setSystemTime(new Date('2024-01-01T00:01:05.000Z'));
+        const [over] = await sendDiagnoseRequests(app, 1, RATE_LIMIT_SOURCE_IP);
+
+        expect(over.statusCode).toBe(429);
+      });
+    cost: >-
+      Whether the ten-request count is a rolling window measured from each request or a bucket
+      that resets at each calendar-minute boundary decides exactly when a caller who has been
+      refused may resume being served — the same thing the node's own Retry-After value exists to
+      tell the caller. That choice is pinned only by this test (and whatever counting the
+      middleware it drives happens to implement); a reader checking the specification for how the
+      one-minute window is measured finds only "at most 10 requests per minute" and has to infer
+      the rolling-window behavior from the test suite instead of from a decided node.
+    kind: unstated
+    correction: >-
+      constraints/the-diagnosis-and-simulation-routes-are-rate-limited (or a decision-log entry
+      against it) would need to state that the per-route count is a rolling window measured from
+      each request rather than a fixed calendar-minute bucket.
+    node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the four `it(...)` blocks at lines 232, 241, 251 and 261 — the first ten requests from one
+      source address within a minute answered 200, the 11th answered 429, the 429 carrying a
+      Retry-After header, and the refusal persisting across a calendar-minute crossing
+    evidence: |-
+      it('answers every one of the first 10 requests within a minute from one source address with its ordinary 200 response, none of them refused', async () => {
+        ...
+        expect(responses.map((response) => response.statusCode)).toEqual(Array(REQUESTS_WITHIN_RATE_LIMIT).fill(200));
+      });
+
+      it('answers the 11th request within one minute from that same source address with HTTP 429', async () => {
+        ...
+        expect(over.statusCode).toBe(429);
+      });
+
+      it('names, in that 429 response, a Retry-After value the caller may retry after', async () => {
+        ...
+        expect(over.headers['retry-after']).toBe('60');
+      });
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: |-
+      function buildTestApp(
+        pinnedCase: Case,
+        requirementsResult: CaseInputRequirementsResult = noRequirements(),
+      ): { app: FastifyInstance; readCase: ReadCaseMock; runDiagnose: RunDiagnoseMock } {
+        const readCase: ReadCaseMock = vi.fn().mockResolvedValue({ case: pinnedCase });
+        const runDiagnose: RunDiagnoseMock = vi.fn();
+        ...
+        const app = Fastify();
+        app.setErrorHandler(handleUnexpectedError);
+        app.register(createDiagnoseRoutesPlugin(dependencies));
+        return { app, readCase, runDiagnose };
+      }
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: |-
+      function buildTestApp(
+        pinnedCase: Case,
+        requirementsResult: CaseInputRequirementsResult = noRequirements(),
+      ): { app: FastifyInstance; readCase: ReadCaseMock; runDiagnose: RunDiagnoseMock } {
+        const readCase: ReadCaseMock = vi.fn().mockResolvedValue({ case: pinnedCase });
+        const runDiagnose: RunDiagnoseMock = vi.fn();
+        ...
+      }
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: |-
+      const caseQuery: ICaseQuery = {
+        readCase,
+        listCases: vi.fn(),
+        listCaseVersions: vi.fn(),
+        listHypotheses: vi.fn(),
+        listHypothesisRevisions: vi.fn(),
+      };
+      const caseInputRequirementsQuery: ICaseInputRequirementsQuery = {
+        readCaseInputRequirements: vi.fn().mockResolvedValue(requirementsResult),
+      };
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      const caseQuery: ICaseQuery = {
+        readCase,
+        listCases: vi.fn(),
+        listCaseVersions: vi.fn(),
+        listHypotheses: vi.fn(),
+        listHypothesisRevisions: vi.fn(),
+      };
+      const caseInputRequirementsQuery: ICaseInputRequirementsQuery = {
+        readCaseInputRequirements: vi.fn().mockResolvedValue(requirementsResult),
+      };
+looked_past: >-
+  The 409/200/422 assertions over case-version state, the response DTO's four fields and
+  subject-vs-case-input-requirements coverage (lines 95-201) test contracts this file's node set
+  does not include — contracts/investigation/diagnosis, contracts/system/guided-diagnosis and
+  contracts/knowledge/case-input-requirements are bound to src/http/diagnose.routes.ts, not to the
+  five constraints delegated here, so they are left for whichever pass answers for those nodes.

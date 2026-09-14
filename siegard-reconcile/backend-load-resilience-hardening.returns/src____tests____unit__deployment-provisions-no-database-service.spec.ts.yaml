@@ -1,0 +1,34 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: >-
+      it('the tree contains no Dockerfile, docker-compose file, Terraform script or Procfile provisioning a
+      database service for the deployment' ...); it('holds no connection URL literal in any file the deployment
+      ships...'); it('builds every connection the deployment opens from env.DATABASE_URL...'); it('constructs the
+      pg Pool in exactly one place across the entire deployed tree...') — the file's four assertions are all about
+      database provisioning and connection construction; none exercises a request rate, a 429 response or a
+      Retry-After value.
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      expect(poolConstructionCount).toBe(1); — the only pool-related assertion in the file counts occurrences of
+      `new Pool(` in source text; nothing here opens a pool or reads a max-connections, idle-timeout or
+      statement-timeout value, configured or defaulted.
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      expect(poolConstructionCount).toBe(1); — the file asserts a construction-site count only; it states nothing
+      about a bound's shape, and never exercises a non-integer, zero or negative value or a startup refusal.
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: >-
+      the three `it` blocks at lines 36, 66 and 77 — findProvisioningArtifacts scanning for Dockerfile/docker-compose/
+      Terraform/Procfile, the connection-URL-literal scan, and the createDatabaseConnection argument check.
+    evidence: >-
+      expect(artifacts).toEqual([]); ... expect(offenders).toEqual([]); ... expect([...new
+      Set(constructionArguments)].sort()).toEqual(EXPECTED_CONNECTION_FACTORY_CALL_ARGUMENTS);
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: the `it` block at line 89, "constructs the pg Pool in exactly one place across the entire deployed tree"
+    evidence: expect(poolConstructionCount).toBe(1);
+looked_past: >-
+  findProvisioningArtifacts and everyDeployedSourceFile duplicate the same recursive-directory-walk shape with
+  slightly different skip rules, which is a code-quality overlap rather than a domain fact.

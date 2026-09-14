@@ -1,0 +1,45 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      nowhere — this file exercises only `loadEnv`, never a route or a rate-limit
+      mechanism
+    evidence: >-
+      import { loadEnv } from '../../../config/env.js';
+      import { InvalidEnvironmentError } from '../../../errors/invalid-environment.error.js';
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      the three pool-variable tests, lines 99-119
+    evidence: >-
+      expect(Number.isFinite(env.DATABASE_POOL_MAX_CONNECTIONS)).toBe(true);
+      expect(Number.isFinite(env.DATABASE_POOL_IDLE_TIMEOUT_MS)).toBe(true);
+      expect(Number.isFinite(env.DATABASE_POOL_STATEMENT_TIMEOUT_MS)).toBe(true);
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: >-
+      the poolBoundCases table and its it.each block, lines 148-185
+    evidence: >-
+      { description: 'refuses a non-integer value', field: 'DATABASE_POOL_STATEMENT_TIMEOUT_MS', value: '2.5', valid: false },
+      { description: 'refuses a zero value', field: 'DATABASE_POOL_IDLE_TIMEOUT_MS', value: '0', valid: false },
+      { description: 'refuses a negative value', field: 'DATABASE_POOL_MAX_CONNECTIONS', value: '-5', valid: false },
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: >-
+      the DATABASE_URL tests, lines 63-97
+    evidence: >-
+      expect(env.DATABASE_URL).toBe('postgres://configured-connection-url');
+      ...
+      expect(issues.some((issue) => issue.includes('DATABASE_URL'))).toBe(true);
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the retired-variable tests, lines 48-61
+    evidence: >-
+      expect(env).not.toHaveProperty('CASE_DATA_DIRECTORY');
+      expect(env).not.toHaveProperty('GLOSSARY_DATA_DIRECTORY');
+      expect(env).not.toHaveProperty('CAPABILITY_DATA_DIRECTORY');
+      expect(env).not.toHaveProperty('INVESTIGATION_DATA_DIRECTORY');
+looked_past: >-
+  The PORT default-to-3000 tests (lines 20-30) and the "names every missing field
+  together" error-aggregation test (lines 32-46) assert implementation conveniences
+  of the env loader — a listen-port default and a validation-error reporting style —
+  neither of which is a business fact any node in this set or the wider specification
+  addresses; nothing in the file states a domain value, threshold or rule against
+  either that the specification holds differently or omits, so they are left to
+  whatever judgment weighs implementation choices rather than domain conformance.

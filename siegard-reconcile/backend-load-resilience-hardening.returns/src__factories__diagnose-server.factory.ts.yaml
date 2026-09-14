@@ -1,0 +1,58 @@
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      function databasePoolOptionsFrom, which assembles the three bounds solely from
+      configuration and passes them to createDatabaseConnection
+    evidence: >-
+      function databasePoolOptionsFrom(env: Env): IDatabaseConnectionPoolOptions {
+        return {
+          maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS,
+          idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+          statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS,
+        };
+      }
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: the createDatabaseConnection call, which takes the URL from configuration and constructs no service
+    evidence: 'const connection = createDatabaseConnection(env.DATABASE_URL, poolOptions);'
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      createDiagnoseHttpServer, which builds one connection and threads it into every
+      query and runner the server wires
+    evidence: >-
+      const connection = createDatabaseConnection(env.DATABASE_URL, poolOptions);
+      const observationSource = new HttpDeclarativeObservationSource({
+        capabilities: createCapabilityQuery(connection),
+        connectorConfigurations: createConnectorConfigurationRegistry(connection),
+      });
+      const caseQuery = createCaseQuery(connection);
+      const caseInputRequirementsQuery = createCaseInputRequirementsQuery(connection);
+  - node: contracts/knowledge/case-input-requirements
+    held_at: the wiring of caseInputRequirementsQuery into the diagnose controller's dependencies
+    evidence: >-
+      const caseInputRequirementsQuery = createCaseInputRequirementsQuery(connection);
+      const runDiagnose = createProductionDiagnoseRunner(runnerDependencies(env, connection, observationSource));
+      const diagnose: DiagnoseControllerDependencies = {
+        caseQuery,
+        caseInputRequirementsQuery,
+        runDiagnose,
+        model: env.EVALUATOR_MODEL,
+        promptVersion: env.PROMPT_VERSION,
+      };
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: nowhere
+    evidence: >-
+      return buildApp(buildAppDependencies({ env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis }));
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      function databasePoolOptionsFrom(env: Env): IDatabaseConnectionPoolOptions {
+        return {
+          maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS,
+          idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+          statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS,
+        };
+      }
+looked_past: >-
+  runnerDependencies, simulationRunnerDependencies and hypothesisSimulationRunnerDependencies
+  repeat the same four evaluator/consolidator fields across three near-identical functions,
+  which is a duplication concern rather than a domain fact.

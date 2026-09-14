@@ -1,0 +1,35 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the three `it` blocks, lines 108-132 — asserting 200 for the first 10 requests, 429 for the
+      11th, and a Retry-After header on the refusal
+    evidence: >-
+      expect(responses.map((response) => response.statusCode)).toEqual(Array(REQUESTS_WITHIN_LIMIT).fill(200));
+      ... expect(over.statusCode).toBe(429); ... expect(over.headers['retry-after']).toBe('60');
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: nowhere
+    evidence: >-
+      const dependencies: SimulateCaseControllerDependencies = { caseQuery, glossary, runSimulate:
+      vi.fn().mockResolvedValue(minimalSimulationResult()) }; — every dependency is a test double,
+      the file opens no connection pool
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: nowhere
+    evidence: >-
+      const dependencies: SimulateCaseControllerDependencies = { caseQuery, glossary, runSimulate:
+      vi.fn().mockResolvedValue(minimalSimulationResult()) }; — no pool configuration is read or
+      constructed in this file
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: nowhere
+    evidence: >-
+      const caseQuery: ICaseQuery = { readCase: vi.fn().mockResolvedValue(readCaseResult), ... };
+      — the case query port is mocked, no database connection is opened
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      const caseQuery: ICaseQuery = { readCase: vi.fn().mockResolvedValue(readCaseResult), ... };
+      — no store is read from or written to; the file exercises only the HTTP route against mocked
+      ports
+looked_past: >-
+  the node's fitness criterion also calls for a caller over the limit on one route to be answered
+  ordinarily on another route, which this file (scoped to simulate-case alone) does not exercise —
+  that is a coverage question for another file/pass, not a domain-fact discrepancy in this one.
