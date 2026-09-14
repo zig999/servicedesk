@@ -313,7 +313,7 @@ let requester: string;
 
 beforeAll(async () => {
   vi.stubGlobal('fetch', fetchMock);
-  seedingConnection = createDatabaseConnection(requireDatabaseUrl());
+  seedingConnection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
   await ensureFixtureSeeded(seedingConnection);
 });
 

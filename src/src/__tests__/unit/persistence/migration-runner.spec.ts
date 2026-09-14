@@ -22,6 +22,8 @@ const BOOKKEEPING_EXISTENCE_QUERY_MARKER = 'to_regclass';
 
 const RAN_MARKER_PREFIX = "SELECT 'ran ";
 
+const A_PLACEHOLDER_POOL_OPTIONS = { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 };
+
 afterEach(() => {
   queryMock.mockReset();
   poolMock.mockClear();
@@ -40,7 +42,7 @@ it('applies migration files in ascending filename order, regardless of the order
     }
     return { rows: [] };
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 
@@ -63,7 +65,7 @@ it('sends no further statement once every migration file is already recorded as 
     }
     throw new Error(`this test expected no other statement, but received: ${text}`);
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 
@@ -81,7 +83,7 @@ it('executes the real statement in a file whose text is entirely comment lines a
     }
     return { rows: [] };
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 
@@ -102,7 +104,7 @@ it('sends a migration file holding no comment line and no blank line to the conn
     }
     return { rows: [] };
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 
@@ -120,7 +122,7 @@ it('drops only the whole comment line inside a multi-line statement, leaving eve
     }
     return { rows: [] };
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 
@@ -140,7 +142,7 @@ it('strips a comment block sitting between two statements, not only a comment bl
     }
     return { rows: [] };
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 
@@ -161,7 +163,7 @@ it("still records the bookkeeping row naming this file's own filename, after its
     }
     return { rows: [] };
   });
-  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url', A_PLACEHOLDER_POOL_OPTIONS);
 
   await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
 

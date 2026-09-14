@@ -45,8 +45,7 @@ const POOL_CONSTRUCTION_PATTERN = /new Pool\(/g;
 const SUITE_HARNESS_BASENAME = 'vitest-global-setup.ts';
 
 const EXPECTED_CONNECTION_FACTORY_CALL_ARGUMENTS = [
-  'connectionUrl: string, poolOptions?: IDatabaseConnectionPoolOptions,',
-  'env.DATABASE_URL',
+  'connectionUrl: string, poolOptions: IDatabaseConnectionPoolOptions,',
   'env.DATABASE_URL, poolOptions',
 ].sort();
 
@@ -93,4 +92,25 @@ it('constructs the pg Pool in exactly one place across the entire deployed tree'
   }
 
   expect(poolConstructionCount).toBe(1);
+});
+
+const PRODUCTION_POOL_OPTIONS_CALLER_MARKER = /createDatabaseConnection\(\s*env\.DATABASE_URL\s*,\s*poolOptions\s*\)/;
+const MAX_CONNECTIONS_LITERAL_ASSIGNMENT = /\bmaxConnections:\s*\d/;
+const IDLE_TIMEOUT_MS_LITERAL_ASSIGNMENT = /\bidleTimeoutMs:\s*\d/;
+const STATEMENT_TIMEOUT_MS_LITERAL_ASSIGNMENT = /\bstatementTimeoutMs:\s*\d/;
+
+it('builds every production caller\'s poolOptions from a numeric literal nowhere in that caller\'s own file', async () => {
+  const offenders: string[] = [];
+  for await (const { path, source } of everyDeployedSourceFile(TARGET_SOURCE_ROOT)) {
+    if (!PRODUCTION_POOL_OPTIONS_CALLER_MARKER.test(source)) continue;
+    if (
+      MAX_CONNECTIONS_LITERAL_ASSIGNMENT.test(source) ||
+      IDLE_TIMEOUT_MS_LITERAL_ASSIGNMENT.test(source) ||
+      STATEMENT_TIMEOUT_MS_LITERAL_ASSIGNMENT.test(source)
+    ) {
+      offenders.push(path);
+    }
+  }
+
+  expect(offenders).toEqual([]);
 });

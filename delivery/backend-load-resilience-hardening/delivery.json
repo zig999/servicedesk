@@ -18,6 +18,14 @@
       "task": "task/database-pool-configuration/pool-settings-in-env-schema"
     },
     {
+      "id": "implementation/pool-options-required-corrective/pool-options-required",
+      "kind": "implementation",
+      "file": "implementation/pool-options-required-corrective/pool-options-required.md",
+      "title": "createDatabaseConnection requires explicit pool options",
+      "summary": "poolOptions is now a mandatory parameter of createDatabaseConnection, the Pool construction reads max/idleTimeoutMillis/statement_timeout unconditionally, and every non-test production caller (the factory, the migration script, the seed script) now supplies it.",
+      "task": "task/pool-options-required-corrective/pool-options-required"
+    },
+    {
       "id": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits",
       "kind": "implementation",
       "file": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits.md",
@@ -48,6 +56,14 @@
       "title": "Pool settings declared in the environment schema — proof",
       "summary": "Four tests added to the existing env.spec.ts prove the six stated criteria and decide constraints/the-pool-bounds-are-positive-integers whole; the pooling clause and the specific default figures are left unproven and named as such.",
       "task": "task/database-pool-configuration/pool-settings-in-env-schema"
+    },
+    {
+      "id": "proof/pool-options-required-corrective/pool-options-required",
+      "kind": "proof",
+      "file": "proof/pool-options-required-corrective/pool-options-required.md",
+      "title": "createDatabaseConnection requires explicit pool options — proof",
+      "summary": "Type-level and unit tests over poolOptions becoming mandatory, plus fixes to every remaining single-argument caller (the shared vitest harness and every affected integration/unit spec) so the tree typechecks and the full suite passes under the new required parameter.",
+      "task": "task/pool-options-required-corrective/pool-options-required"
     },
     {
       "id": "proof/route-rate-limiting/diagnose-and-simulation-route-limits",
@@ -136,6 +152,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/pool-options-required-corrective/pool-options-required",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/pool-options-required-corrective/pool-options-required",
+      "to": "task/pool-options-required-corrective/pool-options-required",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/route-rate-limiting/diagnose-and-simulation-route-limits",
       "to": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
       "kind": "encodes",
@@ -168,6 +196,12 @@
     {
       "from": "proof/database-pool-configuration/pool-settings-in-env-schema",
       "to": "implementation/database-pool-configuration/pool-settings-in-env-schema",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/pool-options-required-corrective/pool-options-required",
+      "to": "implementation/pool-options-required-corrective/pool-options-required",
       "kind": "proves",
       "at": "the path"
     },

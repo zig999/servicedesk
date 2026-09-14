@@ -357,7 +357,7 @@ let getCapturedId: () => string | undefined;
 let originalAnthropicApiKey: string | undefined;
 
 beforeAll(async () => {
-  connection = createDatabaseConnection(requireDatabaseUrl());
+  connection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
   await ensureFixtureSeeded(connection);
 });
 

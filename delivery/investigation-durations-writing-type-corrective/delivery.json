@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/durations-writing-type-corrective/durations-writing-type-corrective",
+      "kind": "implementation",
+      "file": "implementation/durations-writing-type-corrective/durations-writing-type-corrective.md",
+      "title": "IInvestigationRow's durations_writing retyped to admit null",
+      "summary": "Retypes the integration spec's locally-declared durations_writing field as number | null, matching the production repository's own idiom for the same read-back column.",
+      "task": "task/durations-writing-type-corrective/durations-writing-type-corrective"
+    },
+    {
+      "id": "proof/durations-writing-type-corrective/durations-writing-type-corrective",
+      "kind": "proof",
+      "file": "proof/durations-writing-type-corrective/durations-writing-type-corrective.md",
+      "title": "IInvestigationRow's durations_writing retyped to admit null — proof",
+      "summary": "A type-level test pinning durations_writing's widened type to number | null, with the file's two pre-existing reads left unmodified since both already tolerate the widened type.",
+      "task": "task/durations-writing-type-corrective/durations-writing-type-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/durations-writing-type-corrective/durations-writing-type-corrective",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/durations-writing-type-corrective/durations-writing-type-corrective",
+      "to": "task/durations-writing-type-corrective/durations-writing-type-corrective",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/durations-writing-type-corrective/durations-writing-type-corrective",
+      "to": "implementation/durations-writing-type-corrective/durations-writing-type-corrective",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

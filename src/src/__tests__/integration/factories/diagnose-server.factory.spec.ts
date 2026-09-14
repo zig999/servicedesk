@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, expectTypeOf, it, vi } from 'vitest';
 
 const MOCK_INPUT_TOKENS_PER_CALL = 120;
 const MOCK_OUTPUT_TOKENS_PER_CALL = 45;
@@ -276,7 +276,7 @@ interface IInvestigationRow {
   readonly cost_output_tokens: number;
   readonly durations_collection: number;
   readonly durations_judgment: number;
-  readonly durations_writing: number;
+  readonly durations_writing: number | null;
   readonly durations_total: number;
 }
 
@@ -326,7 +326,7 @@ let requester: string;
 
 beforeAll(async () => {
   vi.stubGlobal('fetch', fetchMock);
-  seedingConnection = createDatabaseConnection(requireDatabaseUrl());
+  seedingConnection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
   await ensureFixtureSeeded(seedingConnection);
 });
 
@@ -418,6 +418,14 @@ it(
     expect(written?.durations_total).toBeGreaterThanOrEqual(
       (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
     );
+  },
+);
+
+it(
+  "types IInvestigationRow's durations_writing to admit null rather than an unconditional number, matching how " +
+    "the production repository's own IInvestigationRow already types this same read-back column",
+  () => {
+    expectTypeOf<IInvestigationRow['durations_writing']>().toEqualTypeOf<number | null>();
   },
 );
 

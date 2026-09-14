@@ -51,7 +51,7 @@ let pool: DatabaseConnection;
 let fixturesWrittenByThisTest: IFixture[] = [];
 
 beforeAll(() => {
-  pool = createDatabaseConnection(requireDatabaseUrl());
+  pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
 });
 
 afterAll(async () => {

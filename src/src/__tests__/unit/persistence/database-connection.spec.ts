@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, expect, it, vi } from 'vitest';
 
@@ -36,11 +37,12 @@ afterEach(() => {
   poolMock.mockClear();
 });
 
-it('builds the pg Pool with exactly the given connection URL as its connectionString, and no other configuration key, when the caller supplies no pool options', () => {
-  createDatabaseConnection(A_CONNECTION_URL);
-
-  expect(poolMock).toHaveBeenCalledTimes(1);
-  expect(poolMock).toHaveBeenCalledWith({ connectionString: A_CONNECTION_URL });
+it('refuses, at the type level, a call naming only a connection URL: poolOptions is a required parameter', () => {
+  function callWithNoPoolOptions(): void {
+    // @ts-expect-error — poolOptions is required; a call naming only a connection URL must fail to typecheck
+    createDatabaseConnection(A_CONNECTION_URL);
+  }
+  void callWithNoPoolOptions;
 });
 
 it("maps a supplied poolOptions.maxConnections onto the pg Pool's max option", () => {
@@ -99,4 +101,31 @@ it('constructs exactly one connection in its own source, never a second one for 
   const poolConstructions = source.match(/new Pool\(/g) ?? [];
 
   expect(poolConstructions).toHaveLength(1);
+});
+
+const TREE_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
+const SKIPPED_DIRECTORIES = new Set(['node_modules', '.git', 'dist']);
+const SINGLE_ARGUMENT_CALL_PATTERN = /createDatabaseConnection\(\s*[^,()]*\)/g;
+const EXPECTED_SINGLE_ARGUMENT_CALL_SITE_COUNT = 1;
+
+async function* everyTreeFile(root: string): AsyncGenerator<{ path: string; source: string }> {
+  const entries = await readdir(root, { withFileTypes: true });
+  for (const entry of entries) {
+    const entryPath = join(root, entry.name);
+    if (entry.isDirectory()) {
+      if (SKIPPED_DIRECTORIES.has(entry.name)) continue;
+      yield* everyTreeFile(entryPath);
+    } else if (entry.isFile() && entry.name.endsWith('.ts')) {
+      yield { path: entryPath, source: await readFile(entryPath, 'utf8') };
+    }
+  }
+}
+
+it('is called with only a connection URL nowhere in the tree except this file\'s own type-level refusal proof above, so every caller — production or test — supplies poolOptions', async () => {
+  let singleArgumentCallSites = 0;
+  for await (const { source } of everyTreeFile(TREE_ROOT)) {
+    singleArgumentCallSites += (source.match(SINGLE_ARGUMENT_CALL_PATTERN) ?? []).length;
+  }
+
+  expect(singleArgumentCallSites).toBe(EXPECTED_SINGLE_ARGUMENT_CALL_SITE_COUNT);
 });

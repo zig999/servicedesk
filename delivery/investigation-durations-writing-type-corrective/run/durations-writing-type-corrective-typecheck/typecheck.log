@@ -1,0 +1,42 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/capability-registry/capability-query.port.spec.ts(34,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/create-draft.operation.spec.ts(34,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/discard.operation.spec.ts(67,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/manifest-collects-survive-release.spec.ts(56,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/manifest-composition.operations.spec.ts(50,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/release-hypothesis-revision.operation.spec.ts(47,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/release.operation.spec.ts(54,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/case/revise-hypothesis.operation.spec.ts(54,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/capability-registry.factory.spec.ts(38,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/case-query.factory.spec.ts(52,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts(20,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/diagnose-server.factory.spec.ts(329,23): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/glossary.factory.spec.ts(19,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(119,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/simulate-case-server.factory.spec.ts(316,23): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts(252,23): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/factories/store-wiring.spec.ts(49,16): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts(203,16): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/glossary/glossary-query.port.spec.ts(20,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/http/diagnose-e2e.spec.ts(360,16): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts(382,16): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/database-access.spec.ts(34,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/isolated-connection.spec.ts(96,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts(44,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(57,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts(28,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts(40,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts(65,10): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/integration/seed.spec.ts(212,16): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/database-connection.spec.ts(40,3): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(43,22): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(66,22): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(84,22): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(105,22): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(123,22): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(143,22): error TS2554: Expected 2 arguments, but got 1.
+src/__tests__/unit/persistence/migration-runner.spec.ts(164,22): error TS2554: Expected 2 arguments, but got 1.
+src/vitest-global-setup.ts(71,22): error TS2554: Expected 2 arguments, but got 1.

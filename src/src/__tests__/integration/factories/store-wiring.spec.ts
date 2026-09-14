@@ -46,7 +46,7 @@ async function deleteTolerantly(text: string, params: readonly unknown[]): Promi
 }
 
 beforeAll(() => {
-  connection = createDatabaseConnection(requireDatabaseUrl());
+  connection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
 });
 
 afterAll(async () => {

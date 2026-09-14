@@ -10,16 +10,12 @@ export interface IDatabaseConnectionPoolOptions {
 
 export function createDatabaseConnection(
   connectionUrl: string,
-  poolOptions?: IDatabaseConnectionPoolOptions,
+  poolOptions: IDatabaseConnectionPoolOptions,
 ): DatabaseConnection {
   return new Pool({
     connectionString: connectionUrl,
-    ...(poolOptions === undefined
-      ? {}
-      : {
-          max: poolOptions.maxConnections,
-          idleTimeoutMillis: poolOptions.idleTimeoutMs,
-          statement_timeout: poolOptions.statementTimeoutMs,
-        }),
+    max: poolOptions.maxConnections,
+    idleTimeoutMillis: poolOptions.idleTimeoutMs,
+    statement_timeout: poolOptions.statementTimeoutMs,
   });
 }

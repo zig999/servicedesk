@@ -1,10 +1,20 @@
 import { fileURLToPath } from 'node:url';
 import { MigrationStepError } from './errors/migration-step.error.js';
 import { NON_CONCLUSION_OUTCOMES } from './glossary/terms.js';
-import { createDatabaseConnection, type DatabaseConnection } from './persistence/database-connection.js';
+import {
+  createDatabaseConnection,
+  type DatabaseConnection,
+  type IDatabaseConnectionPoolOptions,
+} from './persistence/database-connection.js';
 import { applyPendingMigrations, resolvedSchema } from './persistence/migration-runner.js';
 
 const MIGRATIONS_DIRECTORY = fileURLToPath(new URL('../migrations', import.meta.url));
+
+const HARNESS_POOL_OPTIONS: IDatabaseConnectionPoolOptions = {
+  maxConnections: 10,
+  idleTimeoutMs: 10_000,
+  statementTimeoutMs: 30_000,
+};
 
 async function seedNonConclusionOutcomes(connection: DatabaseConnection): Promise<void> {
   for (const outcome of NON_CONCLUSION_OUTCOMES) {
@@ -68,7 +78,7 @@ export default async function setup(): Promise<void> {
       { variable: 'DATABASE_URL' },
     );
   }
-  const connection = createDatabaseConnection(connectionUrl);
+  const connection = createDatabaseConnection(connectionUrl, HARNESS_POOL_OPTIONS);
   try {
     await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY, await resolvedSchema(connection));
     await seedNonConclusionOutcomes(connection);

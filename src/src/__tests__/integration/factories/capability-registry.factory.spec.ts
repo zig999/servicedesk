@@ -35,7 +35,7 @@ let pool: DatabaseConnection;
 let conceptsWrittenByThisTest: string[] = [];
 
 beforeAll(() => {
-  pool = createDatabaseConnection(requireDatabaseUrl());
+  pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
 });
 
 afterAll(async () => {

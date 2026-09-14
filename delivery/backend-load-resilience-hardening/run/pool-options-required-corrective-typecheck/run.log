@@ -1,0 +1,6 @@
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+

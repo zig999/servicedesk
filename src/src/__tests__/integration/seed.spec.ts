@@ -209,7 +209,7 @@ async function runSeedScript(runId: number): Promise<void> {
 let connection: DatabaseConnection;
 
 beforeAll(async () => {
-  connection = createDatabaseConnection(requireDatabaseUrl());
+  connection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
   installPlaceholderEnv();
   await wipeFixtureOwnedRows(connection);
   await assertGenuinelyEmpty(connection);

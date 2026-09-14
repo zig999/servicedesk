@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { CapabilityRegistration } from './capability-registry/capability.js';
 import type { Resolution } from './case/case.js';
-import { loadEnv } from './config/env.js';
+import { loadEnv, type Env } from './config/env.js';
 import { createCapabilityRegistry } from './factories/capability-registry.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './factories/case-lifecycle.factory.js';
 import { createCaseQuery } from './factories/case-query.factory.js';
@@ -11,7 +11,11 @@ import { createCaseStore } from './factories/case-store.factory.js';
 import type { IGlossaryStore } from './glossary/glossary-store.port.js';
 import { NON_CONCLUSION_OUTCOMES, type GlossaryTerm } from './glossary/terms.js';
 import type { ConsolidationRegister } from './investigation/consolidation-register.js';
-import { createDatabaseConnection, type DatabaseConnection } from './persistence/database-connection.js';
+import {
+  createDatabaseConnection,
+  type DatabaseConnection,
+  type IDatabaseConnectionPoolOptions,
+} from './persistence/database-connection.js';
 import { RelationalGlossaryStore } from './persistence/relational-glossary-store.repository.js';
 
 const FIXTURES_ROOT = fileURLToPath(new URL('../src/fixtures', import.meta.url));
@@ -160,8 +164,17 @@ async function verifySeededCase(connection: DatabaseConnection): Promise<void> {
   await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
 }
 
+function databasePoolOptionsFrom(env: Env): IDatabaseConnectionPoolOptions {
+  return {
+    maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS,
+    idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+    statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS,
+  };
+}
+
 const env = loadEnv();
-const connection = createDatabaseConnection(env.DATABASE_URL);
+const poolOptions = databasePoolOptionsFrom(env);
+const connection = createDatabaseConnection(env.DATABASE_URL, poolOptions);
 try {
   const glossary = new RelationalGlossaryStore(connection);
   await seedOutcomes(glossary);

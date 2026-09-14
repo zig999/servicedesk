@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/deadline-test-value-corrective/deadline-test-value-corrective",
+      "kind": "implementation",
+      "file": "implementation/deadline-test-value-corrective/deadline-test-value-corrective.md",
+      "title": "Persistence-deadline e2e test's injected total pinned to the specification's declared 20-second figure",
+      "summary": "Corrects TOTAL_DEADLINE_BUDGET_MS in diagnose-persistence-deadline-e2e.spec.ts from 30_000 to 20_000, matching rules/investigation/an-answer-arrives-within-the-declared-deadline's own declared total.",
+      "task": "task/deadline-test-value-corrective/deadline-test-value-corrective"
+    },
+    {
+      "id": "proof/deadline-test-value-corrective/deadline-test-value-corrective",
+      "kind": "proof",
+      "file": "proof/deadline-test-value-corrective/deadline-test-value-corrective.md",
+      "title": "Persistence-deadline e2e test's injected total pinned to the specification's declared 20-second figure — proof",
+      "summary": "A source-level guard test pinning TOTAL_DEADLINE_BUDGET_MS to 20000, the only mechanical way to make criterion 1 fail on a future regression given the file's runtime behavior is insensitive to the total's exact value.",
+      "task": "task/deadline-test-value-corrective/deadline-test-value-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/deadline-test-value-corrective/deadline-test-value-corrective",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/deadline-test-value-corrective/deadline-test-value-corrective",
+      "to": "task/deadline-test-value-corrective/deadline-test-value-corrective",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/deadline-test-value-corrective/deadline-test-value-corrective",
+      "to": "implementation/deadline-test-value-corrective/deadline-test-value-corrective",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

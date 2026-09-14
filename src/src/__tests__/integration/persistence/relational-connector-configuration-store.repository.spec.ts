@@ -25,7 +25,7 @@ function connectorConfigurationRecord(overrides: Partial<ConnectorConfiguration>
 let pool: DatabaseConnection;
 
 beforeAll(async () => {
-  pool = createDatabaseConnection(requireDatabaseUrl());
+  pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
   await pool.query('DELETE FROM connector_configurations');
 });
 

@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import type { PoolClient } from 'pg';
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, expect, it } from 'vitest';
@@ -36,7 +38,7 @@ const INVESTIGATION_ROOT_INSERT_MARKER = 'INSERT INTO investigations';
 
 const WRITE_DELAY_MS = 5_000;
 
-const TOTAL_DEADLINE_BUDGET_MS = 30_000;
+const TOTAL_DEADLINE_BUDGET_MS = 20_000;
 
 const CLEANUP_WAIT_MS = WRITE_DELAY_MS + 3_000;
 
@@ -377,7 +379,7 @@ let connection: DatabaseConnection;
 let fixture: IFixture;
 
 beforeAll(async () => {
-  connection = createDatabaseConnection(requireDatabaseUrl());
+  connection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
   fixture = freshFixture();
   await seedFixture(connection, fixture);
 });
@@ -459,5 +461,29 @@ it(
     } finally {
       await cleanupFixture(connection, guardFixture);
     }
+  },
+);
+
+const THIS_FILE_PATH = fileURLToPath(import.meta.url);
+const TOTAL_DEADLINE_BUDGET_DECLARATION_PATTERN = /const TOTAL_DEADLINE_BUDGET_MS = ([\d_]+);/;
+
+async function declaredTotalDeadlineBudgetMs(): Promise<number> {
+  const source = await readFile(THIS_FILE_PATH, 'utf8');
+  const match = TOTAL_DEADLINE_BUDGET_DECLARATION_PATTERN.exec(source);
+  if (match === null) {
+    throw new Error('TOTAL_DEADLINE_BUDGET_MS is no longer declared in this file as a single numeric literal');
+  }
+  return Number(match[1].replace(/_/g, ''));
+}
+
+it(
+  "declares TOTAL_DEADLINE_BUDGET_MS, the total deadline this file injects into the diagnose runner, equal to " +
+    "rules/investigation/an-answer-arrives-within-the-declared-deadline's own declared total of 20000ms " +
+    '(2000 overhead/margin + 7000 collection + 5000 judgment + 4000 writing + 2000 persistence), never a locally ' +
+    'chosen figure that diverges from it',
+  async () => {
+    const declared = await declaredTotalDeadlineBudgetMs();
+
+    expect(declared).toBe(20_000);
   },
 );

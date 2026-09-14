@@ -266,12 +266,20 @@
           "digest": "sha256:fffa6d99c69f9e45669b08950b2cf91e1b1d22874099a4794942325f53d7a299"
         },
         {
+          "path": "src/src/migrate.ts",
+          "digest": "sha256:d31c3b4913e86059ce7fe327bbad8c28cd1497f2717b72b69d7a8b8f528f3a87"
+        },
+        {
           "path": "src/src/persistence/database-connection.ts",
-          "digest": "sha256:6e01b2a4703c54070688392d462ad7017de6e086b267d6c4b541e4ab9772c962"
+          "digest": "sha256:382a4d7f096da88591e8f9e001466dd86d740625769a35559e73a89f5e1a3962"
         },
         {
           "path": "src/src/persistence/pg.d.ts",
           "digest": "sha256:9a97a1df811f5baf538c342a3b55f761559abd1dd61a1ce0afc7eaa0ebed1e7d"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:cbdd379cb2e5261feb2570e5751d0e090a864a0163581cdd09cbca032b01efe8"
         }
       ]
     },
@@ -3227,7 +3235,7 @@
         },
         {
           "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
-          "digest": "sha256:1ea02c7fcaa61c8312a3102ed20cd6f2fb9f096add34b0d3d81c4a653107e328"
+          "digest": "sha256:0a45c040859a006d05c213c7507842b3ac48bb8f42b012623e2b62740d02c3ce"
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
@@ -6945,6 +6953,10 @@
       "node": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
       "digest": "sha256:e5d449f88de41578c5c9559b29d6fd2217236138bc836f66316eee73cc768190",
       "files": [
+        {
+          "path": "src/src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts",
+          "digest": "sha256:4374c33a3d20d482bbe9094e0ff6ca22317aca0205219e9f0903e86ffc806676"
+        },
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
           "digest": "sha256:8c4482281452e277b95f2ac64b207fcde0ec6e4614c4b2caaaeecc426b4837ab"
