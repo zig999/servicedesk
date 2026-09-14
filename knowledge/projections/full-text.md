@@ -216,14 +216,18 @@ Summing stage budgets and calling the sum a deadline leaves nothing for the over
 
 === constraints/the-diagnosis-and-simulation-routes-are-rate-limited
 ---
-statement: The diagnose, simulate-case and simulate-hypothesis routes each accept at most 10 requests per minute from one caller, counted independently per route, where one caller is one source IP address; a request beyond that limit is refused with an HTTP 429 response carrying a Retry-After value naming when the caller may retry.
+statement: The diagnose, simulate-case and simulate-hypothesis routes each accept at most 10 requests per minute from one caller, counted independently per route, where one caller is one source IP address and that minute is a sliding window opened by the caller's own first request against the route and elapsing 60 seconds after it, never a bucket that resets on a fixed clock-minute boundary; a request beyond that limit is refused with an HTTP 429 response reporting the error code RATE_LIMIT_EXCEEDED, a fixed message stating that too many requests arrived from that source and that the caller should retry after the given number of seconds, a details object carrying retryAfterSeconds, and a Retry-After response header carrying that same seconds count.
 scope: investigation
-fitness: An automated test issues more than 10 requests within one minute against each of diagnose, simulate-case and simulate-hypothesis from one caller and asserts that the response past the limit is HTTP 429 and carries a value naming when the caller may retry, and that a caller over the limit on one route is answered ordinarily on another.
+fitness: An automated test issues more than 10 requests within one minute against each of diagnose, simulate-case and simulate-hypothesis from one caller and asserts that the response past the limit is HTTP 429, reports RATE_LIMIT_EXCEEDED with a details.retryAfterSeconds value and a matching Retry-After header, and that a caller over the limit on one route is answered ordinarily on another; a second test issues one request at the start of a window, waits until 60 seconds have passed since that request but not since any fixed clock-minute boundary crossed in between, issues nine more, and asserts none of the ten is refused.
 ---
 
 ## Description
 
 Nothing else in this build tells a caller of diagnose, simulate-case or simulate-hypothesis to slow down, so an unbounded loop against any of the three drives the same collection, judgment and persistence work the engine runs for a legitimate call — the LLM calls and the database writes an attendant or curator would otherwise spend one case at a time. The limit is confined to these three routes rather than every route the api publishes, because these are the ones the material names — a system-wide limit is a separate decision this constraint does not make. `no-route-enforces-authentication` already holds that no caller's claimed identity is verified anywhere in this build, so this constraint's own caller identity is the connection's own source address, counted separately per route: a caller within the minute's window for diagnose is not thereby counted against simulate-case or simulate-hypothesis.
+
+The window is anchored to the caller's own first request rather than to the clock, because a fixed clock-minute bucket resets for every caller at the same instant regardless of when each one's count began — a caller whose count opened at the last second of one bucket and continues into the first second of the next can clear the limit twice inside one 60-second span, which the "at most 10 requests per minute" bound this constraint states refuses. Anchoring the window to the caller's own first request is what keeps that bound true of every 60-second span, not only of spans that happen to align with the clock.
+
+The refusal's own code, message and details stand here rather than in the code alone: a caller past the limit is told something specific, and that is a fact of this system's behavior a person can find without opening a file.
 
 === constraints/the-domain-depends-on-no-infrastructure
 ---
@@ -5393,6 +5397,42 @@ entries:
     at the one place the bound is declared and costs no caller an answer, since a deployment that never
     starts serves no request; the constraint fixes the shape and leaves the values to the deployment,
     as listings-are-paged already does for its own configured figures.
+- location: constraints/the-diagnosis-and-simulation-routes-are-rate-limited.md
+  field: statement
+  unstated: The material — a /review-change conformance finding over src/http/rate-limit.middleware.ts
+    and src/__tests__/unit/http/diagnose.routes.spec.ts — reported that the delivered refusal's error
+    code, message and details, and the window's exact semantics (sliding versus fixed clock-minute), were
+    never decided by this node, only 'an HTTP 429 response carrying a Retry-After value naming when the
+    caller may retry.'
+  decided: The minute is a sliding window opened by the caller's own first request against the route and
+    elapsing 60 seconds after it, never a bucket that resets on a fixed clock-minute boundary. The refusal
+    reports the error code RATE_LIMIT_EXCEEDED, a fixed message stating that too many requests arrived
+    from that source and that the caller should retry after the given number of seconds, a details object
+    carrying retryAfterSeconds, and a Retry-After response header carrying that same seconds count.
+  why: A fixed clock-minute bucket lets a caller whose count opens near a bucket boundary clear the limit
+    twice within one 60-second span, which the node's own 'at most 10 requests per minute' bound refuses;
+    anchoring the window to the caller's own first request is what makes that bound true of every 60-second
+    span rather than only of spans aligned to the clock, and it is the delivered behavior the reconciliation
+    found already implemented and tested. The refusal's code, message and details are decided here rather
+    than left to the code alone for the same reason a-malformed-request-is-refused-with-a-validation-error
+    and a-domain-error-unmapped-by-status-is-refused-generically already name theirs — the delivered shape
+    is what the reconciliation found, and naming it is what keeps a caller-facing fact from living only
+    in code.
+- location: rules/investigation/no-stage-aborts-on-its-deadline.md
+  field: statement
+  unstated: The material — a /review-change conformance finding over src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+    — reported that this rule and the decision log settle only InvestigationWriteDeadlineExceededError's
+    HTTP status and identity, never what its details carry or its message's exact wording, though the
+    delivered code and this test already fix both.
+  decided: InvestigationWriteDeadlineExceededError's details carry the investigation's own id and remainingMs,
+    the number of milliseconds that remained of the declared deadline when persistence gave up; its message
+    states that the investigation with that id could not be written within remainingMs milliseconds remaining
+    of the declared deadline, so no assessment is returned without a corresponding record.
+  why: A requester who meets this refusal is told which investigation could not be written and how much
+    of the deadline it had left — a fact of what this system discloses to whoever asked, not an implementation
+    detail nobody outside the code could otherwise learn. The delivered code and its own test already
+    fix this exact shape, so the decision states what the reconciliation found rather than inventing a
+    new one.
 
 ---
 
@@ -10231,7 +10271,7 @@ The snapshot domain/investigation/evidence carries — fields and concept_descri
 === rules/investigation/no-stage-aborts-on-its-deadline
 ---
 type: policy
-statement: No stage aborts on deadline overrun — collection records a timeout result and judgment records deadline-exceeded — with persistence as the single declared exception, which makes at most two write attempts against persistence's own stage bound — where that bound is zero or less at the moment persistence begins, no write attempt is made at all and the store is never called, the failure being raised at once; otherwise a first attempt is held to the whole of that bound and abandoned only once the bound elapses, never truncated to hold time back for what follows, and one retry runs only in whatever of the bound a first attempt that failed before the bound elapsed left unspent — and a persistence that settles no write, in either case, is answered with an HTTP 500 response reporting an InvestigationWriteDeadlineExceededError.
+statement: No stage aborts on deadline overrun — collection records a timeout result and judgment records deadline-exceeded — with persistence as the single declared exception, which makes at most two write attempts against persistence's own stage bound — where that bound is zero or less at the moment persistence begins, no write attempt is made at all and the store is never called, the failure being raised at once; otherwise a first attempt is held to the whole of that bound and abandoned only once the bound elapses, never truncated to hold time back for what follows, and one retry runs only in whatever of the bound a first attempt that failed before the bound elapsed left unspent — and a persistence that settles no write, in either case, is answered with an HTTP 500 response reporting an InvestigationWriteDeadlineExceededError, whose details carry the investigation's own id and remainingMs, the number of milliseconds that remained of the declared deadline when persistence gave up, and whose message states that the investigation with that id could not be written within remainingMs milliseconds remaining of the declared deadline, so no assessment is returned without a corresponding record.
 constrains:
   - domain/investigation/investigation
   - domain/investigation/evidence
@@ -10245,6 +10285,8 @@ Persistence cannot degrade because no response exists without a record, which is
 The retry opens no second grant of time: both attempts spend from the one stage bound, so a first attempt that consumes all of it leaves no retry to run.
 Truncating the first attempt to reserve a slice for the retry would abandon a write that was about to land, in the one stage that may not degrade, and would put a second attempt in flight behind an abandoned one that an-investigation-is-written-once leaves no room for; so the first attempt spends the bound to its end, and the retry is what answers a write that fails before the bound does.
 A bound of zero or less is no window at all: nothing could settle inside it, and a call issued into it would be abandoned the instant it was made and left running past the response, which is the one thing this stage's own discipline refuses — so persistence raises without ever reaching the store, and the requester is answered exactly as it is when both attempts overrun.
+
+The refusal's own details and message are named here rather than left to the code alone: a requester who meets this refusal is told which investigation could not be written and how much of the deadline it had left, and that is a fact of what this system discloses, not an implementation detail nobody outside the code could otherwise learn.
 
 === rules/investigation/one-evaluation-per-required-hypothesis
 ---

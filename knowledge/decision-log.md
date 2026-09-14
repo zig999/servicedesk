@@ -4727,5 +4727,41 @@ entries:
     at the one place the bound is declared and costs no caller an answer, since a deployment that never
     starts serves no request; the constraint fixes the shape and leaves the values to the deployment,
     as listings-are-paged already does for its own configured figures.
+- location: constraints/the-diagnosis-and-simulation-routes-are-rate-limited.md
+  field: statement
+  unstated: The material — a /review-change conformance finding over src/http/rate-limit.middleware.ts
+    and src/__tests__/unit/http/diagnose.routes.spec.ts — reported that the delivered refusal's error
+    code, message and details, and the window's exact semantics (sliding versus fixed clock-minute), were
+    never decided by this node, only 'an HTTP 429 response carrying a Retry-After value naming when the
+    caller may retry.'
+  decided: The minute is a sliding window opened by the caller's own first request against the route and
+    elapsing 60 seconds after it, never a bucket that resets on a fixed clock-minute boundary. The refusal
+    reports the error code RATE_LIMIT_EXCEEDED, a fixed message stating that too many requests arrived
+    from that source and that the caller should retry after the given number of seconds, a details object
+    carrying retryAfterSeconds, and a Retry-After response header carrying that same seconds count.
+  why: A fixed clock-minute bucket lets a caller whose count opens near a bucket boundary clear the limit
+    twice within one 60-second span, which the node's own 'at most 10 requests per minute' bound refuses;
+    anchoring the window to the caller's own first request is what makes that bound true of every 60-second
+    span rather than only of spans aligned to the clock, and it is the delivered behavior the reconciliation
+    found already implemented and tested. The refusal's code, message and details are decided here rather
+    than left to the code alone for the same reason a-malformed-request-is-refused-with-a-validation-error
+    and a-domain-error-unmapped-by-status-is-refused-generically already name theirs — the delivered shape
+    is what the reconciliation found, and naming it is what keeps a caller-facing fact from living only
+    in code.
+- location: rules/investigation/no-stage-aborts-on-its-deadline.md
+  field: statement
+  unstated: The material — a /review-change conformance finding over src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+    — reported that this rule and the decision log settle only InvestigationWriteDeadlineExceededError's
+    HTTP status and identity, never what its details carry or its message's exact wording, though the
+    delivered code and this test already fix both.
+  decided: InvestigationWriteDeadlineExceededError's details carry the investigation's own id and remainingMs,
+    the number of milliseconds that remained of the declared deadline when persistence gave up; its message
+    states that the investigation with that id could not be written within remainingMs milliseconds remaining
+    of the declared deadline, so no assessment is returned without a corresponding record.
+  why: A requester who meets this refusal is told which investigation could not be written and how much
+    of the deadline it had left — a fact of what this system discloses to whoever asked, not an implementation
+    detail nobody outside the code could otherwise learn. The delivered code and its own test already
+    fix this exact shape, so the decision states what the reconciliation found rather than inventing a
+    new one.
 
 ---
