@@ -166,6 +166,20 @@ fitness: An automated test requests read-capability for a concept no capability 
 
 The same idiom the-capability-identity-read-refuses-an-unregistered-identity holds for the identity-keyed read of this route family: the registry resolves the absence as ordinary data, and the published read turns it into a named refusal of its own.
 
+=== constraints/the-connection-pool-is-bounded-by-configuration
+---
+statement: The connection to the relational store is pooled under three bounds supplied as deployment configuration — a maximum number of simultaneous connections, an idle timeout and a statement timeout — each falling back to a declared default where the deployment states none, and none of the three left to the driver's own implicit value.
+scope: system
+fitness: An automated test opens the pool with none of the three configured and asserts each bound is the declared default; opens it with each configured and asserts the configured value is the bound the pool carries, with no bound taken from the driver.
+---
+
+## Description
+
+The store is operated by somebody else and reached over a link a network can slow or drop, so how many connections stand open at once, how long an idle one is kept and how long a single statement may run are properties of the environment a deployment meets rather than anything the business decided.
+They are deployment configuration and not business figures, so this names that the three exist and never their values, for the same reason the page default and maximum go unnamed.
+What it refuses is the driver's implicit value: a bound no environment declared is one no review saw, and it moves when the driver is upgraded, which is precisely the kind of change the specification is supposed to survive.
+A deployment that states none of the three still starts, because requiring a bound to exist is not requiring every environment to hold an opinion about it.
+
 === constraints/the-consolidation-prompt-is-closed
 ---
 statement: A consolidation prompt contains only the required hypotheses' evaluations, the evidence any of their citations name, and the case's own consolidation register, in a delimited data block, with no tool calling available to the model.
@@ -258,6 +272,23 @@ fitness: A dependency and network-call audit over the frontend module finds no d
 ## Description
 
 Fetching server-side avoids a browser-side CORS dependency on whatever application publishes the OpenAPI document, and keeps the one place that reads an operator-supplied URL auditable as a single, reviewable path rather than one folded into whichever screen happens to render it.
+
+=== constraints/the-pool-bounds-are-positive-integers
+---
+statement: Each of the connection pool's three bounds — the maximum number of simultaneous connections, the idle timeout and the statement timeout — is a positive integer, and a deployment stating a non-integer, a zero or a negative value for any of them is refused at startup instead of starting.
+scope: system
+fitness: A deployment whose configuration states a non-integer, zero or negative value for any of the three pool bounds fails to start with a configuration error and serves no request, and every value a started deployment holds for the three is a positive integer.
+---
+
+## Description
+
+The three bounds are deployment configuration, so this constraint names the shape every value must have and never the values themselves, the same way listings-are-paged names its default and maximum without figures.
+
+A bound outside that shape has no usable reading: zero or a negative maximum admits no connection at all, a zero or negative timeout either fires at once or means nothing to the driver, and a non-integer is not a count of connections or of time units — so a deployment carrying one would run with the driver's own silent fallback and present as healthy while bounded by something nobody stated.
+
+Refusing at startup is what keeps the configuration the single source of the bound: the failure surfaces once, where the deployment is defined, rather than as load-dependent behavior no one traces back to a mistyped value.
+
+This refusal answers configuration read as the deployment starts and is not the request-time refusal a-malformed-request-is-refused-with-a-validation-error states; no caller ever sees it, because a refused deployment answers no request.
 
 === constraints/the-schema-replays-from-its-scripts
 ---
@@ -5337,6 +5368,31 @@ entries:
     already holds that no caller's claimed identity is verified anywhere in this build, so the caller here is the
     connection's own source address, the same property the sibling capability-identity-read constraint already
     keys on for the same reason.
+- location: constraints/the-connection-pool-is-bounded-by-configuration.md
+  field: statement
+  unstated: No node stated that the relational store's connection is pooled under bounds the deployment
+    configures — a maximum number of simultaneous connections, an idle timeout and a statement timeout
+    — rather than under the driver's implicit defaults, nor that a deployment stating none of the three
+    still starts.
+  found: 'work/backend-load-resilience-hardening/intake/scope.md, section "2. Postgres pool tuning": "Configure
+    explicitly the parameters of the Pool created at src/src/persistence/database-connection.ts — max
+    connections, idleTimeoutMillis, statement_timeout — left today at the pg driver''s implicit default."
+    and "The values'' source of truth should be environment variables, the same pattern src/src/config/env.ts
+    already uses (e.g. POOL_SIZE), with sensible defaults documented in the Env schema itself."'
+- location: constraints/the-pool-bounds-are-positive-integers.md
+  field: statement
+  unstated: No node stated what values the three pool bounds may hold or what becomes of a deployment
+    that states an unusable one — the material configures max connections, idle timeout and statement
+    timeout from environment variables and says nothing about their admissible shape or about a deployment
+    carrying a non-integer, zero or negative value.
+  decided: Each of the three bounds is a positive integer, and a deployment stating a non-integer, zero
+    or negative value for any of them is refused at startup instead of starting.
+  why: A count of connections and a span of time have no reading below one, so the driver would silently
+    substitute its own implicit default and the deployment would run bounded by a figure nobody stated
+    — exactly the unstated bound this hardening set out to close. Refusing at startup keeps the failure
+    at the one place the bound is declared and costs no caller an answer, since a deployment that never
+    starts serves no request; the constraint fixes the shape and leaves the values to the deployment,
+    as listings-are-paged already does for its own configured figures.
 
 ---
 

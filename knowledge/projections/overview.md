@@ -42,6 +42,7 @@ Derived by spec.py from the specification files; never edited.
 - the-capability-identity-read-is-rate-limited (integration)
 - the-capability-identity-read-refuses-an-unregistered-identity (integration)
 - the-concept-read-refuses-an-unanswered-concept (integration)
+- the-connection-pool-is-bounded-by-configuration (system)
 - the-consolidation-prompt-is-closed (investigation)
 - the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
@@ -50,8 +51,9 @@ Derived by spec.py from the specification files; never edited.
 - the-evidence-cache-admits-only-ok-results (investigation)
 - the-judgment-prompt-is-closed (investigation)
 - the-openapi-document-is-fetched-by-the-backend (integration)
+- the-pool-bounds-are-positive-integers (system)
 - the-schema-replays-from-its-scripts (system)
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-289 decision(s) disclosed, 1 fact(s) recorded as read in the decision log.
+290 decision(s) disclosed, 2 fact(s) recorded as read in the decision log.

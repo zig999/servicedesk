@@ -57,6 +57,10 @@ this groups its entries by the file each one located.
   unstated: What the read-capability route answers for a concept no capability answers.
   why: The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The identity-keyed read of the same route family already states its miss this way, and the delivered route answers exactly this.
 
+## constraints/the-connection-pool-is-bounded-by-configuration.md
+- statement — read: work/backend-load-resilience-hardening/intake/scope.md, section "2. Postgres pool tuning": "Configure explicitly the parameters of the Pool created at src/src/persistence/database-connection.ts — max connections, idleTimeoutMillis, statement_timeout — left today at the pg driver's implicit default." and "The values' source of truth should be environment variables, the same pattern src/src/config/env.ts already uses (e.g. POOL_SIZE), with sensible defaults documented in the Env schema itself."
+  unstated: No node stated that the relational store's connection is pooled under bounds the deployment configures — a maximum number of simultaneous connections, an idle timeout and a statement timeout — rather than under the driver's implicit defaults, nor that a deployment stating none of the three still starts.
+
 ## constraints/the-database-is-externally-provisioned.md
 - statement — decided: A deployment choice — the constraint states external provisioning reached through a connection URL from configuration, and names no provider.
   unstated: The material names the provider that provisions the database; it does not say whether the provider is part of the solution bound or a deployment choice the specification stays out of.
@@ -81,6 +85,11 @@ this groups its entries by the file each one located.
 - statement — decided: Yes — the same link, read for either purpose, is fetched only by the backend; no frontend module issues either fetch directly.
   unstated: Whether the backend-only fetch this constraint already gives the draft operation also binds the new read of a document's operations, which fetches the same operator-named link before any operation is chosen.
   why: The CORS dependency and the single auditable path this constraint exists for follow from the link being operator-supplied and external, which is equally true of the read that lists a document's operations before a draft is ever requested from one of them.
+
+## constraints/the-pool-bounds-are-positive-integers.md
+- statement — decided: Each of the three bounds is a positive integer, and a deployment stating a non-integer, zero or negative value for any of them is refused at startup instead of starting.
+  unstated: No node stated what values the three pool bounds may hold or what becomes of a deployment that states an unusable one — the material configures max connections, idle timeout and statement timeout from environment variables and says nothing about their admissible shape or about a deployment carrying a non-integer, zero or negative value.
+  why: A count of connections and a span of time have no reading below one, so the driver would silently substitute its own implicit default and the deployment would run bounded by a figure nobody stated — exactly the unstated bound this hardening set out to close. Refusing at startup keeps the failure at the one place the bound is declared and costs no caller an answer, since a deployment that never starts serves no request; the constraint fixes the shape and leaves the values to the deployment, as listings-are-paged already does for its own configured figures.
 
 ## constraints/the-schema-replays-from-its-scripts.md
 - statement — decided: The constraint states only that the schema replays from the numbered scripts; the directory, the file form and the prohibition on runtime DDL stay with the standard.
