@@ -5354,6 +5354,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order",
+      "digest": "sha256:cf408a0403b80f3275707a5d445d10820b550234c2e20ec515b75dba00d98a46",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:837da5dc7ae0446a06346ebc1a2413b9d50fb4fd07c74afa55c481f4200574ff"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
       "digest": "sha256:27c0d3e9f36f0ef60edcbe1da6319cb8c180b635ac6df9956af84b867e07d6a3",
       "files": [
@@ -6094,6 +6104,26 @@
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
           "digest": "sha256:148cd63eab6955c74ce5f0f967d98373bbe3d47c94ffea5fa2021f53a3cec231"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry",
+      "digest": "sha256:10e3b250f196f58ca8c3ecba334ac5328a75500d279ba29120eed6b2bcced6a1",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:837da5dc7ae0446a06346ebc1a2413b9d50fb4fd07c74afa55c481f4200574ff"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason",
+      "digest": "sha256:d0613b93384204033ac30ef596c8897cb7388aec228ced195cf7615a546210b9",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:837da5dc7ae0446a06346ebc1a2413b9d50fb4fd07c74afa55c481f4200574ff"
         }
       ]
     },
@@ -8798,6 +8828,16 @@
         {
           "path": "frontend/app/src/services/connector-configuration-response-map-capability-coverage.ts",
           "digest": "sha256:15347e81f9fbd3b3ca772f46ba35abe72a957cc4e4260ffbfd23e0744af12847"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order",
+      "digest": "sha256:02fab39252eb0acecdc13190a5c96c62b898c8663e88ac2b396626eb06346ecc",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:837da5dc7ae0446a06346ebc1a2413b9d50fb4fd07c74afa55c481f4200574ff"
         }
       ]
     },

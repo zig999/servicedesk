@@ -236,3 +236,223 @@ it("produces an input_schema whose required array, wherever present, holds only 
 
   expect(problems).toEqual([]);
 });
+
+type CollidingParameterLocation = 'path' | 'query' | 'header' | 'cookie';
+
+type ParameterSpec = {
+  readonly name: string;
+  readonly location: CollidingParameterLocation;
+  readonly required?: boolean;
+  readonly schema?: unknown;
+};
+
+type RequestBodySpec = {
+  readonly properties: Readonly<Record<string, unknown>>;
+  readonly required?: readonly string[];
+};
+
+function documentWithParametersAndRequestBody(
+  parameters: readonly ParameterSpec[],
+  requestBody?: RequestBodySpec,
+): unknown {
+  const operation: Record<string, unknown> = {
+    parameters: parameters.map((parameter) => ({
+      name: parameter.name,
+      in: parameter.location,
+      ...(parameter.required !== undefined ? { required: parameter.required } : {}),
+      schema: parameter.schema ?? { type: 'string' },
+    })),
+  };
+  if (requestBody !== undefined) {
+    operation.requestBody = {
+      content: {
+        'application/json': {
+          schema: {
+            properties: requestBody.properties,
+            ...(requestBody.required !== undefined ? { required: requestBody.required } : {}),
+          },
+        },
+      },
+    };
+  }
+  return { openapi: '3.0.0', paths: { '/widgets': { post: operation } } };
+}
+
+type PrecedenceCase = {
+  readonly title: string;
+  readonly document: unknown;
+  readonly expectedType: string;
+};
+
+const precedenceCases: readonly PrecedenceCase[] = [
+  {
+    title: 'a path parameter over a query parameter of the same name',
+    document: documentWithParametersAndRequestBody([
+      { name: 'status', location: 'query', schema: { type: 'integer' } },
+      { name: 'status', location: 'path', schema: { type: 'string' } },
+    ]),
+    expectedType: 'string',
+  },
+  {
+    title: 'a query parameter over a header parameter of the same name',
+    document: documentWithParametersAndRequestBody([
+      { name: 'status', location: 'header', schema: { type: 'integer' } },
+      { name: 'status', location: 'query', schema: { type: 'string' } },
+    ]),
+    expectedType: 'string',
+  },
+  {
+    title: 'a header parameter over a cookie parameter of the same name',
+    document: documentWithParametersAndRequestBody([
+      { name: 'status', location: 'cookie', schema: { type: 'integer' } },
+      { name: 'status', location: 'header', schema: { type: 'string' } },
+    ]),
+    expectedType: 'string',
+  },
+  {
+    title: 'a cookie parameter over a request-body field of the same name',
+    document: documentWithParametersAndRequestBody(
+      [{ name: 'status', location: 'cookie', schema: { type: 'string' } }],
+      { properties: { status: { type: 'integer' } } },
+    ),
+    expectedType: 'string',
+  },
+  {
+    title: 'the earlier of two query parameters equal in name and location, by their position in the parameters array',
+    document: documentWithParametersAndRequestBody([
+      { name: 'status', location: 'query', schema: { type: 'string' } },
+      { name: 'status', location: 'query', schema: { type: 'integer' } },
+    ]),
+    expectedType: 'string',
+  },
+];
+
+it.each(precedenceCases)('ranks $title as the properties entry, disclosing the other', ({ document, expectedType }) => {
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  const properties = propertiesOf(draft) as Readonly<Record<string, { readonly type: string }>>;
+  expect(Object.keys(properties)).toEqual(['status']);
+  expect(properties.status.type).toBe(expectedType);
+  expect(draft.unresolved).toEqual([{ name: 'status', reason: 'name-claimed-by-another-parameter' }]);
+});
+
+it('discloses every displaced claimant, not only the first, when three parts of the operation share one name', () => {
+  const document = documentWithParametersAndRequestBody([
+    { name: 'status', location: 'cookie', schema: { type: 'integer' } },
+    { name: 'status', location: 'path', schema: { type: 'string' } },
+    { name: 'status', location: 'query', schema: { type: 'boolean' } },
+  ]);
+
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  const properties = propertiesOf(draft) as Readonly<Record<string, { readonly type: string }>>;
+  expect(Object.keys(properties)).toEqual(['status']);
+  expect(properties.status.type).toBe('string');
+  expect(draft.unresolved).toEqual([
+    { name: 'status', reason: 'name-claimed-by-another-parameter' },
+    { name: 'status', reason: 'name-claimed-by-another-parameter' },
+  ]);
+});
+
+it('drafts a single status property from the query parameter, disclosing the colliding request-body field, when an operation declares a query parameter and a request-body field both named status', () => {
+  const document = documentWithParametersAndRequestBody(
+    [{ name: 'status', location: 'query', schema: { type: 'string' } }],
+    { properties: { status: { type: 'integer' } } },
+  );
+
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  const properties = propertiesOf(draft) as Readonly<Record<string, { readonly type: string }>>;
+  expect(Object.keys(properties)).toEqual(['status']);
+  expect(properties.status.type).toBe('string');
+  expect(draft.unresolved).toEqual([{ name: 'status', reason: 'name-claimed-by-another-parameter' }]);
+});
+
+type RequiredCase = {
+  readonly title: string;
+  readonly document: unknown;
+  readonly expectRequired: boolean;
+};
+
+const requiredCases: readonly RequiredCase[] = [
+  {
+    title: 'the first claimant is itself declared required',
+    document: documentWithParametersAndRequestBody([
+      { name: 'status', location: 'query', schema: { type: 'string' } },
+      { name: 'status', location: 'path', schema: { type: 'string' }, required: true },
+    ]),
+    expectRequired: true,
+  },
+  {
+    title: 'only a displaced claimant is declared required',
+    document: documentWithParametersAndRequestBody([
+      { name: 'status', location: 'query', schema: { type: 'string' }, required: true },
+      { name: 'status', location: 'path', schema: { type: 'string' }, required: false },
+    ]),
+    expectRequired: false,
+  },
+];
+
+it.each(requiredCases)('stands the colliding name in required only where $title', ({ document, expectRequired }) => {
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  const parsed = parsedInputSchema(draft);
+  const required = Array.isArray(parsed.required) ? parsed.required : [];
+  expect(required.includes('status')).toBe(expectRequired);
+});
+
+it('names a displaced claimant in unresolved exactly as the OpenAPI document itself gives its name', () => {
+  const document = documentWithParametersAndRequestBody([
+    { name: 'Customer-Id', location: 'query', schema: { type: 'string' } },
+    { name: 'Customer-Id', location: 'path', schema: { type: 'string' } },
+  ]);
+
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  expect(draft.unresolved).toEqual([{ name: 'Customer-Id', reason: 'name-claimed-by-another-parameter' }]);
+});
+
+it('stands no name in unresolved with reason name-claimed-by-another-parameter when every parameter and field name is claimed by only one part of the operation', () => {
+  const document = documentWithParametersAndRequestBody(
+    [
+      { name: 'status', location: 'query', schema: { type: 'string' } },
+      { name: 'limit', location: 'query', schema: { type: 'integer' } },
+    ],
+    { properties: { note: { type: 'string' } } },
+  );
+
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  expect(draft.unresolved).toEqual([]);
+});
+
+it('leaves no properties entry and promotes no later claimant when the first claimant in declared order does not itself reduce to one JSON Schema type', () => {
+  const document = documentWithParametersAndRequestBody([
+    { name: 'status', location: 'query', schema: { type: 'string' } },
+    { name: 'status', location: 'path', schema: {} },
+  ]);
+
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  expect('status' in propertiesOf(draft)).toBe(false);
+  expect(draft.unresolved).toEqual([
+    { name: 'status', reason: 'schema-not-reducible-to-a-type' },
+    { name: 'status', reason: 'name-claimed-by-another-parameter' },
+  ]);
+});
+
+it('names a displaced claimant under both reasons, never one alone, when it both is displaced and does not itself reduce to one JSON Schema type', () => {
+  const document = documentWithParametersAndRequestBody([
+    { name: 'status', location: 'query', schema: {} },
+    { name: 'status', location: 'path', schema: { type: 'string' } },
+  ]);
+
+  const draft = inputSchemaFor(document, '/widgets', 'post');
+
+  const properties = propertiesOf(draft) as Readonly<Record<string, { readonly type: string }>>;
+  expect(properties.status.type).toBe('string');
+  expect(draft.unresolved).toEqual([
+    { name: 'status', reason: 'schema-not-reducible-to-a-type' },
+    { name: 'status', reason: 'name-claimed-by-another-parameter' },
+  ]);
+});

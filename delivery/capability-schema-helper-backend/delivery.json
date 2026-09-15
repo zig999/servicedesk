@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "kind": "implementation",
+      "file": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order.md",
+      "title": "Capability schema draft input_schema collision resolution by declared order",
+      "summary": "Extends draftedInputSchema to resolve a parameter or request-body-field name two or more parts of the chosen operation claim by declared order (path, query, header, cookie, then request body), giving the properties/required entry to the first claimant and disclosing every other one in the draft's unresolved list.",
+      "task": "task/capability-schema-draft-generation/colliding-names-favor-declared-order"
+    },
+    {
       "id": "implementation/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields",
       "kind": "implementation",
       "file": "implementation/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields.md",
@@ -16,6 +24,14 @@
       "title": "Output schema drafted from an operation's success responses",
       "summary": "Adds draftedOutputSchema, deriving a capability schema draft's output_schema and its unresolved items from the chosen operation's success-response fields, and extends the shared OpenAPI reader with the same type-reduction reading the input-schema draft already uses.",
       "task": "task/capability-schema-draft-generation/output-schema-from-success-responses"
+    },
+    {
+      "id": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "kind": "proof",
+      "file": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order.md",
+      "title": "Collision resolution by declared order — input_schema property-name precedence",
+      "summary": "Proves that draftedInputSchema resolves a name two or more parts of the chosen operation claim by the fixed order path, query, header, cookie, request-body field (tie-broken by array position), disclosing every displaced claimant and handling an unreducible winner without promoting a later claimant.",
+      "task": "task/capability-schema-draft-generation/colliding-names-favor-declared-order"
     },
     {
       "id": "proof/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields",
@@ -35,6 +51,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "domain/integration/capability-schema-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "task/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields",
       "to": "domain/integration/capability-schema-draft",
@@ -117,6 +169,12 @@
       "from": "implementation/capability-schema-draft-generation/output-schema-from-success-responses",
       "to": "task/capability-schema-draft-generation/output-schema-from-success-responses",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "to": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "kind": "proves",
       "at": "the path"
     },
     {
