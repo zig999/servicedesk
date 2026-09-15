@@ -14,6 +14,7 @@ import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
+import type { DraftCapabilitySchemaFromOpenApiControllerDependencies } from '../http/draft-capability-schema-from-openapi.controller.js';
 import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from '../http/draft-connector-configuration-from-openapi.controller.js';
 import type { ReadOpenApiDocumentOperationsControllerDependencies } from '../http/read-openapi-document-operations.controller.js';
 import type { SimulateCaseControllerDependencies } from '../http/simulate-case.controller.js';
@@ -162,6 +163,13 @@ function readOpenApiDocumentOperationsDependencies(): Pick<BuildAppDependencies,
   return { readOpenApiDocumentOperations: dependencies };
 }
 
+function draftCapabilitySchemaFromOpenApiDependencies(): Pick<BuildAppDependencies, 'draftCapabilitySchemaFromOpenApi'> {
+  const dependencies: DraftCapabilitySchemaFromOpenApiControllerDependencies = {
+    documentFetcher: new OpenApiDocumentFetcher(),
+  };
+  return { draftCapabilitySchemaFromOpenApi: dependencies };
+}
+
 export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
   const { env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis } = inputs;
   const resources = composeResources(env, connection, caseQuery);
@@ -176,5 +184,6 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...testConnectorDependencies(resources),
     ...draftConnectorConfigurationFromOpenApiDependencies(resources),
     ...readOpenApiDocumentOperationsDependencies(),
+    ...draftCapabilitySchemaFromOpenApiDependencies(),
   };
 }

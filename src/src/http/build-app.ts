@@ -5,6 +5,8 @@ import type { CreateDraftControllerDependencies } from './create-draft.controlle
 import { createCreateDraftRoutesPlugin } from './create-draft.routes.js';
 import { createDiagnoseRoutesPlugin } from './diagnose.routes.js';
 import type { DiagnoseControllerDependencies } from './diagnose.controller.js';
+import type { DraftCapabilitySchemaFromOpenApiControllerDependencies } from './draft-capability-schema-from-openapi.controller.js';
+import { createDraftCapabilitySchemaFromOpenApiRoutesPlugin } from './draft-capability-schema-from-openapi.routes.js';
 import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from './draft-connector-configuration-from-openapi.controller.js';
 import { createDraftConnectorConfigurationFromOpenApiRoutesPlugin } from './draft-connector-configuration-from-openapi.routes.js';
 import { createSimulateCaseRoutesPlugin } from './simulate-case.routes.js';
@@ -98,6 +100,7 @@ export type BuildAppDependencies = {
   readonly registerConnector: RegisterConnectorControllerDependencies;
   readonly draftConnectorConfigurationFromOpenApi: DraftConnectorConfigurationFromOpenApiControllerDependencies;
   readonly readOpenApiDocumentOperations: ReadOpenApiDocumentOperationsControllerDependencies;
+  readonly draftCapabilitySchemaFromOpenApi: DraftCapabilitySchemaFromOpenApiControllerDependencies;
 };
 
 const routePluginFactories: ReadonlyArray<
@@ -136,6 +139,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) =>
     createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
   (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
+  (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
 ];
 
 function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] {

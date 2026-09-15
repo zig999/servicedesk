@@ -11,6 +11,7 @@ import type { ProductionDiagnoseCall } from '../../../factories/production-diagn
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
+import type { DraftCapabilitySchemaFromOpenApiControllerDependencies } from '../../../http/draft-capability-schema-from-openapi.controller.js';
 import type { DraftConnectorConfigurationFromOpenApiControllerDependencies } from '../../../http/draft-connector-configuration-from-openapi.controller.js';
 import type { ListConnectorConfigurationsControllerDependencies } from '../../../http/list-connector-configurations.controller.js';
 import type { ReadCapabilityByIdentityControllerDependencies } from '../../../http/read-capability-by-identity.controller.js';
@@ -172,6 +173,12 @@ function stubDraftConnectorConfigurationFromOpenApi(): DraftConnectorConfigurati
   };
 }
 
+function stubDraftCapabilitySchemaFromOpenApi(): DraftCapabilitySchemaFromOpenApiControllerDependencies {
+  return {
+    documentFetcher: { fetchOpenApiDocument: async () => '{}' },
+  };
+}
+
 function stubTestConnector(): TestConnectorControllerDependencies {
   return {
     readCapabilityByIdentity: async (name, version) => ({
@@ -292,6 +299,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     readOpenApiDocumentOperations: {
       documentFetcher: { fetchOpenApiDocument: async () => '{}' },
     },
+    draftCapabilitySchemaFromOpenApi: stubDraftCapabilitySchemaFromOpenApi(),
   };
 }
 
@@ -571,6 +579,12 @@ const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
     method: 'GET',
     url: '/v1/read-openapi-document-operations?link=a-link',
   },
+  {
+    description: 'draft-capability-schema-from-openapi',
+    method: 'POST',
+    url: '/v1/draft-capability-schema-from-openapi',
+    payload: { link: 'a-link', path: '/a-path', method: 'GET' },
+  },
 ];
 
 it.each(REGISTERED_ROUTE_REQUESTS)(
@@ -790,3 +804,35 @@ function isTypeScriptFile(file: unknown): boolean {
 function importSpecifiersOf(source: string): readonly string[] {
   return [...source.matchAll(/(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g)].map((match) => match[1] ?? '');
 }
+
+const DRAFT_CAPABILITY_SCHEMA_MINIMAL_DOCUMENT = JSON.stringify({
+  openapi: '3.0.0',
+  paths: { '/widgets': { get: { responses: { '200': { description: 'ok' } } } } },
+});
+
+it('issues no register-capability call while draft-capability-schema-from-openapi answers a generated draft', async () => {
+  const registerCapabilitySpy = vi.fn();
+  const diagnose: DiagnoseControllerDependencies = {
+    caseQuery: stubCaseQuery(minimalCase()),
+    caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) },
+    runDiagnose: vi.fn(),
+    model: 'a-model',
+    promptVersion: 'a-prompt-version',
+  };
+  app = buildApp({
+    ...stubBuildAppDependencies(diagnose),
+    registerCapability: { registerCapability: registerCapabilitySpy },
+    draftCapabilitySchemaFromOpenApi: {
+      documentFetcher: { fetchOpenApiDocument: async () => DRAFT_CAPABILITY_SCHEMA_MINIMAL_DOCUMENT },
+    },
+  });
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/v1/draft-capability-schema-from-openapi',
+    payload: { link: 'a-link', path: '/widgets', method: 'GET' },
+  });
+
+  expect(response.statusCode).toBe(200);
+  expect(registerCapabilitySpy).not.toHaveBeenCalled();
+});

@@ -42,6 +42,10 @@
       "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a",
       "files": [
         {
+          "path": "src/src/http/draft-capability-schema-from-openapi.routes.ts",
+          "digest": "sha256:538d019e9505b38c1e5b10f880ab0a011f1ffe8f2ef4dbe70e47f1d09e4055cc"
+        },
+        {
           "path": "src/src/http/draft-connector-configuration-from-openapi.routes.ts",
           "digest": "sha256:ec3c52d297a2185f6e2af216b38c525487689dc24e52b0d344a4eccd8ea1ccea"
         },
@@ -509,7 +513,7 @@
     },
     {
       "node": "constraints/the-openapi-document-is-fetched-by-the-backend",
-      "digest": "sha256:5f410ca953d391f649959a1ed759eb08afbe4363c0039f1d1451b65be50ddc21",
+      "digest": "sha256:119169c46779bf88c29e5573b3f18e7c759bb5a5e88bb3b4d75d39f8004f2d5a",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
@@ -522,6 +526,10 @@
         {
           "path": "frontend/app/src/hooks/use-openapi-document-operations.ts",
           "digest": "sha256:87dab4fe0783e8afd07a07f96b6848de20c0b483a4d092d18604313f3d6027bd"
+        },
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
+          "digest": "sha256:7e57bcdb336b79a9af2530ce8764c2c484c635540e735aaecc2bb1c991af8d67"
         },
         {
           "path": "src/src/connector-registry/openapi-document-fetcher.adapter.ts",
@@ -956,6 +964,20 @@
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
           "digest": "sha256:82a4e772c3615577e8a32dc3ce264f44704a8f384973c1dcd7dddb28105918b9"
+        }
+      ]
+    },
+    {
+      "node": "contracts/integration/capability-schema-draft",
+      "digest": "sha256:a1c320f0e305085664f52b831c4c0cbb1859a526e43a3feb8ff447ef3bfb50f3",
+      "files": [
+        {
+          "path": "src/src/http/build-app.ts",
+          "digest": "sha256:700880c44ed7a412443f81c46a9641e441240a92b79a653e7e3a88f256017275"
+        },
+        {
+          "path": "src/src/http/draft-capability-schema-from-openapi.routes.ts",
+          "digest": "sha256:538d019e9505b38c1e5b10f880ab0a011f1ffe8f2ef4dbe70e47f1d09e4055cc"
         }
       ]
     },
@@ -2480,12 +2502,20 @@
       "digest": "sha256:9dace35d20663828f40585f1f74792546e40477ec76f9bcf91833884c4d54051",
       "files": [
         {
+          "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
+          "digest": "sha256:7e57bcdb336b79a9af2530ce8764c2c484c635540e735aaecc2bb1c991af8d67"
+        },
+        {
           "path": "src/src/connector-registry/capability-schema-draft-output-schema.ts",
           "digest": "sha256:859da376baff72319f9926e9a5b6149343cffe7d15a69634ddae092cc83596e9"
         },
         {
           "path": "src/src/connector-registry/capability-schema-draft.ts",
           "digest": "sha256:1c0c6ac99bfe83c38bef3710810f1031a8e11dd933d58b854fccda2be600ad3b"
+        },
+        {
+          "path": "src/src/http/draft-capability-schema-from-openapi.controller.ts",
+          "digest": "sha256:82e2f778460b1814613f628e671b4c738eb4ba74dff6253533bc4361d9bc0fc1"
         }
       ]
     },
@@ -2504,6 +2534,10 @@
         {
           "path": "src/src/connector-registry/capability-schema-draft.ts",
           "digest": "sha256:1c0c6ac99bfe83c38bef3710810f1031a8e11dd933d58b854fccda2be600ad3b"
+        },
+        {
+          "path": "src/src/http/dto/draft-capability-schema-from-openapi.dto.ts",
+          "digest": "sha256:38ca8bfa2882baae27d11bf2cec439c8da813c441f7191c0e8e89cdc56661b95"
         }
       ]
     },
@@ -2518,6 +2552,10 @@
         {
           "path": "src/src/connector-registry/capability-schema-draft.ts",
           "digest": "sha256:1c0c6ac99bfe83c38bef3710810f1031a8e11dd933d58b854fccda2be600ad3b"
+        },
+        {
+          "path": "src/src/http/dto/draft-capability-schema-from-openapi.dto.ts",
+          "digest": "sha256:38ca8bfa2882baae27d11bf2cec439c8da813c441f7191c0e8e89cdc56661b95"
         }
       ]
     },
@@ -6026,6 +6064,16 @@
         {
           "path": "src/src/http/draft-connector-configuration-from-openapi.routes.ts",
           "digest": "sha256:ec3c52d297a2185f6e2af216b38c525487689dc24e52b0d344a4eccd8ea1ccea"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-generated-schema-draft-answers-under-http-200",
+      "digest": "sha256:ca29696d398960e4c71738f68dc8b1d6e959e64366dd9f2458565dfdc8ba567f",
+      "files": [
+        {
+          "path": "src/src/http/draft-capability-schema-from-openapi.routes.ts",
+          "digest": "sha256:538d019e9505b38c1e5b10f880ab0a011f1ffe8f2ef4dbe70e47f1d09e4055cc"
         }
       ]
     },

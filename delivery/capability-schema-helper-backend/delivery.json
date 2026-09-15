@@ -26,6 +26,14 @@
       "task": "task/capability-schema-draft-generation/output-schema-from-success-responses"
     },
     {
+      "id": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "kind": "implementation",
+      "file": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint.md",
+      "title": "HTTP surface for draft-capability-schema-from-openapi",
+      "summary": "Registers POST /v1/draft-capability-schema-from-openapi, its zod DTO, its thin controller, and its generation module composing the existing fetcher/reader with the sibling epic's draftedInputSchema/draftedOutputSchema, answering a generated CapabilitySchemaDraft under HTTP 200 and a malformed request under HTTP 400 VALIDATION_ERROR.",
+      "task": "task/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint"
+    },
+    {
       "id": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order",
       "kind": "proof",
       "file": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order.md",
@@ -48,6 +56,14 @@
       "title": "Capability schema draft output_schema derivation from success responses",
       "summary": "Verifies that draftedOutputSchema builds output_schema's properties and required array from an operation's application/json success-response fields by the lowest declaring status, keys an enveloped field by its own name, excludes and discloses fields that do not reduce to one type, and drafts a present-but-empty properties object when no field is read.",
       "task": "task/capability-schema-draft-generation/output-schema-from-success-responses"
+    },
+    {
+      "id": "proof/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "kind": "proof",
+      "file": "proof/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint.md",
+      "title": "Proof for the draft-capability-schema-from-openapi HTTP surface",
+      "summary": "Route-level tests for draft-capability-schema-from-openapi's registration, fetch/derive/answer wiring, validation refusal and no-registration guarantee, plus a source-level check that the fetch/read/lookup reuse the existing machinery.",
+      "task": "task/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint"
     }
   ],
   "edges": [
@@ -172,6 +188,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "contracts/integration/capability-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "rules/integration/a-generated-schema-draft-answers-under-http-200",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "domain/integration/capability-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "domain/integration/capability-schema-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "domain/integration/capability-schema-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "task/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order",
       "to": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
       "kind": "proves",
@@ -186,6 +250,12 @@
     {
       "from": "proof/capability-schema-draft-generation/output-schema-from-success-responses",
       "to": "implementation/capability-schema-draft-generation/output-schema-from-success-responses",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "to": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
       "kind": "proves",
       "at": "the path"
     }
