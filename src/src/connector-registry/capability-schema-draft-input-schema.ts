@@ -1,10 +1,19 @@
-import type { OpenApiOperationReading } from './openapi-operation-reader.js';
+import type { OpenApiOperationReading, OpenApiParameterLocation } from './openapi-operation-reader.js';
 import type {
   CapabilitySchemaDraftUnresolvedItem,
   CapabilitySchemaDraftUnresolvedReason,
 } from './capability-schema-draft.js';
 
 const NOT_REDUCIBLE_REASON: CapabilitySchemaDraftUnresolvedReason = 'schema-not-reducible-to-a-type';
+const NAME_CLAIMED_REASON: CapabilitySchemaDraftUnresolvedReason = 'name-claimed-by-another-parameter';
+
+const PARAMETER_LOCATION_PRECEDENCE: Readonly<Record<OpenApiParameterLocation, number>> = {
+  path: 0,
+  query: 1,
+  header: 2,
+  cookie: 3,
+};
+const REQUEST_BODY_FIELD_PRECEDENCE = 4;
 
 export type CapabilitySchemaDraftInputSchemaReading = {
   readonly inputSchema: string;
@@ -15,6 +24,8 @@ type InputSchemaCandidate = {
   readonly name: string;
   readonly required: boolean;
   readonly reducedType?: string;
+  readonly precedenceRank: number;
+  readonly precedenceIndex: number;
 };
 
 type ResolvedInputSchemaCandidate = InputSchemaCandidate & { readonly reducedType: string };
@@ -22,11 +33,12 @@ type ResolvedInputSchemaCandidate = InputSchemaCandidate & { readonly reducedTyp
 type InputSchemaProperties = Readonly<Record<string, { readonly type: string }>>;
 
 export function draftedInputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftInputSchemaReading {
-  const candidates = nonCollidingCandidates(reading);
-  const resolved = candidates.filter(hasReducedType);
+  const groups = candidateGroupsByName(reading);
+  const winners = groups.map(firstInDeclaredOrder);
+  const resolved = winners.filter(hasReducedType);
   const properties = propertiesOf(resolved);
   const required = resolved.filter((candidate) => candidate.required).map((candidate) => candidate.name);
-  const unresolved = candidates.filter((candidate) => !hasReducedType(candidate)).map(unresolvedItemOf);
+  const unresolved = groups.flatMap(unresolvedItemsOf);
   return { inputSchema: JSON.stringify(inputSchemaObject(properties, required)), unresolved };
 }
 
@@ -45,31 +57,64 @@ function hasReducedType(candidate: InputSchemaCandidate): candidate is ResolvedI
   return candidate.reducedType !== undefined;
 }
 
-function unresolvedItemOf(candidate: InputSchemaCandidate): CapabilitySchemaDraftUnresolvedItem {
-  return { name: candidate.name, reason: NOT_REDUCIBLE_REASON };
+function firstInDeclaredOrder(group: readonly InputSchemaCandidate[]): InputSchemaCandidate {
+  return group[0];
 }
 
-function nonCollidingCandidates(reading: OpenApiOperationReading): readonly InputSchemaCandidate[] {
-  const all = allCandidates(reading);
-  const counts = countsByName(all);
-  return all.filter((candidate) => counts.get(candidate.name) === 1);
+function unresolvedItemsOf(group: readonly InputSchemaCandidate[]): readonly CapabilitySchemaDraftUnresolvedItem[] {
+  const [winner, ...displaced] = group;
+  const winnerItems = hasReducedType(winner) ? [] : [unresolvedItemOf(winner, NOT_REDUCIBLE_REASON)];
+  return [...winnerItems, ...displaced.flatMap(unresolvedItemsForDisplacedClaimant)];
+}
+
+function unresolvedItemsForDisplacedClaimant(
+  candidate: InputSchemaCandidate,
+): readonly CapabilitySchemaDraftUnresolvedItem[] {
+  const claimedItem = unresolvedItemOf(candidate, NAME_CLAIMED_REASON);
+  return hasReducedType(candidate) ? [claimedItem] : [unresolvedItemOf(candidate, NOT_REDUCIBLE_REASON), claimedItem];
+}
+
+function unresolvedItemOf(
+  candidate: InputSchemaCandidate,
+  reason: CapabilitySchemaDraftUnresolvedReason,
+): CapabilitySchemaDraftUnresolvedItem {
+  return { name: candidate.name, reason };
+}
+
+function candidateGroupsByName(reading: OpenApiOperationReading): readonly (readonly InputSchemaCandidate[])[] {
+  const grouped = new Map<string, InputSchemaCandidate[]>();
+  for (const candidate of allCandidates(reading)) {
+    const group = grouped.get(candidate.name) ?? [];
+    group.push(candidate);
+    grouped.set(candidate.name, group);
+  }
+  return [...grouped.values()].map(orderedByDeclaredPrecedence);
+}
+
+function orderedByDeclaredPrecedence(group: readonly InputSchemaCandidate[]): readonly InputSchemaCandidate[] {
+  return [...group].sort((a, b) => a.precedenceRank - b.precedenceRank || a.precedenceIndex - b.precedenceIndex);
 }
 
 function allCandidates(reading: OpenApiOperationReading): readonly InputSchemaCandidate[] {
-  return [
-    ...reading.parameterDetails.map((parameter) => ({
-      name: parameter.name,
-      required: parameter.required,
-      reducedType: parameter.reducedType,
-    })),
-    ...reading.requestBodyFields,
-  ];
+  return [...parameterCandidates(reading), ...requestBodyFieldCandidates(reading)];
 }
 
-function countsByName(candidates: readonly InputSchemaCandidate[]): ReadonlyMap<string, number> {
-  const counts = new Map<string, number>();
-  for (const candidate of candidates) {
-    counts.set(candidate.name, (counts.get(candidate.name) ?? 0) + 1);
-  }
-  return counts;
+function parameterCandidates(reading: OpenApiOperationReading): readonly InputSchemaCandidate[] {
+  return reading.parameterDetails.map((parameter, precedenceIndex) => ({
+    name: parameter.name,
+    required: parameter.required,
+    reducedType: parameter.reducedType,
+    precedenceRank: PARAMETER_LOCATION_PRECEDENCE[parameter.location],
+    precedenceIndex,
+  }));
+}
+
+function requestBodyFieldCandidates(reading: OpenApiOperationReading): readonly InputSchemaCandidate[] {
+  return reading.requestBodyFields.map((field, precedenceIndex) => ({
+    name: field.name,
+    required: field.required,
+    reducedType: field.reducedType,
+    precedenceRank: REQUEST_BODY_FIELD_PRECEDENCE,
+    precedenceIndex,
+  }));
 }
