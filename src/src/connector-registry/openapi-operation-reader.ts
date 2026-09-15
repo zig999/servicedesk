@@ -49,6 +49,7 @@ export type OpenApiSuccessResponseField = {
   readonly path: string;
   readonly status: string;
   readonly declaredType?: string;
+  readonly reducedType?: string;
   readonly declaredRequired?: boolean;
   readonly envelope?: string;
 };
@@ -317,21 +318,28 @@ function schemaReadingAt(document: PlainObject, schema: PlainObject, status: str
   const envelopeSchema =
     topLevelNames.length === 1 ? envelopeSchemaOf(document, merged.properties[topLevelNames[0]]) : undefined;
   if (envelopeSchema === undefined) {
-    return directSchemaReading({ merged, topLevelNames, status, variantsUnited });
+    return directSchemaReading({ document, merged, topLevelNames, status, variantsUnited });
   }
   return envelopedSchemaReading({ document, envelopeSchema, envelope: topLevelNames[0], status, variantsUnited });
 }
 
 function directSchemaReading(input: {
+  readonly document: PlainObject;
   readonly merged: MergedSchemaProperties;
   readonly topLevelNames: readonly string[];
   readonly status: string;
   readonly variantsUnited: boolean;
 }): SchemaReading {
-  const { merged, topLevelNames, status, variantsUnited } = input;
+  const { document, merged, topLevelNames, status, variantsUnited } = input;
   return {
     fields: topLevelNames.map((name) =>
-      responseField({ name, propertySchema: merged.properties[name], requiredNames: merged.requiredNames, status }),
+      responseField({
+        document,
+        name,
+        propertySchema: merged.properties[name],
+        requiredNames: merged.requiredNames,
+        status,
+      }),
     ),
     variantsUnited,
     declaresNoProperties: topLevelNames.length === 0,
@@ -351,6 +359,7 @@ function envelopedSchemaReading(input: {
   return {
     fields: envelopedNames.map((name) =>
       responseField({
+        document,
         name,
         propertySchema: enveloped.properties[name],
         requiredNames: enveloped.requiredNames,
@@ -443,20 +452,23 @@ function agreeingBranchType(document: PlainObject, branches: unknown): string | 
 }
 
 function responseField(input: {
+  readonly document: PlainObject;
   readonly name: string;
   readonly propertySchema: unknown;
   readonly requiredNames: readonly string[] | undefined;
   readonly status: string;
   readonly envelope?: string;
 }): OpenApiSuccessResponseField {
-  const { name, propertySchema, requiredNames, status, envelope } = input;
+  const { document, name, propertySchema, requiredNames, status, envelope } = input;
   const path = envelope === undefined ? name : `${envelope}.${name}`;
   const declaredType = declaredTypeOf(propertySchema);
+  const reducedType = reducedTypeOf(document, propertySchema);
   const declaredRequired = requiredNames === undefined ? undefined : requiredNames.includes(name);
   const withPath: OpenApiSuccessResponseField =
     envelope === undefined ? { name, path, status } : { name, path, status, envelope };
   const withType = declaredType === undefined ? withPath : { ...withPath, declaredType };
-  return declaredRequired === undefined ? withType : { ...withType, declaredRequired };
+  const withReducedType = reducedType === undefined ? withType : { ...withType, reducedType };
+  return declaredRequired === undefined ? withReducedType : { ...withReducedType, declaredRequired };
 }
 
 function requiredSecuritySchemesOf(
