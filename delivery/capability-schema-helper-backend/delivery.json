@@ -34,6 +34,14 @@
       "task": "task/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint"
     },
     {
+      "id": "implementation/capability-schema-draft-operation/three-refusals-under-http-422",
+      "kind": "implementation",
+      "file": "implementation/capability-schema-draft-operation/three-refusals-under-http-422.md",
+      "title": "Link disclosure for the capability schema draft's HTTP 422 refusals",
+      "summary": "Verifies the three OpenAPI refusal conditions for draft-capability-schema-from-openapi already ride the shared status-map/error-handler machinery under HTTP 422, and adds the one missing disclosure this operation's own rule requires -- the operator-named link beside an OpenApiDocumentNotReadableError refusal -- without touching the shared reader, the shared error class, or either sibling operation.",
+      "task": "task/capability-schema-draft-operation/three-refusals-under-http-422"
+    },
+    {
       "id": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order",
       "kind": "proof",
       "file": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order.md",
@@ -64,6 +72,14 @@
       "title": "Proof for the draft-capability-schema-from-openapi HTTP surface",
       "summary": "Route-level tests for draft-capability-schema-from-openapi's registration, fetch/derive/answer wiring, validation refusal and no-registration guarantee, plus a source-level check that the fetch/read/lookup reuse the existing machinery.",
       "task": "task/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint"
+    },
+    {
+      "id": "proof/capability-schema-draft-operation/three-refusals-under-http-422",
+      "kind": "proof",
+      "file": "proof/capability-schema-draft-operation/three-refusals-under-http-422.md",
+      "title": "Three HTTP 422 refusals and the generic 500 fallback for draft-capability-schema-from-openapi",
+      "summary": "Adds route-level tests proving the three OpenAPI refusal conditions of draft-capability-schema-from-openapi each answer under HTTP 422 with their own error value and exact disclosed detail (including the new link disclosure beside OpenApiDocumentNotReadableError), that neither refusal ever leaks a draft field or reports as the other, and that an unmapped error falls back to the fixed HTTP 500 envelope.",
+      "task": "task/capability-schema-draft-operation/three-refusals-under-http-422"
     }
   ],
   "edges": [
@@ -236,6 +252,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-schema-draft-operation/three-refusals-under-http-422",
+      "to": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/three-refusals-under-http-422",
+      "to": "rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-schema-draft-operation/three-refusals-under-http-422",
+      "to": "task/capability-schema-draft-operation/three-refusals-under-http-422",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-schema-draft-generation/colliding-names-favor-declared-order",
       "to": "implementation/capability-schema-draft-generation/colliding-names-favor-declared-order",
       "kind": "proves",
@@ -256,6 +290,12 @@
     {
       "from": "proof/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
       "to": "implementation/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-schema-draft-operation/three-refusals-under-http-422",
+      "to": "implementation/capability-schema-draft-operation/three-refusals-under-http-422",
       "kind": "proves",
       "at": "the path"
     }

@@ -6156,6 +6156,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft",
+      "digest": "sha256:e8649d139d9e47664989a1f09b244d188e7cb690137f14d36542d2c715eabaf0",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
+          "digest": "sha256:3dd2bafcae780090acf306c07927c334d8578e2ad6605e3eb67b56d8e6a7364d"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry",
       "digest": "sha256:10e3b250f196f58ca8c3ecba334ac5328a75500d279ba29120eed6b2bcced6a1",
       "files": [
@@ -6282,6 +6292,16 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
           "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document",
+      "digest": "sha256:b525e6a4576c093d2eea808df3a7dd4bebb84d737522a9d0e1309dcba8173eaf",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
+          "digest": "sha256:3dd2bafcae780090acf306c07927c334d8578e2ad6605e3eb67b56d8e6a7364d"
         }
       ]
     },

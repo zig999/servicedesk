@@ -3,6 +3,10 @@ import { fileURLToPath } from 'node:url';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import { CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASONS } from '../../../connector-registry/capability-schema-draft.js';
+import {
+  OpenApiDocumentNotFetchedError,
+  type OpenApiDocumentFetchOutcome,
+} from '../../../errors/openapi-document-not-fetched.error.js';
 import type { DraftCapabilitySchemaFromOpenApiControllerDependencies } from '../../../http/draft-capability-schema-from-openapi.controller.js';
 import { createDraftCapabilitySchemaFromOpenApiRoutesPlugin } from '../../../http/draft-capability-schema-from-openapi.routes.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
@@ -262,5 +266,129 @@ it(
     expect(source).toMatch(/import\s*\{\s*readOpenApiOperation\s*\}\s*from\s*['"]\.\/openapi-operation-reader\.js['"]/);
     expect(source).not.toContain('JSON.parse');
     expect(source).not.toContain('js-yaml');
+  },
+);
+
+const REFUSAL_LINK = 'https://example.com/openapi.json';
+
+type FetchFailureCase = {
+  readonly name: string;
+  readonly outcome: OpenApiDocumentFetchOutcome;
+  readonly expectedDetails: Record<string, unknown>;
+};
+
+const FETCH_FAILURE_CASES: readonly FetchFailureCase[] = [
+  {
+    name: 'a network failure reaching the link',
+    outcome: { kind: 'network-failure' },
+    expectedDetails: { link: REFUSAL_LINK, kind: 'network-failure' },
+  },
+  {
+    name: 'the link not answering before the fetch timeout elapses',
+    outcome: { kind: 'timeout' },
+    expectedDetails: { link: REFUSAL_LINK, kind: 'timeout' },
+  },
+  {
+    name: 'the link answering with a status outside the 2xx range',
+    outcome: { kind: 'status-outside-2xx', status: 503 },
+    expectedDetails: { link: REFUSAL_LINK, kind: 'status-outside-2xx', status: 503 },
+  },
+];
+
+it.each(FETCH_FAILURE_CASES)(
+  "answers 422 reporting OpenApiDocumentNotFetchedError disclosing exactly the link and the failure's own fields, and no draft field, for $name",
+  async ({ outcome, expectedDetails }) => {
+    const built = buildTestApp();
+    app = built.app;
+    built.fetchOpenApiDocument.mockRejectedValueOnce(new OpenApiDocumentNotFetchedError(REFUSAL_LINK, outcome));
+
+    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ link: REFUSAL_LINK }) });
+
+    expect(response.statusCode).toBe(422);
+    const body = response.json() as { error: { code: string; details: unknown } };
+    expect(body.error.code).toBe('OpenApiDocumentNotFetchedError');
+    expect(body.error.details).toEqual(expectedDetails);
+    expect(Object.keys(response.json() as object)).toEqual(['error']);
+  },
+);
+
+type UnreadableDocumentCase = {
+  readonly name: string;
+  readonly documentText: string;
+  readonly expectedDetails: Record<string, unknown>;
+};
+
+const UNREADABLE_DOCUMENT_CASES: readonly UnreadableDocumentCase[] = [
+  {
+    name: 'a fetched document that does not parse in either serialization OpenAPI 3.x defines',
+    documentText: 'null',
+    expectedDetails: { kind: 'unparseable', detail: 'the fetched document text', link: REFUSAL_LINK },
+  },
+  {
+    name: 'a fetched document whose declared version is not OpenAPI 3.x',
+    documentText: JSON.stringify({ openapi: '2.0', paths: {} }),
+    expectedDetails: { kind: 'unsupported-version', declaredVersion: '2.0', link: REFUSAL_LINK },
+  },
+  {
+    name: 'a fetched document declaring no version at all',
+    documentText: JSON.stringify({ paths: {} }),
+    expectedDetails: { kind: 'no-version-declared', link: REFUSAL_LINK },
+  },
+];
+
+it.each(UNREADABLE_DOCUMENT_CASES)(
+  "answers 422 reporting OpenApiDocumentNotReadableError disclosing exactly its own reason and the operator-named link, and no draft field, for $name",
+  async ({ documentText, expectedDetails }) => {
+    const built = buildTestApp();
+    app = built.app;
+    built.fetchOpenApiDocument.mockResolvedValueOnce(documentText);
+
+    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ link: REFUSAL_LINK }) });
+
+    expect(response.statusCode).toBe(422);
+    const body = response.json() as { error: { code: string; details: unknown } };
+    expect(body.error.code).toBe('OpenApiDocumentNotReadableError');
+    expect(body.error.details).toEqual(expectedDetails);
+    expect(Object.keys(response.json() as object)).toEqual(['error']);
+  },
+);
+
+it(
+  'answers 422 reporting OpenApiOperationNotFoundError naming exactly the requested path and method, and no draft ' +
+    'field, when the document parses and declares OpenAPI 3.x but declares no such operation',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+    built.fetchOpenApiDocument.mockResolvedValueOnce(minimalDocument());
+
+    const response = await app.inject({
+      method: 'POST',
+      url: ROUTE_URL,
+      payload: validBody({ path: '/no-such-path', method: 'DELETE' }),
+    });
+
+    expect(response.statusCode).toBe(422);
+    const body = response.json() as { error: { code: string; details: unknown } };
+    expect(body.error.code).toBe('OpenApiOperationNotFoundError');
+    expect(body.error.details).toEqual({ path: '/no-such-path', method: 'DELETE' });
+    expect(Object.keys(response.json() as object)).toEqual(['error']);
+  },
+);
+
+it(
+  "answers 500 with code INTERNAL_ERROR and the fixed message 'an unexpected error occurred', disclosing neither " +
+    "an unmapped error's own message nor any context it carries, when the document fetch throws an error the " +
+    'status map does not name',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+    const unmapped: Error & { context?: unknown } = new Error('internal detail that must never reach the caller');
+    unmapped.context = { secret: 'must never reach the caller either' };
+    built.fetchOpenApiDocument.mockRejectedValueOnce(unmapped);
+
+    const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody() });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
   },
 );
