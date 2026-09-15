@@ -7,7 +7,7 @@ Derived by spec.py from the specification files; never edited.
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
 | glossary | supporting | 6 | 10 | 2 | 1 |
-| integration | generic | 19 | 129 | 9 | 22 |
+| integration | generic | 19 | 130 | 9 | 23 |
 | investigation | supporting | 16 | 39 | 7 | 17 |
 | knowledge | core | 12 | 60 | 5 | 12 |
 

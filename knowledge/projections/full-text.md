@@ -5552,6 +5552,22 @@ entries:
   decided: Required standing is read at the level the name itself was read from — for a name read through an envelope, the required array of the enveloping property's own inner object schema; for a name read at the top level, the success response schema's own top-level required array — and that top-level array's naming of the enveloping property itself makes no drafted entry required.
   why: The envelope reading descends into the enveloping property's inner object and takes each entry's name and type from that inner schema's own properties keyword, so reading required anywhere else would assemble one entry from two schemas; the outer top-level required array can only ever name the enveloping property, never the inner field, so reading required from it would leave every envelope-read field unrequired however plainly the document requires it. Compounding the two instead — requiring a field only where its envelope is required as well — was rejected because it states an inference about presence the document itself never makes, where the drafted schema is a candidate the operator reviews name by name against what one schema declares.
 ---
+- location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
+  field: statement
+  unstated: No node states whether the Schema Helper of a capability authoring or editing surface may have more than one draft-capability-schema-from-openapi request outstanding at once, nor what a further draft request does while an earlier one has not yet ended.
+  decided: 'A new invariant: while a capability schema draft request the Schema Helper made has not yet ended, a further draft request from that same helper issues no draft-capability-schema-from-openapi call at all and leaves the outstanding request untouched, whatever link or operation the surface names by then; the guard is keyed by the helper rather than by the link and the operation, and the helper requests again the moment the outstanding request ends, in a stated draft or in a refusal alike.'
+  why: 'Blocking rather than allowing follows from what a draft request deliberately does not produce: it registers nothing and stores no draft, so two outstanding requests from one helper are indistinguishable once they answer, and whichever answers last silently replaces the draft the operator is reading together with the link and operation that draft stands marked as generated for. The block is affordable because the request is a bounded on-screen wait rather than an open-ended job, and the helper frees the instant the outstanding request ends, a refusal included, since a refusal is an ending too. It is keyed by the helper rather than by the link and the operation together -- unlike the sibling guard over the two simulate operations, which answer different questions about one subject and so key per operation -- because this helper dispatches one operation and states one draft at a time, so a second request naming another link or another operation contends for precisely the thing the guard
+    exists to keep answerable.'
+- location: rules/integration/a-capability-authoring-surface-offers-a-schema-helper.md
+  field: statement
+  unstated: The rule already states that an operator chooses one of the fetched document's own listed operations and never types a path or a method, but no node states what produces that listing for a capability surface -- contracts/integration/openapi-document-operations and every surface rule over domain/integration/openapi-document-operations are worded for the Configuration Helper of a connector configuration surface, and contracts/integration/capability-schema-draft publishes only draft-capability-schema-from-openapi, which is given a path and a method rather than answering any.
+  decided: The operations the Schema Helper lists are those read-openapi-document-operations of contracts/integration/openapi-document-operations answers for the link the operator named -- the same published read the Configuration Helper's listing comes from, with no second read operation and no fetch of the document from a frontend module.
+  why: That read already answers exactly this question for an operator-named link -- every path-and-method pair a fetched document declares, with its refusals, its upper-cased method and its $ref reading already decided over it -- and nothing it reads or answers is particular to a connector configuration, so a second operation for the capability surface would give one specification two reads of one document each owing those same decisions again, while a listing fetched in the browser would put an operator-supplied external link outside the single backend path constraints/the-openapi-document-is-fetched-by-the-backend exists to keep it on.
+- location: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale.md
+  field: then
+  unstated: Whether a stated capability schema draft is stale where the helper's link stands exactly as the draft was generated for and no operation stands chosen, the choice having been cleared since that draft was generated, and whether the helper's operation choice can stand cleared at all once one has been made. a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes compares the surface's link and chosen operation against the two the draft was generated for and says nothing of a surface holding no chosen operation at all; a-capability-authoring-surface-offers-a-schema-helper states only that the draft request is withheld until an operation stands chosen, leaving open whether that condition can return once a choice has been made; and no node states what becomes of a choice when the link it was chosen under changes.
+  decided: The choice can stand cleared once made -- the helper holds no chosen operation from the moment its named link ceases to be the one whose listing that operation was chosen from, and holds none until one is chosen from the listing the link then answers -- and a draft stated over a helper holding no chosen operation stands marked stale however that link then reads, the two applying acts still offered and the draft request withheld as waiting on a chosen operation.
+  why: The helper's operation is only ever an entry of the fetched document's own listing and never a path or a method typed free-hand, so a choice that survived its link would be an operation no listing on the surface holds and would send the draft request at a pairing the newly named document may declare nothing for; and with no operation standing chosen the operator is looking at no operation at all, so a draft and the unresolved items beside it describe something the surface names nowhere -- a stronger case of the misreading the staleness marking exists to prevent than a link merely changed, and one that typing the original link back does not undo, because what the draft was generated for is a link and an operation together.
 
 === domain/glossary/_context
 ---
@@ -7082,7 +7098,7 @@ The rest is discovered by writing cases.
 === rules/integration/a-capability-authoring-surface-offers-a-schema-helper
 ---
 type: invariant
-statement: A surface authoring or editing a capability offers, beneath its Input schema and Output schema fields, a Schema Helper through which an operator names an OpenAPI document link, chooses one of the fetched document's own listed operations -- never by typing a path or a method -- and requests a capability schema draft generated from the chosen operation, that request offered only once an operation stands chosen and stating, in its place, until then, that it waits on one; requesting a draft issues no register-capability call.
+statement: A surface authoring or editing a capability offers, beneath its Input schema and Output schema fields, a Schema Helper through which an operator names an OpenAPI document link, chooses one of the operations read-openapi-document-operations answers for that named link -- never by typing a path or a method -- and requests a capability schema draft generated from the chosen operation, that request offered only once an operation stands chosen and stating, in its place, until then, that it waits on one; requesting a draft issues no register-capability call.
 constrains:
 - domain/integration/capability
 ---
@@ -7091,6 +7107,7 @@ constrains:
 
 The helper lives inside the one surface an operator already authors or edits a capability from, never a separate screen or a dialog of its own -- the same surface a-successful-capability-registration-lands-on-the-capabilitys-own-surface and a-single-capability-surface-offers-a-route-to-the-capabilities-listing already govern.
 Which operation an operator names follows the same reading a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing already gives the sibling helper: from the document's own declared operations, never from a path or a method typed free-hand, so a pairing the document never declares is never named.
+The listing those operations come from is what read-openapi-document-operations of contracts/integration/openapi-document-operations answers for the link the operator named -- the one read that already holds every path-and-method pair a fetched document declares -- so the document behind this helper is fetched where constraints/the-openapi-document-is-fetched-by-the-backend puts every fetch of an operator-named link.
 Offering the act only once an operation is chosen follows a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation's own reasoning: a request made before one is chosen names no path and no method, and the only answer it could have is a refusal for a pairing the operator never chose.
 Offering it is a fact about what the operator can do there; which control carries it, its wording and where exactly it sits beneath the two schema fields are form and belong to the interface, not here.
 
@@ -8728,6 +8745,23 @@ What a $ref stands for is fixed by OpenAPI 3.x itself and is not a reading this 
 What is lost when the reference is not followed falls on the operator rather than on any caller. `a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing` leaves them no way to name an operation but from this listing, and a path that silently contributes none is indistinguishable to them from a document declaring none there — no refusal is due, since `a-malformed-or-unsupported-openapi-document-refuses-the-operations-read` refuses documents that do not parse or do not declare OpenAPI 3.x, and a document declaring a path by reference is a well-formed one.
 
 Home is a new invariant over `domain/integration/openapi-document-operations`, the element that holds every operation a fetched document declares: this states what "declares" reaches, and adds no attribute, publishes no operation and refuses no call.
+
+=== rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+---
+type: invariant
+statement: Where the Schema Helper of a surface authoring or editing a capability has requested a capability schema draft and that request has not yet ended, a further draft request from that same Schema Helper issues no draft-capability-schema-from-openapi call at all and leaves the outstanding request untouched, whatever link or operation the surface names by then; that helper requests again as soon as the outstanding request ends, whether it ended in a stated draft or in a refusal.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+A schema draft request stores no draft and writes nothing a-capability-schema-draft-registers-nothing does not already hold it away from, so two outstanding requests from one helper leave nothing behind that tells their answers apart: whichever answers last silently replaces the draft the operator is reading, and nothing says which request produced the input_schema, the output_schema and the unresolved items standing in front of them.
+The same reading a-pending-simulation-call-is-not-dispatched-again already gives an interface dispatching a call whose run leaves nothing behind, read here over the one helper and the one operation this surface dispatches.
+Keyed by the helper alone, rather than by the link and the operation together: a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes marks the one draft the helper states as generated for the link and the operation of the request that produced it, so a second request naming another link or another operation is exactly the race that single marking cannot survive, the stale reading depending on knowing which request the standing draft came from.
+A helper on another authoring surface is a different helper and blocks nothing.
+The block costs a bounded wait rather than a lock -- the request is one fetch and one generation the operation answers -- and the helper is free the instant the outstanding request ends, including where it ends in one of the refusals a-refused-schema-draft-states-its-refusal-to-the-operator states rather than in a draft.
+This is not a refusal the contract answers: no request is issued, so nothing at contracts/integration/capability-schema-draft ever sees the suppressed attempt and no status or error name belongs to it, and no-schema-draft-refusal-is-stated-before-the-operation-answers stands untouched, because a suppressed attempt is not a request awaiting an answer.
 
 === rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
 ---
@@ -12395,6 +12429,30 @@ then:
 ## Description
 
 Two success response schemas declaring one field name under differing declarations is the case a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses settles by keeping the lowest success status's own declaration, 200 before 201.
+
+=== scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+---
+subject: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+given:
+  - the Schema Helper of a capability authoring surface names the link https://example.test/openapi.json and holds GET /v1/technicians/{userId}/profile chosen from the listing that document answered
+  - a capability schema draft generated for that link and that operation stands stated beneath the Input schema and Output schema fields
+when:
+  - the operator names a different OpenAPI document link in the Schema Helper
+  - the operator names https://example.test/openapi.json again, choosing no operation from the listing it answers
+then:
+  - the Schema Helper holds no chosen operation, the choice standing cleared from the moment the link named ceased to be the one whose listing that operation was chosen from and until one is chosen from the listing the link now answers
+  - the stated draft stands marked stale, though the link named is the one it was generated for
+  - applying its input_schema and applying its output_schema are each still offered
+  - the act requesting a draft is not offered, the surface stating in its place that it waits on a chosen operation
+involves:
+  - domain/integration/capability-schema-draft
+  - rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+---
+
+## Description
+
+The operation the helper holds is never anything but an entry of the listing the named link's document answered, so it cannot outlive the link it was chosen under: naming another link leaves the helper with no chosen operation, and typing the first link back does not choose again on the operator's behalf.
+A draft standing over a helper that holds no chosen operation describes an operation the surface names nowhere, which is the reading the staleness marking exists to refuse -- the link reading as it did when the draft was generated does not restore the operation the unresolved items beside it describe.
 
 === scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
 ---
