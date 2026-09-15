@@ -2831,7 +2831,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
+          "digest": "sha256:f6864de44b2955b41eb0ca0dfd18d78c6b4b97673a1d8734a2d59bd370661bb0"
         },
         {
           "path": "src/src/http/dto/draft-connector-configuration-from-openapi.dto.ts",
@@ -6291,7 +6291,7 @@
         },
         {
           "path": "src/src/connector-registry/openapi-operation-reader.ts",
-          "digest": "sha256:31dd9f2a30eea610752d9e6e57c12fbdaf637c6b2eeb343250441da064f7b2c2"
+          "digest": "sha256:f6864de44b2955b41eb0ca0dfd18d78c6b4b97673a1d8734a2d59bd370661bb0"
         }
       ]
     },

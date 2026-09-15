@@ -133,8 +133,8 @@
       "id": "proof/connector-configuration-draft-maps/success-response-envelope-read-through",
       "kind": "proof",
       "file": "proof/connector-configuration-draft-maps/success-response-envelope-read-through.md",
-      "title": "Envelope descent for a success response schema's single object property -- proof",
-      "summary": "Two tests added to openapi-operation-reader.spec.ts prove every criterion of the envelope-descent task and demonstrate the envelope rule's own invariant whole; the domain field's cross-file 'read by no observation' clause and three behavior inferences the implementation left open are recorded as untested rather than pinned.",
+      "title": "Envelope descent for a success response schema's single object property",
+      "summary": "One table-driven test exercises every branch the envelope invariant distinguishes and a second confirms a non-enveloped field omits the envelope key outright, together with a narrowing edit to a pre-existing, now over-strict $ref-reading assertion in the same file that this task's criteria never claimed as totality.",
       "task": "task/connector-configuration-draft-maps/success-response-envelope-read-through"
     },
     {

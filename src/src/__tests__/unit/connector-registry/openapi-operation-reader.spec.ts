@@ -689,9 +689,12 @@ it('reads a success response and its schema reached through $refs into fields, t
 
   const reading = readOpenApiOperation(documentText, '/widgets', 'get');
 
-  expect(reading.successResponseFields).toEqual([
-    { name: 'serial', path: 'serial', status: '200', declaredType: 'string' },
-  ]);
+  expect(reading.successResponseFields).toHaveLength(1);
+  const [field] = reading.successResponseFields;
+  expect(field.name).toBe('serial');
+  expect(field.path).toBe('serial');
+  expect(field.status).toBe('200');
+  expect(field.declaredType).toBe('string');
 });
 
 it('refuses (as OpenApiDocumentNotReadableError) a success response schema whose $ref chain cycles back to itself', () => {
