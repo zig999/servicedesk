@@ -520,6 +520,10 @@
           "digest": "sha256:63d37bec026ea6d55bfe965c846a15e514ead3f9ee6462a54a50bd6b45faa4e3"
         },
         {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
+        {
           "path": "frontend/app/src/hooks/use-draft-connector-configuration-from-openapi.ts",
           "digest": "sha256:747bd49e3cd124daf2aa72d2efd2edf4a4f81c5087c2b5504af7610acd114225"
         },
@@ -971,6 +975,10 @@
       "node": "contracts/integration/capability-schema-draft",
       "digest": "sha256:a1c320f0e305085664f52b831c4c0cbb1859a526e43a3feb8ff447ef3bfb50f3",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
         {
           "path": "src/src/http/build-app.ts",
           "digest": "sha256:700880c44ed7a412443f81c46a9641e441240a92b79a653e7e3a88f256017275"
@@ -2502,6 +2510,10 @@
       "digest": "sha256:9dace35d20663828f40585f1f74792546e40477ec76f9bcf91833884c4d54051",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
+        {
           "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
           "digest": "sha256:7e57bcdb336b79a9af2530ce8764c2c484c635540e735aaecc2bb1c991af8d67"
         },
@@ -2523,6 +2535,10 @@
       "node": "domain/integration/capability-schema-draft-unresolved-item",
       "digest": "sha256:0cc87755e5bdf85a31202766a2275a56f81cca4b0dc796564c59fd87d4e56f6f",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
         {
           "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
           "digest": "sha256:837da5dc7ae0446a06346ebc1a2413b9d50fb4fd07c74afa55c481f4200574ff"
@@ -5234,6 +5250,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-capability-authoring-surface-offers-a-schema-helper",
+      "digest": "sha256:692b2c1057d87387245c23d8ddbcf445cff0076ebdf4b50ecbb765098de703b4",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-capability-declares-its-contract",
       "digest": "sha256:7ecef635d660efe9a8a3c30cc4b7ae900b90a7b7c681bb2a46a2a6fd529256af",
       "files": [
@@ -6196,6 +6222,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-pending-schema-draft-request-is-not-dispatched-again",
+      "digest": "sha256:9327950cc35f6d13198ff00c3455cb511033889a2bd50cea0bfeeffb57d9115e",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
       "digest": "sha256:1386d73793992a0ed815e8235b96e4d6b9963367f225dc2a16cae0585d0ae079",
       "files": [
@@ -6278,6 +6314,16 @@
         {
           "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
           "digest": "sha256:0408040d66216aedb7720bfac28726d8ee6fa07140f5091ccb55788e03e62f46"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator",
+      "digest": "sha256:cf41be5c942b1446500b6e77baa573b609195befca0f26bf53ec25425ea8d08d",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
         }
       ]
     },
@@ -6506,6 +6552,16 @@
         {
           "path": "frontend/app/src/services/connector-configuration-draft-disclosure.ts",
           "digest": "sha256:c963a46dd61c0653215932444eb8f9dab33ec0c884f0cf492da44c6ed0847f8f"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator",
+      "digest": "sha256:f0c92ebca5331b68f2d9fa0e1b1a63a7e0c6d583337052dac0d949c8290d0b03",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
         }
       ]
     },
@@ -6776,6 +6832,16 @@
         {
           "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
           "digest": "sha256:0408040d66216aedb7720bfac28726d8ee6fa07140f5091ccb55788e03e62f46"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers",
+      "digest": "sha256:f239d08276b5c54cf92cd00c4a333bb999304e9a935e03ee04ff2b18c4dc6722",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
+          "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
         }
       ]
     },

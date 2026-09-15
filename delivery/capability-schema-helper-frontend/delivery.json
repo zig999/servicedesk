@@ -1,0 +1,89 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "kind": "implementation",
+      "file": "implementation/schema-helper-request-and-statement/draft-request-outcome.md",
+      "title": "The draft request and its classified outcome for the Capability Schema Helper",
+      "summary": "A new hook, use-draft-capability-schema-from-openapi, that dispatches the Schema Helper's draft request through the shared apiFetch client to draft-capability-schema-from-openapi and resolves every possible answer into exactly one of six distinguishable outcomes, each drafted or refused outcome carrying the link, path and method it answers.",
+      "task": "task/schema-helper-request-and-statement/draft-request-outcome"
+    },
+    {
+      "id": "proof/schema-helper-request-and-statement/draft-request-outcome",
+      "kind": "proof",
+      "file": "proof/schema-helper-request-and-statement/draft-request-outcome.md",
+      "title": "Draft request and outcome classification proof for use-draft-capability-schema-from-openapi",
+      "summary": "A new spec file exercising the hook's single POST dispatch, its classification of a 200 answer and of each of the three named refusal codes plus any unrecognised failure into six distinct, distinguishable outcomes, its idle/pending sequencing ahead of any refusal, and its suppression of a second dispatch while one is in flight.",
+      "task": "task/schema-helper-request-and-statement/draft-request-outcome"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "rules/integration/a-capability-authoring-surface-offers-a-schema-helper",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "rules/integration/a-pending-schema-draft-request-is-not-dispatched-again",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "contracts/integration/capability-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "domain/integration/capability-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "domain/integration/capability-schema-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "task/schema-helper-request-and-statement/draft-request-outcome",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/schema-helper-request-and-statement/draft-request-outcome",
+      "to": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
