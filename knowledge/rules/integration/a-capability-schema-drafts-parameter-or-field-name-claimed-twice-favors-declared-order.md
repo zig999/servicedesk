@@ -1,0 +1,12 @@
+---
+type: invariant
+statement: Where two parameters of the chosen operation, or a parameter and a request-body field of it, would occupy one and the same input_schema property name, the first of them in the order path parameter, then query parameter, then header parameter, then cookie parameter, then request-body field becomes that property, holding its own type and its own required standing, and every other one of them is named in the draft's unresolved list with reason name-claimed-by-another-parameter, generating no properties entry.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+A JSON Schema properties object holds one entry per key, while OpenAPI 3.x parameters are named apart by location as well as by name, so two parts of one operation can share a name a properties object cannot hold twice; a-security-scheme-collision-at-one-drafted-key-favors-declared-order already meets exactly this shape over a connector configuration draft's own drafted keys and settles it the same way, by a fixed order rather than by refusing the draft or merging the two.
+The order read is the order OpenAPI 3.x itself gives a parameter's own location before it reaches a request body: path, query, header and cookie parameters are declared before the body, and a request body's own fields are read last because a-capability-input-schema-holds-a-well-formed-object already reads a capability's own properties from a flat, undifferentiated set no location distinguishes.
+The displaced name is disclosed rather than silently dropped, so the reviewing operator learns that a second part of the operation answers to that same name and chooses by hand whether the draft's single entry stands for it.

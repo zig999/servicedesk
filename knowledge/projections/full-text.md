@@ -376,6 +376,19 @@ operations:
 
 The synchronous surface the registry offers: the capability currently answering a concept, with its declared contract; the capability currently registered at a given identity, name and version together; every capability currently registered, in pages (constraints/listings-are-paged); and, now that an operator authors these directly, register one — creating it at a new name and version, or replacing whatever already stood at that identity.
 
+=== contracts/integration/capability-schema-draft
+---
+type: api
+direction: published
+operations:
+- draft-capability-schema-from-openapi
+---
+
+## Description
+
+Generate a candidate input schema and output schema for a capability from one operation of a fetched OpenAPI document -- a read, never a registration.
+Fetches the same operator-named document contracts/integration/openapi-document-operations's own read operation would fetch, but generates a schema draft rather than a listing and issues no register-capability call.
+
 === contracts/integration/concept-observation
 ---
 type: api
@@ -5433,7 +5446,61 @@ entries:
     detail nobody outside the code could otherwise learn. The delivered code and its own test already
     fix this exact shape, so the decision states what the reconciliation found rather than inventing a
     new one.
-
+- location: domain/integration/capability-schema-draft.md
+  field: attributes
+  unstated: The material sketched a draft carrying candidate input_schema and output_schema text and named as open whether one shared draft-request produces both together or two independent ones, but never the element's own shape — whether the two schemas sit on one element as two attributes, on two separate elements, or nested inside a further object — and never whether the element carries any relationship to domain/integration/capability itself.
+  decided: One value-object carrying input_schema and output_schema as two independent required string attributes, plus unresolved, and declaring no relationship to capability or to any other aggregate.
+  why: Unlike domain/integration/connector-configuration-draft, nothing this draft resolves depends on which capabilities or connector configurations are currently registered — it reads only the OpenAPI document named in the request — so there is nothing here for a relationship to name; and the two schemas are drafted, disclosed and applied independently of one another (see the entry over applying-a-drafted-capability-schema-changes-only-the-local-edit.md), so one element with two attributes reads truer than two elements or a nested shape neither disclosure nor application ever needs to cross.
+- location: domain/integration/capability-schema-draft-unresolved-item.md
+  field: attributes
+  unstated: The material did not say how one unresolved name and its reason are paired on the new element.
+  decided: 'Mirror domain/integration/connector-configuration-draft-unresolved-item''s own shape exactly: one name attribute and one reason attribute, both required, never many.'
+  why: The sibling element already proves that a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability and its neighbours can honestly disclose an unresolved name with exactly one reason each, and nothing about deriving a JSON Schema properties entry instead of a connector placeholder changes that pairing.
+- location: domain/integration/capability-schema-draft-unresolved-reason.md
+  field: values
+  unstated: The material listed "what cannot be honestly resolved" as an open question for a JSON-Schema-shaped target, without naming the closed set of reasons.
+  decided: 'Two reasons: schema-not-reducible-to-a-type, for a parameter, field or response schema whose own shape (a oneOf or an anyOf naming more than one type, among others) yields no single JSON Schema type; and name-claimed-by-another-parameter, for a property name two parts of one operation would both occupy.'
+  why: These are the two ways a JSON Schema properties entry can honestly fail to be produced from one OpenAPI operation — a type that cannot be read at all, and a name that already has an entry — mirroring the restraint domain/integration/connector-configuration-draft-unresolved-reason already holds of naming only what the draft genuinely could not turn into a placeholder, translated from the connector's placeholder vocabulary to this draft's properties-entry vocabulary.
+- location: rules/integration/a-capability-authoring-surface-offers-a-schema-helper.md
+  field: statement
+  unstated: The material sketched the helper sitting beneath the two schema fields and gated on a chosen operation, by analogy to the Configuration Helper, without deciding it as a fact of this specification.
+  decided: The helper lives beneath the Input schema and Output schema fields of the capability authoring/edit surface, and the act requesting a draft is withheld until an operation is chosen, stating which of the two the request waits on until then.
+  why: 'Mirrors a-connector-configuration-authoring-surface-offers-a-configuration-helper''s own placement and a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation''s own gating: a request made before an operation is chosen names no path and no method, and the only answer it could have is a refusal for a pairing the operator never chose, so withholding the act is what a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed already reads as the standing discipline for an act whose outcome is already known.'
+- location: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order.md
+  field: statement
+  unstated: The material named the collision (a parameter and a request-body field, or two parameters, sharing one property name) as a real problem this draft must resolve, without naming which of the two colliding parts wins or in what order.
+  decided: The order OpenAPI 3.x itself gives a parameter's own location — path, then query, then header, then cookie — with the request body read last, one step further than the format's own order reaches.
+  why: a-security-scheme-collision-at-one-drafted-key-favors-declared-order already meets the identical shape of problem (two parts of one operation claiming one drafted key) over the sibling connector configuration draft and settles it by a fixed, document-given order rather than by refusing the draft or merging the two; reading a capability's own flat properties object (a-capability-input-schema-holds-a-well-formed-object) as the request body's natural last step keeps the order total over every part this draft reads.
+- location: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit.md
+  field: statement
+  unstated: The material named as an open question whether input_schema and output_schema are applied together through one shared draft-request, or independently.
+  decided: Applying input_schema and applying output_schema are two independent acts, each touching only its own field.
+  why: The two schemas are already validated, entered and read independently elsewhere in this specification (a-capability-declares-well-formed-schemas and a-capability-input-schema-holds-a-well-formed-object each hold one schema's own well-formedness on its own account, never the other's), so an operator who wants to keep a hand-authored output_schema while replacing a drafted input_schema, or the reverse, should not be forced to overwrite both by one act.
+- location: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft.md
+  field: statement
+  unstated: The material did not say whether this new operation's own fetch refusal reuses the sibling draft's error value and timeout, or mints its own.
+  decided: Reuse OpenApiDocumentNotFetchedError and the standing 60000-millisecond timeout verbatim, rather than a new error name or a new figure.
+  why: a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document and an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already hold one vocabulary for one condition across two different operations meeting it (the draft and the operations-read); a third operation meeting the identical condition — a named link nothing answered — is the same fact and takes the same name, on the same reasoning a-submitted-registration-states-its-outcome-to-the-operator already gives for deciding one fact once rather than once per caller.
+- location: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft.md
+  field: statement
+  unstated: The material did not say whether this refusal reuses the sibling draft's error value.
+  decided: Reuse OpenApiDocumentNotReadableError verbatim.
+  why: 'The same reuse discipline as an-unfetchable-openapi-link-refuses-the-schema-draft''s own entry: one vocabulary, decided once, for one fact three operations can each meet.'
+- location: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft.md
+  field: statement
+  unstated: The material did not say whether this refusal reuses the sibling draft's error value.
+  decided: Reuse OpenApiOperationNotFoundError verbatim, under HTTP 422.
+  why: 'The same reuse discipline again: the fetched document was read successfully and the named path-and-method pairing is what cannot be drafted from, exactly the condition OpenApiOperationNotFoundError already names for the sibling connector configuration draft.'
+- location: rules/integration/a-generated-schema-draft-answers-under-http-200.md
+  field: statement
+  unstated: The material never named a successful status for the new operation's own answer.
+  decided: HTTP 200, never 201, 202 or 204.
+  why: 'a-drafted-connector-configuration-is-answered-as-a-read already gives this exact reasoning for the sibling operation: a-capability-schema-draft-registers-nothing states that generating a draft creates no capability and no record of any kind, which 201 would assert; nothing here stores a draft or publishes a read of one, so 204 and 202 name conditions this operation never has.'
+- location: contracts/integration/capability-schema-draft.md
+  field: operations
+  unstated: The material did not name the operation itself.
+  decided: draft-capability-schema-from-openapi.
+  why: Mirrors draft-connector-configuration-from-openapi's own naming convention for the sibling read, subject and verb kept parallel across the two contracts.
 ---
 
 === domain/glossary/_context
@@ -5659,6 +5726,68 @@ The most generic piece of the system; nothing in it is for case curation to read
 ## Responsibility
 
 Refuse any registration that is not read-only, lacks its declared contract, declares a schema that is not valid JSON, declares an input schema that does not hold a well-formed shape, names a connector whose registered configuration already embeds a placeholder its own input schema does not declare, or answers a concept a capability of another identity already answers; resolve each concept to exactly one capability as currently registered, and refuse to resolve one the holding answers more than once.
+
+=== domain/integration/capability-schema-draft
+---
+type: value-object
+attributes:
+- name: input_schema
+  type: string
+  required: true
+- name: output_schema
+  type: string
+  required: true
+- name: unresolved
+  type: capability-schema-draft-unresolved-item
+  required: true
+  many: true
+---
+
+## Description
+
+A candidate input schema and output schema for one capability, generated from one operation of a fetched OpenAPI document -- a read, never a registration.
+Its input_schema and its output_schema each declare a top-level properties object and, where any of their own names is declared required, a top-level required array, the same shape a-capability-input-schema-holds-a-well-formed-object already fixes for a registered capability's own input schema.
+Every name the chosen operation declares that the draft could not honestly turn into a properties entry is named in unresolved instead, by its own name and by why.
+
+## Responsibility
+
+Hold, for review, everything one operation of an OpenAPI document could honestly resolve toward one capability's input schema and output schema, and disclose by name and by reason everything it could not.
+
+=== domain/integration/capability-schema-draft-unresolved-item
+---
+type: value-object
+attributes:
+- name: name
+  type: string
+  required: true
+- name: reason
+  type: capability-schema-draft-unresolved-reason
+  required: true
+---
+
+## Description
+
+One parameter, one request-body field, or one response field an operation named that a capability schema draft could not honestly turn into a properties entry -- the name exactly as the OpenAPI document itself gives it, paired with why.
+
+## Responsibility
+
+Name one thing the draft left unresolved and the one reason it did.
+
+=== domain/integration/capability-schema-draft-unresolved-reason
+---
+type: enumeration
+values:
+- schema-not-reducible-to-a-type
+- name-claimed-by-another-parameter
+---
+
+## Description
+
+The closed set of reasons a capability schema draft names a parameter, a request-body field, or a response field apart from what it resolved: its own schema does not reduce to one JSON Schema type, a oneOf or an anyOf naming more than one type among them; or the property name it would occupy is already claimed by another parameter or field of the same operation that a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order reads first.
+
+## Responsibility
+
+None.
 
 === domain/integration/connector-configuration
 ---
@@ -6900,6 +7029,21 @@ consistency: eventual
 Only a subset of the vocabularies must exist before the first case version: its recipients, its actions, and the two outcomes of non-conclusion.
 The rest is discovered by writing cases.
 
+=== rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+---
+type: invariant
+statement: A surface authoring or editing a capability offers, beneath its Input schema and Output schema fields, a Schema Helper through which an operator names an OpenAPI document link, chooses one of the fetched document's own listed operations -- never by typing a path or a method -- and requests a capability schema draft generated from the chosen operation, that request offered only once an operation stands chosen and stating, in its place, until then, that it waits on one; requesting a draft issues no register-capability call.
+constrains:
+- domain/integration/capability
+---
+
+## Description
+
+The helper lives inside the one surface an operator already authors or edits a capability from, never a separate screen or a dialog of its own -- the same surface a-successful-capability-registration-lands-on-the-capabilitys-own-surface and a-single-capability-surface-offers-a-route-to-the-capabilities-listing already govern.
+Which operation an operator names follows the same reading a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing already gives the sibling helper: from the document's own declared operations, never from a path or a method typed free-hand, so a pairing the document never declares is never named.
+Offering the act only once an operation is chosen follows a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation's own reasoning: a request made before one is chosen names no path and no method, and the only answer it could have is a refusal for a pairing the operator never chose.
+Offering it is a fact about what the operator can do there; which control carries it, its wording and where exactly it sits beneath the two schema fields are form and belong to the interface, not here.
+
 === rules/integration/a-capability-declares-its-contract
 ---
 type: invariant
@@ -7025,6 +7169,61 @@ consistency: immediate
 `a-listed-case-version-offers-a-route-to-its-own-manifest` states the route from a listing to the single thing listed, carrying the same clause that its presence turns on nothing further — not on the presented thing's state, not on what preceded the reading. This states the reverse direction over the registry's own subject: from the single capability back to the set of them, owed unconditionally for the same reason.
 
 Consistency is immediate because the route's presence follows from the surface's own subject alone, one capability, and from nothing read elsewhere; no fact here spans two reads.
+
+=== rules/integration/a-capability-schema-draft-registers-nothing
+---
+type: invariant
+statement: Generating a capability schema draft issues no register-capability call -- no capability is created or replaced, and every capability currently registered stands exactly as it stood.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+A draft exists only to be reviewed and, at the operator's own later act, applied to an authoring surface and submitted through register-capability -- the one write the registry publishes.
+Generating one is a read, drawn from an OpenAPI document alone, and reads change nothing -- the same restraint a-connector-configuration-draft-registers-nothing already holds over its own sibling operation.
+
+=== rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+---
+type: invariant
+statement: A capability schema draft's input_schema declares a top-level properties object holding one entry for each parameter the chosen operation declares -- read the way a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs already reads a connector configuration draft's own -- and each request-body field a-connector-configuration-drafts-request-body-fields-are-its-json-schemas-top-level-properties reads from it, each entry keyed by that parameter's or field's own name and holding the type that name's own schema declares where that schema reduces to one JSON Schema type, and a top-level required array listing every such name the operation declares required; a name whose own schema does not reduce to one type declares no properties entry and stands in the draft's unresolved list instead with reason schema-not-reducible-to-a-type.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+Reuses the same path-item, $ref and request-body readings the sibling connector configuration draft already holds, because both read one and the same OpenAPI operation and neither specification reads it two different ways.
+A parameter or field schema reduces to one type where it states type directly or where every branch of an allOf shares one; a oneOf or an anyOf naming more than one type does not reduce, and the name is disclosed rather than guessed at.
+required is drafted from the operation's own declared requirement -- a parameter's own required flag, or a request-body field named in its schema's own top-level required array -- never invented where the operation leaves a name optional.
+
+=== rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+---
+type: invariant
+statement: A capability schema draft's output_schema declares a top-level properties object holding one entry for each field a-success-response-schemas-single-object-property-is-read-through-as-its-envelope reads from a success response schema of the chosen operation -- a success response schema being the schema a response keyed by a numeric status from 200 through 299 declares under the media type application/json and no other -- each entry keyed by that field's own name and holding the type declared by the schema of the lowest such status that declares it, and a top-level required array listing every name declared required by that same lowest-status schema however differently another success response schema declaring it declares it; an operation from which no such field is read drafts an output_schema whose properties object holds no entry and never without one.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+Reuses the same envelope reading the sibling connector configuration draft's own responseMap already holds, for the same document and the same reason: a schema wrapping its fields in one enveloping property is read through it rather than yielding a single field named after the envelope.
+Every success response schema contributes, rather than the lowest one alone, because a field one status carries and another does not is still a field the operation answers with; where more than one declares the same name, the lowest status's own declaration of its type and its required standing is the one kept, the same convention a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas already reads its own response fields by.
+The properties object is drafted even where it holds no entry, so a reviewing operator reads an operation that answers no field as exactly that rather than as a draft that failed silently.
+
+=== rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+---
+type: invariant
+statement: Where two parameters of the chosen operation, or a parameter and a request-body field of it, would occupy one and the same input_schema property name, the first of them in the order path parameter, then query parameter, then header parameter, then cookie parameter, then request-body field becomes that property, holding its own type and its own required standing, and every other one of them is named in the draft's unresolved list with reason name-claimed-by-another-parameter, generating no properties entry.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+A JSON Schema properties object holds one entry per key, while OpenAPI 3.x parameters are named apart by location as well as by name, so two parts of one operation can share a name a properties object cannot hold twice; a-security-scheme-collision-at-one-drafted-key-favors-declared-order already meets exactly this shape over a connector configuration draft's own drafted keys and settles it the same way, by a fixed order rather than by refusing the draft or merging the two.
+The order read is the order OpenAPI 3.x itself gives a parameter's own location before it reaches a request body: path, query, header and cookie parameters are declared before the body, and a request body's own fields are read last because a-capability-input-schema-holds-a-well-formed-object already reads a capability's own properties from a flat, undifferentiated set no location distinguishes.
+The displaced name is disclosed rather than silently dropped, so the reviewing operator learns that a second part of the operation answers to that same name and chooses by hand whether the draft's single entry stands for it.
 
 === rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing
 ---
@@ -8205,6 +8404,18 @@ constrains:
 
 The scheme text beside a credential placeholder is drafted rather than configured because Basic and Bearer are the HTTP authentication scheme's own fixed text and no part of any secret, while the placeholder resolves to exactly one value read from environment configuration. Composing the text in the draft leaves the environment holding the credential alone and keeps the drafted header a value the scheme actually accepts. It is the same division the header-carried API key already stands by, whose header name the draft states while only its value comes from the environment: what the document states goes into the draft, and only the secret is left to be configured.
 
+=== rules/integration/a-generated-schema-draft-answers-under-http-200
+---
+type: invariant
+statement: Where draft-capability-schema-from-openapi answers a request with a generated capability schema draft rather than with one of its own refusals, that answer carries an HTTP 200 status and never HTTP 201, generating a draft creating no capability and no record of any kind; never HTTP 204, the draft being the whole of what the request asked for; and never HTTP 202, the draft standing in the answer to the request that asked for it.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+The same reasoning a-drafted-connector-configuration-is-answered-as-a-read already gives the sibling connector configuration draft's own successful answer, read here over this draft's own: a-capability-schema-draft-registers-nothing states that generating a draft issues no register-capability call and creates no capability, which 201 would assert; nothing here stores a draft or publishes a read of one, so 204 and 202 name conditions this operation never has.
+
 === rules/integration/a-held-connector-configuration-answer-stands-presented-through-a-failed-further-read-but-not-a-refused-one
 ---
 type: invariant
@@ -8377,6 +8588,19 @@ constrains:
 a-malformed-or-unsupported-openapi-document-refuses-the-draft gives the draft operation this same refusal for the same reason: only OpenAPI 3.x is read, an earlier Swagger 2.0 document names its operations differently, and text that parses as neither JSON nor YAML is text nobody can read as OpenAPI. The Configuration Helper's read of a document's operations parses the same fetched text before any path or method is chosen, so it refuses the same way at the same parse stage.
 
 A document that parses but declares no version at all names that absence here too, at that same parse stage: no version stands to be named and nothing failed to parse, and the operator whose link answered something that is not an OpenAPI document at all has a different next act from the one whose link answered a 2.0 document.
+
+=== rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+---
+type: invariant
+statement: A request to draft a capability schema whose fetched document does not parse as OpenAPI 3.x in either of the two serializations the format defines, or whose declared version is not OpenAPI 3.x, is refused with an HTTP 422 response reporting an OpenApiDocumentNotReadableError, read exactly the way a-malformed-or-unsupported-openapi-document-refuses-the-draft already reads that same condition for the sibling operation, including its own reading of a document declaring no version at all; no draft is generated from an unparseable or unsupported document.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+Reuses the same error value a-malformed-or-unsupported-openapi-document-refuses-the-draft and an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already fix for the same condition, for the reason an-unfetchable-openapi-link-refuses-the-schema-draft's own description already gives: one vocabulary, decided once, for one fact met by more than one operation.
+Only OpenAPI 3.x is read for the same reason it is read for the sibling operations: a Swagger 2.0 document names its parameters, its request bodies and its responses differently, and reading one as though it were 3.x would misname what the draft resolves rather than refuse honestly.
 
 === rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed
 ---
@@ -8856,6 +9080,19 @@ Home is a new invariant over `domain/integration/openapi-document-operations`: t
 It adds no attribute to that element, publishes no operation and refuses no call — what the read answers its caller stays `an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document`'s own, and `a-connector-configuration-authoring-surface-offers-a-configuration-helper` keeps stating what the helper is and where it sits.
 It is a fact rather than form on this project's own line, changing what a person can learn and do rather than how it looks; which control carries each statement, its wording, its placement and how long it stands are the interface's own, exactly as every other surface rule here leaves them.
 
+=== rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+---
+type: invariant
+statement: Where an operator names an OpenAPI document link and one of its operations in the Schema Helper of a surface authoring or editing a capability and draft-capability-schema-from-openapi refuses that request, the surface states to that operator that no draft was generated and which of the three conditions an-unfetchable-openapi-link-refuses-the-schema-draft, a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft and an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft answered it, each stated apart from the other two, and, where the answer names none of those conditions, states that the request failed for a reason it does not recognise, never as one of them and never as a draft; no input_schema, no output_schema and no unresolved item stands beside that refusal.
+constrains:
+- domain/integration/capability
+---
+
+## Description
+
+The same statement a-refused-draft-request-states-its-refusal-to-the-operator already owes the sibling connector configuration draft's own three refusals, read here over this draft's own three.
+The Input schema and Output schema fields' own content stand untouched by this refusal's arrival, the same restraint the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival already holds.
+
 === rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
 ---
 type: policy
@@ -8921,6 +9158,18 @@ This states one act, not a second one beside the abandonment. Where the operator
 The destination this act names is the surface the operator was reached from, and on a surface reached from nothing that phrase names nothing at all. That is the silence `an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing` closed for an authoring surface left without registering, met again on the readings stated here, where there is no entry to leave without registering and that rule's own predicate binds nothing. It is not an edge of these registries: `read-capability-by-identity` and `read-connector-configuration` were published for surfaces addressed by an identity and by a connector name, which load on first navigation and on a page refresh, so an operator opens one of these surfaces at its own address or reloads it as a matter of course, and on exactly those readings there is no surface to be landed on.
 
 The listing answers, which is the property this destination has to have: `list-capabilities` and `list-connector-configurations` answer from what is currently registered and, under `constraints/listings-are-paged`, answer a page carrying a total — zero where nothing is registered — rather than refusing, while a destination keyed on the name and version or the connector name the surface presents is refused by `constraints/the-capability-identity-read-refuses-an-unregistered-identity` and `a-connector-configuration-read-by-an-unregistered-name-is-refused` on one of the very readings stated here, the reading whose read answered that nothing is registered there. Landing the operator back on the surface is refused for the reason the sibling rule already gives — no operator is left on a surface the act was supposed to take them off, and staying is already a different act, `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface`, which owes a further explicit act this does not — and because an act whose whole effect is to land the operator somewhere would, on these readings, have no effect at all. Nothing is lost by the listing: `a-single-capability-surface-offers-a-route-to-the-capabilities-listing` and `a-connector-configuration-surface-offers-a-route-to-the-listing` owe a route to that same listing on every reading of this surface regardless, and the paging objection `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` and `a-successful-connector-registration-lands-on-the-configurations-own-surface` raise against the listing does not reach an act that registers nothing and leaves no registration that has to be in view.
+
+=== rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+---
+type: invariant
+statement: an-unfetchable-openapi-link-refuses-the-schema-draft and a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft answer under the same HTTP status and never under the same error value, and neither is ever reported as the other or as a refusal carrying no named condition.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+The same distinction a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already draws between the sibling connector configuration draft's own two refusals, read here over the capability schema draft's own: telling a document that was never received from one that cannot be read is the whole reason the two refusals are two rules rather than one.
 
 === rules/integration/a-security-scheme-collision-at-one-drafted-key-favors-declared-order
 ---
@@ -9020,6 +9269,19 @@ Which control carries this act, whether it stands among the surface's own action
 
 One fact, decided once for both registries, on the reading `a-submitted-registration-states-its-outcome-to-the-operator` and `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface` each already took over this same pair.
 Consistency is eventual because the surface never holds either registration: the readings this rule is stated over are the windows a read issued separately to a registry passes through.
+
+=== rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+---
+type: invariant
+statement: A capability schema draft the Schema Helper states stands marked as generated for the link and the operation of the request that produced it, and is stated as stale -- the act applying it still offered -- from the moment the surface's link or chosen operation differs from either of those two.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+The same misreading a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes already refuses over the sibling connector configuration draft: an operator who changes the link or the operation and applies the draft still standing applies text drafted from what they moved away from, and the unresolved items beside it describe an operation they are no longer looking at.
+The act is still offered because the draft is still exactly what it was -- what changed is the surface around it, and the operator who knows that may still want it.
 
 === rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes
 ---
@@ -9392,6 +9654,20 @@ Nothing here owes the operator a second copy of what they typed: the link, the o
 What that surface states while a draft request is outstanding is not decided here, and what applying a draft does stays `applying-a-drafted-configuration-changes-only-the-local-edit`'s and `an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation`'s.
 It is a fact rather than form on this project's own line, changing what a person can learn and do; which control carries each statement, its wording, its order, its placement and how long it stands are the interface's own, exactly as every other surface rule here leaves them.
 
+=== rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+---
+type: invariant
+statement: 'Where an operator names an OpenAPI document link and one of its operations in the Schema Helper of a surface authoring or editing a capability and draft-capability-schema-from-openapi answers that request with a capability schema draft, the surface states that draft to that operator: its input_schema; its output_schema; and every unresolved item the answer carries, each by the name that answer gave it and by the reason that answer named for it, each of those reasons stated apart from every other reason the draft''s own reason vocabulary holds; stating no name and no reason the answer did not carry.'
+constrains:
+- domain/integration/capability
+---
+
+## Description
+
+The same statement an-answered-draft-request-states-its-draft-to-the-operator already owes the sibling connector configuration draft's own answer, read here over the two schema fields and the one disclosure this draft carries -- no method mismatch, no generated credential and no status or response reading, none of which this draft's own Responsibility holds.
+Every part is stated, rather than the two schemas alone, for the same reason: text alone is the one presentation that reads as a finished answer while being an unfinished one, and the unresolved list is what lets the operator judge each gap against what the document itself declared.
+The Input schema and Output schema fields' own content stand untouched by this answer's arrival, the same restraint the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival already holds; they change only through the operator's own act of applying, which applying-a-drafted-capability-schema-changes-only-the-local-edit governs.
+
 === rules/integration/an-apply-confirmation-states-what-the-draft-would-change
 ---
 type: invariant
@@ -9533,6 +9809,19 @@ Answering instead with a draft holding nothing resolved would misstate what the 
 The refusal names the path and the method it was given, on its own account, for the reason an-unfetchable-openapi-link-refuses-the-draft and a-malformed-or-unsupported-openapi-document-refuses-the-draft each name theirs: the document here was received and read successfully, so folding this into either of those would tell the operator their link or their document was at fault when what was wrong was the operation they selected. A path declared with the named method absent under it is the same refusal because it is the same thing the operator got wrong — the pairing selects the operation, and neither half of it selects one alone.
 
 HTTP 422 and the OpenApiOperationNotFoundError name follow the same reading a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already gives the draft operation's other two refusals: the request is well formed and the document was read; what it names — a path and method pairing — is what cannot be drafted from, the same class of refusal the other two already answer under 422, distinguished from them by its own named condition.
+
+=== rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+---
+type: invariant
+statement: A request to draft a capability schema whose fetched document parses and declares OpenAPI 3.x but declares no operation at the path and HTTP method the request names is refused with an HTTP 422 response reporting an OpenApiOperationNotFoundError, naming that path and that method, exactly as an-openapi-document-declaring-no-such-operation-refuses-the-draft already refuses that same condition for the sibling operation; no capability-schema-draft is produced -- no input_schema, no output_schema and no unresolved item.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+Reuses the same error value for the same reason the two fetch-and-parse refusal rules' own descriptions already give: the request is well formed and the document was read, and what it names -- a path and method pairing -- is what cannot be drafted from, exactly the condition OpenApiOperationNotFoundError already names.
+Everything a schema draft holds is drawn from one operation, so where the document declares none at the named pairing there is nothing to read a properties entry, a type or a required listing from, and answering with a draft holding nothing resolved would misstate an empty unresolved list as an operation with nothing in it rather than as an operation never found.
 
 === rules/integration/an-openapi-operations-method-is-upper-cased
 ---
@@ -9679,6 +9968,19 @@ constrains:
 
 an-unfetchable-openapi-link-refuses-the-draft gives the draft operation this same refusal for the same reason: a link nothing answered, or answered wrong, has no content yet to hold a parse failure against, and the sixty-second timeout is the one figure that keeps a slow document distinguishable from an absent one. The Configuration Helper's read of a document's operations fetches the same link before any path or method is chosen, so it fails the same way at the same fetch stage.
 
+=== rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+---
+type: invariant
+statement: A request to draft a capability schema whose named OpenAPI document link cannot be fetched -- a network failure, a timeout, or a response outside the 2xx range -- is refused before any parsing is attempted, answered with an HTTP 422 response reporting an OpenApiDocumentNotFetchedError, naming the fetch failure exactly as an-unfetchable-openapi-link-refuses-the-draft already names it for the sibling operation; the fetch is abandoned as a timeout where the named link has not answered within 60000 milliseconds of that fetch beginning; no draft is generated from a document that was never received.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+Reuses the same error value, the same HTTP status and the same sixty-second bound an-unfetchable-openapi-link-refuses-the-draft already fixes for the sibling connector configuration draft, and the same reasoning: a link nothing answered, or answered wrong, has no content yet to hold a parse failure against, and OpenApiDocumentNotFetchedError already names exactly that condition without naming which operation met it.
+One vocabulary for one condition, decided once, is the same discipline a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document and an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already hold between the draft and the operations-read: minting a second name for the same fact would give this specification two vocabularies for one condition.
+
 === rules/integration/an-unreachable-connector-ends-unavailable
 ---
 type: policy
@@ -9757,6 +10059,20 @@ constrains:
 
 An applied draft is total over the Configuration field, the same replace-whole an edit typed by hand already is, so applying one over an edit the operator already made would destroy content held nowhere else — the same hazard a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface already answers for a discard with a further explicit act, held to here for the same reason: a costly act this specification refuses to infer from a first gesture alone.
 
+=== rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+---
+type: invariant
+statement: Applying a capability schema draft's input_schema, or its output_schema, writes that text into the Input schema field or the Output schema field respectively of the surface the Schema Helper stands on and registers nothing; over a field the operator has unsubmittedly edited, that write is offered only once the operator confirms it -- stated against what currently stands there -- and is refused until confirmed, that field's content standing exactly as it stood.
+constrains:
+- domain/integration/capability
+---
+
+## Description
+
+The two fields are applied independently: applying input_schema never touches output_schema, and applying output_schema never touches input_schema, so an operator who wants one and not the other takes exactly one act.
+This is the same restraint applying-a-drafted-configuration-changes-only-the-local-edit and an-unsaved-edit-is-not-overwritten-by-applying-a-draft-without-confirmation already hold over the sibling connector configuration draft, read here over two fields rather than one: applying is the operator's own act, and an edit held nowhere else is never silently replaced.
+Nothing is registered by applying either field; register-capability remains the one write that changes what is registered, taken only at the operator's own later submission.
+
 === rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit
 ---
 type: invariant
@@ -9817,6 +10133,18 @@ The sibling rule is written over `draft-connector-configuration-from-openapi` an
 
 It adds no attribute to that element, publishes no operation and refuses no call, and it does not decide what that surface states while an operations read is outstanding. Which control carries a refusal, its wording and its placement stay the interface's own, as every other surface rule here leaves them.
 
+=== rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+---
+type: invariant
+statement: No refusal a-refused-schema-draft-states-its-refusal-to-the-operator states is stated of a schema draft request the operation has not answered.
+constrains:
+- domain/integration/capability-schema-draft
+---
+
+## Description
+
+The same bound no-draft-refusal-is-stated-before-the-operation-answers already puts on the sibling connector configuration draft's own refusals: a refusal stated before an answer arrives is a refusal invented by the surface.
+
 === rules/integration/one-capability-answers-one-concept
 ---
 type: policy
@@ -9863,6 +10191,18 @@ constrains:
 
 a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing leaves the operator no way to name an operation but the listing, so a listing with nothing in it is the whole of what they see while the read is outstanding, when the document declares no operation, and when the read was refused.
 Three situations reading alike tell the operator nothing about which they are in — waiting, correcting the document, or correcting the link — which is the same silence a-presented-connector-configurations-four-readings-are-mutually-distinguishable refuses over the sibling read.
+
+=== rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+---
+type: invariant
+statement: 'The content of the Input schema field and the Output schema field a-capability-authoring-surface-offers-a-schema-helper states stand exactly as they stood when a capability schema draft''s answer arrives, whether that answer is a draft or a refusal: its arrival writes nothing into either field, whose content changes only where the operator themselves applies the draft.'
+constrains:
+- domain/integration/capability
+---
+
+## Description
+
+The same restraint the-configuration-field-is-untouched-by-a-drafts-arrival already holds over the sibling connector configuration draft's own Configuration field, read here over the two schema fields this draft answers toward.
 
 === rules/investigation/a-citation-stays-within-the-hypothesis-collects
 ---
@@ -11905,6 +12245,37 @@ involves:
 
 A concept with no stated meaning would publish a name nobody downstream — the glossary browser, a hypothesis's citation, a judgment prompt — could read.
 
+=== scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+---
+subject: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+given:
+- an operation declares a required path parameter cpf of type string and an optional query parameter includeHistory of type boolean
+when:
+- an operator requests a capability schema draft generated from that operation
+then:
+- the draft's input_schema declares a properties object holding cpf typed string and includeHistory typed boolean
+- the draft's input_schema declares a required array holding exactly cpf
+---
+
+## Description
+
+The ordinary case a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields states in the abstract: two parameters, one required and one not, neither colliding with anything else the operation declares, each reducing to a single JSON Schema type.
+
+=== scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+---
+subject: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+given:
+- an operation declares a 200 response and a 201 response, both under application/json, each declaring a top-level properties object naming id, the 200 response declaring id typed string and the 201 response declaring id typed integer
+when:
+- an operator requests a capability schema draft generated from that operation
+then:
+- the draft's output_schema properties object holds exactly one entry named id, typed string
+---
+
+## Description
+
+Two success response schemas declaring one field name under differing declarations is the case a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses settles by keeping the lowest success status's own declaration, 200 before 201.
+
 === scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
 ---
 subject: rules/integration/a-connector-placeholder-is-declared-by-its-capability
@@ -12027,6 +12398,22 @@ involves:
 ## Description
 
 The operator renames id to login, or adds login at the path they choose, before saving — the correction an observation ending ok with an empty field set would never have told them to make.
+
+=== scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+---
+subject: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+given:
+- an operation declares a query parameter named status and a request-body field also named status
+when:
+- an operator requests a capability schema draft generated from that operation
+then:
+- the draft's input_schema properties object holds exactly one entry named status, holding the query parameter's own type
+- the draft's unresolved list names status with reason name-claimed-by-another-parameter
+---
+
+## Description
+
+A query parameter and a request-body field of one operation sharing one name is the collision a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order settles by declared order, the parameter standing ahead of the body in that order.
 
 === scenarios/integration/a-single-object-property-is-read-through-as-the-response-envelope
 ---

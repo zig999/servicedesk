@@ -22,6 +22,22 @@ classDiagram
         +registerCapability()
         +resolveConcept()
     }
+    class CapabilitySchemaDraft {
+        <<ValueObject>>
+        +string inputSchema
+        +string outputSchema
+        +CapabilitySchemaDraftUnresolvedItem[] unresolved
+    }
+    class CapabilitySchemaDraftUnresolvedItem {
+        <<ValueObject>>
+        +string name
+        +CapabilitySchemaDraftUnresolvedReason reason
+    }
+    class CapabilitySchemaDraftUnresolvedReason {
+        <<Enumeration>>
+        SCHEMA_NOT_REDUCIBLE_TO_A_TYPE
+        NAME_CLAIMED_BY_ANOTHER_PARAMETER
+    }
     class ConnectorConfiguration {
         <<ValueObject>>
         +string connector
