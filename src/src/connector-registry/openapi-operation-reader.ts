@@ -11,6 +11,19 @@ export type OpenApiOperationParameter = {
   readonly location: OpenApiParameterLocation;
 };
 
+export type OpenApiOperationParameterDetail = {
+  readonly name: string;
+  readonly location: OpenApiParameterLocation;
+  readonly required: boolean;
+  readonly reducedType?: string;
+};
+
+export type OpenApiRequestBodyField = {
+  readonly name: string;
+  readonly required: boolean;
+  readonly reducedType?: string;
+};
+
 export type OpenApiRequiredSecurityScheme =
   | {
       readonly schemeName: string;
@@ -51,7 +64,9 @@ export type OpenApiSuccessResponseReading = {
 export type OpenApiOperationReading = {
   readonly method: string;
   readonly parameters: readonly OpenApiOperationParameter[];
+  readonly parameterDetails: readonly OpenApiOperationParameterDetail[];
   readonly requestBodyFieldNames: readonly string[];
+  readonly requestBodyFields: readonly OpenApiRequestBodyField[];
   readonly requiredSecuritySchemes: readonly OpenApiRequiredSecurityScheme[];
   readonly serversInEffect: readonly string[];
   readonly responses: readonly OpenApiOperationResponse[];
@@ -73,10 +88,13 @@ type RawOpenApiParameter = PlainObject & {
 export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
   const document = readOpenApiDocument(documentText);
   const { pathItem, operation, operationKey } = operationEntry(document, path, method);
+  const parameterDetails = parameterDetailsOf(document, pathItem, operation);
   return {
     method: operationKey,
-    parameters: parametersOf(document, pathItem, operation),
+    parameters: parametersOf(parameterDetails),
+    parameterDetails,
     requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
+    requestBodyFields: requestBodyFieldsOf(document, operation),
     requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
     serversInEffect: serversInEffectOf(pathItem, operation, document),
     responses: responsesOf(document, operation),
@@ -119,19 +137,26 @@ function operationEntry(document: PlainObject, path: string, method: string): Op
   return { pathItem, operation: rawOperation, operationKey };
 }
 
-function parametersOf(
+function parametersOf(parameterDetails: readonly OpenApiOperationParameterDetail[]): readonly OpenApiOperationParameter[] {
+  return parameterDetails.map(({ name, location }) => ({ name, location }));
+}
+
+function parameterDetailsOf(
   document: PlainObject,
   pathItem: unknown,
   operation: PlainObject,
-): readonly OpenApiOperationParameter[] {
-  const operationParams = resolvedParameterList(document, operation.parameters);
-  const pathItemParams = isPlainObject(pathItem) ? resolvedParameterList(document, pathItem.parameters) : [];
-  const isOwnConflict = (candidate: OpenApiOperationParameter): boolean =>
+): readonly OpenApiOperationParameterDetail[] {
+  const operationParams = resolvedParameterDetailsList(document, operation.parameters);
+  const pathItemParams = isPlainObject(pathItem) ? resolvedParameterDetailsList(document, pathItem.parameters) : [];
+  const isOwnConflict = (candidate: OpenApiOperationParameterDetail): boolean =>
     operationParams.some((own) => own.name === candidate.name && own.location === candidate.location);
   return [...operationParams, ...pathItemParams.filter((candidate) => !isOwnConflict(candidate))];
 }
 
-function resolvedParameterList(document: PlainObject, rawList: unknown): readonly OpenApiOperationParameter[] {
+function resolvedParameterDetailsList(
+  document: PlainObject,
+  rawList: unknown,
+): readonly OpenApiOperationParameterDetail[] {
   if (!Array.isArray(rawList)) {
     return [];
   }
@@ -139,19 +164,53 @@ function resolvedParameterList(document: PlainObject, rawList: unknown): readonl
     .map((entry) => resolveRef(document, entry))
     .filter(isPlainObject)
     .filter(isOpenApiParameter)
-    .map((entry) => ({ name: entry.name, location: entry.in }));
+    .map((entry) => parameterDetailOf(document, entry));
+}
+
+function parameterDetailOf(document: PlainObject, entry: RawOpenApiParameter): OpenApiOperationParameterDetail {
+  const base = { name: entry.name, location: entry.in, required: entry.required === true };
+  const reducedType = reducedTypeOf(document, entry.schema);
+  return reducedType === undefined ? base : { ...base, reducedType };
 }
 
 function isOpenApiParameter(value: PlainObject): value is RawOpenApiParameter {
   return typeof value.name === 'string' && isParameterLocation(value.in);
 }
 
-function requestBodyFieldNamesOf(document: PlainObject, operation: PlainObject): readonly string[] {
+function requestBodySchemaOf(document: PlainObject, operation: PlainObject): PlainObject | undefined {
   const requestBody = resolveRef(document, operation.requestBody);
   const content = isPlainObject(requestBody) ? requestBody.content : undefined;
   const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
   const schema = isPlainObject(mediaType) ? resolveRef(document, mediaType.schema) : undefined;
-  return isPlainObject(schema) && isPlainObject(schema.properties) ? Object.keys(schema.properties) : [];
+  return isPlainObject(schema) ? schema : undefined;
+}
+
+function requestBodyFieldNamesOf(document: PlainObject, operation: PlainObject): readonly string[] {
+  const schema = requestBodySchemaOf(document, operation);
+  return schema !== undefined && isPlainObject(schema.properties) ? Object.keys(schema.properties) : [];
+}
+
+function requestBodyFieldsOf(document: PlainObject, operation: PlainObject): readonly OpenApiRequestBodyField[] {
+  const schema = requestBodySchemaOf(document, operation);
+  const properties = schema !== undefined ? schema.properties : undefined;
+  if (!isPlainObject(properties)) {
+    return [];
+  }
+  const requiredNames =
+    schema !== undefined && Array.isArray(schema.required) ? schema.required.filter(isStringValue) : [];
+  return Object.keys(properties).map((name) => requestBodyField({ document, properties, name, requiredNames }));
+}
+
+function requestBodyField(input: {
+  readonly document: PlainObject;
+  readonly properties: PlainObject;
+  readonly name: string;
+  readonly requiredNames: readonly string[];
+}): OpenApiRequestBodyField {
+  const { document, properties, name, requiredNames } = input;
+  const base = { name, required: requiredNames.includes(name) };
+  const reducedType = reducedTypeOf(document, properties[name]);
+  return reducedType === undefined ? base : { ...base, reducedType };
 }
 
 function responsesOf(document: PlainObject, operation: PlainObject): readonly OpenApiOperationResponse[] {
@@ -359,6 +418,28 @@ function isStringValue(value: unknown): value is string {
 
 function declaredTypeOf(propertySchema: unknown): string | undefined {
   return isPlainObject(propertySchema) && typeof propertySchema.type === 'string' ? propertySchema.type : undefined;
+}
+
+function reducedTypeOf(document: PlainObject, rawSchema: unknown): string | undefined {
+  const schema = resolveRef(document, rawSchema);
+  if (!isPlainObject(schema)) {
+    return undefined;
+  }
+  const directType = declaredTypeOf(schema);
+  if (directType !== undefined) {
+    return directType;
+  }
+  const combinatorKind = combinatorKindOf(schema);
+  return combinatorKind === undefined ? undefined : agreeingBranchType(document, schema[combinatorKind]);
+}
+
+function agreeingBranchType(document: PlainObject, branches: unknown): string | undefined {
+  if (!Array.isArray(branches) || branches.length === 0) {
+    return undefined;
+  }
+  const branchTypes = branches.map((branch) => declaredTypeOf(resolveRef(document, branch)));
+  const firstType = branchTypes[0];
+  return firstType !== undefined && branchTypes.every((type) => type === firstType) ? firstType : undefined;
 }
 
 function responseField(input: {

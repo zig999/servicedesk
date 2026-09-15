@@ -2476,6 +2476,40 @@
       ]
     },
     {
+      "node": "domain/integration/capability-schema-draft",
+      "digest": "sha256:9dace35d20663828f40585f1f74792546e40477ec76f9bcf91833884c4d54051",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft.ts",
+          "digest": "sha256:1c0c6ac99bfe83c38bef3710810f1031a8e11dd933d58b854fccda2be600ad3b"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/capability-schema-draft-unresolved-item",
+      "digest": "sha256:0cc87755e5bdf85a31202766a2275a56f81cca4b0dc796564c59fd87d4e56f6f",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:f839373b1a27ae597a7bebbd187d5832438796643d4cb3497351798357b0ec22"
+        },
+        {
+          "path": "src/src/connector-registry/capability-schema-draft.ts",
+          "digest": "sha256:1c0c6ac99bfe83c38bef3710810f1031a8e11dd933d58b854fccda2be600ad3b"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/capability-schema-draft-unresolved-reason",
+      "digest": "sha256:e31a85e31b2fdae569dcb0415861233e4f1c82e89257b0afb0ea06e7765462bb",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft.ts",
+          "digest": "sha256:1c0c6ac99bfe83c38bef3710810f1031a8e11dd933d58b854fccda2be600ad3b"
+        }
+      ]
+    },
+    {
       "node": "domain/integration/connector-configuration",
       "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b",
       "files": [
@@ -5280,6 +5314,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields",
+      "digest": "sha256:55d0dbcb1467c9338228193abfaf83ce86e3b8e2c1cc9cc5d0acf71cb813478c",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:f839373b1a27ae597a7bebbd187d5832438796643d4cb3497351798357b0ec22"
+        },
+        {
+          "path": "src/src/connector-registry/openapi-operation-reader.ts",
+          "digest": "sha256:af85f7d97c21b9e4484e4113a9e4849071876eb1fb00135ab9907cc3a6b2decd"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing",
       "digest": "sha256:27c0d3e9f36f0ef60edcbe1da6319cb8c180b635ac6df9956af84b867e07d6a3",
       "files": [
@@ -5918,6 +5966,16 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
           "digest": "sha256:e1c9b0cf5b07d72dcf804887aef9e9d17a87f61d351a71b4a8892f395e7e0b21"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array",
+      "digest": "sha256:5a05f1ca35eaa1715ad73bf4037706337e5ce2f0c9c68a53967b0e42d4ba918c",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:f839373b1a27ae597a7bebbd187d5832438796643d4cb3497351798357b0ec22"
         }
       ]
     },
@@ -8628,6 +8686,16 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters",
+      "digest": "sha256:12a7be4b61fbeccca4a9f130c7c0f12dfa237777837fc7ef16099df6c863538f",
+      "files": [
+        {
+          "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
+          "digest": "sha256:f839373b1a27ae597a7bebbd187d5832438796643d4cb3497351798357b0ec22"
         }
       ]
     },
