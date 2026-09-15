@@ -21,8 +21,8 @@
       "id": "proof/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields",
       "kind": "proof",
       "file": "proof/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields.md",
-      "title": "Capability schema draft input_schema derivation from parameters and request-body fields",
-      "summary": "Verifies that draftedInputSchema builds input_schema's properties and required array from an operation's non-colliding, type-reducing parameters and request-body fields, excludes and discloses unreducible and colliding names, and that the reader's own unresolved-reason enumeration stays closed to its two values.",
+      "title": "Capability schema draft input_schema derivation",
+      "summary": "Holds the fixed spec suite, with the collision-asserting test removed, up against this task's own seventeen behavioral criteria and the three nodes it can decide finitely, over the tree as the sibling collision task now leaves it.",
       "task": "task/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields"
     },
     {

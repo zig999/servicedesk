@@ -87,30 +87,6 @@ it('declares no required key when properties holds entries but the operation dec
   expect('required' in parsed).toBe(false);
 });
 
-it('excludes a name from properties and from required, even where declared required, when another part of the operation also claims the same name', () => {
-  const document = {
-    openapi: '3.0.0',
-    paths: {
-      '/widgets/{cpf}': {
-        parameters: [{ name: 'cpf', in: 'path', required: true, schema: { type: 'string' } }],
-        post: {
-          parameters: [{ name: 'id', in: 'query', required: true, schema: { type: 'string' } }],
-          requestBody: {
-            content: { 'application/json': { schema: { properties: { id: { type: 'string' } } } } },
-          },
-        },
-      },
-    },
-  };
-
-  const draft = inputSchemaFor(document, '/widgets/{cpf}', 'post');
-
-  const parsed = parsedInputSchema(draft);
-  expect('id' in (parsed.properties as object)).toBe(false);
-  expect(Object.keys(parsed.properties as object)).toEqual(['cpf']);
-  expect(parsed.required).toEqual(['cpf']);
-});
-
 it('excludes a name from properties, leaves it out of required even though the operation declares it required, and stands it in the unresolved list under schema-not-reducible-to-a-type, named exactly as the document gives it, for a schema stating no type and declaring no composition', () => {
   const document = {
     openapi: '3.0.0',
