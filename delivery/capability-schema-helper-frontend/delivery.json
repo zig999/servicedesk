@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "implementation",
+      "file": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying.md",
+      "title": "Applying a drafted capability schema writes it into the Input/Output schema fields, one field per act, gated by confirmation over an unsaved edit",
+      "summary": "CapabilitySchemaHelperFields gained two independent 'Aplicar' acts (one per schema) that write through the schema fields' own onChange(value, isValid) contract via a new per-field apply hook, going through the existing connector-configuration confirm-overwrite dialog and diff only when the targeted field already holds an unsubmitted edit, and never issuing a register-capability call.",
+      "task": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying"
+    },
+    {
       "id": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
       "kind": "implementation",
       "file": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator.md",
@@ -32,6 +40,14 @@
       "title": "Refused capability schema draft stated to the operator",
       "summary": "Extends the capability schema draft disclosure service with a refusal-specific mapping keyed on the four refusal outcome kinds from useDraftCapabilitySchemaFromOpenApi, and wires CapabilitySchemaHelperFields to render it.",
       "task": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator"
+    },
+    {
+      "id": "proof/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "proof",
+      "file": "proof/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying.md",
+      "title": "The two schema fields written only by the operator's own apply",
+      "summary": "Full-screen tests on both the capability create screen and the capability detail screen establish that a schema-draft answer's arrival (drafted or refused) writes neither schema field, that each field's own apply act writes only that field behind its own unsaved-edit confirmation while registering nothing, that the write reaches the field through the same onChange contract Discard already reads, and that the act stands offered on both screens.",
+      "task": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying"
     },
     {
       "id": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
@@ -67,6 +83,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "to": "rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "to": "rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "to": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
       "to": "rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator",
@@ -197,6 +231,12 @@
       "from": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
       "to": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "to": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "proves",
       "at": "the path"
     },
     {

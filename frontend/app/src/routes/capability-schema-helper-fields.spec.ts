@@ -30,8 +30,20 @@ function stateWith(
   };
 }
 
-function renderFields(state: CapabilitySchemaHelperState) {
-  return render(createElement(CapabilitySchemaHelperFields, { state }));
+function renderFields(
+  state: CapabilitySchemaHelperState,
+  overrides: {
+    onApplyInputSchema?: (inputSchema: string) => void;
+    onApplyOutputSchema?: (outputSchema: string) => void;
+  } = {},
+) {
+  return render(
+    createElement(CapabilitySchemaHelperFields, {
+      state,
+      onApplyInputSchema: overrides.onApplyInputSchema ?? vi.fn(),
+      onApplyOutputSchema: overrides.onApplyOutputSchema ?? vi.fn(),
+    }),
+  );
 }
 
 function openOperationSelect(): void {

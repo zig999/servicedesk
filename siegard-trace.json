@@ -6854,6 +6854,24 @@
       ]
     },
     {
+      "node": "rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit",
+      "digest": "sha256:00bc8407076a657b1b1dfc91632e96153c675a982b0f8f27a90d73c6cb8ced44",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-apply-to-json-schema-field.ts",
+          "digest": "sha256:d4176dff1ba319cc0b8314144c205fc7297024f5e3db1879fb579aef0736740d"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:901308fc7b1bce84c1b945b8b8491de33ac78a67e09e0f451bde2deee71eacb5"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/applying-a-drafted-configuration-changes-only-the-local-edit",
       "digest": "sha256:8a0f3e4940243c93c8ef777266dbbcb07489714424333d6ae3269f840c1a6398",
       "files": [
@@ -6950,6 +6968,24 @@
         {
           "path": "frontend/app/src/services/connector-configuration-operations-read-disclosure.ts",
           "digest": "sha256:0408040d66216aedb7720bfac28726d8ee6fa07140f5091ccb55788e03e62f46"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival",
+      "digest": "sha256:3f5d8fded18c186c5af1c2af559c810bf350dc36ed1f9709525aad0a98ed3baf",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-apply-to-json-schema-field.ts",
+          "digest": "sha256:d4176dff1ba319cc0b8314144c205fc7297024f5e3db1879fb579aef0736740d"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:901308fc7b1bce84c1b945b8b8491de33ac78a67e09e0f451bde2deee71eacb5"
         }
       ]
     },

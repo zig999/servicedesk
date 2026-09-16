@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/capability-schema-helper-fields.spec.ts(34,61): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ state: CapabilitySchemaHelperState; }' is not assignable to parameter of type 'Attributes & CapabilitySchemaHelperFieldsProps'.
+      Type '{ state: CapabilitySchemaHelperState; }' is missing the following properties from type 'CapabilitySchemaHelperFieldsProps': onApplyInputSchema, onApplyOutputSchema

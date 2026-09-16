@@ -10,7 +10,9 @@ import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capab
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
 import { useCapabilitySchemaHelper } from "../hooks/use-capability-schema-helper";
+import { useApplyToJsonSchemaField } from "../hooks/use-apply-to-json-schema-field";
 import { CapabilitySchemaHelperFields } from "./capability-schema-helper-fields";
+import { ConnectorConfigurationApplyConfirmationDialog } from "./connector-configuration-apply-confirmation-dialog";
 
 export const CAPABILITY_FORM_ID = "capability-form";
 
@@ -86,6 +88,15 @@ export function CapabilityFormFields({
 
   const isSaveDisabled =
     isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;
+
+  const inputSchemaApply = useApplyToJsonSchemaField(
+    inputSchema,
+    isDirty ?? inputSchema.value !== "",
+  );
+  const outputSchemaApply = useApplyToJsonSchemaField(
+    outputSchema,
+    isDirty ?? outputSchema.value !== "",
+  );
 
   return (
     <form id={CAPABILITY_FORM_ID} onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
@@ -198,7 +209,23 @@ export function CapabilityFormFields({
         </div>
       </div>
 
-      <CapabilitySchemaHelperFields state={schemaHelper} />
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+
+      <ConnectorConfigurationApplyConfirmationDialog
+        diff={inputSchemaApply.applyConfirmationDiff}
+        onOpenChange={inputSchemaApply.onApplyConfirmationOpenChange}
+        onConfirm={inputSchemaApply.onConfirmApply}
+      />
+
+      <ConnectorConfigurationApplyConfirmationDialog
+        diff={outputSchemaApply.applyConfirmationDiff}
+        onOpenChange={outputSchemaApply.onApplyConfirmationOpenChange}
+        onConfirm={outputSchemaApply.onConfirmApply}
+      />
 
       <ButtonFooter>
         <Button

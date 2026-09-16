@@ -8,6 +8,7 @@ import type { OpenApiOperation } from "../hooks/use-openapi-document-operations"
 import type { CapabilitySchemaDraft } from "../hooks/use-draft-capability-schema-from-openapi";
 import { operationsReadDisclosureStateForOutcome } from "../services/connector-configuration-operations-read-disclosure";
 import {
+  DRAFT_DISCLOSURE_APPLY_BUTTON,
   OPERATIONS_READ_EMPTY_MESSAGE,
   OPERATIONS_READ_PENDING_MESSAGE,
 } from "../services/connector-configuration-messages";
@@ -32,6 +33,8 @@ const SCHEMA_HELPER_OPERATIONS_READ_RETRY_BUTTON = "Tentar novamente";
 
 export type CapabilitySchemaHelperFieldsProps = {
   readonly state: CapabilitySchemaHelperState;
+  readonly onApplyInputSchema: (inputSchema: string) => void;
+  readonly onApplyOutputSchema: (outputSchema: string) => void;
 };
 
 function operationSelectValue(entry: Pick<OpenApiOperation, "path" | "method">): string {
@@ -40,6 +43,8 @@ function operationSelectValue(entry: Pick<OpenApiOperation, "path" | "method">):
 
 export function CapabilitySchemaHelperFields({
   state,
+  onApplyInputSchema,
+  onApplyOutputSchema,
 }: CapabilitySchemaHelperFieldsProps): JSX.Element {
   const operationsReadDisclosure = operationsReadDisclosureStateForOutcome(state.operationsOutcome);
   const refusalDisclosure = capabilitySchemaDraftRefusalDisclosureFrom(state.outcome);
@@ -117,32 +122,52 @@ export function CapabilitySchemaHelperFields({
           </div>
         )}
       </div>
-      {state.outcome.kind === "drafted" && <CapabilitySchemaDraftStatement draft={state.outcome.draft} />}
+      {state.outcome.kind === "drafted" && (
+        <CapabilitySchemaDraftStatement
+          draft={state.outcome.draft}
+          onApplyInputSchema={onApplyInputSchema}
+          onApplyOutputSchema={onApplyOutputSchema}
+        />
+      )}
     </div>
   );
 }
 
 function CapabilitySchemaDraftStatement({
   draft,
+  onApplyInputSchema,
+  onApplyOutputSchema,
 }: {
   readonly draft: CapabilitySchemaDraft;
+  readonly onApplyInputSchema: (inputSchema: string) => void;
+  readonly onApplyOutputSchema: (outputSchema: string) => void;
 }): JSX.Element {
   const disclosure = capabilitySchemaDraftDisclosureFrom(draft);
 
   return (
     <div aria-live="polite" className="flex flex-col gap-4">
       <section className="flex flex-col gap-1">
-        <p className="text-sm font-medium text-foreground">
-          {CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-medium text-foreground">
+            {CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL}
+          </p>
+          <Button type="button" onClick={() => onApplyInputSchema(disclosure.inputSchema)}>
+            {DRAFT_DISCLOSURE_APPLY_BUTTON}
+          </Button>
+        </div>
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
           {disclosure.inputSchema}
         </pre>
       </section>
       <section className="flex flex-col gap-1">
-        <p className="text-sm font-medium text-foreground">
-          {CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-medium text-foreground">
+            {CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL}
+          </p>
+          <Button type="button" onClick={() => onApplyOutputSchema(disclosure.outputSchema)}>
+            {DRAFT_DISCLOSURE_APPLY_BUTTON}
+          </Button>
+        </div>
         <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
           {disclosure.outputSchema}
         </pre>
