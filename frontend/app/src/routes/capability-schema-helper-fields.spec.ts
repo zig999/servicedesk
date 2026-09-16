@@ -4,6 +4,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { CapabilitySchemaHelperFields } from "./capability-schema-helper-fields";
 import type { CapabilitySchemaHelperState } from "../hooks/use-capability-schema-helper";
 import type { OpenApiOperation } from "../hooks/use-openapi-document-operations";
+import type { CapabilitySchemaDraft } from "../hooks/use-draft-capability-schema-from-openapi";
 
 function operation(path: string, method: string): OpenApiOperation {
   return { path, method };
@@ -32,6 +33,22 @@ function renderFields(state: CapabilitySchemaHelperState) {
 
 function openOperationSelect(): void {
   fireEvent.click(screen.getByLabelText("Operação"));
+}
+
+function normalized(element: HTMLElement): string {
+  return (element.textContent ?? "").replace(/\s+/g, " ").trim();
+}
+
+function draftedOutcomeState(draft: CapabilitySchemaDraft): CapabilitySchemaHelperState {
+  return stateWith({
+    outcome: {
+      kind: "drafted",
+      link: "https://api.example.com/openapi.json",
+      path: "/v2/translate",
+      method: "POST",
+      draft,
+    },
+  });
 }
 
 describe("CapabilitySchemaHelperFields -- the operation Select offers every operation the state lists, none dropped (criterion 3)", () => {
@@ -96,5 +113,58 @@ describe("CapabilitySchemaHelperFields -- the request act stands only over a cho
 
     fireEvent.click(button);
     expect(onRequestDraft).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- a drafted answer's whole draft is stated: both schema texts and every unresolved item by its own name and its own reason, the two reasons held apart even for a name repeated under both, and no name or reason beyond what the answer carried (criteria 1, 2, 3, 4, 5, 6, 7, 8; rule rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator)", () => {
+  it("renders both schema texts verbatim and exactly the three unresolved items the answer carried, each labeled under its own reason", () => {
+    const draft: CapabilitySchemaDraft = {
+      input_schema: "INPUT_SCHEMA_MARKER_7f3a",
+      output_schema: "OUTPUT_SCHEMA_MARKER_9c1e",
+      unresolved: [
+        { name: "alpha", reason: "schema-not-reducible-to-a-type" },
+        { name: "alpha", reason: "name-claimed-by-another-parameter" },
+        { name: "beta", reason: "name-claimed-by-another-parameter" },
+      ],
+    };
+
+    renderFields(draftedOutcomeState(draft));
+
+    expect(screen.getByText("INPUT_SCHEMA_MARKER_7f3a")).toBeTruthy();
+    expect(screen.getByText("OUTPUT_SCHEMA_MARKER_9c1e")).toBeTruthy();
+
+    const items = screen.getAllByRole("listitem").map(normalized);
+    expect(items).toHaveLength(3);
+
+    const [firstAlpha, secondAlpha, betaItem] = items;
+    if (firstAlpha === undefined || secondAlpha === undefined || betaItem === undefined) {
+      throw new Error("capability-schema-helper-fields proof: expected three unresolved list items");
+    }
+    expect(firstAlpha.startsWith("alpha:")).toBe(true);
+    expect(secondAlpha.startsWith("alpha:")).toBe(true);
+    expect(betaItem.startsWith("beta:")).toBe(true);
+
+    const firstAlphaLabel = firstAlpha.slice("alpha:".length).trim();
+    const secondAlphaLabel = secondAlpha.slice("alpha:".length).trim();
+    const betaLabel = betaItem.slice("beta:".length).trim();
+
+    expect(firstAlphaLabel.length).toBeGreaterThan(0);
+    expect(secondAlphaLabel.length).toBeGreaterThan(0);
+    expect(firstAlphaLabel).not.toBe(secondAlphaLabel);
+    expect(secondAlphaLabel).toBe(betaLabel);
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- an answer carrying no unresolved item states none (criterion 9)", () => {
+  it("renders no unresolved list item when the answer's unresolved list is empty", () => {
+    const draft: CapabilitySchemaDraft = {
+      input_schema: "{}",
+      output_schema: "{}",
+      unresolved: [],
+    };
+
+    renderFields(draftedOutcomeState(draft));
+
+    expect(screen.queryAllByRole("listitem")).toHaveLength(0);
   });
 });

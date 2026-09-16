@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "kind": "implementation",
+      "file": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator.md",
+      "title": "Drafted capability schema draft stated to the operator",
+      "summary": "CapabilitySchemaHelperFields now states a drafted outcome's input_schema, output_schema and unresolved items (each by name and by its own reason) beside the helper, sourced from a new capability-schema-draft-disclosure service and its messages module.",
+      "task": "task/schema-helper-request-and-statement/answered-draft-stated-to-the-operator"
+    },
+    {
       "id": "implementation/schema-helper-request-and-statement/draft-request-outcome",
       "kind": "implementation",
       "file": "implementation/schema-helper-request-and-statement/draft-request-outcome.md",
@@ -16,6 +24,14 @@
       "title": "Capability Schema Helper offered beneath the two schema fields",
       "summary": "CapabilityFormFields now renders a Schema Helper (link input plus an operation picker read through the existing operations hook) beneath Input schema and Output schema, offering a capability-schema draft request only once an operation is chosen, on both the create and detail surfaces that already share that component.",
       "task": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface"
+    },
+    {
+      "id": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "kind": "proof",
+      "file": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator.md",
+      "title": "Answered draft stated to the operator -- proof",
+      "summary": "Component-level tests over CapabilitySchemaHelperFields prove every criterion of a drafted outcome's statement (both schema texts, every unresolved item by name and by its own reason, apart by reason, nothing beyond what the answer carried), and service-level tests over capability-schema-draft-disclosure.ts and capability-schema-messages.ts decide the three domain nodes' facts whole.",
+      "task": "task/schema-helper-request-and-statement/answered-draft-stated-to-the-operator"
     },
     {
       "id": "proof/schema-helper-request-and-statement/draft-request-outcome",
@@ -35,6 +51,36 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "to": "rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "to": "domain/integration/capability-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "to": "domain/integration/capability-schema-draft-unresolved-item",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "to": "domain/integration/capability-schema-draft-unresolved-reason",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "to": "task/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/schema-helper-request-and-statement/draft-request-outcome",
       "to": "rules/integration/a-capability-authoring-surface-offers-a-schema-helper",
@@ -117,6 +163,12 @@
       "from": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
       "to": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "to": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "kind": "proves",
       "at": "the path"
     },
     {

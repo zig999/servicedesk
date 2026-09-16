@@ -2522,6 +2522,10 @@
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
         },
         {
+          "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
+          "digest": "sha256:9a4ab82a6b042a5a685d74e2a1abde7c6e9ac5389cf352077b427235965f9f0c"
+        },
+        {
           "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
           "digest": "sha256:7e57bcdb336b79a9af2530ce8764c2c484c635540e735aaecc2bb1c991af8d67"
         },
@@ -2548,6 +2552,14 @@
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
         },
         {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:06e9b1441b9efd14ba9408a81e879518c1ea96f13e8e2b80e7ffdba9f43ad2c2"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
+          "digest": "sha256:9a4ab82a6b042a5a685d74e2a1abde7c6e9ac5389cf352077b427235965f9f0c"
+        },
+        {
           "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
           "digest": "sha256:837da5dc7ae0446a06346ebc1a2413b9d50fb4fd07c74afa55c481f4200574ff"
         },
@@ -2569,6 +2581,10 @@
       "node": "domain/integration/capability-schema-draft-unresolved-reason",
       "digest": "sha256:e31a85e31b2fdae569dcb0415861233e4f1c82e89257b0afb0ea06e7765462bb",
       "files": [
+        {
+          "path": "frontend/app/src/services/capability-schema-messages.ts",
+          "digest": "sha256:716d7efded0d5f42bdf6d7b208a62d92f93e056363c56d3c61f3214724649be3"
+        },
         {
           "path": "src/src/connector-registry/capability-schema-draft-output-schema.ts",
           "digest": "sha256:859da376baff72319f9926e9a5b6149343cffe7d15a69634ddae092cc83596e9"
@@ -6582,6 +6598,18 @@
         {
           "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:06e9b1441b9efd14ba9408a81e879518c1ea96f13e8e2b80e7ffdba9f43ad2c2"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
+          "digest": "sha256:9a4ab82a6b042a5a685d74e2a1abde7c6e9ac5389cf352077b427235965f9f0c"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-messages.ts",
+          "digest": "sha256:716d7efded0d5f42bdf6d7b208a62d92f93e056363c56d3c61f3214724649be3"
         }
       ]
     },

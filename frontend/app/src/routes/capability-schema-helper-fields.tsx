@@ -5,11 +5,18 @@ import { Select, type SelectOption } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
 import type { CapabilitySchemaHelperState } from "../hooks/use-capability-schema-helper";
 import type { OpenApiOperation } from "../hooks/use-openapi-document-operations";
+import type { CapabilitySchemaDraft } from "../hooks/use-draft-capability-schema-from-openapi";
 import { operationsReadDisclosureStateForOutcome } from "../services/connector-configuration-operations-read-disclosure";
 import {
   OPERATIONS_READ_EMPTY_MESSAGE,
   OPERATIONS_READ_PENDING_MESSAGE,
 } from "../services/connector-configuration-messages";
+import { capabilitySchemaDraftDisclosureFrom } from "../services/capability-schema-draft-disclosure";
+import {
+  CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL,
+  CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL,
+  CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_LABEL,
+} from "../services/capability-schema-messages";
 
 const SCHEMA_HELPER_HEADING = "Assistente de Schema";
 const SCHEMA_HELPER_LINK_LABEL = "Link do documento OpenAPI";
@@ -101,6 +108,50 @@ export function CapabilitySchemaHelperFields({
           </div>
         )}
       </div>
+      {state.outcome.kind === "drafted" && <CapabilitySchemaDraftStatement draft={state.outcome.draft} />}
+    </div>
+  );
+}
+
+function CapabilitySchemaDraftStatement({
+  draft,
+}: {
+  readonly draft: CapabilitySchemaDraft;
+}): JSX.Element {
+  const disclosure = capabilitySchemaDraftDisclosureFrom(draft);
+
+  return (
+    <div aria-live="polite" className="flex flex-col gap-4">
+      <section className="flex flex-col gap-1">
+        <p className="text-sm font-medium text-foreground">
+          {CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL}
+        </p>
+        <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
+          {disclosure.inputSchema}
+        </pre>
+      </section>
+      <section className="flex flex-col gap-1">
+        <p className="text-sm font-medium text-foreground">
+          {CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL}
+        </p>
+        <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
+          {disclosure.outputSchema}
+        </pre>
+      </section>
+      {disclosure.unresolved.length > 0 && (
+        <section className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-foreground">
+            {CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_LABEL}
+          </p>
+          <ul className="flex flex-col gap-1">
+            {disclosure.unresolved.map((item) => (
+              <li key={`${item.name}:${item.reason}`} className="text-sm">
+                <span className="font-medium">{item.name}</span>: {item.reasonLabel}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
