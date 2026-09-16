@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/capability-form-fields-schema-helper-detail-placement.spec.ts
+  17:20  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/capability-form-fields-schema-helper-offer.spec.ts
+  37:20  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+✖ 2 problems (2 errors, 0 warnings)
+

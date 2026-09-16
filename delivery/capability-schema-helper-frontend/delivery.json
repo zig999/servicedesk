@@ -10,12 +10,28 @@
       "task": "task/schema-helper-request-and-statement/draft-request-outcome"
     },
     {
+      "id": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "kind": "implementation",
+      "file": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface.md",
+      "title": "Capability Schema Helper offered beneath the two schema fields",
+      "summary": "CapabilityFormFields now renders a Schema Helper (link input plus an operation picker read through the existing operations hook) beneath Input schema and Output schema, offering a capability-schema draft request only once an operation is chosen, on both the create and detail surfaces that already share that component.",
+      "task": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface"
+    },
+    {
       "id": "proof/schema-helper-request-and-statement/draft-request-outcome",
       "kind": "proof",
       "file": "proof/schema-helper-request-and-statement/draft-request-outcome.md",
       "title": "Draft request and outcome classification proof for use-draft-capability-schema-from-openapi",
       "summary": "A new spec file exercising the hook's single POST dispatch, its classification of a 200 answer and of each of the three named refusal codes plus any unrecognised failure into six distinct, distinguishable outcomes, its idle/pending sequencing ahead of any refusal, and its suppression of a second dispatch while one is in flight.",
       "task": "task/schema-helper-request-and-statement/draft-request-outcome"
+    },
+    {
+      "id": "proof/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "kind": "proof",
+      "file": "proof/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface.md",
+      "title": "Schema Helper offer proven on the capability authoring surface",
+      "summary": "Tests establish that CapabilitySchemaHelperFields and useCapabilitySchemaHelper together place the helper inline beneath the two schema fields on both capability screens, source and render only the document's own listed operations with no free-hand entry, gate the draft-request act on a chosen operation while stating that it waits otherwise, compose and dispatch the draft request from the chosen operation alone, forward its outcome unchanged, touch no OpenAPI document URL directly, and issue no register-capability call.",
+      "task": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface"
     }
   ],
   "edges": [
@@ -80,8 +96,38 @@
       "at": "the path"
     },
     {
+      "from": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "to": "rules/integration/a-capability-authoring-surface-offers-a-schema-helper",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "to": "contracts/integration/capability-schema-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "to": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/schema-helper-request-and-statement/draft-request-outcome",
       "to": "implementation/schema-helper-request-and-statement/draft-request-outcome",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "to": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
       "kind": "proves",
       "at": "the path"
     }

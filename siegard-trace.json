@@ -516,6 +516,10 @@
       "digest": "sha256:119169c46779bf88c29e5573b3f18e7c759bb5a5e88bb3b4d75d39f8004f2d5a",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-schema-helper.ts",
+          "digest": "sha256:f88e7bd67263c6a38d8af24b2bafee85c99ca19cf3b4df1d5ef5899746789296"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-helper.ts",
           "digest": "sha256:63d37bec026ea6d55bfe965c846a15e514ead3f9ee6462a54a50bd6b45faa4e3"
         },
@@ -975,6 +979,10 @@
       "node": "contracts/integration/capability-schema-draft",
       "digest": "sha256:a1c320f0e305085664f52b831c4c0cbb1859a526e43a3feb8ff447ef3bfb50f3",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-schema-helper.ts",
+          "digest": "sha256:f88e7bd67263c6a38d8af24b2bafee85c99ca19cf3b4df1d5ef5899746789296"
+        },
         {
           "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
@@ -5254,8 +5262,20 @@
       "digest": "sha256:692b2c1057d87387245c23d8ddbcf445cff0076ebdf4b50ecbb765098de703b4",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-schema-helper.ts",
+          "digest": "sha256:f88e7bd67263c6a38d8af24b2bafee85c99ca19cf3b4df1d5ef5899746789296"
+        },
+        {
           "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:b30dd5cf2084db0887cefa1cfee89607325e3fb5a3c63a61988502e3947d7394"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:ddf5fee52c7d472732b8563913fd2972bc95be4c7961ddcc3aac2350293a8a66"
         }
       ]
     },

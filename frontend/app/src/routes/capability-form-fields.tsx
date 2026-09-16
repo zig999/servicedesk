@@ -9,6 +9,8 @@ import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capability-form-schema";
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
+import { useCapabilitySchemaHelper } from "../hooks/use-capability-schema-helper";
+import { CapabilitySchemaHelperFields } from "./capability-schema-helper-fields";
 
 export const CAPABILITY_FORM_ID = "capability-form";
 
@@ -74,6 +76,8 @@ export function CapabilityFormFields({
     control,
     formState: { errors },
   } = form;
+
+  const schemaHelper = useCapabilitySchemaHelper();
 
   const conceptSelectOptions: SelectOption[] = conceptOptions.map((concept) => ({
     value: concept.name,
@@ -193,6 +197,8 @@ export function CapabilityFormFields({
           </p>
         </div>
       </div>
+
+      <CapabilitySchemaHelperFields state={schemaHelper} />
 
       <ButtonFooter>
         <Button
