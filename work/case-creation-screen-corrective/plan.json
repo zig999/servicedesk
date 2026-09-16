@@ -1,0 +1,136 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-creation-screen-corrective",
+      "kind": "epic",
+      "file": "epic/case-creation-screen-corrective.md",
+      "title": "Case-creation screen correction",
+      "summary": "Builds the missing case-creation capability in the frontend, wiring the disabled \"Create case\" button on cases-list-screen.tsx to an actual /cases/new screen and route."
+    },
+    {
+      "id": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "kind": "task",
+      "file": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route.md",
+      "title": "Wire case creation to a real screen and route",
+      "summary": "Replaces the permanently-disabled \"Create case\" button on cases-list-screen.tsx with a working /cases/new route and screen, so a user can create a new case.",
+      "epic": "case-creation-screen-corrective"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-creation-screen-corrective",
+      "to": "rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
+      "kind": "implements",
+      "at": "implements[7]"
+    }
+  ]
+}
