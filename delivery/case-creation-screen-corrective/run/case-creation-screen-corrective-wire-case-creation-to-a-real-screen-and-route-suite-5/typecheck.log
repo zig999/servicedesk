@@ -1,0 +1,9 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/case-creation-screen-required-content.spec.ts(38,5): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(name: string | Function, fn?: TestFunction<object> | undefined, options?: number | undefined): void', gave the following error.
+    Argument of type '{ timeout: number; }' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(name: string | Function, options?: TestCollectorOptions | undefined, fn?: TestFunction<object> | undefined): void', gave the following error.
+    Type '() => Promise<void>' has no properties in common with type 'TestCollectorOptions'.

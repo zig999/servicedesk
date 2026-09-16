@@ -7,6 +7,7 @@ import { ConnectorConfigurationDetailScreen } from "./connector-configuration-de
 import { ConnectorConfigurationCreateScreen } from "./connector-configuration-create-screen";
 import { CapabilityDetailScreen } from "./capability-detail-screen";
 import { CapabilityCreateScreen } from "./capability-create-screen";
+import { CaseCreationScreen } from "./case-creation-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseSimulationScreen } from "./case-simulation-screen";
@@ -34,6 +35,12 @@ const caseDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug",
   component: CaseDetailScreen,
+});
+
+const caseCreateRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/cases/new",
+  component: CaseCreationScreen,
 });
 
 const caseVersionRoute = createRoute({
@@ -140,6 +147,7 @@ const caseHypothesesRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   casesListRoute,
   caseDetailRoute,
+  caseCreateRoute,
   caseVersionRoute,
   newCaseVersionRoute,
   versionManifestRoute,

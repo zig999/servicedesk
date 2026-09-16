@@ -105,7 +105,8 @@ describe("CasesListScreen", () => {
 
     await mountCasesListScreen();
 
-    const rows = await screen.findAllByRole("button");
+    const table = await screen.findByRole("table");
+    const rows = within(table).getAllByRole("button");
     expect(rows).toHaveLength(2);
 
     const alphaRow = rows[0];
@@ -149,7 +150,8 @@ describe("CasesListScreen", () => {
 
     await mountCasesListScreen();
 
-    const rows = await screen.findAllByRole("button");
+    const table = await screen.findByRole("table");
+    const rows = within(table).getAllByRole("button");
     expect(rows).toHaveLength(1);
     expect(within(rows[0]).getByText("case-empty")).toBeTruthy();
     expect(within(rows[0]).getByText("No version yet")).toBeTruthy();
@@ -193,12 +195,13 @@ describe("CasesListScreen", () => {
 
     await mountCasesListScreen();
 
-    expect(await screen.findAllByRole("button")).toHaveLength(3);
+    const table = await screen.findByRole("table");
+    expect(within(table).getAllByRole("button")).toHaveLength(3);
 
     const input = screen.getByLabelText("Search cases by slug");
     fireEvent.change(input, { target: { value: "beta" } });
 
-    const filteredRows = screen.getAllByRole("button");
+    const filteredRows = within(table).getAllByRole("button");
     expect(filteredRows).toHaveLength(1);
     expect(within(filteredRows[0]).getByText("case-beta")).toBeTruthy();
     expect(screen.queryByText("case-alpha")).toBeNull();
@@ -235,13 +238,14 @@ describe("CasesListScreen", () => {
 
     await mountCasesListScreen();
 
-    expect(await screen.findAllByRole("button")).toHaveLength(2);
+    const table = await screen.findByRole("table");
+    expect(within(table).getAllByRole("button")).toHaveLength(2);
     expect(screen.getByText("Released")).toBeTruthy();
 
     const input = screen.getByLabelText("Search cases by slug");
     fireEvent.change(input, { target: { value: "released" } });
 
-    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(within(table).queryAllByRole("button")).toHaveLength(0);
   });
 
   it("keeps showing the searchable table with zero rows when the search text matches no case, rather than the no-cases-yet empty state", async () => {
@@ -264,7 +268,8 @@ describe("CasesListScreen", () => {
 
     await mountCasesListScreen();
 
-    expect(await screen.findAllByRole("button")).toHaveLength(1);
+    const table = await screen.findByRole("table");
+    expect(within(table).getAllByRole("button")).toHaveLength(1);
 
     const input = screen.getByLabelText("Search cases by slug");
     fireEvent.change(input, { target: { value: "no-such-case" } });
@@ -272,7 +277,7 @@ describe("CasesListScreen", () => {
     expect(screen.queryByText("No cases yet — create the first one")).toBeNull();
     expect(screen.getByLabelText("Search cases by slug")).toBeTruthy();
     expect(screen.getByRole("table")).toBeTruthy();
-    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(within(table).queryAllByRole("button")).toHaveLength(0);
   });
 
   it("renders the empty-state message and a Create case action instead of a table when GET /v1/cases returns zero cases", async () => {
@@ -283,9 +288,7 @@ describe("CasesListScreen", () => {
     await mountCasesListScreen();
 
     expect(await screen.findByText("No cases yet — create the first one")).toBeTruthy();
-    const button = screen.getByRole("button", { name: "Create case" });
-    expect(button.hasAttribute("disabled")).toBe(true);
-    expect(button.title.length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "Create case" })).toBeTruthy();
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.queryByLabelText("Search cases by slug")).toBeNull();
   });
@@ -311,7 +314,8 @@ describe("CasesListScreen", () => {
 
     const router = await mountCasesListScreen();
 
-    const rows = await screen.findAllByRole("button");
+    const table = await screen.findByRole("table");
+    const rows = within(table).getAllByRole("button");
     expect(rows).toHaveLength(1);
 
     fireEvent.click(rows[0]);

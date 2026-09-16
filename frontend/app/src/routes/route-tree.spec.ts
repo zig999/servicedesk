@@ -5,6 +5,7 @@ import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { CapabilityCreateScreen } from "./capability-create-screen";
 import { CapabilityDetailScreen } from "./capability-detail-screen";
+import { CaseCreationScreen } from "./case-creation-screen";
 import { CaseSimulationScreen } from "./case-simulation-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { ConnectorConfigurationCreateScreen } from "./connector-configuration-create-screen";
@@ -19,6 +20,7 @@ import {
 
 const EXPECTED_PATHS = [
   "/cases",
+  "/cases/new",
   "/cases/$slug",
   "/cases/$slug/hypotheses",
   "/cases/$slug/versions/new",
@@ -49,7 +51,7 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the eighteen proposal-plus-origination screens' paths, and no other", () => {
+  it("registers a route at each of the nineteen proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
@@ -113,6 +115,15 @@ describe("route-tree", () => {
     );
 
     expect(detailRoute?.options.component).toBe(CapabilityDetailScreen);
+  });
+
+  it("renders the /cases/new route through CaseCreationScreen (task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route, criterion 2), distinct from the /cases/$slug route's own component", () => {
+    const routes = leafRoutes();
+    const createRoute = routes.find((route) => route.fullPath === "/cases/new");
+    const detailRoute = routes.find((route) => route.fullPath === "/cases/$slug");
+
+    expect(createRoute?.options.component).toBe(CaseCreationScreen);
+    expect(createRoute?.options.component).not.toBe(detailRoute?.options.component);
   });
 
   it("renders the /cases/$slug/versions/$version/simulate route through CaseSimulationScreen (task/simulation-cockpit/case-simulation-route, criterion 1)", () => {

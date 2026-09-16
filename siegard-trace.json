@@ -1476,6 +1476,10 @@
       "digest": "sha256:bbd97cb9f747630c88b362a4828663441aae52d9f85b9ce35cf02caf8f6ec3ee",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-creation-form.ts",
+          "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
+        },
+        {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
           "digest": "sha256:23ea4413912d6b89337cf2bae8802bbf97123d7973e26f99d198c3f086ec7347"
         },
@@ -4054,6 +4058,10 @@
       "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-creation-form.ts",
+          "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
+        },
+        {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
         },
@@ -4076,6 +4084,10 @@
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+        },
+        {
+          "path": "frontend/app/src/services/case-creation-form-schema.ts",
+          "digest": "sha256:58077fc311be741336a0d58d489705aae76762e2a7ca092b5d2e3a2b3b15b343"
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -4264,6 +4276,10 @@
           "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
         },
         {
+          "path": "frontend/app/src/routes/case-creation-form-fields.tsx",
+          "digest": "sha256:f3c1f422f1a709a1511818721d25c3ae809d7c00c4013bff7980c9db95d30774"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
@@ -4294,6 +4310,10 @@
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
           "digest": "sha256:a062a60cb0fb4d304fccfd1b73bcc22b8b5dbb020295a4e2fdf4ac3d5e56c3ab"
+        },
+        {
+          "path": "frontend/app/src/services/case-creation-form-schema.ts",
+          "digest": "sha256:58077fc311be741336a0d58d489705aae76762e2a7ca092b5d2e3a2b3b15b343"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -7686,6 +7706,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent",
+      "digest": "sha256:0694afe5c45af62c091acc00e2c2c4b00baa91bfa2aa77d6b8819958be51e4a9",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-creation-form-fields.tsx",
+          "digest": "sha256:f3c1f422f1a709a1511818721d25c3ae809d7c00c4013bff7980c9db95d30774"
+        },
+        {
+          "path": "frontend/app/src/services/case-creation-form-schema.ts",
+          "digest": "sha256:58077fc311be741336a0d58d489705aae76762e2a7ca092b5d2e3a2b3b15b343"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
       "digest": "sha256:212910d8d3df417c47bd60bf73099c3802959b813d4d6d7a20228c145dcd03a2",
       "files": [
@@ -7754,6 +7788,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
+      "digest": "sha256:a90b3cc19fe992b76bd2f45805d9ee24db437067ed2db9a9188094ced92b47a0",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-creation-form.ts",
+          "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
+        },
+        {
+          "path": "frontend/app/src/services/case-creation-form-schema.ts",
+          "digest": "sha256:58077fc311be741336a0d58d489705aae76762e2a7ca092b5d2e3a2b3b15b343"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
       "digest": "sha256:a90d5fd88e07015842951a2bc84b359f49ba1152cc71b7f1778ae6304281a052",
       "files": [
@@ -7774,6 +7822,16 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading",
+      "digest": "sha256:9069f676c64bdcc027134065ede9e42a5fdb72d30301c84e96f2fe08aab8ca97",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         }
       ]
     },
@@ -8660,6 +8718,16 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface",
+      "digest": "sha256:a1a411cfbf461d5e241744b5366115a3c78def6c4d46db7e9d03e705057348ae",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-creation-form.ts",
+          "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
         }
       ]
     },

@@ -1,0 +1,77 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "kind": "implementation",
+      "file": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route.md",
+      "title": "Case-creation screen and route, wired from the cases list",
+      "summary": "Adds a /cases/new route and screen backed by create-draft, and makes the cases list's own \"Create case\" control a real, always-offered entrance to it.",
+      "task": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route"
+    },
+    {
+      "id": "proof/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "kind": "proof",
+      "file": "proof/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route.md",
+      "title": "Proof for wire-case-creation-to-a-real-screen-and-route",
+      "summary": "Adds dedicated tests for the four criteria and the three finitely-decidable rule nodes this task implements, and repairs the pre-existing cases-list-screen and route-tree specs whose own assertions the corrected, always-enabled header control and the new /cases/new route otherwise made false.",
+      "task": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "to": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

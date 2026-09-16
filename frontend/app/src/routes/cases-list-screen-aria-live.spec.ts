@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import {
   createMemoryHistory,
   createRootRoute,
@@ -89,7 +89,8 @@ describe("CasesListScreen — the search-filtered row count is announced (ACC-07
 
     await mountCasesListScreen();
 
-    expect(await screen.findAllByRole("button")).toHaveLength(3);
+    const table = await screen.findByRole("table");
+    expect(within(table).getAllByRole("button")).toHaveLength(3);
     const initialAnnouncement = screen.getByText("3 cases found");
     expect(initialAnnouncement.getAttribute("aria-live")).toBe("polite");
 

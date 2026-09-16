@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/case-creation-screen-required-content.spec.ts
+  2:10  error  `cleanup` is performed automatically by your test runner, you don't need manual cleanups  testing-library/no-manual-cleanup
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/cases-list-screen-create-case-control.spec.ts
+  2:10  error  `cleanup` is performed automatically by your test runner, you don't need manual cleanups  testing-library/no-manual-cleanup
+
+✖ 2 problems (2 errors, 0 warnings)
+

@@ -161,78 +161,63 @@ export function CasesListScreen(): JSX.Element {
     void navigate({ to: "/cases/$slug", params: { slug } });
   }
 
-  if (casesQuery.isPending) {
-    return <p>Loading cases…</p>;
-  }
+  function renderBody(): JSX.Element {
+    if (casesQuery.isPending) {
+      return <p>Loading cases…</p>;
+    }
 
-  if (casesQuery.isError) {
+    if (casesQuery.isError) {
+      return (
+        <section>
+          <p>Cases could not be loaded.</p>
+          <Button type="button" onClick={() => void casesQuery.refetch()}>
+            Retry
+          </Button>
+        </section>
+      );
+    }
 
-    return (
-      <section>
-        <p>Cases could not be loaded.</p>
-        <Button type="button" onClick={() => void casesQuery.refetch()}>
-          Retry
-        </Button>
-      </section>
-    );
-  }
-
-  const hasNoCasesAtAll = entries.length === 0;
-
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">Cases</h1>
-      {!hasNoCasesAtAll && (
-        <>
-          <input
-            type="search"
-            value={searchText}
-            onChange={handleSearchChange}
-            placeholder="Search cases by slug"
-            aria-label="Search cases by slug"
-            className="w-full max-w-sm rounded border border-border bg-surface px-3 py-2 text-sm text-foreground"
-          />
-          {/*
-            ACC-07: the search-filtered row count changes with no page
-            navigation, so it is exposed through its own aria-live region --
-            this screen's own visible copy of the count, rather than a
-            visually-hidden duplicate, since StatusTable's own row count is
-            not otherwise stated in text anywhere on this screen.
-          */}
-          <p aria-live="polite" className="text-sm text-muted-foreground">
-            {filteredEntries.length} case{filteredEntries.length === 1 ? "" : "s"} found
-          </p>
-        </>
-      )}
-      {hasNoCasesAtAll ? (
+    if (entries.length === 0) {
+      return (
         <div className="flex flex-col items-start gap-3 rounded border border-border bg-surface p-6">
           <p className="text-sm text-foreground">
             No cases yet — create the first one
           </p>
-          {/*
-            The button's own target action (case creation) is out of this
-            task's scope: no case-creation screen exists yet anywhere in this
-            plan. Rendered present but inert (disabled, with a title
-            explaining why) rather than wired to a route that does not
-            exist -- this task's own call, disclosed in its delivery record
-            as a deferral.
-          */}
-          <button
-            type="button"
-            disabled
-            title="Case creation is not built yet in this plan"
-            className="rounded bg-muted px-3 py-2 text-sm text-foreground"
-          >
-            Create case
-          </button>
         </div>
-      ) : (
+      );
+    }
+
+    return (
+      <>
+        <input
+          type="search"
+          value={searchText}
+          onChange={handleSearchChange}
+          placeholder="Search cases by slug"
+          aria-label="Search cases by slug"
+          className="w-full max-w-sm rounded border border-border bg-surface px-3 py-2 text-sm text-foreground"
+        />
+        <p aria-live="polite" className="text-sm text-muted-foreground">
+          {filteredEntries.length} case{filteredEntries.length === 1 ? "" : "s"} found
+        </p>
         <StatusTable
           columns={COLUMNS}
           rows={filteredEntries.map(toRow)}
           onRowClick={handleRowClick}
         />
-      )}
+      </>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold text-foreground">Cases</h1>
+        <Button type="button" onClick={() => void navigate({ to: "/cases/new" })}>
+          Create case
+        </Button>
+      </div>
+      {renderBody()}
     </div>
   );
 }
