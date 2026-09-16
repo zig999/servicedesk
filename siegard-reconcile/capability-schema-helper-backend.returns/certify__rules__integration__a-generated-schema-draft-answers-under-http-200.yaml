@@ -1,0 +1,8 @@
+certified:
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    state: covered
+    tests:
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          fetches the operator-named document through the injected document fetcher, using the
+          request's own link, and answers HTTP 200 for a well-formed request that generates a draft

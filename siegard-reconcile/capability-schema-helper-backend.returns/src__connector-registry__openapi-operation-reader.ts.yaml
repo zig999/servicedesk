@@ -1,0 +1,232 @@
+findings:
+  - file: src/connector-registry/openapi-operation-reader.ts
+    where: "operationEntry() computing operationKey, and readOpenApiOperation()'s return of `method`, lines 94 and 130-139"
+    evidence: |-
+      const operationKey = method.toLowerCase();
+      ...
+      return { pathItem, operation: rawOperation, operationKey };
+      ...
+      return {
+        method: operationKey,
+    cost: >-
+      The drafted configuration's method comes back lower-cased (e.g. "get") instead of the
+      upper-cased verb the executing connector's shape requires ("GET"). An operator reviewing
+      the draft sees a method spelled the way the document happens to key its path item rather
+      than the value the HTTP call itself carries, and a later comparison of this drafted method
+      against a currently-registered configuration's own upper-case method would disagree on
+      case alone, reporting a mismatch that isn't one.
+    kind: contradicts
+    node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    correction: >-
+      Upper-case the value before assigning it to `method` (e.g. `method: operationKey.toUpperCase()`),
+      so an operation the document names under `get` is drafted as method `GET` exactly as the rule
+      states.
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: nowhere
+    evidence: >-
+      export type OpenApiOperationReading = { readonly method: string; readonly parameters:
+      readonly OpenApiOperationParameter[]; ... } -- this file returns an operation reading
+      consumed elsewhere to build the draft value-object; it never declares or assembles a
+      connector-configuration-draft itself.
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: nowhere
+    evidence: |-
+      export type OpenApiSuccessResponseReading = {
+        readonly key: string;
+        readonly hasJsonContent: boolean;
+        readonly variantsUnited: boolean;
+        readonly declaresNoProperties: boolean;
+        readonly envelope?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: "the OpenApiSuccessResponseField type (lines 47-55) and the responseField() function (lines 454-472)"
+    evidence: |-
+      export type OpenApiSuccessResponseField = {
+        readonly name: string;
+        readonly path: string;
+        readonly status: string;
+        readonly declaredType?: string;
+        readonly declaredRequired?: boolean;
+        readonly envelope?: string;
+      };
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: nowhere
+    evidence: |-
+      export type OpenApiOperationResponse = {
+        readonly key: string;
+        readonly kind: OpenApiResponseKeyKind;
+        readonly description?: string;
+      };
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: "reducedTypeOf()/agreeingBranchType() (lines 432-452) and parameterDetailOf()/requestBodyField() (lines 171-215)"
+    evidence: |-
+      const directType = declaredTypeOf(schema);
+      if (directType !== undefined) { return directType; }
+      const combinatorKind = combinatorKindOf(schema);
+      return combinatorKind === undefined ? undefined : agreeingBranchType(document, schema[combinatorKind]);
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: "schemaReadingAt()/responseField() (lines 313-347, 454-472)"
+    evidence: |-
+      const merged = mergedSchemaProperties(schemaPropertySources(document, schema, combinatorKind));
+      const topLevelNames = Object.keys(merged.properties);
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: nowhere
+    evidence: |-
+      return {
+        key,
+        hasJsonContent: true,
+        variantsUnited: reading.variantsUnited,
+        declaresNoProperties: reading.declaresNoProperties,
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: "serversInEffectOf() (lines 107-117) for server precedence and parametersOf()/parameterDetailsOf() for parameter locations"
+    evidence: |-
+      const ownServers = declaredServerUrls(operation.servers);
+      if (ownServers !== undefined) { return ownServers; }
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: "successResponseFieldsOf()/successResponseFieldsAt() (lines 243-266)"
+    evidence: |-
+      return Object.keys(responses)
+        .filter(isSuccessStatusKey)
+        .flatMap((status) => successResponseFieldsAt(document, status, responses[status]));
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: nowhere
+    evidence: |-
+      function responseKeyKind(key: string): OpenApiResponseKeyKind {
+        if (key === 'default') { return 'default'; }
+        return /^[1-5][0-9]{2}$/.test(key) ? 'status' : 'range';
+      }
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: "readOpenApiOperation()'s returned `method` field, line 94"
+    evidence: |-
+      return {
+        method: operationKey,
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: "parameterDetailsOf() (lines 145-155) and resolveRef() (lines 511-522)"
+    evidence: |-
+      const isOwnConflict = (candidate) =>
+        operationParams.some((own) => own.name === candidate.name && own.location === candidate.location);
+      return [...operationParams, ...pathItemParams.filter((candidate) => !isOwnConflict(candidate))];
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: |-
+      import { readOpenApiDocument } from './openapi-document-reader.js';
+      ...
+      const document = readOpenApiDocument(documentText);
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: "schemaReadingAt()/envelopeSchemaOf()/envelopedSchemaReading() (lines 313-379)"
+    evidence: |-
+      function envelopeSchemaOf(document, propertySchema): PlainObject | undefined {
+        const resolved = resolveRef(document, propertySchema);
+        return isPlainObject(resolved) && Object.prototype.hasOwnProperty.call(resolved, 'properties') ? resolved : undefined;
+      }
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: "operationEntry(), line 136"
+    evidence: |-
+      if (!isPlainObject(rawOperation)) {
+        throw new OpenApiOperationNotFoundError(path, method);
+      }
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |-
+      export type OpenApiOperationReading = {
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: |-
+      export type OpenApiOperationReading = {
+        readonly method: string;
+        readonly parameters: readonly OpenApiOperationParameter[];
+        readonly parameterDetails: readonly OpenApiOperationParameterDetail[];
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      export type OpenApiOperationParameterDetail = {
+        readonly name: string;
+        readonly location: OpenApiParameterLocation;
+        readonly required: boolean;
+        readonly reducedType?: string;
+      };
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: nowhere
+    evidence: |-
+      return [...operationParams, ...pathItemParams.filter((candidate) => !isOwnConflict(candidate))];
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: nowhere
+    evidence: |-
+      return reducedType === undefined ? base : { ...base, reducedType };
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: nowhere
+    evidence: |-
+      return requiredNames.includes(name);
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: nowhere
+    evidence: |-
+      return rawList.map((entry) => resolveRef(document, entry)).filter(isPlainObject).filter(isOpenApiParameter).map((entry) => parameterDetailOf(document, entry));
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: nowhere
+    evidence: |-
+      const requiredNames = schema !== undefined && Array.isArray(schema.required) ? schema.required.filter(isStringValue) : [];
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: nowhere
+    evidence: |-
+      const base = { name: entry.name, location: entry.in, required: entry.required === true };
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: nowhere
+    evidence: |-
+      return Object.keys(responses).filter(isSuccessStatusKey).flatMap((status) => successResponseFieldsAt(document, status, responses[status]));
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |-
+      export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: |-
+      export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: |-
+      export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: |-
+      import { readOpenApiDocument } from './openapi-document-reader.js';
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: "operationEntry(), line 136 (shared with the sibling connector-configuration-draft read)"
+    evidence: |-
+      if (!isPlainObject(rawOperation)) {
+        throw new OpenApiOperationNotFoundError(path, method);
+      }
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      throw notReadable('unparseable', `the security scheme "${schemeName}"`);
+looked_past: >-
+  resolvedParameterDetailsList() and isOpenApiParameter() silently drop a parameter object that
+  lacks a string name or a recognized location rather than raising or disclosing anything, and
+  requiredSecurityScheme() groups every "http" scheme (any httpScheme value, not only basic or
+  bearer) into the same shape as an apiKey scheme; neither is a domain-fact statement I can quote
+  as clearly right or wrong from this file alone, so I left both for a judgment closer to the
+  file that actually decides credential reducibility and parameter well-formedness.
+candidates_opened:
+  - rules/integration/a-connector-configuration-draft-reads-an-operations-required-security-schemes
+  - rules/integration/a-connector-configuration-draft-names-a-generated-credential-for-a-reducible-security-scheme

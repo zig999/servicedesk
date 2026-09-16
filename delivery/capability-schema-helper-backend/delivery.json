@@ -80,6 +80,37 @@
       "title": "Three HTTP 422 refusals and the generic 500 fallback for draft-capability-schema-from-openapi",
       "summary": "Adds route-level tests proving the three OpenAPI refusal conditions of draft-capability-schema-from-openapi each answer under HTTP 422 with their own error value and exact disclosed detail (including the new link disclosure beside OpenApiDocumentNotReadableError), that neither refusal ever leaks a draft field or reports as the other, and that an unmapped error falls back to the fixed HTTP 500 envelope.",
       "task": "task/capability-schema-draft-operation/three-refusals-under-http-422"
+    },
+    {
+      "id": "review/capability-schema-helper-backend",
+      "kind": "review",
+      "file": "review/capability-schema-helper-backend.md",
+      "title": "Capability Schema Helper -- backend surface, first review",
+      "summary": "The four passes' findings over the five delivered tasks of capability-schema-helper-backend: the input-schema and output-schema drafting functions, the shared OpenAPI operation reader, the draft-capability-schema-from-openapi endpoint, and its three named refusals under HTTP 422.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "a fetched document that does not parse in either of the two serializations OpenAPI 3.x defines is answered with HTTP 422 reporting an OpenApiDocumentNotReadableError.",
+        "a request whose path, query or body fails the route's declared shape is answered with HTTP 400 whose error code is VALIDATION_ERROR, whose message names which of the three failed, and whose details list the issues found.",
+        "a response keyed by a status outside 200 through 299 contributes no entry.",
+        "a schema every branch of whose oneOf or anyOf names one and the same type reduces to that type.",
+        "a schema whose oneOf or anyOf names more than one type among its branches reduces to no type.",
+        "a success response declaring no content under application/json contributes no entry.",
+        "every capability registered before the request stands exactly as it stood after it.",
+        "no parsing is attempted on a link that could not be fetched.",
+        "no second implementation of parameter reading, $ref resolution or request-body reading is added beside the one in src/src/connector-registry/openapi-operation-reader.ts.",
+        "no second implementation of success-response or envelope reading is added beside the one in src/src/connector-registry/openapi-operation-reader.ts.",
+        "that name stands in input_schema's required array where and only where that first claimant is itself declared required and holds a properties entry.",
+        "the answer stores no record of the draft.",
+        "the document fetch, the document read and the operation lookup are the existing fetcher and readers rather than a second implementation.",
+        "the fetch is abandoned as a timeout where the named link has not answered within 60000 milliseconds of that fetch beginning, and that abandonment is answered with HTTP 422 reporting an OpenApiDocumentNotFetchedError.",
+        "the operator-named document is fetched inside this backend operation, with no fetch of that link issued from any frontend module.",
+        "the request names the OpenAPI document link, the path, and the HTTP method the draft is generated from."
+      ],
+      "findings": 5
     }
   ],
   "edges": [
@@ -298,6 +329,36 @@
       "to": "implementation/capability-schema-draft-operation/three-refusals-under-http-422",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-schema-helper-backend",
+      "to": "task/capability-schema-draft-generation/colliding-names-favor-declared-order",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-schema-helper-backend",
+      "to": "task/capability-schema-draft-generation/input-schema-from-parameters-and-request-body-fields",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/capability-schema-helper-backend",
+      "to": "task/capability-schema-draft-generation/output-schema-from-success-responses",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/capability-schema-helper-backend",
+      "to": "task/capability-schema-draft-operation/draft-capability-schema-from-openapi-endpoint",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/capability-schema-helper-backend",
+      "to": "task/capability-schema-draft-operation/three-refusals-under-http-422",
+      "kind": "reviews",
+      "at": "tasks[4]"
     }
   ]
 }

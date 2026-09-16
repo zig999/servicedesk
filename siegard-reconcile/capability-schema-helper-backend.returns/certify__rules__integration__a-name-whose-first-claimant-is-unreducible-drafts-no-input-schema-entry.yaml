@@ -1,0 +1,41 @@
+certified:
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: leaves no properties entry and promotes no later claimant when the first claimant in declared order does not itself reduce to one JSON Schema type
+    why: >-
+      The named test exercises the fact for one shape only: two parameters of the chosen operation
+      claiming the name status, the first among them by declared order (the path parameter) declaring
+      an empty schema. For that shape it does assert the whole chain — properties declares no status
+      entry, the later claimant's string type is not promoted into it, the unreducible first part
+      stands in unresolved under schema-not-reducible-to-a-type, and the one displaced claimant stands
+      there under name-claimed-by-another-parameter — so it would fail if precedence passed on
+      reducibility or if either unresolved entry were dropped. Two parts the statement itself names go
+      unexercised. First, the statement covers "a parameter and a request-body field of it" occupying
+      one name; nothing in the file pairs an unreducible first-claiming parameter with a request-body
+      field of the same name, so that half of the stated trigger is never run — the file's only
+      parameter-versus-request-body collisions (the cookie-over-body precedence case and the
+      query-parameter-and-request-body status case) both have a first claimant whose schema reduces.
+      Second, the statement says "every other part claiming that name" is named in unresolved; only
+      one displaced claimant is ever present when the first is unreducible, so that the disclosure
+      generalises past a single displaced part is unexercised — the three-claimant test in the file
+      has a reducible first claimant and therefore does not bear on this node. Relatedly, "exactly as
+      it would have been had the first part's schema reduced" is asserted only for the reason string
+      on a lowercase name; the exact-as-declared spelling of a displaced claimant is proven in this
+      file only for the reducible-first case, and the same-location, array-position ordering that the
+      declared order also reads is never the ordering in play when the first claimant is unreducible.
+    remainder: testable
+    remainder_why: >-
+      Three assertions close it, each one input against one expected result. (1) An operation
+      declaring a query parameter named status with schema {} and a request-body field named status
+      typed integer: the draft's properties declares no status entry and unresolved holds
+      [{status, schema-not-reducible-to-a-type}, {status, name-claimed-by-another-parameter}]. (2) An
+      operation declaring three parts claiming status — a path parameter with schema {}, a query
+      parameter typed string, and a cookie parameter typed boolean: properties declares no status
+      entry and unresolved holds one schema-not-reducible-to-a-type entry followed by two
+      name-claimed-by-another-parameter entries, one per displaced part. (3) An operation declaring
+      two query parameters both named Customer-Id, the earlier in the parameters array with schema {}
+      and the later typed string: properties declares no Customer-Id entry and unresolved names the
+      displaced claimant as {name: 'Customer-Id', reason: 'name-claimed-by-another-parameter'},
+      spelled exactly as the document gives it.

@@ -1,0 +1,35 @@
+certified:
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          answers 422 reporting OpenApiDocumentNotReadableError disclosing exactly its own reason and the
+          operator-named link, and no draft field, for $name (the it.each over UNREADABLE_DOCUMENT_CASES:
+          "a fetched document that does not parse in either serialization OpenAPI 3.x defines",
+          "a fetched document whose declared version is not OpenAPI 3.x",
+          "a fetched document declaring no version at all")
+    why: >-
+      The unsupported-version half and the no-version-declared half are each exercised whole: a document
+      declaring openapi 2.0 and a document declaring no version each draw HTTP 422, code
+      OpenApiDocumentNotReadableError, their own reason with the operator-named link, and a body whose only
+      key is error, so no draft is answered. The unparseable half is not. The single case standing for
+      "does not parse as OpenAPI 3.x in either of the two serializations the format defines" submits the
+      text `null`, which both serializations the format defines parse successfully — it reaches the
+      unparseable reason as a value that is not a document, not as text neither serialization can read.
+      Nothing in the set submits text that is malformed in both serializations, so the condition the fact
+      names by that clause goes unexercised, and the refusal could stop holding for genuinely malformed
+      text while every assertion here still passed. Separately, nothing in the set reads the sibling
+      operation, so "read exactly the way
+      a-malformed-or-unsupported-openapi-document-refuses-the-draft already reads that same condition"
+      stands only as the literal reason names and detail fields asserted here; a drift on the sibling's
+      side would leave this file green.
+    remainder: testable
+    remainder_why: >-
+      One input — a fetched document text that neither serialization OpenAPI 3.x defines can parse, such as
+      an unterminated JSON object that YAML also refuses — against one expected result: HTTP 422, code
+      OpenApiDocumentNotReadableError, details carrying the unparseable reason together with the
+      operator-named link, and a response body whose only key is error, so no draft is generated. A second
+      assertion closes the sibling-sameness clause: the same document text submitted to
+      draft-capability-schema-from-openapi and to the sibling operation answers the same error code and the
+      same reason fields, differing only in the link each request named.

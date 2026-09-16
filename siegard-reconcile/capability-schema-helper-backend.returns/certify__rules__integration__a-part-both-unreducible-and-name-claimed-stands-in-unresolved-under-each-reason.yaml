@@ -1,0 +1,31 @@
+certified:
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          names a displaced claimant under both reasons, never one alone, when it both is displaced and does not itself reduce to one JSON Schema type
+    why: >-
+      The parameter arm of the trigger is exercised whole: a query parameter declaring an empty schema and displaced by a
+      path parameter of the same name is asserted to stand in unresolved as exactly two items, one under
+      schema-not-reducible-to-a-type and one under name-claimed-by-another-parameter, so a single item under either reason
+      would fail the assertion. The request-body-field arm is unexercised. The node states its trigger over "one parameter
+      or request-body field", and nothing in the offered proof submits a request-body field that both declares a schema not
+      reducible to one type and would occupy a name an earlier part already holds: the set's request-body collisions
+      ("drafts a single status property from the query parameter, disclosing the colliding request-body field..." and the
+      precedence case "a cookie parameter over a request-body field of the same name") give the field a reducible schema and
+      expect one item under name-claimed-by-another-parameter alone, and the set's non-reducible schemas sit only on
+      parameters. An implementation that settled a request-body field's collision before reading its type — emitting one
+      item under name-claimed-by-another-parameter alone for such a field — would leave every named test passing.
+      The neighbouring test "leaves no properties entry and promotes no later claimant when the first claimant in declared
+      order does not itself reduce to one JSON Schema type" also asserts two unresolved items, but there the two items name
+      two different parts of the operation — the earliest claimant is the unreducible one — so no part meets both triggers
+      and that test does not bear on this fact. Separately, both two-item assertions pin the order of the unresolved list,
+      which the node does not state; the assertion holds more than this fact establishes.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result: an operation declaring a parameter named status with schema {type: 'string'}
+      and a request-body field also named status whose schema states no type and declares no composition — the field is
+      displaced by the parameter under the declared order and does not reduce to one type — expected to yield an unresolved
+      list carrying two items naming status, one with reason schema-not-reducible-to-a-type and one with reason
+      name-claimed-by-another-parameter, and never one alone under either reason.

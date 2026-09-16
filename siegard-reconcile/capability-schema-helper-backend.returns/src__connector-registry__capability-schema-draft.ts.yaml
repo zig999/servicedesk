@@ -1,0 +1,130 @@
+read:
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the type CapabilitySchemaDraft, lines 13-17
+    evidence: |
+      export type CapabilitySchemaDraft = {
+        readonly input_schema: string;
+        readonly output_schema: string;
+        readonly unresolved: readonly CapabilitySchemaDraftUnresolvedItem[];
+      };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the type CapabilitySchemaDraftUnresolvedItem, lines 8-11
+    evidence: |
+      export type CapabilitySchemaDraftUnresolvedItem = {
+        readonly name: string;
+        readonly reason: CapabilitySchemaDraftUnresolvedReason;
+      };
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: >-
+      the constant CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASONS and the derived type
+      CapabilitySchemaDraftUnresolvedReason, lines 1-6
+    evidence: |
+      export const CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASONS = [
+        'schema-not-reducible-to-a-type',
+        'name-claimed-by-another-parameter',
+      ] as const;
+
+      export type CapabilitySchemaDraftUnresolvedReason = (typeof CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASONS)[number];
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; it declares no
+      ordering, no comparison and no collision handling of any kind.
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; it declares no
+      reducibility check or precedence logic of any kind.
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; it produces no
+      unresolved items and contains no branching that could double-report one.
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; no operation
+      reading or drafting logic runs here.
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; no parameter or
+      field reading occurs here.
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: nowhere
+    evidence: >-
+      input_schema and output_schema are both declared as plain strings, `readonly
+      input_schema: string;` and `readonly output_schema: string;`, so this file states no
+      internal shape for either and no required-array logic of any kind.
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; no operation
+      reading logic runs here.
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; no response
+      reading occurs here.
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: nowhere
+    evidence: >-
+      The whole of this file is the type and constant declarations above; no status
+      comparison occurs here.
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      This file declares no route, no operation name and no HTTP handling; it is limited to
+      the type and constant declarations above.
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: >-
+      This file declares no HTTP status of any kind; it is limited to the type and constant
+      declarations above.
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: >-
+      This file declares no call of any kind, register-capability or otherwise; it is
+      limited to the type and constant declarations above.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      This file declares no request handling or validation of any kind; it is limited to
+      the type and constant declarations above.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      This file declares no fetch of any kind; it is limited to the type and constant
+      declarations above.
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      This file declares no fetch, no timeout and no refusal of any kind; it is limited to
+      the type and constant declarations above.
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      This file declares no parsing or version check of any kind; it is limited to the type
+      and constant declarations above.
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      This file declares no operation lookup of any kind; it is limited to the type and
+      constant declarations above.
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: >-
+      This file declares no error value, no status and no refusal of any kind; it is
+      limited to the type and constant declarations above.
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      This file declares no error mapping or status map of any kind; it is limited to the
+      type and constant declarations above.
+looked_past: >-
+  The file's on-disk path (src/src/connector-registry/capability-schema-draft.ts, a doubled
+  "src" segment) rather than the single-"src" path the file set names is a repository-layout
+  fact, not a domain fact this file states, so it is left for whoever tracks the file set
+  itself rather than reported here.

@@ -1,0 +1,41 @@
+certified:
+  - node: contracts/integration/capability-schema-draft
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/build-app.spec.ts
+        name: >-
+          issues no register-capability call while draft-capability-schema-from-openapi answers a
+          generated draft
+      - file: src/__tests__/unit/http/build-app.spec.ts
+        name: >-
+          reaches its own controller rather than answering 404, for the
+          draft-capability-schema-from-openapi route
+    why: >-
+      The operation is reachable: the route case asserts the POST to
+      /v1/draft-capability-schema-from-openapi does not answer 404, and the register-capability test
+      asserts it answers 200. Nothing in the set reads the answer. No assertion anywhere in the file
+      touches the response body of that route, so "generate a candidate input schema and output
+      schema for a capability from one operation of a fetched OpenAPI document" goes wholly
+      unexercised — a handler answering 200 with an empty body, with a canned schema ignoring the
+      document, or with only one of the two schemas, passes every test named here. Nor does anything
+      assert the fetch: the stubbed fetchOpenApiDocument is never checked for the link it was asked
+      for, and no test places this operation's fetch beside
+      contracts/integration/openapi-document-operations's, so "fetches the same operator-named
+      document" and "generates a schema draft rather than a listing" are unexercised too. The
+      "issues no register-capability call" half is asserted, but weakly: registerCapabilitySpy is
+      installed on the registerCapability controller's dependency, which the draft controller is
+      never handed, so the spy stays uncalled whether or not the draft path registers anything — it
+      would fail only if buildApp wired that one dependency into the draft controller, which binds
+      the wiring's shape rather than the refusal to register.
+    remainder: testable
+    remainder_why: >-
+      One input — a POST to /v1/draft-capability-schema-from-openapi naming a link, a path and a
+      method that select one operation of a fetched document whose parameters, request body and
+      response schema differ from each other and from any default — against one expected result: a
+      response body carrying both a candidate input schema built from that operation's parameters
+      and request body and a candidate output schema built from that operation's response, each
+      distinguishable from the other and from a canned value; with the document fetcher asserted to
+      have been asked for exactly the named link, and the answer asserted to be a single operation's
+      draft rather than a listing of the document's operations. The registration half closes with a
+      spy reachable from the draft path — a capability store or registry dependency shared with the
+      register-capability route — asserted uncalled across that same request.

@@ -1,0 +1,27 @@
+certified:
+  - node: domain/integration/capability-schema-draft
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          fetches the operator-named document through the injected document fetcher, using the request's own link, and answers HTTP 200 for a well-formed request that generates a draft
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          answers exactly input_schema, output_schema and unresolved on a generated draft — the value object's three declared attributes and no other key
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          derives input_schema and output_schema from the named operation's resolvable parameters, request-body field and success response field, for an operation whose document declares a resolvable path parameter and a resolvable response field alongside unresolvable ones
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          names each unresolved item by its own name and its own reason, and no other field, for the same operation declaring an unresolvable parameter, a name claimed by another parameter and an unresolvable response field
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          carries a reason for every unresolved item drawn from exactly schema-not-reducible-to-a-type and name-claimed-by-another-parameter, realizing both from one request
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          answers a second request naming a different operation with that operation's own freshly generated draft, never a draft carried over from an earlier request
+    why: >-
+      The three declared attributes and their shape are exercised whole: the draft answers exactly input_schema, output_schema and unresolved and no other key; input_schema and output_schema are asserted as literal JSON declaring a top-level properties object, with a top-level required array where a name is declared required ({"properties":{"id":{"type":"string"}},"required":["id"]}) and without one where none is ({"properties":{"total":{"type":"integer"}}}, and {"properties":{}} for an operation declaring nothing), so both halves of the shape the node fixes would fail if either stopped holding; generation from one operation of a fetched document is exercised through the fetcher call on the request's own link and through a second request answering that operation's own freshly generated draft; and every name the operation declares that could not become a properties entry is asserted exactly — ['filter','id','meta'] — each item carrying its own name and its own reason and no other field, with the reasons drawn from the declared reason set. What goes unexercised is the node's "a read, never a registration": nothing in the set observes a capability registry or any store after a successful draft request, so a draft that also registered the capability it drafted would leave every assertion here passing. Note also the test "fetches through the injected document-fetcher port and reads the operation via the existing openapi-operation-reader module, declaring no second implementation of either", which reads capability-schema-draft-generation.ts as text and asserts an import statement and the absence of the strings JSON.parse and js-yaml: it binds the arrangement of the code rather than this node's fact, so it is not counted as bearing on the draft, and a reader who opens the file should not read it as proof of the read-never-a-registration half.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result: a well-formed draft request answered with 200 against an app whose connector registry (or whatever store holds registered capabilities) is observable, with the expected result that the registry holds exactly what it held before the request — no capability created, updated or persisted by drafting.

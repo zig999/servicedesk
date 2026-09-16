@@ -1,0 +1,125 @@
+read:
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the CapabilitySchemaDraftInputSchemaReading value returned by draftedInputSchema(reading),
+      read through its inputSchema and unresolved fields (input_schema and unresolved are the
+      two attributes this file exercises; output_schema is out of this file's scope)
+    evidence: >-
+      const draft = inputSchemaFor(document, '/widgets', 'get');
+
+      const parsed: unknown = JSON.parse(draft.inputSchema);
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the {name, reason} literal objects the unresolved assertions build and the explicit key-shape check
+    evidence: >-
+      expect(draft.unresolved).toEqual([{ name: 'Loyalty-Tier', reason: 'schema-not-reducible-to-a-type' }]);
+      expect(Object.keys(draft.unresolved[0]).sort()).toEqual(['name', 'reason']);
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: the literal reason strings asserted against draft.unresolved entries throughout the file
+    evidence: >-
+      expect(draft.unresolved).toEqual([{ name: 'status', reason: 'name-claimed-by-another-parameter' }]);
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: the precedenceCases table and the it.each block asserting which colliding part wins by location order
+    evidence: >-
+      { name: 'status', location: 'query', schema: { type: 'integer' } },
+      { name: 'status', location: 'path', schema: { type: 'string' } },
+      ...
+      expect(properties.status.type).toBe(expectedType);
+      expect(draft.unresolved).toEqual([{ name: 'status', reason: 'name-claimed-by-another-parameter' }]);
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: >-
+      the test asserting no properties entry and no promoted later claimant when the order-first part is unreducible
+    evidence: >-
+      expect('status' in propertiesOf(draft)).toBe(false);
+      expect(draft.unresolved).toEqual([
+        { name: 'status', reason: 'schema-not-reducible-to-a-type' },
+        { name: 'status', reason: 'name-claimed-by-another-parameter' },
+      ]);
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: the test naming a displaced claimant under both reasons at once
+    evidence: >-
+      expect(draft.unresolved).toEqual([
+        { name: 'status', reason: 'schema-not-reducible-to-a-type' },
+        { name: 'status', reason: 'name-claimed-by-another-parameter' },
+      ]);
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: >-
+      the test with a query parameter and a request-body field both named status
+    evidence: >-
+      const document = documentWithParametersAndRequestBody(
+        [{ name: 'status', location: 'query', schema: { type: 'string' } }],
+        { properties: { status: { type: 'integer' } } },
+      );
+      ...
+      expect(properties.status.type).toBe('string');
+      expect(draft.unresolved).toEqual([{ name: 'status', reason: 'name-claimed-by-another-parameter' }]);
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: >-
+      the bulk of the file's assertions on properties typing, required membership, allOf/oneOf reduction,
+      path-item/$ref parameters, and request-body fields
+    evidence: >-
+      expect(properties.cpf.type).toBe('string');
+      expect(properties.includeHistory.type).toBe('boolean');
+      expect(parsed.required).toEqual(['cpf']);
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: >-
+      the tests asserting no required key when nothing is required, alongside an unconditionally-present
+      empty properties object
+    evidence: >-
+      expect(parsed.properties).toEqual({});
+      expect('required' in parsed).toBe(false);
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: >-
+      the requiredPathAndOptionalQueryDocument fixture and its consuming test
+    evidence: >-
+      const draft = inputSchemaFor(requiredPathAndOptionalQueryDocument(), '/patients/{cpf}', 'get');
+      ...
+      expect(parsed.required).toEqual(['cpf']);
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: nowhere
+    evidence: >-
+      this file only imports draftedInputSchema and CapabilitySchemaDraftInputSchemaReading; no output_schema
+      reading is exercised
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: nowhere
+    evidence: >-
+      this file only imports draftedInputSchema and CapabilitySchemaDraftInputSchemaReading; no success-response
+      reading is exercised
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: this file calls no HTTP contract or route; it exercises the input-schema drafting function directly
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: this file makes no HTTP request and asserts no status code
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: this file calls no register-capability path and asserts nothing about mutation
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: this file sends no HTTP request and asserts no validation-error response
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      readOpenApiOperation is called on an in-memory JSON.stringify(document), not on a fetched link
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: this file exercises no fetch path or timeout
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: every document fixture in this file declares openapi 3.0.0 and parses successfully
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: every fixture names an operation the document declares at the path and method requested
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: this file exercises no refusal path at all
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: this file raises no domain error and asserts no HTTP 500 fallback
+looked_past: >-
+  the two tests standing a displaced claimant under both unresolved reasons at once (lines ~429-442 and
+  ~444-458) assert a fixed array order — schema-not-reducible-to-a-type before name-claimed-by-another-parameter
+  — that rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+  states as an unordered pair ("one... and one..."); I treated this as an incidental artifact of the exact-order
+  toEqual assertion rather than a business-meaningful ordering rule, since the node's own prose lists the two
+  reasons in that same sequence without ever asserting a sequence requirement.

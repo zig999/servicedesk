@@ -1,0 +1,7 @@
+certified:
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    state: covered
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-output-schema.spec.ts
+        name: >-
+          drafts an output_schema whose properties object holds exactly one entry named id, typed string, from a 200 and 201 both declaring id differently

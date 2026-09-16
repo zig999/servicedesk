@@ -1,0 +1,42 @@
+certified:
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    state: partial
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          excludes a name from properties, leaves it out of required even though the operation declares it required, and stands it in the unresolved list under schema-not-reducible-to-a-type, named exactly as the document gives it, for a schema stating no type and declaring no composition
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          names a displaced claimant in unresolved exactly as the OpenAPI document itself gives its name
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          ranks $title as the properties entry, disclosing the other
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          discloses every displaced claimant, not only the first, when three parts of the operation share one name
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          drafts a single status property from the query parameter, disclosing the colliding request-body field, when an operation declares a query parameter and a request-body field both named status
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          stands no name in unresolved with reason name-claimed-by-another-parameter when every parameter and field name is claimed by only one part of the operation
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          leaves no properties entry and promotes no later claimant when the first claimant in declared order does not itself reduce to one JSON Schema type
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          names a displaced claimant under both reasons, never one alone, when it both is displaced and does not itself reduce to one JSON Schema type
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-output-schema.spec.ts
+        name: >-
+          excludes a field from properties and from required, and stands it in the unresolved list under schema-not-reducible-to-a-type, when its lowest-status declaration does not reduce to one type, even though the response declares it required
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          names each unresolved item by its own name and its own reason, and no other field, for the same operation declaring an unresolvable parameter, a name claimed by another parameter and an unresolvable response field
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          carries a reason for every unresolved item drawn from exactly schema-not-reducible-to-a-type and name-claimed-by-another-parameter, realizing both from one request
+    why: >-
+      The pair's shape is exercised whole: an item carries exactly name and reason and no third key, at the unit level (Object.keys(draft.unresolved[0]).sort() equals ['name','reason']) and over every item a route answers, and each item's reason is one of the declared reason values, both of which one request realizes. Each of the three origins the fact names does produce an item somewhere in the set -- a parameter ('Loyalty-Tier', 'filter'), a request-body field displaced by a parameter ('status' in the cookie-over-body precedence case and in the query-parameter collision case, 'id' through the route), and a response field ('status' in the output unit spec, 'meta' through the route). What goes unexercised is the fidelity half of the fact for two of those three origins: the only names that could catch a name being folded, lowercased or envelope-qualified rather than carried exactly as the document gives it are 'Loyalty-Tier' and 'Customer-Id', and both are parameters. Every unresolved item drawn from a request-body field or a response field in the set is named by an already-lowercase single-token name ('status', 'id', 'meta'), which survives any normalization unchanged, and no unresolved item in the set is drawn from a field nested inside a response envelope, so that such a field's name is given plain rather than envelope-qualified is asserted nowhere -- the output spec's envelope test asserts a properties key, not an unresolved item's name.
+    remainder: testable
+    remainder_why: >-
+      One input -- an operation whose success response declares a case-and-hyphen-bearing field (say 'Created-At') with a schema stating no type, a second such field nested inside a 'data' envelope, and a request body declaring a case-bearing field displaced by a parameter of the same name -- against one expected result: unresolved holds those names character for character as the document spells them, never lowercased, folded or envelope-qualified, each paired with its own reason and carrying no key beyond name and reason.

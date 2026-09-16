@@ -1,0 +1,106 @@
+read:
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the return statement of draftedOutputSchema, line 25 — this file supplies the
+      output_schema and unresolved attributes of the value object (input_schema is supplied by
+      capability-schema-draft-input-schema.ts, outside this file)
+    evidence: >-
+      return { outputSchema: JSON.stringify(outputSchemaObject(properties, required)), unresolved };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: unresolvedItemOf, lines 43-45
+    evidence: |-
+      function unresolvedItemOf(field: OpenApiSuccessResponseField): CapabilitySchemaDraftUnresolvedItem {
+        return { name: field.name, reason: NOT_REDUCIBLE_REASON };
+      }
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: the constant declaration at line 8
+    evidence: >-
+      const NOT_REDUCIBLE_REASON: CapabilitySchemaDraftUnresolvedReason = 'schema-not-reducible-to-a-type';
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: draftedOutputSchema, lines 19-25
+    evidence: |-
+      const lowestStatusFields = lowestStatusSuccessFieldsOf(reading.successResponseFields);
+      const resolved = lowestStatusFields.filter(hasReducedType);
+      const properties = propertiesOf(resolved);
+      const required = resolved.filter((field) => field.declaredRequired === true).map((field) => field.name);
+      const unresolved = lowestStatusFields.filter((field) => !hasReducedType(field)).map(unresolvedItemOf);
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: outputSchemaObject, line 32
+    evidence: >-
+      return required.length > 0 ? { properties, required } : { properties };
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: >-
+      the call to lowestStatusSuccessFieldsOf, line 20 — the per-name lowest-status selection
+      itself runs in success-response-field-selection.ts, a file outside this set
+    evidence: >-
+      const lowestStatusFields = lowestStatusSuccessFieldsOf(reading.successResponseFields);
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: |-
+      import { lowestStatusSuccessFieldsOf } from './success-response-field-selection.js';
+      import type { OpenApiOperationReading, OpenApiSuccessResponseField } from './openapi-operation-reader.js';
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      export function draftedOutputSchema(reading: OpenApiOperationReading): CapabilitySchemaDraftOutputSchemaReading {
+looked_past: >-
+  The correctness of hasReducedType's and declaredRequired's own upstream computation — the
+  envelope reading and per-field type reduction performed in openapi-operation-reader.ts, and
+  the per-name lowest-status grouping performed in success-response-field-selection.ts — is
+  outside this file set and left for whichever review reaches those files.

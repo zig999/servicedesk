@@ -1,0 +1,142 @@
+read:
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      import { readOpenApiOperation } from '../../../connector-registry/openapi-operation-reader.js';
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      The file exercises only readOpenApiOperation's own return shape (method, parameters,
+      requestBodyFieldNames, requiredSecuritySchemes, responses, successResponseFields) and
+      never an unresolved list.
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      Neither 'schema-not-reducible-to-a-type' nor 'name-claimed-by-another-parameter' appears
+      anywhere in the file.
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: nowhere
+    evidence: >-
+      No test in the file drafts an input_schema or resolves a name collision; the reader's own
+      `reading.parameters` and `reading.requestBodyFieldNames` are returned unmerged into any
+      properties object.
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: nowhere
+    evidence: >-
+      No test reduces a parameter's schema to a JSON Schema type or drafts a properties entry.
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: nowhere
+    evidence: >-
+      No test combines an unreducible schema with a name collision.
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: nowhere
+    evidence: >-
+      The file has no scenario declaring a query parameter and a request-body field sharing one
+      name and asserting which one's type wins.
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: >-
+      the parameter-merge and request-body-field-name tests, e.g. lines 112-128 and 202-219
+    evidence: >-
+      "const parameterKeys = new Set(reading.parameters.map((parameter) => `${parameter.name}|${parameter.location}`));
+      expect(parameterKeys).toEqual(new Set(['Widget_Id|path', 'Limit-Count|query']));" and
+      "expect(reading.requestBodyFieldNames).toEqual(['Serial_Number', 'name']);" — this file
+      holds the underlying path-item/$ref parameter reading and the top-level-properties
+      request-body reading this rule reuses, though it stops short of reducing a schema to a
+      type or assembling a properties object.
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: nowhere
+    evidence: >-
+      No test asserts a required array's presence or absence.
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: nowhere
+    evidence: >-
+      No test drafts an input_schema properties object or a required array.
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: >-
+      the success-response-field tests, e.g. lines 514-545 and 619-640
+    evidence: >-
+      "const namesAndPaths = reading.successResponseFields.map((field) => ({ name: field.name, path: field.path }));"
+      and "expect(aField?.status).toBe('200'); expect(bField?.status).toBe('201');" — the file
+      holds the underlying success-response-schema (200-299, application/json only) and envelope
+      reading this rule reuses, without assembling the output_schema itself or resolving
+      cross-status name collisions.
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: nowhere
+    evidence: >-
+      No test declares the same field name under two differing success statuses and asserts
+      which status's declaration is kept; each successResponseFields test here uses one status
+      per field name.
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      The file never calls draft-capability-schema-from-openapi or asserts an HTTP contract.
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: >-
+      No HTTP status is asserted anywhere in the file.
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: >-
+      No register-capability call is exercised; the file calls only readOpenApiOperation.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      The file passes documentText, path and method as plain arguments to a pure function; no
+      HTTP request or VALIDATION_ERROR response is exercised.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      "readOpenApiOperation(documentText, '/widgets', 'GET')" — the function takes
+      already-fetched text; no fetch is issued or asserted in this file.
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      No network failure, timeout or OpenApiDocumentNotFetchedError appears in the file.
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: >-
+      the readableErrorThrownBy tests, lines 30-77
+    evidence: >-
+      "const error = readableErrorThrownBy(() => readOpenApiOperation(documentText, '/widgets', 'GET'));"
+      thrown for swagger 2.0, an unsupported declared version, unparseable text, empty text, a
+      YAML syntax error and a document declaring no version — each raising
+      OpenApiDocumentNotReadableError as the rule requires.
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: >-
+      lines 79-93
+    evidence: >-
+      "const error = operationNotFoundThrownBy(() => readOpenApiOperation(documentText, '/absent', 'GET'));
+      expect(error.context).toEqual({ path: '/absent', method: 'GET' });" and the DELETE-method
+      variant at lines 87-93 — both name the path and method exactly as the rule requires.
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: >-
+      The distinctness test at lines 95-102 compares OpenApiDocumentNotReadableError against
+      OpenApiOperationNotFoundError, not against OpenApiDocumentNotFetchedError — the pairing
+      this node states — and OpenApiDocumentNotFetchedError never appears in the file.
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      No unmapped domain error or HTTP 500/INTERNAL_ERROR response is exercised in the file.
+looked_past: >-
+  The exact internal shape of OpenApiDocumentNotReadableError's own context (the `kind` values
+  unsupported-version/unparseable/no-version-declared, and the literal detail text) is an
+  internal representation the reader throws; whether the HTTP-facing disclosure built from it
+  narrows down to "the link and nothing else of the document" as
+  a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document requires is a
+  question for the route/controller file that maps this error to a response, not for this reader
+  spec.
+candidates_opened:
+  - domain/integration/connector-configuration-draft
+  - domain/integration/connector-configuration-draft-reading-note-kind
+  - domain/integration/connector-configuration-draft-response-field
+  - domain/integration/connector-configuration-draft-status-reading
+  - rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+  - rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+  - rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+  - rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+  - rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+  - rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+  - rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  - rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+  - rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+  - scenarios/integration/a-swagger-2-document-refuses-the-draft

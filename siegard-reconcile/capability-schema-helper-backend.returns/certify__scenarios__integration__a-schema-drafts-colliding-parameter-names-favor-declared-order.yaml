@@ -1,0 +1,7 @@
+certified:
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    state: covered
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          drafts a single status property from the query parameter, disclosing the colliding request-body field, when an operation declares a query parameter and a request-body field both named status

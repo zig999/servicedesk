@@ -1,0 +1,157 @@
+read:
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the unresolvedItemOf function
+    evidence: |-
+      function unresolvedItemOf(
+        candidate: InputSchemaCandidate,
+        reason: CapabilitySchemaDraftUnresolvedReason,
+      ): CapabilitySchemaDraftUnresolvedItem {
+        return { name: candidate.name, reason };
+      }
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: >-
+      draftedInputSchema, building properties from the resolved winners and required from those
+      winners' own required flag
+    evidence: |-
+      const resolved = winners.filter(hasReducedType);
+      const properties = propertiesOf(resolved);
+      const required = resolved.filter((candidate) => candidate.required).map((candidate) => candidate.name);
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: >-
+      the PARAMETER_LOCATION_PRECEDENCE map, REQUEST_BODY_FIELD_PRECEDENCE, and
+      orderedByDeclaredPrecedence's sort
+    evidence: |-
+      const PARAMETER_LOCATION_PRECEDENCE: Readonly<Record<OpenApiParameterLocation, number>> = {
+        path: 0,
+        query: 1,
+        header: 2,
+        cookie: 3,
+      };
+      const REQUEST_BODY_FIELD_PRECEDENCE = 4;
+      function orderedByDeclaredPrecedence(group: readonly InputSchemaCandidate[]): readonly InputSchemaCandidate[] {
+        return [...group].sort((a, b) => a.precedenceRank - b.precedenceRank || a.precedenceIndex - b.precedenceIndex);
+      }
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: >-
+      inputSchemaObject
+    evidence: |-
+      function inputSchemaObject(
+        properties: InputSchemaProperties,
+        required: readonly string[],
+      ): Readonly<Record<string, unknown>> {
+        return required.length > 0 ? { properties, required } : { properties };
+      }
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: >-
+      unresolvedItemsOf's winner branch, combined with the resolved filter that excludes an
+      unreduced winner from properties
+    evidence: |-
+      function unresolvedItemsOf(group: readonly InputSchemaCandidate[]): readonly CapabilitySchemaDraftUnresolvedItem[] {
+        const [winner, ...displaced] = group;
+        const winnerItems = hasReducedType(winner) ? [] : [unresolvedItemOf(winner, NOT_REDUCIBLE_REASON)];
+        return [...winnerItems, ...displaced.flatMap(unresolvedItemsForDisplacedClaimant)];
+      }
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: >-
+      unresolvedItemsForDisplacedClaimant
+    evidence: |-
+      function unresolvedItemsForDisplacedClaimant(
+        candidate: InputSchemaCandidate,
+      ): readonly CapabilitySchemaDraftUnresolvedItem[] {
+        const claimedItem = unresolvedItemOf(candidate, NAME_CLAIMED_REASON);
+        return hasReducedType(candidate) ? [claimedItem] : [unresolvedItemOf(candidate, NOT_REDUCIBLE_REASON), claimedItem];
+      }
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: >-
+      the same required computation in draftedInputSchema that the general rule uses
+    evidence: |-
+      const required = resolved.filter((candidate) => candidate.required).map((candidate) => candidate.name);
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: >-
+      the same precedence ordering (REQUEST_BODY_FIELD_PRECEDENCE ranking a body field after every
+      parameter location) and firstInDeclaredOrder picking the winner
+    evidence: |-
+      const REQUEST_BODY_FIELD_PRECEDENCE = 4;
+      function firstInDeclaredOrder(group: readonly InputSchemaCandidate[]): InputSchemaCandidate {
+        return group[0];
+      }
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      partially: CapabilitySchemaDraftInputSchemaReading holds only this file's slice
+      (inputSchema and unresolved); output_schema is built elsewhere
+    evidence: |-
+      export type CapabilitySchemaDraftInputSchemaReading = {
+        readonly inputSchema: string;
+        readonly unresolved: readonly CapabilitySchemaDraftUnresolvedItem[];
+      };
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: >-
+      the NOT_REDUCIBLE_REASON and NAME_CLAIMED_REASON constants
+    evidence: |-
+      const NOT_REDUCIBLE_REASON: CapabilitySchemaDraftUnresolvedReason = 'schema-not-reducible-to-a-type';
+      const NAME_CLAIMED_REASON: CapabilitySchemaDraftUnresolvedReason = 'name-claimed-by-another-parameter';
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: nowhere
+    evidence: >-
+      this file exports only draftedInputSchema, operating on reading.parameterDetails and
+      reading.requestBodyFields; it reads no response schema at all
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: nowhere
+    evidence: >-
+      the file has no notion of a response or a success status; its inputs are limited to
+      OpenApiOperationReading's parameterDetails and requestBodyFields
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      the file exposes draftedInputSchema as a plain function, not an HTTP operation; it declares
+      no route, no status and no operation surface
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: >-
+      no HTTP status appears anywhere in the file; draftedInputSchema returns a plain
+      CapabilitySchemaDraftInputSchemaReading object
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: >-
+      the file makes no call of any kind beyond reading its OpenApiOperationReading argument;
+      it has no reference to register-capability or any write
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file declares no route and performs no request validation; it only maps an already-read
+      OpenApiOperationReading into a properties/required/unresolved shape
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      the file issues no fetch of any kind; it consumes an OpenApiOperationReading already
+      produced elsewhere
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      no fetch, timeout or link is referenced anywhere in the file
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      no parsing or document-version check is performed here; the file only reads the already-
+      parsed OpenApiOperationReading
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      the file has no notion of locating an operation within a document; it receives one already
+      chosen, as OpenApiOperationReading
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: >-
+      no error value, HTTP status, or refusal of any kind is constructed in this file
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the file raises and catches nothing; it is a pure mapping from OpenApiOperationReading to
+      CapabilitySchemaDraftInputSchemaReading
+looked_past: >-
+  this file's own reducedType values (whether a parameter's or field's schema reduces to one
+  JSON Schema type) are computed elsewhere, in the file bound to
+  a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+  alongside this one (openapi-operation-reader.ts); that reduction logic is that file's judgment,
+  not this one's.

@@ -1,0 +1,28 @@
+certified:
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    state: covered
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          ranks $title as the properties entry, disclosing the other
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          discloses every displaced claimant, not only the first, when three parts of the operation share one name
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          drafts a single status property from the query parameter, disclosing the colliding request-body field, when an operation declares a query parameter and a request-body field both named status
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          stands the colliding name in required only where $title
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          names a displaced claimant in unresolved exactly as the OpenAPI document itself gives its name
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          stands no name in unresolved with reason name-claimed-by-another-parameter when every parameter and field name is claimed by only one part of the operation
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          leaves no properties entry and promotes no later claimant when the first claimant in declared order does not itself reduce to one JSON Schema type
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          names a displaced claimant under both reasons, never one alone, when it both is displaced and does not itself reduce to one JSON Schema type

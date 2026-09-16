@@ -1,0 +1,33 @@
+certified:
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          carries a reason for every unresolved item drawn from exactly schema-not-reducible-to-a-type and
+          name-claimed-by-another-parameter, realizing both from one request
+      - file: src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts
+        name: >-
+          names each unresolved item by its own name and its own reason, and no other field, for the same operation
+          declaring an unresolvable parameter, a name claimed by another parameter and an unresolvable response field
+    why: >-
+      That every unresolved item carries a reason, and that exactly two distinct reasons arise from a document
+      declaring a oneOf parameter, a oneOf response field and a duplicated name, is exercised. Two stated parts go
+      unexercised. First, the closed set is never asserted against the two values the node names: the assertion
+      compares the reasons observed to CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASONS imported from
+      src/connector-registry/capability-schema-draft.ts, so it binds the response to the source's own constant and
+      would still pass were either value renamed in code and constant together — the literal strings
+      schema-not-reducible-to-a-type and name-claimed-by-another-parameter appear only in the test's name, which is
+      not an assertion. Second, which reason names which condition is never asserted: the test over the unresolved
+      items asserts their names ('filter', 'id', 'meta') and their key set, and the reasons test asserts only the set
+      of reasons used across all items, so an implementation that gave the oneOf-schema parameter
+      name-claimed-by-another-parameter and the duplicate-name path parameter schema-not-reducible-to-a-type would
+      pass every assertion in the file unchanged.
+    remainder: testable
+    remainder_why: >-
+      The declared value set is finite and each value names one condition, so one input closes both halves: the
+      existing MIXED_RESOLUTION_DOCUMENT request for GET /widgets/{id}, asserted against the literal expected result
+      — unresolved holding exactly {name: 'filter', reason: 'schema-not-reducible-to-a-type'}, {name: 'meta', reason:
+      'schema-not-reducible-to-a-type'} and {name: 'id', reason: 'name-claimed-by-another-parameter'} — with the
+      reason strings written as literals rather than read from the source constant, so a rename in code fails the
+      test and the oneOf condition is pinned to its own value apart from the claimed-name condition.

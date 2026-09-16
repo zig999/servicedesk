@@ -1,0 +1,7 @@
+certified:
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    state: covered
+    tests:
+      - file: src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts
+        name: >-
+          drafts a properties object holding cpf typed string and includeHistory typed boolean, and a required array holding exactly cpf, for a required path parameter alongside an optional query parameter

@@ -1,0 +1,168 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: >-
+      the registration of the register-concept route plugin, line 137
+    evidence: >-
+      (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the registrations of read-capability, read-capability-by-identity, list-capabilities and
+      register-capability, lines 113, 114, 116 and 118
+    evidence: |-
+      (dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability),
+      (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
+      (dependencies) => createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
+      (dependencies) => createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
+  - node: contracts/integration/capability-schema-draft
+    held_at: >-
+      the registration of the draft-capability-schema-from-openapi route plugin, line 142
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      the registration of the draft-connector-configuration-from-openapi route plugin,
+      lines 139-140
+    evidence: |-
+      (dependencies) =>
+          createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: contracts/integration/openapi-document-operations
+    held_at: >-
+      the registration of the read-openapi-document-operations route plugin, line 141
+    evidence: >-
+      (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
+  - node: contracts/knowledge/case-input-requirements
+    held_at: >-
+      the registration of the read-case-input-requirements route plugin, line 128
+    evidence: >-
+      (dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the registrations of create-draft, update-draft, release, release-hypothesis, discard,
+      revise-hypothesis, place-hypothesis and remove-hypothesis, lines 119-126
+    evidence: |-
+      (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+      (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
+      (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+      (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
+      (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
+      (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
+      (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
+      (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      the registration of the register-connector route plugin, line 138
+    evidence: >-
+      (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- this file mounts the route; the draft's own shape is produced elsewhere.
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no unresolved-item construction appears in this file.
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no reason enumeration appears in this file.
+  - node: rules/integration/a-capability-schema-drafts-parameter-or-field-name-claimed-twice-favors-declared-order
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no ordering or collision logic appears in this file.
+  - node: rules/integration/a-name-whose-first-claimant-is-unreducible-drafts-no-input-schema-entry
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no reducibility check appears in this file.
+  - node: rules/integration/a-part-both-unreducible-and-name-claimed-stands-in-unresolved-under-each-reason
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no dual-unresolved-item logic appears in this file.
+  - node: scenarios/integration/a-schema-drafts-colliding-parameter-names-favor-declared-order
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- the scenario is not exercised by anything this file states.
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no input_schema construction appears in this file.
+  - node: rules/integration/a-drafted-capability-schema-requiring-no-name-declares-no-required-array
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no required-array shaping appears in this file.
+  - node: scenarios/integration/a-capability-schema-drafts-input-schema-reads-required-path-parameters
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- the scenario is not exercised by anything this file states.
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no output_schema construction appears in this file.
+  - node: scenarios/integration/a-capability-schema-drafts-output-schema-reads-the-lowest-success-status
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- the scenario is not exercised by anything this file states.
+  - node: rules/integration/a-generated-schema-draft-answers-under-http-200
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no status code is stated anywhere in this file.
+  - node: rules/integration/a-capability-schema-draft-registers-nothing
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no register-capability call appears in this file.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      const app = Fastify();
+      -- no validator, schema or hook wiring appears anywhere in this file.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      (dependencies) =>
+          createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+      (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- this file only mounts these three routes; no fetch call appears in it.
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no fetch-failure handling appears in this file.
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no parse-failure handling appears in this file.
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-schema-draft
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no operation-lookup handling appears in this file.
+  - node: rules/integration/a-schema-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+      -- no error-value or status mapping appears in this file.
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      the global fallback error handler registration, line 151
+    evidence: >-
+      app.setErrorHandler(handleUnexpectedError);
+looked_past: >-
+  The routePluginFactories array's shape, ordering and the FastifyPluginAsync composition style
+  are code-structure choices carrying no domain fact of their own, and the correctness of each
+  imported route/controller/service (validation shape, status codes, refusal bodies, schema-draft
+  generation) lives in files outside this one and is a different judgment's to make.
