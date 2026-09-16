@@ -233,13 +233,20 @@ it('refuses with 400 and a non-empty details list for a request whose body is em
   expect(body.error.details.length).toBeGreaterThan(0);
 });
 
-it('refuses with 400 a request whose connector is an empty string', async () => {
+it('drafts normally with every subject placeholder unresolved for no-capability-registered when connector is an empty string', async () => {
   const built = buildTestApp();
   app = built.app;
+  built.fetchOpenApiDocument.mockResolvedValueOnce(PARAMETERIZED_DOCUMENT);
 
-  const response = await app.inject({ method: 'POST', url: ROUTE_URL, payload: validBody({ connector: '' }) });
+  const response = await app.inject({
+    method: 'POST',
+    url: ROUTE_URL,
+    payload: validBody({ connector: '', path: '/widgets/{id}' }),
+  });
 
-  expect(response.statusCode).toBe(400);
+  expect(response.statusCode).toBe(200);
+  const body = response.json() as { unresolved: readonly { name: string; reason: string }[] };
+  expect(body.unresolved).toContainEqual({ name: 'id', reason: 'no-capability-registered' });
 });
 
 it('answers 422 reporting OpenApiDocumentNotFetchedError with exactly link and kind — no status key — when the link cannot be reached at all', async () => {

@@ -5,7 +5,7 @@ import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
 import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
-import { isPlainRecord } from "../shared/services/plain-record";
+import { configurationTextParsesToNonObject } from "../services/connector-configuration-well-formedness";
 import { ConnectorConfigurationApplyConfirmationDialog } from "./connector-configuration-apply-confirmation-dialog";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
 import { CredentialPlaceholderStatements } from "./connector-configuration-credential-placeholder-statements-view";
@@ -81,16 +81,6 @@ function FormField({
       )}
     </div>
   );
-}
-
-function configurationTextParsesToNonObject(text: string): boolean {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    return false;
-  }
-  return !isPlainRecord(parsed);
 }
 
 function ConfigurationNotAnObjectStatement({ text }: { text: string }): JSX.Element | null {

@@ -33,9 +33,7 @@ function baseState(outcome: DraftConnectorConfigurationRequestOutcome): Connecto
     operationsOutcome: { kind: "idle" },
     onChooseOperation: () => {},
     path: "",
-    onPathChange: () => {},
     method: "",
-    onMethodChange: () => {},
     onRequestDraft: () => {},
     outcome,
   };

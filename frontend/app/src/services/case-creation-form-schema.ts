@@ -16,7 +16,7 @@ const REQUIRED_CASE_CREATION_FIELDS: readonly RequiredCaseCreationField[] = [
   { path: "slug", label: "Slug" },
   { path: "title", label: "Title" },
   { path: "when_to_use", label: "When to use" },
-  { path: "subject", label: "Subject" },
+  { path: "subject", label: "Subject type" },
   { path: "fallback.outcome", label: "Fallback outcome" },
   { path: "fallback.referral.action", label: "Fallback referral action" },
   { path: "fallback.referral.recipient", label: "Fallback referral recipient" },

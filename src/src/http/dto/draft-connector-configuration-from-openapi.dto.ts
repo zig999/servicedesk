@@ -6,7 +6,7 @@ import {
 import { EVIDENCE_RESULTS } from '../../investigation/evidence-result.js';
 
 export const draftConnectorConfigurationFromOpenApiRequestSchema = z.object({
-  connector: z.string().min(1),
+  connector: z.string(),
   link: z.string().min(1),
   path: z.string().min(1),
   method: z.string().min(1),

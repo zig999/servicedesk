@@ -42,11 +42,18 @@ describe("computeHttpConnectorDepartures -- a method outside the vocabulary is s
   });
 });
 
-describe("computeHttpConnectorDepartures -- an absent method key states no method departure (the task's own resolved reading of criterion 1)", () => {
-  it("returns no departures for an otherwise well-formed configuration declaring no method key at all", () => {
+describe("computeHttpConnectorDepartures -- an absent method key states a method departure, exactly as an absent responseMap or statusMap does (rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary)", () => {
+  it("states one method-outside-vocabulary departure, naming the admitted methods, for a configuration declaring no method key at all", () => {
     const departures = departuresFor(withoutKey(baseConfig(), "method"));
 
-    expect(departures).toEqual([]);
+    expect(departures).toEqual([
+      {
+        kind: "method-outside-vocabulary",
+        key: "method",
+        value: undefined,
+        admittedMethods: HTTP_CONNECTOR_METHODS,
+      },
+    ]);
   });
 });
 

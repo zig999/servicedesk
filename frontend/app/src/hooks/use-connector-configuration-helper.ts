@@ -18,9 +18,7 @@ export type ConnectorConfigurationHelperState = {
   readonly operationsOutcome: OpenApiDocumentOperationsReadOutcome;
   readonly onChooseOperation: (operation: OpenApiOperation) => void;
   readonly path: string;
-  readonly onPathChange: (value: string) => void;
   readonly method: string;
-  readonly onMethodChange: (value: string) => void;
   readonly onRequestDraft: () => void;
   readonly outcome: DraftConnectorConfigurationRequestOutcome;
   readonly stale?: boolean;
@@ -70,9 +68,7 @@ export function useConnectorConfigurationHelper(
       setMethod(operation.method);
     },
     path,
-    onPathChange: setPath,
     method,
-    onMethodChange: setMethod,
     onRequestDraft: () => {
       requestDraft({ link, path, method });
     },

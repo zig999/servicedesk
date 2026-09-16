@@ -17,6 +17,16 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+const ALL_REQUIRED_LABELS = [
+  "Slug",
+  "Title",
+  "When to use",
+  "Subject type",
+  "Fallback outcome",
+  "Fallback referral action",
+  "Fallback referral recipient",
+];
+
 const REQUIRED_FIELD_CASES: readonly {
   readonly label: string;
   readonly overrides: FormInputOverrides;
@@ -24,11 +34,17 @@ const REQUIRED_FIELD_CASES: readonly {
   { label: "Slug", overrides: { slug: "" } },
   { label: "Title", overrides: { title: "" } },
   { label: "When to use", overrides: { when_to_use: "" } },
-  { label: "Subject", overrides: { subject: "" } },
+  { label: "Subject type", overrides: { subject: "" } },
   { label: "Fallback outcome", overrides: { outcome: undefined } },
   { label: "Fallback referral action", overrides: { action: undefined } },
   { label: "Fallback referral recipient", overrides: { recipient: undefined } },
 ];
+
+function stillNeededLabels(): readonly string[] {
+  const text = screen.getByText(/^Still needed before this case can be created:/).textContent ?? "";
+  const listPortion = text.replace(/^Still needed before this case can be created:\s*/, "").replace(/\.$/, "");
+  return listPortion.split(", ").filter((entry) => entry.length > 0);
+}
 
 describe(
   "CaseCreationScreen — the required-content gate " +
@@ -37,9 +53,9 @@ describe(
   () => {
     it(
       "withholds the submit action while any single piece of create-draft's required content is " +
-        "absent, naming exactly the field left blank, refuses to create a case while it is clicked " +
-        "disabled, and enables the act once all seven are filled -- never gated by the optional " +
-        "consolidation register left untouched (underdetermined entry 3)",
+        "absent, naming exactly the field left blank and no other, refuses to create a case while " +
+        "it is clicked disabled, and enables the act once all seven are filled -- never gated by the " +
+        "optional consolidation register left untouched (underdetermined entry 3)",
       async () => {
         for (const { label, overrides } of REQUIRED_FIELD_CASES) {
           const fetchMock = createFetchStub(baseHandlers());
@@ -50,11 +66,8 @@ describe(
           expect(submit.hasAttribute("disabled"), `expected disabled while ${label} is absent`).toBe(
             true,
           );
-          const stillNeeded = screen.getByText(/^Still needed before this case can be created:/);
-          expect(
-            stillNeeded.textContent,
-            `expected the still-needed statement to name ${label}`,
-          ).toContain(label);
+          const named = stillNeededLabels();
+          expect(named, `expected the still-needed statement to name exactly ${label}`).toEqual([label]);
 
           fireEvent.click(submit);
           expect(postCallCount(fetchMock), `expected no case created while ${label} is absent`).toBe(
@@ -75,5 +88,30 @@ describe(
       },
       15000,
     );
+
+    it("withholds the submit action and names every required piece of content, on the screen's own initial state where all seven are absent", async () => {
+      const fetchMock = createFetchStub(baseHandlers());
+      await mountCaseCreationScreen(fetchMock);
+
+      const submit = await screen.findByRole("button", { name: "Create case" });
+      expect(submit.hasAttribute("disabled")).toBe(true);
+      expect(stillNeededLabels()).toEqual(ALL_REQUIRED_LABELS);
+
+      fireEvent.click(submit);
+      expect(postCallCount(fetchMock)).toBe(0);
+    });
+
+    it("names every one of several pieces of required content still absent at once, never only the first", async () => {
+      const fetchMock = createFetchStub(baseHandlers());
+      await mountCaseCreationScreen(fetchMock);
+      await fillForm({ title: "", subject: "", action: undefined });
+
+      const submit = screen.getByRole("button", { name: "Create case" });
+      expect(submit.hasAttribute("disabled")).toBe(true);
+      expect(stillNeededLabels()).toEqual(["Title", "Subject type", "Fallback referral action"]);
+
+      fireEvent.click(submit);
+      expect(postCallCount(fetchMock)).toBe(0);
+    });
   },
 );

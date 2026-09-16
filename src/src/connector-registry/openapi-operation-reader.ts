@@ -129,13 +129,21 @@ function hasStringUrl(value: PlainObject): value is PlainObject & { readonly url
 
 function operationEntry(document: PlainObject, path: string, method: string): OperationEntry {
   const paths: PlainObject = isPlainObject(document.paths) ? document.paths : {};
-  const pathItem = resolveRef(document, paths[path]);
+  const pathItem = resolvedPathItem(document, paths[path]);
   const operationKey = method.toLowerCase();
   const rawOperation = isPlainObject(pathItem) ? pathItem[operationKey] : undefined;
   if (!isPlainObject(rawOperation)) {
     throw new OpenApiOperationNotFoundError(path, method);
   }
   return { pathItem, operation: rawOperation, operationKey };
+}
+
+function resolvedPathItem(document: PlainObject, value: unknown): unknown {
+  try {
+    return resolveRef(document, value);
+  } catch {
+    return undefined;
+  }
 }
 
 function parametersOf(parameterDetails: readonly OpenApiOperationParameterDetail[]): readonly OpenApiOperationParameter[] {

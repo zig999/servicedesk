@@ -58,9 +58,6 @@ function parseConfigurationObject(configurationText: string): Record<string, unk
 }
 
 function methodDeparture(configuration: Record<string, unknown>): HttpConnectorDeparture | null {
-  if (!("method" in configuration)) {
-    return null;
-  }
   const value = configuration.method;
   if (typeof value === "string" && includesString(HTTP_CONNECTOR_METHODS, value)) {
     return null;

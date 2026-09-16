@@ -75,8 +75,8 @@ describe("useConnectorConfigurationHelper -- starts with empty link, path and me
   });
 });
 
-describe("useConnectorConfigurationHelper -- each setter updates only its own field (inference)", () => {
-  it("updates link, path and method independently through onLinkChange, onPathChange and onMethodChange", () => {
+describe("useConnectorConfigurationHelper -- onLinkChange updates only the link, leaving path and method to onChooseOperation alone (inference)", () => {
+  it("updates link through onLinkChange, and path and method only through onChooseOperation, never independently", () => {
     stubFetch(() => jsonResponse(FULL_DRAFT));
     const result = mount();
 
@@ -88,17 +88,11 @@ describe("useConnectorConfigurationHelper -- each setter updates only its own fi
     expect(result.current.method).toBe("");
 
     act(() => {
-      result.current.onPathChange("/v2/translate");
+      result.current.onChooseOperation({ path: "/v2/translate", method: "POST" });
     });
     expect(result.current.path).toBe("/v2/translate");
-    expect(result.current.link).toBe("https://api.example.com/openapi.json");
-
-    act(() => {
-      result.current.onMethodChange("POST");
-    });
     expect(result.current.method).toBe("POST");
     expect(result.current.link).toBe("https://api.example.com/openapi.json");
-    expect(result.current.path).toBe("/v2/translate");
   });
 });
 
@@ -109,8 +103,7 @@ describe("useConnectorConfigurationHelper -- onRequestDraft composes the held li
 
     act(() => {
       result.current.onLinkChange("https://api.example.com/openapi.json");
-      result.current.onPathChange("/v2/translate");
-      result.current.onMethodChange("POST");
+      result.current.onChooseOperation({ path: "/v2/translate", method: "POST" });
     });
     act(() => {
       result.current.onRequestDraft();

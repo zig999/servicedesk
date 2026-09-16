@@ -29,7 +29,7 @@ it('admits exactly the three vocabulary reasons the specification enumerates, an
   expect([...CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS].sort()).toEqual([...expected].sort());
 });
 
-it('refuses an unresolved item whose reason is not one of the four vocabulary values', () => {
+it('refuses an unresolved item whose reason is not one of the three vocabulary values', () => {
   // @ts-expect-error — reason is typed as the closed vocabulary, never a bare string
   const invalid: ConnectorConfigurationDraftUnresolvedItem = { name: 'x', reason: 'not-a-real-reason' };
   void invalid;

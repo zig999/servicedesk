@@ -19,9 +19,7 @@ function stateWith(
     operationsOutcome: { kind: "idle" },
     onChooseOperation: () => {},
     path: "",
-    onPathChange: () => {},
     method: "",
-    onMethodChange: () => {},
     onRequestDraft: () => {},
     outcome: { kind: "idle" },
     ...overrides,
@@ -121,7 +119,7 @@ describe("ConnectorConfigurationHelperFields -- the OpenAPI document link field 
   });
 });
 
-describe("ConnectorConfigurationHelperFields -- a listed operation's method is not upper-cased when the state's own entry names it lower-case (UNDERDETERMINED, from rules/integration/an-openapi-operations-method-is-upper-cased)", () => {
+describe("ConnectorConfigurationHelperFields -- a listed operation's method is upper-cased even when the state's own entry names it lower-case (rules/integration/an-openapi-operations-method-is-upper-cased)", () => {
   it("states the method upper-cased on the option regardless of the case the entry itself holds", () => {
     renderFields(stateWith({ operations: [operation("/items", "get")] }));
 
