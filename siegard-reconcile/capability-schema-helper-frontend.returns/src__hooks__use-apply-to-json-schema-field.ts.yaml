@@ -1,0 +1,131 @@
+read:
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: >-
+      onApply and onConfirmApply, lines 29-48 — a write reaches the field only through
+      field.onChange, gated on hasUnsavedEdit and, when set, on an explicit confirm
+    evidence: |
+      function onApply(text: string): void {
+        if (!hasUnsavedEdit) {
+          field.onChange(text, true);
+          return;
+        }
+        setPendingApplyText(text);
+      }
+      ...
+      function onConfirmApply(): void {
+        if (pendingApplyText !== null) {
+          field.onChange(pendingApplyText, true);
+        }
+        setPendingApplyText(null);
+      }
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: >-
+      absence of any effect reacting to a draft's arrival — the only two calls to
+      field.onChange sit inside onApply and onConfirmApply, both invoked only by the caller's
+      own operator-triggered handlers, never by a prop or state change signalling an answer
+    evidence: |
+      export function useApplyToJsonSchemaField(
+        field: JsonSchemaFieldState,
+        hasUnsavedEdit: boolean,
+      ): ApplyToJsonSchemaFieldState {
+        const [pendingApplyText, setPendingApplyText] = useState<string | null>(null);
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: |
+      return {
+          onApply,
+          applyConfirmationDiff,
+          onApplyConfirmationOpenChange,
+          onConfirmApply,
+        };
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: |
+      return {
+          onApply,
+          applyConfirmationDiff,
+          onApplyConfirmationOpenChange,
+          onConfirmApply,
+        };
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: |
+      return {
+          onApply,
+          applyConfirmationDiff,
+          onApplyConfirmationOpenChange,
+          onConfirmApply,
+        };
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: |
+      return {
+          onApply,
+          applyConfirmationDiff,
+          onApplyConfirmationOpenChange,
+          onConfirmApply,
+        };
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: |
+      return {
+          onApply,
+          applyConfirmationDiff,
+          onApplyConfirmationOpenChange,
+          onConfirmApply,
+        };
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |
+      import { useMemo, useState } from "react";
+      import {
+        computeApplyConfirmationDiff,
+        type ApplyConfirmationDiff,
+      } from "../services/connector-configuration-apply-diff";
+      import type { JsonSchemaFieldState } from "./use-capability-form";
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |
+      import { useMemo, useState } from "react";
+      import {
+        computeApplyConfirmationDiff,
+        type ApplyConfirmationDiff,
+      } from "../services/connector-configuration-apply-diff";
+      import type { JsonSchemaFieldState } from "./use-capability-form";
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |
+      const [pendingApplyText, setPendingApplyText] = useState<string | null>(null);
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: |
+      const [pendingApplyText, setPendingApplyText] = useState<string | null>(null);
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |
+      const [pendingApplyText, setPendingApplyText] = useState<string | null>(null);
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: |
+      return {
+          onApply,
+          applyConfirmationDiff,
+          onApplyConfirmationOpenChange,
+          onConfirmApply,
+        };
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: |
+      export function useApplyToJsonSchemaField(
+        field: JsonSchemaFieldState,
+        hasUnsavedEdit: boolean,
+      ): ApplyToJsonSchemaFieldState {
+looked_past: >-
+  field.onChange(text, true) and field.onChange(pendingApplyText, true) both hardcode the
+  second (validity) argument to true regardless of the applied text's content — a possible
+  validation-wiring question, but not one this file states as a domain fact and not one
+  rules/integration/a-capability-declares-well-formed-schemas (opened as a candidate) speaks
+  to, since that node governs the registry's own refusal rather than a client-side field
+  state, so it is left for whichever judgment covers that flag's semantics.
+candidates_opened:
+  - rules/integration/a-capability-declares-well-formed-schemas

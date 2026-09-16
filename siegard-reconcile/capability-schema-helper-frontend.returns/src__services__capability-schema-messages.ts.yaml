@@ -1,0 +1,123 @@
+findings:
+  - file: src/services/capability-schema-messages.ts
+    where: >-
+      lines 8-13, the CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASON_MESSAGES record
+    evidence: |
+      const CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASON_MESSAGES: Readonly<Record<string, string>> = {
+        "schema-not-reducible-to-a-type":
+          "O esquema declarado não se reduz a um único tipo do JSON Schema.",
+        "name-claimed-by-another-parameter":
+          "O nome já é ocupado por outro parâmetro ou campo desta operação.",
+      };
+    cost: >-
+      domain/integration/capability-schema-draft-unresolved-reason declares the closed set of
+      reasons once, as an enumeration; this record retypes that same closed set as untyped
+      string-literal keys (Record<string, string>, not a type tied to the specification's
+      enumeration), so the set of valid reasons now lives in two places that can drift apart
+      silently — if the specification's enumeration ever gains, renames or drops a reason,
+      nothing here fails to compile or warns; capabilitySchemaDraftUnresolvedReasonMessage
+      simply falls through to the raw machine code (`?? reason`) for the operator to read, and
+      the next person maintaining this file has no link back to the node that is supposed to
+      own the set.
+    kind: contradicts
+    node: domain/integration/capability-schema-draft-unresolved-reason
+    correction: >-
+      Key this record by the specification's own enumeration (e.g. a type generated from or
+      validated against domain/integration/capability-schema-draft-unresolved-reason) rather
+      than by two independently retyped string literals, so the two sets cannot diverge without
+      a compile-time signal.
+read:
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: >-
+      the keys of CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASON_MESSAGES (lines 8-13) and the lookup
+      capabilitySchemaDraftUnresolvedReasonMessage (lines 15-17)
+    evidence: |
+      "schema-not-reducible-to-a-type":
+        "O esquema declarado não se reduz a um único tipo do JSON Schema.",
+      "name-claimed-by-another-parameter":
+        "O nome já é ocupado por outro parâmetro ou campo desta operação.",
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: >-
+      the four distinct refusal messages, lines 19-39
+    evidence: |
+      export const CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_NOT_FETCHED_MESSAGE =
+        "Nenhum rascunho de esquema foi gerado: não foi possível obter o link do documento OpenAPI " +
+        "informado.";
+      ...
+      export const CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_UNRECOGNIZED_FAILURE_MESSAGE =
+        "Nenhum rascunho de esquema foi gerado: a solicitação falhou por um motivo que este " +
+        "assistente não reconhece.";
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: >-
+      CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE, lines 4-6
+    evidence: |
+      export const CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE =
+        "Este rascunho está desatualizado: o link ou a operação mudou desde que este rascunho foi " +
+        "solicitado.";
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the field labels (lines 1-3) and the reason-message map (lines 8-17) that let each
+      unresolved item's reason be stated apart from every other reason
+    evidence: |
+      export const CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL = "Esquema de entrada rascunhado";
+      export const CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL = "Esquema de saída rascunhado";
+      export const CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_LABEL = "Não resolvidos";
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: >-
+      the file holds only label and message string constants; it contains no control that
+      offers a Schema Helper, names a link, chooses an operation or dispatches a draft request
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: >-
+      the file defines static message text only, with no request lifecycle or timing logic of
+      any kind
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      the file defines static message text only, with no dispatch or request-state logic of any
+      kind
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      the file makes no call to draft-capability-schema-from-openapi and holds no request logic
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      the file issues no network or fetch call of any kind
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the label constants naming its three attributes, lines 1-3
+    evidence: |
+      export const CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL = "Esquema de entrada rascunhado";
+      export const CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL = "Esquema de saída rascunhado";
+      export const CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_LABEL = "Não resolvidos";
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      capabilitySchemaDraftUnresolvedReasonMessage, lines 15-17, which maps the item's reason to
+      display text
+    evidence: |
+      export function capabilitySchemaDraftUnresolvedReasonMessage(reason: string): string {
+        return CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASON_MESSAGES[reason] ?? reason;
+      }
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      the file holds no field-write logic of any kind, only message text
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      the file holds no apply/write logic of any kind, only message text
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: >-
+      CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE, lines 4-6, the message through which this
+      scenario's stale-draft outcome is stated
+    evidence: |
+      export const CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE =
+        "Este rascunho está desatualizado: o link ou a operação mudou desde que este rascunho foi " +
+        "solicitado.";
+looked_past: >-
+  The multi-line string-concatenation style and the loose Record<string, string> typing (rather
+  than a type tied to a shared enum) are code-style and type-safety matters this pass does not
+  judge on their own — they surface here only insofar as they let the vocabulary duplication
+  finding go unnoticed at compile time.

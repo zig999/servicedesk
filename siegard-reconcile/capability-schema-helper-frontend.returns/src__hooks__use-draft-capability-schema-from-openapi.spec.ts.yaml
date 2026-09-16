@@ -1,0 +1,142 @@
+findings:
+  - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+    where: "UNRECOGNIZED_FAILURE_CASES (lines 213-223) and the it.each block asserting on it (lines 225-231)"
+    evidence: |-
+      {
+        label: "the request failing outright with no answer at all (criterion 8's fallback; a dependency failing edge case)",
+        handler: () => {
+          throw new TypeError("network failure reaching this project's own backend");
+        },
+      },
+      ...
+      it.each(UNRECOGNIZED_FAILURE_CASES)("resolves $label to unrecognized-failure, distinct from drafted and the three named refusals", async ({ handler }) => {
+        const { result } = await mountAndDispatch(handler, "unrecognized-failure");
+        expect(result.current.outcome.kind).toBe("unrecognized-failure");
+      });
+    cost: >-
+      The test fixes, as required hook behavior, that a request which never reached
+      draft-capability-schema-from-openapi at all (the fetch to this project's own backend throwing,
+      by the test's own description "no answer at all") is stated to the operator as the same
+      refusal-shaped "unrecognized-failure" outcome that the node reserves for a request the
+      operation did answer but with a code it does not recognise. A reader auditing this hook
+      against the specification will find a passing test that requires exactly the invented refusal
+      the node forbids, and nothing in the file distinguishes "the operation refused for an
+      unrecognised reason" from "the operation was never reached" -- the two are folded into one
+      outcome kind with no node authorizing that fold.
+    kind: contradicts
+    correction: >-
+      Either give a request that never reaches the backend a distinct outcome that is not one of
+      the refusal-shaped kinds a-refused-schema-draft-states-its-refusal-to-the-operator defines
+      for an answered request, or have the specification decide that a client-side/network failure
+      reaching this project's own backend is itself treated as an answer for this rule's purposes --
+      and state that decision in a node, since no-schema-draft-refusal-is-stated-before-the-operation-answers
+      does not currently say so.
+    node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the describe/it block "issues exactly one network call, to the published draft route, never
+      to the operator-named link itself or to any other operation" (lines 116-121), which is the
+      part of this file that substantiates "requesting a draft issues no register-capability call".
+    evidence: |-
+      expect(calls.map((call) => call.url)).toEqual([DRAFT_ROUTE]);
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the "a 200 answer's draft is exposed with exactly its declared top-level fields" and "each
+      unresolved item is exposed with exactly its name and reason" blocks (lines 124-171).
+    evidence: |-
+      expect(outcome.draft).toEqual({
+        input_schema: FULL_DRAFT.input_schema,
+        output_schema: FULL_DRAFT.output_schema,
+        unresolved: FULL_DRAFT.unresolved,
+      });
+      expect(Object.prototype.hasOwnProperty.call(outcome.draft, "capability_name")).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(outcome.draft, "generated_at")).toBe(false);
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: >-
+      the NAMED_REFUSAL_CASES block (lines 200-211), which asserts the outcome carries no draft
+      data alongside a named refusal.
+    evidence: |-
+      expect(result.current.outcome).toEqual({
+        kind: expectedKind,
+        link: DRAFT_REQUEST.link,
+        path: DRAFT_REQUEST.path,
+        method: DRAFT_REQUEST.method,
+      });
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: >-
+      partly held at the "idle and pending precede any refusal" block (lines 233-253), which keeps
+      the outcome at "pending" until settle() resolves the response; contradicted elsewhere in this
+      same file as reported in findings.
+    evidence: |-
+      await waitFor(() => expect(result.current.outcome.kind).toBe("pending"));
+      expect(result.current.outcome).toEqual({ kind: "pending" });
+      settle?.(errorResponse("OpenApiDocumentNotReadableError"));
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: >-
+      the "a second dispatch while the first is in flight is suppressed" block (lines 255-274).
+    evidence: |-
+      act(() => {
+        result.current.requestDraft(DRAFT_REQUEST);
+        result.current.requestDraft(DRAFT_REQUEST);
+      });
+      await waitFor(() => expect(result.current.outcome.kind).toBe("pending"));
+      expect(calls).toHaveLength(1);
+  - node: contracts/integration/capability-schema-draft
+    held_at: >-
+      stubFetch's own guard (lines 41-53), which throws for any URL other than DRAFT_ROUTE, so every
+      test in the file exercises only the draft-capability-schema-from-openapi operation.
+    evidence: |-
+      if (url !== DRAFT_ROUTE) {
+        throw new Error(`use-draft-capability-schema-from-openapi proof: no mocked response for ${url}`);
+      }
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the "the request reaches the published draft operation alone" block (lines 116-122).
+    evidence: |-
+      expect(calls.map((call) => call.url)).toEqual([DRAFT_ROUTE]);
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      FULL_DRAFT (lines 24-28) and the outcome.draft assertion (lines 143-147).
+    evidence: |-
+      const FULL_DRAFT: CapabilitySchemaDraft = {
+        input_schema: '{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}',
+        output_schema: '{"type":"object","properties":{"translation":{"type":"string"}}}',
+        unresolved: [{ name: "locale", reason: "schema-not-reducible-to-a-type" }],
+      };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the "strips any field an unresolved item carried beyond name and reason" test (lines 153-171).
+    evidence: |-
+      expect(outcome.draft.unresolved).toEqual([{ name: "locale", reason: "schema-not-reducible-to-a-type" }]);
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      Only the value "schema-not-reducible-to-a-type" appears (lines 27, 160); the file never
+      asserts the closed set itself or exercises "name-claimed-by-another-parameter".
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      This file tests only the network hook's outcome value; it renders no Input schema or Output
+      schema field and makes no assertion about either.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      This file exposes no apply action and asserts nothing about applying a draft to a field.
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      This file's hook and its tests carry no notion of a surface's currently chosen link or
+      operation to compare a standing draft against, and no staleness marking is asserted anywhere.
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      This file tests only useDraftCapabilitySchemaFromOpenApi in isolation; it never models a
+      Schema Helper's chosen-operation state, so the scenario's cleared-choice behavior is untested here.
+looked_past: >-
+  The hardcoded DRAFT_ROUTE literal ("/v1/draft-capability-schema-from-openapi") and the request
+  DTO shape ({link, path, method}) are wiring for the contract operation rather than a domain fact
+  any node states, and domain/integration/capability-schema-draft-unresolved-reason's second value
+  going unexercised in this file is a coverage gap rather than a conformance question, so neither
+  is reported as a finding here.

@@ -1,0 +1,10 @@
+certified:
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    state: covered
+    tests:
+      - file: src/routes/capability-form-fields-schema-apply.spec.ts
+        name: >-
+          keeps both fields at whatever the operator had typed, both once a drafted outcome arrives and once a refusal statement arrives
+      - file: src/routes/capability-form-fields-schema-apply.spec.ts
+        name: >-
+          gates each field's own apply behind its own confirm, writes only the confirmed field, and leaves the other field and the registry untouched

@@ -1,0 +1,36 @@
+certified:
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    state: uncovered
+    tests:
+      - file: src/services/capability-schema-messages.spec.ts
+        name: >-
+          gives schema-not-reducible-to-a-type and name-claimed-by-another-parameter two distinct,
+          non-empty labels, and returns a value outside the two-value vocabulary unchanged
+    why: >-
+      The one test in the offered proof cannot fail if this fact stops holding. Its assertions on
+      the two declared values are `length > 0` and mutual distinctness; because the function under
+      test falls back to returning its argument unchanged (the same fallback the test's third
+      assertion pins), both assertions still hold when a declared value is renamed, removed from
+      the label set, or never recognised at all — two unrecognised reasons still return themselves,
+      still non-empty, still distinct. So neither value's membership in the set is exercised. The
+      set's closedness is likewise unexercised: nothing asserts that these two are the only reasons
+      a draft may name, and the third assertion goes the other way, fixing a behaviour for
+      "some-future-reason", a value outside the vocabulary the node declares closed — an assertion
+      wider than this fact establishes, and a reader should route it rather than read it as
+      coverage. The conditions the node states for each reason are untouched: nothing constructs a
+      draft whose schema is a oneOf or anyOf naming more than one JSON Schema type, and nothing
+      constructs an operation where a property name is already claimed by another parameter or
+      field, so neither reason is ever observed being named apart from what the draft resolved.
+    remainder: testable
+    remainder_why: >-
+      The set is declared and finite, so a test over both values closes it. For each declared
+      value, one input — that value — against one expected result, its own label text pinned
+      literally, so that renaming or dropping `schema-not-reducible-to-a-type` or
+      `name-claimed-by-another-parameter` fails the test rather than falling through to itself; and
+      one input outside the set asserted to yield neither of those two labels. For the conditions:
+      one input — a draft parameter, request-body field or response field whose schema is a oneOf
+      or anyOf naming more than one JSON Schema type — against the expected result that it is named
+      unresolved with reason `schema-not-reducible-to-a-type`; and one input — a draft parameter or
+      field whose property name is already claimed by another parameter or field of the same
+      operation — against the expected result that it is named unresolved with reason
+      `name-claimed-by-another-parameter`, the claimant being the one declared order favours.

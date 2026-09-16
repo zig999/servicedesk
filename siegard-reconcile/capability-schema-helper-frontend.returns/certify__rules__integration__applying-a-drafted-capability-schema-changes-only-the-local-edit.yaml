@@ -1,0 +1,35 @@
+certified:
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    state: partial
+    tests:
+      - file: src/routes/capability-form-fields-schema-apply.spec.ts
+        name: >-
+          gates each field's own apply behind its own confirm, writes only the confirmed field, and leaves the other field and the registry untouched
+      - file: src/routes/capability-form-fields-schema-apply.spec.ts
+        name: >-
+          writes the drafted input schema straight into the empty Input schema field with no dialog
+      - file: src/routes/capability-form-fields-schema-apply.spec.ts
+        name: >-
+          writes the drafted input schema through the field's own state, turning on Discard, which reads it back to the loaded baseline exactly as it would a typed edit
+    why: >-
+      Most of the fact is exercised and would fail if it stopped holding: applying input_schema writes
+      DRAFTED_INPUT_SCHEMA_TEXT into the Input schema field while the Output schema field keeps the operator's
+      typed text, applying output_schema writes only into the Output schema field while the just-applied Input
+      schema field stands, the write over an unsubmittedly edited field is refused until confirmed (opening the
+      dialog leaves both fields at the typed text, "Continuar editando" leaves the Input schema field exactly as
+      it stood, "Aplicar" then writes), and nothing registers (putCallCount of the stubbed fetch asserted at 0,
+      an assertion that would fail on any PUT the applying raised). What goes unexercised is the clause "stated
+      against what currently stands there": the proof reaches the confirmation only through
+      screen.getByRole("dialog") and its two buttons by name, and asserts nothing about what the confirmation
+      says. A dialog that asked for confirmation generically, naming neither the field nor the content currently
+      standing in it, would pass every assertion in the set. Also unexercised, though the mechanism is exercised
+      on the create surface: on the capability detail surface only the no-unsaved-edit path is taken (the field
+      sits at its loaded baseline, no dialog opens), so the confirmation over an operator's unsubmitted edit is
+      never read on that surface, and no test there asserts that applying registers nothing.
+    remainder: testable
+    remainder_why: >-
+      One input — the Schema Helper's Aplicar clicked over an Input schema field holding a specific unsubmitted
+      operator edit — against one expected result: the confirmation the screen raises presents that current field
+      content as what the write would replace, so that the operator confirms against what currently stands there
+      rather than against a bare prompt. A second such assertion on the detail surface, plus a putCallCount
+      assertion there, closes the surface half.

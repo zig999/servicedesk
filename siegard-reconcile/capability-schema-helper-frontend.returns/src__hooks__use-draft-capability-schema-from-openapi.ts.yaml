@@ -1,0 +1,96 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the mutationFn, which calls the backend's own draft endpoint rather than fetching an
+      OpenAPI document URL directly
+    evidence: |-
+      apiFetch<CapabilitySchemaDraft>("/v1/draft-capability-schema-from-openapi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request),
+      })
+  - node: contracts/integration/capability-schema-draft
+    held_at: the same mutationFn, whose path names the draft-capability-schema-from-openapi operation
+    evidence: 'apiFetch<CapabilitySchemaDraft>("/v1/draft-capability-schema-from-openapi", {'
+  - node: domain/integration/capability-schema-draft
+    held_at: the CapabilitySchemaDraft type declaration
+    evidence: |-
+      export type CapabilitySchemaDraft = {
+        readonly input_schema: string;
+        readonly output_schema: string;
+        readonly unresolved: readonly CapabilitySchemaDraftUnresolvedItem[];
+      };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: the CapabilitySchemaDraftUnresolvedItem type declaration
+    evidence: |-
+      export type CapabilitySchemaDraftUnresolvedItem = {
+        readonly name: string;
+        readonly reason: string;
+      };
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: >-
+      readonly requestDraft: (request: DraftCapabilitySchemaFromOpenApiRequest) => void; — the
+      hook takes an already-complete request and neither gates it on, nor states, whether an
+      operation stands chosen; that surface-level offering is left to the caller of this hook.
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: the isDispatchingRef guard inside requestDraft
+    evidence: |-
+      if (isDispatchingRef.current) {
+          return;
+        }
+        isDispatchingRef.current = true;
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: refusalKindForError together with the "error" branch of outcomeFromMutation
+    evidence: |-
+      case "OpenApiDocumentNotFetchedError":
+            return "openapi-document-not-fetched";
+          case "OpenApiDocumentNotReadableError":
+            return "openapi-document-not-readable";
+          case "OpenApiOperationNotFoundError":
+            return "openapi-operation-not-found";
+          default:
+            return undefined;
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: the "success" branch of outcomeFromMutation
+    evidence: 'return { kind: "drafted", ...mutation.variables, draft: pickCapabilitySchemaDraftFields(mutation.data) };'
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: the switch on mutation.status inside outcomeFromMutation
+    evidence: |-
+      switch (mutation.status) {
+          case "idle":
+            return { kind: "idle" };
+          case "pending":
+            return { kind: "pending" };
+          case "success":
+      ...
+          case "error": {
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: 'readonly reason: string;'
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: |-
+      return {
+          outcome: outcomeFromMutation(mutation),
+          requestDraft,
+        };
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: |-
+      return {
+          outcome: outcomeFromMutation(mutation),
+          requestDraft,
+        };
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: '({ readonly kind: "drafted"; readonly draft: CapabilitySchemaDraft } & DraftCapabilitySchemaFromOpenApiRequest)'
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: 'export function useDraftCapabilitySchemaFromOpenApi(): UseDraftCapabilitySchemaFromOpenApiResult {'
+looked_past: >-
+  The reason field is typed as a bare string rather than the closed
+  capability-schema-draft-unresolved-reason enumeration, but the hook never asserts or restates
+  a value from that enumeration — it passes the field through opaquely — so this is a type-safety
+  looseness rather than a domain-fact deviation, and belongs to a code-quality pass rather than
+  this one.

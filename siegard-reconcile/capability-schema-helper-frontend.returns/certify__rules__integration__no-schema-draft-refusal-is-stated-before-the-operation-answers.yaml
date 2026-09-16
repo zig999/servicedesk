@@ -1,0 +1,17 @@
+certified:
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          starts idle before any dispatch, stays pending -- neither drafted nor any refusal -- while the request is unanswered, and only reports a refusal once the operation actually answers
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: renders no alert for an idle outcome and none for a pending outcome
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: >-
+          renders a pairwise-distinct alert for each of the four refusal outcomes, none of them alongside a drafted input schema, output schema or unresolved-item section
+    why: >-
+      The unanswered window of a first request is exercised on both sides: the hook proof pins the outcome to exactly {kind:"idle"} before any dispatch and to exactly {kind:"pending"} while the operation has not answered, so any refusal kind surfacing early fails it; and the surface proof asserts no element with the alert role while idle and while pending, which bites because the companion case establishes that each of the four refusal readings is stated as an alert. What goes unexercised is a schema draft request that is unanswered because it is the second one: nothing in the offered set dispatches again after a request has settled into one of the four refusals, so whether the earlier refusal keeps standing while the new, unanswered request is in flight is untested — and that standing refusal would be a refusal stated of a request the operation has not answered. The double dispatch the hook proof does exercise happens with nothing yet answered and settles to a draft, so it never places a refusal beside an unanswered request.
+    remainder: testable
+    remainder_why: >-
+      One input — a schema draft request answered with a named refusal, followed by a second requestDraft that the operation leaves unanswered — against one expected result: the hook's outcome is pending, carrying none of the four refusal kinds, and the surface renders no alert while that second request stands unanswered.

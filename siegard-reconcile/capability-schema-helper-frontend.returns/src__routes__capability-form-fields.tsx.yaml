@@ -1,0 +1,199 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the form's field set for the aggregate's own attributes
+    evidence: |
+      <FormField label="Name" errorId="name-error" error={errors.name?.message}>
+      <FormField label="Version" errorId="version-error" error={errors.version?.message}>
+      <FormField label="Nature" errorId="nature-error" error={errors.nature?.message}>
+      <FormField label="Timeout (ms)" errorId="timeout-error" error={errors.timeout?.message}>
+      <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
+  - node: domain/integration/capability-nature
+    held_at: >-
+      the Nature Select's options, built from an imported enumeration rather than restated here
+    evidence: |
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+  - node: domain/investigation/field-semantics
+    held_at: the paragraph beneath the Output schema field
+    evidence: >-
+      Os nomes de campo lidos a partir dele são as chaves do próprio objeto
+      properties de nível superior deste schema. O type e a description
+      declarados por cada uma dessas chaves, onde o schema os declara, são
+      lidos como a semântica declarada desse campo. Nenhum outro conteúdo
+      deste schema é lido ou validado.
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: the closing sentence of the same paragraph
+    evidence: >-
+      Uma description aqui declara o que seu valor significa e não nomeia
+      nenhuma decisão.
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the Schema Helper's placement, immediately beneath the Input schema and Output schema
+      fields
+    evidence: |
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: nowhere
+    evidence: >-
+      isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: the paragraph beneath the Output schema field
+    evidence: >-
+      O que é inserido aqui é JSON. Os nomes de campo lidos a partir dele são
+      as chaves do próprio objeto properties de nível superior deste schema.
+      O type e a description declarados por cada uma dessas chaves, onde o
+      schema os declara, são lidos como a semântica declarada desse campo.
+      Nenhum outro conteúdo deste schema é lido ou validado. Uma description
+      aqui declara o que seu valor significa e não nomeia nenhuma decisão.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: >-
+      the two independently-instantiated apply hooks and their own confirmation dialogs
+    evidence: |
+      const inputSchemaApply = useApplyToJsonSchemaField(
+        inputSchema,
+        isDirty ?? inputSchema.value !== "",
+      );
+      const outputSchemaApply = useApplyToJsonSchemaField(
+        outputSchema,
+        isDirty ?? outputSchema.value !== "",
+      );
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: |
+      <Select
+        value={field.value}
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        options={conceptSelectOptions}
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: >-
+      the wiring that routes the Schema Helper only to the explicit apply callbacks, never to
+      the fields' own onChange
+    evidence: |
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+      ...
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+      ...
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+      ...
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |
+      import { useCapabilitySchemaHelper } from "../hooks/use-capability-schema-helper";
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |
+      import type { BaseSyntheticEvent, JSX, ReactNode } from "react";
+      import { Controller, type UseFormReturn } from "react-hook-form";
+      import { Input } from "@tui/ui/input";
+      import { Label } from "@tui/ui/label";
+      import { Select, type SelectOption } from "@tui/ui/select";
+      import { Button } from "@tui/ui/button";
+      import { ButtonFooter } from "../shared/components/button-footer";
+      import { JsonTextareaField } from "../shared/components/json-textarea-field";
+      import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capability-form-schema";
+      import type { ConceptOption } from "../hooks/use-concept-options";
+      import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
+      import { useCapabilitySchemaHelper } from "../hooks/use-capability-schema-helper";
+      import { useApplyToJsonSchemaField } from "../hooks/use-apply-to-json-schema-field";
+      import { CapabilitySchemaHelperFields } from "./capability-schema-helper-fields";
+      import { ConnectorConfigurationApplyConfirmationDialog } from "./connector-configuration-apply-confirmation-dialog";
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+      ...
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: |
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+      ...
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: |
+      const schemaHelper = useCapabilitySchemaHelper();
+      ...
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+looked_past: >-
+  The apply-confirmation dialog component is named ConnectorConfigurationApplyConfirmationDialog
+  yet reused here for the capability schema fields, and the per-field "unsubmitted edit" signal
+  falls back to `value !== ""` when `isDirty` is undefined — both are implementation choices
+  inside a file (use-apply-to-json-schema-field.ts) outside this set, not a domain-fact
+  discrepancy this file itself states.

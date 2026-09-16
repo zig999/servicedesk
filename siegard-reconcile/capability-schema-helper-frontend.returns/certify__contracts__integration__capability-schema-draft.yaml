@@ -1,0 +1,40 @@
+certified:
+  - node: contracts/integration/capability-schema-draft
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          sends exactly {link, path, method} in the POST body, taken from the request passed to requestDraft
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          issues exactly one network call, to the published draft route, never to the operator-named link itself or to any other operation
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          carries the link, path and method of the request answered, and a draft holding exactly input_schema, output_schema and unresolved -- no field the answer's top level did not carry
+      - file: src/hooks/use-capability-schema-helper.spec.ts
+        name: >-
+          sends exactly {link, path, method} from the chosen operation, and exposes the drafted outcome once it resolves
+      - file: src/hooks/use-capability-schema-helper.spec.ts
+        name: >-
+          lists the operations the shared hook's own read answers for the link, touching no other operations route
+    why: >-
+      The generating half and the "a read, never a registration" half are exercised whole: the draft
+      request is dispatched with one operation's link, path and method; the answer is exposed as a
+      schema draft carrying input_schema and output_schema rather than a listing; and the
+      exactly-one-call assertion over the whole drafted flow (calls.map(url) equal to [DRAFT_ROUTE],
+      with the stub recording and then rejecting any other URL) would fail if a register-capability
+      call — or any second call — were issued, so "issues no register-capability call" is pinned, not
+      merely absent. What goes unexercised is that the document drafted from is the same
+      operator-named document contracts/integration/openapi-document-operations's own read operation
+      would fetch. In the helper proof the operator names one link, and the draft body is asserted to
+      carry exactly that link, but the operations read is asserted only by route prefix
+      (requestedUrls.every(url => url.startsWith(OPERATIONS_READ_ROUTE_PREFIX))) — nothing asserts
+      that the read request carries the operator-named link at all. An implementation that read the
+      operations for one document and drafted from another would pass every test in the offered set.
+    remainder: testable
+    remainder_why: >-
+      One input — a single operator-named link put to the helper, an operation chosen from the
+      listing it answers, and a draft requested — against one expected result: the operations-read
+      request and the draft request both carry that same link value (the read's link asserted in its
+      URL or body, not by route prefix alone), so that the document the draft is generated from is the
+      same operator-named document the listing was read from.

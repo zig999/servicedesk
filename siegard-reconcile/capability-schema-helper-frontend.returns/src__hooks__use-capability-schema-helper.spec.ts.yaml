@@ -1,0 +1,96 @@
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the it block "issues no network request when onRequestDraft is called with no chosen
+      operation" (describe "onRequestDraft dispatches nothing while no operation is chosen")
+    evidence: |
+      act(() => {
+        result.current.onRequestDraft();
+      });
+      await Promise.resolve();
+
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(result.current.outcome).toEqual({ kind: "idle" });
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the final assertion of the last it block, checking the resolved outcome carries the full
+      draft the mocked backend answered
+    evidence: |
+      await waitFor(() =>
+        expect(result.current.outcome).toEqual({
+          kind: "drafted",
+          link: LINK,
+          path: "/items",
+          method: "POST",
+          draft: FULL_DRAFT,
+        }),
+      );
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      the file's four describe blocks cover operation listing, the no-direct-fetch constraint,
+      the no-operation-chosen guard, and a successful draft's own request/outcome shape; none
+      exercises a refused draft-capability-schema-from-openapi answer
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: >-
+      no it block in this file leaves the draft-capability-schema-from-openapi promise unresolved
+      and asserts anything about outcome before it settles
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      no it block calls result.current.onRequestDraft() twice or asserts anything about a second
+      request while one is outstanding
+  - node: contracts/integration/capability-schema-draft
+    held_at: >-
+      the assertion of the draft request's URL and body in the last it block
+    evidence: |
+      expect(calls[0]?.url).toBe(DRAFT_ROUTE);
+      expect(parsedBody(calls[0])).toEqual({ link: LINK, path: "/items", method: "POST" });
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the assertions in the first two describe blocks that every captured request URL starts
+      with the backend's own read route and none equals the operator-named link itself
+    evidence: |
+      expect(requestedUrls.every((url) => url.startsWith(OPERATIONS_READ_ROUTE_PREFIX))).toBe(true);
+      expect(requestedUrls.some((url) => url === LINK)).toBe(false);
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the FULL_DRAFT fixture and its round-trip through the resolved "drafted" outcome
+    evidence: |
+      const FULL_DRAFT = { input_schema: "{}", output_schema: "{}", unresolved: [] };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      unresolved: [] — the only unresolved value this file ever constructs is the empty case;
+      no it block builds or asserts a named-and-reasoned unresolved entry
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      unresolved: [] — no reason value from the enumeration is ever asserted in this file
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      the properties this file reads off the hook are result.current.operations,
+      result.current.operationsOutcome, result.current.outcome, result.current.onLinkChange,
+      result.current.onChooseOperation and result.current.onRequestDraft — no Input schema or
+      Output schema field content is part of this hook's tested surface
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      no it block calls anything resembling an apply action or asserts a write into an Input
+      schema or Output schema field
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      the drafted outcome carries link, path and method alongside the draft, but no it block
+      changes the link or the chosen operation afterward and checks anything about staleness
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      no it block names a second link or clears a chosen operation after a draft is stated
+looked_past: >-
+  This file only exercises the operations listing, the no-direct-fetch constraint and one
+  successful draft request/outcome round-trip; refusal handling, request de-duplication,
+  applying a drafted schema and staleness marking are not covered here and are presumably
+  another file's or another pass's concern rather than a defect in this one.

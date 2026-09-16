@@ -1,0 +1,38 @@
+certified:
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    state: partial
+    tests:
+      - file: src/routes/capability-form-fields-schema-draft-staleness.spec.ts
+        name: >-
+          states no staleness right after the draft is stated, states it once the link alone
+          changes, and still applies the same drafted input_schema afterward
+    why: >-
+      The link half of the fact is exercised and would fail if it stopped holding: the proof
+      asserts no staleness is stated while the surface still matches what the draft was
+      generated for, asserts staleness appears once the link is moved to a different document,
+      and asserts both apply acts remain offered and enabled with the input act still writing
+      exactly the drafted input_schema. The operation half goes unexercised. The node states
+      staleness from the moment the surface's link *or* chosen operation differs from either of
+      the two the draft was generated for, and nothing in the offered proof leaves the link
+      standing and moves the chosen operation to a different one -- so whether a draft is stated
+      stale on an operation change alone is never put to the test, and the proof would still
+      pass if the surface compared only the link. The same gap weakens the one link case that is
+      asserted: the handler for the new link answers an empty operations list, so the chosen
+      operation may be cleared by that change rather than left untouched as the file's comment
+      claims, and the staleness the proof observes cannot be attributed to the link comparison
+      alone. Nothing in the set asserts what the draft stands marked as generated for -- neither
+      the link nor the operation is read back off the stated draft -- so that marking is
+      observed only through the one staleness transition it produces. The output apply act is
+      asserted as offered and enabled but never clicked, so that it still writes exactly the
+      drafted output_schema is unexercised.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result, twice over the pairings the offered proof omits.
+      With a draft stated for a link and POST /v2/translate, and the link left exactly as it
+      was, choose a second operation the same document offers: the expected result is that
+      staleness is stated and both apply acts stay offered, enabled, and still write the
+      original drafted input_schema and output_schema. Paired with it, a link change against a
+      document offering the same operation, so the chosen operation is demonstrably retained and
+      the stated staleness can only come from the link differing. Clicking the output apply act
+      in the stale state and asserting the Output schema field holds the drafted output_schema
+      closes the last unexercised act.

@@ -96,6 +96,37 @@
       "title": "Refused capability schema draft stated to the operator -- proof",
       "summary": "Tests capabilitySchemaDraftRefusalDisclosureFrom's four refusal readings and idle/pending suppression at the disclosure-service level, CapabilitySchemaHelperFields' rendering of each reading as a distinct alert never beside a drafted schema, the surface's silence before an answer arrives, and that the shared generic error-state table gained no entry for the three OpenAPI refusal codes.",
       "task": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator"
+    },
+    {
+      "id": "review/capability-schema-helper-frontend",
+      "kind": "review",
+      "file": "review/capability-schema-helper-frontend.md",
+      "title": "Capability Schema Helper -- frontend surface, first review",
+      "summary": "The four passes' findings over the six delivered tasks of capability-schema-helper-frontend: the draft request/outcome hook, the Schema Helper's offer and placement, the drafted and refused disclosures, the two apply acts, and the staleness marking.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A drafted or refused outcome carries the link, the path and the method of the request it answers, exactly as that request named them.",
+        "A stated draft is marked with the link of the request that produced it, exactly as that request named it.",
+        "A stated draft is marked with the operation of the request that produced it, exactly as that request named it.",
+        "An applied write reaches the field through the same onChange value-and-validity contract the field's own typing uses, so save-gating and Discard read applied text exactly as they read typed text.",
+        "Applying either schema issues no register-capability call, and the capability registered at the identity being edited stands exactly as it stood.",
+        "Each stated unresolved item carries the reason the answer named for it.",
+        "Staleness is read by comparing the stated outcome's own recorded request against the helper's current link and chosen operation, and no separate stale flag is stored.",
+        "The act applying each schema is offered on the capability create screen and on the capability detail screen alike.",
+        "The confirmation and its diff are the existing apply-over-unsaved-edit dialog and diff computation, not a second implementation of either.",
+        "The helper offers no free-hand entry of a path and no free-hand entry of an HTTP method; an operation is named only by choosing one of the listed operations.",
+        "The helper takes an OpenAPI document link from the operator and lists that document's own declared operations, read through the existing use-openapi-document-operations hook rather than through a second operations reader.",
+        "The hook dispatches a POST to draft-capability-schema-from-openapi carrying a body of exactly link, path and method, taken from the link the operator named and the operation they chose.",
+        "The request is issued through the existing apiFetch client in frontend/app/src/services/api-client.ts, and no module added by this task builds a fetch of its own or parses a response envelope of its own.",
+        "The surface states no unresolved reason the answer did not carry for the item it is stated against.",
+        "When any of the four refusal statements arrives, both fields' content stand exactly as they stood before the request was dispatched.",
+        "Where the field applied to holds an edit the operator has not submitted, the write is offered only once the operator confirms it, and what is offered for confirmation states the drafted text against what currently stands in that field."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -296,6 +327,42 @@
       "to": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-schema-helper-frontend",
+      "to": "task/schema-helper-request-and-statement/draft-request-outcome",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-schema-helper-frontend",
+      "to": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/capability-schema-helper-frontend",
+      "to": "task/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/capability-schema-helper-frontend",
+      "to": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/capability-schema-helper-frontend",
+      "to": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/capability-schema-helper-frontend",
+      "to": "task/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }

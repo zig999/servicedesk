@@ -1,0 +1,118 @@
+read:
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the object built and returned by capabilitySchemaDraftDisclosureFrom, lines 28-36
+    evidence: |
+      return {
+          inputSchema: draft.input_schema,
+          outputSchema: draft.output_schema,
+          unresolved: draft.unresolved.map((item) => ({
+            name: item.name,
+            reason: item.reason,
+            reasonLabel: capabilitySchemaDraftUnresolvedReasonMessage(item.reason),
+          })),
+        };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the mapping inside draft.unresolved.map, lines 31-35
+    evidence: >-
+      unresolved: draft.unresolved.map((item) => ({
+      name: item.name,
+      reason: item.reason,
+      reasonLabel: capabilitySchemaDraftUnresolvedReasonMessage(item.reason),
+      })),
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: >-
+      the switch in capabilitySchemaDraftRefusalDisclosureFrom, lines 46-63, one case per
+      recognised condition plus an unrecognized-failure fallback, returning only a message
+      (no input_schema, output_schema or unresolved item)
+    evidence: |
+      case "openapi-document-not-fetched":
+            return { message: CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_NOT_FETCHED_MESSAGE };
+          case "openapi-document-not-readable":
+            return { message: CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE };
+          case "openapi-operation-not-found":
+            return {
+              message: capabilitySchemaDraftNotGeneratedOperationNotFoundMessage(
+                outcome.method,
+                outcome.path,
+              ),
+            };
+          case "unrecognized-failure":
+            return { message: CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_UNRECOGNIZED_FAILURE_MESSAGE };
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      capabilitySchemaDraftDisclosureFrom, lines 25-37, which states input_schema, output_schema
+      and every unresolved item exactly as the draft carries them
+    evidence: |
+      export function capabilitySchemaDraftDisclosureFrom(
+        draft: CapabilitySchemaDraft,
+      ): CapabilitySchemaDraftDisclosure {
+        return {
+          inputSchema: draft.input_schema,
+          outputSchema: draft.output_schema,
+          unresolved: draft.unresolved.map((item) => ({
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: >-
+      the trailing cases of the switch in capabilitySchemaDraftRefusalDisclosureFrom, lines 60-63
+    evidence: |
+      case "idle":
+          case "pending":
+          case "drafted":
+            return undefined;
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: >-
+      the file exports only capabilitySchemaDraftDisclosureFrom and
+      capabilitySchemaDraftRefusalDisclosureFrom, two pure mapping functions taking an
+      already-produced draft or outcome; there is no control, link field or operation listing
+      here
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      capabilitySchemaDraftRefusalDisclosureFrom(outcome: DraftCapabilitySchemaRequestOutcome)
+      only reads an outcome already produced elsewhere and formats a message from it; the file
+      issues no request and contains no logic suppressing or replaying one
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      import type { CapabilitySchemaDraft, DraftCapabilitySchemaRequestOutcome } from
+      "../hooks/use-draft-capability-schema-from-openapi"; — only types are imported, no call to
+      draft-capability-schema-from-openapi is made in this file
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      the file's only imports are type imports from the hook module and message imports from
+      ./capability-schema-messages; it contains no fetch or network call of any kind
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      readonly reason: string; — the reason is carried as an opaque string and passed unchanged
+      to capabilitySchemaDraftUnresolvedReasonMessage(item.reason); the enumeration itself is not
+      restated here
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      the file only returns disclosure objects (CapabilitySchemaDraftDisclosure,
+      CapabilitySchemaDraftRefusalDisclosure); it performs no write to any field
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      the file exports capabilitySchemaDraftDisclosureFrom and
+      capabilitySchemaDraftRefusalDisclosureFrom only; there is no apply-related function or
+      write here
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      the file holds no notion of the link or operation a draft was generated for, and marks
+      nothing stale; it only reshapes a CapabilitySchemaDraft already given to it
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      the file has no operation-choice state and no staleness handling; it is limited to the two
+      pure mapping functions described above
+looked_past: >-
+  CapabilitySchemaDraftUnresolvedItemDisclosure types `reason` as a plain `string` rather than the
+  closed two-value enumeration domain/integration/capability-schema-draft-unresolved-reason
+  defines, which is a type-strictness matter rather than a value the code states differently from
+  or in place of the specification, since the value itself is passed through unchanged.

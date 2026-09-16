@@ -1,0 +1,91 @@
+findings:
+  - file: src/services/error-ui-state.spec.ts
+    where: "the test at lines 219-227, \"resolves OpenApiDocumentNotFetchedError, OpenApiDocumentNotReadableError and OpenApiOperationNotFoundError to the shared generic-error state rather than a code of their own (capability schema helper's refusal-stated-to-the-operator criterion 8)\""
+    evidence: |-
+      const kinds = [
+        "OpenApiDocumentNotFetchedError",
+        "OpenApiDocumentNotReadableError",
+        "OpenApiOperationNotFoundError",
+      ].map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+
+      expect(kinds).toEqual(["generic-error", "generic-error", "generic-error"]);
+    cost: >-
+      A caller of uiStateForApiError — the classification this test fixes in place — cannot
+      tell an unfetchable link, an unreadable document and a missing operation apart: all three
+      collapse into the same "generic-error" kind the table also gives a code it does not
+      recognise at all. A screen built on this kind has nothing left to read which of the three
+      conditions answered the refusal, so it cannot state that distinction to the operator, and
+      the test's own citation of the schema-helper refusal rule as its reason makes this look
+      like proof of compliance rather than the opposite of it.
+    kind: contradicts
+    correction: >-
+      The mapping (or whichever surface is meant to carry this disclosure) should give each of
+      the three conditions a kind of its own, distinct from the other two and from the plain
+      "generic-error" fallback, and this test should assert that distinction rather than the
+      three codes' identity.
+    node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: "the test at lines 219-227"
+    evidence: |-
+      expect(kinds).toEqual(["generic-error", "generic-error", "generic-error"]);
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |-
+      import { ApiError } from "./api-client";
+      import { uiStateForApiError } from "./error-ui-state";
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      import { ApiError } from "./api-client";
+      import { uiStateForApiError } from "./error-ui-state";
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: |-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
+looked_past: >-
+  The file's other roughly twenty error-code-to-kind mappings (CaseNotFoundError,
+  ConceptNotAnsweredError, HypothesisRevisionNotDraftAtReleaseError,
+  ManifestWouldHoldNoHypothesisError, ConnectorConfigurationNotWellFormedError and the rest) sit
+  outside every node in this set and were left unexamined for conformance, since none of the
+  nodes handed to this pass speaks to those domains.

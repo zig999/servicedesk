@@ -1,0 +1,41 @@
+certified:
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    state: partial
+    tests:
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: >-
+          renders both schema texts verbatim and exactly the three unresolved items the answer
+          carried, each labeled under its own reason
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: >-
+          renders no unresolved list item when the answer's unresolved list is empty
+    why: >-
+      The two schema texts are exercised: the drafted test places a unique marker in input_schema
+      and another in output_schema and fails if either stops being stated. The unresolved list's
+      names are exercised, and "stating no name the answer did not carry" is exercised twice -- the
+      drafted test asserts exactly three list items for a three-item answer, and the empty-answer
+      test asserts none for an empty one. Two parts of the fact go unexercised. First, nothing ties
+      a stated reason to the reason the answer named for that item: the drafted test reads each
+      item's label only as an opaque string, asserting it is non-empty, that the two items carrying
+      different reasons carry different labels, and that the two items carrying the same reason
+      carry the same one. A surface that rendered a placeholder for every reason, or that rendered
+      each of the two reasons under the other's reading, would satisfy every one of those
+      assertions -- so "by the reason that answer named for it", and "stating no reason the answer
+      did not carry", are not exercised, only the weaker fact that the two readings are held apart
+      from each other. Second, nothing ties either schema text to its own field: the drafted test
+      asserts both markers are present somewhere in the render and never that the input_schema text
+      is stated as the input schema and the output_schema text as the output schema, so a surface
+      that stated each under the other's heading would still pass. Separately, the drafted test
+      exercises the reasons-held-apart clause over two reason values only; the pack does not state
+      how many readings the draft's own reason vocabulary holds, so whether those two are the whole
+      vocabulary is not established by the proof offered.
+    remainder: testable
+    remainder_why: >-
+      One input -- a drafted answer whose unresolved list carries one item per reason the draft's
+      reason vocabulary holds, with input_schema and output_schema carrying distinct marker texts
+      -- against one expected result: each item states its own name beside the reading the
+      specification names for that item's reason, each such reading distinct from every other
+      reading in that vocabulary and asserted by its own text rather than by inequality with a
+      sibling label; and the input_schema marker is found within the input schema field and the
+      output_schema marker within the output schema field, each queried by that field rather than
+      across the whole render.

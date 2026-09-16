@@ -1,0 +1,108 @@
+findings:
+  - file: src/routes/capability-form-fields-schema-draft-staleness.spec.ts
+    where: "comment above the link-change step, lines 61-62"
+    evidence: |-
+      // only the link moves away from the one the draft was generated for; the chosen operation
+      // is left untouched (criterion 4)
+    cost: >-
+      A maintainer reading this comment to understand why the draft goes stale after a link
+      change learns that the chosen operation survives the change untouched. But
+      scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale states
+      that naming a different link leaves the Schema Helper "holds no chosen operation, the
+      choice standing cleared from the moment the link named ceased to be the one whose listing
+      that operation was chosen from" — the opposite of what the comment claims. Nothing in this
+      test queries the operation select after the link changes, so this false claim is the only
+      place in the file that speaks to that behavior at all, and it records it backwards for the
+      next reader.
+    kind: contradicts
+    node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    correction: >-
+      Remove the comment's claim about the chosen operation, or replace it (and add the matching
+      assertion) with the actual governed behavior: the chosen operation is cleared the instant
+      the named link stops being the one it was chosen under.
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the requestSchemaDraft() helper, which drives the Link field, the Operação listbox and the
+      "Solicitar rascunho de schema" button as one flow
+    evidence: |-
+      fireEvent.change(screen.getByLabelText("Link do documento OpenAPI"), { target: { value: LINK } });
+      openOperationSelect();
+      const listbox = screen.getByRole("listbox");
+      const option = await within(listbox).findByRole("option", { name: /\/v2\/translate.*POST/i });
+      fireEvent.mouseDown(option);
+      const requestButton = await screen.findByRole("button", { name: "Solicitar rascunho de schema" });
+      fireEvent.click(requestButton);
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: the assertion that both apply controls appear once the draft answer arrives
+    evidence: 'await screen.findAllByRole("button", { name: "Aplicar" });'
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      the only draft-route handler in the file is the success response
+      `jsonResponse({ input_schema: DRAFTED_INPUT_SCHEMA_TEXT, output_schema:
+      DRAFTED_OUTPUT_SCHEMA_TEXT, unresolved: [] })`; no refusal response or refusal-message
+      assertion appears anywhere in this file
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: >-
+      as above, this file contains no refusal handling or refusal-timing assertion at all
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      requestSchemaDraft() is called exactly once in the one test this file defines; no second
+      dispatch or pending-state assertion is made
+  - node: contracts/integration/capability-schema-draft
+    held_at: the DRAFT_ROUTE handler registered on the fetch stub
+    evidence: '[DRAFT_ROUTE]: () => jsonResponse({ input_schema: DRAFTED_INPUT_SCHEMA_TEXT, output_schema: DRAFTED_OUTPUT_SCHEMA_TEXT, unresolved: [] }),'
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the fetch stub's route table, whose only entries are backend endpoints
+      (read-openapi-document-operations and draft-capability-schema-from-openapi), never the
+      operator-named openapi.json link itself
+    evidence: |-
+      function operationsReadRoute(link: string): string {
+        return `/v1/read-openapi-document-operations?link=${encodeURIComponent(link)}`;
+      }
+  - node: domain/integration/capability-schema-draft
+    held_at: the shape of the DRAFT_ROUTE response object
+    evidence: 'jsonResponse({ input_schema: DRAFTED_INPUT_SCHEMA_TEXT, output_schema: DRAFTED_OUTPUT_SCHEMA_TEXT, unresolved: [] })'
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: 'unresolved: []'
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: 'unresolved: [] — no reason value appears anywhere in this file'
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      the file never reads the Input schema or Output schema field's value immediately after
+      requestSchemaDraft() resolves; screen.getByLabelText<HTMLTextAreaElement>("Input schema")
+      is only read later, after the Aplicar button is clicked
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: the closing click-and-assert pair on the input apply button
+    evidence: |-
+      fireEvent.click(inputApplyButton);
+      await waitFor(() => expect(inputSchemaField.value).toBe(DRAFTED_INPUT_SCHEMA_TEXT));
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: the staleness-text assertions before and after the link change
+    evidence: |-
+      expect(screen.queryByText(/desatualizado/i)).toBeNull();
+      ...
+      expect(await screen.findByText(/desatualizado/i)).toBeTruthy();
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: >-
+      partially: the staleness-on-link-change and apply-buttons-still-offered assertions hold
+      the scenario's staleness clause; the scenario's chosen-operation-clearing clause is not
+      exercised by any assertion, and the adjoining comment states its opposite (see findings)
+    evidence: |-
+      expect(await screen.findByText(/desatualizado/i)).toBeTruthy();
+      const applyButtons = screen.getAllByRole("button", { name: "Aplicar" });
+      expect(applyButtons).toHaveLength(2);
+      expect(applyButtons.every((button) => !button.hasAttribute("disabled"))).toBe(true);
+looked_past: >-
+  The describe block's title and the "(criterion 3)"/"(criterion 4)"/"(criterion 6)" comment
+  markers restate rule text and reference an external numbered list rather than domain facts of
+  their own, and the file exercises no test for the earlier-request-blocked or refusal paths at
+  all — coverage gaps and comment-numbering style are not domain-fact conformance and are left
+  to whichever pass owns them.

@@ -1,0 +1,117 @@
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: |-
+      function stateWith(overrides: Partial<CapabilitySchemaHelperState> = {}): CapabilitySchemaHelperState {
+        return {
+          link: "https://api.example.com/openapi.json",
+          onLinkChange: () => {},
+          operations: [],
+          operationsOutcome: { kind: "idle" },
+          onRetryOperationsRead: () => {},
+          chosenOperation: undefined,
+          onChooseOperation: () => {},
+          onRequestDraft: () => {},
+      ...
+      }
+      The fields link, operations, operationsOutcome, onLinkChange, onChooseOperation and onRequestDraft are set only to satisfy the state's type; no assertion in this file exercises the helper's offer of the link, the operation listing or the request act.
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      expect(onApplyInputSchema).toHaveBeenCalledWith(DISTINCTIVE_DRAFT.input_schema);
+      expect(onApplyOutputSchema).toHaveBeenCalledWith(DISTINCTIVE_DRAFT.output_schema);
+      The file checks only that the apply handlers receive the draft's own schema text; it makes no assertion that input_schema, output_schema or unresolved are stated to the operator on the draft's arrival.
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      outcome: {
+        kind: "drafted",
+        link: "https://api.example.com/openapi.json",
+        path: "/v2/translate",
+        method: "POST",
+        draft: DISTINCTIVE_DRAFT,
+      },
+      Only a "drafted" outcome is ever constructed in this file; no refusal outcome is exercised.
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: |-
+      outcome: {
+        kind: "drafted",
+        ...
+      },
+      No refusal state, before or after an answer, appears anywhere in this file.
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: |-
+      onRequestDraft: () => {},
+      onRequestDraft is supplied only to satisfy the state shape and is never invoked or asserted against in this file.
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |-
+      import type { CapabilitySchemaDraft } from "../hooks/use-draft-capability-schema-from-openapi";
+      The contract's operation is referenced only through a type import for test fixture typing; no call to draft-capability-schema-from-openapi is made or asserted.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      link: "https://api.example.com/openapi.json",
+      The link is used only as a fixture value; no fetch of the OpenAPI document, backend-side or otherwise, is exercised in this file.
+  - node: domain/integration/capability-schema-draft
+    held_at: the DISTINCTIVE_DRAFT constant
+    evidence: |-
+      const DISTINCTIVE_DRAFT: CapabilitySchemaDraft = {
+        input_schema: "DISTINCTIVE_INPUT_SCHEMA_MARKER_a91c",
+        output_schema: "DISTINCTIVE_OUTPUT_SCHEMA_MARKER_c38f",
+        unresolved: [],
+      };
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: |-
+      unresolved: [],
+      unresolved is always the empty array in this file; no unresolved item's name or reason is ever constructed or asserted.
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      unresolved: [],
+      No value of the reason enumeration appears anywhere in this file.
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: |-
+      const { unmount } = renderFields(stateWith({ stale: true }));
+      expect(screen.getByText(/desatualizado/i)).toBeTruthy();
+      The test that renders the drafted state only checks the stale statement's presence; it makes no assertion about the Input schema or Output schema fields' own content before or after the draft's arrival.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: the second `it` block ("keeps both Apply buttons rendered and enabled while the draft is stale, ...")
+    evidence: |-
+      const buttons = screen.getAllByRole("button", { name: "Aplicar" });
+      expect(buttons).toHaveLength(2);
+      expect(buttons.every((button) => !button.hasAttribute("disabled"))).toBe(true);
+
+      const [inputButton, outputButton] = buttons;
+      ...
+      inputButton.click();
+      outputButton.click();
+
+      expect(onApplyInputSchema).toHaveBeenCalledWith(DISTINCTIVE_DRAFT.input_schema);
+      expect(onApplyOutputSchema).toHaveBeenCalledWith(DISTINCTIVE_DRAFT.output_schema);
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: the two `it` blocks under the "stale drafted disclosure" and "still offers the act applying" describes
+    evidence: |-
+      const { unmount } = renderFields(stateWith({ stale: true }));
+      expect(screen.getByText(/desatualizado/i)).toBeTruthy();
+      unmount();
+
+      renderFields(stateWith({ stale: false }));
+      expect(screen.queryByText(/desatualizado/i)).toBeNull();
+      ...
+      renderFields(stateWith({ stale: true }), { onApplyInputSchema, onApplyOutputSchema });
+      const buttons = screen.getAllByRole("button", { name: "Aplicar" });
+      expect(buttons.every((button) => !button.hasAttribute("disabled"))).toBe(true);
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: |-
+      chosenOperation: undefined,
+      onChooseOperation: () => {},
+      ...
+      renderFields(stateWith({ stale: true }));
+      `stale` is injected directly as a boolean override; the file never drives staleness by naming a different link or clearing a chosen operation, so the scenario's own causal chain is not exercised here.
+looked_past: This file's scope is the presentational stale-marking and apply-offer behavior of CapabilitySchemaHelperFields given a `stale` boolean already computed elsewhere; whether that boolean is itself derived correctly from a changed link or operation, and the confirmation guard over an unsubmittedly-edited field, are not exercised here, which reads as a coverage question for the hook-level tests rather than a fact this file states wrongly.

@@ -1,0 +1,42 @@
+certified:
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    state: partial
+    tests:
+      - file: src/services/capability-schema-draft-disclosure.spec.ts
+        name: >-
+          maps every unresolved entry in order, preserving each one's own name and reason and adding
+          nothing beyond a reasonLabel
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: strips any field an unresolved item carried beyond name and reason
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          carries the link, path and method of the request answered, and a draft holding exactly
+          input_schema, output_schema and unresolved -- no field the answer's top level did not carry
+    why: >-
+      The pairing half of the fact is exercised: the disclosure proof submits two unresolved entries and
+      asserts each one's own name and reason survive character for character and in their own positions,
+      so a crossed or rewritten name-to-reason pairing fails it; the hook proof submits an entry carrying
+      parameter_location beyond the two attributes and asserts the exposed item is exactly {name, reason},
+      so a third attribute leaking in fails it. What goes unexercised is that both attributes are required:
+      nothing in the set submits an unresolved entry with no name, or with no reason, so whether an item
+      can exist carrying only one of the two is never decided by the proof -- the item type would keep
+      every test in the set passing if either attribute became optional. Nothing in the set submits a
+      reason that is not a value of capability-schema-draft-unresolved-reason either, so that the reason
+      attribute is of that type -- rather than any string -- goes unexercised; the disclosure derives a
+      reasonLabel from the reason with nothing asserting what an undeclared reason yields. The description's
+      claim that the name is exactly as the OpenAPI document itself gives it is exercised only as far as
+      this boundary reaches: the proofs show the name the draft operation answered is carried through
+      unaltered, and nothing here reads the OpenAPI document, so the step from document to answer is
+      outside what these tests can decide.
+    remainder: testable
+    remainder_why: >-
+      Three inputs against three expected results, each stated in the node's own terms. One: a draft answer
+      whose unresolved entry carries a reason but no name -- expected result, no item lacking a name is
+      exposed as an unresolved item, since the node declares name required. Two: a draft answer whose
+      unresolved entry carries a name but no reason -- expected result, no item lacking a reason is exposed,
+      since the node declares reason required and the item's whole responsibility is a name paired with why.
+      Three: a draft answer whose unresolved entry carries a reason that is not one the
+      capability-schema-draft-unresolved-reason type holds -- expected result, it is not exposed as a reason
+      of that type. The step that runs them is the existing test step; the assertions belong beside the two
+      already in src/hooks/use-draft-capability-schema-from-openapi.spec.ts and
+      src/services/capability-schema-draft-disclosure.spec.ts.

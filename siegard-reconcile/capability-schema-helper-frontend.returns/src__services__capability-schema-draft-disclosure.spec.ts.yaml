@@ -1,0 +1,89 @@
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: >-
+      The whole file exercises only two pure functions, `capabilitySchemaDraftDisclosureFrom` and
+      `capabilitySchemaDraftRefusalDisclosureFrom`; it never renders or asserts on a surface, a
+      control, or the offering of a draft-request act.
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: the `capabilitySchemaDraftDisclosureFrom` describe blocks, lines 42-85
+    evidence: |-
+      expect(disclosure.inputSchema).toBe(draft.input_schema);
+      expect(disclosure.outputSchema).toBe(draft.output_schema);
+      expect(disclosure.unresolved[0]?.name).toBe("first-field");
+      expect(disclosure.unresolved[0]?.reason).toBe("schema-not-reducible-to-a-type");
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: the `capabilitySchemaDraftRefusalDisclosureFrom` describe blocks, lines 87-131
+    evidence: |-
+      expect(disclosure?.message).toBe(CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_NOT_FETCHED_MESSAGE);
+      expect(disclosure?.message).toBe(CAPABILITY_SCHEMA_DRAFT_NOT_GENERATED_NOT_READABLE_MESSAGE);
+      expect(disclosure?.message).toContain("PATCH");
+      expect(new Set(messages).size).toBe(4);
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: lines 133-137
+    evidence: |-
+      expect(capabilitySchemaDraftRefusalDisclosureFrom({ kind: "idle" })).toBeUndefined();
+      expect(capabilitySchemaDraftRefusalDisclosureFrom({ kind: "pending" })).toBeUndefined();
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      The file never constructs or dispatches a request; `DraftCapabilitySchemaRequestOutcome`
+      values are supplied as ready-made fixtures, so no dispatch-suppression behavior is exercised.
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      const BASE_DRAFT: CapabilitySchemaDraft = { input_schema: '{"type":"object","properties":{}}',
+      output_schema: '{"type":"object","properties":{}}', unresolved: [] };
+      — a locally built fixture; the file never calls draft-capability-schema-from-openapi.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      No fetch, request, or network call of any kind appears in the file; only in-memory objects
+      are constructed and passed to the two disclosure functions.
+  - node: domain/integration/capability-schema-draft
+    held_at: lines 42-64
+    evidence: |-
+      expect(disclosure.inputSchema).toBe(draft.input_schema);
+      expect(disclosure.outputSchema).toBe(draft.output_schema);
+      expect(Object.keys(disclosure).sort()).toEqual(["inputSchema", "outputSchema", "unresolved"]);
+      expect(disclosure.unresolved).toEqual([]);
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: lines 66-85
+    evidence: |-
+      expect(disclosure.unresolved[0]?.name).toBe("first-field");
+      expect(disclosure.unresolved[0]?.reason).toBe("schema-not-reducible-to-a-type");
+      expect(disclosure.unresolved[1]?.name).toBe("second-field");
+      expect(disclosure.unresolved[1]?.reason).toBe("name-claimed-by-another-parameter");
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: lines 71-72
+    evidence: |-
+      { name: "first-field", reason: "schema-not-reducible-to-a-type" },
+      { name: "second-field", reason: "name-claimed-by-another-parameter" },
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      The file builds only a return-value disclosure object; it never references an Input schema
+      field or an Output schema field, so this restraint is not exercised here.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      No apply-to-field logic appears in the file; the two functions under test only shape a
+      draft or a refusal outcome into a disclosure object.
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      Nothing in the file tracks a link or an operation across calls, so no staleness marking is
+      exercised.
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      The scenario concerns operation-choice clearing on an authoring surface; this file has no
+      surface, no chosen-operation state, and no such assertion.
+looked_past: >-
+  The refusal-disclosure tests never assert the absence of input_schema, output_schema or an
+  unresolved list beside a stated refusal (a-refused-schema-draft-states-its-refusal-to-the-operator's
+  own closing clause), and the unrecognized-failure test hardcodes the literal substring "não
+  declara nenhuma operação" instead of importing the operation-not-found message constant it is
+  guarding against — both are test-coverage/duplication concerns about wording the specification
+  itself leaves to the interface, not a domain fact stated or misstated in this file, so they are
+  left for a different pass.

@@ -1,0 +1,94 @@
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the describe block "the request act stands only over a chosen operation..." and the operation-Select
+      describe blocks
+    evidence: >-
+      expect(screen.queryByRole("button", { name: "Solicitar rascunho de schema" })).toBeNull();
+      expect(screen.getByText("Escolha uma operação para solicitar um rascunho de schema.")).toBeTruthy();
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the describe block "a drafted answer's whole draft is stated..." and the empty-unresolved-list test
+    evidence: >-
+      expect(screen.getByText("INPUT_SCHEMA_MARKER_7f3a")).toBeTruthy();
+      expect(screen.getByText("OUTPUT_SCHEMA_MARKER_9c1e")).toBeTruthy();
+      const items = screen.getAllByRole("listitem").map(normalized);
+      expect(items).toHaveLength(3);
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: >-
+      the four refusal describe blocks (not-fetched, not-readable, operation-not-found, unrecognized, and the
+      pairwise-distinct block)
+    evidence: >-
+      expect(alertText).toContain("Nenhum rascunho de esquema foi gerado");
+      expect(screen.queryByText("Esquema de entrada rascunhado")).toBeNull();
+      expect(screen.queryByText("Esquema de saída rascunhado")).toBeNull();
+      expect(screen.queryByText("Não resolvidos")).toBeNull();
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: >-
+      the describe block "no refusal is stated while a schema draft request stands unanswered..."
+    evidence: >-
+      renderFields(stateWith({ outcome: { kind: "idle" } }));
+      expect(screen.queryByRole("alert")).toBeNull();
+      renderFields(stateWith({ outcome: { kind: "pending" } }));
+      expect(screen.queryByRole("alert")).toBeNull();
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      renderFields(stateWith({ outcome: { kind: "pending" } }));
+      expect(screen.queryByRole("alert")).toBeNull(); — the only "pending" fixture in this file checks
+      absence of an alert, never a second onRequestDraft dispatch or its suppression.
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      import type { CapabilitySchemaDraft, DraftCapabilitySchemaRequestOutcome } from
+      "../hooks/use-draft-capability-schema-from-openapi"; — the contract's own operation is never invoked here,
+      only its result types are used as fixtures.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      link: "https://api.example.com/openapi.json", — used only as static fixture text passed into state, never
+      as an argument to any fetch this file performs.
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the draft fixture object literals
+    evidence: >-
+      input_schema: "INPUT_SCHEMA_MARKER_7f3a",
+      output_schema: "OUTPUT_SCHEMA_MARKER_9c1e",
+      unresolved: [ { name: "alpha", reason: "schema-not-reducible-to-a-type" }, ... ]
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the unresolved array entries of the draft fixture
+    evidence: '{ name: "alpha", reason: "schema-not-reducible-to-a-type" }'
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: >-
+      the reason fields of the unresolved array entries
+    evidence: >-
+      reason: "schema-not-reducible-to-a-type" ... reason: "name-claimed-by-another-parameter"
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      no assertion in this file inspects Input schema or Output schema field content before and after an
+      outcome transition; the drafted state is rendered directly via draftedOutcomeState(draft) with no
+      before/after comparison.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      onApplyInputSchema: overrides.onApplyInputSchema ?? vi.fn(),
+      onApplyOutputSchema: overrides.onApplyOutputSchema ?? vi.fn(), — both are declared and passed to render
+      but never asserted invoked or checked for confirmation behavior anywhere in this file.
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      draftedOutcomeState(draft) is used as a static fixture; no test in this file varies state.link or
+      state.chosenOperation after a draft is stated to check for a stale marking.
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      no test in this file clears or changes a chosen operation after a draft outcome is stated; the scenario's
+      given/when/then sequence is not exercised here.
+looked_past: >-
+  Whether onApplyInputSchema/onApplyOutputSchema are actually wired to a visible apply affordance in the
+  rendered component, and whether the stale-draft marking or the pending-request-suppression behavior are
+  covered by some other file in this delivery, is a coverage question for another pass, not a conformance
+  finding against this file.
+candidates_opened: []

@@ -1,0 +1,20 @@
+certified:
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    state: partial
+    tests:
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: renders the not-fetched refusal as an alert stating no draft was generated
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: renders the not-readable refusal as an alert stating no draft was generated
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: renders the operation-not-found refusal as an alert stating no draft was generated and naming the method and path
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: renders a fallback alert stating no draft was generated for a reason the surface does not recognise
+      - file: src/routes/capability-schema-helper-fields.spec.ts
+        name: >-
+          renders a pairwise-distinct alert for each of the four refusal outcomes, none of them alongside a drafted input schema, output schema or unresolved-item section
+    why: >-
+      The three named conditions are exercised whole: each of the three refusals asserts the "no draft was generated" sentence plus a phrase proper to its own condition (the unfetchable link, the document unreadable as OpenAPI 3.x, and the method and path of the absent operation), and the pairwise-distinctness assertion holds them apart from one another. That no input_schema, output_schema or unresolved item stands beside a refusal is exercised for all four readings, by the absence of the three drafted sections. Two stated parts go unexercised. First, the clause "states that the request failed for a reason it does not recognise": the unrecognised-failure test asserts only the shared no-draft sentence and the absence of the three named phrases, so a surface that rendered the bare no-draft sentence with nothing at all about an unrecognised reason would pass it, and the pairwise-distinctness assertion would still pass too, since the other three texts carry their own phrases and the fixture's link, path and method. The negative half ("never as one of them", "never as a draft") is exercised; the positive statement the operator is owed is not. Second, the fact scopes the refusal to the Schema Helper "of a surface authoring or editing a capability"; every test in the offered proof renders CapabilitySchemaHelperFields directly against a hand-built state, so nothing exercises that either surface reaches this statement, and the fact could stop holding on one of those surfaces with the whole proof still passing.
+    remainder: testable
+    remainder_why: >-
+      One input — an outcome of kind "unrecognized-failure" — against one expected result: the alert states, in its own words, that the request failed for a reason the surface does not recognise, asserted positively on that sentence rather than only by the absence of the three named phrases. The second gap is likewise testable, as one input against one result per surface: rendering the capability-authoring surface and the capability-editing surface with a refusing draft outcome, each expected to state that refusal to the operator.

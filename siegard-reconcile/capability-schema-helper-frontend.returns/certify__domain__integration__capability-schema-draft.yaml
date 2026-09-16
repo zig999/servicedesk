@@ -1,0 +1,62 @@
+certified:
+  - node: domain/integration/capability-schema-draft
+    state: partial
+    tests:
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          carries the link, path and method of the request answered, and a draft holding exactly
+          input_schema, output_schema and unresolved -- no field the answer's top level did not carry
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: strips any field an unresolved item carried beyond name and reason
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: exposes unresolved as an empty array when the answer carried none
+      - file: src/hooks/use-draft-capability-schema-from-openapi.spec.ts
+        name: >-
+          issues exactly one network call, to the published draft route, never to the operator-named
+          link itself or to any other operation
+      - file: src/services/capability-schema-draft-disclosure.spec.ts
+        name: >-
+          returns inputSchema and outputSchema equal, character for character, to the draft's own
+          fields, and no key beyond inputSchema, outputSchema and unresolved
+      - file: src/services/capability-schema-draft-disclosure.spec.ts
+        name: returns an empty unresolved array for a draft carrying none
+      - file: src/services/capability-schema-draft-disclosure.spec.ts
+        name: >-
+          maps every unresolved entry in order, preserving each one's own name and reason and adding
+          nothing beyond a reasonLabel
+    why: >-
+      Three of the node's statements are exercised: the draft carries exactly input_schema,
+      output_schema and unresolved and no other top-level name; each unresolved entry is carried by
+      its own name and its own reason and nothing else, an empty list staying an empty list; and the
+      draft is obtained by a single call to the published draft operation and never to the
+      operator-named link or to any registration, so "a read, never a registration" would fail if a
+      second or different call appeared. Two statements go unexercised. First, that input_schema and
+      output_schema "each declare a top-level properties object and, where any of their own names is
+      declared required, a top-level required array": every assertion in the set treats both as
+      opaque strings compared for pass-through equality — `toBe(draft.input_schema)` in
+      capability-schema-draft-disclosure.spec.ts and `toEqual` against the fixture in
+      use-draft-capability-schema-from-openapi.spec.ts — and one case ("exposes unresolved as an
+      empty array when the answer carried none") passes a draft whose input_schema is `"{}"`,
+      declaring no properties object at all, without any assertion objecting. The fixtures happen to
+      carry the shape; nothing would fail if they stopped. Second, that "every name the chosen
+      operation declares that the draft could not honestly turn into a properties entry is named in
+      unresolved instead": no test in the offered proof ever presents an OpenAPI operation, so the
+      partition between what became a properties entry and what was disclosed as unresolved is never
+      checked against the names the operation declared — the drafts are hand-written fixtures, and a
+      draft that silently dropped a name it could not resolve would pass every test here. Whatever
+      proves that half lives outside the offered proof, over the generating operation rather than
+      over this frontend's carry-through.
+    remainder: testable
+    remainder_why: >-
+      Two assertions close it. For the shape: one input — a drafted answer whose input_schema and
+      output_schema are read rather than compared as strings — against one expected result, that each
+      parses to an object declaring a top-level properties object, and that where one of its own
+      declared names is required the parsed object also declares a top-level required array listing
+      it; with the companion input of a schema declaring no such properties object expected not to
+      stand as a draft. For the disclosure of what could not be resolved: one input — a single
+      OpenAPI operation declaring a set of names, some of which cannot honestly become a properties
+      entry — against one expected result, that every properties entry of the two schemas plus every
+      unresolved item's name together account for exactly the names that operation declared, each
+      unresolved item carrying that name and its reason. The second assertion is over the step that
+      generates the draft from the operation, not over this hook, so it cannot be written against the
+      files in the offered proof.

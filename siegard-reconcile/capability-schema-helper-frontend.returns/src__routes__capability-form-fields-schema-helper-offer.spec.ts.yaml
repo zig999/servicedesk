@@ -1,0 +1,102 @@
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      lines 36-58 of the spec — the Schema Helper's position relative to the
+      Output schema field, the absence of a dialog role, the waiting text and
+      absent request button/path/method textboxes before an operation is
+      chosen, the listbox-driven operation selection, and the request
+      button's appearance once an operation is chosen.
+    evidence: |-
+      const outputSchemaField = screen.getByLabelText("Output schema");
+      const heading = screen.getByRole("heading", { name: "Assistente de Schema" });
+      expect(
+        Boolean(outputSchemaField.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING),
+      ).toBe(true);
+      expect(screen.queryByRole("dialog")).toBeNull();
+      expect(screen.getByText("Escolha uma operação para solicitar um rascunho de schema.")).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Solicitar rascunho de schema" })).toBeNull();
+      expect(screen.queryByRole("textbox", { name: /path/i })).toBeNull();
+      expect(screen.queryByRole("textbox", { name: /method/i })).toBeNull();
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      The test only asserts that fetchMock was called with DRAFT_ROUTE and
+      that no PUT was made; it makes no assertion that the surface states
+      input_schema, output_schema or any unresolved item to the operator.
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No refusal response is exercised anywhere in this file — the
+      DRAFT_ROUTE handler always returns a successful draft.
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: >-
+      No timing between a request and a refusal is exercised in this file.
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      The test dispatches exactly one draft request and never attempts a
+      second request while the first is outstanding.
+  - node: contracts/integration/capability-schema-draft
+    held_at: >-
+      the DRAFT_ROUTE constant and the waitFor assertion that the request
+      reached it.
+    evidence: |-
+      const DRAFT_ROUTE = "/v1/draft-capability-schema-from-openapi";
+      ...
+      await waitFor(() =>
+        expect(
+          fetchMock.mock.calls.some(
+            ([input]) => (typeof input === "string" ? input : input.toString()) === DRAFT_ROUTE,
+          ),
+        ).toBe(true),
+      );
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      The test never asserts the absence of a direct fetch to the OpenAPI
+      document's own URL; it only stubs the backend-facing routes.
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the fixture returned by the DRAFT_ROUTE handler.
+    evidence: |-
+      [DRAFT_ROUTE]: () => jsonResponse({ input_schema: "{}", output_schema: "{}", unresolved: [] }),
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      unresolved is fixed to an empty array in the fixture, so no unresolved
+      item is ever instantiated.
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      No unresolved reason value appears anywhere in the file.
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      The test never reads the Input schema or Output schema field's content
+      after the draft request's answer arrives.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      No apply action is taken in this file.
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      The link or operation is never changed after a draft is stated in this
+      file.
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      The scenario's link-changed / operation-cleared sequence is not
+      exercised in this file.
+looked_past: >-
+  The describe block's title string restates, in prose, the same facts
+  rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+  states (inline placement, waiting on a chosen operation, naming from the
+  document's own listing, no capability-registry call) and cites the node by
+  full identity; I did not raise this as a restated-fact finding because it
+  is a human-readable test label rather than an operative second home for
+  the fact — treating that distinction, if any, is a different pass's
+  judgment (the comment-convention route), not this one.
+candidates_opened:
+  - contracts/integration/openapi-document-operations

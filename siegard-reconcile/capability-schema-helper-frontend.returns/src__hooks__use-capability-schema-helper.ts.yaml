@@ -1,0 +1,108 @@
+findings:
+  - file: src/hooks/use-capability-schema-helper.ts
+    where: "`onLinkChange` (line 55, `onLinkChange: setLink,`) alongside the `chosenOperation` state declared at line 49"
+    evidence: |-
+      const [chosenOperation, setChosenOperation] = useState<OpenApiOperation | undefined>(undefined);
+
+      const { outcome: operationsOutcome, refetch } = useOpenApiDocumentOperations(link);
+
+      return {
+        link,
+        onLinkChange: setLink,
+    cost: >-
+      Changing the named link only updates `link`; nothing clears `chosenOperation`, so the hook
+      keeps exposing the operation chosen under the previous document as `chosenOperation` even
+      once the listing for the new link has replaced it. A caller reading `chosenOperation` to
+      decide whether the request-draft act is offered, or to render the operation beside the
+      helper, is shown a choice that names no entry of the current link's listing -- the exact
+      state the specification says must read as cleared -- and the operator who types the
+      original link back is handed a stale selection rather than the "waits on one" state the
+      surface owes until a fresh choice is made.
+    kind: contradicts
+    correction: >-
+      Reset chosenOperation to undefined whenever link changes away from the link it was chosen
+      under (e.g. an effect keyed on link, or deriving chosenOperation so it cannot outlive the
+      link's own listing), matching the scenario's given/when/then.
+    node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: |-
+      const { outcome: operationsOutcome, refetch } = useOpenApiDocumentOperations(link);
+  - node: contracts/integration/capability-schema-draft
+    held_at: the onRequestDraft callback, line 65
+    evidence: |-
+      requestDraft({ link, path: chosenOperation.path, method: chosenOperation.method });
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: the onRequestDraft callback, lines 61-66
+    evidence: |-
+      onRequestDraft: () => {
+            if (chosenOperation === undefined) {
+              return;
+            }
+            requestDraft({ link, path: chosenOperation.path, method: chosenOperation.method });
+          },
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: the draftIsStale function, lines 31-43, and the stale field, line 68
+    evidence: |-
+      return (
+          outcome.link !== current.link ||
+          outcome.path !== current.chosenOperation?.path ||
+          outcome.method !== current.chosenOperation?.method
+        );
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      outcome,
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      outcome,
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: |-
+      outcome,
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: |-
+      const { requestDraft, outcome } = useDraftCapabilitySchemaFromOpenApi();
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: |-
+      type DraftCapabilitySchemaRequestOutcome,
+      } from "./use-draft-capability-schema-from-openapi";
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: |-
+      outcome,
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: |-
+      outcome,
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: |-
+      return {
+          link,
+          onLinkChange: setLink,
+          operations: operationsOfferedFor(operationsOutcome),
+          operationsOutcome,
+          onRetryOperationsRead: refetch,
+          chosenOperation,
+          onChooseOperation: (operation) => setChosenOperation(operation),
+          onRequestDraft: () => {
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: |-
+      outcome,
+        stale: draftIsStale(outcome, { link, chosenOperation }),
+      };
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: |-
+      onLinkChange: setLink,
+looked_past: >-
+  onChooseOperation accepts any OpenApiOperation value without checking it against the operations
+  list currently offered; the node set's own description attributes the constraint that a choice
+  can only come from the fetched listing to the interface's control (dropdown), not to this hook,
+  so this is left to whichever judgment covers the rendering surface.

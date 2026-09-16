@@ -1,0 +1,83 @@
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the two `expect` assertions in the `it` block — checking the Schema Helper heading's
+      document position relative to the Output schema field, and the absence of any dialog role
+      on the page
+    evidence: |-
+      expect(
+            Boolean(outputSchemaField.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING),
+          ).toBe(true);
+          expect(screen.queryByRole("dialog")).toBeNull();
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — the file's sole test exercises only heading placement and
+      dialog absence; no draft request, input_schema, output_schema or unresolved disclosure is
+      exercised
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no refusal path is exercised in this file
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no request/answer timing is exercised in this file
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no request dispatch is exercised in this file
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      const fetchMock = createFetchStub(baseHandlers()); await mountCapabilityDetailScreen(fetchMock); —
+      the mounted screen is exercised only for layout, not for any draft-capability-schema-from-openapi call
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      const fetchMock = createFetchStub(baseHandlers()); await mountCapabilityDetailScreen(fetchMock); —
+      no assertion in this file concerns where any OpenAPI fetch runs
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no draft content (input_schema, output_schema, unresolved) appears
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no unresolved-item content appears
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no unresolved-reason content appears
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      const outputSchemaField = await screen.findByLabelText("Output schema"); — the field is
+      located only to test its position, its content before/after a draft's arrival is never asserted
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no apply action is exercised in this file
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — no staleness scenario is exercised in this file
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      it("renders the Schema Helper positioned after the Output schema field, with no dialog on
+      the page", async () => { ... }) — this scenario's link/operation-clearing sequence is not exercised
+looked_past: >-
+  The test verifies the Schema Helper heading's position only against the Output schema field,
+  not additionally against the Input schema field the node also names beneath which the helper
+  must sit; that is a test-coverage question rather than a stated domain fact conflicting with a
+  node, so it is left unreported here.

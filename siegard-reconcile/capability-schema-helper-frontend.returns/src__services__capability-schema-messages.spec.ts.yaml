@@ -1,0 +1,99 @@
+findings:
+  - file: src/services/capability-schema-messages.spec.ts
+    where: "lines 8 and 13, the `outsideVocabulary` case"
+    evidence: |-
+      const outsideVocabulary = capabilitySchemaDraftUnresolvedReasonMessage("some-future-reason");
+      ...
+      expect(outsideVocabulary).toBe("some-future-reason");
+    cost: >-
+      The test fixes what an operator sees when draft-capability-schema-from-openapi names an
+      unresolved-item reason outside the two-value closed enumeration schema-not-reducible-to-a-type /
+      name-claimed-by-another-parameter: the raw enumeration string is echoed back verbatim, unlabeled.
+      No node decides this. The specification does have a stated convention for a value outside a
+      vocabulary the surface must present — "a refusal whose condition the surface does not recognise
+      is stated as exactly that" (the pattern rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+      also applies to refusal conditions) — but nothing extends or excludes that convention here, so
+      whether echoing the raw value or stating it as unrecognised is correct for this vocabulary is a
+      decision this test makes on its own, and the next person who extends the enumeration has nowhere
+      in the specification to check it against.
+    kind: unstated
+    correction: >-
+      Add to domain/integration/capability-schema-draft-unresolved-reason, or a new rule constraining
+      it, a statement of what a surface displays for an unresolved-item reason outside the two named
+      values — echoed raw, as this test fixes, or stated as unrecognised the way an unmatched refusal
+      condition already is elsewhere in this specification.
+read:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: nowhere
+    evidence: >-
+      import { capabilitySchemaDraftUnresolvedReasonMessage } from "./capability-schema-messages";
+      — the file's only subject is that one label-mapping function; no offering of the Schema Helper,
+      no link, no operation choice and no draft request appear anywhere in it.
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      partially — the assertion that the two reason labels differ, line 12, which is this file's
+      share of the disclosure rule's "each of those reasons stated apart from every other reason"
+      requirement. The rest of that rule (input_schema, output_schema, and the name each unresolved
+      item carries) is not exercised in this file.
+    evidence: "expect(notReducibleLabel).not.toBe(nameClaimedLabel);"
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      The file tests only capabilitySchemaDraftUnresolvedReasonMessage; no refusal, no refusal
+      condition and no "no draft was generated" statement appears in it.
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: nowhere
+    evidence: >-
+      Nothing in the file concerns request timing or an operation's answer; it calls a pure
+      string-mapping function three times with literal inputs.
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: nowhere
+    evidence: >-
+      No draft request, dispatch or outstanding-request state appears; the file has one describe
+      block covering capabilitySchemaDraftUnresolvedReasonMessage alone.
+  - node: contracts/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      No call to draft-capability-schema-from-openapi, nor any contract interaction, appears in
+      this file.
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: nowhere
+    evidence: >-
+      No OpenAPI document, link or fetch is referenced anywhere in this file.
+  - node: domain/integration/capability-schema-draft
+    held_at: nowhere
+    evidence: >-
+      No input_schema, output_schema or unresolved list is constructed or read in this file; only
+      individual reason strings are passed to the function under test.
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: nowhere
+    evidence: >-
+      The file passes bare reason strings to capabilitySchemaDraftUnresolvedReasonMessage; it never
+      constructs or reads a name/reason pair.
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: "the two literal enum values passed as test input, lines 6-7"
+    evidence: |-
+      const notReducibleLabel = capabilitySchemaDraftUnresolvedReasonMessage("schema-not-reducible-to-a-type");
+      const nameClaimedLabel = capabilitySchemaDraftUnresolvedReasonMessage("name-claimed-by-another-parameter");
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      No Input schema or Output schema field, and no draft arrival, is referenced in this file.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: nowhere
+    evidence: >-
+      No apply action, field write or confirmation appears anywhere in this file.
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: nowhere
+    evidence: >-
+      No staleness marking, link or chosen-operation comparison appears in this file.
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: nowhere
+    evidence: >-
+      The scenario's link/operation clearing and staleness sequence is not exercised anywhere in
+      this file, which tests one pure reason-to-label function only.
+looked_past: >-
+  The describe string cites "(domain/integration/capability-schema-draft-unresolved-reason)" and the
+  exact label wording for each reason is never asserted (only length and distinctness) — both read
+  as deliberate test-to-node traceability and as respecting the specification's own restraint that
+  wording belongs to the interface, not a domain-fact departure, so neither is reported here.

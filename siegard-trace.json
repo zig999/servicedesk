@@ -981,7 +981,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-schema-helper.ts",
-          "digest": "sha256:f88e7bd67263c6a38d8af24b2bafee85c99ca19cf3b4df1d5ef5899746789296"
+          "digest": "sha256:c25dc845b083c51801dc8c6207c6e948d741948e3654ee799128c49fb417a85a"
         },
         {
           "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
@@ -2345,7 +2345,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:fb37da270465bbe66d7107dabf7925c8481f522e89541633983d682ae7b39d69"
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -2443,7 +2443,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:fb37da270465bbe66d7107dabf7925c8481f522e89541633983d682ae7b39d69"
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -2523,7 +2523,7 @@
         },
         {
           "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
-          "digest": "sha256:9a4ab82a6b042a5a685d74e2a1abde7c6e9ac5389cf352077b427235965f9f0c"
+          "digest": "sha256:bd47cc45bcd9c0dc1be9a5e30d294bc5baaf2a78e4759077c2a934650a7e9976"
         },
         {
           "path": "src/src/connector-registry/capability-schema-draft-generation.ts",
@@ -2553,11 +2553,11 @@
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
-          "digest": "sha256:06e9b1441b9efd14ba9408a81e879518c1ea96f13e8e2b80e7ffdba9f43ad2c2"
+          "digest": "sha256:373101cf8eca8ab4e41a0fd7e1d97d096045f01c1592131a7a6034095a813ee9"
         },
         {
           "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
-          "digest": "sha256:9a4ab82a6b042a5a685d74e2a1abde7c6e9ac5389cf352077b427235965f9f0c"
+          "digest": "sha256:bd47cc45bcd9c0dc1be9a5e30d294bc5baaf2a78e4759077c2a934650a7e9976"
         },
         {
           "path": "src/src/connector-registry/capability-schema-draft-input-schema.ts",
@@ -3697,7 +3697,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:fb37da270465bbe66d7107dabf7925c8481f522e89541633983d682ae7b39d69"
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -5215,7 +5215,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:fb37da270465bbe66d7107dabf7925c8481f522e89541633983d682ae7b39d69"
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
@@ -6631,15 +6631,15 @@
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
-          "digest": "sha256:06e9b1441b9efd14ba9408a81e879518c1ea96f13e8e2b80e7ffdba9f43ad2c2"
+          "digest": "sha256:373101cf8eca8ab4e41a0fd7e1d97d096045f01c1592131a7a6034095a813ee9"
         },
         {
           "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
-          "digest": "sha256:9a4ab82a6b042a5a685d74e2a1abde7c6e9ac5389cf352077b427235965f9f0c"
+          "digest": "sha256:bd47cc45bcd9c0dc1be9a5e30d294bc5baaf2a78e4759077c2a934650a7e9976"
         },
         {
           "path": "frontend/app/src/services/capability-schema-messages.ts",
-          "digest": "sha256:716d7efded0d5f42bdf6d7b208a62d92f93e056363c56d3c61f3214724649be3"
+          "digest": "sha256:0a213583118dd73c2c3b1dc62a5861dac41d5db0861ccc245b7b4559e1e2870c"
         }
       ]
     },
@@ -6765,11 +6765,11 @@
     },
     {
       "node": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
-      "digest": "sha256:f34e2239987801d90e397279af263b3dd80935509e527c231227496b4ba92de7",
+      "digest": "sha256:74e9067974e9cc76a61469fca3e03619efbbe579bd2b7112642798ea6ef21968",
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:fb37da270465bbe66d7107dabf7925c8481f522e89541633983d682ae7b39d69"
+          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
         }
       ]
     },
@@ -6885,7 +6885,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
-          "digest": "sha256:901308fc7b1bce84c1b945b8b8491de33ac78a67e09e0f451bde2deee71eacb5"
+          "digest": "sha256:373101cf8eca8ab4e41a0fd7e1d97d096045f01c1592131a7a6034095a813ee9"
         }
       ]
     },
@@ -7003,7 +7003,15 @@
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
-          "digest": "sha256:901308fc7b1bce84c1b945b8b8491de33ac78a67e09e0f451bde2deee71eacb5"
+          "digest": "sha256:373101cf8eca8ab4e41a0fd7e1d97d096045f01c1592131a7a6034095a813ee9"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields-schema-apply.spec.ts",
+          "digest": "sha256:1ab1719789f885dbd07e3d90ac8acb5a213eedbcb4aebae35a15ffc838fd029c"
         }
       ]
     },

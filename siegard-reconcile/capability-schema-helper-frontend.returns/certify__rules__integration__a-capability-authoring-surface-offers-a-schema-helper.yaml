@@ -1,0 +1,37 @@
+certified:
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    state: partial
+    tests:
+      - file: src/routes/capability-form-fields-schema-helper-offer.spec.ts
+        name: >-
+          walks from no operation chosen to a dispatched draft request, touching no
+          register-capability call throughout
+    why: >-
+      Three parts of the fact hold under this test and would fail if they stopped: the helper
+      sitting beneath the Output schema field on the same surface rather than in a dialog, the
+      request act being absent until an operation stands chosen with the waiting statement in its
+      place, and the waiting statement giving way to the request act once one is chosen. Three
+      stated parts go unexercised. (a) The fact is stated over "a surface authoring or editing a
+      capability"; the single test mounts only the create screen via
+      mountCapabilityCreateScreen, so an edit surface that stopped offering the helper entirely
+      would leave this test passing. (b) The draft requested is stated to be "generated from the
+      chosen operation", and the test asserts only that some call reached
+      /v1/draft-capability-schema-from-openapi -- nothing reads the request, so a draft requested
+      for a different operation, for no operation, or without the named link would leave this
+      test passing. (c) "never by typing a path or a method" is asserted only in the opening
+      state, before the link is even named -- the queryByRole checks for path/method textboxes
+      run before the operator names the document, so a surface that offered free-hand path or
+      method entry after the link was named, or alongside the chosen operation, would leave this
+      test passing.
+    remainder: testable
+    remainder_why: >-
+      Three assertions close it. First: mount the capability edit surface for an existing
+      capability and assert the same Schema Helper stands beneath its Output schema field, with
+      the waiting statement in place of the request act -- one input, an edit surface, against
+      one expected result, the helper offered there as it is on the create surface. Second: after
+      choosing the listed /v2/translate POST operation and clicking the request act, read the
+      captured draft-route call and assert its request carries the named link and that chosen
+      path and method -- one input, a chosen operation, against one expected result, a draft
+      request naming that operation and no other. Third: repeat the path/method free-hand checks
+      in the states the current test skips -- after the link is named and after an operation
+      stands chosen -- asserting no path or method textbox is offered in either.

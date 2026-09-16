@@ -1,0 +1,104 @@
+read:
+  - node: domain/integration/capability-schema-draft-unresolved-item
+    held_at: >-
+      the unresolved-item list item in CapabilitySchemaDraftStatement
+    evidence: |-
+      <span className="font-medium">{item.name}</span>: {item.reasonLabel}
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the link Input, the operation Select restricted to state.operations, and the
+      chosenOperation-gated request control
+    evidence: |-
+      {state.chosenOperation === undefined ? (
+                <p className="text-sm text-muted-foreground">{SCHEMA_HELPER_WAITING_ON_OPERATION_MESSAGE}</p>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={state.onRequestDraft}
+                  disabled={state.outcome.kind === "pending"}
+                >
+  - node: rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator
+    held_at: >-
+      the refusalDisclosure alert paragraph
+    evidence: |-
+      {refusalDisclosure !== undefined && (
+              <p role="alert" className="text-sm text-destructive">
+                {refusalDisclosure.message}
+              </p>
+            )}
+  - node: rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes
+    held_at: >-
+      the stale-message paragraph in CapabilitySchemaDraftStatement
+    evidence: |-
+      {stale && <p className="text-sm text-muted-foreground">{CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE}</p>}
+  - node: rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator
+    held_at: >-
+      the two schema sections and the unresolved section of CapabilitySchemaDraftStatement,
+      rendered only when state.outcome.kind === "drafted"
+    evidence: |-
+      {state.outcome.kind === "drafted" && (
+              <CapabilitySchemaDraftStatement
+                draft={state.outcome.draft}
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: >-
+      the two independent Apply buttons, each calling only its own handler
+    evidence: |-
+      <Button type="button" onClick={() => onApplyInputSchema(disclosure.inputSchema)}>
+      ...
+      <Button type="button" onClick={() => onApplyOutputSchema(disclosure.outputSchema)}>
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: >-
+      nowhere directly — this file holds no reference to the capability's own Input/Output
+      schema fields; it shows the draft's own schema in read-only <pre> blocks and calls
+      onApplyInputSchema/onApplyOutputSchema only from the two Apply buttons' onClick, never
+      from an effect keyed to the draft's arrival
+    evidence: |-
+      <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
+                {disclosure.inputSchema}
+              </pre>
+  - node: rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers
+    held_at: >-
+      the derivation and render of refusalDisclosure, driven only from state.outcome
+    evidence: |-
+      const refusalDisclosure = capabilitySchemaDraftRefusalDisclosureFrom(state.outcome);
+  - node: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again
+    held_at: >-
+      the disabled attribute of the request-draft Button
+    evidence: |-
+      disabled={state.outcome.kind === "pending"}
+  - node: contracts/integration/capability-schema-draft
+    held_at: >-
+      nowhere — this file never invokes draft-capability-schema-from-openapi; it only reads
+      state.outcome, which the hook populates
+    evidence: |-
+      {state.outcome.kind === "drafted" && (
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      nowhere — no fetch, no HTTP client and no direct request to an OpenAPI URL appears
+      anywhere in this file's imports or body
+    evidence: |-
+      import type { CapabilitySchemaDraft } from "../hooks/use-draft-capability-schema-from-openapi";
+  - node: domain/integration/capability-schema-draft
+    held_at: >-
+      the disclosure derived from the draft prop and rendered as input_schema/output_schema/unresolved
+    evidence: |-
+      const disclosure = capabilitySchemaDraftDisclosureFrom(draft);
+  - node: domain/integration/capability-schema-draft-unresolved-reason
+    held_at: >-
+      nowhere — the raw enum values are never read or compared here; only the derived
+      item.reasonLabel is displayed
+    evidence: |-
+      <span className="font-medium">{item.name}</span>: {item.reasonLabel}
+  - node: scenarios/integration/a-cleared-operation-choice-leaves-a-stated-schema-draft-stale
+    held_at: >-
+      the same chosenOperation-undefined branch (waiting message, no request control) combined
+      with the stale-message render, both driven from state.chosenOperation and state.stale
+    evidence: |-
+      {state.chosenOperation === undefined ? (
+                <p className="text-sm text-muted-foreground">{SCHEMA_HELPER_WAITING_ON_OPERATION_MESSAGE}</p>
+              ) : (
+looked_past: >-
+  The operationsReadDisclosure pending/empty/refused messages and the "Tentar novamente" retry
+  button are imported wholesale from the sibling connector-configuration helper's own
+  disclosure/messages modules and reflect the read-openapi-document-operations listing rather
+  than any node in this file's set, so their conformance is another file's judgment.
