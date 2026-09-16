@@ -1,0 +1,9 @@
+certified:
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    state: covered
+    tests:
+      - file: src/routes/case-creation-screen-submission.spec.ts
+        name: >-
+          creates the case via POST /v1/cases carrying the curator's own typed slug verbatim, and
+          lands on /cases/{slug}/versions/{version} using the version the response names, without
+          ever reading that slug beforehand

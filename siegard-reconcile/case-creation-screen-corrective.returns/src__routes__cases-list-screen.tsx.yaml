@@ -1,0 +1,118 @@
+findings:
+  - file: src/routes/cases-list-screen.tsx
+    where: "fetchCaseSummary, lines 54-61"
+    evidence: |-
+      const highestOffset = versionCount - 1;
+      const highestPage =
+        highestOffset < probe.data.length
+          ? probe
+          : await apiFetch<PaginatedResponse<CaseVersionListItem>>(
+              caseVersionsUrl(slug, 1, highestOffset),
+            );
+      const highest = highestPage.data[0];
+    cost: >-
+      current_state and last_updated are picked by treating the item at page offset
+      versionCount - 1 as "the highest-numbered version" — a rule the code applies that
+      only holds if list-case-versions answers a case's versions in ascending version-number
+      order. The specification decides that order for the cases listing itself
+      (cases-in-slug-order) and for a hypothesis's revisions (highest-revision-first), but
+      no node commits list-case-versions to any order at all, so a reader who wants to know
+      why offset versionCount - 1 names the current version has nowhere in the specification
+      to look; if the API's own arrangement ever differs, current_state and last_updated
+      would silently come from the wrong version with nothing in the spec to say so.
+    kind: unstated
+    correction: >-
+      A node stating the order list-case-versions answers in (or an explicit way to request
+      "the highest-numbered version" instead of inferring it from an offset) would settle
+      what this code currently assumes on its own.
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      fetchCasesWithSummaries and fetchCaseSummary, which call list-cases, list-case-versions
+      and read-case
+    evidence: |-
+      const casesPage = await apiFetch<PaginatedResponse<CaseIdentity>>("/v1/cases");
+      ...
+      caseVersionsUrl(slug, 1, 0)
+      ...
+      `/v1/cases/${encodeURIComponent(slug)}/versions/${highest.version}`
+  - node: domain/knowledge/case
+    held_at: "the CaseIdentity type, carrying the case's identity through the listing"
+    evidence: |-
+      type CaseIdentity = {
+        readonly slug: string;
+      };
+  - node: domain/knowledge/case-summary
+    held_at: "the CaseSummary type and its construction in fetchCaseSummary"
+    evidence: |-
+      type CaseSummary = {
+        readonly versionCount: number;
+        readonly currentState?: CaseVersionState;
+        readonly lastUpdated?: string;
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: "the CaseVersionState type"
+    evidence: 'type CaseVersionState = "draft" | "released";'
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: >-
+      the "Create case" Button rendered in CasesListScreen's own outer JSX, outside and
+      before the branches of renderBody(), so it is present whether the query is pending,
+      errored, or answered zero cases
+    evidence: |-
+      <Button type="button" onClick={() => void navigate({ to: "/cases/new" })}>
+        Create case
+      </Button>
+      {renderBody()}
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: >-
+      fetchCaseSummary's zero-version branch and its assembly of currentState/lastUpdated
+      from what it takes to be the highest-numbered version
+    evidence: |-
+      if (versionCount === 0) {
+        return { versionCount };
+      }
+      ...
+      return {
+        versionCount,
+        currentState: highest.state,
+        lastUpdated: detail.authored_at,
+      };
+  - node: domain/knowledge/case-version
+    held_at: "the CaseVersionListItem and CaseVersionDetail types (version, state, authored_at)"
+    evidence: |-
+      type CaseVersionListItem = {
+        readonly version: number;
+        readonly state: CaseVersionState;
+      };
+      type CaseVersionDetail = {
+        readonly authored_at: string;
+      };
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      the file's only case-authoring construct is `<Button ... onClick={() =>
+      navigate({ to: "/cases/new" })}>Create case</Button>` — a navigation, not a call to
+      create-draft or any other lifecycle operation
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: >-
+      the file renders no authoring fields or submitting act; its route to authoring is
+      the same `navigate({ to: "/cases/new" })` call, which only takes the curator elsewhere
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: >-
+      the file contains no post-creation navigation logic at all — the only navigation it
+      performs is `navigate({ to: "/cases/$slug", params: { slug } })` on a row click and
+      `navigate({ to: "/cases/new" })` on the create button
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      the file has no create-draft call or slug-origination logic; it only reads existing
+      cases via list-cases and list-case-versions
+looked_past: >-
+  CaseSummary here carries only versionCount, currentState and lastUpdated and the
+  screen's columns show only slug, state, version count and last-updated — never title,
+  when_to_use or released_version that domain/knowledge/case-summary also declares, and the
+  cases listing itself is fetched with no limit/offset and no visible way to reach a further
+  page — both left to me as interface form rather than reported, since no node in this set
+  fixes what a case-listing screen must show or how it must expose paging.

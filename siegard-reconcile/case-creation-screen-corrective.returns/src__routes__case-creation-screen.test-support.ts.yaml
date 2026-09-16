@@ -1,0 +1,63 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      baseHandlers only registers `"GET /v1/glossary/outcome"`, `"GET /v1/glossary/action"` and
+      `"GET /v1/glossary/recipient"`; no handler or route in this file exercises read-case,
+      list-cases, list-case-versions, list-hypotheses or list-hypothesis-revisions.
+  - node: domain/knowledge/case
+    held_at: >-
+      VALID_FORM_INPUT's slug field, carried into the create-draft submission this file's
+      helpers stub
+    evidence: |-
+      export const VALID_FORM_INPUT = {
+        slug: "case-required-content-check",
+  - node: domain/knowledge/case-version
+    held_at: >-
+      VALID_FORM_INPUT's title, when_to_use, subject, outcome, action and recipient fields, and
+      fillForm's population of the corresponding form controls
+    evidence: |-
+      title: "A title",
+        when_to_use: "Use this when needed",
+        subject: "billing-dispute",
+        outcome: "resolved",
+        action: "escalate",
+        recipient: "supervisor",
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      CREATE_PATH, the endpoint the fetch stub and postCallCount/parsedPostBody treat as the
+      create-draft submission
+    evidence: 'export const CREATE_PATH = "/v1/cases";'
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      const casesListRoute = createRoute({ getParentRoute: () => rootRoute, path: "/cases",
+      component: () => createElement("div", null, "Cases List Placeholder") }); — a placeholder
+      div, carrying no route-to-create-draft affordance for this file to exercise.
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: >-
+      FormInputOverrides and fillForm's per-field guards, which let a caller drive the form with
+      a required field left absent
+    evidence: |-
+      if (values.outcome !== undefined) {
+          selectOption("Fallback outcome", values.outcome);
+        }
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: >-
+      the caseVersionRoute definition, standing in as the created version's own surface that a
+      successful create-draft is expected to land on
+    evidence: >-
+      const caseVersionRoute = createRoute({ getParentRoute: () => rootRoute, path:
+      "/cases/$slug/versions/$version", component: () => createElement("div", null, "Version
+      Editor Placeholder") });
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: >-
+      VALID_FORM_INPUT.slug, the slug the create-draft submission this file stubs is made to
+      carry
+    evidence: 'slug: "case-required-content-check",'
+looked_past: >-
+  The literal REST paths this file hardcodes (CREATE_PATH "/v1/cases", and the glossary
+  endpoints "/v1/glossary/outcome|action|recipient") and apiErrorResponse's envelope, which
+  omits the details list constraints/a-malformed-request-is-refused-with-a-validation-error
+  describes, are wiring/test-fixture shape rather than a domain fact this file asserts as its
+  own, and were not pursued as findings.

@@ -1,0 +1,83 @@
+findings:
+  - file: src/routes/case-creation-screen-submission.spec.ts
+    where: "lines 51-55, the assertion following the POST call"
+    evidence: |-
+      expect(
+            calledAnyUrlStartingWith(fetchMock, `/v1/cases/${typedSlug}`),
+            "expected no prior read of the typed slug before create-draft is submitted",
+          ).toBe(false);
+    cost: >-
+      This locks in a rule no specification node ever decided: that the case-authoring surface
+      must never issue a read against the typed slug before submitting create-draft. The
+      specification's own withholding rule (rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent)
+      is explicit that it "bounds the absent case only" and decides nothing about what happens
+      once every required field holds content — it says nothing about a slug-existence read.
+      Nothing in domain/knowledge/case or rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+      forbids such a read either; that rule only describes how the backend resolves a slug
+      collision once create-draft is submitted, not what the surface may do beforehand. A future
+      change adding a legitimate slug-availability check (which no node prohibits) would fail
+      this test, and nobody consulting the specification would find the constraint the test is
+      actually enforcing, because it was never decided there.
+    kind: unstated
+    correction: >-
+      Either state, in a specification node, that a case-authoring surface must not read the case
+      being created before submitting create-draft, or drop the assertion if the specification
+      means to leave this open the way it leaves the required-content withholding open.
+read:
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: |-
+      expect(
+            calledAnyUrlStartingWith(fetchMock, `/v1/cases/${typedSlug}`),
+            "expected no prior read of the typed slug before create-draft is submitted",
+          ).toBe(false);
+  - node: domain/knowledge/case
+    held_at: "the matchObject assertion on the posted body, line 37-38"
+    evidence: |-
+      expect(parsedPostBody(fetchMock)).toMatchObject({
+            slug: typedSlug,
+  - node: domain/knowledge/case-version
+    held_at: "the matchObject assertion on the posted body, lines 39-49"
+    evidence: |-
+      title: VALID_FORM_INPUT.title,
+            when_to_use: VALID_FORM_INPUT.when_to_use,
+            subject: VALID_FORM_INPUT.subject,
+            fallback: {
+              outcome: VALID_FORM_INPUT.outcome,
+              referral: {
+                action: VALID_FORM_INPUT.action,
+                recipient: VALID_FORM_INPUT.recipient,
+              },
+            },
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the POST handler mock and the submitting click, lines 24-25 and 31"
+    evidence: |-
+      [`POST ${CREATE_PATH}`]: () => jsonResponse({ slug: typedSlug, version: 7 }, 201),
+      fireEvent.click(screen.getByRole("button", { name: "Create case" }));
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: |-
+      describe("CaseCreationScreen — submitting a new case (task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route, criterion 3)", () => {
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: |-
+      await fillForm({ slug: typedSlug });
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: "the navigation assertion, lines 56-58, together with the mocked response naming the version"
+    evidence: |-
+      [`POST ${CREATE_PATH}`]: () => jsonResponse({ slug: typedSlug, version: 7 }, 201),
+      ...
+      await waitFor(() => {
+            expect(router.state.location.pathname).toBe(`/cases/${typedSlug}/versions/7`);
+          });
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: "the matchObject assertion tying the posted slug to the typed slug, line 38"
+    evidence: |-
+      const typedSlug = "brand-new-case-nobody-has-yet";
+      ...
+      slug: typedSlug,
+looked_past: >-
+  The literal button label "Create case" and the literal route shape "/cases/{slug}/versions/{version}"
+  are both facts the specification leaves as interface form (per the presentation rules' own
+  "form belonging to the interface" language), so their presence in this test is not reported as
+  a domain-fact gap.

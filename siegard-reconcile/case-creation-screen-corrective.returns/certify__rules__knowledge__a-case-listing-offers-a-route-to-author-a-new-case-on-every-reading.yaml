@@ -1,0 +1,5 @@
+certified:
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    state: covered
+    tests:
+      - file: src/routes/cases-list-screen-create-case-control.spec.ts

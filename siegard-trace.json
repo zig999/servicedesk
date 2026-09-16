@@ -1291,7 +1291,7 @@
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
-          "digest": "sha256:79e3f15c078cfa15c13c3d389ca4406319d76c0768de5c7b11e2b44e05f858aa"
+          "digest": "sha256:be419f8e4a2100824af684db68560fbbe8133a46a3899473614be57644ec9ef5"
         },
         {
           "path": "src/src/factories/production-simulate-hypothesis.factory.ts",
@@ -1703,7 +1703,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -2369,7 +2369,7 @@
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
-          "digest": "sha256:79e3f15c078cfa15c13c3d389ca4406319d76c0768de5c7b11e2b44e05f858aa"
+          "digest": "sha256:be419f8e4a2100824af684db68560fbbe8133a46a3899473614be57644ec9ef5"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -4083,7 +4083,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         },
         {
           "path": "frontend/app/src/services/case-creation-form-schema.ts",
@@ -4223,7 +4223,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -4455,7 +4455,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -7833,6 +7833,14 @@
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/routes/cases-list-screen-create-case-control.spec.ts",
+          "digest": "sha256:527f35c2d55ad2d971944762ba0b26de942f4e05552bd8fc321287237e86218f"
+        }
       ]
     },
     {
@@ -7841,7 +7849,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -8728,6 +8736,14 @@
         {
           "path": "frontend/app/src/hooks/use-case-creation-form.ts",
           "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/routes/case-creation-screen-submission.spec.ts",
+          "digest": "sha256:a70ba9c290477c8332a7a5346fa0274ec96e0b953c2cc77a4485ff9c7f103faf"
         }
       ]
     },

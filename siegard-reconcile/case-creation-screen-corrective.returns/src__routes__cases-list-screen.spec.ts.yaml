@@ -1,0 +1,90 @@
+findings:
+  - file: src/routes/cases-list-screen.spec.ts
+    where: "the three 'it' blocks at lines 164-209, 211-249 and 251-281 (search behavior)"
+    evidence: |-
+      it("narrows the rendered rows to cases whose slug matches the typed search text", async () => {
+      ...
+      it("does not narrow rows by a match against a visible column other than slug", async () => {
+      ...
+      it("keeps showing the searchable table with zero rows when the search text matches no case, rather than the no-cases-yet empty state", async () => {
+      ...
+      const input = screen.getByLabelText("Search cases by slug");
+      fireEvent.change(input, { target: { value: "beta" } });
+      const filteredRows = within(table).getAllByRole("button");
+      expect(filteredRows).toHaveLength(1);
+    cost: >-
+      The rule that a curator may narrow the case listing by typed slug text — including that the
+      match is against slug alone (a typed match on the rendered "Released" state text is
+      required to yield zero rows) and that a listing answering no match keeps the searchable
+      table rather than falling back to the no-cases-yet empty state — is asserted here as a
+      requirement of the screen, but the specification never states that the case listing offers
+      any search or filtering capability at all. A reader who goes to the specification to learn
+      what the case listing does will not find this feature, and the next person changing it has
+      only this test file to consult, so the rule now lives in a place no one revising the
+      business is looking.
+    kind: unstated
+    correction: >-
+      A node stating that the case listing may be narrowed by typed slug text, and what that
+      narrowing does and does not match against, would have to be added to the specification
+      (or the search behavior removed from the screen and its test) before this test states it
+      as a requirement on its own authority.
+
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the stubbed GET /v1/cases and per-case GET /v1/cases/{slug}/versions calls the screen makes
+      and the rows rendered from their answers
+    evidence: |-
+      "/v1/cases": {
+              data: [{ slug: "case-alpha" }, { slug: "case-beta" }],
+              total: 2,
+              limit: 20,
+              offset: 0,
+              pageCount: 1,
+            },
+  - node: domain/knowledge/case
+    held_at: the slug assertions made against each rendered row
+    evidence: |-
+      expect(within(alphaRow).getByText("case-alpha")).toBeTruthy();
+  - node: domain/knowledge/case-version
+    held_at: the mocked version/state payloads and the state-cell and version-count assertions
+    evidence: |-
+      "/v1/cases/case-alpha/versions?limit=1&offset=0": {
+              data: [{ version: 1, state: "draft" }],
+      ...
+      expect(within(alphaRow).getByText("Draft")).toBeTruthy();
+      expect(within(alphaRow).getByText("1")).toBeTruthy();
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |-
+      expect(screen.getByRole("button", { name: "Create case" })).toBeTruthy();
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: >-
+      the empty-state test, which checks the Create case action is present on a reading that
+      answered zero cases
+    evidence: |-
+      expect(await screen.findByText("No cases yet — create the first one")).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Create case" })).toBeTruthy();
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: |-
+      import { CasesListScreen } from "./cases-list-screen";
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: |-
+      import { CasesListScreen } from "./cases-list-screen";
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |-
+      import { CasesListScreen } from "./cases-list-screen";
+
+looked_past: >-
+  Presentational choices this file also asserts — the state-cell colors (bg-warning/bg-success/bg-muted),
+  the capitalized "Draft"/"Released" wording, the medium/short date-time format, rows rendered as
+  buttons, and the row-click navigation target "/cases/$slug" — are form the specification
+  repeatedly leaves to the interface, so they are a different judgment's to make, not this one's.
+
+candidates_opened:
+  - domain/knowledge/case-summary
+  - rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+  - domain/knowledge/case-version-state

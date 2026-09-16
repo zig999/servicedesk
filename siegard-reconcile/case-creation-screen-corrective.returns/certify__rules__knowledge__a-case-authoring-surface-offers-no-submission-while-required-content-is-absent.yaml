@@ -1,0 +1,36 @@
+certified:
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    state: partial
+    tests:
+      - file: src/routes/case-creation-screen-required-content.spec.ts
+    why: >-
+      The withholding half is exercised element-wise and would fail if it stopped holding: the single
+      test loops the seven pieces of required content the node enumerates (the case's slug, and the
+      version's title, when_to_use, subject and the fallback's outcome, referral action and referral
+      recipient), and for each asserts the act is not offered (the "Create case" control carries
+      disabled), that clicking it creates no case (no POST), and that the statement standing in the
+      act's place names that piece. The statement half is exercised only one absence at a time: every
+      iteration blanks exactly one field and fills the rest, and the surface's own opening state —
+      every required field still empty — is never mounted and read, so "states ... which of that
+      required content is still absent" is exercised only in its singular case. A surface that named
+      the first absent piece and stayed silent about the others would pass this test whole while that
+      part of the fact had stopped holding. "Named against the field that would carry it" is asserted
+      as a substring of the still-needed text (toContain(label)); nothing ties that string to the
+      field bearing it, so a statement naming content by a label no field on the surface carries
+      would also pass. Two further facts a reader routes rather than ones settled here: the closing
+      assertions — that the act is offered and the statement absent once all seven are filled — claim
+      more than this node establishes, since the node states that where every piece of required
+      content holds content "nothing here decides whether the act is offered"; they are also what
+      keeps the loop falsifiable, since a control disabled unconditionally would satisfy every
+      iteration. And the proof's meaning of "absent" and "no case created" rests on fillForm,
+      createFetchStub and postCallCount imported from ./case-creation-screen.test-support, which the
+      pack did not offer as proof and which this certification therefore does not pin.
+    remainder: testable
+    remainder_why: >-
+      The required content is a declared, finite enumeration, so the remainder is a test over the
+      absences the loop leaves out. One input: mount the surface untouched, with all seven pieces of
+      required content absent, and then a case with two or more absent together. One expected result:
+      the act is still not offered and no case is created, and the statement in the act's place names
+      every absent piece — each read through the field that would carry it (resolving the field by
+      its own label and asserting the statement names that same field) rather than by a substring of
+      the statement's text.

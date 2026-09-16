@@ -1,0 +1,97 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: >-
+      the caseSimulationRoute definition, addressing the simulation screen by the case's
+      slug and the version it simulates
+    evidence: |
+      const caseSimulationRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases/$slug/versions/$version/simulate",
+        component: CaseSimulationScreen,
+      });
+  - node: domain/integration/capability
+    held_at: the capabilityDetailRoute definition, keyed on the capability's own name and version
+    evidence: |
+      const capabilityDetailRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/capabilities/$name/$version",
+        component: CapabilityDetailScreen,
+      });
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the read routes casesListRoute (list-cases) and caseDetailRoute (read-case), each
+      keyed by the identity the operation reads
+    evidence: |
+      const casesListRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases",
+        component: CasesListScreen,
+      });
+
+      const caseDetailRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases/$slug",
+        component: CaseDetailScreen,
+      });
+  - node: domain/knowledge/case
+    held_at: >-
+      caseDetailRoute, keyed by the case's own slug, and caseCreateRoute as the entry to
+      create-draft
+    evidence: |
+      const caseCreateRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases/new",
+        component: CaseCreationScreen,
+      });
+  - node: domain/knowledge/case-version
+    held_at: >-
+      caseVersionRoute, versionManifestRoute, versionReleaseRoute and versionDiscardRoute,
+      each keyed by the case's slug together with the version number
+    evidence: |
+      const caseVersionRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases/$slug/versions/$version",
+        component: CaseVersionEditorScreen,
+      });
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the action routes: caseCreateRoute (create-draft), manifestHypothesisRoute
+      (revise-hypothesis), newManifestHypothesisRoute (place-hypothesis),
+      versionReleaseRoute (release) and versionDiscardRoute (discard)
+    evidence: |
+      const manifestHypothesisRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName",
+        component: ReviseHypothesisScreen,
+      });
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      const caseCreateRoute = createRoute({ getParentRoute: () => rootRoute, path:
+      "/cases/new", component: CaseCreationScreen }); — this only wires the path to a
+      component; whether the listing offers this route, and on which readings, is not
+      expressed in this file.
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: >-
+      const caseCreateRoute = createRoute({ getParentRoute: () => rootRoute, path:
+      "/cases/new", component: CaseCreationScreen }); — no field or submission gating
+      appears in this file; the route only mounts the screen component.
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: >-
+      const caseVersionRoute = createRoute({ getParentRoute: () => rootRoute, path:
+      "/cases/$slug/versions/$version", component: CaseVersionEditorScreen }); — this
+      declares the destination address the rule requires, but no navigation-on-success
+      logic appears in this file.
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      const caseCreateRoute = createRoute({ getParentRoute: () => rootRoute, path:
+      "/cases/new", component: CaseCreationScreen }); — the route only reaches the
+      authoring screen; it states nothing about slug uniqueness or version numbering.
+looked_past: >-
+  VersionReleasePlaceholder, VersionDiscardPlaceholder and CaseHypothesesPlaceholder stand
+  in for screens not yet built for the release, discard and case-hypotheses routes — an
+  implementation-completeness matter for another pass, not a stated-or-contradicted domain
+  fact.

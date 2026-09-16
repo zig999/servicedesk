@@ -1,0 +1,50 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the Title, When to use, Subject type, Consolidation register and Fallback
+      outcome/referral(action)/referral(recipient) fields, each bound via register()/Controller
+      to the version's own declared attributes
+    evidence: |-
+      <FormField label="Title" errorId="title-error" error={errors.title?.message}>
+        <Input
+          {...register("title")}
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: >-
+      the canSubmit computation, the disabled submit button, and the still-absent statement shown
+      in the act's place
+    evidence: |-
+      const canSubmit = stillAbsentFields.length === 0;
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: |-
+      export type CaseCreationFormFieldsProps = {
+        readonly form: UseFormReturn<CaseCreationFormValues>;
+        readonly outcomeOptions: GlossaryVocabularyOptions;
+  - node: domain/knowledge/case
+    held_at: the Slug field, bound via register("slug")
+    evidence: |-
+      <FormField label="Slug" errorId="slug-error" error={errors.slug?.message}>
+        <Input
+          {...register("slug")}
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |-
+      onSubmit={onSubmit}
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: |-
+      export function CaseCreationFormFields({
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: |-
+      readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |-
+      <FormField label="Slug" errorId="slug-error" error={errors.slug?.message}>
+        <Input
+          {...register("slug")}
+looked_past: >-
+  the Subject type field is a plain text Input rather than a Select despite subject being typed
+  as domain/glossary/subject-type, which is a widget-consistency choice the specification leaves
+  to the interface rather than a domain fact this file states or contradicts

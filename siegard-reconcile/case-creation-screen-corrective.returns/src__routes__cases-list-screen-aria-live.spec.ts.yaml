@@ -1,0 +1,96 @@
+findings:
+  - file: src/routes/cases-list-screen-aria-live.spec.ts
+    where: "lines 94-95, the initial announcement assertion"
+    evidence: |-
+      const initialAnnouncement = screen.getByText("3 cases found");
+      expect(initialAnnouncement.getAttribute("aria-live")).toBe("polite");
+    cost: >-
+      The test pins an aria-live="polite" live region announcing the case count in the exact
+      wording "N cases found"/"N case found" (see the singular form asserted at line 101). No
+      node in the specification — including contracts/knowledge/case-query, which publishes
+      list-cases as the plain listing read, and every case-listing rule in this file's own node
+      set — says the listing announces its row count through a live region, at what politeness
+      level, or in what wording. A later reviewer who wants to know what the case listing must
+      announce, or who changes this wording, has nothing in the specification to check it
+      against; the accessibility behavior lives only in this test.
+    kind: unstated
+    correction: >-
+      Add a node (or extend the case-listing presentation rule) stating that the case listing
+      announces its row count via a live region, naming the aria-live level and the wording/
+      pluralization the announcement uses.
+  - file: src/routes/cases-list-screen-aria-live.spec.ts
+    where: "lines 97-103, the search interaction and updated announcement"
+    evidence: |-
+      fireEvent.change(screen.getByLabelText("Search cases by slug"), {
+        target: { value: "beta" },
+      });
+
+      const updatedAnnouncement = screen.getByText("1 case found");
+    cost: >-
+      The test exercises a search-by-slug filter over the case listing (typing "beta" narrows
+      three rendered cases to one) — a capability contracts/knowledge/case-query does not
+      publish: list-cases is described as the plain read of every case, with no search or
+      filter parameter, and no rule in this file's node set (including
+      rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading, the
+      one presentation rule this file's set carries for the listing) mentions filtering by
+      slug. Whether the listing may be searched, and what it searches against, is a fact this
+      test carries alone rather than one the specification states.
+    kind: unstated
+    correction: >-
+      Add a node stating that the case listing offers a search that filters by slug (and what
+      match rule it applies), so the capability has a specification home rather than living
+      only in this test.
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the fetch stub map, exercising list-cases and list-case-versions as the reads the
+      listing depends on
+    evidence: |-
+      "/v1/cases": () =>
+          jsonResponse({
+            data: [{ slug: "case-alpha" }, { slug: "case-beta" }, { slug: "case-gamma" }],
+            total: 3,
+            limit: 20,
+            offset: 0,
+            pageCount: 1,
+          }),
+        "/v1/cases/case-alpha/versions?limit=1&offset=0": () =>
+          jsonResponse({ data: [], total: 0, limit: 1, offset: 0, pageCount: 0 }),
+  - node: domain/knowledge/case
+    held_at: "the mocked case objects' slug field, and the search filter matched against it"
+    evidence: |-
+      data: [{ slug: "case-alpha" }, { slug: "case-beta" }, { slug: "case-gamma" }],
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      "/v1/cases/case-alpha/versions?limit=1&offset=0": () =>
+          jsonResponse({ data: [], total: 0, limit: 1, offset: 0, pageCount: 0 }),
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |-
+      const caseDetailRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/cases/$slug",
+        component: () => createElement("div", null, "Case Detail Placeholder"),
+      });
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: |-
+      const table = await screen.findByRole("table");
+      expect(within(table).getAllByRole("button")).toHaveLength(3);
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: |-
+      component: () => createElement("div", null, "Case Detail Placeholder"),
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: |-
+      component: () => createElement("div", null, "Case Detail Placeholder"),
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |-
+      component: () => createElement("div", null, "Case Detail Placeholder"),
+looked_past: >-
+  The fetch stub's error-throwing when a URL has no registered handler (`if (!handler) { throw
+  new Error(...) }`) is test-harness plumbing rather than a domain fact, so it is not reported
+  here.

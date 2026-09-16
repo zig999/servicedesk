@@ -1,0 +1,91 @@
+findings:
+  - file: src/services/case-creation-form-schema.ts
+    where: "isBlank (lines 39-41), applied by stillAbsentRequiredFields to every entry of REQUIRED_CASE_CREATION_FIELDS — slug, title, when_to_use, subject, fallback.outcome, fallback.referral.action, fallback.referral.recipient"
+    evidence: |-
+      function isBlank(value: string | undefined): boolean {
+        return value === undefined || value.trim() === "";
+      }
+    cost: >-
+      The specification never says whether a slug, title, when_to_use, subject or fallback
+      value consisting only of whitespace counts as "absent" for the purpose of withholding
+      create-draft's submission; this file now answers that for every required field of a case,
+      so the next reader who wants to know what "absent" means for these fields will look at
+      rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+      and find nothing, because the decision lives only in this trim() call.
+    kind: unstated
+    correction: >-
+      State, in rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+      or its decision log entry, whether whitespace-only content is treated as absent for the
+      case's required fields — the way rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation
+      explicitly decided the same question for a Connector field's name.
+    node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      the schema extension declaring `slug` and its entry in REQUIRED_CASE_CREATION_FIELDS
+    evidence: |-
+      slug: z.string().min(1),
+      ...
+      { path: "slug", label: "Slug" },
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the REQUIRED_CASE_CREATION_FIELDS entries for title, when_to_use, subject and the
+      fallback sub-fields (outcome, referral.action, referral.recipient)
+    evidence: |-
+      { path: "title", label: "Title" },
+      { path: "when_to_use", label: "When to use" },
+      { path: "subject", label: "Subject" },
+      { path: "fallback.outcome", label: "Fallback outcome" },
+      { path: "fallback.referral.action", label: "Fallback referral action" },
+      { path: "fallback.referral.recipient", label: "Fallback referral recipient" },
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: >-
+      stillAbsentRequiredFields, which filters REQUIRED_CASE_CREATION_FIELDS by isBlank and
+      returns exactly the still-absent required fields, naming consolidation_register and the
+      manifest nowhere in that list
+    evidence: |-
+      export function stillAbsentRequiredFields(
+        values: CaseCreationRequiredValues,
+      ): readonly RequiredCaseCreationField[] {
+        return REQUIRED_CASE_CREATION_FIELDS.filter((field) =>
+          isBlank(readRequiredFieldValue(values, field.path)),
+        );
+      }
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: >-
+      the schema's own slug field, present as free text the caller supplies rather than a
+      value this schema derives
+    evidence: |-
+      export const caseCreationFormSchema = caseVersionFormSchema.extend({
+        slug: z.string().min(1),
+      });
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      The file exports only caseCreationFormSchema, its inferred type, and the required-field
+      helpers above; nothing here calls or shapes read-case, list-cases, list-case-versions,
+      list-hypotheses or list-hypothesis-revisions.
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      The file validates form values only; it names no create-draft submission, no
+      revise-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release or discard
+      operation.
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      Nothing in the file concerns a case listing or a route to an authoring surface; it is a
+      schema and a required-fields check consumed by whatever form uses it.
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: >-
+      The file contains no navigation or destination logic; it defines validation only, with
+      no reference to a created version's own surface or to routing after submission.
+
+looked_past: >-
+  The zod schema's slug: z.string().min(1) and the isBlank/trim() check disagree on whether a
+  single-space slug is valid (min(1) passes it, isBlank rejects it) — a mismatch between the two
+  validation paths in this file, not a domain-fact question, so it is left for a different pass.
+
+candidates_opened: []

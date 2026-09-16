@@ -1,0 +1,76 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      No line in this file references read-case, list-cases, list-case-versions,
+      list-hypotheses or list-hypothesis-revisions; the file only mounts the creation
+      screen and asserts on its submit gate.
+  - node: domain/knowledge/case
+    held_at: >-
+      The "Slug" entry of REQUIRED_FIELD_CASES and its disabled/still-needed
+      assertions.
+    evidence: |-
+      { label: "Slug", overrides: { slug: "" } },
+      ...
+      expect(submit.hasAttribute("disabled"), `expected disabled while ${label} is absent`).toBe(
+              true,
+            );
+  - node: domain/knowledge/case-version
+    held_at: >-
+      The "Title", "When to use", "Subject" and three "Fallback ..." entries of
+      REQUIRED_FIELD_CASES, exercised through the same disabled/still-needed loop.
+    evidence: |-
+      { label: "Title", overrides: { title: "" } },
+      { label: "When to use", overrides: { when_to_use: "" } },
+      { label: "Subject", overrides: { subject: "" } },
+      { label: "Fallback outcome", overrides: { outcome: undefined } },
+      { label: "Fallback referral action", overrides: { action: undefined } },
+      { label: "Fallback referral recipient", overrides: { recipient: undefined } },
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      The click-and-postCallCount assertion, which exercises the submit action that
+      would otherwise call create-draft.
+    evidence: |-
+      fireEvent.click(submit);
+      expect(postCallCount(fetchMock), `expected no case created while ${label} is absent`).toBe(
+              0,
+            );
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      This file never renders or asserts on a case listing; it only mounts the
+      authoring screen itself.
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: >-
+      The whole loop body: the disabled assertion, the still-needed-text assertion
+      naming the field, the click producing no post, and the final all-filled case
+      showing the button enabled and the still-needed text gone.
+    evidence: |-
+      expect(submit.hasAttribute("disabled"), `expected disabled while ${label} is absent`).toBe(
+              true,
+            );
+      const stillNeeded = screen.getByText(/^Still needed before this case can be created:/);
+      expect(
+              stillNeeded.textContent,
+              `expected the still-needed statement to name ${label}`,
+            ).toContain(label);
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: >-
+      This file never submits a fully valid form to completion and asserts on a
+      resulting navigation or surface; it only checks that the button becomes
+      enabled and the still-needed text disappears.
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      No assertion here concerns case identity, next_version, or slug-collision
+      semantics — only whether the slug field being blank disables submission.
+looked_past: >-
+  The exact wording of the submit button ("Create case") and of the still-needed
+  statement ("Still needed before this case can be created:") is presentation the
+  governing rule explicitly leaves to the interface, and the manual-cleanup
+  eslint-disable comment with its inline rationale is a lint/readability concern, not
+  a domain-fact question, so neither is reported here.
+candidates_opened:
+  - domain/knowledge/resolution
+  - domain/knowledge/referral

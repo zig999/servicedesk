@@ -16,6 +16,22 @@
       "title": "Proof for wire-case-creation-to-a-real-screen-and-route",
       "summary": "Adds dedicated tests for the four criteria and the three finitely-decidable rule nodes this task implements, and repairs the pre-existing cases-list-screen and route-tree specs whose own assertions the corrected, always-enabled header control and the new /cases/new route otherwise made false.",
       "task": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route"
+    },
+    {
+      "id": "review/case-creation-screen-corrective",
+      "kind": "review",
+      "file": "review/case-creation-screen-corrective.md",
+      "title": "Review: case-creation-screen-corrective",
+      "summary": "Reviews the delivery of task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route -- the /cases/new screen, route and always-offered header control.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "The case-creation screen never offers its submitting act while the information the case domain requires is absent from its fields; it states, in the act's place, which required information is still absent, named against the field that would carry it, and no case is created."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -72,6 +88,12 @@
       "to": "implementation/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-creation-screen-corrective",
+      "to": "task/case-creation-screen-corrective/wire-case-creation-to-a-real-screen-and-route",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

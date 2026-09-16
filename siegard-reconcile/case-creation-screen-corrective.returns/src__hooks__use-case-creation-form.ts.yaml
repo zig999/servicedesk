@@ -1,0 +1,82 @@
+findings:
+  - file: src/hooks/use-case-creation-form.ts
+    where: "mutationFn's request-body construction, `authored_at: new Date().toISOString()`"
+    evidence: |-
+      const body: CreateDraftRequestBody = {
+        slug: values.slug,
+        authored_at: new Date().toISOString(),
+    cost: >-
+      The decision log's own reason for requiring authored_at is "an audit of which procedure
+      was current when an old investigation ran," yet no node says whose clock or which moment
+      the field records. This hook fixes that meaning unilaterally — the browser's local clock
+      at the instant the mutation fires, rather than a server-assigned receipt time — so a
+      skewed client clock can misstate the audit trail without breaking anything the
+      specification checks, and the next reader auditing authored_at's precision will look in
+      domain/knowledge/case-version and find only "required, datetime," not this rule.
+    kind: unstated
+    correction: >-
+      domain/knowledge/case-version's authored_at attribute (or contracts/knowledge/case-lifecycle's
+      create-draft operation) would need to state whether authored_at is client-submitted or
+      server-assigned, and at which moment of the act it is taken.
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the mutationFn's POST to /v1/cases, invoking create-draft"
+    evidence: |-
+      return apiFetch<CreatedDraft>("/v1/cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+  - node: domain/knowledge/case
+    held_at: "the `slug` field carried on the create-draft request body"
+    evidence: "slug: values.slug,"
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: >-
+      the request body takes slug straight from the curator-typed form value; the hook computes
+      no slug of its own
+    evidence: "slug: values.slug,"
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: "the mutation's onSuccess handler"
+    evidence: |-
+      onSuccess: (data) => {
+        void navigate({
+          to: "/cases/$slug/versions/$version",
+          params: { slug: data.slug, version: String(data.version) },
+        });
+      },
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      the file's only network call is the create-draft POST to /v1/cases; navigate({ to:
+      "/cases/$slug/versions/$version", ... }) hands the read to whatever screen that route
+      renders, and no read-case, list-cases, list-case-versions, list-hypotheses or
+      list-hypothesis-revisions call appears in this file
+  - node: domain/knowledge/case-version
+    held_at: "the CreateDraftRequestBody type and its construction in mutationFn"
+    evidence: |-
+      type CreateDraftRequestBody = {
+        readonly slug: string;
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly authored_at: string;
+        readonly subject: string;
+        readonly fallback: CaseCreationFormValues["fallback"];
+        readonly consolidation_register?: CaseCreationFormValues["consolidation_register"];
+      };
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      the only reference to the cases listing in this file is the cancel fallback `void
+      navigate({ to: "/cases" })`; the file renders no listing and offers no route onto one, so
+      this rule's own subject — the listing surface's own offered route — is not this file's
+      fact to hold
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: "the stillAbsentFields computation exposed to the ready phase"
+    evidence: |-
+      const stillAbsentFields = stillAbsentRequiredFields(watchedValues);
+      ...
+      stillAbsentFields: stillAbsentFields.map((field) => field.label),
+looked_past: >-
+  The onCancel back/forward-history logic and the isDispatchingRef double-submit guard are
+  interaction mechanics with no domain rule behind them in this specification, so they are left
+  unreported as another judgment's (code review) concern rather than this pass's.

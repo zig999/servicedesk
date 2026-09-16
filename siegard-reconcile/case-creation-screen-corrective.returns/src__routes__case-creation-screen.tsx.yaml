@@ -1,0 +1,40 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      const state = useCaseCreationForm();
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      form={state.form}
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      form={state.form}
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      onSubmit={state.onSubmit}
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      <h1 className="text-lg font-semibold text-foreground">New case</h1>
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: >-
+      stillAbsentFields={state.stillAbsentFields}
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: >-
+      <Button variant="secondary" asChild>
+        <Link to="/cases">Cases</Link>
+      </Button>
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      form={state.form}
+looked_past: >-
+  The ButtonFooter/Cancel/Cases block is duplicated verbatim across the loading and load-error
+  phases rather than factored once, which is a code-shape matter and not a domain fact this pass judges.
+candidates_opened:
+  - rules/knowledge/an-abandoned-case-version-edit-writes-nothing

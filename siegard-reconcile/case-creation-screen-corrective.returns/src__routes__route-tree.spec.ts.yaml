@@ -1,0 +1,54 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: |-
+      "/cases",
+        "/cases/new",
+        "/cases/$slug",
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: |-
+      "/cases/new",
+        "/cases/$slug",
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the case-version operations release and discard, surfaced as their own routes and
+      mapped to distinct placeholder components
+    evidence: |-
+      "/cases/$slug/versions/$version/release": VersionReleasePlaceholder,
+        "/cases/$slug/versions/$version/discard": VersionDiscardPlaceholder,
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the create-draft, place-hypothesis and revise-hypothesis operations, each wired to
+      its own distinct screen at its own route
+    evidence: |-
+      expect(createRoute?.options.component).toBe(CaseCreationScreen);
+      expect(newHypothesisRoute?.options.component).toBe(NewHypothesisScreen);
+      expect(reviseHypothesisRoute?.options.component).toBe(ReviseHypothesisScreen);
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: nowhere
+    evidence: |-
+      "/cases",
+        "/cases/new",
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: nowhere
+    evidence: |-
+      expect(createRoute?.options.component).toBe(CaseCreationScreen);
+      expect(createRoute?.options.component).not.toBe(detailRoute?.options.component);
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: nowhere
+    evidence: |-
+      "/cases/$slug/versions/$version",
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |-
+      "/cases/new",
+looked_past: >-
+  The second test's own name claims "the eighteen routes" while EXPECTED_PATHS holds nineteen
+  entries and the test's own assertion (`new Set(actualPaths).size`) never depends on that
+  number — a stale count in a test description rather than a domain fact from any node, so it
+  is left to whichever pass reviews test hygiene rather than reported here; likewise the
+  "no-authentication disclosure" tests (lines 186-196) were checked against
+  constraints/every-screen-discloses-that-authentication-is-unenforced, found outside this
+  file's node set, and found not to disagree with it, so no finding was raised over that node
+  either.

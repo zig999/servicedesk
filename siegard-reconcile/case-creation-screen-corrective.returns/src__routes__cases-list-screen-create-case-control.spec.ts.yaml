@@ -1,0 +1,60 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      nowhere — the file mocks fetch responses shaped like list-cases/list-case-versions/read-case
+      answers only as fixture plumbing to let the listing screen render; nothing in the test asserts
+      on the read's own semantics (validation, synchronous answer, or the listing operations themselves).
+    evidence: >-
+      "/v1/cases": () =>
+            jsonResponse({
+              data: [{ slug: "case-x" }],
+              total: 1,
+              limit: 20,
+              offset: 0,
+              pageCount: 1,
+            }),
+  - node: domain/knowledge/case
+    held_at: >-
+      nowhere — the case aggregate's declared attributes (slug, next_version) are never exercised or
+      asserted; "case-x" appears only as opaque fixture data needed to route to a version listing.
+    evidence: 'data: [{ slug: "case-x" }]'
+  - node: domain/knowledge/case-version
+    held_at: >-
+      nowhere — version, state and authored_at appear only as unasserted fixture values feeding the
+      listing screen's render path, not as a fact this test checks.
+    evidence: '"/v1/cases/case-x/versions/1": () => jsonResponse({ authored_at: "2024-01-01T00:00:00.000Z" }),'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      nowhere — the route this test navigates to is a placeholder; no create-draft or any other
+      lifecycle operation is invoked or asserted.
+    evidence: 'component: () => createElement("div", null, "Case Creation Placeholder"),'
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: >-
+      the for-loop over READINGS, which asserts the "Create case" button is present and enabled and
+      that clicking it navigates to /cases/new across a read still outstanding, a read that failed, a
+      read that answered no case, and a read that answered at least one case.
+    evidence: |-
+      const button = await screen.findByRole("button", { name: "Create case" });
+                expect(
+                  button.hasAttribute("disabled"),
+                  `expected the Create case control to be enabled during ${reading.name}`,
+                ).toBe(false);
+  - node: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
+    held_at: >-
+      nowhere — the destination route renders only a placeholder div, never the authoring surface's
+      fields or its submission control, so no submission-withholding behavior is exercised here.
+    evidence: 'component: () => createElement("div", null, "Case Creation Placeholder"),'
+  - node: rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
+    held_at: >-
+      nowhere — the test only verifies navigation to the authoring route /cases/new; it makes no
+      create-draft call and asserts nothing about a post-success destination.
+    evidence: 'expect(\n              router.state.location.pathname,\n ... ).toBe("/cases/new");'
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: >-
+      nowhere — no create-draft call is made anywhere in this file; the mocked endpoints are all reads
+      (/v1/cases and its version listings), never a creation.
+    evidence: 'const fetchMock: FetchFn = vi.fn(async (input) => { ... });'
+looked_past: >-
+  The mocked pagination envelope (total/limit/offset/pageCount) and case-version-state/authored_at
+  fixture shapes used only to make the underlying CasesListScreen render without throwing, unasserted
+  by this file's own expectations, belong to whatever conformance pass covers cases-list-screen.tsx.
