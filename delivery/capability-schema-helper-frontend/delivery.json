@@ -26,6 +26,14 @@
       "task": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface"
     },
     {
+      "id": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "kind": "implementation",
+      "file": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator.md",
+      "title": "Refused capability schema draft stated to the operator",
+      "summary": "Extends the capability schema draft disclosure service with a refusal-specific mapping keyed on the four refusal outcome kinds from useDraftCapabilitySchemaFromOpenApi, and wires CapabilitySchemaHelperFields to render it.",
+      "task": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator"
+    },
+    {
       "id": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
       "kind": "proof",
       "file": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator.md",
@@ -48,6 +56,14 @@
       "title": "Schema Helper offer proven on the capability authoring surface",
       "summary": "Tests establish that CapabilitySchemaHelperFields and useCapabilitySchemaHelper together place the helper inline beneath the two schema fields on both capability screens, source and render only the document's own listed operations with no free-hand entry, gate the draft-request act on a chosen operation while stating that it waits otherwise, compose and dispatch the draft request from the chosen operation alone, forward its outcome unchanged, touch no OpenAPI document URL directly, and issue no register-capability call.",
       "task": "task/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface"
+    },
+    {
+      "id": "proof/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "kind": "proof",
+      "file": "proof/schema-helper-request-and-statement/refusal-stated-to-the-operator.md",
+      "title": "Refused capability schema draft stated to the operator -- proof",
+      "summary": "Tests capabilitySchemaDraftRefusalDisclosureFrom's four refusal readings and idle/pending suppression at the disclosure-service level, CapabilitySchemaHelperFields' rendering of each reading as a distinct alert never beside a drafted schema, the surface's silence before an answer arrives, and that the shared generic error-state table gained no entry for the three OpenAPI refusal codes.",
+      "task": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator"
     }
   ],
   "edges": [
@@ -166,6 +182,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "to": "rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "to": "rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "to": "task/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
       "to": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
       "kind": "proves",
@@ -180,6 +214,12 @@
     {
       "from": "proof/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
       "to": "implementation/schema-helper-request-and-statement/helper-offered-on-the-authoring-surface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/schema-helper-request-and-statement/refusal-stated-to-the-operator",
+      "to": "implementation/schema-helper-request-and-statement/refusal-stated-to-the-operator",
       "kind": "proves",
       "at": "the path"
     }

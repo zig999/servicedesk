@@ -4,7 +4,10 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { CapabilitySchemaHelperFields } from "./capability-schema-helper-fields";
 import type { CapabilitySchemaHelperState } from "../hooks/use-capability-schema-helper";
 import type { OpenApiOperation } from "../hooks/use-openapi-document-operations";
-import type { CapabilitySchemaDraft } from "../hooks/use-draft-capability-schema-from-openapi";
+import type {
+  CapabilitySchemaDraft,
+  DraftCapabilitySchemaRequestOutcome,
+} from "../hooks/use-draft-capability-schema-from-openapi";
 
 function operation(path: string, method: string): OpenApiOperation {
   return { path, method };
@@ -50,6 +53,26 @@ function draftedOutcomeState(draft: CapabilitySchemaDraft): CapabilitySchemaHelp
     },
   });
 }
+
+const NOT_FETCHED_REFUSAL: DraftCapabilitySchemaRequestOutcome = {
+  kind: "openapi-document-not-fetched",
+  link: "https://api.example.com/openapi.json",
+  path: "/v2/translate",
+  method: "POST",
+};
+const NOT_READABLE_REFUSAL: DraftCapabilitySchemaRequestOutcome = {
+  kind: "openapi-document-not-readable",
+  link: "https://api.example.com/openapi.json",
+  path: "/v2/translate",
+  method: "POST",
+};
+const OPERATION_NOT_FOUND_REFUSAL: DraftCapabilitySchemaRequestOutcome = {
+  kind: "openapi-operation-not-found",
+  link: "https://api.example.com/openapi.json",
+  path: "/v2/translate",
+  method: "PATCH",
+};
+const UNRECOGNIZED_REFUSAL: DraftCapabilitySchemaRequestOutcome = { kind: "unrecognized-failure" };
 
 describe("CapabilitySchemaHelperFields -- the operation Select offers every operation the state lists, none dropped (criterion 3)", () => {
   it("opens onto exactly one option per entry in state.operations, both entries represented", () => {
@@ -166,5 +189,83 @@ describe("CapabilitySchemaHelperFields -- an answer carrying no unresolved item 
     renderFields(draftedOutcomeState(draft));
 
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- an unfetchable OpenAPI link's refusal states that no draft was generated, distinctly from the other two named conditions (criterion 1)", () => {
+  it("renders the not-fetched refusal as an alert stating no draft was generated", () => {
+    renderFields(stateWith({ outcome: NOT_FETCHED_REFUSAL }));
+
+    const alertText = screen.getByRole("alert").textContent ?? "";
+    expect(alertText).toContain("Nenhum rascunho de esquema foi gerado");
+    expect(alertText).toContain("não foi possível obter o link");
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- an unreadable OpenAPI document's refusal states that no draft was generated, distinctly from the other two named conditions (criterion 2)", () => {
+  it("renders the not-readable refusal as an alert stating no draft was generated", () => {
+    renderFields(stateWith({ outcome: NOT_READABLE_REFUSAL }));
+
+    const alertText = screen.getByRole("alert").textContent ?? "";
+    expect(alertText).toContain("Nenhum rascunho de esquema foi gerado");
+    expect(alertText).toContain("não pôde ser lido como um documento OpenAPI 3.x");
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- an operation-not-found refusal states that no draft was generated and names the operation's own method and path, distinctly from the other two named conditions (criterion 3)", () => {
+  it("renders the operation-not-found refusal as an alert stating no draft was generated and naming the method and path", () => {
+    renderFields(stateWith({ outcome: OPERATION_NOT_FOUND_REFUSAL }));
+
+    const alertText = screen.getByRole("alert").textContent ?? "";
+    expect(alertText).toContain("Nenhum rascunho de esquema foi gerado");
+    expect(alertText).toContain("PATCH");
+    expect(alertText).toContain("/v2/translate");
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- an answer naming none of the three conditions states an unrecognised failure, reusing none of the three named refusal sentences (criterion 4)", () => {
+  it("renders a fallback alert stating no draft was generated for a reason the surface does not recognise", () => {
+    renderFields(stateWith({ outcome: UNRECOGNIZED_REFUSAL }));
+
+    const alertText = screen.getByRole("alert").textContent ?? "";
+    expect(alertText).toContain("Nenhum rascunho de esquema foi gerado");
+    expect(alertText).not.toContain("não foi possível obter o link");
+    expect(alertText).not.toContain("não pôde ser lido como um documento OpenAPI 3.x");
+    expect(alertText).not.toContain("não declara nenhuma operação");
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- each of the four refusal readings is stated apart from the other three, and none of them renders any part of a draft beside it (criterion 5; rule rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator)", () => {
+  it("renders a pairwise-distinct alert for each of the four refusal outcomes, none of them alongside a drafted input schema, output schema or unresolved-item section", () => {
+    const cases: readonly DraftCapabilitySchemaRequestOutcome[] = [
+      NOT_FETCHED_REFUSAL,
+      NOT_READABLE_REFUSAL,
+      OPERATION_NOT_FOUND_REFUSAL,
+      UNRECOGNIZED_REFUSAL,
+    ];
+
+    const alertTexts = cases.map((outcome) => {
+      const { unmount } = renderFields(stateWith({ outcome }));
+      const alertText = screen.getByRole("alert").textContent ?? "";
+      expect(alertText).toContain("Nenhum rascunho de esquema foi gerado");
+      expect(screen.queryByText("Esquema de entrada rascunhado")).toBeNull();
+      expect(screen.queryByText("Esquema de saída rascunhado")).toBeNull();
+      expect(screen.queryByText("Não resolvidos")).toBeNull();
+      unmount();
+      return alertText;
+    });
+
+    expect(new Set(alertTexts).size).toBe(cases.length);
+  });
+});
+
+describe("CapabilitySchemaHelperFields -- no refusal is stated while a schema draft request stands unanswered, whether none has been dispatched or one is in flight (criteria 6, 7; rule rules/integration/no-schema-draft-refusal-is-stated-before-the-operation-answers)", () => {
+  it("renders no alert for an idle outcome and none for a pending outcome", () => {
+    const { unmount } = renderFields(stateWith({ outcome: { kind: "idle" } }));
+    expect(screen.queryByRole("alert")).toBeNull();
+    unmount();
+
+    renderFields(stateWith({ outcome: { kind: "pending" } }));
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 });

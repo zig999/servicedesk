@@ -6360,6 +6360,18 @@
         {
           "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:191d21abd339aeb4b72dab1b816099aaeb2ecd7e206f558a7f68e5bbff48e257"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
+          "digest": "sha256:bd47cc45bcd9c0dc1be9a5e30d294bc5baaf2a78e4759077c2a934650a7e9976"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-messages.ts",
+          "digest": "sha256:302114c5172bf38c6aba8c92f1fc454fee72f453572d2654768f8d8fe60b9b44"
         }
       ]
     },
@@ -6890,6 +6902,10 @@
         {
           "path": "frontend/app/src/hooks/use-draft-capability-schema-from-openapi.ts",
           "digest": "sha256:93193de6359be4032536a05047a75bd9162d0d31048f9274cd4ae2abaf85ddd8"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-draft-disclosure.ts",
+          "digest": "sha256:bd47cc45bcd9c0dc1be9a5e30d294bc5baaf2a78e4759077c2a934650a7e9976"
         }
       ]
     },

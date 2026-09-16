@@ -11,7 +11,10 @@ import {
   OPERATIONS_READ_EMPTY_MESSAGE,
   OPERATIONS_READ_PENDING_MESSAGE,
 } from "../services/connector-configuration-messages";
-import { capabilitySchemaDraftDisclosureFrom } from "../services/capability-schema-draft-disclosure";
+import {
+  capabilitySchemaDraftDisclosureFrom,
+  capabilitySchemaDraftRefusalDisclosureFrom,
+} from "../services/capability-schema-draft-disclosure";
 import {
   CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL,
   CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL,
@@ -39,6 +42,7 @@ export function CapabilitySchemaHelperFields({
   state,
 }: CapabilitySchemaHelperFieldsProps): JSX.Element {
   const operationsReadDisclosure = operationsReadDisclosureStateForOutcome(state.operationsOutcome);
+  const refusalDisclosure = capabilitySchemaDraftRefusalDisclosureFrom(state.outcome);
 
   const operationOptions: SelectOption[] = state.operations.map((operation) => ({
     value: operationSelectValue(operation),
@@ -91,6 +95,11 @@ export function CapabilitySchemaHelperFields({
         )}
       </div>
       <div aria-live="polite" className="flex flex-col gap-2">
+        {refusalDisclosure !== undefined && (
+          <p role="alert" className="text-sm text-destructive">
+            {refusalDisclosure.message}
+          </p>
+        )}
         {operationsReadDisclosure.kind === "pending" && (
           <p className="text-sm text-muted-foreground">{OPERATIONS_READ_PENDING_MESSAGE}</p>
         )}

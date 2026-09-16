@@ -215,4 +215,14 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
     const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "some future message"));
     expect(Object.keys(state)).toEqual(["kind"]);
   });
+
+  it("resolves OpenApiDocumentNotFetchedError, OpenApiDocumentNotReadableError and OpenApiOperationNotFoundError to the shared generic-error state rather than a code of their own (capability schema helper's refusal-stated-to-the-operator criterion 8)", () => {
+    const kinds = [
+      "OpenApiDocumentNotFetchedError",
+      "OpenApiDocumentNotReadableError",
+      "OpenApiOperationNotFoundError",
+    ].map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+
+    expect(kinds).toEqual(["generic-error", "generic-error", "generic-error"]);
+  });
 });
