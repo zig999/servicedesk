@@ -9,3 +9,4 @@ Build (schema-helper-request-and-statement-draft-request-outcome-build) passed o
 implement-task draft-request-outcome delivered and committed: 0eab38deca620a75b74e4227fbe4663f2733b6f9.
 implement-task helper-offered-on-the-authoring-surface delivered and committed: 5c5a91edfca51b0588bbc6f5c9d3c4ff488942dd.
 implement-task answered-draft-stated-to-the-operator delivered and committed: cf448e8abce2fcd3252c55ba6fe6569bfb8f740b.
+implement-task refusal-stated-to-the-operator delivered and committed: 9a8157ca0ee5075ac0ead8db6c6db376164ddee3. Epic schema-helper-request-and-statement is now fully delivered (4/4 tasks).
