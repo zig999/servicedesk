@@ -19,6 +19,7 @@ import {
 import {
   CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL,
   CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL,
+  CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE,
   CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_LABEL,
 } from "../services/capability-schema-messages";
 
@@ -125,6 +126,7 @@ export function CapabilitySchemaHelperFields({
       {state.outcome.kind === "drafted" && (
         <CapabilitySchemaDraftStatement
           draft={state.outcome.draft}
+          stale={state.stale ?? false}
           onApplyInputSchema={onApplyInputSchema}
           onApplyOutputSchema={onApplyOutputSchema}
         />
@@ -135,10 +137,12 @@ export function CapabilitySchemaHelperFields({
 
 function CapabilitySchemaDraftStatement({
   draft,
+  stale,
   onApplyInputSchema,
   onApplyOutputSchema,
 }: {
   readonly draft: CapabilitySchemaDraft;
+  readonly stale: boolean;
   readonly onApplyInputSchema: (inputSchema: string) => void;
   readonly onApplyOutputSchema: (outputSchema: string) => void;
 }): JSX.Element {
@@ -146,6 +150,7 @@ function CapabilitySchemaDraftStatement({
 
   return (
     <div aria-live="polite" className="flex flex-col gap-4">
+      {stale && <p className="text-sm text-muted-foreground">{CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE}</p>}
       <section className="flex flex-col gap-1">
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm font-medium text-foreground">

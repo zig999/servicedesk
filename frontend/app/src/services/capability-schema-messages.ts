@@ -1,6 +1,9 @@
 export const CAPABILITY_SCHEMA_DRAFT_INPUT_SCHEMA_LABEL = "Esquema de entrada rascunhado";
 export const CAPABILITY_SCHEMA_DRAFT_OUTPUT_SCHEMA_LABEL = "Esquema de saída rascunhado";
 export const CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_LABEL = "Não resolvidos";
+export const CAPABILITY_SCHEMA_DRAFT_STALE_MESSAGE =
+  "Este rascunho está desatualizado: o link ou a operação mudou desde que este rascunho foi " +
+  "solicitado.";
 
 const CAPABILITY_SCHEMA_DRAFT_UNRESOLVED_REASON_MESSAGES: Readonly<Record<string, string>> = {
   "schema-not-reducible-to-a-type":

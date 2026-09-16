@@ -1,0 +1,12 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/capability-form-fields-schema-draft-staleness.spec.ts
+  67:11  error  Prefer `findByText` query over using `waitFor` + `queryByText`               testing-library/prefer-find-by
+  67:39  error  Use `getBy*` queries rather than `queryBy*` for checking element is present  testing-library/prefer-presence-queries
+
+✖ 2 problems (2 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

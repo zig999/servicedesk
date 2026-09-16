@@ -10,6 +10,14 @@
       "task": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying"
     },
     {
+      "id": "implementation/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
+      "kind": "implementation",
+      "file": "implementation/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale.md",
+      "title": "A stated capability schema draft is marked stale once its link or operation moves",
+      "summary": "The Capability Schema Helper computes, on every render, whether its stated draft's outcome still matches the helper's current link and chosen operation, and states the draft as stale without hiding either apply act.",
+      "task": "task/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale"
+    },
+    {
       "id": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
       "kind": "implementation",
       "file": "implementation/schema-helper-request-and-statement/answered-draft-stated-to-the-operator.md",
@@ -48,6 +56,14 @@
       "title": "The two schema fields written only by the operator's own apply",
       "summary": "Full-screen tests on both the capability create screen and the capability detail screen establish that a schema-draft answer's arrival (drafted or refused) writes neither schema field, that each field's own apply act writes only that field behind its own unsaved-edit confirmation while registering nothing, that the write reaches the field through the same onChange contract Discard already reads, and that the act stands offered on both screens.",
       "task": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying"
+    },
+    {
+      "id": "proof/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
+      "kind": "proof",
+      "file": "proof/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale.md",
+      "title": "A stated capability schema draft is marked stale once its link or operation moves",
+      "summary": "Proves task/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale -- the Schema Helper's stated draft stays keyed to the request it was generated for, flips to stale the instant only the link or only the chosen operation differs, and keeps offering both apply acts throughout -- against the implementation record for that task.",
+      "task": "task/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale"
     },
     {
       "id": "proof/schema-helper-request-and-statement/answered-draft-stated-to-the-operator",
@@ -98,6 +114,18 @@
     {
       "from": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
       "to": "task/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
+      "to": "rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
+      "to": "task/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
       "kind": "implements",
       "at": "the path"
     },
@@ -236,6 +264,12 @@
     {
       "from": "proof/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
       "to": "implementation/schema-draft-applied-to-the-capability-edit/schema-fields-written-only-by-applying",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
+      "to": "implementation/schema-draft-applied-to-the-capability-edit/stated-draft-marked-stale",
       "kind": "proves",
       "at": "the path"
     },

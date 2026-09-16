@@ -19,12 +19,27 @@ export type CapabilitySchemaHelperState = {
   readonly onChooseOperation: (operation: OpenApiOperation) => void;
   readonly onRequestDraft: () => void;
   readonly outcome: DraftCapabilitySchemaRequestOutcome;
+  readonly stale?: boolean;
 };
 
 function operationsOfferedFor(
   operationsOutcome: OpenApiDocumentOperationsReadOutcome,
 ): readonly OpenApiOperation[] {
   return operationsOutcome.kind === "operations" ? operationsOutcome.operations : [];
+}
+
+function draftIsStale(
+  outcome: DraftCapabilitySchemaRequestOutcome,
+  current: { readonly link: string; readonly chosenOperation: OpenApiOperation | undefined },
+): boolean {
+  if (outcome.kind !== "drafted") {
+    return false;
+  }
+  return (
+    outcome.link !== current.link ||
+    outcome.path !== current.chosenOperation?.path ||
+    outcome.method !== current.chosenOperation?.method
+  );
 }
 
 export function useCapabilitySchemaHelper(): CapabilitySchemaHelperState {
@@ -50,5 +65,6 @@ export function useCapabilitySchemaHelper(): CapabilitySchemaHelperState {
       requestDraft({ link, path: chosenOperation.path, method: chosenOperation.method });
     },
     outcome,
+    stale: draftIsStale(outcome, { link, chosenOperation }),
   };
 }

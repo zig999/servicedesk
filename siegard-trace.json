@@ -6448,6 +6448,24 @@
       ]
     },
     {
+      "node": "rules/integration/a-stated-capability-schema-draft-is-marked-stale-once-what-it-was-generated-for-changes",
+      "digest": "sha256:bca1c88173f3d8a67785dc83e8e74ed0ed0bc8cf61896221dd4d05f8612a79cc",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-schema-helper.ts",
+          "digest": "sha256:c25dc845b083c51801dc8c6207c6e948d741948e3654ee799128c49fb417a85a"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
+          "digest": "sha256:373101cf8eca8ab4e41a0fd7e1d97d096045f01c1592131a7a6034095a813ee9"
+        },
+        {
+          "path": "frontend/app/src/services/capability-schema-messages.ts",
+          "digest": "sha256:0a213583118dd73c2c3b1dc62a5861dac41d5db0861ccc245b7b4559e1e2870c"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-stated-draft-is-marked-stale-once-what-it-was-generated-for-changes",
       "digest": "sha256:51948b9cc14eda1c7e628a3e096aa54104475fce21f9cdf605ebdf60ed36e585",
       "files": [
