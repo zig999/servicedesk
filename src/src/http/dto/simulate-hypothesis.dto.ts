@@ -10,7 +10,7 @@ const subjectAttributeValueSchema = z.object({
 
 const subjectSchema = z.object({
   type: z.string().min(1),
-  attributes: z.array(subjectAttributeValueSchema).min(1),
+  attributes: z.array(subjectAttributeValueSchema),
 });
 
 const caseRefSchema = z.object({

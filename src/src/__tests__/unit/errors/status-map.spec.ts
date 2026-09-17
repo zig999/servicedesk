@@ -13,6 +13,7 @@ import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.er
 import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
 import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
+import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
@@ -275,6 +276,17 @@ it('maps OpenApiDocumentNotFetchedError, OpenApiDocumentNotReadableError and Ope
 
 it('resolves InvestigationWriteDeadlineExceededError to 500', () => {
   const error = new InvestigationWriteDeadlineExceededError('an-investigation-id', 300);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(500);
+});
+
+it('resolves DuplicateConceptAnswerError to 500', () => {
+  const error = new DuplicateConceptAnswerError('a-concept', [
+    { name: 'capability-a', version: '1.0.0' },
+    { name: 'capability-b', version: '2.0.0' },
+  ]);
 
   const status = statusForError(error);
 

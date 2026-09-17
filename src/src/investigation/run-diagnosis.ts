@@ -86,7 +86,7 @@ async function writeWithinDeadline(args: WriteWithinDeadlineArgs): Promise<void>
   const stageBoundMs = persistenceStageBoundMs(now, deadline, elapsedBeforePersistenceMs);
   const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs));
   if (!settled) {
-    throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs);
+    throw new InvestigationWriteDeadlineExceededError(investigation.id, Math.max(0, deadline - readClockMs()));
   }
 }
 

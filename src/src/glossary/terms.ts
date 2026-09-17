@@ -4,8 +4,6 @@ export type GlossaryTerm = {
 
 export type SubjectType = GlossaryTerm;
 
-export type SubjectAttribute = GlossaryTerm;
-
 export type Outcome = GlossaryTerm;
 
 export type Action = GlossaryTerm;

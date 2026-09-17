@@ -1,5 +1,17 @@
 import { expect, it } from 'vitest';
-import { simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+
+function validSimulateCaseRequestBody(): Record<string, unknown> {
+  return {
+    case: { slug: 'a-case', version: 1 },
+    subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+    requester: 'a-requester',
+  };
+}
+
+function simulateCaseRequestBodyWithoutSubject(): Record<string, unknown> {
+  return { case: { slug: 'a-case', version: 1 }, requester: 'a-requester' };
+}
 
 function aValidAssessment(): Record<string, unknown> {
   return {
@@ -319,4 +331,23 @@ it("validates a response whose cost.calls is fractional, since domain/investigat
   const result = simulateCaseResponseSchema.safeParse(response);
 
   expect(result.success).toBe(true);
+});
+
+it('accepts a request whose subject carries an empty attributes array, since the schema no longer requires at least one entry', () => {
+  const request = { ...validSimulateCaseRequestBody(), subject: { type: 'a-subject-type', attributes: [] } };
+
+  const result = simulateCaseRequestSchema.safeParse(request);
+
+  expect(result.success).toBe(true);
+});
+
+it.each<[string, Record<string, unknown>]>([
+  ['a missing subject', simulateCaseRequestBodyWithoutSubject()],
+  ['a subject missing its type', { ...validSimulateCaseRequestBody(), subject: { attributes: [{ attribute: 'an-attribute', value: 'a-value' }] } }],
+  ["an attribute entry missing its own attribute name", { ...validSimulateCaseRequestBody(), subject: { type: 'a-subject-type', attributes: [{ value: 'a-value' }] } }],
+  ["an attribute entry missing its own value", { ...validSimulateCaseRequestBody(), subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute' }] } }],
+])('still rejects a request with %s, unaffected by the attributes array no longer requiring a minimum length', (_description, request) => {
+  const result = simulateCaseRequestSchema.safeParse(request);
+
+  expect(result.success).toBe(false);
 });

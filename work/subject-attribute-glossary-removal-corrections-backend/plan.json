@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/backend-corrections",
+      "kind": "epic",
+      "file": "epic/backend-corrections.md",
+      "title": "Backend corrections",
+      "summary": "Four fixes triaged from the subject-attribute-glossary-removal-backend review: one reachability bug against a decided rule, one removal residue, two pre-existing defects the review surfaced."
+    },
+    {
+      "id": "task/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "kind": "task",
+      "file": "task/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable.md",
+      "title": "Accept an empty simulate subject at the wire so its 422 refusal is reachable",
+      "summary": "simulate-case.dto.ts and simulate-hypothesis.dto.ts stop refusing an empty attributes array at the schema level, so buildSubject's own SubjectCarriesNoAttributeError (422) is what a caller actually receives.",
+      "epic": "backend-corrections"
+    },
+    {
+      "id": "task/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "kind": "task",
+      "file": "task/backend-corrections/map-duplicateconceptanswererror-to-its-own-status.md",
+      "title": "Map DuplicateConceptAnswerError to its own status",
+      "summary": "status-map.ts maps DuplicateConceptAnswerError to HTTP 500, instead of letting it fall through to the generic unmapped-error response.",
+      "epic": "backend-corrections"
+    },
+    {
+      "id": "task/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "kind": "task",
+      "file": "task/backend-corrections/remove-the-leftover-subjectattribute-type-alias.md",
+      "title": "Remove the leftover SubjectAttribute type alias",
+      "summary": "terms.ts no longer exports a SubjectAttribute type, since no governed subject-attribute vocabulary exists any more.",
+      "epic": "backend-corrections"
+    },
+    {
+      "id": "task/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "kind": "task",
+      "file": "task/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up.md",
+      "title": "Report the actual remaining deadline when persistence gives up",
+      "summary": "run-diagnosis.ts's InvestigationWriteDeadlineExceededError now carries the milliseconds actually remaining of the declared deadline at the moment persistence gave up, not the bound persistence was granted at entry.",
+      "epic": "backend-corrections"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/backend-corrections",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/backend-corrections",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}

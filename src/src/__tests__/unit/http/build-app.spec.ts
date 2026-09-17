@@ -693,7 +693,7 @@ it(
   },
 );
 
-it('refuses with 400 a simulate-case request whose subject carries no attribute at all, at the wire, before the route ever reaches its own controller', async () => {
+it('answers 422 reporting SubjectCarriesNoAttributeError for a simulate-case request whose subject carries no attribute at all, now that the DTO admits the empty array through to the domain refusal', async () => {
   const built = buildTestApp();
   app = built.app;
 
@@ -703,7 +703,9 @@ it('refuses with 400 a simulate-case request whose subject carries no attribute 
     payload: { ...validSimulateRequestBody(), subject: { type: 'a-subject-type', attributes: [] } },
   });
 
-  expect(response.statusCode).toBe(400);
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string } };
+  expect(body.error.code).toBe('SubjectCarriesNoAttributeError');
 });
 
 it(

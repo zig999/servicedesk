@@ -1,0 +1,131 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "kind": "implementation",
+      "file": "implementation/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable.md",
+      "title": "Accept an empty simulate subject at the wire so its 422 refusal is reachable",
+      "summary": "simulate-case.dto.ts and simulate-hypothesis.dto.ts no longer require attributes.min(1), so buildSubject's own SubjectCarriesNoAttributeError (422) is what a caller actually receives for an empty subject.",
+      "task": "task/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable"
+    },
+    {
+      "id": "implementation/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "kind": "implementation",
+      "file": "implementation/backend-corrections/map-duplicateconceptanswererror-to-its-own-status.md",
+      "title": "Map DuplicateConceptAnswerError to its own status",
+      "summary": "status-map.ts maps DuplicateConceptAnswerError to HTTP 500, mirroring the existing DuplicateGlossaryNameError entry, instead of letting it fall through to the generic unmapped-error response.",
+      "task": "task/backend-corrections/map-duplicateconceptanswererror-to-its-own-status"
+    },
+    {
+      "id": "implementation/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "kind": "implementation",
+      "file": "implementation/backend-corrections/remove-the-leftover-subjectattribute-type-alias.md",
+      "title": "Remove the leftover SubjectAttribute type alias",
+      "summary": "terms.ts no longer exports a SubjectAttribute type, since no governed subject-attribute vocabulary exists any more.",
+      "task": "task/backend-corrections/remove-the-leftover-subjectattribute-type-alias"
+    },
+    {
+      "id": "implementation/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "kind": "implementation",
+      "file": "implementation/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up.md",
+      "title": "Report the actual remaining deadline when persistence gives up",
+      "summary": "writeWithinDeadline now throws InvestigationWriteDeadlineExceededError with the deadline-minus-now reading taken at the moment persistence gave up, instead of the pre-computed stage bound.",
+      "task": "task/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up"
+    },
+    {
+      "id": "proof/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "kind": "proof",
+      "file": "proof/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable.md",
+      "title": "Proof for accepting an empty simulate subject at the wire",
+      "summary": "New schema-level and wire-level tests show both simulate DTOs now admit an empty attributes array through to buildSubject's 422 SubjectCarriesNoAttributeError refusal, while every other DTO shape rule stays enforced and diagnose/test-connector are left alone.",
+      "task": "task/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable"
+    },
+    {
+      "id": "proof/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "kind": "proof",
+      "file": "proof/backend-corrections/map-duplicateconceptanswererror-to-its-own-status.md",
+      "title": "Proof for mapping DuplicateConceptAnswerError to its own status",
+      "summary": "Tests that DuplicateConceptAnswerError resolves to HTTP 500 through statusForError and through the shared error-handler middleware, naming the error rather than falling into the generic fallback.",
+      "task": "task/backend-corrections/map-duplicateconceptanswererror-to-its-own-status"
+    },
+    {
+      "id": "proof/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "kind": "proof",
+      "file": "proof/backend-corrections/remove-the-leftover-subjectattribute-type-alias.md",
+      "title": "Proof for removing the leftover SubjectAttribute type alias",
+      "summary": "Confirms terms.ts's remaining exports are unchanged via the pre-existing terms.spec.ts test, and records why the type-alias-absence and import-absence criteria admit no runtime test.",
+      "task": "task/backend-corrections/remove-the-leftover-subjectattribute-type-alias"
+    },
+    {
+      "id": "proof/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "kind": "proof",
+      "file": "proof/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up.md",
+      "title": "Proof for reporting the actual remaining deadline when persistence gives up",
+      "summary": "run-diagnosis.spec.ts now exercises writeWithinDeadline's corrected remainingMs across the stage-bound-capped, zero-real-elapsed, real-elapsed-during-attempts and already-zero-bound classes; the pre-existing e2e's stale assertion was corrected to match.",
+      "task": "task/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "to": "task/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "to": "task/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "to": "task/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "to": "task/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "to": "implementation/backend-corrections/accept-an-empty-simulate-subject-at-the-wire-so-its-422-refusal-is-reachable",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "to": "implementation/backend-corrections/map-duplicateconceptanswererror-to-its-own-status",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "to": "implementation/backend-corrections/remove-the-leftover-subjectattribute-type-alias",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "to": "implementation/backend-corrections/report-the-actual-remaining-deadline-when-persistence-gives-up",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

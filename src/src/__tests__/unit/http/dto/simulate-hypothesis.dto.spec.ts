@@ -1,6 +1,19 @@
 import { expect, it } from 'vitest';
-import { simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+import { simulateHypothesisRequestSchema, simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
 import { VERDICTS } from '../../../../investigation/verdict.js';
+
+function validSimulateHypothesisRequestBody(): Record<string, unknown> {
+  return {
+    case: { slug: 'a-case', version: 1 },
+    subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+    requester: 'a-requester',
+    hypothesis: 'a-hypothesis',
+  };
+}
+
+function simulateHypothesisRequestBodyWithoutSubject(): Record<string, unknown> {
+  return { case: { slug: 'a-case', version: 1 }, requester: 'a-requester', hypothesis: 'a-hypothesis' };
+}
 
 function aValidEvidenceItem(): Record<string, unknown> {
   return {
@@ -183,4 +196,23 @@ it('validates a response whose evaluation carries neither usage nor elapsed_ms, 
   const result = simulateHypothesisResponseSchema.safeParse(response);
 
   expect(result.success).toBe(true);
+});
+
+it('accepts a request whose subject carries an empty attributes array, since the schema no longer requires at least one entry', () => {
+  const request = { ...validSimulateHypothesisRequestBody(), subject: { type: 'a-subject-type', attributes: [] } };
+
+  const result = simulateHypothesisRequestSchema.safeParse(request);
+
+  expect(result.success).toBe(true);
+});
+
+it.each<[string, Record<string, unknown>]>([
+  ['a missing subject', simulateHypothesisRequestBodyWithoutSubject()],
+  ['a subject missing its type', { ...validSimulateHypothesisRequestBody(), subject: { attributes: [{ attribute: 'an-attribute', value: 'a-value' }] } }],
+  ["an attribute entry missing its own attribute name", { ...validSimulateHypothesisRequestBody(), subject: { type: 'a-subject-type', attributes: [{ value: 'a-value' }] } }],
+  ["an attribute entry missing its own value", { ...validSimulateHypothesisRequestBody(), subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute' }] } }],
+])('still rejects a request with %s, unaffected by the attributes array no longer requiring a minimum length', (_description, request) => {
+  const result = simulateHypothesisRequestSchema.safeParse(request);
+
+  expect(result.success).toBe(false);
 });

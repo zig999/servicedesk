@@ -351,8 +351,8 @@ async function assertDeadlineExceeded(options: IAssertDeadlineExceededOptions): 
   expect(body.error.details).toBeDefined();
   const remainingMs = (body.error.details as { id: string; remainingMs: number }).remainingMs;
   expect(body.error.details).toEqual({ id, remainingMs });
-  expect(remainingMs).toBeGreaterThan(0);
-  expect(remainingMs).toBeLessThanOrEqual(2_000);
+  expect(remainingMs).toBeGreaterThanOrEqual(0);
+  expect(remainingMs).toBeLessThan(TOTAL_DEADLINE_BUDGET_MS);
   expect(body.error.message).toBe(
     `the investigation with id "${id}" could not be written within the ${remainingMs}ms remaining of the declared deadline, so no assessment is returned without a corresponding record`,
   );

@@ -2,6 +2,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it } from 'vitest';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
+import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { HypothesisRevisionNotDraftAtReleaseError } from '../../../errors/hypothesis-revision-not-draft-at-release.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
@@ -66,6 +67,20 @@ it('answers InvestigationWriteDeadlineExceededError with a named 500 envelope, n
       details: { id: 'investigation-1', remainingMs: 300 },
     },
   });
+});
+
+it('answers DuplicateConceptAnswerError with a named 500 envelope, naming the error rather than falling back to the generic, unnamed one', async () => {
+  app = buildAppThatRejectsWith(
+    new DuplicateConceptAnswerError('a-concept', [
+      { name: 'capability-a', version: '1.0.0' },
+      { name: 'capability-b', version: '2.0.0' },
+    ]),
+  );
+
+  const response = await app.inject({ method: 'GET', url: '/throw' });
+
+  expect(response.statusCode).toBe(500);
+  expect(response.json().error.code).toBe('DuplicateConceptAnswerError');
 });
 
 it(
