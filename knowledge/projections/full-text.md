@@ -5554,6 +5554,21 @@ entries:
   unstated: The rule held the invariant that a subject carries at least one attribute-value, but no node stated what a caller is told when a call arrives with a subject carrying none — no error class and no HTTP status anywhere in the specification named this violation, so the only answer the specification held for it was the generic fallback of constraints/a-domain-error-unmapped-by-status-is-refused-generically. Surfaced during plan-work for subject-attribute-glossary-removal-backend by an execution-contract-binder over task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary, whose criteria hold this refusal to a named error class.
   decided: A call whose subject carries no attribute-value is refused with an HTTP 422 response reporting a SubjectCarriesNoAttributeError.
   why: A request that is well-formed but whose content the domain refuses is HTTP 422 everywhere in this specification — a-hypothesis-collects-at-least-one-concept, a-capability-declares-its-contract and a-diagnosed-subject-covers-its-cases-required-attributes all answer an empty-or-missing required content that way, 400 being reserved by a-malformed-request-is-refused-with-a-validation-error for the route's declared shape — and the class name is this rule's own condition negated over the element it constrains, the same derivation HypothesisRevisionCollectsNoConceptError takes from its own rule.
+- location: domain/investigation/evidence.md
+  field: attributes
+  unstated: The material stated that domain/integration/capability gains an optional, free-text payload_notes attribute for an operator's own technical account of what an observation's payload actually carries, to ground a hypothesis's judgment -- but said nothing about whether that account reaches an evidence item at all, and if so whether judgment reads it live from the capability registry or from a value fixed at collection the way concept_description and fields already are, nor what an evidence item collected before this attribute existed, or produced by a capability declaring no payload notes, holds for it.
+  decided: A new required string attribute, capability_payload_notes, snapshotted onto evidence from the producing capability's own payload_notes at the exact moment that item is collected, never re-read afterward. A capability declaring no payload notes, and an evidence item collected before this attribute existed, both read it as an empty string -- never an absent field and never a read failure.
+  why: rules/investigation/judgment-reads-the-evidence-snapshot and rules/investigation/presentation-reads-the-evidence-snapshot already forbid a live read of the capability registry at judgment and at presentation, on the verified defect that a registration silently replaces whatever it held at that identity -- a live read of payload_notes for the same purpose would reopen precisely that defect for the one attribute this change adds. concept_description is the one attribute already carrying a producing element's own free-text account onto evidence this same way, snapshotted rather than read live and honestly empty rather than absent where its source declared none; payload_notes is the same shape of fact for the capability that produced the item as concept_description already is for the concept it was collected against, so it is decided the same way rather than inventing a second mechanism -- a live pointer, a nullable field -- for one new fact with no difference from the one already governing its nearest sibling.
+- location: rules/investigation/judgment-reads-the-evidence-snapshot.md
+  field: statement
+  unstated: Whether a hypothesis's judgment, already limited to reading its evidence's own snapshotted concept and field semantics, also reads the new capability_payload_notes snapshot now that evidence carries it, or is left without a stated reading of it at all.
+  decided: Judgment reads capability_payload_notes from the same evidence snapshot it already reads concept and field semantics from, as further grounding context alongside them, and never live from the capability registry.
+  why: An attribute of evidence this rule's statement does not name is, by that rule's own closed wording ("reads only"), an attribute judgment may not read at all -- silently withholding from the evaluator the one fact this whole change exists to give it. Naming it beside concept and field semantics, on the same footing, keeps the one property that makes the existing pair safe to read -- capability_payload_notes is itself a snapshot fixed at collection, so admitting it changes nothing about what "only... at the moment that evidence was collected" already guarantees.
+- location: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them.md
+  field: statement
+  unstated: This rule already forbids every declared attribute of a presented capability from ever standing absent. domain/integration/capability now declares one attribute, payload_notes, that a registration may legitimately leave undeclared -- and no node stated whether that attribute may therefore stand absent in this presentation the way no other, required attribute of that identity ever may.
+  decided: payload_notes may stand absent throughout this presentation, and stands absent exactly where the read's own answer carried none; every other, required attribute of the identity stays held to the existing absolute prohibition on ever presenting as absent.
+  why: The rule's blanket "no attribute... stand absent" was sound only because every attribute domain/integration/capability declared until now was required, so an absent one could only ever be a stale or wrong reading, never an honest fact -- rules/integration/a-capability-declares-its-contract already refuses a registration missing a required attribute outright, so no presentation of a validly registered capability could show one absent without misreporting the read. payload_notes breaks that premise by design -- a capability validly registered with none is a capability this reading must show truthfully as having none, so carrying the old blanket prohibition forward unchanged would make this one attribute's honest absence indistinguishable from every other attribute's dishonest one, which is the exact confusion the rest of this rule exists to prevent.
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement
@@ -5622,6 +5637,26 @@ entries:
   unstated: Whether the OpenAPI operation lookup that resolves a path+method pairing for a connector-configuration or capability-schema draft compares the request's HTTP method against the document's own declared operation key case-sensitively or case-insensitively, and what case the document's own key may be declared in. Surfaced by /review-change's specification-conformance pass over connector-configuration-draft-status-response-maps-backend, evidence at src/src/connector-registry/openapi-operation-reader.ts's operationEntry, which lower-cases only the request's method before the lookup, and at that delivery's own test, whose title claims general case-insensitivity while exercising only a document already declared lower-case.
   decided: An OpenAPI 3.x document declares each path item's own operations under lower-cased HTTP-method keys -- the document format's own fact, never a choice this system makes -- and the lookup compares the request's own method against that key case-insensitively, lower-casing the request's method before the comparison. Recorded as a new invariant over domain/integration/openapi-operation.
   why: rules/integration/an-openapi-operations-method-is-upper-cased already reads a fetched document's path-item keys as lower-case in its own reasoning, without stating that fact as its own or saying anything about how a lookup compares against it; this rule makes explicit what that reading already rested on -- the OpenAPI 3.x specification itself fixes a path item's operation keys as lower-case, the same way it fixes every other structural key (paths, components, securitySchemes) that this system never chose -- and decides the comparison the currently delivered lookup already performs one direction of (lower-casing the request's method), closing the open half (whether the document's own key could be declared otherwise) by naming it as a format fact rather than a possibility to guard against.
+- location: rules/investigation/an-empty-attribute-input-is-no-attribute-value.md
+  field: statement
+  unstated: No node states what an attribute input left empty at the interface assembling a subject contributes. domain/investigation/subject-attribute-value declares value required without saying what an empty one is, and a-composed-subject-presents-every-case-input-requirement states which inputs are presented and which of them gate the call, never what an empty one yields; the specification's empty-string readings are each scoped to their own field — a capability's attributes, a connector configuration's name, a diagnosed subject's coverage check, a simulation's requester, an investigation's ticket_ref — and none reaches what this interface assembles. Surfaced by /plan-work over subject-attribute-glossary-removal-frontend, deciding what the task composing a simulated subject from case-input-requirements alone implements.
+  decided: An attribute input left empty at the interface assembling a subject contributes no attribute-value — the interface assembles no attribute-value pairing that attribute's name with an empty value, and the subject it assembles omits that attribute exactly as one whose input was never offered.
+  why: An empty value identifies nothing about the instance, so assembling the pair would put a second encoding of absence into the one set every capability's connector derives its call from — one each consumer would have to read back as absence on its own account, as the diagnose door's coverage check already must — where the specification's standing reading of an empty attribute, unbroken across every field that has one, is that it is the absence of the value; not assembling it also keeps a-subject-carries-at-least-one-attribute's refusal reachable for a subject whose every input was left empty, which pairs carrying empty values would silently pass.
+- location: rules/glossary/a-browsed-vocabularys-listing-states-its-own-emptiness-and-a-failed-read.md
+  field: statement
+  unstated: No node stated whether a surface presenting one glossary vocabulary's terms states an empty listing's own emptiness explicitly or leaves a bare absence of rows a person browsing could read as a stalled load, and no node stated whether a failed listing read of a vocabulary is disclosed to that person at all or offered with a control that re-issues exactly that same read. contracts/glossary/glossary-query publishes list-vocabulary-terms and says only that it lists every term one vocabulary currently holds, in pages; rules/glossary/a-glossary-read-by-an-unheld-name-is-refused decides only the refusal of a read by a name nothing holds. Surfaced by /review-change over subject-attribute-glossary-removal-frontend, reviewing frontend/app/src/routes/glossary-browser-screen-vocabulary-tabs.spec.ts.
+  decided: A surface presenting to a person browsing the glossary the terms one vocabulary currently holds states explicitly, where that vocabulary's listing read answers no term at all, that the vocabulary currently holds no term, and states explicitly, where that listing read fails to answer, that the vocabulary's terms could not be read, offering in that failed reading alone a control whose one effect is to issue the same listing read for the same vocabulary again — never presenting either reading as a bare absence of terms, and never issuing that read again on its own.
+  why: This specification has answered this shape repeatedly and is answered the same way again. a-case-holding-no-versions-is-told-explicitly refuses an emptiness a reader cannot tell from a pending read or a failure over a stored set, and its premise holds here unchanged — a glossary vocabulary holding no term is a real, standing, reachable state, because domain/glossary/subject-type is a discovered vocabulary that grows as cases declare their subjects and the-non-conclusion-outcomes-precede-the-first-case requires only recipients, actions and the two non-conclusion outcomes to exist before the first case version, so a vocabulary a person browses can legitimately hold nothing with nothing wrong anywhere. The failed half follows the same standing answer: a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed and a-presented-connector-configuration-states-an-outstanding-or-failed-read both state a failed read and carry that same read with it, on the reasoning that the reader's next act differs between an answer and a failure and that naming the act while withholding it leaves a reload as the only route back; both also hold the re-issue to the reader's own act rather than the surface's, which is why this statement does too. A Rule is the home rather than a further scenario because the fact is a standing obligation on a surface across all four vocabularies plus an error path with a control, which is the shape this specification already records as a policy rule for every other surface of this kind. The emptiness is bounded to the vocabulary's own zero rather than any empty page, since constraints/listings-are-paged has every listing carry its total. The frontend already delivered by subject-attribute-glossary-removal-frontend behaves this way, so the specification gains the fact and no source change follows either way.
+- location: rules/investigation/an-empty-attribute-input-is-no-attribute-value.md
+  field: statement
+  unstated: Whether an attribute input holding whitespace alone counts as empty at the interface assembling a subject. This rule's decided reading of an empty input is scoped to an input holding no content at all, and the whitespace-equivalence the specification does state is scoped to other surfaces' own fields (a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation's Connector field, a-case-authoring-surface-offers-no-submission-while-required-content-is-absent's required content), neither of which reaches an attribute input on this interface. Surfaced by /review-change's specification-conformance pass over subject-attribute-glossary-removal-frontend, evidence at frontend/app/src/hooks/use-simulation-subject.ts's composedAttributes, which already skips a requirement field whose trimmed value is empty.
+  decided: Empty means holding no content or holding whitespace alone -- an attribute input holding only whitespace contributes no attribute-value, exactly as one holding nothing does, and the subject omits that attribute.
+  why: A value made of only whitespace identifies the instance by nothing a capability's connector could derive a call from, so admitting it as an attribute-value would put into the one set every connector reads from precisely the second, indistinguishable encoding of absence this rule already refuses for an input holding nothing -- and would additionally let a subject whose every input holds only spaces pass a-subject-carries-at-least-one-attribute's refusal holding pairs that identify nothing, the outcome this rule exists to keep reachable.
+- location: rules/investigation/a-simulation-carries-its-requester.md
+  field: statement
+  unstated: Whether a requester holding whitespace alone counts as an empty requester. This rule's decided reading of "or an empty one" is scoped to the literal empty string, and the whitespace-equivalence the specification does state is stated on each other field's own node, never once across two fields at a time, so none of them reaches the requester a simulate call carries. Surfaced by /review-change's specification-conformance pass over subject-attribute-glossary-removal-frontend, evidence at frontend/app/src/hooks/use-simulation-subject.ts's isReady, which already treats a requester whose trimmed value is empty as no requester.
+  decided: Empty means holding no content or holding whitespace alone -- a simulate-case or simulate-hypothesis call whose payload carries a requester of only whitespace is refused before any collection, exactly as one carrying none is.
+  why: A requester of only whitespace names no identity anything is authorized as, so admitting it would leave the call's collection with no authorization scope to run in but the service's own -- the outcome collection-runs-in-the-requester-scope forbids outright and this rule exists to keep unreachable -- which is precisely the gap an absent requester opens; admitting it would also give the refusal two indistinguishable encodings of one absence, where this specification's standing reading of an empty required field, whitespace included, is that it is the absence of the value.
 
 === domain/glossary/_context
 ---
@@ -5782,6 +5817,9 @@ attributes:
   - name: concept
     type: domain/glossary/concept
     required: true
+  - name: payload_notes
+    type: string
+    required: false
 ---
 
 ## Description
@@ -5790,10 +5828,12 @@ One registered read-only observation the system can perform, identified by name 
 It answers exactly one concept, the one the registry resolves it by.
 Its input schema, once its own shape is declared, names which subject attributes it uses and which it cannot observe without; its output schema, stated in the glossary's vocabulary, bounds every citation over the evidence it produces; its timeout is its own budget inside the collection's global deadline; its connector names the adapter that executes it.
 The capability resolves internally whatever derivation its concept needs — an address from a contract, a region from an access — so derivation is never the case's work.
+Its payload notes, where an operator declares them, are that operator's own free-text account of what the observation actually returns beneath the shallow, unvalidated shape its output schema states — an omission the schema carries silently, a default the store applies, which of two overlapping meanings a field actually holds. An operator's own hint, exactly as a schema's own field-level description already is, never enforced and never read by anything that resolves a call or admits a citation.
 
 ## Responsibility
 
 Declare its contract completely — nature, both schemas, timeout in milliseconds, connector, the concept it answers — so the registry can refuse what departs from it and resolve by it.
+Declare, where the operator supplies them, payload notes carrying what the contract's own required fields do not — an absent declaration is a capability that simply has none, never an incomplete one.
 
 === domain/integration/capability-nature
 ---
@@ -6435,6 +6475,9 @@ attributes:
   - name: concept_description
     type: string
     required: true
+  - name: capability_payload_notes
+    type: string
+    required: true
 relationships:
   - target: domain/integration/capability
     type: reference
@@ -6448,6 +6491,7 @@ The absence of data is a recorded fact: a timeout, a denial or an unavailability
 The capability reference pins which registered capability, at which version, produced this observation.
 elapsed_ms is how long the collection itself took, in milliseconds, whatever the result — the same unit `domain/investigation/durations` already keeps its own stage totals in. An evidence item collected before this attribute existed reads elapsed_ms as 0, meaning not measured, never a read failure and never an invented duration.
 fields and concept_description are this item's own snapshotted semantics — the producing capability's own declared field-by-field meaning and the concept's own declared meaning — exactly as the capability registry and the glossary held them at the moment this item was collected, never re-read afterward. A concept collected before it declared a description snapshots an empty one; a concept whose capability never resolved snapshots no fields at all, the same honest degradation the result itself already records. An evidence item collected before fields or concept_description existed as attributes of this element reads each the identical honest-empty way — no fields at all, and an empty concept_description — never a read failure and never an invented semantics.
+capability_payload_notes is this same kind of snapshot, taken from the producing capability's own payload_notes at that identical moment: a capability registered with none snapshots an empty string, the same honest degradation concept_description already carries for a concept with none, never a read failure and never an invented account. An evidence item collected before this attribute existed reads it the identical honest-empty way.
 
 ## Responsibility
 
@@ -6508,7 +6552,7 @@ The rule it applies is not in code but in the case's prose, so the tension betwe
 
 ## Responsibility
 
-Given one hypothesis's criterion, its own evidence — each item's own snapshotted concept and field semantics alongside its observation — and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred, reading nothing live from the glossary or the capability registry.
+Given one hypothesis's criterion, its own evidence — each item's own snapshotted concept, field semantics and capability payload notes alongside its observation — and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred, reading nothing live from the glossary or the capability registry.
 
 === domain/investigation/investigation
 ---
@@ -6985,6 +7029,47 @@ Declared by every hypothesis and by the case's fallback; the material states the
 ## Responsibility
 
 Pair one outcome with one referral so no position can declare one without the other.
+
+=== rules/glossary/a-browsed-vocabularys-listing-states-its-own-emptiness-and-a-failed-read
+---
+type: policy
+statement: >-
+  A surface presenting to a person browsing the glossary the terms one vocabulary currently
+  holds states explicitly, where that vocabulary's listing read answers no term at all, that
+  the vocabulary currently holds no term, and states explicitly, where that listing read
+  fails to answer, that the vocabulary's terms could not be read, offering in that failed
+  reading alone a control whose one effect is to issue the same listing read for the same
+  vocabulary again — never presenting either reading as a bare absence of terms, and never
+  issuing that read again on its own.
+constrains:
+  - domain/glossary/subject-type
+  - domain/glossary/outcome
+  - domain/glossary/action
+  - domain/glossary/recipient
+consistency: eventual
+---
+
+## Description
+
+`list-vocabulary-terms` of `contracts/glossary/glossary-query` is the read this surface stands on, and it is issued separately from the surface that presents it: between a person naming a vocabulary and the answer arriving there is a window in which no term is held to show, and a read that fails leaves the surface holding none at all.
+
+A vocabulary holding no term at all is a real and reachable state rather than a degenerate one.
+`domain/glossary/subject-type` is a discovered vocabulary that grows as cases declare their subjects and is never designed ahead of them, and `the-non-conclusion-outcomes-precede-the-first-case` requires only the recipients, the actions and the two non-conclusion outcomes to exist before the first case version validates — the rest is discovered by writing cases.
+So a person browsing subject types before any case has declared one meets a vocabulary that legitimately holds nothing, exactly as a curator meets a case whose sole draft was discarded.
+
+Rows absent with nothing said about why read the same whether the vocabulary holds no term, the read has not answered yet, or the read failed unannounced.
+`a-case-holding-no-versions-is-told-explicitly` answered that same question for a case's own versions, and its answer is taken again here for a vocabulary's: a real, reachable zero is stated, never left as an unexplained empty listing.
+`a-composed-subjects-interface-discloses-an-empty-requirement-set` took the same answer for a requirement set naming no attribute, and `a-presented-manifest-entry-states-its-pinned-revisions-state` for an entry with nothing to state; the reason does not change with the set.
+
+The failed read is stated in its own right, and the same read is offered with it, because the person's next act differs across the two readings: an emptiness is the vocabulary's own answer and asks nothing further, while a failed read settles only if it is made again.
+`a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` and `a-presented-connector-configuration-states-an-outstanding-or-failed-read` both state a failed read and carry that same read with it for exactly this reason — naming the act and withholding it would leave a page reload or a re-navigation as the only route back.
+The re-issue is the person's own act and never the surface's, so a failed read never becomes a loop against a published route.
+
+The emptiness stated here is the vocabulary's own and not a page's: every published listing answers one page carrying its total (`constraints/listings-are-paged`), so the surface reads that this vocabulary holds no term off the answer itself rather than off an empty row set alone, and a page selected past the last term of a vocabulary that does hold terms is not this reading.
+An unheld name stays `a-glossary-read-by-an-unheld-name-is-refused`'s own: that refusal answers a term read by a name nothing holds, which is a refusal and not an emptiness, and nothing here touches it.
+Which control carries each statement, its wording, and where on the surface it sits are form and belong to the interface, exactly as this specification's other surface rules leave them.
+
+Consistency is eventual because the surface never holds the terms it presents: what it states is drawn from a listing read issued separately, and these two readings are precisely where that read answered zero or did not answer at all.
 
 === rules/glossary/a-concept-declares-its-description
 ---
@@ -8805,28 +8890,33 @@ statement: >-
   Where the identity-keyed read of the capability registered at a name and version an
   operator named has answered, the surface presenting that capability to the operator
   states its name and version and every attribute a capability declares — its nature, its
-  input schema, its output schema, its timeout, its connector and the concept it answers —
-  exactly as that answer carried each of them, states no value for any of them that the
-  answer did not carry, and carries all of them from the moment that presentation begins:
-  at no point in that presentation does an attribute of that identity stand absent, stand
-  empty, or stand at a value drawn from anything but that read's own answer, unless the
-  operator has themselves changed it.
+  input schema, its output schema, its timeout, its connector, the concept it answers and
+  its payload notes — exactly as that answer carried each of them, states no value for any
+  of them that the answer did not carry, and carries all of them from the moment that
+  presentation begins: at no point in that presentation does a required attribute of that
+  identity stand absent, does any of them stand at a value drawn from anything but that
+  read's own answer, unless the operator has themselves changed it; payload notes, the one
+  attribute a registration may leave undeclared, stands absent throughout that presentation
+  exactly where that answer itself carried none, and never otherwise.
 expression: >-
   For a name n and a version v an operator named, and a surface presenting the capability
   registered at (n, v) through read-capability-by-identity of
   contracts/integration/capability-registry: where that read has answered, the surface
-  states name, version, nature, input_schema, output_schema, timeout, connector and
-  concept as that answer carries each of them, and states no value for any of them that
-  that answer did not carry. Each of them is stated from the first moment this
+  states name, version, nature, input_schema, output_schema, timeout, connector, concept
+  and payload_notes as that answer carries each of them, and states no value for any of
+  them that that answer did not carry. Each of them is stated from the first moment this
   presentation stands, and not from some later moment inside it: while this presentation
-  holds, and until the operator changes a field themselves, no attribute of (n, v) is
-  presented as absent, as empty, or as a value drawn from any answer other than that
-  read's own — not a page of list-capabilities the caller already held, not the answer of
-  read-capability for the concept this capability answers, and not the content a
-  register-capability submission carried. An edit the operator makes to a field is theirs
-  and is no statement of this reading; what this states is what the presentation carries
-  before and apart from any such edit. Nothing here turns on how the operator reached the
-  surface.
+  holds, and until the operator changes a field themselves, no required attribute of (n, v)
+  is presented as absent, and none of them is presented as a value drawn from any answer
+  other than that read's own — not a page of list-capabilities the caller already held, not
+  the answer of read-capability for the concept this capability answers, and not the
+  content a register-capability submission carried. payload_notes is presented empty
+  exactly where that answer's own payload_notes was empty, and holding content exactly
+  where that answer's own payload_notes held it — never empty where the answer carried
+  content and never filled from any other answer where the answer carried none. An edit
+  the operator makes to a field is theirs and is no statement of this reading; what this
+  states is what the presentation carries before and apart from any such edit. Nothing
+  here turns on how the operator reached the surface.
 constrains:
   - domain/integration/capability
 consistency: eventual
@@ -8844,6 +8934,7 @@ Answering the read-and-shown window differently for a capability than for a conn
 
 Every declared attribute is stated, rather than some of them.
 `a-capability-declares-its-contract` and `domain/integration/capability` between them make nature, both schemas, timeout, connector and concept all required of a registration, and the neighbouring surface rule's own reasoning is that a registration answers whole or is refused — so a reading showing part of what the read answered states as this identity's content a contract narrower than the one the registry holds.
+Payload notes is the one attribute `domain/integration/capability` leaves optional, so it is the one attribute this reading may honestly show absent: a capability an operator registered without one has none to show, and showing it absent there is showing the read's own answer, not a gap in the presentation. What stays refused is the same silent substitution every other attribute is refused: payload notes never stands empty where the answer carried content, and never stands filled from a schema draft, an earlier registration, or anything else that is not that identity's own current answer.
 `a-presented-case-version-states-its-own-declared-attributes` took exactly this answer for the other keyed reading in this specification: the reader is shown that record's own declared attributes, each read from that record itself.
 
 No value the answer did not carry, because the source of what is shown is fixed rather than opportunistic.
@@ -10619,7 +10710,7 @@ An-unresolvable-observation-ends-unavailable already treats an unresolvable obse
 === rules/investigation/a-simulation-carries-its-requester
 ---
 type: invariant
-statement: A simulate-case and a simulate-hypothesis call each carry, in the call's own payload, the requester whose authorization scope that call's collection runs in; a call whose payload carries no requester, or an empty one, is refused before any collection, with the refusal every route gives a body that fails its declared shape.
+statement: A simulate-case and a simulate-hypothesis call each carry, in the call's own payload, the requester whose authorization scope that call's collection runs in; a call whose payload carries no requester, or an empty one — empty meaning holding no content or holding whitespace alone — is refused before any collection, with the refusal every route gives a body that fails its declared shape.
 constrains:
   - domain/investigation/evidence
 ---
@@ -10629,6 +10720,7 @@ constrains:
 rules/investigation/collection-runs-in-the-requester-scope holds every collection to the requester's own authorization scope and never the service's, and a simulation runs that same collection through the same connectors — so a simulation arriving with no requester has no scope to run in, and the only scope left to run it in is the service's own, which that rule forbids outright. Requiring the requester on both operations is what keeps the two from meeting in that gap.
 Nothing else could carry it: rules/investigation/a-simulation-writes-no-investigation keeps a simulation out of the record, so domain/investigation/investigation's own requester attribute — which arrives in the diagnose call alone — says nothing about a simulation, and neither operation resolves an identity of its own. The value is the caller's claim, unverified, exactly as constraints/no-route-enforces-authentication states for every requester this build accepts.
 The refusal is the standing one rather than a new one: a required field absent from a body is a failure of the route's declared shape, which constraints/a-malformed-request-is-refused-with-a-validation-error already answers for every route, so no status or error name of its own is stated here.
+A requester made of whitespace alone is empty in the sense this rule means: a value of only spaces names no identity whose authorization scope a collection could run in, so it leaves exactly the scopeless gap an absent requester leaves, and it is the reading this specification already gives a required field holding only whitespace — rules/investigation/an-empty-attribute-input-is-no-attribute-value for an attribute input on the same composing interface, rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation for a connector name, rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent for a case's own required content.
 rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses is untouched by this door — that rule is about an attribute-value of the subject, whose absence one concept's own observation records as unavailable, while a missing requester has no degraded form: there is no scope in which anything could be collected at all.
 
 === rules/investigation/a-simulation-result-is-stale-once-its-source-changes
@@ -10702,6 +10794,24 @@ constrains:
 
 The attendant waits on screen; past the caller's timeout they see a network error instead of a degraded assessment.
 The total is an engineering proposal pending operational confirmation, set at twenty seconds — two of overhead and margin, seven of collection, five of judgment, four of writing and two of persistence.
+
+=== rules/investigation/an-empty-attribute-input-is-no-attribute-value
+---
+type: invariant
+statement: An attribute input left empty at the interface assembling a subject, empty meaning holding no content or holding whitespace alone, contributes no attribute-value — the interface assembles no attribute-value pairing that attribute's name with an empty value, and the subject it assembles omits that attribute exactly as one whose input was never offered.
+constrains:
+  - domain/investigation/subject
+---
+
+## Description
+
+The interface presents one input per the pinned case version's own case-input-requirements and nothing beyond that set (`a-composed-subject-presents-every-case-input-requirement`), so leaving an input empty is the only way the composer can say they hold no value for the attribute it names — including a required one, which a simulation deliberately lets them run without (`a-simulated-subject-missing-a-requirement-degrades-not-refuses`).
+
+An empty value assembled as a pair would occupy the place of a fact about the instance while identifying nothing by it, and each consumer of the set would have to read it back as an absence on its own account: the coverage check at the diagnose door already does (`a-diagnosed-subject-covers-its-cases-required-attributes`), while at assembly an empty first arrival would hold the attribute's one place against a later real value (`a-subject-holds-one-value-per-attribute`). Assembling nothing keeps the set to what the composer actually supplied, so a subject every one of whose inputs was left empty carries no attribute-value at all and meets `a-subject-carries-at-least-one-attribute`'s own refusal rather than passing it holding pairs that identify nothing. This is the reading this specification already gives an empty attribute elsewhere, stated for a different field by `an-empty-ticket-reference-is-no-ticket-reference`.
+
+An input holding whitespace alone is empty in the sense this rule means: the composer who typed only spaces has supplied nothing that identifies the instance, and no capability's connector could derive a call from it — the same reading `rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation` and `rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent` each already take of a surface field holding whitespace alone.
+
+What this governs is what the composing interface assembles, not what a call must accept: the diagnose door's own reading of an empty attribute-value stands for a subject that reached it from anywhere else.
 
 === rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
 ---
@@ -10786,7 +10896,7 @@ The instruction is fixed in the judgment prompt: evidence grounds verdicts, and 
 === rules/investigation/judgment-reads-the-evidence-snapshot
 ---
 type: invariant
-statement: A hypothesis's judgment reads only its own evidence's snapshotted concept and field semantics, fixed at the moment that evidence was collected; it never re-reads the glossary or the capability registry.
+statement: A hypothesis's judgment reads only its own evidence's snapshotted concept, field semantics and capability payload notes, fixed at the moment that evidence was collected; it never re-reads the glossary or the capability registry.
 constrains:
   - domain/investigation/evidence
 ---
@@ -10794,7 +10904,7 @@ constrains:
 ## Description
 
 Two verified defects made a live read costly: a capability registration silently replaces whatever it already held at that name and version, and a citation vocabulary drawn from a live lookup fails silently once collection and judgment disagree about which registration answered a concept.
-The snapshot domain/investigation/evidence carries — fields and concept_description — is what a hypothesis's judgment reads instead, always; nothing later than collection can change what an already-collected item's judgment sees.
+The snapshot domain/investigation/evidence carries — fields, concept_description and capability_payload_notes — is what a hypothesis's judgment reads instead, always; nothing later than collection can change what an already-collected item's judgment sees. capability_payload_notes reaches the judgment the same way concept_description already does: as context grounding the observation, never as a fact anything validates or a vocabulary any citation is held to — an evidence item whose capability declared none reads it the same honest-empty way collection already recorded.
 
 === rules/investigation/no-stage-aborts-on-its-deadline
 ---

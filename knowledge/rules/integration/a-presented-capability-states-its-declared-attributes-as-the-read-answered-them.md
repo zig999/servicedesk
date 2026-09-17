@@ -4,28 +4,33 @@ statement: >-
   Where the identity-keyed read of the capability registered at a name and version an
   operator named has answered, the surface presenting that capability to the operator
   states its name and version and every attribute a capability declares — its nature, its
-  input schema, its output schema, its timeout, its connector and the concept it answers —
-  exactly as that answer carried each of them, states no value for any of them that the
-  answer did not carry, and carries all of them from the moment that presentation begins:
-  at no point in that presentation does an attribute of that identity stand absent, stand
-  empty, or stand at a value drawn from anything but that read's own answer, unless the
-  operator has themselves changed it.
+  input schema, its output schema, its timeout, its connector, the concept it answers and
+  its payload notes — exactly as that answer carried each of them, states no value for any
+  of them that the answer did not carry, and carries all of them from the moment that
+  presentation begins: at no point in that presentation does a required attribute of that
+  identity stand absent, does any of them stand at a value drawn from anything but that
+  read's own answer, unless the operator has themselves changed it; payload notes, the one
+  attribute a registration may leave undeclared, stands absent throughout that presentation
+  exactly where that answer itself carried none, and never otherwise.
 expression: >-
   For a name n and a version v an operator named, and a surface presenting the capability
   registered at (n, v) through read-capability-by-identity of
   contracts/integration/capability-registry: where that read has answered, the surface
-  states name, version, nature, input_schema, output_schema, timeout, connector and
-  concept as that answer carries each of them, and states no value for any of them that
-  that answer did not carry. Each of them is stated from the first moment this
+  states name, version, nature, input_schema, output_schema, timeout, connector, concept
+  and payload_notes as that answer carries each of them, and states no value for any of
+  them that that answer did not carry. Each of them is stated from the first moment this
   presentation stands, and not from some later moment inside it: while this presentation
-  holds, and until the operator changes a field themselves, no attribute of (n, v) is
-  presented as absent, as empty, or as a value drawn from any answer other than that
-  read's own — not a page of list-capabilities the caller already held, not the answer of
-  read-capability for the concept this capability answers, and not the content a
-  register-capability submission carried. An edit the operator makes to a field is theirs
-  and is no statement of this reading; what this states is what the presentation carries
-  before and apart from any such edit. Nothing here turns on how the operator reached the
-  surface.
+  holds, and until the operator changes a field themselves, no required attribute of (n, v)
+  is presented as absent, and none of them is presented as a value drawn from any answer
+  other than that read's own — not a page of list-capabilities the caller already held, not
+  the answer of read-capability for the concept this capability answers, and not the
+  content a register-capability submission carried. payload_notes is presented empty
+  exactly where that answer's own payload_notes was empty, and holding content exactly
+  where that answer's own payload_notes held it — never empty where the answer carried
+  content and never filled from any other answer where the answer carried none. An edit
+  the operator makes to a field is theirs and is no statement of this reading; what this
+  states is what the presentation carries before and apart from any such edit. Nothing
+  here turns on how the operator reached the surface.
 constrains:
   - domain/integration/capability
 consistency: eventual
@@ -43,6 +48,7 @@ Answering the read-and-shown window differently for a capability than for a conn
 
 Every declared attribute is stated, rather than some of them.
 `a-capability-declares-its-contract` and `domain/integration/capability` between them make nature, both schemas, timeout, connector and concept all required of a registration, and the neighbouring surface rule's own reasoning is that a registration answers whole or is refused — so a reading showing part of what the read answered states as this identity's content a contract narrower than the one the registry holds.
+Payload notes is the one attribute `domain/integration/capability` leaves optional, so it is the one attribute this reading may honestly show absent: a capability an operator registered without one has none to show, and showing it absent there is showing the read's own answer, not a gap in the presentation. What stays refused is the same silent substitution every other attribute is refused: payload notes never stands empty where the answer carried content, and never stands filled from a schema draft, an earlier registration, or anything else that is not that identity's own current answer.
 `a-presented-case-version-states-its-own-declared-attributes` took exactly this answer for the other keyed reading in this specification: the reader is shown that record's own declared attributes, each read from that record itself.
 
 No value the answer did not carry, because the source of what is shown is fixed rather than opportunistic.

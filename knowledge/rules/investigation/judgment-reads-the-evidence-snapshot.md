@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: A hypothesis's judgment reads only its own evidence's snapshotted concept and field semantics, fixed at the moment that evidence was collected; it never re-reads the glossary or the capability registry.
+statement: A hypothesis's judgment reads only its own evidence's snapshotted concept, field semantics and capability payload notes, fixed at the moment that evidence was collected; it never re-reads the glossary or the capability registry.
 constrains:
   - domain/investigation/evidence
 ---
@@ -8,4 +8,4 @@ constrains:
 ## Description
 
 Two verified defects made a live read costly: a capability registration silently replaces whatever it already held at that name and version, and a citation vocabulary drawn from a live lookup fails silently once collection and judgment disagree about which registration answered a concept.
-The snapshot domain/investigation/evidence carries — fields and concept_description — is what a hypothesis's judgment reads instead, always; nothing later than collection can change what an already-collected item's judgment sees.
+The snapshot domain/investigation/evidence carries — fields, concept_description and capability_payload_notes — is what a hypothesis's judgment reads instead, always; nothing later than collection can change what an already-collected item's judgment sees. capability_payload_notes reaches the judgment the same way concept_description already does: as context grounding the observation, never as a fact anything validates or a vocabulary any citation is held to — an evidence item whose capability declared none reads it the same honest-empty way collection already recorded.

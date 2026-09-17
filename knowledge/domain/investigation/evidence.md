@@ -34,6 +34,9 @@ attributes:
   - name: concept_description
     type: string
     required: true
+  - name: capability_payload_notes
+    type: string
+    required: true
 relationships:
   - target: domain/integration/capability
     type: reference
@@ -47,6 +50,7 @@ The absence of data is a recorded fact: a timeout, a denial or an unavailability
 The capability reference pins which registered capability, at which version, produced this observation.
 elapsed_ms is how long the collection itself took, in milliseconds, whatever the result — the same unit `domain/investigation/durations` already keeps its own stage totals in. An evidence item collected before this attribute existed reads elapsed_ms as 0, meaning not measured, never a read failure and never an invented duration.
 fields and concept_description are this item's own snapshotted semantics — the producing capability's own declared field-by-field meaning and the concept's own declared meaning — exactly as the capability registry and the glossary held them at the moment this item was collected, never re-read afterward. A concept collected before it declared a description snapshots an empty one; a concept whose capability never resolved snapshots no fields at all, the same honest degradation the result itself already records. An evidence item collected before fields or concept_description existed as attributes of this element reads each the identical honest-empty way — no fields at all, and an empty concept_description — never a read failure and never an invented semantics.
+capability_payload_notes is this same kind of snapshot, taken from the producing capability's own payload_notes at that identical moment: a capability registered with none snapshots an empty string, the same honest degradation concept_description already carries for a concept with none, never a read failure and never an invented account. An evidence item collected before this attribute existed reads it the identical honest-empty way.
 
 ## Responsibility
 

@@ -6,14 +6,14 @@ Derived by spec.py from the specification files; never edited.
 
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
-| glossary | supporting | 5 | 10 | 2 | 1 |
+| glossary | supporting | 5 | 11 | 2 | 1 |
 | integration | generic | 19 | 131 | 9 | 23 |
-| investigation | supporting | 16 | 38 | 7 | 17 |
+| investigation | supporting | 16 | 39 | 7 | 17 |
 | knowledge | core | 12 | 67 | 5 | 12 |
 
 ## Aggregates
 
-- integration/capability — 0 entity(ies) inside, 8 attribute(s) on the root
+- integration/capability — 0 entity(ies) inside, 9 attribute(s) on the root
 - investigation/investigation — 0 entity(ies) inside, 13 attribute(s) on the root
 - knowledge/case — 0 entity(ies) inside, 2 attribute(s) on the root
 - knowledge/case-version — 0 entity(ies) inside, 10 attribute(s) on the root
@@ -56,4 +56,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-313 decision(s) disclosed, 4 fact(s) recorded as read in the decision log.
+316 decision(s) disclosed, 4 fact(s) recorded as read in the decision log.
