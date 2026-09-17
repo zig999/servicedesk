@@ -2395,7 +2395,7 @@
         },
         {
           "path": "src/src/http/dto/read-capability-by-identity.dto.ts",
-          "digest": "sha256:ad50ca4fa6ce85aa92c76e58aed2a21678cc9d07a86d290b448ff06999d39b88"
+          "digest": "sha256:ee508a84a91b5ab16fb35af68591dd03eb99368b9393c3ef3bf9a75541388387"
         },
         {
           "path": "src/src/http/dto/read-capability.dto.ts",
@@ -5368,8 +5368,16 @@
           "digest": "sha256:3964566a7e3a63f37d1730be1d64db21814f7c3a3107c7f6d22ff45448b29d66"
         },
         {
+          "path": "src/src/http/dto/read-capability-by-identity.dto.ts",
+          "digest": "sha256:ee508a84a91b5ab16fb35af68591dd03eb99368b9393c3ef3bf9a75541388387"
+        },
+        {
           "path": "src/src/http/dto/register-capability.dto.ts",
           "digest": "sha256:cc1fa4e0665f7f2e7ecabc39cd74c39b139e382b3366c9b58a75c8ce7adf9c8b"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:edb7f034f80f6f120fe7fb50cbbaa752933182f515c77f53ab0457656e25b16c"
         }
       ]
     },
@@ -6337,11 +6345,15 @@
     },
     {
       "node": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
-      "digest": "sha256:1386d73793992a0ed815e8235b96e4d6b9963367f225dc2a16cae0585d0ae079",
+      "digest": "sha256:3fe08952925e165e2008e297ff658fc226c30f08d876b873473072ea3dd6dc1e",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
           "digest": "sha256:57cab358bb32a689a765dcf94196002deff3a1ec396b46028c498a673f3e7630"
+        },
+        {
+          "path": "src/src/http/dto/read-capability-by-identity.dto.ts",
+          "digest": "sha256:ee508a84a91b5ab16fb35af68591dd03eb99368b9393c3ef3bf9a75541388387"
         }
       ]
     },

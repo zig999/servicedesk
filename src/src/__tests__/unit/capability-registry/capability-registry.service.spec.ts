@@ -227,6 +227,17 @@ it('declares payload notes exactly where the operator supplies them, and treats 
   expect(withoutNotes).not.toHaveProperty('payload_notes');
 });
 
+it('answers the payload_notes the store currently holds at (name, version), never the text an earlier register-capability submission carried, once the store has since changed independently of that submission', async () => {
+  const store = new InMemoryCapabilityStore();
+  const registry = new CapabilityRegistryService(store);
+  await registry.registerCapability(completeRegistration({ payload_notes: 'the submitted note' }));
+  await store.writeCapabilities([heldCapability({ payload_notes: 'the note the store now holds' })]);
+
+  const resolved = await registry.readCapabilityByIdentityOrThrow('a-capability', '1.0.0');
+
+  expect(resolved.payload_notes).toBe('the note the store now holds');
+});
+
 it('treats a registration whose payload_notes is an empty string the same as one that states none at all — a capability holding no payload notes, not an empty string', async () => {
   const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
 

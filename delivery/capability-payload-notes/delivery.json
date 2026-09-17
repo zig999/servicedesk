@@ -10,12 +10,28 @@
       "task": "task/capability-payload-notes/capability-declares-payload-notes"
     },
     {
+      "id": "implementation/capability-payload-notes/identity-read-states-payload-notes",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes/identity-read-states-payload-notes.md",
+      "title": "Identity-keyed capability read admits payload_notes, absent only where none was registered",
+      "summary": "read-capability-by-identity's response contract now declares payload_notes as the one optional attribute, letting an already-fresh, already-pass-through read answer it exactly as the registration holds it, with the repository's own read path corrected to treat a stored empty string as no payload_notes at all.",
+      "task": "task/capability-payload-notes/identity-read-states-payload-notes"
+    },
+    {
       "id": "proof/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proof",
       "file": "proof/capability-payload-notes/capability-declares-payload-notes.md",
       "title": "Capability declares its payload notes -- registration, contract-completeness tolerance and store round trip",
       "summary": "Eight new tests prove that payload_notes is accepted at the HTTP boundary, carried through registration and the domain model's Responsibility without being required, normalized from an empty string, overwritten (not merged) on whole re-registration, read back safely from a pre-existing column-less row, and paired 1:1 with its own migration-created column.",
       "task": "task/capability-payload-notes/capability-declares-payload-notes"
+    },
+    {
+      "id": "proof/capability-payload-notes/identity-read-states-payload-notes",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes/identity-read-states-payload-notes.md",
+      "title": "Identity-keyed capability read admits and answers payload_notes correctly",
+      "summary": "Tests establishing that read-capability-by-identity answers payload_notes exactly as the registration holds it -- present as declared text, absent (never empty or substituted) where none was declared -- including a stored empty string, once a code defect the suite caught was corrected -- and drawn from the current store rather than a register-capability submission; and that its response schema admits payload_notes alone as optional while still refusing every other declared attribute absent.",
+      "task": "task/capability-payload-notes/identity-read-states-payload-notes"
     }
   ],
   "edges": [
@@ -50,8 +66,38 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-payload-notes/identity-read-states-payload-notes",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/identity-read-states-payload-notes",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/identity-read-states-payload-notes",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/identity-read-states-payload-notes",
+      "to": "task/capability-payload-notes/identity-read-states-payload-notes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-payload-notes/capability-declares-payload-notes",
       "to": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes/identity-read-states-payload-notes",
+      "to": "implementation/capability-payload-notes/identity-read-states-payload-notes",
       "kind": "proves",
       "at": "the path"
     }

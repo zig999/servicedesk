@@ -17,6 +17,7 @@ export const readCapabilityByIdentityResponseSchema = z.object({
   timeout: z.int().positive(),
   connector: z.string().min(1),
   concept: z.string().min(1),
+  payload_notes: z.string().optional(),
 });
 
 export type ReadCapabilityByIdentityResponseDto = z.infer<typeof readCapabilityByIdentityResponseSchema>;

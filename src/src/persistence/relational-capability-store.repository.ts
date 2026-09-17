@@ -63,7 +63,7 @@ function toCapability(row: ICapabilityRow): Capability {
     timeout: row.timeout,
     connector: row.connector,
     concept: row.concept,
-    ...(row.payload_notes !== null ? { payload_notes: row.payload_notes } : {}),
+    ...(row.payload_notes !== null && row.payload_notes !== '' ? { payload_notes: row.payload_notes } : {}),
   };
 }
 

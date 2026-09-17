@@ -222,6 +222,20 @@ it('reads back a capability row stored before payload_notes existed as one holdi
   ]);
 });
 
+it("treats a stored registration whose payload_notes is the empty string as one holding no payload notes, never answering payload_notes as ''", async () => {
+  const concept = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  await pool.query(
+    `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    ['a-capability-with-empty-notes', '1.0.0', 'read-only', '{}', '{}', 5000, 'a-connector', concept, ''],
+  );
+
+  const answered = await store.readCapabilities();
+
+  expect(answered[0]).not.toHaveProperty('payload_notes');
+});
+
 it('leaves capability-a exactly as it was when a different capability, capability-b, is written afterward', async () => {
   const conceptA = await aFreshConcept();
   const conceptB = await aFreshConcept();

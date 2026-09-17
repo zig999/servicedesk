@@ -24,7 +24,21 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
     timeout: 5_000,
     connector: 'a-connector',
     concept: 'a-concept',
+    payload_notes: 'notes about the payload',
     ...overrides,
+  };
+}
+
+function heldCapabilityWithoutPayloadNotes(): Capability {
+  return {
+    name: 'a-capability',
+    version: '1.0.0',
+    nature: 'read-only',
+    input_schema: 'an-input-schema',
+    output_schema: 'an-output-schema',
+    timeout: 5_000,
+    connector: 'a-connector',
+    concept: 'a-concept',
   };
 }
 
@@ -57,6 +71,17 @@ it('answers 200 with the capability currently registered under the named (name, 
   expect(Object.keys(response.json() as object).sort()).toEqual(
     Object.keys(readCapabilityByIdentityResponseSchema.shape).sort(),
   );
+});
+
+it('answers 200 with no payload_notes key in the body when the registered capability carries none, never an empty or substituted value', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce(heldCapabilityWithoutPayloadNotes());
+
+  const response = await app.inject({ method: 'GET', url: '/v1/capabilities/a-capability/1.0.0' });
+
+  expect(response.statusCode).toBe(200);
+  expect(response.json()).not.toHaveProperty('payload_notes');
 });
 
 it('resolves the identity exactly as the path spelled it, case and hyphenation preserved, never normalized', async () => {

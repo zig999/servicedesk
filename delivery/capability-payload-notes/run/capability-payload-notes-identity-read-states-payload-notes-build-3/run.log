@@ -1,0 +1,62 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (3 moderate, 2 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts(125,3): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: { ...; }[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/http/simulate-case.controller.spec.ts(54,7): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: never[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts(52,7): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: never[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts(49,3): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: never[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts(35,3): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: never[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/investigation/citation-validation.spec.ts(17,3): error TS2322: Type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: EvidenceResult; result_detail?: string; ... 5 more ...; capability_payload_notes?: string | undefined; }' is not assignable to type 'Evidence'.
+  Types of property 'capability_payload_notes' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/investigation/draft-assessment-text.spec.ts(39,3): error TS2322: Type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: EvidenceResult; result_detail?: string; ... 5 more ...; capability_payload_notes?: string | undefined; }' is not assignable to type 'Evidence'.
+  Types of property 'capability_payload_notes' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(61,3): error TS2322: Type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: EvidenceResult; result_detail?: string; ... 5 more ...; capability_payload_notes?: string | undefined; }' is not assignable to type 'Evidence'.
+  Types of property 'capability_payload_notes' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/investigation/investigation-pipeline.spec.ts(145,3): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: { ...; }[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/investigation/judgment-stage.spec.ts(77,3): error TS2322: Type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: EvidenceResult; result_detail?: string; ... 5 more ...; capability_payload_notes?: string | undefined; }' is not assignable to type 'Evidence'.
+  Types of property 'capability_payload_notes' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts(68,3): error TS2322: Type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: EvidenceResult; result_detail?: string; ... 5 more ...; capability_payload_notes?: string | undefined; }' is not assignable to type 'Evidence'.
+  Types of property 'capability_payload_notes' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(413,3): error TS2741: Property 'capability_payload_notes' is missing in type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: "ok"; capability_name: string; capability_version: string; elapsed_ms: number; fields: { ...; }[]; concept_description: string; }' but required in type 'Evidence'.
+src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts(107,3): error TS2322: Type '{ concept: string; inputs: string; observation: string; observed_at: string; ttl: number; origin: string; result: EvidenceResult; result_detail?: string; ... 5 more ...; capability_payload_notes?: string | undefined; }' is not assignable to type 'Evidence'.
+  Types of property 'capability_payload_notes' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test-unit :: node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit :: not_run =====
+
