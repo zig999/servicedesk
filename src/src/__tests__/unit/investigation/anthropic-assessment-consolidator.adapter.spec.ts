@@ -59,6 +59,7 @@ const SOME_EVIDENCE: readonly Evidence[] = [
     elapsed_ms: 12,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
   },
 ];
 

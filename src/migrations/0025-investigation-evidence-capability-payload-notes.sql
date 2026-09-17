@@ -1,0 +1,46 @@
+-- domain/investigation/evidence gains a required capability_payload_notes
+-- attribute (task/capability-payload-notes/evidence-snapshots-capability-payload-notes):
+-- "capability_payload_notes is this same kind of snapshot, taken from the
+-- producing capability's own payload_notes at that identical moment: a
+-- capability registered with none snapshots an empty string, the same
+-- honest degradation concept_description already carries for a concept
+-- with none, never a read failure and never an invented account. An
+-- observation whose capability never resolved — leaving no payload notes
+-- anywhere to take — snapshots that same empty string, and ends exactly as
+-- the result itself already records it." evidence-collection-stage.ts
+-- already assembles this snapshot onto every Evidence item it produces, the
+-- same call that resolves fields and concept_description; this migration is
+-- what lets investigation_evidence carry it through a write and a read.
+--
+-- A plain required string, the identical shape
+-- migrations/0012-glossary-concept-description.sql already gave
+-- concepts.description and migrations/0013-investigation-evidence-semantics-snapshot.sql
+-- already gave investigation_evidence.concept_description: TEXT NOT NULL
+-- DEFAULT ''. DEFAULT '' backfills every already-stored investigation_evidence
+-- row with the empty string, the same honest-empty reading
+-- domain/investigation/evidence already sanctions for "an evidence item
+-- collected before this attribute existed."
+--
+-- The DEFAULT stays on the column after the backfill rather than being
+-- dropped, the same DEFAULT-kept-permanently shape
+-- migrations/0013-investigation-evidence-semantics-snapshot.sql's own
+-- concept_description column already establishes, since every row this
+-- store writes from here forward always supplies the value explicitly
+-- through evidenceStatement().
+--
+-- Additive only: no column of any other table is touched, no row of
+-- investigation_evidence or of any other relation is altered or removed,
+-- and every already-stored investigation_evidence row keeps its own
+-- existing columns exactly as they were, gaining only this one new one.
+--
+-- Implements, from the specification:
+--   domain/investigation/evidence                             -- investigation_evidence.capability_payload_notes
+--   domain/integration/capability                              -- the capability
+--     attribute this column snapshots at collection time
+--   constraints/the-stored-schema-mirrors-the-declared-model   -- pairs the
+--     newly-declared required attribute with its own column
+--   constraints/the-schema-replays-from-its-scripts            -- a plain
+--     numbered .sql file beside its siblings, applied once in filename order
+
+ALTER TABLE investigation_evidence
+  ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';

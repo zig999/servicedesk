@@ -155,6 +155,7 @@ function expectedOkEvidence(concept: string, observation: string): Evidence {
     elapsed_ms: 0,
     fields: [{ name: 'a-field', type: 'string' }],
     concept_description: '',
+    capability_payload_notes: '',
   };
 }
 

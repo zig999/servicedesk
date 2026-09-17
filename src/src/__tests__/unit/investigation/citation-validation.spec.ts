@@ -26,6 +26,7 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
     elapsed_ms: 12,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
     ...overrides,
   };
 }

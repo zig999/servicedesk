@@ -292,6 +292,7 @@ function expectedOkEvidence(
     elapsed_ms: elapsedMs,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
   };
 }
 
@@ -315,6 +316,7 @@ function expectedNonOkEvidence(
     elapsed_ms: elapsedMs,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
   };
 }
 
@@ -333,6 +335,7 @@ function expectedUnavailableEvidence(context: EvidenceContext, resultDetail: str
     elapsed_ms: 0,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
   };
 }
 
@@ -1026,6 +1029,92 @@ it("records concept_description as the empty string for a concept the glossary h
   });
 
   expect(result[0]?.concept_description).toBe('');
+});
+
+it("carries the resolved capability's own declared payload_notes text onto the produced evidence item's capability_payload_notes, unchanged", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const capability = aCapability({ concept: 'a-concept', payload_notes: "what this observation's shallow schema doesn't say" });
+  capabilities.hold(capability);
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.capability_payload_notes).toBe("what this observation's shallow schema doesn't say");
+});
+
+it('records capability_payload_notes as the empty string for a capability that declares none, the same honest degradation concept_description already carries for a concept with none', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const capability = aCapability({ concept: 'a-concept' });
+  capabilities.hold(capability);
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.capability_payload_notes).toBe('');
+});
+
+it('records capability_payload_notes as the empty string for an observation whose capability never resolved, ending exactly as the result itself already records it', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const observationSource = new FakeObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.result).toBe('unavailable');
+  expect(result[0]?.capability_payload_notes).toBe('');
+});
+
+it("leaves an already-produced evidence item's capability_payload_notes unaffected by a later re-registration of the same producing capability, since the value is snapshotted once at collection rather than read again", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept', payload_notes: 'the original operator notes' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+  capabilities.hold(aCapability({ concept: 'a-concept', payload_notes: 'notes rewritten by a later re-registration' }));
+
+  expect(result[0]?.capability_payload_notes).toBe('the original operator notes');
 });
 
 it("settles the capability read and the glossary-concept read together, so a concept nothing currently answers is timed by whichever of the two takes longer, never their sum", async () => {

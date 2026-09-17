@@ -87,6 +87,7 @@ function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, un
     elapsed_ms: 12,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
     ...overrides,
   };
 }
@@ -117,6 +118,7 @@ function anEvidence(overrides: Partial<Evidence> = {}): Evidence {
     elapsed_ms: 12,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
     ...overrides,
   };
 }
@@ -250,7 +252,7 @@ it("carries each evidence item's capability_name and capability_version pin into
   const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
   expect(evidenceInsert?.params).toEqual([
     investigation.id, 'a-concept', 'serialized-inputs', 'an-observation', '2024-01-01T00:00:00.000Z', 60, 'a-connector', 'ok', null,
-    'a-registered-capability', '2.0.0', 12, '[]', '',
+    'a-registered-capability', '2.0.0', 12, '[]', '', '',
   ]);
 });
 
@@ -725,7 +727,7 @@ it("sends the evidence item's own fields, JSON-serialized, and its own concept_d
   await store.write(investigation);
 
   const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
-  expect(evidenceInsert?.params?.slice(-2)).toEqual([JSON.stringify(fields), 'a real description']);
+  expect(evidenceInsert?.params?.slice(-3, -1)).toEqual([JSON.stringify(fields), 'a real description']);
 });
 
 it("assembles the read evidence item's own fields and concept_description straight from the stored row's own two columns, carried through unchanged rather than a literal placeholder", async () => {

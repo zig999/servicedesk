@@ -69,6 +69,7 @@ interface IEvidenceRow {
   readonly elapsed_ms: number;
   readonly fields: readonly FieldSemantics[];
   readonly concept_description: string;
+  readonly capability_payload_notes: string;
 }
 
 interface IEvaluationRow {
@@ -206,8 +207,8 @@ function subjectAttributeValueStatement(investigationId: string, attribute: Subj
 function evidenceStatement(investigationId: string, evidence: Evidence): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_EVIDENCE_TABLE}
-             (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms, fields, concept_description)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+             (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms, fields, concept_description, capability_payload_notes)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
     params: [
       investigationId,
       evidence.concept,
@@ -223,6 +224,7 @@ function evidenceStatement(investigationId: string, evidence: Evidence): IStatem
       evidence.elapsed_ms,
       JSON.stringify(evidence.fields),
       evidence.concept_description,
+      evidence.capability_payload_notes,
     ],
   };
 }
@@ -313,7 +315,7 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
   const rows = await runStatement<IEvidenceRow>(
     tx,
     {
-      text: `SELECT concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms, fields, concept_description
+      text: `SELECT concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms, fields, concept_description, capability_payload_notes
              FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE investigation_id = $1 ORDER BY concept`,
       params: [id],
     },
@@ -337,6 +339,7 @@ function evidenceOf(row: IEvidenceRow): Evidence {
     elapsed_ms: row.elapsed_ms,
     fields: row.fields,
     concept_description: row.concept_description,
+    capability_payload_notes: row.capability_payload_notes,
   };
 }
 

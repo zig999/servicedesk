@@ -24,4 +24,6 @@ export type Evidence = {
   readonly fields: readonly FieldSemantics[];
 
   readonly concept_description: string;
+
+  readonly capability_payload_notes: string;
 };

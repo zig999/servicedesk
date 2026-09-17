@@ -89,6 +89,7 @@ function resolvedBaseOf(args: {
     capabilityVersion: capability.version,
     fields: fieldSemanticsOf(capability.output_schema),
     conceptDescription,
+    capabilityPayloadNotes: capability.payload_notes ?? '',
   };
 }
 
@@ -139,6 +140,7 @@ type EvidenceBase = {
   readonly fields: readonly FieldSemantics[];
 
   readonly conceptDescription: string;
+  readonly capabilityPayloadNotes: string;
 };
 
 type EvidenceEnding = {
@@ -164,13 +166,24 @@ function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
     elapsed_ms: ending.elapsedMs,
     fields: base.fields,
     concept_description: base.conceptDescription,
+    capability_payload_notes: base.capabilityPayloadNotes,
   };
 }
 
 function unavailableEvidence(options: UnavailableEvidenceOptions): Evidence {
   const { concept, inputs, observedAt, attemptStartedAt, conceptDescription } = options;
   return evidenceOf(
-    { concept, inputs, observedAt, origin: '', capabilityName: '', capabilityVersion: '', fields: [], conceptDescription },
+    {
+      concept,
+      inputs,
+      observedAt,
+      origin: '',
+      capabilityName: '',
+      capabilityVersion: '',
+      fields: [],
+      conceptDescription,
+      capabilityPayloadNotes: '',
+    },
     {
       result: 'unavailable',
       resultDetail: new CapabilityNotResolvedForObservationError(concept).name,

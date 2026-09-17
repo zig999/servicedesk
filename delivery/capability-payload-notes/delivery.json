@@ -10,6 +10,14 @@
       "task": "task/capability-payload-notes/capability-declares-payload-notes"
     },
     {
+      "id": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes.md",
+      "title": "Evidence snapshots the capability's payload notes",
+      "summary": "Evidence gains a required capability_payload_notes attribute snapshotted from the producing capability at collection time, carried through the DTO, the relational store and a new additive migration.",
+      "task": "task/capability-payload-notes/evidence-snapshots-capability-payload-notes"
+    },
+    {
       "id": "implementation/capability-payload-notes/identity-read-states-payload-notes",
       "kind": "implementation",
       "file": "implementation/capability-payload-notes/identity-read-states-payload-notes.md",
@@ -24,6 +32,14 @@
       "title": "Capability declares its payload notes -- registration, contract-completeness tolerance and store round trip",
       "summary": "Eight new tests prove that payload_notes is accepted at the HTTP boundary, carried through registration and the domain model's Responsibility without being required, normalized from an empty string, overwritten (not merged) on whole re-registration, read back safely from a pre-existing column-less row, and paired 1:1 with its own migration-created column.",
       "task": "task/capability-payload-notes/capability-declares-payload-notes"
+    },
+    {
+      "id": "proof/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes/evidence-snapshots-capability-payload-notes.md",
+      "title": "Evidence snapshots the capability's payload notes -- proof",
+      "summary": "New tests demonstrate that collection snapshots the producing capability's payload_notes onto Evidence (present, absent, and unresolved-capability cases), that the snapshot survives a later re-registration untouched, that the DTO accepts a real value, and that migration 0025 pairs exactly one column with the new attribute and backfills a pre-existing row honestly; the Evidence value-object's whole declared shape is pinned by a type-level check.",
+      "task": "task/capability-payload-notes/evidence-snapshots-capability-payload-notes"
     },
     {
       "id": "proof/capability-payload-notes/identity-read-states-payload-notes",
@@ -66,6 +82,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "to": "task/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/capability-payload-notes/identity-read-states-payload-notes",
       "to": "domain/integration/capability",
       "kind": "encodes",
@@ -92,6 +138,12 @@
     {
       "from": "proof/capability-payload-notes/capability-declares-payload-notes",
       "to": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "to": "implementation/capability-payload-notes/evidence-snapshots-capability-payload-notes",
       "kind": "proves",
       "at": "the path"
     },

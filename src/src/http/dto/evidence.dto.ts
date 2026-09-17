@@ -21,4 +21,5 @@ export const evidenceSchema = z.object({
   elapsed_ms: z.number(),
   fields: z.array(fieldSemanticsSchema).readonly(),
   concept_description: z.string(),
+  capability_payload_notes: z.string(),
 });

@@ -29,6 +29,7 @@ function aValidEvidenceItem(): Record<string, unknown> {
     elapsed_ms: 50,
     fields: [{ name: 'a-field', type: 'string', description: 'a description' }],
     concept_description: 'a description of the concept',
+    capability_payload_notes: '',
   };
 }
 

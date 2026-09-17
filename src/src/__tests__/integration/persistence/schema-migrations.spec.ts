@@ -63,6 +63,20 @@ async function migrationFilesInOrder(): Promise<readonly string[]> {
   return entries.filter((name) => name.endsWith('.sql')).sort();
 }
 
+async function applyMigrationsBefore(client: Client, targetPrefix: string): Promise<string> {
+  const files = await migrationFilesInOrder();
+  const targetIndex = files.findIndex((name) => name.startsWith(targetPrefix));
+  const target = files[targetIndex];
+  if (target === undefined) {
+    throw new Error(`migration ${targetPrefix} not found among the migration files`);
+  }
+  for (const file of files.slice(0, targetIndex)) {
+    const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+    await client.query(sql);
+  }
+  return target;
+}
+
 async function applyMigrations(client: Client): Promise<void> {
   for (const file of await migrationFilesInOrder()) {
     const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
@@ -263,6 +277,22 @@ async function seedMinimalPreMigrationVocabulary(client: Client): Promise<IGloss
   };
 }
 
+async function seedMinimalVocabulary(client: Client, concept: string): Promise<IGlossary> {
+  await client.query("INSERT INTO subject_types (name) VALUES ('a-subject-type')");
+  await client.query("INSERT INTO outcomes (name) VALUES ('an-outcome')");
+  await client.query("INSERT INTO actions (name) VALUES ('an-action')");
+  await client.query("INSERT INTO recipients (name) VALUES ('a-recipient')");
+  await client.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [concept]);
+  return {
+    subjectType: 'a-subject-type',
+    outcome: 'an-outcome',
+    action: 'an-action',
+    recipient: 'a-recipient',
+    subjectAttribute: 'unused',
+    concept,
+  };
+}
+
 let client: Client;
 let schemaName: string;
 let glossary: IGlossary;
@@ -418,6 +448,71 @@ it('preserves an already-stored subject-attribute-value row when migration 0023 
   );
   expect(rows).toEqual([{ attribute: 'an-attribute', value: 'a-preserved-value' }]);
 });
+
+it('adds investigation_evidence exactly one new column, capability_payload_notes, when migration 0025 runs on top of every migration before it', async () => {
+  const freshSchema = `fresh_capability_payload_notes_pairing_${randomUUID().replace(/-/g, '_')}`;
+  await client.query(`CREATE SCHEMA "${freshSchema}"`);
+  await client.query(`SET search_path TO "${freshSchema}"`);
+  const files = await migrationFilesInOrder();
+  const targetIndex = files.findIndex((name) => name.startsWith('0025-'));
+  for (const file of files.slice(0, targetIndex)) {
+    const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+    await client.query(sql);
+  }
+  const { rows: before } = await client.query<{ column_name: string }>(
+    'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
+    [freshSchema, 'investigation_evidence'],
+  );
+
+  const target = files[targetIndex];
+  if (target === undefined) {
+    throw new Error('migration 0025 not found among the migration files');
+  }
+  const targetSql = await readFile(join(MIGRATIONS_DIR, target), 'utf8');
+  await client.query(targetSql);
+
+  const { rows: after } = await client.query<{ column_name: string }>(
+    'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
+    [freshSchema, 'investigation_evidence'],
+  );
+  const beforeNames = new Set(before.map((row) => row.column_name));
+  const addedColumns = after.map((row) => row.column_name).filter((name) => !beforeNames.has(name));
+
+  expect(addedColumns).toEqual(['capability_payload_notes']);
+});
+
+it(
+  'reads an investigation_evidence row inserted before migration 0025 back with capability_payload_notes as the empty string once that migration runs, never a read failure',
+  async () => {
+    const freshSchema = `fresh_capability_payload_notes_backfill_${randomUUID().replace(/-/g, '_')}`;
+    await client.query(`CREATE SCHEMA "${freshSchema}"`);
+    await client.query(`SET search_path TO "${freshSchema}"`);
+    const target = await applyMigrationsBefore(client, '0025-');
+    const preMigrationGlossary = await seedMinimalVocabulary(client, 'unused-before-0025');
+    await client.query(
+      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+       VALUES ('pre-0025-capability', 'v1', 'read-only', '{}', '{}', 1000, 'a-connector', $1)`,
+      [preMigrationGlossary.concept],
+    );
+    const investigationId = await aStoredInvestigation(client, preMigrationGlossary, `inv-${randomUUID()}`);
+    await insertEvidence(client, {
+      investigationId,
+      concept: preMigrationGlossary.concept,
+      capability: { name: 'pre-0025-capability', version: 'v1' },
+    });
+
+    const targetSql = await readFile(join(MIGRATIONS_DIR, target), 'utf8');
+    await client.query(targetSql);
+
+    const { rows } = await client.query<{ capability_payload_notes: string }>(
+      'SELECT capability_payload_notes FROM investigation_evidence WHERE investigation_id = $1',
+      [investigationId],
+    );
+
+    expect(rows).toEqual([{ capability_payload_notes: '' }]);
+  },
+  15000,
+);
 
 it('persists and reads back a full case, hypothesis revision, resolution, referral and its collects', async () => {
   const slug = 'a-full-case';

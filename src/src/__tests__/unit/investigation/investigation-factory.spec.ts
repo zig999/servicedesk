@@ -71,6 +71,7 @@ function anEvidence(concept: string, overrides: Partial<Evidence> = {}): Evidenc
     elapsed_ms: 12,
     fields: [],
     concept_description: '',
+    capability_payload_notes: '',
     ...overrides,
   };
 }

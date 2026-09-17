@@ -54,7 +54,7 @@ function completeRecord(): InvestigationPipelineResult {
       {
         concept: 'a-concept', inputs: '{}', observation: 'an-observation', observed_at: '2024-01-01T00:00:00.000Z',
         ttl: 60, origin: 'a-connector', result: 'ok', capability_name: 'a-capability', capability_version: '1.0.0',
-        elapsed_ms: 10, fields: [], concept_description: '',
+        elapsed_ms: 10, fields: [], concept_description: '', capability_payload_notes: '',
       },
     ],
     evaluations: [

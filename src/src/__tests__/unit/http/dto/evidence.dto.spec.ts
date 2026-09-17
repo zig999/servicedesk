@@ -15,6 +15,7 @@ function aValidEvidenceItem(): Record<string, unknown> {
     elapsed_ms: 50,
     fields: [{ name: 'a-field', type: 'string', description: 'a description' }],
     concept_description: 'a description of the concept',
+    capability_payload_notes: '',
   };
 }
 
@@ -106,6 +107,14 @@ it('rejects an evidence item whose concept_description is not a string', () => {
 
 it('validates an evidence item whose concept_description is the empty string, matching a concept collected before it declared one', () => {
   const evidenceItem = { ...aValidEvidenceItem(), concept_description: '' };
+
+  const result = evidenceSchema.safeParse(evidenceItem);
+
+  expect(result.success).toBe(true);
+});
+
+it("validates an evidence item whose capability_payload_notes carries the producing capability's own free-text account, not only the empty string", () => {
+  const evidenceItem = { ...aValidEvidenceItem(), capability_payload_notes: "what this observation's shallow schema doesn't say" };
 
   const result = evidenceSchema.safeParse(evidenceItem);
 

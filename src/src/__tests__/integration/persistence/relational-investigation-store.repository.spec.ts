@@ -135,6 +135,7 @@ function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][n
     elapsed_ms: 12,
     fields: [{ name: 'a-field', type: 'string', description: 'a field description' }],
     concept_description: 'a concept description',
+    capability_payload_notes: '',
   };
 }
 
