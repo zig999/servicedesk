@@ -1,0 +1,38 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: the literal subject.attributes fixture inside baseState
+    evidence: >-
+      subject: { type: "billing-dispute", attributes: [{ attribute: "account-id", value: "12345" }] },
+  - node: domain/knowledge/case-input-requirement
+    held_at: buildRequiredField's default return object
+    evidence: >-
+      attribute: "account-id",
+      required: true,
+      capabilities: [buildCapability()],
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      renderPanel only renders the component and awaits the subject-type glossary settling; it
+      asserts no presented input set.
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      baseState always defaults to a non-empty set — requiredFields: [buildRequiredField()] — the
+      file never constructs or exercises the empty-set disclosure itself
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      the fixtures never assemble two attribute-values naming the same attribute; baseState's
+      subject carries exactly one pair
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      throw new Error(`case-simulation-subject-panel proof: no mocked response registered for ${url}`);
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      buildRequiredField's default value: "12345" is always non-empty; the file never models an
+      empty attribute input
+looked_past: >-
+  the pagination shape returned by glossaryPage mirrors constraints/listings-are-paged, which is
+  outside this file's staged node set and is arbitrary mock data rather than an asserted default.

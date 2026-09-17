@@ -1,0 +1,91 @@
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: >-
+      the useQuery call inside useGlossaryVocabularyOptions, which issues the list-vocabulary-terms
+      read
+    evidence: >-
+      queryFn: () => apiFetch<GlossaryTermsPage>(`/v1/glossary/${vocabulary}`),
+  - node: domain/glossary/action
+    held_at: the GlossaryVocabulary union
+    evidence: |-
+      export type GlossaryVocabulary =
+        | "outcome"
+        | "action"
+        | "recipient"
+        | "subject-type";
+  - node: domain/glossary/outcome
+    held_at: the GlossaryVocabulary union
+    evidence: |-
+      export type GlossaryVocabulary =
+        | "outcome"
+        | "action"
+        | "recipient"
+        | "subject-type";
+  - node: domain/glossary/recipient
+    held_at: the GlossaryVocabulary union
+    evidence: |-
+      export type GlossaryVocabulary =
+        | "outcome"
+        | "action"
+        | "recipient"
+        | "subject-type";
+  - node: domain/glossary/subject-type
+    held_at: the GlossaryVocabulary union
+    evidence: |-
+      export type GlossaryVocabulary =
+        | "outcome"
+        | "action"
+        | "recipient"
+        | "subject-type";
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      the GlossaryVocabulary union — outcome, action, recipient, subject-type — names no
+      attribute/value pair, and no other construct in the file assembles an attribute name
+      paired with a value; the hook only lists governed vocabulary terms.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      isError: query.isError, — the hook exposes one generic error flag for any failure of the
+      GET, with no branch reading or distinguishing a 404/VocabularyTermNotHeldError response
+      from any other failure.
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: nowhere
+    evidence: >-
+      the file's whole body concerns only fetching and mapping one vocabulary's terms for a
+      select control; it names no case version, hypothesis-revision, or ConceptNotInGlossaryError.
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      the file defines only GlossaryTermsPage ({ readonly data: readonly { readonly name:
+      string }[] }) and GlossaryVocabularyOptions; neither names an attribute, a required flag,
+      or a capability.
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      return { options, isLoading, isError, refetch: () => { void query.refetch(); }, }; — the
+      hook's whole return shape is a vocabulary options list, not a set of case-input-requirement
+      inputs.
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      const options = (query.data?.data ?? []).map((term) => ({ value: term.name, label:
+      term.name })); — an empty page simply yields an empty options array, with no disclosure
+      logic for an empty case-input-requirement set.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      the map from query.data?.data to options carries no attribute/value pairing or
+      deduplication of any kind; it only turns each term's name into { value, label }.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      the hook has no input field and no attribute-value assembly step; it only fetches and
+      lists vocabulary terms.
+looked_past: >-
+  the hook's isError flag does not distinguish a 404 refusal from any other fetch failure, and
+  the query fetches only the first page of a vocabulary's terms without following
+  constraints/listings-are-paged — both are error-handling/completeness concerns for whichever
+  screen renders these options, not a domain fact this file states, contradicts, or duplicates.
+candidates_opened:
+  - domain/glossary/concept

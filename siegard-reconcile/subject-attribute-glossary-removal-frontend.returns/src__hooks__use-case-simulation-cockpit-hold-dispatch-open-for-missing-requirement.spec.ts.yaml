@@ -1,0 +1,69 @@
+findings:
+  - file: src/hooks/use-case-simulation-cockpit-hold-dispatch-open-for-missing-requirement.spec.ts
+    where: "the twoRequirementsResponse fixture, lines 27-35"
+    evidence: |-
+      requirements: [
+        { attribute: "account-id", required: true, capabilities: [] },
+        { attribute: "escalation-flag", required: false, capabilities: [] },
+      ],
+    cost: >-
+      The fixture models a case-input-requirement carrying zero asking capabilities, for both the
+      required and the optional attribute driving criterion 1 and criterion 2. A reader treating
+      this proof as documentation of the wire shape learns that an entry can exist without a
+      capability behind it; the domain node the entry answers to says the opposite — an attribute
+      no currently-registered capability asks for is not a requirement at all — so a future read
+      that produced such an entry through a real defect would pass unnoticed against this fixture
+      rather than being caught by it.
+    correction: >-
+      Give each requirement in the fixture at least one capability entry (name and version), the
+      way REQUIRED_FIELD_RESPONSE in use-case-simulation-cockpit.test-support.ts already does, so
+      the fixture states a reachable case-input-requirement rather than one the domain node rules
+      out.
+    kind: contradicts
+    node: domain/knowledge/case-input-requirement
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the onChange call pairing the second requirement's attribute with the value the test
+      supplies, line 48
+    evidence: 'result.current.subject.requiredFields[1]?.onChange("urgent");'
+  - node: domain/knowledge/case-input-requirement
+    held_at: "the twoRequirementsResponse fixture, lines 29-32"
+    evidence: |-
+      requirements: [
+        { attribute: "account-id", required: true, capabilities: [] },
+        { attribute: "escalation-flag", required: false, capabilities: [] },
+      ],
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: >-
+      the wait for both the required and the optional derived field to have loaded, and the
+      required-flag assertion, lines 40-46 and line 73
+    evidence: |-
+      if (result.current.subject.requiredFields.length !== 2) {
+      ...
+      expect(result.current.subject.requiredFields[0]?.required).toBe(true);
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      the only requirements fixture this file stubs is twoRequirementsResponse, which always
+      returns two entries; the file never stubs an empty requirements list.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      each of the two derived fields receives exactly one onChange call; the file never assembles
+      two attribute-values naming the same attribute.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      the file's only import from production code is useCaseSimulationCockpit; no glossary or
+      vocabulary read is stubbed, called or asserted anywhere in the file.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: >-
+      the field-emptiness assertions taken before and after each dispatch, lines 72, 81, 95 and 105
+    evidence: 'expect(result.current.subject.requiredFields[0]?.value).toBe("");'
+looked_past: >-
+  use-case-simulation-cockpit.test-support.ts, which this file imports its fixtures and helpers
+  from (including the differently-shaped REQUIRED_FIELD_RESPONSE with a real capability entry),
+  was read only for context and is a different file's own conformance pass, not this one's.
+candidates_opened:
+  - rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses

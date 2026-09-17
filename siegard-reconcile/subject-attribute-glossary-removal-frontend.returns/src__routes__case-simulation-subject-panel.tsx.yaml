@@ -1,0 +1,73 @@
+findings:
+  - file: src/routes/case-simulation-subject-panel.tsx
+    where: "the header preceding the required-fields list, line 69"
+    evidence: |-
+      Required by the connectors:
+    cost: >-
+      The list under this header is populated from state.requiredFields, whose per-field entries
+      are then shown alongside the currently-registered capabilities that ask for the attribute —
+      each already labelled with its own connector. The header instead names the connector as the
+      thing an attribute is "required by". A reader maintaining this panel who takes the header at
+      its word could dedupe or key the section by connector identity, when the requirement's own
+      cardinality (1..* per domain/knowledge/case-input-requirement) and its derivation are
+      per-capability, not per-connector — a connector is only a string a capability declares, not
+      an entity that itself asks for anything.
+    correction: >-
+      State what actually governs presence in the list — e.g. "Required by the case version's
+      case-input-requirements" or "Required by the following capabilities" — rather than
+      attributing the requirement to the connector.
+    kind: contradicts
+    node: domain/knowledge/case-input-requirement
+read:
+  - node: domain/glossary/subject-type
+    held_at: "the vocabulary-options hook call and the Select bound to it, lines 23 and 32-36"
+    evidence: |-
+      useGlossaryVocabularyOptions("subject-type")
+  - node: domain/integration/capability
+    held_at: "the per-field capability list (lines 94-108) and the malformed-capability list (lines 124-131)"
+    evidence: |-
+      ← {capability.connector} ({capability.name} {capability.version})
+  - node: domain/investigation/subject
+    held_at: "the read-only Select bound to state.subject.type (line 34)"
+    evidence: |-
+      value={state.subject.type}
+  - node: domain/investigation/subject-attribute-value
+    held_at: "the per-field Input bound to field.attribute and field.value, lines 88-93"
+    evidence: |-
+      <Input id={`case-simulation-subject-field-${field.attribute}`} value={field.value} onChange={(event) => field.onChange(event.target.value)} required={field.required} />
+  - node: domain/knowledge/case-input-requirement
+    held_at: "the requiredFields list (lines 69-113), whose header is quoted in the finding above"
+    evidence: |-
+      {state.requiredFields.map((field) => (
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: "the field list rendering both required and optional inputs with the required flag carried through unchanged, lines 76-93"
+    evidence: |-
+      {field.required && (<span aria-hidden="true" className="text-destructive">
+  - node: rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability
+    held_at: "the malformed-capability disclosure block, lines 116-134"
+    evidence: |-
+      Asking for nothing at all — their own stored input schema holds no well-formed shape:
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: "the empty-set branch, lines 70-73"
+    evidence: |-
+      The pinned case version's own case-input-requirements name no attribute.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      this file only renders one input per already-distinct field.attribute key; the
+      first-recorded-wins dedup itself is not present here.
+  - node: scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator
+    held_at: "the malformed-capability disclosure block, lines 116-134"
+    evidence: |-
+      {state.capabilitiesWithMalformedInputSchema.map((capability) => (
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      Could not load the subject-type glossary.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: |-
+      onChange={(event) => field.onChange(event.target.value)}
+looked_past: >-
+  The subject-type Select is rendered as an interactive control whose onChange is a no-op — a
+  UI/affordance question, not a domain fact this pass judges.

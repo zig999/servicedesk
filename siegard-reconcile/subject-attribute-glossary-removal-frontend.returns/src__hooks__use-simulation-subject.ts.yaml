@@ -1,0 +1,104 @@
+findings:
+  - file: src/hooks/use-simulation-subject.ts
+    where: "composedAttributes, line 50"
+    evidence: |-
+      if (field.value.trim() === "" || attributeMap.has(field.attribute)) {
+    cost: >-
+      An attribute input made of only spaces is silently treated the same as an untouched, truly
+      empty input — dropped from the assembled subject and from the count isReady uses. The
+      specification's own decided reading of an empty attribute input is scoped to the empty
+      string exactly; whitespace-equivalence for this field is decided nowhere, so the next reader
+      who wants to know what counts as "no attribute-value" here will find only the literal empty
+      string in the specification and a wider rule living only in this file.
+    correction: >-
+      Either drop the .trim() and compare field.value === "" alone, matching the node's decided
+      "left empty" reading, or have the specification decide and state the whitespace-equivalence
+      for this field before the code applies it.
+    kind: unstated
+    node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+  - file: src/hooks/use-simulation-subject.ts
+    where: "isReady, line 96"
+    evidence: |-
+      const isReady = requester.trim() !== "" && subject.attributes.length > 0;
+    cost: >-
+      A requester made of only whitespace is treated as no requester for readying a simulate
+      call. rules/investigation/a-simulation-carries-its-requester states only "a call whose
+      payload carries no requester, or an empty one, is refused" — none of the specification's
+      four scoped empty-string readings is stated with a whitespace extension for this field.
+    correction: >-
+      Compare requester !== "" alone, or have the specification decide and state
+      whitespace-equivalence for the requester field before the code applies it.
+    kind: unstated
+    node: rules/investigation/a-simulation-carries-its-requester
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "the capabilities value read via useCapabilities(), lines 69-73"
+    evidence: |-
+      const { capabilities, isLoading: isLoadingCapabilities, isError: isCapabilitiesError } = useCapabilities();
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilities } from "./use-capabilities";
+  - node: contracts/knowledge/case-input-requirements
+    held_at: "the useCaseInputRequirements(slug, version) call, lines 63-68"
+    evidence: |-
+      const { requirements, capabilitiesWithMalformedInputSchema, ... } = useCaseInputRequirements(slug, version);
+  - node: domain/investigation/subject
+    held_at: "the subject object, lines 91-94"
+    evidence: |-
+      const subject: SimulationSubject = { type: source.subject, attributes: composedAttributes(requiredFields) };
+  - node: domain/investigation/subject-attribute-value
+    held_at: "the SimulationSubjectAttribute type, lines 21-24, and its construction in composedAttributes, line 55"
+    evidence: |-
+      export type SimulationSubjectAttribute = { readonly attribute: string; readonly value: string; };
+  - node: domain/knowledge/case-input-requirement
+    held_at: "requiredFields, lines 83-89"
+    evidence: |-
+      const requiredFields: SimulationRequiredField[] = definitions.map((definition) => ({ ...definition, value: values[definition.attribute] ?? "", ... }));
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      export function useSimulationSubject(source, slug: string, version: number): SimulationSubjectState {
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: "requiredFields, lines 83-89"
+    evidence: |-
+      const requiredFields: SimulationRequiredField[] = definitions.map((definition) => ({ ...definition, ... }));
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: "isReady, line 96 — never inspects an individual field's required flag or fill state"
+    evidence: |-
+      const isReady = requester.trim() !== "" && subject.attributes.length > 0;
+  - node: rules/investigation/a-simulation-carries-its-requester
+    held_at: "the requester state and isReady, lines 81, 96, 101-102"
+    evidence: |-
+      const [requester, setRequester] = useState("");
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "isReady, line 96"
+    evidence: |-
+      const isReady = requester.trim() !== "" && subject.attributes.length > 0;
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: "composedAttributes, lines 45-56"
+    evidence: |-
+      const attributeMap = new Map<string, string>();
+        for (const field of requiredFields) {
+          if (field.value.trim() === "" || attributeMap.has(field.attribute)) { continue; }
+          attributeMap.set(field.attribute, field.value);
+        }
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: "composedAttributes, line 50"
+    evidence: |-
+      if (field.value.trim() === "" || attributeMap.has(field.attribute)) { continue; }
+  - node: scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute
+    held_at: "requiredFields, lines 83-89"
+    evidence: |-
+      const requiredFields: SimulationRequiredField[] = definitions.map((definition) => ({ ...definition, ... }));
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: |-
+      readonly requiredFields: readonly SimulationRequiredField[];
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      import { useMemo, useState } from "react";
+looked_past: >-
+  The combined loading/error flags merge two hooks' states with ||, and the functional setValues
+  update in each field's onChange — both are UI data-plumbing choices that state no domain fact.

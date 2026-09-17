@@ -1,0 +1,36 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      const fetchMock = vi.fn().mockRejectedValue(new Error("network down"));
+      await waitFor(() => expect(result.current.isError).toBe(true));
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
+looked_past: >-
+  The comment at line 24 restates, as the reason attached to a @ts-expect-error suppression, a
+  fact the decision log already settles — a comment-rule question, not a stated-versus-spec
+  conflict. The failure-path test exercises only a generic rejected fetch and never the specific
+  HTTP 404 / VocabularyTermNotHeldError refusal the node states — a coverage gap, not a stated
+  fact in conflict with that node.

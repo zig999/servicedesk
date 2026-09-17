@@ -1,0 +1,61 @@
+findings:
+  - file: src/routes/case-simulation-subject-panel-malformed-capabilities.spec.ts
+    where: "the two it() blocks under the describe at line 93, lines 94-100 and 102-108"
+    evidence: |-
+      it("discloses nothing while state.isLoadingRegistries is true, even though the array is non-empty", async () => {
+          await renderPanel(baseState({ isLoadingRegistries: true, capabilitiesWithMalformedInputSchema: [malformedCapability()] }));
+          expect(screen.queryByText("legacy-lookup 9.9.9")).toBeNull();
+        });
+    cost: >-
+      The rule that a malformed capability's identity is withheld from the composer while the
+      registries read is loading or has errored lives only in this test. Neither
+      rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability, its
+      sibling empty-set rule, nor contracts/knowledge/case-input-requirements says anything about
+      a loading or error window during which the disclosure is suppressed. A future reader will
+      not find this in the specification, and nothing stops the next change from silently
+      dropping or altering it.
+    correction: >-
+      Decide, in rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability
+      (or a new node beside it), whether the disclosure is withheld while the read is
+      outstanding or has failed, and record the reasoning.
+    kind: unstated
+    node: rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: |-
+      import { baseState, buildCapability, buildRequiredField, renderPanel } from "./case-simulation-subject-panel.test-support";
+  - node: domain/knowledge/case-input-requirement
+    held_at: "the criterion-1 tests (lines 20-38) and the criterion-4 test (lines 85-91)"
+    evidence: |-
+      expect(screen.getByText("legacy-lookup 9.9.9")).toBeTruthy();
+      expect(screen.queryByText(/Asking for nothing at all/)).toBeNull();
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: "the criterion-3 test, lines 68-83"
+    evidence: |-
+      expect(screen.getByLabelText<HTMLInputElement>("account-id").required).toBe(true);
+      expect(screen.getByLabelText<HTMLInputElement>("notes").required).toBe(false);
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: |-
+      expect(screen.queryByText(/Asking for nothing at all/)).toBeNull();
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: |-
+      buildRequiredField({ attribute: "account-id", required: true }),
+      buildRequiredField({ attribute: "notes", required: false }),
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      import { afterEach, describe, expect, it, vi } from "vitest";
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: |-
+      buildRequiredField({ attribute: "account-id", required: true }),
+looked_past: >-
+  The name+version concatenation and describe-block prose paraphrasing a node for rationale are
+  display/wording and test-labeling choices; the edge-case test asserting two identical-identity
+  malformed capabilities are both rendered rather than deduplicated touches no node in this set.
+candidates_opened:
+  - rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability
+  - scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator

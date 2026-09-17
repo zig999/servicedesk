@@ -1,0 +1,37 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      The file's whole subject is the tab set and the Concepts row shape; no attribute/value
+      pairing or subject-attribute vocabulary appears anywhere in the file for this fact to sit in.
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      No case version, capability, or requirement-derivation reasoning appears in the file; its
+      assertions cover only the five glossary tabs and the Concepts table's own columns.
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      Nothing in the file assembles or presents case-input-requirement-derived inputs.
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      The file's only empty-state assertions concern the Concepts tab's own empty message, never
+      a case-input-requirement set.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      No subject, attribute-value pairing, or duplicate-attribute handling is asserted anywhere
+      in the file.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      The file's one failure-path test simulates a thrown network error rather than an
+      unheld-name 404, and asserts only the generic CONCEPTS_ERROR_MESSAGE and a Retry button.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      No attribute input, empty or otherwise, is assembled or asserted anywhere in the file.
+looked_past: >-
+  The file's own UI-presentation choices are surface conventions, not domain facts the nodes in
+  this set or found elsewhere in the specification speak to either way.

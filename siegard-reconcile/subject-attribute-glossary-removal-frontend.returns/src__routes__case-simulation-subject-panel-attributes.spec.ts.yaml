@@ -1,0 +1,50 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the third describe/it block (criterion 3), which asserts the panel never reads a
+      subject-attribute vocabulary and shows neither a loading nor a load-error state for one
+    evidence: |
+      expect(fetchMock.mock.calls.some((call) => call[0] === SUBJECT_ATTRIBUTE_PATH)).toBe(false);
+      expect(screen.queryByText("Loading subject attributes…")).toBeNull();
+      expect(screen.queryByText("Could not load the subject-attribute glossary.")).toBeNull();
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      the file only asserts the absence of a manual add-attribute control and of an attribute
+      row's inputs; it exercises no case-input-requirement shape or its capability-driven
+      computation — that fact is not read here.
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: >-
+      the first and second describe/it blocks (criteria 1 and 2), which assert that no control
+      lets the composer add an attribute beyond the presented set and that no attribute row
+      (select, input, remove button) survives
+    evidence: |
+      expect(screen.queryByRole("button", { name: "+ attribute" })).toBeNull();
+      expect(screen.queryByLabelText("Attribute")).toBeNull();
+      expect(screen.queryByLabelText("Value")).toBeNull();
+      expect(screen.queryByRole("button", { name: "Remove attribute" })).toBeNull();
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      the file's three describe blocks cover only the add-attribute control's removal, the
+      attribute row's removal, and the subject-attribute glossary no longer being read; none
+      renders or asserts an empty-requirement-set disclosure.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      baseState() supplies a single attribute ({ attribute: "account-id", value: "12345" }) and
+      no test in this file assembles two attribute-values naming the same attribute.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      the file asserts that no fetch to SUBJECT_ATTRIBUTE_PATH occurs at all; it exercises no
+      read by an unheld name and no 404/VocabularyTermNotHeldError response.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      no test in this file leaves an attribute input empty or checks what the assembled subject
+      omits as a result; baseState()'s single field carries a non-empty value throughout.
+looked_past: >-
+  The exact button/label/message strings quoted in the assertions are UI copy rather than a
+  domain fact any node states a value for, so their wording is left to whatever pass reviews
+  surface presentation.

@@ -64,6 +64,35 @@
       "title": "Proof for narrowing the glossary vocabulary union",
       "summary": "Tests pin GlossaryVocabulary to exactly outcome, action, recipient and subject-type, prove subject-attribute is a compile-time rejection, and keep the empty-page and isError cases alive on a surviving vocabulary.",
       "task": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union"
+    },
+    {
+      "id": "review/subject-attribute-glossary-removal-frontend",
+      "kind": "review",
+      "file": "review/subject-attribute-glossary-removal-frontend.md",
+      "title": "Subject-attribute glossary removal, frontend, four passes over the whole change",
+      "summary": "Coverage, conformance, standard and failures over the 17 files the four tasks of subject-attribute-glossary-removal-frontend wrote or touched: the glossary browser's own tab reduction, the GlossaryVocabulary union narrowing, the case-simulation subject panel's control removal, and useSimulationSubject's own composition rewrite.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every vocabulary name this screen reads is one the glossary holds, so this rule refuses none of the screen's own reads.",
+        "GlossaryVocabulary admits exactly \"outcome\", \"action\", \"recipient\" and \"subject-type\".",
+        "No vocabulary name this hook can be asked for is one the glossary does not hold, so this rule refuses no read the hook issues.",
+        "Passing the literal \"subject-attribute\" to useGlossaryVocabularyOptions is a type error rather than a call the frontend can express.",
+        "SubjectAttributeRow stays defined in use-test-connector-panel.ts serving that panel's own placeholder-derived rows, and its row-reconciliation helper there is untouched.",
+        "The composed subject carries at most one value per attribute name; where two requirement inputs name the same attribute, the value of the one recorded first stands and the later one's value is dropped.",
+        "The hook's options mapping, isLoading, isError and refetch shape are unchanged for every surviving vocabulary, and no second glossary-options hook is introduced.",
+        "The hook's own spec exercises only vocabulary names the narrowed union admits, and no case in it names \"subject-attribute\".",
+        "The hook's own specs and both missing-requirement specs drive readiness and dispatch-hold through requirement inputs alone, with no call to a removed member, and still assert the dispatch hold they asserted before.",
+        "The panel's own specs assert the above without reading state.addedAttributes, state.onAddAttribute, state.onRemoveAttribute or state.onAttributeChange.",
+        "The requiredFields, capabilitiesWithMalformedInputSchema, requester, isLoadingRegistries and isRegistriesError members are unchanged, and the case-input-requirements read they derive from is not modified.",
+        "The { type, attributes: [{ attribute, value }] } shape reaching use-simulate-case and use-simulate-hypothesis is field-for-field unchanged.",
+        "Where the read names no requirement at all, the panel still states that emptiness explicitly to the person composing the subject and that the simulate call is unavailable in that state, and the panel offers them no other way to name an attribute.",
+        "case-simulation-ready-view.test-support.ts composes its subject fixture without naming any removed member."
+      ],
+      "findings": 11
     }
   ],
   "edges": [
@@ -186,6 +215,30 @@
       "to": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-frontend",
+      "to": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-frontend",
+      "to": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-frontend",
+      "to": "task/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-frontend",
+      "to": "task/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

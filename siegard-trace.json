@@ -825,7 +825,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:cbd36a4bedb4fa61b19eb117501f7a451badadb10df50066b0b60f9007b95daf"
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -833,7 +833,7 @@
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
         },
         {
           "path": "src/src/factories/glossary.factory.ts",
@@ -907,7 +907,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "frontend/app/src/routes/capability-create-screen.tsx",
@@ -1447,7 +1447,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:107acd0a0d92921f8bba8abee8b0dde05127c5cc40f7af37973caeb4da7ae2e2"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "src/src/case/case-input-requirements.port.ts",
@@ -1901,7 +1901,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:cbd36a4bedb4fa61b19eb117501f7a451badadb10df50066b0b60f9007b95daf"
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1913,7 +1913,7 @@
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -1987,7 +1987,7 @@
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
         },
         {
           "path": "frontend/app/src/routes/glossary-concepts-panel.tsx",
@@ -2081,7 +2081,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:cbd36a4bedb4fa61b19eb117501f7a451badadb10df50066b0b60f9007b95daf"
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2093,7 +2093,7 @@
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -2147,7 +2147,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:cbd36a4bedb4fa61b19eb117501f7a451badadb10df50066b0b60f9007b95daf"
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2159,7 +2159,7 @@
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -2213,7 +2213,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:cbd36a4bedb4fa61b19eb117501f7a451badadb10df50066b0b60f9007b95daf"
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2225,11 +2225,11 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -2327,7 +2327,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -3769,11 +3769,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -7119,7 +7119,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         }
       ]
     },
@@ -7225,7 +7225,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -7243,7 +7243,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         }
       ]
     },
@@ -7317,7 +7317,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -9501,7 +9501,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         }
       ]
     },
@@ -9557,7 +9557,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",

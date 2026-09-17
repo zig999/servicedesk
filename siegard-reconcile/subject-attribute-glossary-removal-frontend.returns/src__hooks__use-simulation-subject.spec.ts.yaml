@@ -1,0 +1,51 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: "the subject.attributes assertion in the criterion-2 test, lines 59-65"
+    evidence: |-
+      expect(result.current.subject).toEqual({
+        type: SOURCE.subject,
+        attributes: [
+          { attribute: "account-id", value: "acct-1" },
+          { attribute: "case-priority", value: "high" },
+        ],
+      });
+  - node: domain/knowledge/case-input-requirement
+    held_at: "the stubbed requirements payloads driving requiredFields, e.g. lines 40-45 and 233"
+    evidence: |-
+      requirements: [
+            { attribute: "account-id", required: true, capabilities: [] },
+            { attribute: "case-priority", required: false, capabilities: [] },
+          ],
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: "the criterion-1 negative-property assertions, lines 28-31, and criterion-5 readiness assertions, lines 120-149"
+    evidence: |-
+      expect(result.current).not.toHaveProperty("addedAttributes");
+      expect(result.current).not.toHaveProperty("onAddAttribute");
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      the empty-set test (lines 151-165) only checks requiredFields and isReady/subject.attributes,
+      with no assertion of any disclosed message.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: "the criterion-3 test, line 90"
+    evidence: |-
+      expect(result.current.subject.attributes).toEqual([{ attribute: "account-id", value: "acct-1" }]);
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      the file's own imports name only useSimulationSubject and its test-support helpers — no
+      glossary read appears anywhere in the file.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: "the criterion-4 test, line 115"
+    evidence: |-
+      expect(result.current.subject.attributes).toEqual([{ attribute: "account-id", value: "acct-1" }]);
+looked_past: >-
+  The "shared identically between a full-case and a single-hypothesis run" test and the
+  registry-loading-order tests check implementation-level determinism and async sequencing
+  rather than a domain fact any node states.
+candidates_opened:
+  - rules/investigation/a-subject-carries-at-least-one-attribute
+  - rules/investigation/a-simulation-carries-its-requester
+  - rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+  - scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute
+  - contracts/knowledge/case-input-requirements

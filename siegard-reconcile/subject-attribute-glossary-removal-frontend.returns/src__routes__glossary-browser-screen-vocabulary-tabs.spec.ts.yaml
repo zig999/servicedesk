@@ -1,0 +1,76 @@
+findings:
+  - file: src/routes/glossary-browser-screen-vocabulary-tabs.spec.ts
+    where: "the it.each block under \"GlossaryBrowserScreen — five term-vocabulary tabs, empty state (edge case)\", lines 44-56"
+    evidence: |-
+      "renders its own explicit empty-state message and no table when GET $path returns zero terms, in the $tabLabel tab",
+      expect(await screen.findByText(emptyMessage)).toBeTruthy();
+      expect(screen.queryByRole("table")).toBeNull();
+    cost: >-
+      whether an empty glossary-vocabulary listing must state its own emptiness explicitly,
+      rather than leaving a bare absence of rows the person browsing could read as a stalled
+      load, lives only in this test and the screen it drives, for all four vocabulary tabs; the
+      specification decided the identical question for a case holding no versions
+      (rules/knowledge/a-case-holding-no-versions-is-told-explicitly), so the next reader who
+      checks the specification for whether the glossary owes the same disclosure finds nothing,
+      though the sibling read already answers it.
+    correction: >-
+      decide, the way a-case-holding-no-versions-is-told-explicitly was decided for its own
+      listing, whether and how each glossary vocabulary listing states its own emptiness
+      explicitly, then bind this test to that node.
+    kind: unstated
+  - file: src/routes/glossary-browser-screen-vocabulary-tabs.spec.ts
+    where: "the it.each block under \"GlossaryBrowserScreen — five term-vocabulary tabs, generic load-failure plus Retry (disclosed inference)\", lines 60-85"
+    evidence: |-
+      "shows $errorMessage plus a Retry button when GET $path fails, and Retry re-issues the same request, in the $tabLabel tab",
+      fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    cost: >-
+      whether a failed vocabulary-listing read is disclosed to the person browsing the glossary,
+      and whether they are offered a control that re-issues exactly that same read, lives only
+      in this test (and the screen it drives) for all five vocabulary tabs; the specification's
+      own precedent for every comparable read required a dedicated decided rule naming that
+      disclosure and that operator-initiated reattempt, so the next reader who checks the
+      specification for what a failed glossary listing tells its user finds nothing, though the
+      same question was answered for every sibling read.
+    correction: >-
+      decide, the way those sibling rules were decided for their own reads, what a failed
+      glossary-vocabulary-listing read states to the person browsing it and whether it offers an
+      operator-initiated reattempt — then bind this test to that node.
+    kind: unstated
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      This file's four describe blocks test only the glossary-vocabulary listing screen;
+      nothing here assembles or presents an attribute name paired with a value.
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      Nothing in this file reads a case version's collection plan or names which capabilities
+      ask for an attribute.
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      This stubs a vocabulary-listing GET returning terms, not a case-input-requirements read.
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      This asserts an explicit empty-state message for an empty vocabulary listing, never the
+      disclosure of an empty case-input-requirement set.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      This counts rendered table rows for a term listing; the file assembles no attribute-value
+      pairs.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      Every failure this file simulates is a generic network throw; none stubs a 404 refusal
+      response, and the file tests list-vocabulary-terms throughout, never a by-name read.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      This drives tab selection and vocabulary-listing assertions; the file never leaves an
+      attribute input empty.
+looked_past: >-
+  the "switching tabs" test's assertion that no request is issued for the other four vocabulary
+  paths is a fetch-efficiency detail rather than a domain fact.

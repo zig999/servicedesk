@@ -1,0 +1,40 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      buildRequiredField({ attribute: "account-id" }) shapes a case-input-requirement, not a
+      name-paired-with-a-concrete-value subject-attribute-value pair.
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      baseState({ isLoadingRegistries: true, requiredFields: [buildRequiredField({ attribute:
+      "account-id" })] }) followed only by expect(screen.queryByText("account-id")).toBeNull();
+      the requirement's own required flag and capabilities are never asserted here.
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      expect(screen.queryAllByRole("listitem")).toHaveLength(0); covers only the empty case.
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: >-
+      the assertion in the first test, "states, in the rule's own terms, that the pinned case
+      version's own case-input-requirements name no attribute"
+    evidence: >-
+      expect(screen.getByText("The pinned case version's own case-input-requirements name no attribute.")).toBeTruthy();
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      buildRequiredField({ attribute: "account-id" }) appears exactly once; no scenario assembles
+      two attribute-values naming the same attribute.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      [SUBJECT_TYPE_PATH]: () => { throw new Error("network down"); }, — a transport error, not
+      the specification's HTTP 404 refusal of an unheld name.
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      await renderPanel(baseState({ requiredFields: [] })); tests the whole set being empty, not
+      a single attribute input left empty while others are supplied.
+looked_past: >-
+  The loading and error/retry states for the subject-type glossary fetch and the registries
+  fetch are generic data-fetching UI states with no governing node in this set.

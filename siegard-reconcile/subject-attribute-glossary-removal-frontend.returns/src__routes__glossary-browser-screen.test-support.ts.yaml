@@ -1,0 +1,36 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: |-
+      export function term(name: string): { readonly name: string } {
+        return { name };
+      }
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: |-
+      export function glossaryConcept(overrides: Partial<GlossaryConcept> = {}): GlossaryConcept {
+        return { name: "billing-dispute", accepts: ["customer-account"], ttl: 3600, ...overrides };
+      }
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: |-
+      export async function mountGlossaryBrowserScreen(fetchMock: FetchFn): Promise<void> { ... }
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: |-
+      return (handler ?? (() => jsonResponse(page([]))))();
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: |-
+      export function requestsWithMethod(fetchMock: Mock<FetchFn>, method: string) { ... }
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      return vi.fn(async (input, _init) => { const handler = handlers[url]; return (handler ?? (() => jsonResponse(page([]))))(); });
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: |-
+      export function glossaryConcept(overrides: Partial<GlossaryConcept> = {}): GlossaryConcept { ... }
+looked_past: >-
+  ALL_TAB_CASES re-derives, by mapping over VOCABULARY_TAB_CASES and prepending the concepts
+  case, a list that overlaps ALL_TAB_LABELS; a code-structure matter with no domain fact attached.

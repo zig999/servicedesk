@@ -1,0 +1,58 @@
+findings:
+  - file: src/hooks/use-simulation-subject-hold-dispatch-open-for-missing-requirement.spec.ts
+    where: "twoRequirementsResponse() and threeRequirementsResponse(), lines 21-22 and 31-33"
+    evidence: |-
+      { attribute: "account-id", required: true, capabilities: [] },
+      { attribute: "escalation-flag", required: false, capabilities: [] },
+    cost: >-
+      The node holds a case-input-requirement to at least one asking capability — "never fewer
+      than one, since an attribute nobody currently asks for is not a requirement at all" — but
+      every requirement entry these fixtures hand the hook carries capabilities: []. A reader who
+      takes these two response builders as a model of what a case-input-requirements read
+      actually returns learns a shape the specification says cannot occur.
+    correction: >-
+      Give each mocked requirement at least one capability entry (name, version, connector,
+      concept), so the fixture's shape matches the cardinality the node declares.
+    kind: contradicts
+    node: domain/knowledge/case-input-requirement
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: "the requiredFields[i].value and onChange assertions, e.g. lines 52-53 and 56"
+    evidence: |-
+      expect(result.current.requiredFields[0]?.value).toBe("");
+      result.current.requiredFields[0]?.onChange("acct-1");
+  - node: domain/knowledge/case-input-requirement
+    held_at: "the mocked requirement objects, e.g. line 21"
+    evidence: |-
+      { attribute: "account-id", required: true, capabilities: [] },
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: "the requiredFields length and required-flag assertions, lines 45, 69 and 96"
+    evidence: |-
+      await waitFor(() => expect(result.current.requiredFields).toHaveLength(2));
+      expect(result.current.requiredFields[0]?.required).toBe(true);
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: |-
+      function twoRequirementsResponse(): Response { return jsonResponse({ requirements: [ ... ] }); }
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: |-
+      requirements: [ { attribute: "account-id", ... }, { attribute: "case-priority", ... }, { attribute: "escalation-flag", ... } ],
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      import { useSimulationSubject } from "./use-simulation-subject";
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: |-
+      expect(result.current.requiredFields[0]?.value).toBe("");
+      expect(result.current.isReady).toBe(true);
+looked_past: >-
+  The descriptive prose inside the describe/it titles paraphrases several specification rules
+  for documentation purposes; a test-authoring style question. The readiness behavior itself
+  matches rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses and
+  rules/investigation/a-simulation-carries-its-requester, both opened as candidates.
+candidates_opened:
+  - rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+  - rules/investigation/a-simulation-carries-its-requester
+  - rules/investigation/a-subject-carries-at-least-one-attribute

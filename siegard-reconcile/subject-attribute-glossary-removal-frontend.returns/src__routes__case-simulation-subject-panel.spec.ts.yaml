@@ -1,0 +1,73 @@
+findings:
+  - file: src/routes/case-simulation-subject-panel.spec.ts
+    where: "the last it() in the describe block \"every asking capability for a requirement is shown by its own name, version and connector, never only one (criterion 4)\", lines 166-173"
+    evidence: |-
+      it("renders no capability list under a requirement whose own capabilities array is empty (edge case: no currently-registered capability resolves)", async () => {
+          await renderPanel(
+            baseState({ requiredFields: [buildRequiredField({ attribute: "account-id", capabilities: [] })] }),
+          );
+          const [row] = requirementRows();
+          expect(within(row).queryByRole("list")).toBeNull();
+        });
+    cost: |-
+      domain/knowledge/case-input-requirement declares its capabilities relationship 1..* and says
+      outright that "an attribute nobody currently asks for is not a requirement at all" — a
+      requirement the derivation produces at all always names at least one asking capability.
+      This test builds and locks in rendering behavior for exactly the state the node says cannot
+      occur: a present requirement with a zero-length capabilities array, calling it a legitimate
+      "edge case." Any future branch written to satisfy this test would have no node behind it.
+    correction: "Drop the empty-capabilities fixture and assertion, or replace it with the case the node actually admits — a requirement absent from the set entirely."
+    kind: contradicts
+    node: domain/knowledge/case-input-requirement
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the attribute name used, unvalidated against any vocabulary, as the labeled input's own
+      accessible name across requirement-row fixtures
+    evidence: |-
+      buildRequiredField({ attribute: "account-id", required: true }),
+      expect(screen.getByLabelText<HTMLInputElement>("account-id")).toBeTruthy();
+  - node: domain/knowledge/case-input-requirement
+    held_at: "the requirement rows rendering each capability by its own name, version and connector, lines 127-174"
+    evidence: |-
+      buildCapability({ name: "check-balance", version: "1.0.0", connector: "core-banking-connector" }),
+      expect(screen.getByText("← core-banking-connector (check-balance 1.0.0)")).toBeTruthy();
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: "renders a labeled input for a required requirement and for an optional one, neither filtered out, lines 72-85"
+    evidence: |-
+      requiredFields: [
+        buildRequiredField({ attribute: "account-id", required: true }),
+        buildRequiredField({ attribute: "notes", required: false }),
+      ],
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      no it() in this file drives baseState with an empty requiredFields set; no assertion checks
+      for an explicit "no requirement named" disclosure.
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: |-
+      requiredFields: [
+        buildRequiredField({ attribute: "notes", required: false }),
+        buildRequiredField({ attribute: "account-id", required: true }),
+      ],
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      fireEvent.click(screen.getByLabelText("Type"));
+      expect(options.map((option) => option.textContent)).toEqual(["billing-dispute", "customer-account"]);
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: |-
+      requiredFields: [buildRequiredField({ attribute: "account-id", required: true, value: "" })],
+      expect(screen.getByLabelText<HTMLInputElement>("account-id").disabled).toBe(false);
+looked_past: >-
+  The capability-entry display format, the native required attribute plus asterisk convention,
+  and the describe-title paraphrases of other rules are presentation choices already disclosed as
+  inference, not new domain facts.
+candidates_opened:
+  - rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+  - domain/glossary/subject-type
+  - domain/investigation/subject
+  - rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability
+  - domain/integration/capability

@@ -1,0 +1,32 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      expect(requestedPaths.has(SUBJECT_ATTRIBUTE_PATH)).toBe(false);
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      describe("GlossaryBrowserScreen — no read of the retired subject-attribute vocabulary, from any tab (criteria 2 and 5)", () => {
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: >-
+      describe("GlossaryBrowserScreen — no read of the retired subject-attribute vocabulary, from any tab (criteria 2 and 5)", () => {
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: >-
+      describe("GlossaryBrowserScreen — no read of the retired subject-attribute vocabulary, from any tab (criteria 2 and 5)", () => {
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: >-
+      describe("GlossaryBrowserScreen — the test support's shared fixtures hold no Subject attributes entry (criterion 6)", () => {
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      expect(requestedPaths.has(SUBJECT_ATTRIBUTE_PATH)).toBe(false);
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: >-
+      describe("GlossaryBrowserScreen — the test support's shared fixtures hold no Subject attributes entry (criterion 6)", () => {
+looked_past: >-
+  The describe-block titles cite external acceptance criteria by number rather than a spec node;
+  a traceability/labeling question, not a domain fact this file states on its own authority.

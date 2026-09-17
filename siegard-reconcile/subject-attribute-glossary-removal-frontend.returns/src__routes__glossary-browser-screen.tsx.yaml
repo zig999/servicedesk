@@ -1,0 +1,75 @@
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: >-
+      the VocabularyPanel's use of useGlossaryVocabularyOptions and the ConceptsPanel
+      invocation, which source the list-vocabulary-terms and list-concepts reads respectively
+    evidence: |-
+      const { options, isLoading, isError, refetch } = useGlossaryVocabularyOptions(vocabulary);
+      ...
+      <TabsContent value="concepts">
+        <ConceptsPanel />
+      </TabsContent>
+  - node: domain/glossary/action
+    held_at: the "action" tab trigger and its VocabularyPanel instance
+    evidence: |-
+      <TabsTrigger value="action">Actions</TabsTrigger>
+      ...
+      <VocabularyPanel
+        vocabulary="action"
+        emptyMessage="The glossary currently holds no actions."
+        loadErrorMessage="Unable to load actions."
+      />
+  - node: domain/glossary/concept
+    held_at: the "concepts" tab trigger and its ConceptsPanel instance
+    evidence: |-
+      <TabsTrigger value="concepts">Concepts</TabsTrigger>
+      ...
+      <TabsContent value="concepts">
+        <ConceptsPanel />
+      </TabsContent>
+  - node: domain/glossary/outcome
+    held_at: the "outcome" tab trigger and its VocabularyPanel instance
+    evidence: |-
+      <TabsTrigger value="outcome">Outcomes</TabsTrigger>
+  - node: domain/glossary/recipient
+    held_at: the "recipient" tab trigger and its VocabularyPanel instance
+    evidence: |-
+      <TabsTrigger value="recipient">Recipients</TabsTrigger>
+  - node: domain/glossary/subject-type
+    held_at: the "subject-type" tab trigger and its VocabularyPanel instance
+    evidence: |-
+      <TabsTrigger value="subject-type">Subject types</TabsTrigger>
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      the only reads this file performs are the plural, listing forms; there is no by-name term
+      or concept read, and so no refusal path for one, anywhere in this component
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: nowhere
+    evidence: >-
+      the file's imports are Button, Tabs/TabsContent/TabsList/TabsTrigger, StatusTable and its
+      types, useGlossaryVocabularyOptions/GlossaryVocabulary, and ConceptsPanel — nothing
+      referencing a case version or hypothesis-revision
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: the TabsList holds exactly five triggers, none for subject-attribute
+  - node: domain/knowledge/case-input-requirement
+    held_at: nowhere
+    evidence: the TabsList holds exactly five triggers, none naming a case-input-requirement
+  - node: rules/investigation/a-composed-subject-presents-every-case-input-requirement
+    held_at: nowhere
+    evidence: this screen presents glossary vocabularies, not a composed subject's inputs
+  - node: rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set
+    held_at: nowhere
+    evidence: this screen has no requirement-set disclosure logic
+  - node: rules/investigation/a-subject-holds-one-value-per-attribute
+    held_at: nowhere
+    evidence: this screen assembles no attribute-value pairs
+  - node: rules/investigation/an-empty-attribute-input-is-no-attribute-value
+    held_at: nowhere
+    evidence: this screen has no attribute input at all
+looked_past: >-
+  The empty-state and error-state copy in VocabularyPanel is presentational wording carrying no
+  independent domain claim, and the absence of any pagination control despite the glossary-query
+  contract's paged listings is a completeness question for a different pass, not a fact this
+  file states against a node.
