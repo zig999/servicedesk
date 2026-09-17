@@ -148,6 +148,11 @@ this groups its entries by the file each one located.
   unstated: The material describes the synchronous flow but names no interface operation.
   why: One entry point, one name, matching the flow the material draws end to end.
 
+## contracts/investigation/glossary-source.md
+- operations — decided: Rewritten rather than removed — operations becomes read-concept, the operation evidence collection already performs and that no contract previously declared.
+  unstated: The material leaves open whether this contract is removed once its only stated consumer (refuseAttributesNotInGlossary, reading read-vocabulary-term) is deleted, or rewritten for whichever operation investigation still performs against the glossary.
+  why: The investigation context still reads the glossary once refuseAttributesNotInGlossary is gone — evidence collection resolves each concept it collects against the published language — and that read held no contract of its own before this change. Rewriting this contract to the operation that actually remains closes a gap the removal would otherwise leave silent, rather than deleting the one node naming this boundary at all.
+
 ## contracts/knowledge/case-lifecycle.md
 - operations — decided: update-draft, added alongside create-draft, revise-hypothesis, place-hypothesis and remove-hypothesis in case-lifecycle's own operations.
   unstated: The same review decided update-draft belongs to the curator's published entrance, without naming where it is exposed.
@@ -187,11 +192,6 @@ this groups its entries by the file each one located.
 - type — decided: value-object
   unstated: The material fixes governance for recipients but not their values.
   why: Same open-set reasoning as the other vocabularies.
-
-## domain/glossary/subject-attribute.md
-- type — decided: value-object
-  unstated: The material asks for a closed vocabulary of attribute names, discovered from the glossary, without naming the value's construct or fixing an initial set.
-  why: Mirrors subject-type, concept, outcome, action and recipient exactly — an open, registered set that grows as a new kind of identifying data enters, never a fixed enumeration.
 
 ## domain/glossary/subject-type.md
 - type — decided: value-object
@@ -382,6 +382,8 @@ this groups its entries by the file each one located.
 - attributes — decided: attribute, domain/glossary/subject-attribute, required; value, string, required.
   unstated: The material gives the attribute-value pair only as a worked example (attribute "id", value "12345") without naming the element that holds it or its own two fields.
   why: Mirrors domain/investigation/citation's own pairing of a governed-vocabulary reference with a free string in this same context — one governed name and one free value travel together as one fact rather than two arrays kept in step by convention.
+- attributes — read: temp/analise-subject-attribute-para-input-schema.md, section 4: "attribute deixa de ser domain/glossary/subject-attribute e vira string (decisão original no decision-log linhas 236-243)"
+  unstated: Whether the attribute field keeps its type domain/glossary/subject-attribute once this same change eliminates that vocabulary, or is restated as a bare string.
 
 ## domain/investigation/subject.md
 - attributes — decided: attributes, subject-attribute-value, many, required — alongside the unchanged type field.
@@ -392,6 +394,8 @@ this groups its entries by the file each one located.
 - attributes — decided: The element declares only attribute and required; the capability itself is a relationship, by reference, to domain/integration/capability — never a restatement of its version, connector or concept, each already that capability's own declared fact, and never the schema's hint, which is presentation guidance for an operator's panel rather than a domain fact this specification holds.
   unstated: The material's own worked example nests, per asking capability, that capability's version, connector and answered concept, and a schema hint (the property's own declared type and description), alongside the attribute and whether it is required.
   why: constraints/the-stored-schema-mirrors-the-declared-model already refuses a column no attribute declares for a stored fact; the same reasoning, applied to a derived read instead of a stored one, refuses a field that only restates what the referenced capability's own aggregate already answers, and SPEC-001's own floor admits no technical artifact such as a schema's free-text hint.
+- attributes — read: temp/analise-subject-attribute-para-input-schema.md, section 4: "domain/knowledge/case-input-requirement — o campo attribute idem; a descrição deixa de dizer 'which glossary subject-attribute it is'"
+  unstated: Whether the requirement's attribute field keeps its type domain/glossary/subject-attribute once that vocabulary is eliminated, or is restated as a bare string, and whether its description keeps naming "which glossary subject-attribute it is".
 
 ## domain/knowledge/case-summary.md
 - attributes — decided: Both are optional, present only where the case currently holds at least one version; a case holding none has neither, the same pattern domain/knowledge/case-version.released_at already uses ("present only once released").
@@ -1035,11 +1039,6 @@ this groups its entries by the file each one located.
 - statement — decided: Both count, and both kinds of shown result go stale together: a case-simulation result -- its evaluations and, where one was produced, its assessment -- is stale once the case version it was produced from, or a hypothesis-revision that version manifests, changes after the result was produced. The specification names this as the fact to hold, not the hash/updated_at-or-else-always mechanism the delivered code detects it by, which stays the implementation's own engineering choice.
   unstated: The material (work/case-simulation-frontend/intake/scope.md's own "D8" decision, delivered in use-case-simulation-cockpit.ts) states that a shown simulation result is marked stale on return from editing, and names the mechanism the delivered code actually uses (compare a hash/updated_at if one exists; otherwise always mark stale) -- but never states the underlying fact as one the specification holds, nor whether staleness reaches a simulate-hypothesis result's own evaluation as well as a simulate-case result's assessment, nor whether an edit to a hypothesis-revision the version manifests counts the same as an edit to the version itself.
   why: The cockpit shows both a case-run's assessment and a hypothesis-run's evaluation from the same history, and D8 draws no line between them -- "mark the last run stale" reads as whichever run is currently shown, not one kind specifically. And case-terms-exist-in-the-glossary's own sibling reasoning already treats a case version's manifested hypothesis-revisions as part of what a version names, so an edit reaching either is one fact, not two.
-
-## rules/investigation/a-subject-attribute-is-drawn-from-the-glossary.md
-- statement — decided: A new, separate policy — every attribute a subject's attribute-values name exists in the glossary.
-  unstated: The material asks for machine-checkable governance of attribute names from the glossary, without deciding whether this extends case-terms-exist-in-the-glossary or stands as its own rule.
-  why: case-terms-exist-in-the-glossary's own statement and rationale are specifically about what a case names; a subject's attribute-values are never declared by a case — the entry point resolves and assembles them at request time — so folding this into that rule would state a case-time check that never actually runs for them.
 
 ## rules/investigation/a-subject-carries-at-least-one-attribute.md
 - statement — decided: A subject carries at least one attribute-value, as its own invariant.

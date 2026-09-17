@@ -4,7 +4,6 @@ statement: A read over a vocabulary, or over the concepts, that finds one name h
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type
-  - domain/glossary/subject-attribute
   - domain/glossary/outcome
   - domain/glossary/action
   - domain/glossary/recipient

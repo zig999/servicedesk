@@ -541,12 +541,12 @@ type: api
 direction: consumed
 upstream: contracts/glossary/glossary-query
 operations:
-  - read-vocabulary-term
+  - read-concept
 ---
 
 ## Description
 
-What the investigation reads from the published language: the subject types and terms its records name.
+What the investigation reads from the published language: the concept each piece of evidence it collects names.
 
 === contracts/investigation/investigation-completed
 ---
@@ -909,13 +909,6 @@ entries:
   why: A five-minute wait contradicts the synchronous, on-screen experience Decision 1 closed on; twenty seconds
     is the only total the material gives, so the undisclosed three-hundred-second figure is corrected to it, pending
     the operational confirmation the material itself still asks for.
-- location: domain/glossary/subject-attribute.md
-  field: type
-  unstated: The material asks for a closed vocabulary of attribute names, discovered from the glossary, without
-    naming the value's construct or fixing an initial set.
-  decided: value-object
-  why: Mirrors subject-type, concept, outcome, action and recipient exactly — an open, registered set that grows
-    as a new kind of identifying data enters, never a fixed enumeration.
 - location: domain/investigation/subject-attribute-value.md
   field: attributes
   unstated: The material gives the attribute-value pair only as a worked example (attribute "id", value "12345")
@@ -938,14 +931,6 @@ entries:
   decided: A subject carries at least one attribute-value, as its own invariant.
   why: Mirrors a-hypothesis-collects-at-least-one-concept's own reasoning exactly — a subject with no attribute-value
     at all identifies nothing, and no capability's connector would have anything to derive its call from.
-- location: rules/investigation/a-subject-attribute-is-drawn-from-the-glossary.md
-  field: statement
-  unstated: The material asks for machine-checkable governance of attribute names from the glossary, without deciding
-    whether this extends case-terms-exist-in-the-glossary or stands as its own rule.
-  decided: A new, separate policy — every attribute a subject's attribute-values name exists in the glossary.
-  why: case-terms-exist-in-the-glossary's own statement and rationale are specifically about what a case names;
-    a subject's attribute-values are never declared by a case — the entry point resolves and assembles them at request
-    time — so folding this into that rule would state a case-time check that never actually runs for them.
 - location: constraints/the-evidence-cache-admits-only-ok-results.md
   field: statement
   unstated: The same substitution the idempotency key needed applies to this cache-key constraint, which the material
@@ -5551,6 +5536,19 @@ entries:
   unstated: Where a-success-response-schemas-single-object-property-is-read-through-as-its-envelope reaches a field through a single-object-property envelope, no node stated which required array declares that field required for the drafted output_schema — the required array of the enveloping property's own inner object schema, which names the field directly, or the success response schema's own top-level required array, which can name only the enveloping property. This rule took an entry's required standing from "the lowest-status schema that declares that name" without saying which of the two schemas, for an envelope-read name, counts as declaring it.
   decided: Required standing is read at the level the name itself was read from — for a name read through an envelope, the required array of the enveloping property's own inner object schema; for a name read at the top level, the success response schema's own top-level required array — and that top-level array's naming of the enveloping property itself makes no drafted entry required.
   why: The envelope reading descends into the enveloping property's inner object and takes each entry's name and type from that inner schema's own properties keyword, so reading required anywhere else would assemble one entry from two schemas; the outer top-level required array can only ever name the enveloping property, never the inner field, so reading required from it would leave every envelope-read field unrequired however plainly the document requires it. Compounding the two instead — requiring a field only where its envelope is required as well — was rejected because it states an inference about presence the document itself never makes, where the drafted schema is a candidate the operator reviews name by name against what one schema declares.
+- location: domain/investigation/subject-attribute-value.md
+  field: attributes
+  unstated: Whether the attribute field keeps its type domain/glossary/subject-attribute once this same change eliminates that vocabulary, or is restated as a bare string.
+  found: 'temp/analise-subject-attribute-para-input-schema.md, section 4: "attribute deixa de ser domain/glossary/subject-attribute e vira string (decisão original no decision-log linhas 236-243)"'
+- location: domain/knowledge/case-input-requirement.md
+  field: attributes
+  unstated: Whether the requirement's attribute field keeps its type domain/glossary/subject-attribute once that vocabulary is eliminated, or is restated as a bare string, and whether its description keeps naming "which glossary subject-attribute it is".
+  found: 'temp/analise-subject-attribute-para-input-schema.md, section 4: "domain/knowledge/case-input-requirement — o campo attribute idem; a descrição deixa de dizer ''which glossary subject-attribute it is''"'
+- location: contracts/investigation/glossary-source.md
+  field: operations
+  unstated: The material leaves open whether this contract is removed once its only stated consumer (refuseAttributesNotInGlossary, reading read-vocabulary-term) is deleted, or rewritten for whichever operation investigation still performs against the glossary.
+  decided: Rewritten rather than removed — operations becomes read-concept, the operation evidence collection already performs and that no contract previously declared.
+  why: The investigation context still reads the glossary once refuseAttributesNotInGlossary is gone — evidence collection resolves each concept it collects against the published language — and that read held no contract of its own before this change. Rewriting this contract to the operation that actually remains closes a gap the removal would otherwise leave silent, rather than deleting the one node naming this boundary at all.
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement
@@ -5627,7 +5625,7 @@ strategic: supporting
 
 ## Description
 
-The published language of the whole system: the five vocabularies — subject types, subject attributes, outcomes, actions, recipients — and the concepts a case may collect.
+The published language of the whole system: the four vocabularies — subject types, outcomes, actions, recipients — and the concepts a case may collect.
 Pure data with no behavior; every other context depends on it and translates into it, never around it.
 
 ## Responsibility
@@ -5717,24 +5715,6 @@ Global and stable: real operational queues, a role and never a person.
 ## Responsibility
 
 Name one role a referral can be forwarded to.
-
-=== domain/glossary/subject-attribute
----
-type: value-object
-attributes:
-  - name: name
-    type: string
-    required: true
----
-
-## Description
-
-One identifying attribute a subject instance may carry — an id, a phone number, a contract number (the material's "atributo do sujeito").
-A discovered vocabulary, the same shape as concept, subject-type, outcome, action and recipient: it grows as a new kind of identifying data enters, never designed ahead of it.
-
-## Responsibility
-
-Name one attribute a subject's identity may be assembled from.
 
 === domain/glossary/subject-type
 ---
@@ -6616,7 +6596,7 @@ Identify what is under investigation, in the case's declared subject type, by th
 type: value-object
 attributes:
   - name: attribute
-    type: domain/glossary/subject-attribute
+    type: string
     required: true
   - name: value
     type: string
@@ -6625,12 +6605,13 @@ attributes:
 
 ## Description
 
-One fact about the subject's identity: a governed attribute name and the concrete value it holds for this instance (the material's example: attribute "id", value "12345").
-The same shape citation already gives a concept and a field: one governed name, paired with one free value, so the pair travels as one fact rather than two arrays kept in step by convention.
+One fact about the subject's identity: an attribute name and the concrete value it holds for this instance (the material's example: attribute "id", value "12345").
+The same shape citation already gives a concept and a field: one name, paired with one free value, so the pair travels as one fact rather than two arrays kept in step by convention.
+The name is free text rather than a governed vocabulary term: a-composed-subject-presents-every-case-input-requirement is what names the attribute an interface composing this pair may offer, and a-diagnosed-subject-covers-its-cases-required-attributes is what a case-time check holds it to; neither depends on a separate registry of every name that could ever appear here.
 
 ## Responsibility
 
-Pair one attribute, drawn from the glossary, with the one value it holds for this subject.
+Pair one attribute name with the one value it holds for this subject.
 
 === domain/investigation/usage
 ---
@@ -6712,7 +6693,7 @@ Name one case for as long as it exists, hold the one counter that assigns its ne
 type: value-object
 attributes:
   - name: attribute
-    type: domain/glossary/subject-attribute
+    type: string
     required: true
   - name: required
     type: boolean
@@ -6725,7 +6706,7 @@ relationships:
 
 ## Description
 
-One subject attribute a case version's derived input requirements name: which glossary subject-attribute it is, whether the case cannot be diagnosed without it, and every currently-registered capability that asks for it — never fewer than one, since an attribute nobody currently asks for is not a requirement at all.
+One subject attribute a case version's derived input requirements name: its name as the capabilities that ask for it declare it, whether the case cannot be diagnosed without it, and every currently-registered capability that asks for it — never fewer than one, since an attribute nobody currently asks for is not a requirement at all.
 Held by no aggregate and stored nowhere, the same as domain/knowledge/case-summary: computed fresh at every read from the case version's own collection plan and the capabilities currently resolving it, never a fact any case version or capability carries as its own.
 A capability referenced here already carries its own name, version, connector and the concept it answers; nothing here restates them, and nothing here carries what that capability's own input schema declares about this attribute — a property's own declared type and description are guidance for whoever displays an entry, never part of what the entry states — so an asking capability reaches whatever reads this entry, an interface assembling a subject included, by its identity alone.
 A capability whose own stored input schema does not currently hold a well-formed shape stands in no entry's asking-capability place at all, since it is referenced by none (rules/knowledge/a-case-versions-input-requirements-are-derived); the read names it apart from the attributes instead, by identity, and that is the whole of what reaches the person composing a subject about it (contracts/knowledge/case-input-requirements, rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability).
@@ -6852,7 +6833,7 @@ values:
 ## Description
 
 The register a case's curator asks the write-up to keep — formal or plain, nothing else.
-Fixed and known ahead of time, unlike a discovered vocabulary such as concept or subject-attribute: a register is a closed style choice, never a growing set a new case could extend.
+Fixed and known ahead of time, unlike a discovered vocabulary such as concept or subject-type: a register is a closed style choice, never a growing set a new case could extend.
 
 ## Responsibility
 
@@ -7046,7 +7027,6 @@ statement: A read of a vocabulary term by a name the named vocabulary does not h
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type
-  - domain/glossary/subject-attribute
   - domain/glossary/outcome
   - domain/glossary/action
   - domain/glossary/recipient
@@ -7094,7 +7074,6 @@ statement: A read over a vocabulary, or over the concepts, that finds one name h
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type
-  - domain/glossary/subject-attribute
   - domain/glossary/outcome
   - domain/glossary/action
   - domain/glossary/recipient
@@ -7865,7 +7844,7 @@ The registry's own resolution answers an unregistered identity as ordinary data,
 
 The configuration under test is the registered one for the same reason the capability under test is a registered one: registration is where every gate a connector configuration passes stands — a-connector-configuration-holds-a-well-formed-object and a-connector-placeholder-is-declared-by-its-capability are both checks the registry performs at the write — so a diagnostic issuing a real call from text no write had ever been held to would exercise exactly what those gates exist to keep out, and would report a seam (a-connector-placeholder-is-declared-by-its-capability's own check for the pairing under test) against a pairing that does not exist. Register-connector is create-or-replace and replaces the whole configuration on every edit, so an operator wanting to test edited text registers it first; what the diagnostic never offers is a call to a real system from a draft nothing has committed to.
 
-Which attributes the operator supplies values for follows from that same registered configuration rather than from any case: a test names no case version, so the case-derived requirement governing an ordinary diagnose (a-diagnosed-subject-covers-its-cases-required-attributes, which this test is already exempt from) has nothing to say about it, and the configuration's own ${subject:<attribute-name>} placeholders (an-http-connector-configuration-declares-its-call) are the only statement anywhere of which Subject attributes this call actually reads. Each such name is already governed twice over — held inside the paired capability's input schema properties by a-connector-placeholder-is-declared-by-its-capability, and drawn from the glossary by a-subject-attribute-is-drawn-from-the-glossary — so it is a name the operator reads rather than authors; what the operator contributes is the value, the other half of the attribute-value pair domain/investigation/subject-attribute-value declares, which is what identifies the instance the test call reaches. Two placeholders naming the same attribute name one attribute, so the test collects one value for it, not two.
+Which attributes the operator supplies values for follows from that same registered configuration rather than from any case: a test names no case version, so the case-derived requirement governing an ordinary diagnose (a-diagnosed-subject-covers-its-cases-required-attributes, which this test is already exempt from) has nothing to say about it, and the configuration's own ${subject:<attribute-name>} placeholders (an-http-connector-configuration-declares-its-call) are the only statement anywhere of which Subject attributes this call actually reads. Each such name is already governed once — held inside the paired capability's input schema properties by a-connector-placeholder-is-declared-by-its-capability — so it is a name the operator reads rather than authors; what the operator contributes is the value, the other half of the attribute-value pair domain/investigation/subject-attribute-value declares, which is what identifies the instance the test call reaches. Two placeholders naming the same attribute name one attribute, so the test collects one value for it, not two.
 
 === rules/integration/a-connector-configuration-listing-routes-presence-turns-on-nothing-further
 ---
@@ -10466,9 +10445,9 @@ consistency: eventual
 ## Description
 
 The case-input-requirements read already computes the authoritative set once, for a diagnose's own door refusal (a-diagnosed-subject-covers-its-cases-required-attributes) to hold a subject to; this rule is the same set reaching the person composing that subject in the first place, before either call, so what blocks a diagnose was already visible rather than discovered at the door.
-An optional requirement is presented the same as a required one because the case-input-requirements read already names it as something a currently-registered capability asks for — the composer benefits from knowing that without first learning the attribute's name from the glossary on their own.
-Nothing here forbids the composer from adding an attribute-value the requirements set does not name; a-subject-attribute-is-drawn-from-the-glossary already governs what any added attribute must be.
-Which capabilities are named alongside each input is `a-composed-subjects-input-names-every-capability-that-asks-for-it`'s own; what the interface discloses where the set names no requirement at all is `a-composed-subjects-interface-discloses-an-empty-requirement-set`'s own.
+An optional requirement is presented the same as a required one because the case-input-requirements read already names it as something a currently-registered capability asks for — the composer benefits from knowing that without first learning the attribute's name any other way.
+This set is the whole of what the interface presents; the composer adds no attribute beyond it, so what identifies the subject is exactly what a currently-registered capability asked for. What the interface does where this set names no requirement at all is `a-composed-subjects-interface-discloses-an-empty-requirement-set`'s own.
+Which capabilities are named alongside each input is `a-composed-subjects-input-names-every-capability-that-asks-for-it`'s own.
 
 === rules/investigation/a-composed-subjects-input-names-every-capability-that-asks-for-it
 ---
@@ -10523,7 +10502,7 @@ consistency: eventual
 
 ## Description
 
-A set naming no requirement at all is a real state rather than a degenerate one, and reachable with nothing wrong anywhere: `a-capability-input-schema-holds-a-well-formed-object` admits an empty properties object as a valid declaration — a capability whose connector reads nothing from the subject, only a credential or the requester — and `a-case-versions-input-requirements-are-derived` contributes nothing for a concept no registered capability currently answers, or that more than one answers. Shown as a bare absence of inputs, that state is indistinguishable from a read that failed, a mispinned case version, or a panel still loading, while the composer still owes the call a subject carrying at least one attribute-value (`a-subject-carries-at-least-one-attribute`) and would be left to reach for one without ever being told why nothing was offered. The sibling `a-composed-subjects-interface-discloses-a-malformed-capability` states the narrower half of the same care — the concept a malformed capability answers asks the composer for nothing, and without disclosure nothing would tell them why — and covers only that one reason, which an empty set does not require.
+A set naming no requirement at all is a real state rather than a degenerate one, and reachable with nothing wrong anywhere: `a-capability-input-schema-holds-a-well-formed-object` admits an empty properties object as a valid declaration — a capability whose connector reads nothing from the subject, only a credential or the requester — and `a-case-versions-input-requirements-are-derived` contributes nothing for a concept no registered capability currently answers, or that more than one answers. Shown as a bare absence of inputs, that state is indistinguishable from a read that failed, a mispinned case version, or a panel still loading. The composer has no way to reach for an attribute this set does not name — `a-composed-subject-presents-every-case-input-requirement` presents this set and nothing beyond it — so an empty set is a state the call cannot proceed from at all: no attribute-value can be assembled, and `a-subject-carries-at-least-one-attribute` is never met. The disclosure states why the call is unavailable rather than pointing the composer at a way around it, because there is none. The sibling `a-composed-subjects-interface-discloses-a-malformed-capability` states the narrower half of the same care — the concept a malformed capability answers asks the composer for nothing, and without disclosure nothing would tell them why — and covers only that one reason, which an empty set does not require.
 
 === rules/investigation/a-decided-evaluation-cites-evidence
 ---
@@ -10680,21 +10659,6 @@ consistency: eventual
 A curator composing a draft needs to watch the engine judge it before releasing it, and a curator or an auditor needs to see a released version's own verdicts and evidence without writing another investigation over it — neither want is a diagnosis.
 `rules/investigation/only-a-released-case-version-is-diagnosed` keeps every diagnosis on a released version; this rule keeps every simulation out of the record that one protects, so the two never meet — what a simulation collected cannot warm a cache a diagnosis later reads from, and what it judged is never the answer anyone was given.
 
-=== rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
----
-type: policy
-statement: Every attribute a subject's attribute-values name exists in the glossary.
-constrains:
-  - domain/investigation/subject
-  - domain/investigation/subject-attribute-value
-  - domain/glossary/subject-attribute
-consistency: eventual
----
-
-## Description
-
-The glossary is the published language; an attribute name the entry point assembles that the glossary does not hold is not a name at all — the same discipline case-terms-exist-in-the-glossary already holds a case to, applied here because a subject's attribute-values are never declared by a case: the entry point resolves and assembles them at request time, so no case-time check ever reaches them.
-
 === rules/investigation/a-subject-carries-at-least-one-attribute
 ---
 type: invariant
@@ -10719,7 +10683,7 @@ constrains:
 
 The entry point assembles the whole set of attribute-values before the diagnose call (domain/investigation/subject), and nothing about that assembly stops one attribute from being reached twice — two resolutions of the same customer, or two placeholders naming one attribute in the same call.
 A subject carrying two values for one attribute identifies two things at once, and every consumer of the set would have to choose between them on its own account: a capability's connector resolves ${subject:<attribute-name>} to one value (rules/integration/an-http-connector-configuration-declares-its-call), and the coverage check reads one value per required attribute (rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes). Deciding it once, at assembly, is what keeps those consumers from each answering it differently.
-The first recorded value wins because assembly is additive — what is already established about the subject's identity stands, and a later arrival never silently rewrites it. This drops a value rather than refusing the subject: a duplicate is not a subject that identifies nothing (a-subject-carries-at-least-one-attribute) nor a name the glossary does not hold (a-subject-attribute-is-drawn-from-the-glossary), and the set the capabilities receive is still the whole set of what identifies the instance.
+The first recorded value wins because assembly is additive — what is already established about the subject's identity stands, and a later arrival never silently rewrites it. This drops a value rather than refusing the subject: a duplicate is not a subject that identifies nothing (a-subject-carries-at-least-one-attribute), and the set the capabilities receive is still the whole set of what identifies the instance.
 
 === rules/investigation/an-answer-arrives-within-the-declared-deadline
 ---

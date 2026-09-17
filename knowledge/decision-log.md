@@ -226,13 +226,6 @@ entries:
   why: A five-minute wait contradicts the synchronous, on-screen experience Decision 1 closed on; twenty seconds
     is the only total the material gives, so the undisclosed three-hundred-second figure is corrected to it, pending
     the operational confirmation the material itself still asks for.
-- location: domain/glossary/subject-attribute.md
-  field: type
-  unstated: The material asks for a closed vocabulary of attribute names, discovered from the glossary, without
-    naming the value's construct or fixing an initial set.
-  decided: value-object
-  why: Mirrors subject-type, concept, outcome, action and recipient exactly — an open, registered set that grows
-    as a new kind of identifying data enters, never a fixed enumeration.
 - location: domain/investigation/subject-attribute-value.md
   field: attributes
   unstated: The material gives the attribute-value pair only as a worked example (attribute "id", value "12345")
@@ -255,14 +248,6 @@ entries:
   decided: A subject carries at least one attribute-value, as its own invariant.
   why: Mirrors a-hypothesis-collects-at-least-one-concept's own reasoning exactly — a subject with no attribute-value
     at all identifies nothing, and no capability's connector would have anything to derive its call from.
-- location: rules/investigation/a-subject-attribute-is-drawn-from-the-glossary.md
-  field: statement
-  unstated: The material asks for machine-checkable governance of attribute names from the glossary, without deciding
-    whether this extends case-terms-exist-in-the-glossary or stands as its own rule.
-  decided: A new, separate policy — every attribute a subject's attribute-values name exists in the glossary.
-  why: case-terms-exist-in-the-glossary's own statement and rationale are specifically about what a case names;
-    a subject's attribute-values are never declared by a case — the entry point resolves and assembles them at request
-    time — so folding this into that rule would state a case-time check that never actually runs for them.
 - location: constraints/the-evidence-cache-admits-only-ok-results.md
   field: statement
   unstated: The same substitution the idempotency key needed applies to this cache-key constraint, which the material
@@ -4868,6 +4853,19 @@ entries:
   unstated: Where a-success-response-schemas-single-object-property-is-read-through-as-its-envelope reaches a field through a single-object-property envelope, no node stated which required array declares that field required for the drafted output_schema — the required array of the enveloping property's own inner object schema, which names the field directly, or the success response schema's own top-level required array, which can name only the enveloping property. This rule took an entry's required standing from "the lowest-status schema that declares that name" without saying which of the two schemas, for an envelope-read name, counts as declaring it.
   decided: Required standing is read at the level the name itself was read from — for a name read through an envelope, the required array of the enveloping property's own inner object schema; for a name read at the top level, the success response schema's own top-level required array — and that top-level array's naming of the enveloping property itself makes no drafted entry required.
   why: The envelope reading descends into the enveloping property's inner object and takes each entry's name and type from that inner schema's own properties keyword, so reading required anywhere else would assemble one entry from two schemas; the outer top-level required array can only ever name the enveloping property, never the inner field, so reading required from it would leave every envelope-read field unrequired however plainly the document requires it. Compounding the two instead — requiring a field only where its envelope is required as well — was rejected because it states an inference about presence the document itself never makes, where the drafted schema is a candidate the operator reviews name by name against what one schema declares.
+- location: domain/investigation/subject-attribute-value.md
+  field: attributes
+  unstated: Whether the attribute field keeps its type domain/glossary/subject-attribute once this same change eliminates that vocabulary, or is restated as a bare string.
+  found: 'temp/analise-subject-attribute-para-input-schema.md, section 4: "attribute deixa de ser domain/glossary/subject-attribute e vira string (decisão original no decision-log linhas 236-243)"'
+- location: domain/knowledge/case-input-requirement.md
+  field: attributes
+  unstated: Whether the requirement's attribute field keeps its type domain/glossary/subject-attribute once that vocabulary is eliminated, or is restated as a bare string, and whether its description keeps naming "which glossary subject-attribute it is".
+  found: 'temp/analise-subject-attribute-para-input-schema.md, section 4: "domain/knowledge/case-input-requirement — o campo attribute idem; a descrição deixa de dizer ''which glossary subject-attribute it is''"'
+- location: contracts/investigation/glossary-source.md
+  field: operations
+  unstated: The material leaves open whether this contract is removed once its only stated consumer (refuseAttributesNotInGlossary, reading read-vocabulary-term) is deleted, or rewritten for whichever operation investigation still performs against the glossary.
+  decided: Rewritten rather than removed — operations becomes read-concept, the operation evidence collection already performs and that no contract previously declared.
+  why: The investigation context still reads the glossary once refuseAttributesNotInGlossary is gone — evidence collection resolves each concept it collects against the published language — and that read held no contract of its own before this change. Rewriting this contract to the operation that actually remains closes a gap the removal would otherwise leave silent, rather than deleting the one node naming this boundary at all.
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement

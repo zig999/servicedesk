@@ -14,7 +14,6 @@ flowchart LR
     integration ==>|model: evidence-result| investigation
     investigation ==>|model: concept| glossary
     investigation ==>|model: outcome| glossary
-    investigation ==>|model: subject-attribute| glossary
     investigation ==>|model: subject-type| glossary
     investigation ==>|model: capability| integration
     investigation ==>|model: case| knowledge
@@ -24,7 +23,6 @@ flowchart LR
     knowledge ==>|model: concept| glossary
     knowledge ==>|model: outcome| glossary
     knowledge ==>|model: recipient| glossary
-    knowledge ==>|model: subject-attribute| glossary
     knowledge ==>|model: subject-type| glossary
     knowledge ==>|model: capability| integration
     outside(["outside"])

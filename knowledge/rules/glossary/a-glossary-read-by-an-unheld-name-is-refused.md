@@ -4,7 +4,6 @@ statement: A read of a vocabulary term by a name the named vocabulary does not h
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type
-  - domain/glossary/subject-attribute
   - domain/glossary/outcome
   - domain/glossary/action
   - domain/glossary/recipient

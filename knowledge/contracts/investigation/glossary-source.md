@@ -3,9 +3,9 @@ type: api
 direction: consumed
 upstream: contracts/glossary/glossary-query
 operations:
-  - read-vocabulary-term
+  - read-concept
 ---
 
 ## Description
 
-What the investigation reads from the published language: the subject types and terms its records name.
+What the investigation reads from the published language: the concept each piece of evidence it collects names.
