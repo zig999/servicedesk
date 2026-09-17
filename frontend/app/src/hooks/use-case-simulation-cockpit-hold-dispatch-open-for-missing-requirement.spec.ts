@@ -4,6 +4,7 @@ import { resetVisitedSimulationRoutesForTests, useCaseSimulationCockpit, type Ca
 import {
   SIMULATE_CASE_PATH,
   createWrapper,
+  inputRequirementsPath,
   jsonResponse,
   record,
   simulateCaseResult,
@@ -23,29 +24,28 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+function twoRequirementsResponse(): Response {
+  return jsonResponse({
+    requirements: [
+      { attribute: "account-id", required: true, capabilities: [] },
+      { attribute: "escalation-flag", required: false, capabilities: [] },
+    ],
+    capabilities_with_malformed_input_schema: [],
+  });
+}
+
 async function readySubjectWithoutFillingRequiredField(
   result: { readonly current: CaseSimulationCockpitState },
 ): Promise<void> {
   await waitFor(() => {
-    if (result.current.subject.requiredFields.length !== 1) {
+    if (result.current.subject.requiredFields.length !== 2) {
       throw new Error(
-        "hold-the-simulate-dispatch-open proof: expected exactly one derived required field to have loaded",
+        "hold-the-simulate-dispatch-open proof: expected exactly two derived required fields to have loaded",
       );
     }
   });
   act(() => {
-    result.current.subject.onAddAttribute();
-  });
-  const rowId = result.current.subject.addedAttributes[0]?.id;
-  act(() => {
-    if (rowId !== undefined) {
-      result.current.subject.onAttributeChange(rowId, "attribute", "escalation-flag");
-    }
-  });
-  act(() => {
-    if (rowId !== undefined) {
-      result.current.subject.onAttributeChange(rowId, "value", "urgent");
-    }
+    result.current.subject.requiredFields[1]?.onChange("urgent");
   });
   act(() => {
     result.current.subject.onRequesterChange("someone");
@@ -60,8 +60,11 @@ function countCallsTo(fetchMock: { mock: { calls: unknown[][] } }, path: string)
 }
 
 describe("useCaseSimulationCockpit -- criterion 1: the simulate-case dispatch is not refused by the one derived required field's own empty input", () => {
-  it("issues the /v1/simulate request once the requester and a curator-added attribute-value are present, with the one derived required field still empty", async () => {
-    const fetchMock = stubFetch({ [SIMULATE_CASE_PATH]: () => jsonResponse(simulateCaseResult()) });
+  it("issues the /v1/simulate request once the requester and a second requirement input are filled, with the one required field still empty", async () => {
+    const fetchMock = stubFetch({
+      [SIMULATE_CASE_PATH]: () => jsonResponse(simulateCaseResult()),
+      [inputRequirementsPath(SLUG, VERSION)]: () => twoRequirementsResponse(),
+    });
     const { result } = renderHook(() => useCaseSimulationCockpit(SLUG, VERSION, record()), {
       wrapper: createWrapper().Wrapper,
     });
@@ -80,9 +83,10 @@ describe("useCaseSimulationCockpit -- criterion 1: the simulate-case dispatch is
 });
 
 describe("useCaseSimulationCockpit -- criterion 2: the simulate-hypothesis dispatch is not refused by the one derived required field's own empty input", () => {
-  it("issues the /v1/simulate/hypothesis request once the requester and a curator-added attribute-value are present, with the one derived required field still empty", async () => {
+  it("issues the /v1/simulate/hypothesis request once the requester and a second requirement input are filled, with the one required field still empty", async () => {
     const fetchMock = stubFetch({
       [simulateHypothesisPath(SLUG, VERSION)]: () => jsonResponse(simulateHypothesisResult()),
+      [inputRequirementsPath(SLUG, VERSION)]: () => twoRequirementsResponse(),
     });
     const { result } = renderHook(() => useCaseSimulationCockpit(SLUG, VERSION, record()), {
       wrapper: createWrapper().Wrapper,

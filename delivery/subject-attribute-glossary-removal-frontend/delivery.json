@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "kind": "implementation",
+      "file": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone.md",
+      "title": "Compose the simulation subject from case-input-requirements alone",
+      "summary": "use-simulation-subject.ts no longer holds curator-added-attribute state; the composed subject's attributes come solely from requiredFields' non-empty inputs, first-recorded-wins per attribute name.",
+      "task": "task/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone"
+    },
+    {
       "id": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
       "kind": "implementation",
       "file": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel.md",
@@ -24,6 +32,14 @@
       "title": "Narrow the glossary vocabulary union",
       "summary": "The GlossaryVocabulary union in use-glossary-vocabulary.ts admits only outcome, action, recipient and subject-type; the hook's options mapping, isLoading, isError and refetch shape are unchanged.",
       "task": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union"
+    },
+    {
+      "id": "proof/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "kind": "proof",
+      "file": "proof/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone.md",
+      "title": "Compose the subject from case-input-requirements alone",
+      "summary": "Proves that useSimulationSubject exposes no curator-added attribute state, composes the subject's attributes from requiredFields alone (paired, deduplicated first-wins, empty-skipping), and that isReady stays exactly requester-non-empty-and-at-least-one-pair, driven through the hook's own spec and both missing-requirement specs with no call to a removed member.",
+      "task": "task/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone"
     },
     {
       "id": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
@@ -51,6 +67,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "rules/investigation/an-empty-attribute-input-is-no-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "task/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
       "to": "domain/investigation/subject-attribute-value",
@@ -109,6 +161,12 @@
       "from": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
       "to": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "to": "implementation/composed-subject-attribute-inputs/compose-the-subject-from-case-input-requirements-alone",
+      "kind": "proves",
       "at": "the path"
     },
     {

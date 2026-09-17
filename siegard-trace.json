@@ -3889,7 +3889,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
@@ -4229,7 +4229,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:107acd0a0d92921f8bba8abee8b0dde05127c5cc40f7af37973caeb4da7ae2e2"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
@@ -7155,7 +7155,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
@@ -7443,8 +7443,12 @@
     },
     {
       "node": "rules/investigation/a-subject-holds-one-value-per-attribute",
-      "digest": "sha256:75c4b26a02a1691e4ba59a744aef56e6565f085ea5290cf47af8c76fb891a8b5",
+      "digest": "sha256:bf59d3b1197bb2519700bc44398a9645054182d68bf93783048ec487746eddc3",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
           "digest": "sha256:b49e359dbe81537d60efd65ecc564571ec9ee6340ed8fbc69ccb95b2927b4480"
@@ -7466,6 +7470,16 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:f793964914f9048645c6b40c7d41a146db9104e996d954b4cd85406bf3a79181"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-empty-attribute-input-is-no-attribute-value",
+      "digest": "sha256:747fd8c3a1eac82a0b1e9c16aefe213b52754a98690a8b24b0e28de48f8aec69",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:775d940aba67e37af7e98846c63831a42a5aaeef6ea4cf9d4a97036536f8a5f8"
         }
       ]
     },

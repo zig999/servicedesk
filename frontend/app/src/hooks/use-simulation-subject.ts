@@ -1,10 +1,9 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useCapabilities } from "./use-capabilities";
 import {
   useCaseInputRequirements,
   type CapabilityReference,
 } from "./use-case-input-requirements";
-import type { SubjectAttributeRow, SubjectAttributeValue } from "./use-test-connector-panel";
 import {
   deriveSubjectFields,
   type DerivedSubjectField,
@@ -19,9 +18,14 @@ export type SimulationRequiredField = DerivedSubjectField & {
   readonly onChange: (value: string) => void;
 };
 
+export type SimulationSubjectAttribute = {
+  readonly attribute: string;
+  readonly value: string;
+};
+
 export type SimulationSubject = {
   readonly type: string;
-  readonly attributes: readonly SubjectAttributeValue[];
+  readonly attributes: readonly SimulationSubjectAttribute[];
 };
 
 export type SimulationSubjectState = {
@@ -30,10 +34,6 @@ export type SimulationSubjectState = {
   readonly capabilitiesWithMalformedInputSchema: readonly CapabilityReference[];
   readonly requester: string;
   readonly onRequesterChange: (value: string) => void;
-  readonly addedAttributes: readonly SubjectAttributeRow[];
-  readonly onAddAttribute: () => void;
-  readonly onRemoveAttribute: (id: string) => void;
-  readonly onAttributeChange: (id: string, field: "attribute" | "value", value: string) => void;
   readonly subject: SimulationSubject;
   readonly isReady: boolean;
 
@@ -42,21 +42,15 @@ export type SimulationSubjectState = {
   readonly isRegistriesError: boolean;
 };
 
-function mergedAttributes(
+function composedAttributes(
   requiredFields: readonly SimulationRequiredField[],
-  addedAttributes: readonly SubjectAttributeRow[],
-): readonly SubjectAttributeValue[] {
+): readonly SimulationSubjectAttribute[] {
   const attributeMap = new Map<string, string>();
   for (const field of requiredFields) {
-    if (field.value.trim() !== "") {
-      attributeMap.set(field.attribute, field.value);
+    if (field.value.trim() === "" || attributeMap.has(field.attribute)) {
+      continue;
     }
-  }
-  for (const row of addedAttributes) {
-    const attribute = row.attribute.trim();
-    if (attribute !== "" && row.value.trim() !== "") {
-      attributeMap.set(attribute, row.value);
-    }
+    attributeMap.set(field.attribute, field.value);
   }
   return [...attributeMap.entries()].map(([attribute, value]) => ({ attribute, value }));
 }
@@ -85,8 +79,6 @@ export function useSimulationSubject(
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [requester, setRequester] = useState("");
-  const [addedAttributes, setAddedAttributes] = useState<SubjectAttributeRow[]>([]);
-  const nextRowIdRef = useRef(0);
 
   const requiredFields: SimulationRequiredField[] = definitions.map((definition) => ({
     ...definition,
@@ -98,7 +90,7 @@ export function useSimulationSubject(
 
   const subject: SimulationSubject = {
     type: source.subject,
-    attributes: mergedAttributes(requiredFields, addedAttributes),
+    attributes: composedAttributes(requiredFields),
   };
 
   const isReady = requester.trim() !== "" && subject.attributes.length > 0;
@@ -108,20 +100,6 @@ export function useSimulationSubject(
     capabilitiesWithMalformedInputSchema,
     requester,
     onRequesterChange: setRequester,
-    addedAttributes,
-    onAddAttribute: () => {
-      nextRowIdRef.current += 1;
-      const id = `simulation-subject-attribute-row-${nextRowIdRef.current}`;
-      setAddedAttributes((current) => [...current, { id, attribute: "", value: "" }]);
-    },
-    onRemoveAttribute: (id) => {
-      setAddedAttributes((current) => current.filter((row) => row.id !== id));
-    },
-    onAttributeChange: (id, field, value) => {
-      setAddedAttributes((current) =>
-        current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
-      );
-    },
     subject,
     isReady,
     isLoadingRegistries: isLoadingCaseInputRequirements || isLoadingCapabilities,
