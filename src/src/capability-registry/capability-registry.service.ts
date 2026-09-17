@@ -147,6 +147,7 @@ function heldCapability(registration: CapabilityRegistration): Capability {
     timeout: registration.timeout ?? DEFAULT_CAPABILITY_TIMEOUT_MS,
     connector: registration.connector,
     concept: registration.concept,
+    ...(isUndeclared(registration.payload_notes) ? {} : { payload_notes: registration.payload_notes }),
   };
 }
 

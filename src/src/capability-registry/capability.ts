@@ -18,6 +18,8 @@ export type Capability = {
   readonly connector: string;
 
   readonly concept: string;
+
+  readonly payload_notes?: string;
 };
 
 export type CapabilityRegistration = {
@@ -29,6 +31,7 @@ export type CapabilityRegistration = {
   readonly timeout?: number;
   readonly connector?: string;
   readonly concept?: string;
+  readonly payload_notes?: string;
 };
 
 export const DEFAULT_CAPABILITY_TIMEOUT_MS = 60_000;

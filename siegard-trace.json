@@ -624,6 +624,10 @@
           "digest": "sha256:e38418be43abd9551fcf2c775fed716db3387bc4284d3bd05d97256b4cd44326"
         },
         {
+          "path": "src/migrations/0024-capability-payload-notes.sql",
+          "digest": "sha256:d540c9b87ae9d17881fee586d07f1df88aa1ff2e13cca95ac1405d4fe8a3478a"
+        },
+        {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
           "digest": "sha256:199e1c5cd56b7c0e0aef854abaeaf251dd6ab5b321203f2cd3e941bd60b94094"
         },
@@ -684,6 +688,14 @@
         {
           "path": "src/migrations/0023-drop-subject-attributes.sql",
           "digest": "sha256:e38418be43abd9551fcf2c775fed716db3387bc4284d3bd05d97256b4cd44326"
+        },
+        {
+          "path": "src/migrations/0024-capability-payload-notes.sql",
+          "digest": "sha256:d540c9b87ae9d17881fee586d07f1df88aa1ff2e13cca95ac1405d4fe8a3478a"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:996f45f3622b4875dfb5b3001b4fe2a16dcb0d1b06154baeef2f8b00cb3c2c25"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -2279,7 +2291,7 @@
     },
     {
       "node": "domain/integration/capability",
-      "digest": "sha256:e3431be5a3749f49dced75b443dbdb81c2fd890b4c55fdc8974a713e30d47713",
+      "digest": "sha256:91a8e47dde1bb38dea81d4e464723f23b227e2b9788696ab0f899bbebe2b5148",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
@@ -2350,6 +2362,10 @@
           "digest": "sha256:2518d97115e7ffa8cc8856c52abb8ee5741532c8c6f556b0759e2d43e31b3a96"
         },
         {
+          "path": "src/migrations/0024-capability-payload-notes.sql",
+          "digest": "sha256:d540c9b87ae9d17881fee586d07f1df88aa1ff2e13cca95ac1405d4fe8a3478a"
+        },
+        {
           "path": "src/src/capability-registry/capability-input-schema-shape.ts",
           "digest": "sha256:d8435609f371c2f5ec54b14974fc0b12ad0dffafaa804c92aeffdc195a50e89f"
         },
@@ -2359,11 +2375,11 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a"
+          "digest": "sha256:e0c219ae637d6100a28e69977db832fc6eafe383fa81eb039aa9d621587b6697"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
-          "digest": "sha256:64b4965184adee493fb4f8a976efd5b2587fe7db2540e6695fc073f4a5faf112"
+          "digest": "sha256:cd69bfada94561ae835b428867daf10dfde1b5d1093b66a7980a9fee8c2d540f"
         },
         {
           "path": "src/src/connector-registry/capabilities-reader.port.ts",
@@ -2395,7 +2411,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:82a4e772c3615577e8a32dc3ce264f44704a8f384973c1dcd7dddb28105918b9"
+          "digest": "sha256:996f45f3622b4875dfb5b3001b4fe2a16dcb0d1b06154baeef2f8b00cb3c2c25"
         }
       ]
     },
@@ -5341,7 +5357,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a"
+          "digest": "sha256:e0c219ae637d6100a28e69977db832fc6eafe383fa81eb039aa9d621587b6697"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
@@ -5350,6 +5366,10 @@
         {
           "path": "src/src/errors/incomplete-capability-contract.error.ts",
           "digest": "sha256:3964566a7e3a63f37d1730be1d64db21814f7c3a3107c7f6d22ff45448b29d66"
+        },
+        {
+          "path": "src/src/http/dto/register-capability.dto.ts",
+          "digest": "sha256:cc1fa4e0665f7f2e7ecabc39cd74c39b139e382b3366c9b58a75c8ce7adf9c8b"
         }
       ]
     },

@@ -209,6 +209,33 @@ it('accepts a complete read-only contract and answers the capability as register
   });
 });
 
+it('declares payload notes exactly where the operator supplies them, and treats an absent declaration as a capability that simply has none, never refusing it as an incomplete contract', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const withNotes = await registry.registerCapability(
+    completeRegistration({
+      name: 'a-capability-with-notes',
+      concept: 'a-concept-with-notes',
+      payload_notes: 'what the shallow schema does not say',
+    }),
+  );
+  const withoutNotes = await registry.registerCapability(
+    completeRegistration({ name: 'a-capability-without-notes', concept: 'a-concept-without-notes' }),
+  );
+
+  expect(withNotes.payload_notes).toBe('what the shallow schema does not say');
+  expect(withoutNotes).not.toHaveProperty('payload_notes');
+});
+
+it('treats a registration whose payload_notes is an empty string the same as one that states none at all — a capability holding no payload notes, not an empty string', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const registeredWithEmptyString = await registry.registerCapability(completeRegistration({ payload_notes: '' }));
+  const registeredWithNoneStated = await registry.registerCapability(completeRegistration());
+
+  expect(registeredWithEmptyString).toEqual(registeredWithNoneStated);
+});
+
 it('persists an accepted registration through the store', async () => {
   const store = new InMemoryCapabilityStore();
   const registry = new CapabilityRegistryService(store);

@@ -115,8 +115,8 @@ it('upserts each given capability by its own (name, version) identity, inside on
   expect(texts[2]).toContain('ON CONFLICT (name, version) DO UPDATE');
   expect(texts[3]).toBe('COMMIT');
   expect(texts.some((text) => text.includes('DELETE'))).toBe(false);
-  expect(recorded[1]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
-  expect(recorded[2]?.params).toEqual(['another-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
+  expect(recorded[1]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept', null]);
+  expect(recorded[2]?.params).toEqual(['another-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept', null]);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 

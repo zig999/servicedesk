@@ -252,6 +252,37 @@ it('passes a stated timeout through to registerCapability unchanged, never subst
   expect(calledWith.timeout).toBe(5_000);
 });
 
+it('passes a stated payload_notes through to registerCapability unchanged', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerCapability.mockResolvedValueOnce(heldCapability({ payload_notes: 'an operator note' }));
+
+  await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ payload_notes: 'an operator note' }),
+  });
+
+  const [calledWith] = built.registerCapability.mock.calls[0] as [CapabilityRegistration];
+  expect(calledWith.payload_notes).toBe('an operator note');
+});
+
+it('answers 200, without refusing at the request-body boundary, for a registration whose payload_notes is an empty string', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerCapability.mockResolvedValueOnce(heldCapability());
+
+  const response = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ payload_notes: '' }),
+  });
+
+  expect(response.statusCode).toBe(200);
+  const [calledWith] = built.registerCapability.mock.calls[0] as [CapabilityRegistration];
+  expect(calledWith.payload_notes).toBe('');
+});
+
 it("answers 400 for a timeout of 0, one below the schema's own positive lower boundary, without ever reaching registerCapability", async () => {
   const built = buildTestApp();
   app = built.app;

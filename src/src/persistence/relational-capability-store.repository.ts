@@ -13,6 +13,7 @@ interface ICapabilityRow {
   readonly timeout: number;
   readonly connector: string;
   readonly concept: string;
+  readonly payload_notes: string | null;
 }
 
 const CAPABILITY_NATURE_VALUES: ReadonlySet<string> = new Set<string>(CAPABILITY_NATURES);
@@ -26,7 +27,7 @@ export class RelationalCapabilityStore implements ICapabilityStore {
     const rows = await runStatement<ICapabilityRow>(
       this.connection,
       {
-        text: `SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept
+        text: `SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes
                FROM ${CAPABILITIES_TABLE}`,
       },
       raiseReadFailure,
@@ -62,21 +63,23 @@ function toCapability(row: ICapabilityRow): Capability {
     timeout: row.timeout,
     connector: row.connector,
     concept: row.concept,
+    ...(row.payload_notes !== null ? { payload_notes: row.payload_notes } : {}),
   };
 }
 
 function upsertStatementFor(capability: Capability): IStatement {
   return {
     text: `INSERT INTO ${CAPABILITIES_TABLE}
-             (name, version, nature, input_schema, output_schema, timeout, connector, concept)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+             (name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
            ON CONFLICT (name, version) DO UPDATE SET
              nature = EXCLUDED.nature,
              input_schema = EXCLUDED.input_schema,
              output_schema = EXCLUDED.output_schema,
              timeout = EXCLUDED.timeout,
              connector = EXCLUDED.connector,
-             concept = EXCLUDED.concept`,
+             concept = EXCLUDED.concept,
+             payload_notes = EXCLUDED.payload_notes`,
     params: [
       capability.name,
       capability.version,
@@ -86,6 +89,7 @@ function upsertStatementFor(capability: Capability): IStatement {
       capability.timeout,
       capability.connector,
       capability.concept,
+      capability.payload_notes ?? null,
     ],
   };
 }

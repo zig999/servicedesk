@@ -186,6 +186,42 @@ it('persists and reads back a registration exactly as given — name, version, n
   expect(answered).toEqual([capability]);
 });
 
+it("persists a registration's payload_notes exactly as given, holding the same text at the identity it was registered under", async () => {
+  const concept = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  const registry = new CapabilityRegistryService(store);
+
+  await registry.registerCapability(completeRegistration({ concept, payload_notes: 'what the shallow schema does not say' }));
+  const resolved = await registry.readCapabilityByIdentityOrThrow('a-capability', '1.0.0');
+
+  expect(resolved.payload_notes).toBe('what the shallow schema does not say');
+});
+
+it('reads back a capability row stored before payload_notes existed as one holding no payload notes, never as a read failure', async () => {
+  const concept = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  await pool.query(
+    `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    ['a-legacy-capability', '1.0.0', 'read-only', '{}', '{}', 5000, 'a-connector', concept],
+  );
+
+  const answered = await store.readCapabilities();
+
+  expect(answered).toEqual([
+    {
+      name: 'a-legacy-capability',
+      version: '1.0.0',
+      nature: 'read-only',
+      input_schema: '{}',
+      output_schema: '{}',
+      timeout: 5000,
+      connector: 'a-connector',
+      concept,
+    },
+  ]);
+});
+
 it('leaves capability-a exactly as it was when a different capability, capability-b, is written afterward', async () => {
   const conceptA = await aFreshConcept();
   const conceptB = await aFreshConcept();
@@ -318,6 +354,19 @@ it('persists a complete read-only registration, unrefused, when registered again
   const registered = await registry.registerCapability(completeRegistration({ concept }));
 
   await expect(store.readCapabilities()).resolves.toEqual([registered]);
+});
+
+it('holds no payload_notes after a whole re-registration at the same identity omits it, never the text an earlier registration carried', async () => {
+  const concept = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  const registry = new CapabilityRegistryService(store);
+  await registry.registerCapability(completeRegistration({ concept, payload_notes: 'an earlier operator note' }));
+
+  const reregistered = await registry.registerCapability(completeRegistration({ concept }));
+
+  expect(reregistered).not.toHaveProperty('payload_notes');
+  const persisted = await registry.readCapabilityByIdentityOrThrow('a-capability', '1.0.0');
+  expect(persisted).not.toHaveProperty('payload_notes');
 });
 
 it('holds a registration that states no timeout with the default of sixty seconds, in what the store actually persists', async () => {

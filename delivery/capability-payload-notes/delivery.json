@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes/capability-declares-payload-notes.md",
+      "title": "Capability holds its optional payload notes at registration and storage",
+      "summary": "payload_notes becomes a declarable, optional attribute on Capability, carried through registration, contract-completeness, and the relational capability store, with a new additive migration column.",
+      "task": "task/capability-payload-notes/capability-declares-payload-notes"
+    },
+    {
+      "id": "proof/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes/capability-declares-payload-notes.md",
+      "title": "Capability declares its payload notes -- registration, contract-completeness tolerance and store round trip",
+      "summary": "Eight new tests prove that payload_notes is accepted at the HTTP boundary, carried through registration and the domain model's Responsibility without being required, normalized from an empty string, overwritten (not merged) on whole re-registration, read back safely from a pre-existing column-less row, and paired 1:1 with its own migration-created column.",
+      "task": "task/capability-payload-notes/capability-declares-payload-notes"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "to": "task/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes/capability-declares-payload-notes",
+      "to": "implementation/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -340,6 +340,25 @@ it('gives hypothesis_revisions a state column after applying every migration scr
   expect(rows).toEqual([{ column_name: 'state' }]);
 });
 
+it('gives capabilities exactly one column per attribute domain/integration/capability declares, payload_notes included, and no column pairing with none of them, after every migration script replays in numbered order on an empty database', async () => {
+  const { rows } = await client.query<{ column_name: string }>(
+    `SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = 'capabilities' ORDER BY column_name`,
+    [schemaName],
+  );
+
+  expect(rows.map((row) => row.column_name)).toEqual([
+    'concept',
+    'connector',
+    'input_schema',
+    'name',
+    'nature',
+    'output_schema',
+    'payload_notes',
+    'timeout',
+    'version',
+  ]);
+});
+
 it('adds hypothesis_revisions exactly one new column, state, when migration 0020 runs on top of every migration before it', async () => {
   const freshSchema = `fresh_state_pairing_${randomUUID().replace(/-/g, '_')}`;
   await client.query(`CREATE SCHEMA "${freshSchema}"`);
@@ -499,7 +518,7 @@ it('persists and reads back concept, subject-type, action, outcome, recipient an
   expect(capabilityRows).toEqual([{ nature: 'read-only', timeout: 1000, connector: 'a-connector' }]);
 });
 
-it('holds every domain column NOT NULL except exactly the twelve columns the model declares optional', async () => {
+it('holds every domain column NOT NULL except exactly the thirteen columns the model declares optional', async () => {
   const { rows } = await client.query<{ table_name: string; column_name: string }>(
     `SELECT table_name, column_name FROM information_schema.columns
      WHERE table_schema = $1 AND table_name <> 'schema_migrations' AND is_nullable = 'YES'
@@ -508,6 +527,7 @@ it('holds every domain column NOT NULL except exactly the twelve columns the mod
   );
 
   expect(rows).toEqual([
+    { table_name: 'capabilities', column_name: 'payload_notes' },
     { table_name: 'case_versions', column_name: 'consolidation_register' },
     { table_name: 'case_versions', column_name: 'released_at' },
     { table_name: 'investigation_evaluation_citations', column_name: 'field' },

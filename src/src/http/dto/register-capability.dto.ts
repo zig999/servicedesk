@@ -15,6 +15,7 @@ export const registerCapabilityBodySchema = z.object({
   timeout: z.number().int().positive().optional(),
   connector: z.string().min(1),
   concept: z.string().min(1),
+  payload_notes: z.string().optional(),
 });
 
 export type RegisterCapabilityBodyDto = z.infer<typeof registerCapabilityBodySchema>;
