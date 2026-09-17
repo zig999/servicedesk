@@ -2204,60 +2204,6 @@
       ]
     },
     {
-      "node": "domain/glossary/subject-attribute",
-      "digest": "sha256:c2e70117fe4dbf4d9845c00cd659b7e09cd216563b3cfeef87f8858e77dfbc20",
-      "files": [
-        {
-          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:cbd36a4bedb4fa61b19eb117501f7a451badadb10df50066b0b60f9007b95daf"
-        },
-        {
-          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
-        },
-        {
-          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
-          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
-        },
-        {
-          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
-          "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
-        },
-        {
-          "path": "src/migrations/0002-glossary-vocabulary.sql",
-          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
-        },
-        {
-          "path": "src/src/glossary/glossary-query.port.ts",
-          "digest": "sha256:7c6e2e1ae523ee575472face5a243c5b3cfe51e848f5c32105749c7a0c1ee980"
-        },
-        {
-          "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
-        },
-        {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:28974b23105b3ce4bc9868279456ac8570b2dad6caeb2440f37bcd913fe341ce"
-        },
-        {
-          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
-          "digest": "sha256:562bfd4cf63edb094956957d2bdf4e04f6b7d207c53ccd3b908cca459eaca101"
-        },
-        {
-          "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
-        },
-        {
-          "path": "src/src/investigation/subject-attribute-value.ts",
-          "digest": "sha256:a886c99bc70dcece01733d18cc327dda41fde2b6b76834d95ce8def94413dbac"
-        },
-        {
-          "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:6cb04ea0a73ac2a6920d8802aa2f673fd993ce05bdfb06fc0258d0e869cb57eb"
-        }
-      ]
-    },
-    {
       "node": "domain/glossary/subject-type",
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
@@ -7362,36 +7308,6 @@
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
           "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
-        }
-      ]
-    },
-    {
-      "node": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
-      "digest": "sha256:25399d172f19ecd02a80a28c96ccc68cd0cab79f53f7edad40ba256c62a3c38a",
-      "files": [
-        {
-          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:b49e359dbe81537d60efd65ecc564571ec9ee6340ed8fbc69ccb95b2927b4480"
-        },
-        {
-          "path": "src/src/errors/subject-attribute-not-in-glossary.error.ts",
-          "digest": "sha256:ca58e15032bb3f069593c575ff01d3a375ab379e7cb1b739e607833949057b10"
-        },
-        {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:28974b23105b3ce4bc9868279456ac8570b2dad6caeb2440f37bcd913fe341ce"
-        },
-        {
-          "path": "src/src/http/simulate-case.controller.ts",
-          "digest": "sha256:ebabebf7ff171d1bd315a5a2acae3cfb57bd62d99564f26d8a4fcf7aed4b470b"
-        },
-        {
-          "path": "src/src/http/simulate-hypothesis.controller.ts",
-          "digest": "sha256:a3f9c29d3a10f8852d61720fcf4743ee31b1de37e74431f62b19c112ca473b63"
-        },
-        {
-          "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
         }
       ]
     },
