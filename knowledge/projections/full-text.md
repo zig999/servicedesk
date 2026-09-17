@@ -5549,6 +5549,11 @@ entries:
   unstated: The material leaves open whether this contract is removed once its only stated consumer (refuseAttributesNotInGlossary, reading read-vocabulary-term) is deleted, or rewritten for whichever operation investigation still performs against the glossary.
   decided: Rewritten rather than removed — operations becomes read-concept, the operation evidence collection already performs and that no contract previously declared.
   why: The investigation context still reads the glossary once refuseAttributesNotInGlossary is gone — evidence collection resolves each concept it collects against the published language — and that read held no contract of its own before this change. Rewriting this contract to the operation that actually remains closes a gap the removal would otherwise leave silent, rather than deleting the one node naming this boundary at all.
+- location: rules/investigation/a-subject-carries-at-least-one-attribute.md
+  field: statement
+  unstated: The rule held the invariant that a subject carries at least one attribute-value, but no node stated what a caller is told when a call arrives with a subject carrying none — no error class and no HTTP status anywhere in the specification named this violation, so the only answer the specification held for it was the generic fallback of constraints/a-domain-error-unmapped-by-status-is-refused-generically. Surfaced during plan-work for subject-attribute-glossary-removal-backend by an execution-contract-binder over task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary, whose criteria hold this refusal to a named error class.
+  decided: A call whose subject carries no attribute-value is refused with an HTTP 422 response reporting a SubjectCarriesNoAttributeError.
+  why: A request that is well-formed but whose content the domain refuses is HTTP 422 everywhere in this specification — a-hypothesis-collects-at-least-one-concept, a-capability-declares-its-contract and a-diagnosed-subject-covers-its-cases-required-attributes all answer an empty-or-missing required content that way, 400 being reserved by a-malformed-request-is-refused-with-a-validation-error for the route's declared shape — and the class name is this rule's own condition negated over the element it constrains, the same derivation HypothesisRevisionCollectsNoConceptError takes from its own rule.
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement
@@ -10662,7 +10667,7 @@ A curator composing a draft needs to watch the engine judge it before releasing 
 === rules/investigation/a-subject-carries-at-least-one-attribute
 ---
 type: invariant
-statement: A subject carries at least one attribute-value.
+statement: A subject carries at least one attribute-value; a call whose subject carries none is refused with an HTTP 422 response reporting a SubjectCarriesNoAttributeError.
 constrains:
   - domain/investigation/subject
 ---

@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: A subject carries at least one attribute-value.
+statement: A subject carries at least one attribute-value; a call whose subject carries none is refused with an HTTP 422 response reporting a SubjectCarriesNoAttributeError.
 constrains:
   - domain/investigation/subject
 ---

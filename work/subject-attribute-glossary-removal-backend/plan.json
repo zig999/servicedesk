@@ -1,0 +1,246 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/subject-attribute-check-removal",
+      "kind": "epic",
+      "file": "epic/subject-attribute-check-removal.md",
+      "title": "The investigation stops holding subject attribute names to the glossary",
+      "summary": "Removal of the glossary name check from the two simulate controllers and from investigation building, leaving a subject attribute name free text and the diagnose door's own coverage refusal the only check a subject is held to."
+    },
+    {
+      "id": "epic/subject-attribute-vocabulary-removal",
+      "kind": "epic",
+      "file": "epic/subject-attribute-vocabulary-removal.md",
+      "title": "The glossary no longer holds a subject-attribute vocabulary",
+      "summary": "Removal of subject-attribute from the vocabulary list, the store's table map, the coherence role map, the seed and its fixture, and the destructive migration that drops the table and the foreign key holding recorded attribute-values to it."
+    },
+    {
+      "id": "inventory/subject-attribute-glossary-removal-backend",
+      "kind": "inventory",
+      "file": "inventory/subject-attribute-glossary-removal-backend.md",
+      "title": "Backend wiring for the glossary vocabulary subject-attribute and its replacement",
+      "summary": "Where the subject-attribute glossary vocabulary is declared, stored, checked, seeded, and tested across src/, and where the capability-input-schema-derived coverage check it is replaced by already lives."
+    },
+    {
+      "id": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "task",
+      "file": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building.md",
+      "title": "Remove the glossary attribute check from investigation building and delete its error",
+      "summary": "buildInvestigation stops consulting the glossary, BuildInvestigationOptions drops the glossary field, run-diagnosis stops passing it, and refuseAttributesNotInGlossary and SubjectAttributeNotInGlossaryError leave the tree.",
+      "epic": "subject-attribute-check-removal"
+    },
+    {
+      "id": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "task",
+      "file": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary.md",
+      "title": "Drop the glossary attribute check and dependency from both simulate controllers",
+      "summary": "handleSimulateCaseRequest and handleSimulateHypothesisRequest stop calling refuseAttributesNotInGlossary and stop declaring a glossary dependency, together with every call site that supplies one.",
+      "epic": "subject-attribute-check-removal"
+    },
+    {
+      "id": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "task",
+      "file": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies.md",
+      "title": "Reduce the glossary to four term vocabularies",
+      "summary": "subject-attribute leaves TERM_VOCABULARIES, the store's vocabulary-to-table map, VOCABULARY_ROLES and the seed, and its fixture file leaves the tree.",
+      "epic": "subject-attribute-vocabulary-removal"
+    },
+    {
+      "id": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "kind": "task",
+      "file": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key.md",
+      "title": "Drop the subject_attributes table and the foreign key holding attribute-values to it",
+      "summary": "A new migration removes investigation_subject_attribute_values' reference to subject_attributes and then the table, preserving every recorded attribute-value row.",
+      "epic": "subject-attribute-vocabulary-removal"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/subject-attribute-check-removal",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/subject-attribute-vocabulary-removal",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/subject-attribute-vocabulary-removal",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/subject-attribute-vocabulary-removal",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/subject-attribute-vocabulary-removal",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/subject-attribute-vocabulary-removal",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/subject-attribute-vocabulary-removal",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}
