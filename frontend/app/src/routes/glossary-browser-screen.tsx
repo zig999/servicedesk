@@ -62,7 +62,6 @@ export function GlossaryBrowserScreen(): JSX.Element {
         <TabsList>
           <TabsTrigger value="concepts">Concepts</TabsTrigger>
           <TabsTrigger value="subject-type">Subject types</TabsTrigger>
-          <TabsTrigger value="subject-attribute">Subject attributes</TabsTrigger>
           <TabsTrigger value="outcome">Outcomes</TabsTrigger>
           <TabsTrigger value="action">Actions</TabsTrigger>
           <TabsTrigger value="recipient">Recipients</TabsTrigger>
@@ -75,13 +74,6 @@ export function GlossaryBrowserScreen(): JSX.Element {
             vocabulary="subject-type"
             emptyMessage="The glossary currently holds no subject types."
             loadErrorMessage="Unable to load subject types."
-          />
-        </TabsContent>
-        <TabsContent value="subject-attribute">
-          <VocabularyPanel
-            vocabulary="subject-attribute"
-            emptyMessage="The glossary currently holds no subject attributes."
-            loadErrorMessage="Unable to load subject attributes."
           />
         </TabsContent>
         <TabsContent value="outcome">

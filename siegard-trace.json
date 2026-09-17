@@ -5276,6 +5276,10 @@
       "digest": "sha256:fc1a088a879cf4912d7d85d785c2a895a6bb7bba607dec750efa50d8317cc77e",
       "files": [
         {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"
+        },
+        {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
         },

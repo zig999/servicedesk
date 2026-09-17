@@ -7,7 +7,6 @@ import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
 
 export const CONCEPTS_PATH = "/v1/glossary/concepts";
 export const SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
-export const SUBJECT_ATTRIBUTE_PATH = "/v1/glossary/subject-attribute";
 export const OUTCOME_PATH = "/v1/glossary/outcome";
 export const ACTION_PATH = "/v1/glossary/action";
 export const RECIPIENT_PATH = "/v1/glossary/recipient";
@@ -114,12 +113,6 @@ export const VOCABULARY_TAB_CASES: readonly VocabularyTabCase[] = [
     errorMessage: "Unable to load subject types.",
   },
   {
-    tabLabel: "Subject attributes",
-    path: SUBJECT_ATTRIBUTE_PATH,
-    emptyMessage: "The glossary currently holds no subject attributes.",
-    errorMessage: "Unable to load subject attributes.",
-  },
-  {
     tabLabel: "Outcomes",
     path: OUTCOME_PATH,
     emptyMessage: "The glossary currently holds no outcomes.",
@@ -142,7 +135,6 @@ export const VOCABULARY_TAB_CASES: readonly VocabularyTabCase[] = [
 export const ALL_TAB_LABELS = [
   "Concepts",
   "Subject types",
-  "Subject attributes",
   "Outcomes",
   "Actions",
   "Recipients",

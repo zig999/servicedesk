@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "kind": "implementation",
+      "file": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser.md",
+      "title": "Drop the Subject attributes tab from the glossary browser",
+      "summary": "The glossary browser's browsable-vocabulary tab set is reduced to the five vocabularies the glossary publishes; the Subject attributes TabsTrigger/TabsContent/VocabularyPanel instance and its shared test-support fixture entries are removed.",
+      "task": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser"
+    },
+    {
+      "id": "proof/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "kind": "proof",
+      "file": "proof/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser.md",
+      "title": "Proof for dropping the Subject attributes tab from the glossary browser",
+      "summary": "Tests showing the glossary browser renders exactly five tabs with no Subject attributes tab, issues no read of that vocabulary from any tab, and that every surviving tab and test-support fixture still holds after the shortening.",
+      "task": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "to": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "to": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

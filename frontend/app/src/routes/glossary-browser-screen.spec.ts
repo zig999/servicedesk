@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
   ALL_TAB_CASES,
-  ALL_TAB_LABELS,
   CONCEPTS_EMPTY_MESSAGE,
   CONCEPTS_ERROR_MESSAGE,
   CONCEPTS_PATH,
@@ -17,22 +16,23 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("GlossaryBrowserScreen — six tabs (criterion 1)", () => {
-  it("renders six tabs labeled Concepts, Subject types, Subject attributes, Outcomes, Actions and Recipients, with Concepts selected by default", async () => {
+describe("GlossaryBrowserScreen — exactly five tabs, none for Subject attributes (criterion 1)", () => {
+  it("renders exactly the tabs Concepts, Subject types, Outcomes, Actions and Recipients, in that order, with Concepts selected by default", async () => {
     const fetchMock = createGlossaryFetchStub({ [CONCEPTS_PATH]: () => jsonResponse(page([])) });
     await mountGlossaryBrowserScreen(fetchMock);
     await screen.findByText(CONCEPTS_EMPTY_MESSAGE);
 
-    for (const label of ALL_TAB_LABELS) {
-      expect(screen.getByRole("tab", { name: label })).toBeTruthy();
-    }
-    expect(screen.getByRole("tab", { name: "Concepts" }).getAttribute("aria-selected")).toBe(
-      "true",
-    );
-    for (const label of ALL_TAB_LABELS.slice(1)) {
-      expect(screen.getByRole("tab", { name: label }).getAttribute("aria-selected")).toBe(
-        "false",
-      );
+    const tabs = screen.getAllByRole("tab");
+    expect(tabs.map((tab) => tab.textContent)).toEqual([
+      "▸Concepts",
+      "Subject types",
+      "Outcomes",
+      "Actions",
+      "Recipients",
+    ]);
+    expect(tabs[0]?.getAttribute("aria-selected")).toBe("true");
+    for (const tab of tabs.slice(1)) {
+      expect(tab.getAttribute("aria-selected")).toBe("false");
     }
   });
 });

@@ -10,7 +10,6 @@ import {
   OUTCOME_PATH,
   page,
   RECIPIENT_PATH,
-  SUBJECT_ATTRIBUTE_PATH,
   SUBJECT_TYPE_PATH,
   term,
   VOCABULARY_TAB_CASES,
@@ -108,7 +107,6 @@ describe("GlossaryBrowserScreen — switching tabs (edge case)", () => {
     expect(requestedPaths).toContain(CONCEPTS_PATH);
     expect(requestedPaths).toContain(OUTCOME_PATH);
     expect(requestedPaths).not.toContain(SUBJECT_TYPE_PATH);
-    expect(requestedPaths).not.toContain(SUBJECT_ATTRIBUTE_PATH);
     expect(requestedPaths).not.toContain(ACTION_PATH);
     expect(requestedPaths).not.toContain(RECIPIENT_PATH);
   });
