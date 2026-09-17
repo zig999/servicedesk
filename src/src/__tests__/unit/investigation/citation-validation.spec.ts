@@ -93,6 +93,21 @@ it("refuses a citation naming a field that exists among some OTHER evidence item
   expect(isCitationValid(context, citation)).toBe(false);
 });
 
+it("refuses a citation naming a field that appears only inside the cited evidence item's own capability_payload_notes text and in no declared field, so the payload notes reaching the prompt widen no citation vocabulary", () => {
+  const evidence = anEvidence({
+    concept: 'a-collected-concept',
+    fields: fieldsDeclaring('a-declared-field'),
+    capability_payload_notes: 'the response actually nests the code under a field named raw_status',
+  });
+  const context: HypothesisCitationContext = {
+    collects: ['a-collected-concept'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'a-collected-concept', field: 'raw_status' };
+
+  expect(isCitationValid(context, citation)).toBe(false);
+});
+
 it('filters a proposed set of citations to only those accepted, keeping the accepted ones in the order they were proposed', () => {
   const evidenceA = anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') });
   const evidenceB = anEvidence({ concept: 'concept-b', fields: fieldsDeclaring('field-b') });

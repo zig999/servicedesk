@@ -297,6 +297,83 @@ it('omits the <concept_description> tag entirely for an item whose concept_descr
   expect(itemBlock).toContain('<observation>an-observation</observation>');
 });
 
+it("renders an evidence item's own capability_payload_notes inside its own <capability_payload_notes> tag, holding exactly that item's snapshotted text", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-with-payload-notes',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [{ name: 'a-field' }],
+      concept_description: '',
+      capability_payload_notes: 'the payload actually nests status under a raw key',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const itemBlock = itemBlockOf(content, 'concept-with-payload-notes');
+  expect(itemBlock).toContain('<capability_payload_notes>the payload actually nests status under a raw key</capability_payload_notes>');
+});
+
+it("omits the <capability_payload_notes> tag entirely for an item whose capability_payload_notes is the empty string, the same omission concept_description already takes when empty, while still carrying that item's own fields and observation", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-without-payload-notes',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [{ name: 'a-field' }],
+      concept_description: '',
+      capability_payload_notes: '',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const itemBlock = itemBlockOf(content, 'concept-without-payload-notes');
+  expect(itemBlock).not.toContain('capability_payload_notes');
+  expect(itemBlock).toContain('<field name="a-field"></field>');
+  expect(itemBlock).toContain('<observation>an-observation</observation>');
+});
+
+it("renders each evidence item's own capability_payload_notes into that item's own block alone, never another item's in the same prompt", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-one',
+      result: 'ok',
+      observation: 'observation-one',
+      fields: [{ name: 'a-field' }],
+      concept_description: '',
+      capability_payload_notes: 'notes-belonging-to-item-one',
+    },
+    {
+      concept: 'concept-two',
+      result: 'ok',
+      observation: 'observation-two',
+      fields: [{ name: 'a-field' }],
+      concept_description: '',
+      capability_payload_notes: 'notes-belonging-to-item-two',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const itemOne = itemBlockOf(content, 'concept-one');
+  const itemTwo = itemBlockOf(content, 'concept-two');
+  expect(itemOne).toContain('<capability_payload_notes>notes-belonging-to-item-one</capability_payload_notes>');
+  expect(itemOne).not.toContain('notes-belonging-to-item-two');
+  expect(itemTwo).toContain('<capability_payload_notes>notes-belonging-to-item-two</capability_payload_notes>');
+  expect(itemTwo).not.toContain('notes-belonging-to-item-one');
+});
+
 it("escapes reserved XML characters in an item's own concept_description and field name/type/description, so none of them can break out of the closed data block", async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();

@@ -34,6 +34,14 @@
       "task": "task/capability-payload-notes/judgment-call-carries-payload-notes"
     },
     {
+      "id": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes.md",
+      "title": "The judgment prompt states an item's payload notes",
+      "summary": "The Anthropic hypothesis-evaluator adapter now renders each evidence item's own snapshotted capability_payload_notes into that item's own prompt block, omitted where the snapshot is empty, exactly the way concept_description already is.",
+      "task": "task/capability-payload-notes/judgment-prompt-renders-payload-notes"
+    },
+    {
       "id": "proof/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proof",
       "file": "proof/capability-payload-notes/capability-declares-payload-notes.md",
@@ -64,6 +72,14 @@
       "title": "The judgment call's snapshotted capability payload notes reach the evaluator",
       "summary": "judgment-stage.spec.ts gains two tests proving toEvidenceItems() carries a non-empty capability_payload_notes value through unchanged and never omits the attribute when the snapshot holds none, alongside a third proving the assembly issues no capability-registry read.",
       "task": "task/capability-payload-notes/judgment-call-carries-payload-notes"
+    },
+    {
+      "id": "proof/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes/judgment-prompt-renders-payload-notes.md",
+      "title": "The judgment prompt renders each item's own capability payload notes",
+      "summary": "Four tests prove the adapter states an item's own capability_payload_notes beside its observation when non-empty, omits the tag entirely when empty, never leaks one item's notes into another item's block, and that a field named only in payload notes still fails citation validation.",
+      "task": "task/capability-payload-notes/judgment-prompt-renders-payload-notes"
     }
   ],
   "edges": [
@@ -176,6 +192,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "to": "task/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-payload-notes/capability-declares-payload-notes",
       "to": "implementation/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proves",
@@ -196,6 +242,12 @@
     {
       "from": "proof/capability-payload-notes/judgment-call-carries-payload-notes",
       "to": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "to": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
       "kind": "proves",
       "at": "the path"
     }

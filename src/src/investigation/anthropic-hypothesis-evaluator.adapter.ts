@@ -13,7 +13,7 @@ import { VERDICTS, type Verdict } from './verdict.js';
 
 const SYSTEM_PROMPT = `You judge whether the criterion of one troubleshooting hypothesis is confirmed or refuted, using only the evidence given to you.
 
-Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept, carries a <concept_description> naming what that concept means wherever one is known (absent where none is — the item is then known by its concept alone, with no stated meaning), lists its own <field> elements inside <fields> — each naming itself and, wherever known, its own type and a description of what it means — and carries its own <observation>.
+Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept, carries a <concept_description> naming what that concept means wherever one is known (absent where none is — the item is then known by its concept alone, with no stated meaning), lists its own <field> elements inside <fields> — each naming itself and, wherever known, its own type and a description of what it means — carries a <capability_payload_notes> element wherever the capability that produced this observation declared free-text notes on what its payload actually returns (absent where none were declared) — context grounding the observation, never a fact to verify and never a field name you may cite — and carries its own <observation>.
 
 Answer with exactly one JSON object and nothing else — no prose before or after it, no markdown code fence — matching exactly one of these three shapes:
 
@@ -158,6 +158,7 @@ function itemBlock(item: EvidenceItem): string {
     `<item concept="${escapeForXmlAttribute(item.concept)}">`,
     ...conceptDescriptionLines(item.concept_description),
     fieldsBlock(item.fields),
+    ...capabilityPayloadNotesLines(item.capability_payload_notes),
     `<observation>${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</observation>`,
     '</item>',
   ].join('\n');
@@ -165,6 +166,12 @@ function itemBlock(item: EvidenceItem): string {
 
 function conceptDescriptionLines(conceptDescription: string): readonly string[] {
   return conceptDescription === '' ? [] : [`<concept_description>${escapeForXmlText(conceptDescription)}</concept_description>`];
+}
+
+function capabilityPayloadNotesLines(capabilityPayloadNotes: string): readonly string[] {
+  return capabilityPayloadNotes === ''
+    ? []
+    : [`<capability_payload_notes>${escapeForXmlText(capabilityPayloadNotes)}</capability_payload_notes>`];
 }
 
 function fieldsBlock(fields: readonly FieldSemantics[]): string {
