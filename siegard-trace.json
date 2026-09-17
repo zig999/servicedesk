@@ -1389,7 +1389,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
+          "digest": "sha256:6343356419762d1f1b2854fe62350d29da580861f23ab57f3a86a664b25b55b7"
         }
       ]
     },
@@ -3905,7 +3905,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
+          "digest": "sha256:6343356419762d1f1b2854fe62350d29da580861f23ab57f3a86a664b25b55b7"
         },
         {
           "path": "src/src/investigation/subject-attribute-value.ts",

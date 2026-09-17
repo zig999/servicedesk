@@ -1,14 +1,7 @@
 import { expect, expectTypeOf, it } from 'vitest';
 import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import { InvestigationNotBuildableError } from '../../../errors/investigation-not-buildable.error.js';
-import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
 import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
-import type {
-  ConceptResolution,
-  IGlossaryQuery,
-  TermResolution,
-} from '../../../glossary/glossary-query.port.js';
-import type { TermVocabulary } from '../../../glossary/terms.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { Cost } from '../../../investigation/cost.js';
 import type { Durations } from '../../../investigation/durations.js';
@@ -24,40 +17,6 @@ const CASE_VERSION = 3;
 const CASE_AUTHORED_AT = '2024-01-01T00:00:00.000Z';
 
 const WRITTEN_AT = '2024-06-01T12:00:00.000Z';
-
-class FakeGlossaryQuery implements IGlossaryQuery {
-  private readonly attributes = new Set<string>();
-
-  public holdAttribute(name: string): void {
-    this.attributes.add(name);
-  }
-
-  public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
-    return this.attributes.has(name)
-      ? { held: true, term: { name } }
-      : { held: false, vocabulary, name };
-  }
-
-  public async readConcept(name: string): Promise<ConceptResolution> {
-    return { held: false, name };
-  }
-
-  public async listVocabularyTerms(): Promise<never> {
-    throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
-  }
-
-  public async listConcepts(): Promise<never> {
-    throw new Error('FakeGlossaryQuery.listConcepts is not scripted for this file');
-  }
-}
-
-function glossaryHolding(...names: readonly string[]): FakeGlossaryQuery {
-  const glossary = new FakeGlossaryQuery();
-  for (const name of names) {
-    glossary.holdAttribute(name);
-  }
-  return glossary;
-}
 
 function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
@@ -152,7 +111,6 @@ function validOptions(overrides: Partial<BuildInvestigationOptions> = {}): Build
     narrative: 'the narrative the requester submitted',
     subjectType: 'ont',
     subjectAttributes: DEFAULT_SUBJECT_ATTRIBUTES,
-    glossary: glossaryHolding('id'),
     case: aCase(),
     prompt_version: 'prompt-v1',
     model: 'model-x',
@@ -221,95 +179,6 @@ it('refuses to build when the subject carries no attribute-value at all, naming 
   expect(refusal.context).toEqual({ type: 'ont' });
 });
 
-it('refuses to build when the subject names an attribute the glossary does not hold, naming the violated policy', async () => {
-  const options = validOptions({
-    subjectAttributes: [{ attribute: 'id', value: 'subject-1' }],
-    glossary: glossaryHolding(), // holds no attribute at all
-  });
-
-  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
-
-  if (!(refusal instanceof SubjectAttributeNotInGlossaryError)) {
-    throw new Error('expected the subject-attribute-not-in-glossary refusal and the investigation built instead');
-  }
-  expect(refusal.message).toBe('a subject of type "ont" names an attribute the glossary does not hold: id');
-  expect(refusal.context).toEqual({ type: 'ont', attributes: ['id'] });
-});
-
-it('names every attribute the glossary does not hold together, in one refusal', async () => {
-  const options = validOptions({
-    subjectAttributes: [
-      { attribute: 'id', value: 'subject-1' },
-      { attribute: 'phone', value: '555-0100' },
-    ],
-    glossary: glossaryHolding(), // holds neither
-  });
-
-  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
-
-  if (!(refusal instanceof SubjectAttributeNotInGlossaryError)) {
-    throw new Error('expected the subject-attribute-not-in-glossary refusal and the investigation built instead');
-  }
-  expect(refusal.context.attributes).toEqual(['id', 'phone']);
-});
-
-it('names an attribute missing from the glossary once, no matter how many attribute-value pairs of the subject name it', async () => {
-  const options = validOptions({
-    subjectAttributes: [
-      { attribute: 'id', value: 'subject-1' },
-      { attribute: 'id', value: 'subject-2' },
-    ],
-    glossary: glossaryHolding(),
-  });
-
-  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
-
-  if (!(refusal instanceof SubjectAttributeNotInGlossaryError)) {
-    throw new Error('expected the subject-attribute-not-in-glossary refusal and the investigation built instead');
-  }
-  expect(refusal.context.attributes).toEqual(['id']);
-});
-
-it('does not refuse a subject whose every named attribute the glossary holds', async () => {
-  const options = validOptions({
-    subjectAttributes: [
-      { attribute: 'id', value: 'subject-1' },
-      { attribute: 'phone', value: '555-0100' },
-    ],
-    glossary: glossaryHolding('id', 'phone'),
-  });
-
-  await expect(buildInvestigation(options)).resolves.toBeDefined();
-});
-
-it('lets a failure from the glossary port reach the caller rather than becoming a subject-attribute-not-in-glossary refusal', async () => {
-  const failure = new Error('glossary temporarily unavailable');
-  const glossary: IGlossaryQuery = {
-    readVocabularyTerm: () => Promise.reject(failure),
-    readConcept: () => Promise.resolve({ held: false, name: 'unused' }),
-
-    listVocabularyTerms: () => Promise.reject(new Error('listVocabularyTerms is not scripted for this file')),
-    listConcepts: () => Promise.reject(new Error('listConcepts is not scripted for this file')),
-  };
-  const options = validOptions({ glossary });
-
-  await expect(buildInvestigation(options)).rejects.toBe(failure);
-});
-
-it('refuses over a subject-attribute-not-in-glossary violation before ever checking evidence or evaluation totality', async () => {
-
-  const options = validOptions({
-    subjectAttributes: [{ attribute: 'unknown-attribute', value: 'x' }],
-    glossary: glossaryHolding(),
-    evidence: [],
-    evaluations: [],
-  });
-
-  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
-
-  expect(refusal).toBeInstanceOf(SubjectAttributeNotInGlossaryError);
-});
-
 it('carries a subject whose type and every attribute-value pair are valid, unchanged, into the built Investigation', async () => {
   const subjectAttributes: readonly SubjectAttributeValue[] = [
     { attribute: 'id', value: 'subject-1' },
@@ -318,7 +187,6 @@ it('carries a subject whose type and every attribute-value pair are valid, uncha
   const options = validOptions({
     subjectType: 'ont',
     subjectAttributes,
-    glossary: glossaryHolding('id', 'phone'),
   });
 
   const investigation = await buildInvestigation(options);
@@ -443,7 +311,6 @@ function optionsOmittingTicketRef(): BuildInvestigationOptions {
     cost: full.cost,
     durations: full.durations,
     written_at: full.written_at,
-    glossary: full.glossary,
   };
 }
 
@@ -531,4 +398,10 @@ it('resolves to an Investigation itself, never to a second hand-declared type st
 
 it('still declares written_at optional on BuildInvestigationOptions, so a caller before settle supplies none rather than inventing one', () => {
   expectTypeOf<BuildInvestigationOptions['written_at']>().toEqualTypeOf<string | undefined>();
+});
+
+it('declares no glossary field on BuildInvestigationOptions at all, required or optional, now that the check it fed is gone', () => {
+  type HasGlossaryField = 'glossary' extends keyof BuildInvestigationOptions ? true : false;
+
+  expectTypeOf<HasGlossaryField>().toEqualTypeOf<false>();
 });

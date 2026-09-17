@@ -69,7 +69,6 @@ function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestiga
     assessment,
     cost,
     durations,
-    glossary: options.glossary,
   };
 }
 

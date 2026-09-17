@@ -1268,6 +1268,16 @@ it('fails fast on an empty subject attribute set before collecting any evidence,
   expect(store.writeCount).toBe(0);
 });
 
+it('writes the investigation successfully even though the glossary the pipeline still carries holds none of the subject\'s own attribute names — buildInvestigationOptions no longer copies glossary into the literal it hands to buildInvestigation', async () => {
+  const store = new InMemoryInvestigationStore();
+  const options = baseOptions({ store, glossary: glossaryHolding() });
+
+  const assessment = await runDiagnosis(options);
+
+  expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
+  expect(store.writeCount).toBe(1);
+});
+
 function baseOptionsOmittingTicketRef(): RunDiagnosisOptions {
   const full = baseOptions();
   return {

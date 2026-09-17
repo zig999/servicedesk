@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "implementation",
+      "file": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building.md",
+      "title": "Remove the glossary attribute check from investigation building",
+      "summary": "buildInvestigation no longer consults the glossary over subject attribute names; the glossary-shaped option, the check function, its error class and their test stubs are gone from investigation-factory.ts, run-diagnosis.ts and its spec.",
+      "task": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building"
+    },
+    {
       "id": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
       "kind": "implementation",
       "file": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary.md",
       "title": "Remove the glossary attribute check from simulate-case and simulate-hypothesis",
       "summary": "The two simulate controllers stop calling refuseAttributesNotInGlossary and stop declaring a glossary dependency; every call site that supplied one — the server factory and every spec that constructed the dependency object — is updated to match, and status-map.ts now maps SubjectCarriesNoAttributeError to 422.",
       "task": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary"
+    },
+    {
+      "id": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "proof",
+      "file": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building.md",
+      "title": "Proof that the glossary-attribute check is gone from investigation building",
+      "summary": "Tests confirm buildInvestigation and run-diagnosis's buildInvestigationOptions accept any subject attribute name with no glossary consultation, that BuildInvestigationOptions carries no glossary field at all, that the pre-existing case-input-requirements 422 door refusal and the totality-violation refusal are both unaffected, and that the removed identifiers are actually gone from the tree.",
+      "task": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building"
     },
     {
       "id": "proof/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
@@ -19,6 +35,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
       "to": "domain/investigation/subject-attribute-value",
@@ -47,6 +81,12 @@
       "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
       "to": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "to": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "proves",
       "at": "the path"
     },
     {

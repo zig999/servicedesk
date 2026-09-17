@@ -1,15 +1,13 @@
 import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
 import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
-import { SubjectAttributeNotInGlossaryError } from '../errors/subject-attribute-not-in-glossary.error.js';
-import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
 import type { Cost } from './cost.js';
 import type { Durations } from './durations.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 import type { Investigation, PinnedCase } from './investigation.js';
-import { buildSubject, type Subject } from './subject.js';
+import { buildSubject } from './subject.js';
 import type { SubjectAttributeValue } from './subject-attribute-value.js';
 
 export type BuildInvestigationOptions = {
@@ -33,14 +31,11 @@ export type BuildInvestigationOptions = {
   readonly durations: Durations;
 
   readonly written_at?: string;
-
-  readonly glossary: IGlossaryQuery;
 };
 
 export async function buildInvestigation(options: BuildInvestigationOptions): Promise<Investigation> {
-  const { case: theCase, evidence, evaluations, subjectType, subjectAttributes, glossary } = options;
+  const { case: theCase, evidence, evaluations, subjectType, subjectAttributes } = options;
   const subject = buildSubject(subjectType, subjectAttributes);
-  await refuseAttributesNotInGlossary(subject, glossary);
   refuseTotalityViolations(theCase, evidence, evaluations);
   return {
     id: options.id,
@@ -58,19 +53,6 @@ export async function buildInvestigation(options: BuildInvestigationOptions): Pr
     durations: options.durations,
     written_at: options.written_at!,
   };
-}
-
-export async function refuseAttributesNotInGlossary(subject: Subject, glossary: IGlossaryQuery): Promise<void> {
-  const missing: string[] = [];
-  for (const name of new Set(subject.attributes.map((pair) => pair.attribute))) {
-    const resolution = await glossary.readVocabularyTerm('subject-attribute', name);
-    if (!resolution.held) {
-      missing.push(name);
-    }
-  }
-  if (missing.length > 0) {
-    throw new SubjectAttributeNotInGlossaryError(subject.type, missing);
-  }
 }
 
 function pinnedCaseOf(theCase: Case): PinnedCase {
