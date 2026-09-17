@@ -207,6 +207,7 @@ function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[]
     observation: item.observation,
     fields: item.fields,
     concept_description: item.concept_description,
+    capability_payload_notes: item.capability_payload_notes,
   }));
 }
 

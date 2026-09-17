@@ -9,6 +9,7 @@ export type EvidenceItem = {
   readonly concept: string;
   readonly fields: readonly FieldSemantics[];
   readonly concept_description: string;
+  readonly capability_payload_notes: string;
 } & ObservationOutcome;
 
 export type EvaluationOutcome =

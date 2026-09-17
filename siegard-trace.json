@@ -3610,6 +3610,10 @@
           "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:f1366f4a978df7291d235bfe2acd83eb004025f078912c0f6a4477cbe7b414bc"
+        },
+        {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:38f071ffa063e01559319a2be36bc37f66114bf497ae13f230d186a9e6ff45ec"
         },
@@ -3729,7 +3733,7 @@
     },
     {
       "node": "domain/investigation/hypothesis-evaluator",
-      "digest": "sha256:32978196d783d10e141e9d217262481369394d9fa8cd5f9d8378e0d6c9aa1eae",
+      "digest": "sha256:262aa9e7f85e0bcf8ba148d6c7215a0a202fe17091e41e5b5aa72ba4b5489a48",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -3737,11 +3741,11 @@
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:ae5e3e8fb8f7e51247624b7dab9a55d83e4197208a83d26c8ae36ee81c1a1552"
+          "digest": "sha256:3bd46f0f97c8795f4a6fff48f0111aad67b8fcacd9579e08f1a19e0d3d5f3cb9"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
+          "digest": "sha256:f1366f4a978df7291d235bfe2acd83eb004025f078912c0f6a4477cbe7b414bc"
         }
       ]
     },
@@ -7553,7 +7557,7 @@
     },
     {
       "node": "rules/investigation/judgment-reads-the-evidence-snapshot",
-      "digest": "sha256:45cba604403000475e71d48ec311fc8c320eeb0680d35ed0fd4491a3b3e089fd",
+      "digest": "sha256:453ab7c6753034980beddf08d877c74af8b267da35fe4d515e048bae3c479b9e",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -7565,11 +7569,11 @@
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:ae5e3e8fb8f7e51247624b7dab9a55d83e4197208a83d26c8ae36ee81c1a1552"
+          "digest": "sha256:3bd46f0f97c8795f4a6fff48f0111aad67b8fcacd9579e08f1a19e0d3d5f3cb9"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
+          "digest": "sha256:f1366f4a978df7291d235bfe2acd83eb004025f078912c0f6a4477cbe7b414bc"
         }
       ]
     },

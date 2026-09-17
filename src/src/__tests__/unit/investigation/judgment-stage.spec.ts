@@ -195,8 +195,8 @@ it("calls evaluate() with only the judged hypothesis's own criterion and its own
   expect(evaluator.calls).toHaveLength(2);
   const forH1 = evaluator.calls.find((call) => call.criterion === 'h1 criterion');
   const forH2 = evaluator.calls.find((call) => call.criterion === 'h2 criterion');
-  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', fields: [], concept_description: '' }]);
-  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', fields: [], concept_description: '' }]);
+  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', fields: [], concept_description: '', capability_payload_notes: '' }]);
+  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', fields: [], concept_description: '', capability_payload_notes: '' }]);
 });
 
 it("passes each evidence item's own snapshotted field semantics and concept description to evaluate() — read straight from the evidence it was given, never resolved live — before the first call is ever made, never only after a decided answer", async () => {
@@ -216,8 +216,42 @@ it("passes each evidence item's own snapshotted field semantics and concept desc
       observation: 'an-observation',
       fields: fieldsDeclaring('field-a', 'field-b'),
       concept_description: 'a concept description',
+      capability_payload_notes: '',
     },
   ]);
+});
+
+it("carries the evidence item's own snapshotted, non-empty capability_payload_notes into the EvidenceItem the evaluator receives, holding exactly the stored value regardless of a capability re-registered under that same name and version after collection", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({
+      concept: 'concept-a',
+      capability_name: 'cap-x',
+      capability_version: '1.0.0',
+      capability_payload_notes: 'notes captured at collection',
+    })]],
+  ]);
+
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 });
+
+  expect(evaluator.calls[0]?.evidence[0]?.capability_payload_notes).toBe('notes captured at collection');
+});
+
+it("reaches the evaluator with capability_payload_notes present as an empty string, never omitting the attribute, when the evidence item's own snapshot holds none", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', capability_payload_notes: '' })]],
+  ]);
+
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 });
+
+  const item = evaluator.calls[0]?.evidence[0];
+  expect(item).toHaveProperty('capability_payload_notes');
+  expect(item?.capability_payload_notes).toBe('');
 });
 
 it("passes the same pinned case's own title and when_to_use, grouped as CaseContext, to every hypothesis judged in one judgeHypotheses() call — never a different context per hypothesis", async () => {

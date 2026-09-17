@@ -40,6 +40,7 @@ const SOME_OK_EVIDENCE: readonly EvidenceItem[] = [
     observation: 'an-observed-value',
     fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
     concept_description: 'what concept-one means',
+    capability_payload_notes: '',
   },
 ];
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
@@ -61,9 +62,9 @@ afterEach(() => {
 
 it('answers inconclusive with reason no-data, citing exactly the evidence items whose result is not ok', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
-    { concept: 'concept-denied', result: 'denied', fields: [], concept_description: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-denied', result: 'denied', fields: [], concept_description: '', capability_payload_notes: '' },
   ];
   const evaluator = createEvaluator();
 
@@ -81,8 +82,8 @@ it('answers inconclusive with reason no-data, citing exactly the evidence items 
 
 it("omits the field key entirely from each citation a no-data outcome constructs for its non-ok evidence — never field: '' — so 'field' in citation is false for every one of them", async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
   ];
   const evaluator = createEvaluator();
 
@@ -122,8 +123,8 @@ it("leaves a refuted answer's citation carrying both concept and field exactly a
 
 it('never calls the provider when the evidence carries any non-ok result', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
   ];
   const evaluator = createEvaluator();
 
@@ -135,29 +136,20 @@ it('never calls the provider when the evidence carries any non-ok result', async
 it('sends byte-identical prompt content across two calls carrying the same criterion, evidence (including its own field semantics and concept description) and case context', async () => {
   createMock.mockResolvedValue(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
-  const evidenceForFirstCall: readonly EvidenceItem[] = [
+  const evidenceForEachCall = (): readonly EvidenceItem[] => [
     {
       concept: 'concept-one',
       result: 'ok',
       observation: 'an-observed-value',
       fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
       concept_description: 'what concept-one means',
+      capability_payload_notes: '',
     },
   ];
-  const evidenceForSecondCall: readonly EvidenceItem[] = [
-    {
-      concept: 'concept-one',
-      result: 'ok',
-      observation: 'an-observed-value',
-      fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
-      concept_description: 'what concept-one means',
-    },
-  ];
-  const caseContextForFirstCall: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
-  const caseContextForSecondCall: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
+  const caseContextForEachCall = (): CaseContext => ({ title: 'a-title', whenToUse: 'a-when-to-use' });
 
-  await evaluator.evaluate(A_CRITERION, evidenceForFirstCall, caseContextForFirstCall);
-  await evaluator.evaluate(A_CRITERION, evidenceForSecondCall, caseContextForSecondCall);
+  await evaluator.evaluate(A_CRITERION, evidenceForEachCall(), caseContextForEachCall());
+  await evaluator.evaluate(A_CRITERION, evidenceForEachCall(), caseContextForEachCall());
 
   const firstContent = createMock.mock.calls[0]?.[0]?.messages[0]?.content;
   const secondContent = createMock.mock.calls[1]?.[0]?.messages[0]?.content;
@@ -174,6 +166,7 @@ it('carries the given criterion, evidence observation, its own concept descripti
       observation: 'the-marker-observation',
       fields: [{ name: 'the-marker-field', type: 'the-marker-type', description: 'the-marker-field-description' }],
       concept_description: 'the-marker-concept-description',
+      capability_payload_notes: '',
     },
   ];
   const caseContext: CaseContext = { title: 'the-marker-title', whenToUse: 'the-marker-when-to-use' };
@@ -215,8 +208,9 @@ it("renders each evidence item's own field semantics as its own <field> elements
         { name: 'field-two' },
       ],
       concept_description: 'what concept-one means',
+      capability_payload_notes: '',
     },
-    { concept: 'concept-two', result: 'ok', observation: 'observation-two', fields: [], concept_description: '' },
+    { concept: 'concept-two', result: 'ok', observation: 'observation-two', fields: [], concept_description: '', capability_payload_notes: '' },
   ];
 
   await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
@@ -244,6 +238,7 @@ it("renders a field's own type attribute independently of its own description te
         { name: 'field-description-only', description: 'a description with no type' },
       ],
       concept_description: '',
+      capability_payload_notes: '',
     },
   ];
 
@@ -264,6 +259,7 @@ it("renders each evidence item's own concept description as its own <concept_des
       observation: 'an-observation',
       fields: [{ name: 'a-field' }],
       concept_description: 'what concept-with-a-description means',
+      capability_payload_notes: '',
     },
   ];
 
@@ -288,6 +284,7 @@ it('omits the <concept_description> tag entirely for an item whose concept_descr
       observation: 'an-observation',
       fields: [{ name: 'a-field' }],
       concept_description: '',
+      capability_payload_notes: '',
     },
   ];
 
@@ -310,6 +307,7 @@ it("escapes reserved XML characters in an item's own concept_description and fie
       observation: 'an-observation',
       fields: [{ name: 'a-<field>-&-name', type: 'a-<type>', description: 'a-<description>-&-text' }],
       concept_description: 'a-<concept-description>-&-text',
+      capability_payload_notes: '',
     },
   ];
 
@@ -600,8 +598,8 @@ it("reports elapsed_ms and the exact prompt sent, but never invents a usage fiel
 
 it('a no-data outcome, answered without ever reaching the provider, still carries none of usage, elapsed_ms or prompt', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
   ];
   const evaluator = createEvaluator();
 

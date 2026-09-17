@@ -26,6 +26,14 @@
       "task": "task/capability-payload-notes/identity-read-states-payload-notes"
     },
     {
+      "id": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes/judgment-call-carries-payload-notes.md",
+      "title": "The judgment call carries the snapshotted capability payload notes",
+      "summary": "EvidenceItem gains a required capability_payload_notes attribute, and toEvidenceItems() carries it straight from the evidence snapshot into every item handed to the hypothesis evaluator.",
+      "task": "task/capability-payload-notes/judgment-call-carries-payload-notes"
+    },
+    {
       "id": "proof/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proof",
       "file": "proof/capability-payload-notes/capability-declares-payload-notes.md",
@@ -48,6 +56,14 @@
       "title": "Identity-keyed capability read admits and answers payload_notes correctly",
       "summary": "Tests establishing that read-capability-by-identity answers payload_notes exactly as the registration holds it -- present as declared text, absent (never empty or substituted) where none was declared -- including a stored empty string, once a code defect the suite caught was corrected -- and drawn from the current store rather than a register-capability submission; and that its response schema admits payload_notes alone as optional while still refusing every other declared attribute absent.",
       "task": "task/capability-payload-notes/identity-read-states-payload-notes"
+    },
+    {
+      "id": "proof/capability-payload-notes/judgment-call-carries-payload-notes",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes/judgment-call-carries-payload-notes.md",
+      "title": "The judgment call's snapshotted capability payload notes reach the evaluator",
+      "summary": "judgment-stage.spec.ts gains two tests proving toEvidenceItems() carries a non-empty capability_payload_notes value through unchanged and never omits the attribute when the snapshot holds none, alongside a third proving the assembly issues no capability-registry read.",
+      "task": "task/capability-payload-notes/judgment-call-carries-payload-notes"
     }
   ],
   "edges": [
@@ -136,6 +152,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
+      "to": "task/capability-payload-notes/judgment-call-carries-payload-notes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-payload-notes/capability-declares-payload-notes",
       "to": "implementation/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proves",
@@ -150,6 +190,12 @@
     {
       "from": "proof/capability-payload-notes/identity-read-states-payload-notes",
       "to": "implementation/capability-payload-notes/identity-read-states-payload-notes",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes/judgment-call-carries-payload-notes",
+      "to": "implementation/capability-payload-notes/judgment-call-carries-payload-notes",
       "kind": "proves",
       "at": "the path"
     }
