@@ -43,7 +43,6 @@ describe("NewCaseDraftScreen — Save issues a widened POST once seeded from a r
       slug: SLUG,
       title: RELEASED_VERSION_RECORD.title,
       when_to_use: RELEASED_VERSION_RECORD.when_to_use,
-      authored_at: expect.any(String),
       subject: RELEASED_VERSION_RECORD.subject,
       fallback: RELEASED_VERSION_RECORD.fallback,
       consolidation_register: RELEASED_VERSION_RECORD.consolidation_register,
@@ -71,7 +70,6 @@ describe("NewCaseDraftScreen — Save issues a widened POST once seeded from a r
       slug: SLUG,
       title: RELEASED_VERSION_RECORD_WITHOUT_REGISTER.title,
       when_to_use: RELEASED_VERSION_RECORD_WITHOUT_REGISTER.when_to_use,
-      authored_at: expect.any(String),
       subject: RELEASED_VERSION_RECORD_WITHOUT_REGISTER.subject,
       fallback: RELEASED_VERSION_RECORD_WITHOUT_REGISTER.fallback,
       source_version: 7,
@@ -96,7 +94,6 @@ describe("NewCaseDraftScreen — Save issues a widened POST once seeded from a r
       slug: SLUG,
       title: VALID_FORM_INPUT.title,
       when_to_use: VALID_FORM_INPUT.when_to_use,
-      authored_at: expect.any(String),
       subject: SUBJECT_TYPE_TERMS.data[0].name,
       fallback: {
         outcome: VALID_FORM_INPUT.outcome,

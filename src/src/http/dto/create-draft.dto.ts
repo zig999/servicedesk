@@ -15,7 +15,6 @@ export const createDraftBodySchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
   when_to_use: z.string().min(1),
-  authored_at: z.string().min(1),
   subject: z.string().min(1),
   fallback: resolutionSchema,
   consolidation_register: z.enum(CONSOLIDATION_REGISTERS).optional(),

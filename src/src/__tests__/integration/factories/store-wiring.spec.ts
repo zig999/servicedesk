@@ -142,7 +142,6 @@ it(
       slug: fixture.slug,
       title: 'A case proving the connection is shared',
       when_to_use: 'when proving store-wiring criterion 5',
-      authored_at: '2024-01-01T00:00:00.000Z',
       subject: fixture.subject,
       fallback: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
     });

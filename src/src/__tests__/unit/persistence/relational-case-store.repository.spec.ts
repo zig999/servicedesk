@@ -226,7 +226,6 @@ function aCreateDraftInput(overrides: Partial<CreateDraftInput> = {}): CreateDra
     slug: 'a-slug',
     title: 'A title',
     when_to_use: 'A use',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'a-subject-type',
     fallback: aResolution(),
     ...overrides,

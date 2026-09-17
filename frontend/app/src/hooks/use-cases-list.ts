@@ -40,21 +40,13 @@ function caseVersionsUrl(slug: string, limit: number, offset: number): string {
 }
 
 async function fetchCaseSummary(slug: string): Promise<CaseSummary> {
-  const probe = await apiFetch<PaginatedResponse<CaseVersionListItem>>(
+  const highestPage = await apiFetch<PaginatedResponse<CaseVersionListItem>>(
     caseVersionsUrl(slug, 1, 0),
   );
-  const versionCount = probe.total;
+  const versionCount = highestPage.total;
   if (versionCount === 0) {
     return { versionCount };
   }
-
-  const highestOffset = versionCount - 1;
-  const highestPage =
-    highestOffset < probe.data.length
-      ? probe
-      : await apiFetch<PaginatedResponse<CaseVersionListItem>>(
-          caseVersionsUrl(slug, 1, highestOffset),
-        );
   const highest = highestPage.data[0];
 
   const detail = await apiFetch<CaseVersionDetail>(

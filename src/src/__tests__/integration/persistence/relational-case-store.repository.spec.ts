@@ -93,7 +93,6 @@ function aCreateDraftInput(slug: string, glossary: IGlossary, overrides: Partial
     slug,
     title: 'A title',
     when_to_use: 'A use',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: glossary.subjectType,
     fallback: aResolution(glossary),
     ...overrides,
@@ -268,8 +267,9 @@ it('answers an empty page — data: [] — rather than an error or an absent val
 });
 
 it(
-  "returns every version the named case currently holds, by its own number and lifecycle state, " +
-    'ordered by version regardless of how many of them have since been released',
+  'returns every version the named case currently holds, by its own number and lifecycle state, ' +
+    'highest-numbered first, regardless of how many of them have since been released ' +
+    '(rules/knowledge/a-case-versions-listing-answers-highest-numbered-first)',
   async () => {
     const slug = `case-lifecycle-store-list-versions-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
@@ -282,8 +282,8 @@ it(
     const page = await store.listCaseVersions(slug, { offset: 0, limit: 20 });
 
     expect(page.data).toEqual([
-      { version: version1, state: 'released' },
       { version: version2, state: 'draft' },
+      { version: version1, state: 'released' },
     ]);
   },
 );
@@ -1365,7 +1365,6 @@ it(
       slug,
       title: 'A title',
       when_to_use: 'A use',
-      authored_at: '2024-01-01T00:00:00.000Z',
       subject: `case-lifecycle-store-unregistered-subject-${randomUUID()}`,
       fallback: {
         outcome: `case-lifecycle-store-unregistered-outcome-${randomUUID()}`,
@@ -1523,15 +1522,19 @@ it(
     const store = new RelationalCaseStore(pool);
     const releasedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
     await store.release(slug, releasedVersion);
-    await store.createDraft(
-      aCreateDraftInput(slug, glossary, { authored_at: '2024-06-01T00:00:00.000Z', source_version: releasedVersion }),
+    const draftVersion = await store.createDraft(
+      aCreateDraftInput(slug, glossary, { source_version: releasedVersion }),
     );
+    const draft = await store.assembleVersion(slug, draftVersion);
+    if (draft === undefined) {
+      throw new Error('expected the just-created draft version to assemble');
+    }
 
     const limit = await generousCasesPageLimit();
     const page = await store.listCases({ offset: 0, limit });
 
     const entry = page.data.find((item) => item.slug === slug);
-    expect(entry).toMatchObject({ current_state: 'draft', last_updated: '2024-06-01T00:00:00.000Z' });
+    expect(entry).toMatchObject({ current_state: 'draft', last_updated: draft.authored_at });
   },
 );
 

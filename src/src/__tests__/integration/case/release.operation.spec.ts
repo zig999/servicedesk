@@ -118,7 +118,6 @@ async function createDraftVersion(store: RelationalCaseStore, description: IDraf
     slug: description.slug,
     title: description.title,
     when_to_use: 'when a curator asks release to check this draft',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: description.subjectType,
     fallback: description.resolution,
   });

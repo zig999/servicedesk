@@ -19,7 +19,6 @@ function validCreateDraftBody(overrides: Partial<CreateDraftBodyDto> = {}): Crea
     slug: 'a-slug',
     title: 'a-title',
     when_to_use: 'when an attendant needs this case',
-    authored_at: '2024-03-01T00:00:00.000Z',
     subject: 'a-subject',
     fallback: heldResolution(),
     consolidation_register: 'formal',
@@ -97,7 +96,6 @@ it('answers 400 for a body missing the required title attribute, without ever re
   const bodyWithoutTitle = {
     slug: fullBody.slug,
     when_to_use: fullBody.when_to_use,
-    authored_at: fullBody.authored_at,
     subject: fullBody.subject,
     fallback: fullBody.fallback,
   };
@@ -115,7 +113,6 @@ it('answers 400 for a body missing the required slug attribute, without ever rea
   const bodyWithoutSlug = {
     title: fullBody.title,
     when_to_use: fullBody.when_to_use,
-    authored_at: fullBody.authored_at,
     subject: fullBody.subject,
     fallback: fullBody.fallback,
   };
@@ -134,7 +131,6 @@ it('succeeds when consolidation_register is omitted from the body entirely, call
     slug: fullBody.slug,
     title: fullBody.title,
     when_to_use: fullBody.when_to_use,
-    authored_at: fullBody.authored_at,
     subject: fullBody.subject,
     fallback: fullBody.fallback,
     source_version: fullBody.source_version,
@@ -156,7 +152,6 @@ it('succeeds when source_version is omitted from the body entirely, calling crea
     slug: fullBody.slug,
     title: fullBody.title,
     when_to_use: fullBody.when_to_use,
-    authored_at: fullBody.authored_at,
     subject: fullBody.subject,
     fallback: fullBody.fallback,
     consolidation_register: fullBody.consolidation_register,

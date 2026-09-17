@@ -135,7 +135,6 @@ async function insertFixtureCase(connection: DatabaseConnection): Promise<void> 
     slug: fixture.slug,
     title: fixture.title,
     when_to_use: fixture.when_to_use,
-    authored_at: fixture.authored_at,
     subject: fixture.subject,
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,
@@ -273,7 +272,6 @@ async function releaseOwnedHypothesisRevision(
     slug: options.slug,
     title: "A case owned exclusively by one of this file's own dedicated proof tests",
     when_to_use: "Exercised only by a dedicated instance this file's own proof tests build.",
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'contract',
     fallback: {
       outcome: 'inconclusive-hypotheses-exhausted',

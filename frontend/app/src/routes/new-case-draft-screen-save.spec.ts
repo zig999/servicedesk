@@ -11,7 +11,6 @@ import {
   parsedPostBody,
   patchCallCount,
   postCallCount,
-  postedAuthoredAt,
   SLUG,
   SUBJECT_TYPE_TERMS,
   VALID_FORM_INPUT,
@@ -24,7 +23,7 @@ afterEach(() => {
 });
 
 describe("NewCaseDraftScreen — Save issues POST /v1/cases", () => {
-  it("issues POST /v1/cases with slug, the curator's entered content and a client-side authored_at timestamp when Save is clicked", async () => {
+  it("issues POST /v1/cases with slug and the curator's entered content, carrying no authored_at -- rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles leaves that instant to the settling write, never the curator's own surface", async () => {
     const fetchMock = createFetchStub(
       baseHandlers({
         [`POST ${CREATE_PATH}`]: () => jsonResponse({ slug: SLUG, version: 9 }, 201),
@@ -33,18 +32,15 @@ describe("NewCaseDraftScreen — Save issues POST /v1/cases", () => {
     await mountNewCaseDraft(fetchMock);
     await fillValidForm();
 
-    const before = Date.now();
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
     await waitFor(() => {
       expect(postCallCount(fetchMock)).toBe(1);
     });
-    const after = Date.now();
 
     expect(parsedPostBody(fetchMock)).toEqual({
       slug: SLUG,
       title: VALID_FORM_INPUT.title,
       when_to_use: VALID_FORM_INPUT.when_to_use,
-      authored_at: expect.any(String),
       subject: SUBJECT_TYPE_TERMS.data[0].name,
       fallback: {
         outcome: VALID_FORM_INPUT.outcome,
@@ -54,10 +50,6 @@ describe("NewCaseDraftScreen — Save issues POST /v1/cases", () => {
         },
       },
     });
-
-    const authoredAtMillis = new Date(postedAuthoredAt(fetchMock)).getTime();
-    expect(authoredAtMillis).toBeGreaterThanOrEqual(before);
-    expect(authoredAtMillis).toBeLessThanOrEqual(after);
   });
 
   it("issues exactly one POST when Save is clicked twice in quick succession", async () => {

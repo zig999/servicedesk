@@ -166,7 +166,6 @@ async function insertReleasedFixtureCase(connection: DatabaseConnection): Promis
     slug: fixture.slug,
     title: fixture.title,
     when_to_use: fixture.when_to_use,
-    authored_at: fixture.authored_at,
     subject: fixture.subject,
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,
@@ -204,7 +203,6 @@ async function insertDraftFixtureCase(connection: DatabaseConnection): Promise<n
     slug: DRAFT_SLUG,
     title: 'A draft-only case for simulate-case-operation',
     when_to_use: 'When this task\'s own proof needs a case version genuinely still in draft.',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'contract',
     fallback: { outcome: 'inconclusive-hypotheses-exhausted', referral: { action: 'escalate-to-specialist', recipient: 'tier-two-support-queue' } },
   });

@@ -169,18 +169,6 @@ export function parsedPostBody(fetchMock: ReturnType<typeof createFetchStub>): u
   return JSON.parse(rawBody);
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-export function postedAuthoredAt(fetchMock: ReturnType<typeof createFetchStub>): string {
-  const body = parsedPostBody(fetchMock);
-  if (!isRecord(body) || typeof body.authored_at !== "string") {
-    throw new Error("expected the POST body to carry a string authored_at");
-  }
-  return body.authored_at;
-}
-
 export function patchCallCount(fetchMock: ReturnType<typeof createFetchStub>): number {
   return callsFor(fetchMock, "PATCH").length;
 }

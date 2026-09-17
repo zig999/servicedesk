@@ -1,0 +1,24 @@
+-- Gives case_versions.authored_at a server-side default, so the value is the
+-- instant this write settles rather than one a client submitted.
+--
+-- Implements, from the specification:
+--   domain/knowledge/case-version -- authored_at, required, datetime
+--   rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles --
+--     "authored_at holds the instant the store settled the write that
+--     persisted that version ... It is filled by the settling write alone,
+--     so it is not part of what a create-draft or revise request carries to
+--     the store." -- decided the same way, for the same reason, as
+--     rules/investigation/written-at-records-when-the-write-settled already
+--     decided investigations.written_at
+--   constraints/the-stored-schema-mirrors-the-declared-model -- no column
+--     added; the existing one gains a default instead
+--   constraints/the-schema-replays-from-its-scripts -- a plain numbered
+--     .sql file beside its siblings, applied once in filename order
+--
+-- Mirrors 0018-investigations-written-at-default.sql exactly: clock_timestamp()
+-- rather than now(), because now() is fixed at the transaction's own start
+-- and every write here already runs inside runInTransaction. The insert
+-- statement stops naming authored_at in its column list (relational-case-store.repository.ts's
+-- own draftInsertStatement) so this default is what fills it.
+ALTER TABLE case_versions
+  ALTER COLUMN authored_at SET DEFAULT clock_timestamp();

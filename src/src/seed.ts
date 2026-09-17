@@ -145,7 +145,6 @@ async function seedCase(connection: DatabaseConnection): Promise<void> {
     slug: fixture.slug,
     title: fixture.title,
     when_to_use: fixture.when_to_use,
-    authored_at: fixture.authored_at,
     subject: fixture.subject,
     fallback: fixture.fallback,
     consolidation_register: fixture.consolidation_register,

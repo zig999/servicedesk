@@ -32,7 +32,6 @@ function aCreateDraftInput(slug: string, glossary: IGlossary): CreateDraftInput 
     slug,
     title: 'A title',
     when_to_use: 'A use',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: glossary.subjectType,
     fallback: aResolution(glossary),
   };

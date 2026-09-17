@@ -85,7 +85,6 @@ async function aFreshDraftCase(glossary: IGlossary): Promise<{ slug: string; ver
     slug,
     title: 'A title',
     when_to_use: 'A use',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: glossary.subjectType,
     fallback: { outcome: glossary.outcome, referral: { action: glossary.action, recipient: glossary.recipient } },
   });

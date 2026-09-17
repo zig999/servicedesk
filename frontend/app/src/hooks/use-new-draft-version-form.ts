@@ -24,7 +24,6 @@ type CreateDraftRequestBody = {
   readonly slug: string;
   readonly title: string;
   readonly when_to_use: string;
-  readonly authored_at: string;
   readonly subject: string;
   readonly fallback: CaseVersionFormValues["fallback"];
   readonly consolidation_register?: CaseVersionFormValues["consolidation_register"];
@@ -114,7 +113,6 @@ export function useNewDraftVersionForm(slug: string): EditDraftVersionFormState 
     mutationFn: (values: CaseVersionFormValues) => {
       const body: CreateDraftRequestBody = {
         slug,
-        authored_at: new Date().toISOString(),
         title: values.title,
         when_to_use: values.when_to_use,
         subject: values.subject,

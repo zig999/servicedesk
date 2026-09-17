@@ -141,7 +141,7 @@ class FakeCaseStore implements ICaseStore {
     record.versions.set(version, {
       title: input.title,
       when_to_use: input.when_to_use,
-      authored_at: input.authored_at,
+      authored_at: '2024-01-01T00:00:00.000Z',
       subject: input.subject,
       fallback: input.fallback,
       state: 'draft',
@@ -278,7 +278,6 @@ async function seedCase(store: FakeCaseStore, options: ISeedOptions = {}): Promi
     slug,
     title: options.title ?? 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
     fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
   });

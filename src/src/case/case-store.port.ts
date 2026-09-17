@@ -40,7 +40,6 @@ export type CreateDraftInput = {
   readonly slug: string;
   readonly title: string;
   readonly when_to_use: string;
-  readonly authored_at: string;
   readonly subject: string;
   readonly fallback: Resolution;
   readonly consolidation_register?: ConsolidationRegister;

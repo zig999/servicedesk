@@ -70,7 +70,6 @@ function draftInputFor(slug: string, glossary: IGlossary, overrides: Partial<Cre
     slug,
     title: 'A title',
     when_to_use: 'A use',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: glossary.subjectType,
     fallback: resolutionOf(glossary),
     ...overrides,

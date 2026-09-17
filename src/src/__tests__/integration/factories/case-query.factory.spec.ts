@@ -87,7 +87,6 @@ async function writeCase(vocabulary: IVocabulary, hypotheses: readonly ReturnTyp
     slug: vocabulary.slug,
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: vocabulary.subject,
     fallback: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.fallbackAction, recipient: vocabulary.fallbackRecipient } },
   });

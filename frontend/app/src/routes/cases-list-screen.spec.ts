@@ -87,17 +87,10 @@ describe("CasesListScreen", () => {
       "/v1/cases/case-alpha/versions/1": { authored_at: "2024-01-15T09:30:00.000Z" },
 
       "/v1/cases/case-beta/versions?limit=1&offset=0": {
-        data: [{ version: 1, state: "draft" }],
-        total: 2,
-        limit: 1,
-        offset: 0,
-        pageCount: 2,
-      },
-      "/v1/cases/case-beta/versions?limit=1&offset=1": {
         data: [{ version: 2, state: "released" }],
         total: 2,
         limit: 1,
-        offset: 1,
+        offset: 0,
         pageCount: 2,
       },
       "/v1/cases/case-beta/versions/2": { authored_at: "2024-06-20T16:45:00.000Z" },

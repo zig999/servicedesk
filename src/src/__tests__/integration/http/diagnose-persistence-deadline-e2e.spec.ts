@@ -164,7 +164,6 @@ async function seedFixture(connection: DatabaseConnection, fixture: IFixture): P
     slug: fixture.slug,
     title: 'A case for the persistence-deadline proof',
     when_to_use: 'when proving criterion 5 of task/service-on-the-database/diagnose-end-to-end at the integration level',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: fixture.subjectType,
     fallback: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
   });
@@ -426,7 +425,6 @@ async function createDraftAndRevision(
     slug: guardFixture.slug,
     title: 'A case for the release-guard proof',
     when_to_use: 'when proving releaseRevisionDirectly still routes through the guarded lifecycle operation',
-    authored_at: '2024-01-01T00:00:00.000Z',
     subject: guardFixture.subjectType,
     fallback: { outcome: guardFixture.outcome, referral: { action: guardFixture.action, recipient: guardFixture.recipient } },
   });

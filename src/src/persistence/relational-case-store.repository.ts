@@ -429,7 +429,7 @@ function caseVersionsCountSelect(slug: string): IStatement {
 
 function caseVersionsPageSelect(slug: string, pagination: PaginationRequest): IStatement {
   return {
-    text: `SELECT version, state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 ORDER BY version LIMIT $2 OFFSET $3`,
+    text: `SELECT version, state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 ORDER BY version DESC LIMIT $2 OFFSET $3`,
     params: [slug, pagination.limit, pagination.offset],
   };
 }
@@ -683,15 +683,14 @@ function draftInsertStatement(input: CreateDraftInput, version: number): IStatem
   const [fallbackOutcome, fallbackAction, fallbackRecipient] = referralColumns(input.fallback);
   return {
     text: `INSERT INTO ${CASE_VERSIONS_TABLE}
-             (slug, version, title, when_to_use, authored_at, subject,
+             (slug, version, title, when_to_use, subject,
               fallback_outcome, fallback_action, fallback_recipient, consolidation_register, state)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
     params: [
       input.slug,
       version,
       input.title,
       input.when_to_use,
-      input.authored_at,
       input.subject,
       fallbackOutcome,
       fallbackAction,
