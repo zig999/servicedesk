@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "kind": "implementation",
+      "file": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel.md",
+      "title": "Remove the add-attribute control from the subject panel",
+      "summary": "Case-simulation-subject-panel.tsx now renders exactly one input per case-input-requirements entry and offers no way to name any other attribute.",
+      "task": "task/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel"
+    },
+    {
       "id": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
       "kind": "implementation",
       "file": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser.md",
       "title": "Drop the Subject attributes tab from the glossary browser",
       "summary": "The glossary browser's browsable-vocabulary tab set is reduced to the five vocabularies the glossary publishes; the Subject attributes TabsTrigger/TabsContent/VocabularyPanel instance and its shared test-support fixture entries are removed.",
       "task": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser"
+    },
+    {
+      "id": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "kind": "proof",
+      "file": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel.md",
+      "title": "Proof for removing the add-attribute control from the subject panel",
+      "summary": "Proves the composed subject panel offers exactly one input per case-input-requirement and no other way to name an attribute, by asserting the removed control's absence, the dropped subject-attribute glossary read, and the pre-existing empty-set disclosure and pass-through rendering.",
+      "task": "task/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel"
     },
     {
       "id": "proof/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
@@ -20,6 +36,36 @@
   ],
   "edges": [
     {
+      "from": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "to": "task/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
       "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
       "kind": "encodes",
@@ -29,6 +75,12 @@
       "from": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
       "to": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "to": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
+      "kind": "proves",
       "at": "the path"
     },
     {

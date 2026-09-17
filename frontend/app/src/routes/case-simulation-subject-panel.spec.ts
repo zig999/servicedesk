@@ -118,7 +118,7 @@ describe("CaseSimulationSubjectPanel -- a required marking never becomes a clien
     );
 
     expect(screen.getByLabelText<HTMLInputElement>("account-id").disabled).toBe(false);
-    for (const button of screen.getAllByRole("button")) {
+    for (const button of screen.queryAllByRole("button")) {
       expect(button.hasAttribute("disabled")).toBe(false);
     }
   });

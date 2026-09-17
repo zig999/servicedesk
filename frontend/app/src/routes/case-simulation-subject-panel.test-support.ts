@@ -35,10 +35,6 @@ async function awaitGlossariesSettled(): Promise<void> {
   if (loadingSubjectTypes !== null) {
     await waitForElementToBeRemoved(loadingSubjectTypes);
   }
-  const loadingSubjectAttributes = screen.queryByText("Loading subject attributes…");
-  if (loadingSubjectAttributes !== null) {
-    await waitForElementToBeRemoved(loadingSubjectAttributes);
-  }
 }
 
 export async function renderPanel(
@@ -51,7 +47,6 @@ export async function renderPanel(
   const { handlers = {}, awaitSettled = true } = options;
   const fetchMock = createFetchStub({
     [SUBJECT_TYPE_PATH]: () => jsonResponse(glossaryPage(["billing-dispute", "customer-account"])),
-    [SUBJECT_ATTRIBUTE_PATH]: () => jsonResponse(glossaryPage(["account-id", "email"])),
     ...handlers,
   });
   vi.stubGlobal("fetch", fetchMock);

@@ -4,7 +4,6 @@ import {
   baseState,
   buildRequiredField,
   renderPanel,
-  SUBJECT_ATTRIBUTE_PATH,
   SUBJECT_TYPE_PATH,
 } from "./case-simulation-subject-panel.test-support";
 
@@ -33,15 +32,6 @@ describe("CaseSimulationSubjectPanel -- loading and error states for the two glo
     expect(screen.getByText("Loading subject types…")).toBeTruthy();
   });
 
-  it("shows a loading message while the subject-attribute vocabulary is still loading", async () => {
-    await renderPanel(baseState(), {
-      handlers: { [SUBJECT_ATTRIBUTE_PATH]: () => new Promise<Response>(() => {}) },
-      awaitSettled: false,
-    });
-
-    expect(screen.getByText("Loading subject attributes…")).toBeTruthy();
-  });
-
   it("shows a load-error message with a Retry control when the subject-type vocabulary fails to load, and Retry re-issues the request", async () => {
     const { fetchMock } = await renderPanel(baseState(), {
       handlers: {
@@ -58,26 +48,6 @@ describe("CaseSimulationSubjectPanel -- loading and error states for the two glo
 
     await waitFor(() => {
       const callsAfterRetry = fetchMock.mock.calls.filter((call) => call[0] === SUBJECT_TYPE_PATH).length;
-      expect(callsAfterRetry).toBeGreaterThan(callsBeforeRetry);
-    });
-  });
-
-  it("shows a load-error message with a Retry control when the subject-attribute vocabulary fails to load, and Retry re-issues the request", async () => {
-    const { fetchMock } = await renderPanel(baseState(), {
-      handlers: {
-        [SUBJECT_ATTRIBUTE_PATH]: () => {
-          throw new Error("network down");
-        },
-      },
-    });
-
-    expect(screen.getByText("Could not load the subject-attribute glossary.")).toBeTruthy();
-    const callsBeforeRetry = fetchMock.mock.calls.filter((call) => call[0] === SUBJECT_ATTRIBUTE_PATH).length;
-
-    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
-
-    await waitFor(() => {
-      const callsAfterRetry = fetchMock.mock.calls.filter((call) => call[0] === SUBJECT_ATTRIBUTE_PATH).length;
       expect(callsAfterRetry).toBeGreaterThan(callsBeforeRetry);
     });
   });

@@ -3889,7 +3889,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         },
         {
           "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
@@ -4217,7 +4217,7 @@
     },
     {
       "node": "domain/knowledge/case-input-requirement",
-      "digest": "sha256:e9c7db28cb1575c1318d9e5f0a27f3415cf034f5805305f0657d597baea11ff4",
+      "digest": "sha256:c6d5deee71c066b437c3bcac252d5db96311b754a32ee41de4efe236b37aee65",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-input-requirements.ts",
@@ -4229,7 +4229,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
@@ -7143,7 +7143,7 @@
     },
     {
       "node": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
-      "digest": "sha256:cd83cb8a284ebd597485b0c3450a6d877a2b50c9ec78770ec3179a138e6b2b1f",
+      "digest": "sha256:c0ab6266340346516ef5f8457cb72df2fc15a0d2032ecd6e6881d62da85ce0c1",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
@@ -7151,7 +7151,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
@@ -7166,6 +7166,16 @@
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
           "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set",
+      "digest": "sha256:a296e0b49dd462bdfb7c75e292e13ee1f1cc178c4eabff527f1de9ebc668c768",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
         }
       ]
     },
