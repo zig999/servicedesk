@@ -45,7 +45,6 @@ function recordingConceptQuery(rows: IRoutedConceptRows): {
 
 it.each([
   ['subject-type', 'subject_types'],
-  ['subject-attribute', 'subject_attributes'],
   ['outcome', 'outcomes'],
   ['action', 'actions'],
   ['recipient', 'recipients'],

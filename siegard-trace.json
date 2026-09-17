@@ -5256,6 +5256,24 @@
       ]
     },
     {
+      "node": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "digest": "sha256:fc1a088a879cf4912d7d85d785c2a895a6bb7bba607dec750efa50d8317cc77e",
+      "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
+        },
+        {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:562bfd4cf63edb094956957d2bdf4e04f6b7d207c53ccd3b908cca459eaca101"
+        }
+      ]
+    },
+    {
       "node": "rules/glossary/a-registered-concept-is-never-removed",
       "digest": "sha256:cfafcbd48814014cfe088037dcc36262e34789cb97c719e9945c2ddb213cd971",
       "files": [
@@ -5267,8 +5285,16 @@
     },
     {
       "node": "rules/glossary/a-vocabulary-holds-each-name-once",
-      "digest": "sha256:1dbb26c9d6fd23878f2216bd94b4f8d6b224ecea04cf8fe40b7672f94993b974",
+      "digest": "sha256:201ec08c65074c133d6fb3168e8a3f15e927870829775e84e88161ac5861253c",
       "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
+        },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:6cb04ea0a73ac2a6920d8802aa2f673fd993ce05bdfb06fc0258d0e869cb57eb"

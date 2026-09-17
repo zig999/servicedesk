@@ -29,7 +29,6 @@ async function deleteTolerantly(text: string, params: readonly unknown[]): Promi
 }
 
 const subjectTypesWrittenByThisTest: string[] = [];
-const subjectAttributesWrittenByThisTest: string[] = [];
 const outcomesWrittenByThisTest: string[] = [];
 const actionsWrittenByThisTest: string[] = [];
 const recipientsWrittenByThisTest: string[] = [];
@@ -66,7 +65,6 @@ async function cleanupCapabilitiesAndConcepts(): Promise<void> {
 async function cleanupWrittenRows(): Promise<void> {
   await cleanupCapabilitiesAndConcepts();
   await deleteTrackedRows('subject_types', 'name', subjectTypesWrittenByThisTest);
-  await deleteTrackedRows('subject_attributes', 'name', subjectAttributesWrittenByThisTest);
   await deleteTrackedRows('outcomes', 'name', outcomesWrittenByThisTest);
   await deleteTrackedRows('actions', 'name', actionsWrittenByThisTest);
   await deleteTrackedRows('recipients', 'name', recipientsWrittenByThisTest);
@@ -110,11 +108,10 @@ async function seedConceptReferencedByCapability(
 }
 
 it(
-  "answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows",
+  "answers each of the four vocabularies with the rows written for it, and no other vocabulary's rows",
   async () => {
     const store = new RelationalGlossaryStore(pool);
     const subjectType = freshTerm('glossary-store-subject-type', subjectTypesWrittenByThisTest);
-    const subjectAttribute = freshTerm('glossary-store-subject-attribute', subjectAttributesWrittenByThisTest);
     const outcome = freshTerm('glossary-store-outcome', outcomesWrittenByThisTest);
     const action = freshTerm('glossary-store-action', actionsWrittenByThisTest);
     const recipient = freshTerm('glossary-store-recipient', recipientsWrittenByThisTest);
@@ -122,24 +119,16 @@ it(
     await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [outcome.name]);
     await pool.query('INSERT INTO actions (name) VALUES ($1)', [action.name]);
     await pool.query('INSERT INTO recipients (name) VALUES ($1)', [recipient.name]);
-    await store.writeTerms('subject-attribute', [subjectAttribute]);
 
     await expect(store.readTerms('subject-type')).resolves.toEqual(expect.arrayContaining([subjectType]));
-    await expect(store.readTerms('subject-attribute')).resolves.toEqual(expect.arrayContaining([subjectAttribute]));
     await expect(store.readTerms('outcome')).resolves.toEqual(expect.arrayContaining([outcome]));
     await expect(store.readTerms('action')).resolves.toEqual(expect.arrayContaining([action]));
     await expect(store.readTerms('recipient')).resolves.toEqual(expect.arrayContaining([recipient]));
-    expect((await store.readTerms('subject-type')).map((term) => term.name)).not.toContain(subjectAttribute.name);
-    expect((await store.readTerms('subject-attribute')).map((term) => term.name)).not.toContain(subjectType.name);
+    expect((await store.readTerms('subject-type')).map((term) => term.name)).not.toContain(outcome.name);
+    expect((await store.readTerms('outcome')).map((term) => term.name)).not.toContain(subjectType.name);
   },
   15000,
 );
-
-it('answers the empty vocabulary when the real table currently holds no row', async () => {
-  const store = new RelationalGlossaryStore(pool);
-
-  await expect(store.readTerms('subject-attribute')).resolves.toEqual([]);
-});
 
 it('answers each concept with its name, the subject types it accepts, its ttl and its description, exactly as the real tables hold them', async () => {
   const subjectA = freshTerm('glossary-store-concept-subject-a', subjectTypesWrittenByThisTest);

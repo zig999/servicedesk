@@ -103,7 +103,7 @@ it('refuses with the status the status map assigns VocabularyTermNotHeldError, w
   expect(body.error.details).toEqual({ vocabulary: 'recipient', name: 'an-absent-term' });
 });
 
-it('answers 400 for a :vocabulary segment naming none of the five term vocabularies, never reaching the glossary query', async () => {
+it('answers 400 for a :vocabulary segment naming none of the four term vocabularies, never reaching the glossary query', async () => {
   const built = buildTestApp();
   app = built.app;
 

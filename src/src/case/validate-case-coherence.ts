@@ -11,8 +11,6 @@ import type { Case, Resolution } from './case.js';
 
 const VOCABULARY_ROLES: Readonly<Record<TermVocabulary, string>> = {
   'subject-type': 'subject type',
-
-  'subject-attribute': 'subject attribute',
   outcome: 'outcome',
   action: 'action',
   recipient: 'recipient',

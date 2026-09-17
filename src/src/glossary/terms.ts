@@ -12,7 +12,7 @@ export type Action = GlossaryTerm;
 
 export type Recipient = GlossaryTerm;
 
-export const TERM_VOCABULARIES = ['subject-type', 'subject-attribute', 'outcome', 'action', 'recipient'] as const;
+export const TERM_VOCABULARIES = ['subject-type', 'outcome', 'action', 'recipient'] as const;
 
 export type TermVocabulary = (typeof TERM_VOCABULARIES)[number];
 

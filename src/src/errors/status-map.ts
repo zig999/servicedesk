@@ -20,6 +20,7 @@ import { ConceptRefusesSubjectTypeError } from './concept-refuses-subject-type.e
 import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
 import { ConnectorPlaceholderOutsideInputSchemaError } from './connector-placeholder-outside-input-schema.error.js';
+import { DuplicateGlossaryNameError } from './duplicate-glossary-name.error.js';
 import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from './hypothesis-revision-collects-no-concept.error.js';
 import { HypothesisRevisionNotDraftAtReleaseError } from './hypothesis-revision-not-draft-at-release.error.js';
@@ -78,6 +79,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [OpenApiDocumentNotReadableError, 422],
   [OpenApiOperationNotFoundError, 422],
   [InvestigationWriteDeadlineExceededError, 500],
+  [DuplicateGlossaryNameError, 500],
 ]);
 
 export function statusForError(error: unknown): number | undefined {

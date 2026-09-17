@@ -512,10 +512,10 @@ it('refuses listing a vocabulary whose records hold one name twice, the same typ
 
 it('answers a page count of zero for a non-positive limit, rather than dividing by it (API-03)', async () => {
   const store = new InMemoryGlossaryStore();
-  await store.writeTerms('subject-attribute', [{ name: 'attr-a' }, { name: 'attr-b' }]);
+  await store.writeTerms('subject-type', [{ name: 'type-a' }, { name: 'type-b' }]);
   const glossary = new GlossaryService(store);
 
-  const page = await glossary.listVocabularyTerms('subject-attribute', { offset: 0, limit: 0 });
+  const page = await glossary.listVocabularyTerms('subject-type', { offset: 0, limit: 0 });
 
   expect(page.pageCount).toBe(0);
 });

@@ -44,6 +44,7 @@ const EQUIPMENT_STATUS_CONNECTOR = 'corporate-records-equipment-status-connector
 const NETWORK_OUTAGE_CONNECTOR = 'corporate-records-network-outage-connector';
 const EQUIPMENT_STATUS_ADDRESS = 'https://corporate-records.test/equipment-status';
 const NETWORK_OUTAGE_ADDRESS = 'https://corporate-records.test/network-outage';
+const SEEDED_SUBJECT_ATTRIBUTE_NAME = 'contract-number';
 
 const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
   new Response(JSON.stringify({ status: 'ok', active: false }), { status: 200, headers: { 'content-type': 'application/json' } }),
@@ -65,7 +66,7 @@ async function readTermNames(file: string): Promise<readonly string[]> {
 
 async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
   await insertTerms(connection, 'subject_types', await readTermNames('subject-type.json'));
-  await insertTerms(connection, 'subject_attributes', await readTermNames('subject-attribute.json'));
+  await insertTerms(connection, 'subject_attributes', [SEEDED_SUBJECT_ATTRIBUTE_NAME]);
   await insertTerms(connection, 'outcomes', await readTermNames('outcome.json'));
   await insertTerms(connection, 'actions', await readTermNames('action.json'));
   await insertTerms(connection, 'recipients', await readTermNames('recipient.json'));
@@ -243,7 +244,7 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
     await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
   await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [[SEEDED_SUBJECT_ATTRIBUTE_NAME]]);
 
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readTermNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
@@ -262,7 +263,7 @@ async function cleanupConnectorConfigurations(connection: DatabaseConnection): P
 function requestBodyFor(requester: string): Record<string, unknown> {
   return {
     case: { slug: SLUG, version: VERSION },
-    subject: { type: 'contract', attributes: [{ attribute: 'contract-number', value: 'CTR-0001' }] },
+    subject: { type: 'contract', attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }] },
     narrative: 'a customer reports an intermittent internet connection',
     requester,
   };

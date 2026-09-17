@@ -18,6 +18,14 @@
       "task": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary"
     },
     {
+      "id": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "implementation",
+      "file": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies.md",
+      "title": "Drop subject-attribute from the glossary's own vocabularies",
+      "summary": "TERM_VOCABULARIES, the repository's table map, VOCABULARY_ROLES and seed.ts shrink to four vocabularies; every test asserting five vocabularies or reading the retired fixture is updated to match.",
+      "task": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies"
+    },
+    {
       "id": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
       "kind": "proof",
       "file": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building.md",
@@ -32,6 +40,14 @@
       "title": "Backend removal of the glossary attribute check from simulate-case and simulate-hypothesis",
       "summary": "Proves both controllers no longer refuse a simulate call for an attribute name absent from the glossary, that their dependency types now declare exactly caseQuery plus their own runner, that the factory and every spec construct those dependencies without a glossary, and that a subject carrying no attribute at all still ends in a genuine HTTP 422 reporting SubjectCarriesNoAttributeError.",
       "task": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary"
+    },
+    {
+      "id": "proof/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "proof",
+      "file": "proof/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies.md",
+      "title": "Four-vocabulary glossary reduction — proof",
+      "summary": "Confirms TERM_VOCABULARIES, the repository's table map, VOCABULARY_ROLES, seed.ts and the fixture tree hold exactly four vocabularies, with two new tests closing gaps the implementer's own rewritten specs left open, and one pre-existing status-map.ts gap (DuplicateGlossaryNameError never mapped) closed as part of this task's own criterion.",
+      "task": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies"
     }
   ],
   "edges": [
@@ -84,6 +100,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
       "to": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
       "kind": "proves",
@@ -92,6 +126,12 @@
     {
       "from": "proof/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
       "to": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "to": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
       "kind": "proves",
       "at": "the path"
     }

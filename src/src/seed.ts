@@ -36,7 +36,6 @@ async function seedOutcomes(store: IGlossaryStore): Promise<void> {
 
 async function seedRemainingVocabularies(store: IGlossaryStore): Promise<void> {
   await store.insertMissingTerms('subject-type', await fixtureTerms('subject-type.json'));
-  await store.insertMissingTerms('subject-attribute', await fixtureTerms('subject-attribute.json'));
   await store.insertMissingTerms('action', await fixtureTerms('action.json'));
   await store.insertMissingTerms('recipient', await fixtureTerms('recipient.json'));
 }

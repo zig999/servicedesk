@@ -16,7 +16,6 @@ interface IConceptAcceptRow {
 
 const VOCABULARY_TABLES: Readonly<Record<TermVocabulary, string>> = {
   'subject-type': 'subject_types',
-  'subject-attribute': 'subject_attributes',
   outcome: 'outcomes',
   action: 'actions',
   recipient: 'recipients',

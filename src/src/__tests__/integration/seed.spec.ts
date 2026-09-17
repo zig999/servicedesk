@@ -106,7 +106,6 @@ async function wipeFixtureOwnedRows(connection: DatabaseConnection): Promise<voi
     await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
   await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
 
   for (const outcomeName of await readGlossaryFixtureNames('outcome.json')) {
     await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = $1', [outcomeName]);
@@ -163,7 +162,6 @@ async function cleanupSeededRows(connection: DatabaseConnection): Promise<void> 
     await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
   await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readGlossaryFixtureNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
   await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
@@ -242,14 +240,6 @@ it("holds exactly the fixture's own outcome names, the case-specific ones and th
 it('holds exactly the fixture\'s own subject-type name, the one the curated case declares as its subject', async () => {
   const expected = await readGlossaryFixtureNames('subject-type.json');
   const { rows } = await connection.query<{ name: string }>('SELECT name FROM subject_types WHERE name = ANY($1)', [expected]);
-
-  expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
-});
-
-it("holds exactly the fixture's own subject-attribute name, even though the curated case document names no subject attribute of its own", async () => {
-  const expected = await readGlossaryFixtureNames('subject-attribute.json');
-  expect(expected.length).toBeGreaterThan(0);
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM subject_attributes');
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });

@@ -1,5 +1,6 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
+import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import { TERM_VOCABULARIES, type GlossaryTerm, type TermVocabulary } from '../../../glossary/terms.js';
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
@@ -104,7 +105,7 @@ it("answers each of two requests against different vocabularies with that reques
   expect((second.json() as PaginatedResponse<GlossaryTerm>).data).toEqual([{ name: 'an-action-term' }]);
 });
 
-it('answers 400 for a :vocabulary segment naming none of the five term vocabularies, never reaching listVocabularyTerms', async () => {
+it('answers 400 for a :vocabulary segment naming none of the four term vocabularies, never reaching listVocabularyTerms', async () => {
   const built = buildTestApp();
   app = built.app;
 
@@ -163,11 +164,26 @@ it('answers the paginated envelope with an empty data array and a total of zero,
   const emptyPage: PaginatedResponse<GlossaryTerm> = { data: [], total: 0, limit: 20, offset: 0, pageCount: 0 };
   built.listVocabularyTerms.mockResolvedValueOnce(emptyPage);
 
-  const response = await app.inject({ method: 'GET', url: '/v1/glossary/subject-attribute' });
+  const response = await app.inject({ method: 'GET', url: '/v1/glossary/recipient' });
 
   expect(response.statusCode).toBe(200);
   expect(response.json()).toEqual(emptyPage);
 });
+
+it(
+  'answers 400 for a GET of /v1/glossary/subject-attribute, the vocabulary this reduction dropped, never reaching listVocabularyTerms',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const response = await app.inject({ method: 'GET', url: '/v1/glossary/subject-attribute' });
+
+    expect(response.statusCode).toBe(400);
+    const body = response.json() as { error: { code: string } };
+    expect(body.error.code).toBe('VALIDATION_ERROR');
+    expect(built.listVocabularyTerms).not.toHaveBeenCalled();
+  },
+);
 
 it('accepts an offset of exactly zero, the lower boundary of the nonnegative range, without refusing it', async () => {
   const built = buildTestApp();
@@ -244,4 +260,16 @@ it("answers 500 with a generic message, never the rejected call's own error text
 
   expect(response.statusCode).toBe(500);
   expect(response.body).not.toContain('sensitive internal detail');
+});
+
+it('answers a listing whose vocabulary holds one name twice with an HTTP 500 response reporting DuplicateGlossaryNameError', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.listVocabularyTerms.mockRejectedValueOnce(new DuplicateGlossaryNameError('action', 'repeated-term'));
+
+  const response = await app.inject({ method: 'GET', url: '/v1/glossary/action' });
+
+  expect(response.statusCode).toBe(500);
+  const body = response.json() as { error: { code: string } };
+  expect(body.error.code).toBe('DuplicateGlossaryNameError');
 });
