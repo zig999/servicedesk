@@ -6,8 +6,7 @@ export type GlossaryVocabulary =
   | "outcome"
   | "action"
   | "recipient"
-  | "subject-type"
-  | "subject-attribute";
+  | "subject-type";
 
 type GlossaryTermsPage = {
   readonly data: readonly { readonly name: string }[];

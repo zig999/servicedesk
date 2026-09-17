@@ -3884,6 +3884,10 @@
       "digest": "sha256:2bfd19dc9fb350cd82568706db9ac2cb771905649714eead973876f019d4e551",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
           "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
         },
@@ -5275,6 +5279,10 @@
       "node": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
       "digest": "sha256:fc1a088a879cf4912d7d85d785c2a895a6bb7bba607dec750efa50d8317cc77e",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:504727a01de19c4b457ecc59da81a4e6098347960059267eb06b387b45565064"
+        },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
           "digest": "sha256:c4bdeb4f49fd329d432944d0d1959c2e41905852bcf338169629129773b2e9d8"

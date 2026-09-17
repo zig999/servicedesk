@@ -18,6 +18,14 @@
       "task": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser"
     },
     {
+      "id": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "kind": "implementation",
+      "file": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union.md",
+      "title": "Narrow the glossary vocabulary union",
+      "summary": "The GlossaryVocabulary union in use-glossary-vocabulary.ts admits only outcome, action, recipient and subject-type; the hook's options mapping, isLoading, isError and refetch shape are unchanged.",
+      "task": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union"
+    },
+    {
       "id": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
       "kind": "proof",
       "file": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel.md",
@@ -32,6 +40,14 @@
       "title": "Proof for dropping the Subject attributes tab from the glossary browser",
       "summary": "Tests showing the glossary browser renders exactly five tabs with no Subject attributes tab, issues no read of that vocabulary from any tab, and that every surviving tab and test-support fixture still holds after the shortening.",
       "task": "task/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser"
+    },
+    {
+      "id": "proof/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "kind": "proof",
+      "file": "proof/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union.md",
+      "title": "Proof for narrowing the glossary vocabulary union",
+      "summary": "Tests pin GlossaryVocabulary to exactly outcome, action, recipient and subject-type, prove subject-attribute is a compile-time rejection, and keep the empty-page and isError cases alive on a surviving vocabulary.",
+      "task": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union"
     }
   ],
   "edges": [
@@ -78,6 +94,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "to": "task/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
       "to": "implementation/composed-subject-attribute-inputs/remove-the-add-attribute-control-from-the-subject-panel",
       "kind": "proves",
@@ -86,6 +120,12 @@
     {
       "from": "proof/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
       "to": "implementation/glossary-vocabulary-reduction/drop-the-subject-attributes-tab-from-the-glossary-browser",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
+      "to": "implementation/glossary-vocabulary-reduction/narrow-the-glossary-vocabulary-union",
       "kind": "proves",
       "at": "the path"
     }

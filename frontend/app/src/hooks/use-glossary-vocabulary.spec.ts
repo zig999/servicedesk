@@ -19,32 +19,20 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('useGlossaryVocabularyOptions("subject-attribute")', () => {
-  it("issues a GET to /v1/glossary/subject-attribute and maps the page's terms to {value, label} options, called with the literal typed with no cast", async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValue(jsonResponse({ data: [{ name: "eligibility" }, { name: "risk-tier" }] }));
-    vi.stubGlobal("fetch", fetchMock);
-
-    const vocabulary: GlossaryVocabulary = "subject-attribute";
-    const { result } = renderHook(() => useGlossaryVocabularyOptions(vocabulary), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
-
-    expect(fetchMock.mock.calls[0]?.[0]).toBe("/v1/glossary/subject-attribute");
-    expect(result.current.options).toEqual([
-      { value: "eligibility", label: "eligibility" },
-      { value: "risk-tier", label: "risk-tier" },
-    ]);
+describe("GlossaryVocabulary -- a closed union of exactly outcome, action, recipient and subject-type", () => {
+  it("refuses a fifth, unheld vocabulary name at compile time", () => {
+    // @ts-expect-error -- the glossary no longer publishes this vocabulary, so it does not belong to GlossaryVocabulary
+    const unheldVocabulary: GlossaryVocabulary = "subject-attribute";
+    expect(unheldVocabulary).toBe("subject-attribute");
   });
+});
 
-  it("returns an empty options array, rather than throwing or leaving it undefined, when the subject-attribute page holds no terms yet", async () => {
+describe("useGlossaryVocabularyOptions, edge states re-pointed to a surviving vocabulary", () => {
+  it("returns an empty options array, rather than throwing or leaving it undefined, when the page holds no terms yet", async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: [] }));
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useGlossaryVocabularyOptions("subject-attribute"), {
+    const { result } = renderHook(() => useGlossaryVocabularyOptions("outcome"), {
       wrapper: createWrapper(),
     });
 
@@ -53,11 +41,11 @@ describe('useGlossaryVocabularyOptions("subject-attribute")', () => {
     expect(result.current.options).toEqual([]);
   });
 
-  it("reports isError, with options staying empty, when the subject-attribute request fails", async () => {
+  it("reports isError, with options staying empty, when the request fails", async () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error("network down"));
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useGlossaryVocabularyOptions("subject-attribute"), {
+    const { result } = renderHook(() => useGlossaryVocabularyOptions("outcome"), {
       wrapper: createWrapper(),
     });
 
