@@ -1,0 +1,106 @@
+findings:
+  - file: src/investigation/evidence.ts
+    where: "line 4, the module-level constant beside the `Evidence` type"
+    evidence: |-
+      export const DEFAULT_EVIDENCE_TTL_SECONDS = 60;
+    cost: >-
+      The sixty-second default is a decided fact of rules/knowledge/a-collected-concept-declares-a-ttl
+      (per the decision log: "Sixty seconds... one minute keeps any cached observation fresher than
+      the investigation deadline by a factor of three"), and it belongs to a concept's own declared
+      ttl, not to evidence's ttl attribute (domain/investigation/evidence.ttl is required and always
+      populated from whatever ttl the concept already resolved at collection). Restating the number
+      here under an evidence-scoped name gives the decided default a second, disconnected home: if the
+      specification's default ever changes, nothing ties this constant to that decision, and a reader
+      of this file has no way to tell the number is not this file's own to decide.
+    kind: contradicts
+    correction: >-
+      Remove the locally declared default and, wherever a default ttl is actually needed, read it from
+      wherever the concept's own resolved ttl (already defaulted at registration per
+      rules/knowledge/a-collected-concept-declares-a-ttl) is obtained, rather than re-stating the number.
+    node: rules/knowledge/a-collected-concept-declares-a-ttl
+
+read:
+  - node: domain/investigation/evidence
+    held_at: >-
+      the `Evidence` type declaration, lines 6-29
+    evidence: |-
+      export type Evidence = {
+        readonly concept: string;
+
+        readonly inputs: string;
+
+        readonly observation: string;
+
+        readonly observed_at: string;
+        readonly ttl: number;
+
+        readonly origin: string;
+        readonly result: EvidenceResult;
+        readonly result_detail?: string;
+        readonly capability_name: string;
+        readonly capability_version: string;
+
+        readonly elapsed_ms: number;
+
+        readonly fields: readonly FieldSemantics[];
+
+        readonly concept_description: string;
+
+        readonly capability_payload_notes: string;
+      };
+  - node: domain/integration/capability
+    held_at: >-
+      the `capability_name` and `capability_version` fields, lines 19-20, which realize the node's
+      "reference, cardinality 1" relationship by the referenced capability's own declared identity
+      (name, version)
+    evidence: |-
+      readonly capability_name: string;
+      readonly capability_version: string;
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |-
+      import type { EvidenceResult } from './evidence-result.js';
+      import type { FieldSemantics } from './field-semantics.js';
+      export type Evidence = {
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      readonly capability_name: string;
+      readonly capability_version: string;
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      import type { EvidenceResult } from './evidence-result.js';
+      import type { FieldSemantics } from './field-semantics.js';
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the `fields`, `concept_description` and `capability_payload_notes` attributes, lines 24, 26 and
+      28 — exactly the snapshotted content the rule says a judgment reads instead of the live glossary
+      or capability registry
+    evidence: |-
+      readonly fields: readonly FieldSemantics[];
+
+      readonly concept_description: string;
+
+      readonly capability_payload_notes: string;
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |-
+      export type Evidence = {
+        readonly concept: string;
+        ...
+        readonly capability_payload_notes: string;
+      };
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      export type Evidence = {
+        readonly concept: string;
+        ...
+        readonly capability_payload_notes: string;
+      };
+
+looked_past: >-
+  The `DEFAULT_EVIDENCE_TTL_SECONDS` constant is declared but not referenced anywhere in this file;
+  whether it is dead code or used elsewhere is a code-quality question this pass does not judge — only
+  the domain fact its value states was in scope here.

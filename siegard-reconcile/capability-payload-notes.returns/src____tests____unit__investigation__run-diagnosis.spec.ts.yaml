@@ -1,0 +1,81 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the aCapability factory, which builds every fixture capability with the full declared
+      contract and leaves payload_notes unset (optional, per the node)
+    evidence: |
+      function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability {
+        return {
+          name: `capability-for-${overrides.concept}`,
+          version: '1.0.0',
+          nature: 'read-only',
+          input_schema: 'input-schema',
+          output_schema: schemaDeclaring('a-field'),
+          timeout: 60_000,
+          connector: `connector-for-${overrides.concept}`,
+          ...overrides,
+        };
+      }
+  - node: domain/investigation/evidence
+    held_at: the expectedOkEvidence helper
+    evidence: |
+      return {
+        concept,
+        inputs: JSON.stringify({ concept, subject: A_SUBJECT, requester: A_REQUESTER }),
+        observation,
+        observed_at: new Date(0).toISOString(),
+        ttl: DEFAULT_EVIDENCE_TTL_SECONDS,
+        origin: `connector-for-${concept}`,
+        result: 'ok',
+        capability_name: `capability-for-${concept}`,
+        capability_version: '1.0.0',
+        elapsed_ms: 0,
+        fields: [{ name: 'a-field', type: 'string' }],
+        concept_description: '',
+        capability_payload_notes: '',
+      };
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: the fake IHypothesisEvaluator implementations, e.g. ImmediateHypothesisEvaluator
+    evidence: |
+      class ImmediateHypothesisEvaluator implements IHypothesisEvaluator {
+        public constructor(private readonly outcome: EvaluationOutcome) {}
+        public async evaluate(): Promise<EvaluationOutcome> {
+          return this.outcome;
+        }
+      }
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      aCapability always assembles a complete contract with an explicit timeout: 60_000; no
+      fixture omits a required attribute or exercises the refusal or the default.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      This file composes runDiagnosis against in-memory fakes; it never touches the
+      capability-identity read-and-present surface.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      expectedOkEvidence, whose fields, concept_description and capability_payload_notes are
+      fixed values independent of any live read, reinforced by FakeGlossaryQuery.readConcept
+    evidence: |
+      public async readConcept(name: string): Promise<ConceptResolution> {
+        return { held: false, name };
+      }
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      Persistence in this file is InMemoryInvestigationStore and its delayed/failing variants --
+      plain in-memory Maps, never a relation or column.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      No migration or schema is reached by this file, only in-memory store fakes.
+looked_past: >-
+  The file's extensive deadline/retry/persistence-bound assertions and its cost.calls and
+  durations arithmetic are governed by nodes outside this delegation's set and matched what those
+  nodes state on the reading taken.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - rules/investigation/an-investigation-is-written-once
+  - domain/investigation/cost
+  - domain/investigation/evaluation

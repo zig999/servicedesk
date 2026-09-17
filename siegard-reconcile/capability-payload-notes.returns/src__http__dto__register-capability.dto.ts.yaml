@@ -1,0 +1,127 @@
+findings:
+  - file: src/http/dto/register-capability.dto.ts
+    where: >-
+      registerCapabilityParamsSchema (name, version) and
+      registerCapabilityBodySchema (nature, input_schema, output_schema,
+      connector, concept) — all declared as required, non-optional zod
+      fields, four of them additionally with `.min(1)`
+    evidence: |-
+      export const registerCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+      ...
+      export const registerCapabilityBodySchema = z.object({
+        nature: z.enum(CAPABILITY_NATURES),
+        input_schema: z.string().min(1),
+        output_schema: z.string().min(1),
+        timeout: z.number().int().positive().optional(),
+        connector: z.string().min(1),
+        concept: z.string().min(1),
+        payload_notes: z.string().optional(),
+      });
+    cost: >-
+      An empty or missing name, version, nature, input_schema, output_schema,
+      connector or concept fails Zod parsing at the boundary and is answered
+      as a generic HTTP 400 VALIDATION_ERROR (the route's declared-shape
+      refusal) before the request ever reaches the capability registry's own
+      completeness check. The specification names a distinct refusal for
+      exactly this condition — a registration leaving a required attribute
+      absent or empty is undeclared and is refused with HTTP 422
+      IncompleteCapabilityContractError — and that refusal can never be
+      produced through this route: a reader tracing IncompleteCapabilityContractError
+      to find where it fires will not find it reachable from register-capability,
+      because the DTO already intercepts every one of those cases as a shape
+      violation first.
+    kind: contradicts
+    node: rules/integration/a-capability-declares-its-contract
+    correction: >-
+      Let empty or absent values for these required attributes reach the
+      capability registry's own completeness check (e.g. do not enforce
+      `.min(1)` or non-optional presence for them at the DTO layer), so an
+      incomplete registration is refused there with HTTP 422
+      IncompleteCapabilityContractError rather than with a generic
+      VALIDATION_ERROR at the shape-validation boundary.
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the two exported zod schemas, which declare the route's shape for the
+      params and body of register-capability
+    evidence: |-
+      export const registerCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the exported request schemas and inferred types for the
+      register-capability operation
+    evidence: |-
+      export const registerCapabilityBodySchema = z.object({
+      export type RegisterCapabilityBodyDto = z.infer<typeof registerCapabilityBodySchema>;
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      registerCapabilityBodySchema's timeout field is held correctly
+      (optional, integer, positive); the required-attribute completeness
+      check for the other attributes is not held as the specified 422
+      refusal — see findings
+    evidence: |-
+      timeout: z.number().int().positive().optional(),
+      input_schema: z.string().min(1),
+      output_schema: z.string().min(1),
+      connector: z.string().min(1),
+      concept: z.string().min(1),
+  - node: domain/integration/capability
+    held_at: >-
+      the field lists of registerCapabilityParamsSchema (name, version) and
+      registerCapabilityBodySchema (nature, input_schema, output_schema,
+      timeout, connector, concept, payload_notes), matching the aggregate's
+      declared attributes and their requiredness (payload_notes alone
+      optional)
+    evidence: |-
+      name: z.string().min(1),
+      version: z.string().min(1),
+      nature: z.enum(CAPABILITY_NATURES),
+      input_schema: z.string().min(1),
+      output_schema: z.string().min(1),
+      timeout: z.number().int().positive().optional(),
+      connector: z.string().min(1),
+      concept: z.string().min(1),
+      payload_notes: z.string().optional(),
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      the file defines only the two request schemas for register-capability
+      (registerCapabilityParamsSchema, registerCapabilityBodySchema) and
+      their inferred types; it declares no presentation or read-answer shape
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+looked_past: >-
+  The choice to enforce field presence and type through Zod at the DTO layer
+  at all — as opposed to any other validation mechanism — is a library/style
+  choice and not itself reported, only the specific place it absorbs a
+  domain-level completeness condition that the specification carves out for
+  a distinct refusal.

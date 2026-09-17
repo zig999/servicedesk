@@ -1,0 +1,49 @@
+read:
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: capability is referenced only by name and version inside an evidence fixture; none of the
+    capability's own declared attributes is constructed or asserted anywhere in this file.
+- node: domain/investigation/evidence
+  held_at: the aValidEvidenceItem() fixture and the 'no field stripped' assertion
+  evidence: "function aValidEvidenceItem(): Record<string, unknown> {\n  return {\n    concept: 'a-concept',\n\
+    \    inputs: 'an-input',\n    observation: 'an-observation',\n    observed_at: '2026-01-01T00:00:00.000Z',\n\
+    \    ttl: 60,\n    origin: 'a-capability',\n    result: 'ok',\n    capability_name: 'a-capability',\n\
+    \    capability_version: '1.0.0',\n    elapsed_ms: 50,\n    fields: [{ name: 'a-field', type: 'string',\
+    \ description: 'a description' }],\n    concept_description: 'a description of the concept',\n   \
+    \ capability_payload_notes: '',\n  };\n}\n...\nexpect(result.data?.evidence[0]).toEqual(evidenceItem);\n"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: "function aConfirmedEvaluation(): Record<string, unknown> {\n  return { hypothesis: 'a-hypothesis',\
+    \ verdict: VERDICTS[0], citations: [{ concept: 'a-concept' }] };\n} -- this exercises the evaluation\
+    \ DTO's own shape, never the evaluator's operation."
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: 'capability_name: ''a-capability'', capability_version: ''1.0.0'' -- no nature, input_schema,
+    output_schema, timeout or connector value appears anywhere.'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: import { simulateHypothesisRequestSchema, simulateHypothesisResponseSchema } from '../../../../http/dto/simulate-hypothesis.dto.js';
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: 'capability_payload_notes: '''' -- appears only as a snapshot field''s shape inside the DTO
+    fixture.'
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: import { expect, it } from 'vitest';
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: import { expect, it } from 'vitest';
+looked_past: The fixture-building helpers repeat a pattern of literal object construction that duplicates
+  shape across this file rather than sharing builders; that is a style matter for a code-quality pass,
+  not a domain-fact judgment. The test accepting a subject with an empty attributes array was checked
+  against decision-log.md (~line 4869-4873), which confirms the DTO's structural acceptance is deliberately
+  distinct from the domain-level at-least-one-attribute invariant (422 SubjectCarriesNoAttributeError),
+  so this is not drift.
+candidates_opened:
+- domain/investigation/usage
+- domain/investigation/evaluation
+- domain/investigation/verdict
+- domain/investigation/evaluation-reason
+- domain/investigation/subject
+- domain/investigation/subject-attribute-value
+- rules/investigation/a-measured-duration-below-one-millisecond-is-zero

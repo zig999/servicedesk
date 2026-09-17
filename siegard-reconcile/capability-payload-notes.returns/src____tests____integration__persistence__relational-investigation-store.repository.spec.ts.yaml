@@ -1,0 +1,63 @@
+findings:
+- file: src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts
+  where: the final assertion of the first test ("reads back a whole investigation exactly as written...")
+  evidence: expect(answered?.hash).toBe(createHash('sha256').update(JSON.stringify(document), 'utf8').digest('hex'));
+  cost: This locks the store's read() into answering a hash field alongside document, computed by one
+    specific algorithm (SHA-256 over JSON.stringify(document), UTF-8, hex digest). No node anywhere in
+    the specification says a stored investigation carries or answers a content hash, let alone how one
+    is computed -- a caller relying on this shape, or a future implementer changing the serialization
+    or algorithm, will not find this contract in the specification.
+  kind: unstated
+  correction: Either state, in domain/investigation/investigation or a governing rule, that a read answer
+    carries a content hash and how it is derived, or drop the algorithm-specific assertion if the hash
+    is meant to remain an unspecified implementation detail no caller is entitled to depend on.
+read:
+- node: domain/integration/capability
+  held_at: insertFixtureRows' INSERT into capabilities
+  evidence: '''INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout,
+    connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)'', [names.capabilityName, names.capabilityVersion,
+    ''read-only'', ''an-input-schema'', ''an-output-schema'', 5000, ''a-connector'', names.concept],'
+- node: domain/investigation/evidence
+  held_at: anIntegrationEvidence
+  evidence: "return {\n  concept: fixtures.concept, inputs: 'serialized-inputs', observation: 'an-observation',\n\
+    \  observed_at: '2024-01-01T00:00:00.000Z', ttl: 60, origin: 'a-connector', result: 'ok',\n  capability_name:\
+    \ fixtures.capabilityName, capability_version: fixtures.capabilityVersion,\n  elapsed_ms: 12, fields:\
+    \ [{ name: 'a-field', type: 'string', description: 'a field description' }],\n  concept_description:\
+    \ 'a concept description', capability_payload_notes: '',\n};"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: evaluations are hand-built literal fixtures written and read back through the store; no evaluator
+    port is invoked anywhere in this file.
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: insertFixtureRows' INSERT into capabilities
+  evidence: '''INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout,
+    connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)'', [names.capabilityName, names.capabilityVersion,
+    ''read-only'', ''an-input-schema'', ''an-output-schema'', 5000, ''a-connector'', names.concept],'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: the file's whole surface is the investigation store; no capability-registry read-by-identity
+    or presentation surface is imported or exercised anywhere in it.
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: 'concept_description: ''a concept description'', capability_payload_notes: '''' -- round-tripped
+    through write/read, but nothing feeds them to a judgment or hypothesis-evaluator here.'
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: cleanupWrittenInvestigations and cleanupWrittenFixtures
+  evidence: one relation per domain element (investigation, evidence, evaluation, citation, subject attribute-value),
+    matching the pairing the constraint requires.
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: the suite connects to a database assumed already migrated; it neither runs nor asserts anything
+    about migration replay.
+looked_past: The file also exercises facts that candidate nodes outside this set govern -- written_at
+  assigned at settle rather than the fixture's literal, an empty ticket_ref read back absent, durations.writing
+  and a no-data citation's field as optional columns, and write-once/concurrent-write refusal -- all consistent
+  with the candidates opened, so nothing is reported against them here.
+candidates_opened:
+- domain/investigation/durations
+- domain/investigation/citation
+- domain/investigation/investigation
+- rules/investigation/written-at-records-when-the-write-settled
+- rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+- rules/investigation/an-investigation-is-written-once
+- domain/knowledge/consolidation-register

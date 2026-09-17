@@ -1,0 +1,41 @@
+certified:
+  - node: domain/investigation/evidence
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/evidence.spec.ts
+        name: >-
+          declares every attribute domain/investigation/evidence names, each with its own
+          required-or-optional shape, capability_payload_notes included as a required string
+    why: >-
+      The proof is a single type-level equality assertion over the Evidence shape. It exercises
+      the attribute half of the fact: capability_payload_notes is present and required as a
+      string, alongside every other attribute the node names, and the assertion would fail if
+      that attribute were dropped, made optional, or retyped. Two reservations sit on even that
+      half. First, the file's only assertion is `expectTypeOf(...).toEqualTypeOf(...)`, which
+      carries no runtime check — it decides the fact only if the "test" step typechecks the
+      spec; run as a plain runtime suite it passes unconditionally, and a reader who opens the
+      file should know that before counting it as proof. Second, the asserted shape names
+      `capability_name` and `capability_version` where the node declares a reference
+      relationship to domain/integration/capability, so the shape the test pins is not, member
+      for member, the shape the node states. Beyond the attribute half, everything the
+      Description states about capability_payload_notes goes unexercised: that the value is
+      snapshotted from the producing capability's own payload_notes at the moment of
+      collection and never re-read afterward; that a capability registered with no payload
+      notes snapshots the empty string rather than failing or inventing an account; that an
+      observation whose capability never resolved — leaving no payload notes anywhere to take —
+      snapshots that same empty string and ends exactly as the result already records; and that
+      an evidence item collected before this attribute existed reads it the identical
+      honest-empty way rather than as a read failure. A type equality cannot fail when any of
+      those stop holding.
+    remainder: testable
+    remainder_why: >-
+      Four inputs against four expected results, over a read of a collected evidence item:
+      (1) collection from a capability whose registered payload_notes carry text — the item's
+      capability_payload_notes equals that text as the registry held it at collection, and a
+      later change to the capability's payload_notes leaves the collected item unchanged;
+      (2) collection from a capability registered with no payload_notes — capability_payload_notes
+      is the empty string, no error raised; (3) collection whose capability never resolved —
+      capability_payload_notes is the empty string and the item's result records the
+      unresolved ending as it already does; (4) a stored evidence item written without the
+      capability_payload_notes key — read back, capability_payload_notes is the empty string
+      and the read succeeds.

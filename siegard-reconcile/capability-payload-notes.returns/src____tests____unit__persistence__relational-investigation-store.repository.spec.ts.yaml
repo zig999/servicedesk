@@ -1,0 +1,95 @@
+findings:
+- file: src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts
+  where: the test "refuses a second write of an id already stored through InvestigationAlreadyStoredError,
+    mapped from the root insert's own unique-violation, without any SELECT ever run before it" (lines
+    276-292)
+  evidence: 'const rejection = store.write(anInvestigation({ id: ''an-already-stored-id'' }));
+
+
+    await expect(rejection).rejects.toBeInstanceOf(InvestigationAlreadyStoredError);
+
+    await expect(rejection).rejects.toMatchObject({ context: { id: ''an-already-stored-id'' } });
+
+    expect(recorded.some((entry) => entry.text.includes(''SELECT''))).toBe(false);'
+  cost: 'This is the store''s own pinned contract for the one case rules/investigation/an-investigation-is-written-once
+    names directly: a write against an id already holding a record. The node states that outcome "counts
+    as a write that settled," but this file pins `write()` to reject with a distinct typed error instead
+    — so anyone building against this repository''s own tested contract sees a duplicate write as a failure
+    requiring special handling to reach the settled outcome the specification already decided, rather
+    than finding that outcome built into the store itself. The decision log entry for this same rule (rules/investigation/an-investigation-is-written-once.md)
+    reasons explicitly that reading this case as unsettled "would answer an HTTP 500 ... to a requester
+    whose investigation is durably written," which is exactly the shape a rejected promise pushes a caller
+    toward unless every caller remembers to special-case this one error.'
+  kind: contradicts
+  correction: Either `write()` resolves (rather than rejects) when the root insert's own unique-violation
+    names an id already stored — matching "persists no second record and counts as a write that settled"
+    — or, if `InvestigationAlreadyStoredError` is meant purely as an internal signal for a caller to answer
+    from the existing record, this file's own test description should state that handoff rather than calling
+    the outcome a refusal.
+  node: rules/investigation/an-investigation-is-written-once
+read:
+- node: domain/integration/capability
+  held_at: nowhere — this file never constructs or asserts a capability's own declared attributes (nature,
+    schemas, timeout, connector, concept, payload_notes); it only carries the capability_name/capability_version
+    identity pair through evidence rows.
+  evidence: 'import type { Citation } from ''../../../investigation/citation.js'';
+
+    import type { Durations } from ''../../../investigation/durations.js'';
+
+    import type { EvaluationReason } from ''../../../investigation/evaluation-reason.js'';
+
+    import type { Evaluation } from ''../../../investigation/evaluation.js'';
+
+    import type { Evidence } from ''../../../investigation/evidence.js'';
+
+    import type { Investigation } from ''../../../investigation/investigation.js'';'
+- node: domain/investigation/evidence
+  held_at: the anEvidence/evidenceRow helpers and the write/read round-trip assertions for the investigation_evidence
+    table (e.g. the evidence insert-params and read-back-equality tests)
+  evidence: "function anEvidence(overrides: Partial<Evidence> = {}): Evidence {\n  return {\n    concept:\
+    \ 'a-concept',\n    inputs: 'serialized-inputs',\n    observation: 'an-observation',\n    observed_at:\
+    \ '2024-01-01T00:00:00.000Z',\n    ttl: 60,\n    origin: 'a-connector',\n    result: 'ok',\n    capability_name:\
+    \ 'a-capability',\n    capability_version: '1.0.0',\n    elapsed_ms: 12,\n    fields: [],\n    concept_description:\
+    \ '',\n    capability_payload_notes: '',\n    ...overrides,\n  };\n}"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere — this file never imports or exercises the evaluate operation or its port.
+  evidence: 'import type { IConnectableQueryable } from ''../../../persistence/database-access.js'';
+
+    import { RelationalInvestigationStore } from ''../../../persistence/relational-investigation-store.repository.js'';'
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere — no capability contract (schemas, timeout, connector) is asserted in this file.
+  evidence: 'import type { Citation } from ''../../../investigation/citation.js'';
+
+    import type { Durations } from ''../../../investigation/durations.js'';'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere — this file tests the investigation store, not a capability read-and-present surface.
+  evidence: 'import type { Evidence } from ''../../../investigation/evidence.js'';
+
+    import type { Investigation } from ''../../../investigation/investigation.js'';'
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere — the file persists and reads back the evidence snapshot's own fields, concept_description
+    and capability_payload_notes columns, but never exercises a judgment reading them, and never imports
+    the hypothesis-evaluator.
+  evidence: 'import type { Evidence } from ''../../../investigation/evidence.js'';
+
+    import type { Investigation } from ''../../../investigation/investigation.js'';'
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: the evidence-insert and evidence-select column lists and the params/round-trip assertions built
+    against them
+  evidence: "const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));\n\
+    expect(evidenceInsert?.params).toEqual([\n  investigation.id, 'a-concept', 'serialized-inputs', 'an-observation',\
+    \ '2024-01-01T00:00:00.000Z', 60, 'a-connector', 'ok', null,\n  'a-registered-capability', '2.0.0',\
+    \ 12, '[]', '', '',\n]);"
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere — this file exercises a fake connection/client, never a migration replay.
+  evidence: "function fakeTransactionConnection(\n  handleQuery: (text: string, params?: readonly unknown[])\
+    \ => Promise<{ rows: unknown[] }>,\n): { connection: IConnectableQueryable; client: IFakeClient }\
+    \ {"
+looked_past: The sha256-of-JSON-serialization hash the "computes StoredInvestigation's own hash" test
+  pins, and the migrations/0013 aside embedded in one test's own title, are implementation/historical
+  narrative rather than a domain fact this pass judges — the specification elsewhere treats a comparable
+  hash mechanism as "the implementation's own engineering choice," so I did not raise either as a finding.
+candidates_opened:
+- rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+- rules/investigation/an-investigation-is-written-once
+- rules/investigation/written-at-records-when-the-write-settled

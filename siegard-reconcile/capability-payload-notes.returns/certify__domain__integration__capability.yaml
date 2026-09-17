@@ -1,0 +1,37 @@
+certified:
+  - node: domain/integration/capability
+    state: partial
+    tests:
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: >-
+          declares payload notes exactly where the operator supplies them, and treats an absent declaration as a capability that simply has none, never refusing it as an incomplete contract
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: >-
+          answers the payload_notes the store currently holds at (name, version), never the text an earlier register-capability submission carried, once the store has since changed independently of that submission
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: treats a registration whose payload_notes is an empty string the same as one that states none at all — a capability holding no payload notes, not an empty string
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration whose nature is mutating
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses an empty registration naming every required attribute
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration that declares no input schema, naming the attribute
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration that declares no output schema, naming the attribute
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration that declares no connector, naming the attribute
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration that declares no name
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration that declares no version
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: refuses a registration that declares no concept
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: accepts a complete read-only contract and answers the capability as registered
+      - file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+        name: answers the held capability directly, with no resolution wrapper, when one is currently registered under the named identity
+    why: >-
+      The payload-notes half of the fact is exercised whole: notes are declared exactly where the operator supplies them, an absent declaration passes as a capability that simply has none rather than an incomplete contract, an empty string is held as none, and a read at (name, version) answers what the store currently holds. The read-only nature and the completeness of the required contract are exercised attribute by attribute, and the accepted-registration test would fail if a required attribute stopped being carried through. Three stated parts go unexercised. First, "It answers exactly one concept, the one the registry resolves it by": nothing in the set reads a capability by its concept — every read is by name and version — and nothing submits a second capability naming a concept another already answers and expects a refusal; ConceptAlreadyAnsweredError appears only as a negative assertion inside the placeholder-ordering test, which passes whether or not the concept-uniqueness refusal exists at all. Second, the attribute list states timeout required, yet the only registration in the set that states no timeout ("holds the default of sixty seconds, as 60000 milliseconds, for a registration that states no timeout") asserts a default is applied rather than a refusal; nothing exercises timeout as a required declaration, and the divergence between the node's `required: true` and the asserted default is a fact for a reader to route, not one settled here. Third, "The capability resolves internally whatever derivation its concept needs — an address from a contract, a region from an access — so derivation is never the case's work": the offered proof is a registry-service unit spec that never executes a capability, so nothing in it could fail if derivation moved to the case.
+    remainder: testable
+    remainder_why: >-
+      Three assertions close it. One: with a capability registered against a concept, a read resolving by that concept answers exactly that capability, and a second registration naming the same already-answered concept is refused as ConceptAlreadyAnsweredError with the held capability left unchanged in the store. Two: a registration stating no timeout against the result the node's `required: true` names — a refusal naming `timeout` among the missing attributes — which, if the default of sixty seconds is instead the decided behavior, is a divergence to settle in the node rather than a test to write. Three: a capability whose concept needs a derivation, executed with only the subject attributes its input schema declares, answers the derived value without the case having supplied it — an assertion over execution, so it belongs to a test file outside the proof offered here, and the state stays short of covered until such a test is named as proof for this node.

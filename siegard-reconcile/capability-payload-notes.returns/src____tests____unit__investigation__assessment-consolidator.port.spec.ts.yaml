@@ -1,0 +1,63 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      capability_name: 'a-capability',
+          capability_version: '1',
+  - node: domain/investigation/evidence
+    held_at: the SOME_EVIDENCE fixture
+    evidence: |-
+      concept: 'a-concept',
+          inputs: 'a-serialized-call',
+          observation: 'an-observed-value',
+          observed_at: '2026-01-01T00:00:00.000Z',
+          ttl: 60,
+          origin: 'a-connector',
+          result: 'ok',
+          capability_name: 'a-capability',
+          capability_version: '1',
+          elapsed_ms: 12,
+          fields: [],
+          concept_description: '',
+          capability_payload_notes: '',
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |-
+      const A_CONFIRMED_EVALUATION: Evaluation = {
+        hypothesis: 'hypothesis-one',
+        verdict: 'confirmed',
+        citations: [{ concept: 'a-concept', field: 'a-field' }],
+      };
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      import type { ConsolidationOutcome, IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      import type { ConsolidationOutcome, IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |-
+      fields: [],
+          concept_description: '',
+          capability_payload_notes: '',
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import { expect, expectTypeOf, it } from 'vitest';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { expect, expectTypeOf, it } from 'vitest';"
+looked_past: >-
+  SOME_EVIDENCE models the evidence-to-capability link as flat capability_name/capability_version
+  strings rather than the single cardinality-1 capability reference domain/investigation/evidence
+  declares as a relationship, but that shape is dictated by the Evidence type declared in
+  evidence.ts (not in this file set), so any departure there is that file's judgment, not this
+  fixture's.
+candidates_opened:
+  - domain/investigation/assessment
+  - domain/knowledge/consolidation-register
+  - domain/investigation/usage
+  - domain/investigation/evaluation-reason
+  - domain/investigation/verdict
+  - domain/investigation/evidence-result

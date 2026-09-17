@@ -1,0 +1,52 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      capability_name: 'a-capability',
+      capability_version: '1.0.0',
+  - node: domain/investigation/evidence
+    held_at: >-
+      aValidEvidenceItem() (lines 4-20) and the required/optional-field assertions built on it
+      throughout the spec (e.g. lines 28-46, 48-54, 80-98, 108-114, 116-122)
+    evidence: |
+      return {
+          concept: 'a-concept',
+          inputs: 'an-input',
+          observation: 'an-observation',
+          observed_at: '2026-01-01T00:00:00.000Z',
+          ttl: 60,
+          origin: 'a-capability',
+          result: 'ok',
+          capability_name: 'a-capability',
+          capability_version: '1.0.0',
+          elapsed_ms: 50,
+          fields: [{ name: 'a-field', type: 'string', description: 'a description' }],
+          concept_description: 'a description of the concept',
+          capability_payload_notes: '',
+        };
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from '../../../../http/dto/evidence.dto.js';"
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from '../../../../http/dto/evidence.dto.js';"
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from '../../../../http/dto/evidence.dto.js';"
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      const evidenceItem = { ...aValidEvidenceItem(), capability_payload_notes: "what this
+      observation's shallow schema doesn't say" };
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from '../../../../http/dto/evidence.dto.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from '../../../../http/dto/evidence.dto.js';"
+looked_past: >-
+  aValidEvidenceItem() carries capability_name and capability_version rather than a single
+  compound capability reference -- a plausible flattening of domain/investigation/evidence's
+  cardinality-1 reference to domain/integration/capability, but the DTO source itself
+  (src/http/dto/evidence.dto.ts) is outside this file set and is the place that shape would
+  actually need judging.

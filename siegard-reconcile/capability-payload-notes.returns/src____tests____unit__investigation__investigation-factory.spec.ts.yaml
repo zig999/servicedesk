@@ -1,0 +1,99 @@
+findings:
+- file: src/__tests__/unit/investigation/investigation-factory.spec.ts
+  where: lines 284-289, the test 'builds an Investigation carrying no written_at, rather than refusing...'
+  evidence: "it('builds an Investigation carrying no written_at, rather than refusing, when written_at\
+    \ is missing entirely from the given options — the store decides that value later, at settle', async\
+    \ () => {\n  const options = validOptionsWithout('written_at');\n\n  const investigation = await buildInvestigation(options);\n\
+    \n  expect(investigation.written_at).toBeUndefined();\n});"
+  cost: 'domain/investigation/investigation.md declares written_at `required: true`, and rules/investigation/written-at-records-when-the-write-settled.md
+    states "the domain model declares no second element for an investigation assembled but not yet settled"
+    and "an investigation assembled but not yet settled is therefore no element of the domain model" —
+    what persistence receives is "the investigation''s own content less written_at", never an Investigation
+    with written_at left empty. This test instead asserts that the value `buildInvestigation` itself returns
+    — the thing the type test two nodes over locks to the literal `Investigation` type — can carry `written_at`
+    as `undefined`. A reader trusting the node''s attribute list would build downstream logic assuming
+    an `Investigation` always carries a settled written_at; this test instead proves the pre-settle, no-second-element
+    case is represented as an `Investigation` value with that attribute missing, which is exactly the
+    representation the rule refuses to let the domain model call by that name.'
+  kind: contradicts
+  correction: buildInvestigation would need to return a type distinct from Investigation for the pre-settle
+    content (e.g. Investigation's own attributes less written_at), leaving written_at to be filled only
+    by the settling write, rather than returning an Investigation whose written_at is undefined.
+  node: domain/investigation/investigation
+- file: src/__tests__/unit/investigation/investigation-factory.spec.ts
+  where: lines 396-398, the test 'resolves to an Investigation itself, never to a second hand-declared
+    type...'
+  evidence: "it('resolves to an Investigation itself, never to a second hand-declared type standing in\
+    \ for every attribute but written_at', () => {\n  expectTypeOf(buildInvestigation).returns.toEqualTypeOf<Promise<Investigation>>();\n\
+    });"
+  cost: 'rules/investigation/written-at-records-when-the-write-settled.md states that what persistence
+    is handed "is the investigation''s own content less written_at" and that "the domain model declares
+    no second element for an investigation assembled but not yet settled" — a structural distinction between
+    the settled Investigation and its pre-settle content. This test asserts, by name, the opposite design
+    choice: that buildInvestigation''s return type is exactly `Investigation` and "never a second hand-declared
+    type standing in for every attribute but written_at". Locking this in as a type-level contract makes
+    the rule''s own prescribed shape ("content less written_at") impossible to introduce later without
+    failing this test, and leaves a reader of the domain node believing every Investigation the code holds
+    is a settled one with written_at present, when the tested return type says otherwise.'
+  kind: contradicts
+  correction: Replace the equality check with one that matches the shape the rule calls for (the investigation's
+    content less written_at) rather than asserting identity with the domain element's own settled type.
+  node: rules/investigation/written-at-records-when-the-write-settled
+read:
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: 'capability_name: `capability-for-${concept}`,
+
+    capability_version: ''1.0.0'','
+- node: domain/investigation/evidence
+  held_at: the `anEvidence` fixture, lines 60-77
+  evidence: "function anEvidence(concept: string, overrides: Partial<Evidence> = {}): Evidence {\n  return\
+    \ {\n    concept,\n    inputs: 'an-input',\n    observation: 'an-observation',\n    observed_at: '2024-01-01T00:00:00.000Z',\n\
+    \    ttl: 60,\n    origin: 'a-connector',\n    result: 'ok',\n    capability_name: `capability-for-${concept}`,\n\
+    \    capability_version: '1.0.0',\n    elapsed_ms: 12,\n    fields: [],\n    concept_description:\
+    \ '',\n    capability_payload_notes: '',\n    ...overrides,\n  };\n}"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: "function aConfirmedEvaluation(hypothesis: string): Evaluation {\n  return { hypothesis, verdict:\
+    \ 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }] };\n}"
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: 'import type { Case, Hypothesis, ManifestEntry } from ''../../../case/case.js'';
+
+    import { InvestigationNotBuildableError } from ''../../../errors/investigation-not-buildable.error.js'';
+
+    import { SubjectCarriesNoAttributeError } from ''../../../errors/subject-carries-no-attribute.error.js'';'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: 'import type { Case, Hypothesis, ManifestEntry } from ''../../../case/case.js'';
+
+    import { InvestigationNotBuildableError } from ''../../../errors/investigation-not-buildable.error.js'';
+
+    import { SubjectCarriesNoAttributeError } from ''../../../errors/subject-carries-no-attribute.error.js'';'
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: "it('copies model, prompt_version and evidence straight from the given options, unchanged',\
+    \ async () => {\n  const evidence = [anEvidence('concept-a'), anEvidence('concept-b')];\n  const options\
+    \ = validOptions({ model: 'model-y', prompt_version: 'prompt-v2', evidence });\n\n  const investigation\
+    \ = await buildInvestigation(options);\n\n  expect(investigation.model).toBe('model-y');\n  expect(investigation.prompt_version).toBe('prompt-v2');\n\
+    \  expect(investigation.evidence).toEqual(evidence);\n});"
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: 'import { expect, expectTypeOf, it } from ''vitest'';
+
+    import type { Case, Hypothesis, ManifestEntry } from ''../../../case/case.js'';'
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: 'import { expect, expectTypeOf, it } from ''vitest'';
+
+    import type { Case, Hypothesis, ManifestEntry } from ''../../../case/case.js'';'
+looked_past: The file's structural-immutability assertions (Object.getPrototypeOf equal to Object.prototype,
+  no function-valued properties) and its defensive-copy checks on the evidence and evaluations arrays
+  are implementation choices for how the factory's immutable-result quality is achieved, not domain facts
+  the specification states differently, and are not reported here.
+candidates_opened:
+- domain/investigation/investigation
+- rules/investigation/written-at-records-when-the-write-settled
+- rules/investigation/one-evidence-per-collected-concept
+- rules/investigation/one-evaluation-per-required-hypothesis
+- rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses

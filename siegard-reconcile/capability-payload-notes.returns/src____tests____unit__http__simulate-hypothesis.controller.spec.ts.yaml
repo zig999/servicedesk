@@ -1,0 +1,44 @@
+read:
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: 'capability_name: ''a-capability'',
+
+    capability_version: ''1.0.0'','
+- node: domain/investigation/evidence
+  held_at: the evidence array literal inside completeRecord()
+  evidence: '{ concept: ''a-concept'', inputs: ''{}'', observation: ''an-observation'', observed_at: ''2024-01-01T00:00:00.000Z'',
+    ttl: 60, origin: ''a-connector'', result: ''ok'', capability_name: ''a-capability'', capability_version:
+    ''1.0.0'', elapsed_ms: 10, fields: [], concept_description: '''', capability_payload_notes: '''' }'
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: 'evaluation: { hypothesis: ''hypothesis-a'', verdict: ''confirmed'', citations: [{ concept:
+    ''a-concept'', field: ''a-field'' }] } -- a fixture the mocked runSimulateHypothesis resolves with,
+    never a call into the evaluator itself.'
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: 'capability_name: ''a-capability'', capability_version: ''1.0.0'' -- the only capability-shaped
+    data in the file, carrying neither schemas, timeout, connector nor nature.'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies }
+    from '../../../http/simulate-hypothesis.controller.js';
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: 'const runSimulateHypothesis: RunSimulateHypothesisMock = vi.fn(); ... runSimulateHypothesis.mockResolvedValueOnce(record);'
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: the file's imports are limited to case, case-query.port, errors, factories and http types.
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: the file's imports are limited to case, case-query.port, errors, factories and http types.
+looked_past: The fixture builders heldManifestEntry/heldCase duplicate the same Case/ManifestEntry shape
+  across several tests, and expectTypeOf is used for a structural-typing assertion -- both are test-construction
+  choices, not domain facts. Several stronger domain assertions (twenty-second deadline budget, narrow
+  response shape with no resolved/assessment/cost/narrative/ticket_ref, no store/event-bus write, HypothesisNotInManifestError
+  and SubjectCarriesNoAttributeError propagation) were checked directly against the specification root
+  and matched rules/investigation/an-answer-arrives-within-the-declared-deadline, constraints/the-deadline-is-an-absolute-propagated-instant,
+  contracts/investigation/case-simulation, scenarios/investigation/a-single-hypothesis-is-simulated, rules/investigation/a-simulation-writes-no-investigation,
+  rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused and rules/investigation/a-subject-carries-at-least-one-attribute
+  -- none outside this file's given set, none contradicted.
+candidates_opened:
+- constraints/the-deadline-is-an-absolute-propagated-instant

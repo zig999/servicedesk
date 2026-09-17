@@ -1,0 +1,73 @@
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      insertSubjectAttributeValue's INSERT into investigation_subject_attribute_values, and the test
+      asserting no foreign key still ties its attribute column to a vocabulary table.
+    evidence: |-
+      'INSERT INTO investigation_subject_attribute_values (investigation_id, attribute, value) VALUES ($1,$2,$3)',
+      [options.investigationId, options.attribute, value],
+  - node: domain/integration/capability
+    held_at: >-
+      the test asserting the capabilities table's exact column set, one per declared attribute,
+      payload_notes included.
+    evidence: |-
+      expect(rows.map((row) => row.column_name)).toEqual([
+        'concept', 'connector', 'input_schema', 'name', 'nature', 'output_schema', 'payload_notes', 'timeout', 'version',
+      ]);
+  - node: domain/investigation/evidence
+    held_at: >-
+      the migration-0025 column-addition test and the pre-0025-row backfill-read test for
+      capability_payload_notes.
+    evidence: |-
+      expect(addedColumns).toEqual(['capability_payload_notes']);
+      ...
+      expect(rows).toEqual([{ capability_payload_notes: '' }]);
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      The file's only external dependency touching persistence is `import { Client } from 'pg';`;
+      no import or call of the evaluator port, its adapter, or an `evaluate` operation appears anywhere
+      in the file -- this suite exercises schema and rows only.
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      the NOT-NULL-except-thirteen-columns test, which leaves every capabilities column but
+      payload_notes as NOT NULL at the schema level.
+    evidence: |-
+      { table_name: 'capabilities', column_name: 'payload_notes' },
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      This is a database-migration and row-persistence suite (pg client against a raw schema);
+      it contains no surface, no read-capability-by-identity call and no presentation of a capability
+      to an operator -- nothing here states or withholds an attribute on a surface.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the test reading a pre-migration-0025 investigation_evidence row's capability_payload_notes back
+      as the empty string, never a read failure.
+    evidence: |-
+      expect(rows).toEqual([{ capability_payload_notes: '' }]);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the capabilities column-set test (one column per declared attribute, none extra) and the
+      schema_migrations-is-the-one-exemption test.
+    evidence: |-
+      expect(rows.map((row) => row.column_name)).toEqual(['applied_at', 'filename']);
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      applyMigrations applying every *.sql file in sorted filename order to a fresh schema, and the
+      test asserting the resulting relations equal EXPECTED_TABLES exactly.
+    evidence: |-
+      async function applyMigrations(client: Client): Promise<void> {
+        for (const file of await migrationFilesInOrder()) {
+          const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+          await client.query(sql);
+        }
+      }
+looked_past: >-
+  Most of the file's assertions (hypothesis_revisions' state enum and default, evidence-result and
+  evaluation-reason and capability-nature and consolidation-register CHECK sets, the citations
+  surrogate-identity-replaced-the-composite-key claim, the investigations five-optional-attributes
+  count, foreign-key and unique-constraint refusals unrelated to subject-attribute-value or
+  capability/evidence payload notes) test domain facts whose owning nodes are not in this file's set
+  and are pre-existing rather than part of the payload-notes/subject-attribute-value work under
+  review; judging them belongs to whichever pass carries their own nodes.

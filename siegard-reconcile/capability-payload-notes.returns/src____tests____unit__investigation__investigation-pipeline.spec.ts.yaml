@@ -1,0 +1,50 @@
+read:
+- node: domain/integration/capability
+  held_at: the aCapability factory, which builds every required attribute the aggregate declares and lets
+    payload_notes stay correctly absent when the caller declares none
+  evidence: "function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability\
+    \ {\n  return {\n    name: `capability-for-${overrides.concept}`,\n    version: '1.0.0',\n    nature:\
+    \ 'read-only',\n    input_schema: 'input-schema',\n    output_schema: schemaDeclaring('a-field'),\n\
+    \    timeout: 60_000,\n    connector: `connector-for-${overrides.concept}`,\n    ...overrides,\n \
+    \ };\n}"
+- node: domain/investigation/evidence
+  held_at: the expectedOkEvidence builder, matched against the pipeline's actual result
+  evidence: "return {\n  concept,\n  inputs: JSON.stringify({ concept, subject: A_SUBJECT, requester:\
+    \ A_REQUESTER }),\n  observation,\n  observed_at: new Date(0).toISOString(),\n  ttl: DEFAULT_EVIDENCE_TTL_SECONDS,\n\
+    \  origin: `connector-for-${concept}`,\n  result: 'ok',\n  capability_name: `capability-for-${concept}`,\n\
+    \  capability_version: '1.0.0',\n  elapsed_ms: 0,\n  fields: [{ name: 'a-field', type: 'string' }],\n\
+    \  concept_description: '',\n  capability_payload_notes: '',\n};"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: the evaluate operation implemented on the fake evaluators the pipeline is exercised against
+  evidence: "class ImmediateHypothesisEvaluator implements IHypothesisEvaluator {\n  public constructor(private\
+    \ readonly outcome: EvaluationOutcome) {}\n  public async evaluate(): Promise<EvaluationOutcome> {\n\
+    \    return this.outcome;\n  }\n}"
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: 'timeout: 60_000 -- the fixture states a fixed, already-valid timeout; the file never omits
+    a required attribute to exercise the default or the refusal.'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: the file's imports reach only the domain type and the fake registry query, never a presentation
+    surface or read-capability-by-identity flow.
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: "public async evaluate(): Promise<EvaluationOutcome> {\n  return this.outcome;\n}"
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: the fakes hold state in an in-memory Map; the file carries no relational store, schema or
+    migration code.
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: the same in-memory fake stands in for persistence; nothing touches a migration script.
+looked_past: The last test's assertion that run-diagnosis.ts imports none of the five stage modules is
+  a module-boundary/architecture check with no domain fact in it. Two facts the test states beyond the
+  given node set (the empty-subject refusal and the durations.total-not-a-simple-sum claim) were checked
+  and matched rules/investigation/a-subject- carries-at-least-one-attribute and domain/investigation/durations,
+  close to verbatim -- not drift.
+candidates_opened:
+- domain/investigation/subject
+- domain/investigation/subject-attribute-value
+- rules/investigation/a-subject-carries-at-least-one-attribute
+- domain/investigation/durations
+- contracts/investigation/observation-source

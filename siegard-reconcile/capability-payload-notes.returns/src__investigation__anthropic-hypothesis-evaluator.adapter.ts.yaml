@@ -1,0 +1,160 @@
+findings:
+  - file: src/investigation/anthropic-hypothesis-evaluator.adapter.ts
+    where: "outcomeFromModelText, lines 104-107"
+    evidence: |-
+      if (parsed === undefined || parsed.verdict === 'inconclusive') {
+          return judgmentFailureOutcome(callRecord);
+        }
+    cost: >-
+      When the model returns the well-formed `{"verdict":"inconclusive"}` response the
+      system prompt itself instructs it to give "whenever the evidence does not ground
+      either" verdict — the honest, no-inference answer judgment-does-not-infer calls
+      for, with nothing having actually failed — this branch records it under reason
+      "judgment-failure", the identical label used when the response could not be
+      parsed at all. A reader relying on the reason to separate a broken call from an
+      evidence-grounded "cannot decide" will find the two merged under one label,
+      which is the same confusion an-inconclusive-evaluation-declares-its-reason's own
+      rationale warns against ("an infrastructure failure is read as a domain fact —
+      the pathology the rest of the system exists to avoid"), here running the other
+      way: a domain conclusion (the evidence does not decide it) is read as an
+      infrastructure failure.
+    kind: unstated
+    node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    correction: >-
+      A distinct reason for "the call completed and the model itself could not ground
+      a verdict" — or an explicit decision, recorded in domain/investigation/evaluation-reason
+      or this rule, that such a response is folded into judgment-failure on purpose —
+      would have to be stated before this branch's choice stops being the adapter's own.
+read:
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: >-
+      the class declaration implementing the port, and the fact the Anthropic SDK is
+      imported only in this adapter file
+    evidence: |-
+      import Anthropic from '@anthropic-ai/sdk';
+      ...
+      export class AnthropicHypothesisEvaluator implements IHypothesisEvaluator {
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: "buildUserPrompt() and the client.messages.create call, lines 66-71 and 133-150"
+    evidence: |-
+      return await this.client.messages.create({
+            model: this.model,
+            max_tokens: this.maxTokens,
+            system: SYSTEM_PROMPT,
+            messages: [{ role: 'user', content: prompt }],
+          });
+  - node: domain/integration/capability
+    held_at: "capabilityPayloadNotesLines(), lines 171-175"
+    evidence: |-
+      function capabilityPayloadNotesLines(capabilityPayloadNotes: string): readonly string[] {
+        return capabilityPayloadNotes === ''
+          ? []
+          : [`<capability_payload_notes>${escapeForXmlText(capabilityPayloadNotes)}</capability_payload_notes>`];
+      }
+  - node: domain/investigation/citation
+    held_at: "noDataOutcome(), line 88, and isCitation(), lines 215-217"
+    evidence: |-
+      citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+  - node: domain/investigation/evaluation
+    held_at: "outcomeFromModelText()/judgmentFailureOutcome(), lines 92-112"
+    evidence: |-
+      return outcomeFromModelText(textOf(message), { usage: message.usage, elapsed_ms: elapsedMs, prompt });
+  - node: domain/investigation/evidence
+    held_at: "itemBlock(), lines 156-165"
+    evidence: |-
+      function itemBlock(item: EvidenceItem): string {
+        return [
+          `<item concept="${escapeForXmlAttribute(item.concept)}">`,
+          ...conceptDescriptionLines(item.concept_description),
+          fieldsBlock(item.fields),
+          ...capabilityPayloadNotesLines(item.capability_payload_notes),
+          `<observation>${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</observation>`,
+          '</item>',
+        ].join('\n');
+      }
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: "the evaluate() method, line 45"
+    evidence: |-
+      public async evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome> {
+  - node: domain/investigation/usage
+    held_at: "outcomeFromModelText call site, line 61"
+    evidence: |-
+      return outcomeFromModelText(textOf(message), { usage: message.usage, elapsed_ms: elapsedMs, prompt });
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: "fieldElement()/fieldsBlock(), lines 177-185, and the SYSTEM_PROMPT instruction, line 24"
+    evidence: |-
+      function fieldElement(field: FieldSemantics): string {
+        const typeAttribute = field.type !== undefined ? ` type="${escapeForXmlAttribute(field.type)}"` : '';
+        const description = field.description !== undefined ? escapeForXmlText(field.description) : '';
+        return `<field name="${escapeForXmlAttribute(field.name)}"${typeAttribute}>${description}</field>`;
+      }
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: "parseJudgment(), lines 126-130"
+    evidence: |-
+      if (!isCitationArray(citations) || !isNonEmpty(citations)) {
+          return undefined;
+        }
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "noDataOutcome(), lines 84-90, and judgmentFailureOutcome(), lines 92-94"
+    evidence: |-
+      function noDataOutcome(nonOkEvidence: readonly EvidenceItem[]): EvaluationOutcome {
+        return {
+          verdict: 'inconclusive',
+          reason: 'no-data',
+          citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+        };
+      }
+  - node: rules/investigation/judgment-does-not-infer
+    held_at: "SYSTEM_PROMPT, line 16"
+    evidence: >-
+      The absence of evidence that would ground a verdict is itself a reason to answer
+      inconclusively — never an invitation to infer, assume, or draw on anything beyond
+      the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: "itemBlock(), lines 156-165, reading only the EvidenceItem's own already-snapshotted fields"
+    evidence: |-
+      `<item concept="${escapeForXmlAttribute(item.concept)}">`,
+        ...conceptDescriptionLines(item.concept_description),
+        fieldsBlock(item.fields),
+        ...capabilityPayloadNotesLines(item.capability_payload_notes),
+  - node: scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+    held_at: "conceptDescriptionLines(), lines 167-169"
+    evidence: |-
+      function conceptDescriptionLines(conceptDescription: string): readonly string[] {
+        return conceptDescription === '' ? [] : [`<concept_description>${escapeForXmlText(conceptDescription)}</concept_description>`];
+      }
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      the file's only imports are `@anthropic-ai/sdk`, `./citation.js`,
+      `./citation-validation.js`, `./field-semantics.js`, `./hypothesis-evaluator.port.js`,
+      `./usage.js` and `./verdict.js` — no capability-registration or contract-validation
+      code appears anywhere in the file
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      the file contains no HTTP surface or presentation code — its only exported class
+      implements IHypothesisEvaluator and calls the Anthropic SDK
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      the file contains no persistence or migration code — it holds only prompt
+      assembly, the Anthropic call, and response parsing
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      the file contains no schema or migration code of any kind
+looked_past: >-
+  DEFAULT_MAX_TOKENS (1024) and the code-fence/JSON parsing mechanics (CODE_FENCE,
+  unwrapCodeFence, parseJsonOrUndefined) are technical call-shaping details with no
+  node addressing them either way, and Anthropic's own Usage shape may carry fields
+  beyond input_tokens/output_tokens flowing through message.usage unchanged — these
+  read as implementation/typing concerns for a different pass, not domain facts.
+candidates_opened:
+  - domain/investigation/evaluation-reason
+  - rules/investigation/a-judgment-failure-records-the-last-call-made
+  - scenarios/investigation/a-foreign-citation-is-refused

@@ -80,6 +80,25 @@
       "title": "The judgment prompt renders each item's own capability payload notes",
       "summary": "Four tests prove the adapter states an item's own capability_payload_notes beside its observation when non-empty, omits the tag entirely when empty, never leaks one item's notes into another item's block, and that a field named only in payload notes still fails citation validation.",
       "task": "task/capability-payload-notes/judgment-prompt-renders-payload-notes"
+    },
+    {
+      "id": "review/capability-payload-notes",
+      "kind": "review",
+      "file": "review/capability-payload-notes.md",
+      "title": "capability-payload-notes, first review",
+      "summary": "Four passes over the five delivered tasks carrying an operator-authored payload_notes field from capability registration through evidence collection into the hypothesis judgment prompt.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "A capability re-registered between collection and judgment does not change the capability_payload_notes the evaluator receives for an already-collected item.",
+        "Assembling the judgment call issues no capability-registry read, so the value handed to the evaluator comes from the evidence snapshot alone.",
+        "The relation holding a collected evidence item has one column pairing with capability_payload_notes and no column pairing with no declared attribute."
+      ],
+      "findings": 23
     }
   ],
   "edges": [
@@ -250,6 +269,36 @@
       "to": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-payload-notes",
+      "to": "task/capability-payload-notes/capability-declares-payload-notes",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-payload-notes",
+      "to": "task/capability-payload-notes/evidence-snapshots-capability-payload-notes",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/capability-payload-notes",
+      "to": "task/capability-payload-notes/identity-read-states-payload-notes",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/capability-payload-notes",
+      "to": "task/capability-payload-notes/judgment-call-carries-payload-notes",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/capability-payload-notes",
+      "to": "task/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "kind": "reviews",
+      "at": "tasks[4]"
     }
   ]
 }

@@ -1,0 +1,83 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the capabilityRecord() fixture and the round-trip assertion in the first it block, which together
+      carry the aggregate's full attribute set through a write and a read.
+    evidence: |
+      return {
+          name: 'a-capability',
+          version: '1.0.0',
+          nature: 'read-only',
+          input_schema: '{}',
+          output_schema: '{}',
+          timeout: 5000,
+          connector: 'a-connector',
+          concept: 'a-concept',
+          ...overrides,
+        };
+      ...
+      expect(answered).toEqual([capability]);
+  - node: domain/investigation/evidence
+    held_at: >-
+      the fixed-shape INSERT built by insertInvestigationReferencingCapability, used only to give a
+      capability a referencing row for the FK-preservation tests, not to exercise the evidence element's
+      own attributes.
+    evidence: |-
+      await pool.query(
+        `INSERT INTO investigation_evidence
+           (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, capability_name, capability_version, elapsed_ms)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [id, concept, 'serialized-inputs', 'an-observation', when, 60, 'a-connector', 'ok', capability.name, capability.version, 12],
+      );
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |-
+      import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
+      import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      the SIXTY_SECONDS_IN_MILLISECONDS constant and the timeout-default test, together with the
+      no-output-schema and no-connector exclusion tests that assert the store refuses an incomplete
+      registration.
+    evidence: |-
+      const SIXTY_SECONDS_IN_MILLISECONDS = 60_000;
+      ...
+      await registry.registerCapability(completeRegistration({ concept, timeout: undefined }));
+      const [persisted] = await store.readCapabilities();
+      expect(persisted?.timeout).toBe(SIXTY_SECONDS_IN_MILLISECONDS);
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      const resolved = await registry.readCapabilityByIdentityOrThrow('a-capability', '1.0.0');
+      expect(resolved.payload_notes).toBe('what the shallow schema does not say');
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |-
+      await pool.query(
+        `INSERT INTO investigation_evidence
+           (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, capability_name, capability_version, elapsed_ms)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the explicit column lists in the raw SQL against capabilities, matching domain/integration/capability's
+      own declared attributes one for one.
+    evidence: |-
+      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      ['a-legacy-capability', '1.0.0', 'read-only', '{}', '{}', 5000, 'a-connector', concept],
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
+      await pool.query('DELETE FROM capabilities');
+looked_past: >-
+  The wrapping of a Postgres NOT_NULL_VIOLATION into CapabilityStoreError, and the choice to represent an
+  absent payload_notes as an omitted object key rather than an explicit undefined, are implementation/error-
+  handling shapes this pass does not judge.
+candidates_opened:
+  - domain/integration/capability-nature
+  - rules/integration/a-capability-is-read-only
+  - domain/integration/capability-registry
+  - rules/knowledge/the-contract-check-reads-the-current-registration
+  - constraints/the-system-persists-to-one-relational-database
+  - contracts/integration/capability-registry

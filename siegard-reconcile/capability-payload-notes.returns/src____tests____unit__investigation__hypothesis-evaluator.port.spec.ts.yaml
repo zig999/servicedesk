@@ -1,0 +1,62 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file's whole surface is the hypothesis-evaluator port and its fake; no capability
+      aggregate is constructed or referenced anywhere in it.
+  - node: domain/investigation/evidence
+    held_at: the SOME_EVIDENCE fixture
+    evidence: |-
+      const SOME_EVIDENCE: readonly EvidenceItem[] = [
+        {
+          concept: 'a-concept',
+          result: 'ok',
+          observation: 'an-observed-value',
+          fields: [{ name: 'a-field', type: 'string', description: 'a description of a-field' }],
+          concept_description: 'what a-concept means',
+          capability_payload_notes: '',
+        },
+      ];
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: every evaluate() call against the fake evaluator
+    evidence: |-
+      const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      this fixture only ever plays the role of a hypothesis-evaluator's evidence snapshot; no
+      capability contract is declared or validated in this file.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      no presentation surface, registry read, or capability attribute set is in scope.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      SOME_EVIDENCE's fields, concept_description and capability_payload_notes, carried unchanged
+      into every evaluate() call
+    evidence: |-
+      fields: [{ name: 'a-field', type: 'string', description: 'a description of a-field' }],
+      concept_description: 'what a-concept means',
+      capability_payload_notes: '',
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      this file exercises an in-memory fake port implementation; no relation, column or
+      migration is touched.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      no migration or schema-replay concern is in this file's scope.
+looked_past: >-
+  The fake evaluator's own choices (zeroing a seeded non-zero usage/elapsed_ms, throwing when a
+  criterion has no seed, ignoring the evidence argument) are the test double's own plumbing.
+candidates_opened:
+  - domain/investigation/usage
+  - domain/investigation/verdict
+  - domain/investigation/evaluation
+  - domain/investigation/evaluation-reason
+  - domain/investigation/citation
+  - constraints/judgment-runs-behind-a-port
+  - rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  - rules/investigation/a-decided-evaluation-cites-evidence
+  - constraints/the-judgment-prompt-is-closed

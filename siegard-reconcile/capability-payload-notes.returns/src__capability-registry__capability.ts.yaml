@@ -1,0 +1,73 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the `Capability` type, lines 7-23
+    evidence: |-
+      export type Capability = {
+        readonly name: string;
+        readonly version: string;
+        readonly nature: CapabilityNature;
+        readonly input_schema: string;
+        readonly output_schema: string;
+        readonly timeout: number;
+        readonly connector: string;
+        readonly concept: string;
+        readonly payload_notes?: string;
+      };
+  - node: domain/integration/capability-nature
+    held_at: >-
+      the `CAPABILITY_NATURES` constant and `CapabilityNature` type, lines 1-3
+    evidence: >-
+      export const CAPABILITY_NATURES = ['read-only', 'mutating'] as const;
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      `DEFAULT_CAPABILITY_TIMEOUT_MS` (line 37) and `REQUIRED_REGISTRATION_ATTRIBUTES` (lines 39-47)
+    evidence: |-
+      export const DEFAULT_CAPABILITY_TIMEOUT_MS = 60_000;
+
+      export const REQUIRED_REGISTRATION_ATTRIBUTES = [
+        'name',
+        'version',
+        'nature',
+        'input_schema',
+        'output_schema',
+        'connector',
+        'concept',
+      ] as const;
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file declares only `readonly payload_notes?: string;` on `Capability`; it declares no
+      `evidence` shape and no `capability_payload_notes` snapshot attribute — that snapshot is not
+      this file's fact to hold.
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      the file exports only `CAPABILITY_NATURES`, `Capability`, `CapabilityRegistration`,
+      `DEFAULT_CAPABILITY_TIMEOUT_MS`, `REQUIRED_REGISTRATION_ATTRIBUTES` and `SCHEMA_ATTRIBUTES`;
+      no `evaluate` operation or evaluator port appears here.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      the file declares the `Capability` shape's fields but contains no read, presentation or
+      surface-facing logic that could state or withhold any of them.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to a hypothesis's judgment or to reading an evidence
+      snapshot; it only declares capability-side types.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      `readonly payload_notes?: string;` is the declared-model side of the pairing this
+      constraint measures; the file itself contains no column or migration, so the mirroring
+      fact is not held here.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      the file contains no migration script or replay logic of any kind.
+looked_past: >-
+  READ_ONLY_NATURE and SCHEMA_ATTRIBUTES are helper constants naming a literal and a field
+  grouping already implied by domain/integration/capability's own attribute declarations; they
+  read as code organization rather than a domain fact stated independently of the node, so they
+  are not reported as findings.

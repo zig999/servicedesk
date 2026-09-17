@@ -1,0 +1,97 @@
+findings:
+- file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+  where: the namedAttributes helper and the assertion in it('refuses an empty registration naming every
+    required attribute', ...)
+  evidence: "function namedAttributes(refusal: unknown): string[] {\n  if (!(refusal instanceof IncompleteCapabilityContractError))\
+    \ {\n    throw new Error('expected the incomplete-contract refusal, got something else');\n  }\n \
+    \ return refusal.context.problems.map((problem) => problem.split(' ')[0]);\n}\n...\nexpect(namedAttributes(refusal).sort()).toEqual([\n\
+    \  'concept',\n  'connector',\n  'input_schema',\n  'name',\n  'nature',\n  'output_schema',\n  'version',\n\
+    ]);"
+  cost: rules/integration/a-capability-declares-its-contract says only that an incomplete registration
+    is refused with an HTTP 422 IncompleteCapabilityContractError; it never says the refusal names which
+    required attribute(s) are missing, unlike the sibling rules for MalformedCapabilityInputSchemaError
+    and ConnectorPlaceholderOutsideInputSchemaError, whose own statements explicitly say "naming every
+    departure" / "naming every orphaned placeholder". This suite locks in a per-attribute problems entry
+    across nine separate tests.
+  kind: unstated
+  correction: State, in rules/integration/a-capability-declares-its-contract, that the refusal names every
+    attribute left undeclared, the way the analogous schema and placeholder rules already do for their
+    own conditions.
+  node: rules/integration/a-capability-declares-its-contract
+- file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+  where: it('refuses a registration missing a required attribute as IncompleteCapabilityContractError,
+    even though the named connector already holds a configuration that would also embed an orphaned placeholder',
+    ...)
+  evidence: "const refusal = await registry\n  .registerCapability(completeRegistration({ connector: 'erp-http',\
+    \ name: undefined }))\n  .catch((error: unknown) => error);\n\nexpect(refusal).toBeInstanceOf(IncompleteCapabilityContractError);\n\
+    expect(refusal).not.toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);"
+  cost: No node decides which refusal an operator sees when a registration is both incomplete and would
+    orphan a connector placeholder; this test fixes IncompleteCapabilityContractError as taking priority
+    over ConnectorPlaceholderOutsideInputSchemaError, a business-visible choice that currently lives only
+    in this test and the code it pins.
+  kind: unstated
+  node: rules/integration/a-capability-declares-its-contract
+- file: src/__tests__/unit/capability-registry/capability-registry.service.spec.ts
+  where: it('refuses a registration whose connector holds an orphaning configuration as ConnectorPlaceholderOutsideInputSchemaError
+    even though its concept is already answered by another capability, since this check runs before the
+    concept-uniqueness refusal', ...)
+  evidence: 'expect(refusal).toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
+
+    expect(refusal).not.toBeInstanceOf(ConceptAlreadyAnsweredError);'
+  cost: No node decides whether the connector-placeholder-orphan check or the one-capability-answers-one-concept
+    check runs first when a registration trips both; the rationale for fixing the placeholder check as
+    running first lives only in this test's title.
+  kind: unstated
+  node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+read:
+- node: domain/integration/capability
+  held_at: the heldCapability() factory and the full attribute-set assertion in it('accepts a complete
+    read-only contract and answers the capability as registered', ...)
+  evidence: "expect(registered).toEqual({\n  name: 'a-capability',\n  version: '1.0.0',\n  nature: READ_ONLY,\n\
+    \  input_schema: '{}',\n  output_schema: '{}',\n  timeout: STATED_TIMEOUT_MS,\n  connector: 'a-connector',\n\
+    \  concept: 'a-concept',\n});"
+- node: domain/investigation/evidence
+  held_at: nowhere
+  evidence: import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: the per-attribute refusal tests and the default-timeout test
+  evidence: 'expect(namedAttributes(refusal)).toEqual([''input_schema'']);
+
+    ...
+
+    expect(registered.timeout).toBe(SIXTY_SECONDS_IN_MILLISECONDS);'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: readCapabilityByIdentityOrThrow answering the store's current record rather than a stale submission,
+    and answering the held record directly
+  evidence: 'const resolved = await registry.readCapabilityByIdentityOrThrow(''a-capability'', ''1.0.0'');
+
+    expect(resolved.payload_notes).toBe(''the note the store now holds'');'
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: "class InMemoryCapabilityStore implements ICapabilityStore {\n  public constructor(private\
+    \ records: readonly Capability[] = []) {}"
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: "class InMemoryCapabilityStore implements ICapabilityStore {\n  public constructor(private\
+    \ records: readonly Capability[] = []) {}"
+looked_past: The exact shape of the orphaned-placeholder report and the accepted-but-unvalidated non-integer
+  timeout / non-positive limit at the service layer (whose split from HTTP-level validation the decision
+  log already accounts for) are formatting and layering choices, not domain facts. A seeming timeout contradiction
+  was checked against decision-log.md (~lines 509-511) and resolved as an intentional DTO-vs-service validation
+  split, not drift.
+candidates_opened:
+- rules/integration/a-capability-is-read-only
+- domain/integration/capability-nature
+- rules/integration/a-capability-declares-well-formed-schemas
+- rules/integration/a-capability-input-schema-holds-a-well-formed-object
+- rules/integration/a-connector-placeholder-is-declared-by-its-capability
+- rules/integration/one-capability-answers-one-concept
+- constraints/listings-are-paged
+- constraints/the-capability-identity-read-refuses-an-unregistered-identity
+- constraints/a-malformed-request-is-refused-with-a-validation-error

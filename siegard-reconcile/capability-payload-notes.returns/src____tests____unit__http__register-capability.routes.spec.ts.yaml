@@ -1,0 +1,54 @@
+read:
+- node: domain/integration/capability
+  held_at: the validBody() and heldCapability() test-data builders, and the payload_notes pass-through
+    tests
+  evidence: "function heldCapability(overrides: Partial<Capability> = {}): Capability {\n  return {\n\
+    \    name: 'a-name',\n    version: '1.0.0',\n    nature: 'read-only',\n    input_schema: '{\"type\"\
+    :\"object\"}',\n    output_schema: '{\"type\":\"object\"}',\n    timeout: 60_000,\n    connector:\
+    \ 'a-connector',\n    concept: 'a-concept',\n    ...overrides,\n  };\n}"
+- node: domain/investigation/evidence
+  held_at: nowhere
+  evidence: this file's imports and every test in it address only the register-capability HTTP route;
+    nothing here constructs, snapshots or reads an evidence item
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: the file's whole scope is app.inject calls against the register-capability route; no hypothesis
+    evaluation is exercised
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: the timeout tests (default left to the registry, malformed timeout refused at 400, absent-timeout
+    default distinguished from a decimal timeout's refusal)
+  evidence: 'it(''calls registerCapability with no timeout key when the request body states none, leaving
+    the default to the registry rather than defaulting it here'', ...
+
+    const [calledWith] = built.registerCapability.mock.calls[0] as [CapabilityRegistration];
+
+    expect(calledWith).not.toHaveProperty(''timeout'');'
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: every request in this file is a PUT against register-capability; the file never invokes or
+    asserts on a read-capability-by-identity presentation
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: no hypothesis judgment or evidence snapshot appears anywhere in this file
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: this file builds an in-memory Fastify app with a mocked registerCapability; no schema, migration
+    or persistence code is exercised
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: registerCapability is a mock in every test; no migration or database replay is involved
+looked_past: The final test asserts that a generic, non-domain rejection from registerCapability is answered
+  with the sanitized INTERNAL_ERROR envelope via shared middleware; that is generic cross-cutting error-handling,
+  not a fact of the capability domain. The PUT-only route and 200-for-both-create-and-replace choices
+  were checked against knowledge/projections/full-text.md (~line 4439), which already records that success-status
+  choice for register-connector and sibling create-or-replace operations is deliberately left to REST
+  convention, not decided into a node -- not drift.
+candidates_opened:
+- constraints/a-malformed-request-is-refused-with-a-validation-error
+- rules/integration/a-capability-declares-well-formed-schemas
+- rules/integration/a-capability-is-read-only
+- rules/integration/one-capability-answers-one-concept
+- rules/integration/a-connector-placeholder-is-declared-by-its-capability
+- rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder
+- rules/integration/a-capability-input-schema-holds-a-well-formed-object
+- contracts/integration/capability-registry

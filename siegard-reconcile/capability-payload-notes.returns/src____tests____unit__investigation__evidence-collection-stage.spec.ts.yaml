@@ -1,0 +1,73 @@
+findings:
+- file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+  where: the it.each test description at lines 448–454, for the parametrized cause 'MalformedHttpConnectorConfigurationError'
+  evidence: '''carries %s as the evidence result_detail for a held capability whose observation ends unavailable
+    for that cause (rules/integration/an-unresolvable-observation-ends-unavailable, rules/integration/an-http-connector-configuration-declares-its-call)'','
+  cost: A reader who wants to know why 'MalformedHttpConnectorConfigurationError' is a valid result_detail
+    follows this citation to `an-http-connector-configuration-declares-its-call`, whose own statement
+    covers only the address, query, headers and body a connector call may declare and never mentions a
+    method, a statusMap or this error at all. The node that actually states the required keys and this
+    exact error — `an-http-connector-configuration-declares-its-method-and-status-vocabulary`, whose statement
+    reads "...an observation reaching a configuration that lacks any of the three issues no call and ends
+    unavailable, with a result detail reporting a MalformedHttpConnectorConfigurationError..." — is never
+    named, so the citation sends the next reader to the wrong page of the specification for three of the
+    four causes' shared rule and a fourth cause the cited node does not govern.
+  kind: contradicts
+  node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+  correction: Cite `rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary`
+    alongside `rules/integration/an-unresolvable-observation-ends-unavailable` for this test, in place
+    of `rules/integration/an-http-connector-configuration-declares-its-call`.
+read:
+- node: domain/integration/capability
+  held_at: the `aCapability()` builder, whose returned object supplies every declared attribute (name,
+    version, nature, input_schema, output_schema, timeout, connector, concept, and an optional payload_notes
+    via overrides)
+  evidence: "function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability\
+    \ {\n  return {\n    name: `capability-for-${overrides.concept}`,\n    version: '1.0.0',\n    nature:\
+    \ 'read-only',\n    input_schema: 'input-schema',\n    output_schema: 'output-schema',\n    timeout:\
+    \ 60_000,\n    connector: `connector-for-${overrides.concept}`,\n    ...overrides,\n  };\n}\n"
+- node: domain/investigation/evidence
+  held_at: the `expectedOkEvidence` / `expectedNonOkEvidence` / `expectedUnavailableEvidence` builders,
+    which assert the full evidence shape `collectEvidence` must produce
+  evidence: "return {\n  concept: context.concept,\n  inputs: expectedInputs(context),\n  observation,\n\
+    \  observed_at: context.observedAt,\n  ttl: DEFAULT_EVIDENCE_TTL_SECONDS,\n  origin: context.capability.connector,\n\
+    \  result: 'ok' as const,\n  capability_name: context.capability.name,\n  capability_version: context.capability.version,\n\
+    \  elapsed_ms: elapsedMs,\n  fields: [],\n  concept_description: '',\n  capability_payload_notes:\
+    \ '',\n};\n"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: the file's own import list never reaches `hypothesis-evaluator.port.js` or `judgment-stage.js`;
+    every import is `capability-registry`, `case`, `connector-registry`, `glossary` or `investigation/evidence-collection-stage`
+    and its own observation-source adapters — this file exercises `collectEvidence` alone, never evaluation.
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: "public hold(capability: Capability): void {\n  this.held.set(capability.concept, capability);\n\
+    }\n"
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: the file imports only backend investigation, capability-registry, glossary and case types
+    (lines 1–21); no HTTP DTO or presentation-surface module is imported or exercised.
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: the file never imports or calls `hypothesis-evaluator.port.js`'s `evaluate`, and every test
+    in it exercises `collectEvidence` producing evidence, never a judgment reading it back.
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: no persistence or repository module is imported; `FakeCapabilityQuery` and `FakeGlossaryQuery`
+    hold state in in-memory `Map`s, e.g. `private readonly held = new Map<string, Capability>();` — no
+    relational schema is touched.
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: the same in-memory fakes as above are the file's only data stores; no migration script or
+    database connection is referenced anywhere in the file.
+looked_past: the file's heavy repetition of capability/observation-source/case setup boilerplate across
+  nearly every `it()`, and the regex-based source-import scan at the bottom (`IMPORT_SPECIFIER_PATTERN`)
+  as a technique for asserting the no-infrastructure constraint, are test-construction and code-quality
+  matters rather than domain-fact conformance.
+candidates_opened:
+- rules/integration/an-http-connector-configuration-declares-its-call
+- rules/integration/an-unresolvable-observation-ends-unavailable
+- rules/investigation/collection-has-its-own-budget-within-the-total
+- constraints/the-deadline-is-an-absolute-propagated-instant
+- contracts/investigation/observation-source
+- domain/investigation/field-semantics

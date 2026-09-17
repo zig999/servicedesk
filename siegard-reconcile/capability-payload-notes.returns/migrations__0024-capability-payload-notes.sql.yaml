@@ -1,0 +1,46 @@
+findings:
+- file: migrations/0024-capability-payload-notes.sql
+  where: opening comment block, lines 1-5
+  evidence: an operator's own free-text account of what the observation actually returns beneath its declared
+    output schema, never enforced and never read by anything that resolves a call or admits a citation.
+  cost: This restates domain/integration/capability's own account of what payload_notes is and guarantees
+    ("never enforced and never read by anything that resolves a call or admits a citation") as the migration's
+    own prose rather than pointing to the node. If that node's description of payload_notes is ever revised,
+    this comment keeps stating the old account verbatim, and a reader of the migration would take it as
+    current without opening the node it silently duplicates.
+  kind: contradicts
+  correction: Drop the restated description and keep only the identity citation of domain/integration/capability
+    already present in the "Implements, from the specification" block, so the meaning of payload_notes
+    has one home.
+  node: domain/integration/capability
+read:
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: the file itself -- a single plain numbered script applying one additive change.
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: the ALTER TABLE statement.
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: domain/integration/capability
+  held_at: 'the ALTER TABLE statement -- a nullable TEXT column with no DEFAULT and no NOT NULL, matching
+    the attribute''s declared type string and required: false.'
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: domain/investigation/evidence
+  held_at: nowhere
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: the ALTER TABLE statement -- payload_notes is added nullable, with no NOT NULL, so it stays
+    outside the set of attributes this rule requires a registration to declare.
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: "ALTER TABLE capabilities\n  ADD COLUMN payload_notes TEXT;"
+looked_past: The file's "Implements, from the specification" trailer cites each node by identity with
+  a short structural annotation, matching the same footer convention the comment itself says migrations
+  0003, 0007 and 0012 already use; this uniform trace-citation footer was not treated as a further restatement
+  finding.

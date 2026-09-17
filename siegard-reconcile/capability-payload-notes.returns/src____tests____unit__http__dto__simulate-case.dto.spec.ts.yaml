@@ -1,0 +1,59 @@
+findings:
+- file: src/__tests__/unit/http/dto/simulate-case.dto.spec.ts
+  where: the it("validates a response whose cost.calls is fractional, since domain/investigation/cost
+    stays outside this task's scope", ...) block, lines 329-335
+  evidence: "it(\"validates a response whose cost.calls is fractional, since domain/investigation/cost\
+    \ stays outside this task's scope\", () => {\n  const response = { ...aValidResponse(), cost: { calls:\
+    \ 1.5, input_tokens: 1, output_tokens: 1 } };\n\n  const result = simulateCaseResponseSchema.safeParse(response);\n\
+    \n  expect(result.success).toBe(true);\n});"
+  cost: A reader of domain/investigation/cost sees calls declared as an integer -- a whole count of judgment
+    calls made. This test locks the response schema's acceptance of a fractional value (1.5) into the
+    suite as correct behavior, so the next person touching this schema sees a passing green test confirming
+    that a non-integer call count is valid, and has no reason to treat calls as anything but permissive
+    -- the domain model's own typing is the one place that still says otherwise.
+  kind: contradicts
+  correction: Either the response schema (and this test) enforces calls as an integer, matching domain/investigation/cost's
+    declared type, or the node's declaration of calls as type integer is revisited -- the test should
+    not assert success true for a fractional calls value while the node stands as written.
+  node: domain/investigation/cost
+read:
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: domain/investigation/evidence
+  held_at: the aValidEvidenceItem() fixture and its round-trip assertion in the "validates a production-shaped
+    response with no field stripped from its assessment or its evidence" test
+  evidence: "return {\n    concept: 'a-concept',\n    inputs: 'an-input',\n    observation: 'an-observation',\n\
+    \    observed_at: '2026-01-01T00:00:00.000Z',\n    ttl: 60,\n    origin: 'a-capability',\n    result:\
+    \ 'ok',\n    capability_name: 'a-capability',\n    capability_version: '1.0.0',\n    elapsed_ms: 50,\n\
+    \    fields: [{ name: 'a-field', type: 'string', description: 'a description' }],\n    concept_description:\
+    \ 'a description of the concept',\n    capability_payload_notes: '',\n  };\n...\nexpect(result.data?.evidence[0]).toEqual(evidenceItem);\n"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: 'fields: [{ name: ''a-field'', type: ''string'', description: ''a description'' }],
+
+    concept_description: ''a description of the concept'',
+
+    capability_payload_notes: '''','
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: import { simulateCaseRequestSchema, simulateCaseResponseSchema } from '../../../../http/dto/simulate-case.dto.js';
+looked_past: Several other tests in this file assert domain facts outside this node set -- a citation's
+  field now optional on every verdict branch, an assessment requiring register/usage/ elapsed_ms/prompt,
+  and a subject's attributes array no longer requiring a minimum length -- each of those belongs to whichever
+  node set governs citation, assessment and subject, not to the capability-payload-notes nodes this pass
+  was given.
+candidates_opened:
+- domain/investigation/cost

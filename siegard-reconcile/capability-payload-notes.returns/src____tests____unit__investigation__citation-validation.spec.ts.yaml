@@ -1,0 +1,66 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the test exercising the fact that payload notes are "never read by anything that ... admits a citation"
+    evidence: |-
+      capability_payload_notes: 'the response actually nests the code under a field named raw_status',
+      ...
+      expect(isCitationValid(context, citation)).toBe(false);
+  - node: domain/investigation/evidence
+    held_at: >-
+      the anEvidence/fieldsDeclaring fixtures and the test binding a citation's field check strictly to its
+      own cited evidence item's snapshotted fields
+    evidence: |-
+      const citedEvidence = anEvidence({ concept: 'a-collected-concept', fields: fieldsDeclaring('field-on-a') });
+      const otherEvidence = anEvidence({ concept: 'a-different-collected-concept', fields: fieldsDeclaring('field-on-b') });
+      ...
+      expect(isCitationValid(context, citation)).toBe(false);
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: >-
+      the test asserting the module reads nothing live from the capability registry
+    evidence: |-
+      expect(source).not.toMatch(/outputSchemas/);
+      expect(source).not.toMatch(/capabilityOutputSchemaKey/);
+      expect(source).not.toMatch(/CapabilityOutputSchemas/);
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      capability_name: `capability-for-${overrides.concept}`,
+      capability_version: '1.0.0',
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      import type { Citation } from '../../../investigation/citation.js';
+      import {
+        acceptedCitations,
+        isCitationValid,
+      } from '../../../investigation/citation-validation.js';
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the test that a field named only in capability_payload_notes text is refused as a citation, together
+      with the test that no live-resolved capability output-schema map is built or read
+    evidence: |-
+      capability_payload_notes: 'the response actually nests the code under a field named raw_status',
+      ...
+      expect(isCitationValid(context, citation)).toBe(false);
+      ...
+      expect(source).not.toMatch(/outputSchemas/);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |-
+      import { readFile } from 'node:fs/promises';
+      import { fileURLToPath } from 'node:url';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      import { readFile } from 'node:fs/promises';
+      import { fileURLToPath } from 'node:url';
+looked_past: >-
+  The inline accepted/refused comments annotating the acceptedCitations test's citation list restate the
+  collects/field-snapshot rules in prose next to the data, and the "answering false rather than throwing"
+  test for a concept with no matching evidence at all asserts a defensive robustness property beyond what
+  any node states -- both are a different judgment's than a domain-fact conformance check.
+candidates_opened:
+  - rules/investigation/a-citation-stays-within-the-hypothesis-collects
+  - rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+  - domain/investigation/citation

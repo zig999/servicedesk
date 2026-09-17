@@ -1,0 +1,52 @@
+findings:
+- file: src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts
+  where: the test "returns exactly the model's own text content, trimmed of surrounding whitespace"
+  evidence: 'create.mockResolvedValueOnce(textResponse(''  The consolidated assessment.\n''));
+
+    ...
+
+    expect(outcome.text).toBe(''The consolidated assessment.'');'
+  cost: 'The rule this test locks in -- that an assessment''s text is trimmed of its surrounding whitespace
+    before the consolidator hands it back -- is stated nowhere but here: domain/investigation/assessment-consolidator''s
+    responsibility says only that the call "return[s] the assessment''s text", and domain/investigation/assessment
+    declares text as a plain required string with no normalization rule attached.'
+  kind: unstated
+  node: domain/investigation/assessment-consolidator
+  correction: State, on domain/investigation/assessment-consolidator's responsibility or on domain/investigation/assessment's
+    text attribute, that the text a consolidation call answers is trimmed of surrounding whitespace before
+    it is carried as the assessment's own text.
+read:
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: 'capability_name: ''a-capability'',
+
+    capability_version: ''1'','
+- node: domain/investigation/evidence
+  held_at: the SOME_EVIDENCE fixture
+  evidence: "const SOME_EVIDENCE: readonly Evidence[] = [\n  {\n    concept: 'a-concept',\n    inputs:\
+    \ 'a-serialized-call',\n    observation: 'an-observed-value',\n    observed_at: '2026-01-01T00:00:00.000Z',\n\
+    \    ttl: 60,\n    origin: 'a-connector',\n    result: 'ok',\n    capability_name: 'a-capability',\n\
+    \    capability_version: '1',\n    elapsed_ms: 12,\n    fields: [],\n    concept_description: '',\n\
+    \    capability_payload_notes: '',\n  },\n];"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: import { AnthropicAssessmentConsolidator } from '../../../investigation/anthropic-assessment-consolidator.adapter.js';
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: const ADAPTER_PATH = join(INVESTIGATION_DIRECTORY, 'anthropic-assessment-consolidator.adapter.ts');
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: const DOMAIN_FILES_FEEDING_CONSOLIDATE = ['assessment-consolidator.port.ts', 'consolidation-register.ts',
+    'evaluation.ts', 'evidence.ts'];
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: import type { Evidence } from '../../../investigation/evidence.js';
+looked_past: The tests over the config-supplied vs. environment-variable API key, the whitelist of HTTP
+  client libraries the adapter file may import, and the error-handling assertions are engineering and
+  dependency-hygiene concerns rather than domain facts, so they are not reported here.

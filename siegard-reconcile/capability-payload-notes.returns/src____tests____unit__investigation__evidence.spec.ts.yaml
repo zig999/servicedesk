@@ -1,0 +1,60 @@
+findings:
+- file: src/__tests__/unit/investigation/evidence.spec.ts
+  where: the expectTypeOf<Evidence>().toEqualTypeOf<{...}> object literal, the capability reference fields
+  evidence: 'readonly capability_name: string;
+
+    readonly capability_version: string;'
+  cost: 'domain/investigation/evidence.md states the capability link only as relationships: target: domain/integration/capability,
+    type: reference, cardinality: "1" -- it never says the reference is materialized as two flat string
+    fields, or names them capability_name and capability_version. A reader who wants to know how this
+    required reference is represented has to read this test (or the implementation it type-checks) to
+    learn it.'
+  kind: unstated
+  node: domain/investigation/evidence
+  correction: Record how the capability relationship materializes on evidence -- e.g. as required capability_name
+    and capability_version string attributes -- in domain/investigation/evidence.md, with a decision-log
+    entry, the way attributes.inputs.type, attributes.observation.type and attributes.origin.type were
+    each decided for this same element.
+read:
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: the type literal under test carries only evidence's own attributes and the two capability-identity
+    fields; none of capability's own declared attributes appear as a standalone shape anywhere in this
+    file
+- node: domain/investigation/evidence
+  held_at: the expectTypeOf<Evidence>().toEqualTypeOf<{...}> block
+  evidence: "expectTypeOf<Evidence>().toEqualTypeOf<{\n    readonly concept: string;\n    readonly inputs:\
+    \ string;\n    readonly observation: string;\n    readonly observed_at: string;\n    readonly ttl:\
+    \ number;\n    readonly origin: string;\n    readonly result: EvidenceResult;\n    readonly result_detail?:\
+    \ string;\n    readonly capability_name: string;\n    readonly capability_version: string;\n    readonly\
+    \ elapsed_ms: number;\n    readonly fields: readonly FieldSemantics[];\n    readonly concept_description:\
+    \ string;\n    readonly capability_payload_notes: string;\n  }>();"
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: the file imports and type-checks only Evidence, EvidenceResult and FieldSemantics; nothing
+    here names an evaluate operation or a hypothesis-evaluator port
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: these two fields carry only the capability's identity keys; the file states nothing about
+    nature, both schemas, timeout, connector or a refusal on an incomplete registration
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: the file contains no reference to read-capability-by-identity, a presentation surface, or
+    any attribute being "presented" -- it is a type-shape assertion over the Evidence value object only
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: the required fields, concept_description and capability_payload_notes attributes asserted in
+    the same type block
+  evidence: 'readonly fields: readonly FieldSemantics[];
+
+    readonly concept_description: string;
+
+    readonly capability_payload_notes: string;'
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: the file is a compile-time type test over a TypeScript interface; it makes no statement about
+    a relation, a column, or a migration
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: the file makes no statement about migration scripts or schema replay
+looked_past: Whether a structural expectTypeOf assertion is the right test-design pattern for pinning
+  an interface's shape is a code-review question, not a domain-fact one.

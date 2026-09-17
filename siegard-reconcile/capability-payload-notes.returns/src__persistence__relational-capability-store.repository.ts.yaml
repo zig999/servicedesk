@@ -1,0 +1,98 @@
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      readCapabilities()'s SELECT column list and upsertStatementFor()'s INSERT/ON CONFLICT column
+      list, both naming exactly the nine attributes domain/integration/capability declares.
+    evidence: >-
+      SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes
+                     FROM ${CAPABILITIES_TABLE}
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the constructor's single DatabaseConnection dependency and every read/write routed through
+      runStatement/runInTransaction against it.
+    evidence: >-
+      public constructor(private readonly connection: DatabaseConnection) {}
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the class exposes only readCapabilities(): Promise<readonly Capability[]> and
+      writeCapabilities(capabilities: readonly Capability[]): Promise<void> — no read-capability,
+      read-capability-by-identity, list-capabilities or register-capability operation appears here;
+      those are composed elsewhere from these two.
+  - node: domain/integration/capability
+    held_at: >-
+      the ICapabilityRow interface and toCapability()'s return object, which carry all nine
+      declared attributes across the read path, mirrored by upsertStatementFor()'s params on write.
+    evidence: >-
+      return {
+          name: row.name,
+          version: row.version,
+          nature: row.nature,
+          input_schema: row.input_schema,
+          output_schema: row.output_schema,
+          timeout: row.timeout,
+          connector: row.connector,
+          concept: row.concept,
+          ...(row.payload_notes !== null && row.payload_notes !== '' ? { payload_notes: row.payload_notes } : {}),
+        };
+  - node: domain/integration/capability-nature
+    held_at: >-
+      CAPABILITY_NATURE_VALUES, built from the imported CAPABILITY_NATURES, and isCapabilityNature(),
+      which checks a row's nature string against that set rather than redeclaring the values.
+    evidence: >-
+      const CAPABILITY_NATURE_VALUES: ReadonlySet<string> = new Set<string>(CAPABILITY_NATURES);
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file implements only readCapabilities() and writeCapabilities(); register-capability and
+      resolve-concept are not implemented here.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      export class RelationalCapabilityStore implements ICapabilityStore { — the class's only two
+      methods operate on ICapabilityRow/Capability; no evidence record is read or written.
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      the conditional spread in toCapability(), which treats a stored empty-string payload_notes
+      the same as a null one — i.e. undeclared, consistent with "an attribute that is absent or an
+      empty string is undeclared."
+    evidence: >-
+      ...(row.payload_notes !== null && row.payload_notes !== '' ? { payload_notes: row.payload_notes } : {})
+  - node: rules/knowledge/the-contract-check-reads-the-current-registration
+    held_at: >-
+      readCapabilities(), which issues a fresh SELECT against the capabilities table on every call,
+      holding nothing remembered between calls.
+    evidence: >-
+      const rows = await runStatement<ICapabilityRow>(
+            this.connection,
+            {
+              text: `SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes
+                     FROM ${CAPABILITIES_TABLE}`,
+            },
+            raiseReadFailure,
+          );
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      export class RelationalCapabilityStore implements ICapabilityStore { — no evaluate operation
+      or hypothesis-judgment code appears in this file.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      the file has no presentation/surface code; its two methods are readCapabilities() and
+      writeCapabilities(), both persistence operations.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      the file never reads or writes an evidence record or a hypothesis's judgment; its scope is
+      the capabilities table alone.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      import { runInTransaction, runStatement, type IStatement } from './database-access.js'; —
+      the file executes statements against an already-existing schema; it neither runs nor
+      declares migration scripts.
+looked_past: >-
+  the defensive isCapabilityNature() check and its raiseReadFailure on an unrecognized nature
+  value is a data-integrity guard over already-established enum values, not a domain-fact
+  conformance question, so it is not reported here.

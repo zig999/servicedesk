@@ -1,0 +1,74 @@
+read:
+  - node: domain/investigation/evidence
+    held_at: >-
+      the evidenceSchema object, lines 10-25
+    evidence: |
+      export const evidenceSchema = z.object({
+        concept: z.string().min(1),
+        inputs: z.string(),
+        observation: z.string(),
+        observed_at: z.string().min(1),
+        ttl: z.number(),
+        origin: z.string(),
+        result: z.enum(EVIDENCE_RESULTS),
+        result_detail: z.string().optional(),
+        capability_name: z.string(),
+        capability_version: z.string(),
+        elapsed_ms: z.number(),
+        fields: z.array(fieldSemanticsSchema).readonly(),
+        concept_description: z.string(),
+        capability_payload_notes: z.string(),
+      });
+  - node: domain/integration/capability
+    held_at: >-
+      the evidenceSchema's capability_name and capability_version fields, holding the reference's
+      identity half rather than the full aggregate
+    evidence: |
+      capability_name: z.string(),
+      capability_version: z.string(),
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod';
+      import { EVIDENCE_RESULTS } from '../../investigation/evidence-result.js';
+      — the file's only imports; no evaluate operation or hypothesis-evaluator surface appears
+      anywhere in it.
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      capability_name: z.string(),
+      capability_version: z.string(),
+      — only the identity pair is modeled here; nature, input_schema, output_schema, timeout and
+      connector, and any refusal on their absence, do not appear in this file.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      capability_name: z.string(),
+      capability_version: z.string(),
+      — this file shapes an evidence item, not a capability-identity presentation; none of the
+      policy's named attributes (nature, both schemas, timeout, connector, payload_notes) are
+      modeled here.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the evidenceSchema's fields, concept_description and capability_payload_notes properties,
+      lines 22-24
+    evidence: |
+      fields: z.array(fieldSemanticsSchema).readonly(),
+      concept_description: z.string(),
+      capability_payload_notes: z.string(),
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod'; — this is an HTTP DTO validation schema, not a relation or a
+      migration script; no column-to-attribute pairing is asserted here.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod'; — the file contains no migration script or replay logic.
+looked_past: >-
+  ttl and elapsed_ms validate as z.number() rather than enforcing integer values (e.g. via
+  z.number().int()), even though both nodes declare them as type integer; this is a
+  validation-completeness/code-quality matter about how tightly the schema constrains input
+  shape, not a stated domain fact, so it is left to a different pass.
+candidates_opened:
+  - domain/investigation/field-semantics

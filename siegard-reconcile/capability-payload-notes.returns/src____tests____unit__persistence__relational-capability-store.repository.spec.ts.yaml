@@ -1,0 +1,57 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the capabilityRecord() factory (used by every read and write test) and the row literals fed
+      to the fake driver, which carry all nine declared attributes in the declared order
+    evidence: |-
+      return {
+          name: 'a-capability',
+          version: '1.0.0',
+          nature: 'read-only',
+          input_schema: 'an-input-schema',
+          output_schema: 'an-output-schema',
+          timeout: 5000,
+          connector: 'a-connector',
+          concept: 'a-concept',
+          ...overrides,
+        };
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: "import type { Capability } from '../../../capability-registry/capability.js';"
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: "import type { Capability } from '../../../capability-registry/capability.js';"
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      every capabilityRecord() the file builds already carries nature, both schemas, timeout and
+      connector filled in; no test withholds a required attribute or checks the default/refusal.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      const answered = await store.readCapabilities(); expect(answered).toEqual([capabilityRecord()]);
+      -- exercises readCapabilities(), never read-capability-by-identity or a presenting surface
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: "import type { Capability } from '../../../capability-registry/capability.js';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the params asserted for each upsert statement in the 'upserts each given capability' test
+    evidence: >-
+      expect(recorded[1]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema',
+      'an-output-schema', 5000, 'a-connector', 'a-concept', null]);
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      the file drives a fake DatabaseConnection throughout and never touches a migration script.
+looked_past: >-
+  the store's own error-wrapping convention (CapabilityStoreError carrying the driver failure as
+  cause, and the ROLLBACK-then-release sequence on a refused write) is an engineering pattern, not
+  a domain fact any node states or contradicts.
+candidates_opened:
+  - domain/integration/capability-nature
+  - rules/integration/a-capability-is-read-only
+  - rules/knowledge/the-contract-check-reads-the-current-registration
+  - domain/integration/capability-registry
+  - contracts/integration/capability-registry
+  - constraints/the-system-persists-to-one-relational-database

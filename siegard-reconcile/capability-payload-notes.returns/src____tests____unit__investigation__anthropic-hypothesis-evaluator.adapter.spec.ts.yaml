@@ -1,0 +1,70 @@
+findings:
+- file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+  where: the test 'defaults the token ceiling to 1024 when the caller configures none'
+  evidence: 'expect(createMock.mock.calls[0]?.[0]).toMatchObject({ max_tokens: 1024 });'
+  cost: '1024 is a threshold that bounds how much of a judgment call''s answer the provider is allowed
+    to return -- exactly the kind of call-shaping figure the specification documents elsewhere for a capability''s
+    own timeout (its default of sixty seconds is stated in rules/integration/a-capability-declares-its-contract).
+    Here the number lives only in this test (and the adapter it pins): a reader auditing or retuning the
+    judgment call''s token budget will look for it in the specification and find nothing, and the day
+    someone changes it in code without changing a node, nobody can say whether that was a decision or
+    a slip.'
+  kind: unstated
+  correction: A node governing the hypothesis-evaluator's provider call would need to declare the default
+    token ceiling the adapter falls back to when the caller configures none, the way the capability contract
+    rule declares the timeout default.
+read:
+- node: domain/investigation/evaluation
+  held_at: the shape asserted on the value evaluate() returns, throughout the file
+  evidence: expect(outcome.usage).toBeUndefined(); expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+    expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
+- node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+  held_at: nowhere
+  evidence: the one elapsed_ms test in this file only checks expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(20)
+    after an artificial 20ms delay; no assertion exercises a sub-millisecond span settling at 0
+- node: domain/integration/capability
+  held_at: nowhere
+  evidence: this file constructs no capability value and asserts none of name, version, nature, schemas,
+    timeout or connector -- it only exercises EvidenceItem's snapshotted capability_payload_notes
+- node: domain/investigation/evidence
+  held_at: the EvidenceItem literals passed to evaluate(), e.g. SOME_OK_EVIDENCE
+  evidence: '{ concept: ''concept-one'', result: ''ok'', observation: ''an-observed-value'', fields: [{
+    name: ''field-one'', type: ''string'', description: ''field-one description'' }], concept_description:
+    ''what concept-one means'', capability_payload_notes: '''' }'
+- node: domain/investigation/hypothesis-evaluator
+  held_at: every call to evaluator.evaluate(criterion, evidence, caseContext) across the file
+  evidence: const outcome = await evaluator.evaluate(A_CRITERION, mixedEvidence, A_CASE_CONTEXT);
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: no capability registration, timeout or contract-completeness fact is asserted anywhere in
+    this file
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: nowhere
+  evidence: this file exercises no capability-presentation surface at all
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: the assertions that the prompt content carries exactly each evidence item's own snapshotted
+    fields and concept_description
+  evidence: expect(content).toContain('the-marker-field'); expect(content).toContain('the-marker-type');
+    expect(content).toContain('the-marker-field-description'); expect(content).toContain('the-marker-concept-description');
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: this file mocks the Anthropic SDK and asserts prompt/outcome shapes only; it touches no persistence
+    schema
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: this file has no migration or schema-replay concern; it is a unit test of the evaluator adapter
+    alone
+looked_past: The test asserting the credential is read from the ANTHROPIC_API_KEY environment variable
+  when the constructor is given no apiKey states an adapter wiring convention, not a domain fact any specification
+  node models -- left to whatever judgment covers adapter/engineering conventions rather than this pass.
+candidates_opened:
+- constraints/the-judgment-prompt-is-closed
+- rules/investigation/judgment-does-not-infer
+- domain/investigation/citation
+- domain/investigation/usage
+- domain/investigation/verdict
+- scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+- rules/investigation/an-inconclusive-evaluation-declares-its-reason
+- rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+- constraints/judgment-runs-behind-a-port
+- domain/investigation/evaluation-reason

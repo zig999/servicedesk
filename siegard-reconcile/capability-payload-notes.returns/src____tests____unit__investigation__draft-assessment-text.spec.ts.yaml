@@ -1,0 +1,52 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      capability_name: `capability-for-${overrides.concept}`,
+          capability_version: '1.0.0',
+  - node: domain/investigation/evidence
+    held_at: >-
+      the anEvidence() factory, lines 38-54
+    evidence: |-
+      capability_name: `capability-for-${overrides.concept}`,
+          capability_version: '1.0.0',
+          elapsed_ms: 12,
+          fields: [],
+          concept_description: '',
+          capability_payload_notes: '',
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      import { draftAssessment, type DraftAssessmentOptions } from '../../../investigation/draft-assessment-text.js';
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      capability_name: `capability-for-${overrides.concept}`,
+          capability_version: '1.0.0',
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      capability_name: `capability-for-${overrides.concept}`,
+          capability_version: '1.0.0',
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister }, text);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      import { expect, expectTypeOf, it } from 'vitest';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      import { expect, expectTypeOf, it } from 'vitest';
+looked_past: >-
+  ScriptedConsolidator duplicates FakeAssessmentConsolidator's role as a second hand-rolled
+  IAssessmentConsolidator fake used in only one test; that duplication is a code-review concern
+  rather than a domain-fact conformance question, so it is not reported as a finding.
+candidates_opened:
+  - domain/investigation/assessment
+  - domain/knowledge/consolidation-register
+  - domain/investigation/usage
+  - domain/investigation/evaluation
+  - domain/investigation/citation

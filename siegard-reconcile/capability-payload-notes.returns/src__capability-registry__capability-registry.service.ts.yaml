@@ -1,0 +1,143 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: >-
+      listCapabilities(), the object literal it returns
+    evidence: |
+      const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+      return {
+        data,
+        total,
+        limit: pagination.limit,
+        offset: pagination.offset,
+        pageCount: pageCountOf(total, pagination.limit),
+      };
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: >-
+      readCapabilityByIdentityOrThrow()
+    evidence: |
+      if (!resolution.held) {
+        throw new CapabilityIdentityNotFoundError(resolution.name, resolution.version);
+      }
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the four public methods of CapabilityRegistryService — registerCapability, readCapability,
+      readCapabilityByIdentity/readCapabilityByIdentityOrThrow, listCapabilities
+    evidence: |
+      public async registerCapability(registration: CapabilityRegistration): Promise<Capability> {
+      public async readCapability(concept: string): Promise<CapabilityResolution> {
+      public async readCapabilityByIdentity(name: string, version: string): Promise<CapabilityIdentityResolution> {
+      public async listCapabilities(pagination: PaginationRequest): Promise<PaginatedResponse<Capability>> {
+  - node: domain/integration/capability
+    held_at: >-
+      heldCapability(), the returned Capability object
+    evidence: |
+      return {
+        name: registration.name,
+        version: registration.version,
+        nature: registration.nature,
+        input_schema: registration.input_schema,
+        output_schema: registration.output_schema,
+        timeout: registration.timeout ?? DEFAULT_CAPABILITY_TIMEOUT_MS,
+        connector: registration.connector,
+        concept: registration.concept,
+        ...(isUndeclared(registration.payload_notes) ? {} : { payload_notes: registration.payload_notes }),
+      };
+  - node: domain/integration/capability-registry
+    held_at: >-
+      registerCapability() and readCapability(), together with heldCapability(), refuseOrphanedPlaceholders()
+      and refuseAnsweredConcept()
+    evidence: |
+      const answers = held.filter((candidate) => candidate.concept === concept);
+      if (answers.length > 1) {
+        throw new DuplicateConceptAnswerError(concept, answers);
+      }
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      contractProblems()/isUndeclared(), and the timeout default in heldCapability()
+    evidence: |
+      function isUndeclared(value: string | undefined): boolean {
+        return value === undefined || value === '';
+      }
+      timeout: registration.timeout ?? DEFAULT_CAPABILITY_TIMEOUT_MS,
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: >-
+      refuseMalformedSchemas()/isWellFormedJson()
+    evidence: |
+      function refuseMalformedSchemas(registration: DeclaredRegistration): void {
+        const malformed = SCHEMA_ATTRIBUTES.filter((attribute) => !isWellFormedJson(registration[attribute]));
+        if (malformed.length > 0) {
+          throw new CapabilitySchemaNotWellFormedError(malformed);
+        }
+      }
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: >-
+      refuseMalformedInputSchemaShape()
+    evidence: |
+      function refuseMalformedInputSchemaShape(registration: DeclaredRegistration): void {
+        const parsed: unknown = JSON.parse(registration.input_schema);
+        const problems = inputSchemaShapeProblems(parsed);
+        if (problems.length > 0) {
+          throw new MalformedCapabilityInputSchemaError(problems);
+        }
+      }
+  - node: rules/integration/a-capability-is-read-only
+    held_at: >-
+      heldCapability(), the nature check
+    evidence: |
+      if (registration.nature !== READ_ONLY_NATURE) {
+        throw new CapabilityNotReadOnlyError(registration.nature);
+      }
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: >-
+      refuseOrphanedPlaceholders() and orphanedAcrossEveryConfiguration()
+    evidence: |
+      const configurations = (await this.connectorConfigurationsReader.readConnectorConfigurations()).filter(
+        (configuration) => configuration.connector === capability.connector,
+      );
+      const orphaned = orphanedAcrossEveryConfiguration(capability, configurations);
+      if (orphaned.length > 0) {
+        throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);
+      }
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: >-
+      readCapability() and refuseAnsweredConcept()
+    evidence: |
+      function refuseAnsweredConcept(kept: readonly Capability[], registering: Capability): void {
+        const answering = kept.find((candidate) => candidate.concept === registering.concept);
+        if (answering !== undefined) {
+          throw new ConceptAlreadyAnsweredError(registering.concept, answering, registering);
+        }
+      }
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      This file never constructs or touches a domain/investigation/evidence value; heldCapability()
+      only carries payload_notes onto the Capability itself — `...(isUndeclared(registration.payload_notes)
+      ? {} : { payload_notes: registration.payload_notes }),` — with no evidence-snapshot construct anywhere
+      in the file.
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      The file's whole surface is `export class CapabilityRegistryService implements ICapabilityQuery`,
+      with no reference to a hypothesis or an evaluator anywhere in it.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      readCapabilityByIdentity() returns the raw resolution — `return capability === undefined ? { held:
+      false, name, version } : { held: true, capability };` — this file has no presentation surface that
+      states an identity's attributes to an operator.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      Nothing in this file reads or reasons over a hypothesis's evidence; the store dependency is
+      `private readonly store: ICapabilityStore` and nothing else is read here.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      Persistence here is entirely behind the port — `private readonly store: ICapabilityStore` — this
+      file declares no column, relation or schema of its own.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      This file contains no migration or schema-construction code; the same `private readonly store:
+      ICapabilityStore` dependency is the only persistence surface it touches.

@@ -1,0 +1,64 @@
+findings:
+- file: src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts
+  where: it('resolves the identity exactly as the path spelled it, case and hyphenation preserved, never
+    normalized', ...)
+  evidence: "it('resolves the identity exactly as the path spelled it, case and hyphenation preserved,\
+    \ never normalized', async () => {\n  const built = buildTestApp();\n  app = built.app;\n  built.readCapabilityByIdentity.mockResolvedValueOnce(\n\
+    \    heldCapability({ name: 'Mixed-Case-Capability', version: '1.0.0-RC.1' }),\n  );\n\n  await app.inject({\
+    \ method: 'GET', url: '/v1/capabilities/Mixed-Case-Capability/1.0.0-RC.1' });\n\n  expect(built.readCapabilityByIdentity).toHaveBeenCalledWith('Mixed-Case-Capability',\
+    \ '1.0.0-RC.1');\n});"
+  cost: domain/integration/capability and contracts/integration/capability-registry say a capability is
+    "identified by name and version" but never say whether that identity matches case-sensitively and
+    without any hyphenation/format normalization. This test is the only place that decision lives; a reader
+    checking whether two differently-cased requests for the same name resolve to one capability or two
+    will not find the answer in the specification, and a later change to fold case before lookup would
+    break only this test rather than anything the business is on record as having decided.
+  kind: unstated
+  correction: State, in domain/integration/capability or a rule constraining it, whether the (name, version)
+    identity matches case-sensitively and unnormalized, so the test asserts a decision the specification
+    already carries rather than being the decision's only home.
+  node: domain/integration/capability
+read:
+- node: domain/integration/capability
+  held_at: the heldCapability and heldCapabilityWithoutPayloadNotes fixtures, which carry exactly the
+    aggregate's declared attribute set
+  evidence: "function heldCapability(overrides: Partial<Capability> = {}): Capability {\n  return {\n\
+    \    name: 'a-capability',\n    version: '1.0.0',\n    nature: 'read-only',\n    input_schema: 'an-input-schema',\n\
+    \    output_schema: 'an-output-schema',\n    timeout: 5_000,\n    connector: 'a-connector',\n    concept:\
+    \ 'a-concept',\n    payload_notes: 'notes about the payload',\n    ...overrides,\n  };\n}"
+- node: domain/investigation/evidence
+  held_at: nowhere
+  evidence: No evidence-related attribute, snapshot or reference appears anywhere in this file; it exercises
+    only the capability-identity read route.
+- node: domain/investigation/hypothesis-evaluator
+  held_at: nowhere
+  evidence: No hypothesis, criterion or evaluation construct appears anywhere in this file.
+- node: rules/integration/a-capability-declares-its-contract
+  held_at: nowhere
+  evidence: The file never asserts a 422 response, an IncompleteCapabilityContractError, or a default
+    timeout; it only reads a capability already fully formed by heldCapability.
+- node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  held_at: the first two it blocks, asserting the response body equals the read's own answer key for key
+    and that payload_notes is absent exactly when the answer carried none
+  evidence: "expect(response.statusCode).toBe(200);\nexpect(response.json()).toEqual(capability);\nexpect(Object.keys(response.json()\
+    \ as object).sort()).toEqual(\n  Object.keys(readCapabilityByIdentityResponseSchema.shape).sort(),\n\
+    );\n...\nexpect(response.statusCode).toBe(200);\nexpect(response.json()).not.toHaveProperty('payload_notes');"
+- node: rules/investigation/judgment-reads-the-evidence-snapshot
+  held_at: nowhere
+  evidence: No judgment, evaluator call or evidence snapshot read appears anywhere in this file.
+- node: constraints/the-stored-schema-mirrors-the-declared-model
+  held_at: nowhere
+  evidence: This is an HTTP-layer unit test built on an in-memory Fastify instance with a mocked dependency;
+    no schema, migration or column is touched.
+- node: constraints/the-schema-replays-from-its-scripts
+  held_at: nowhere
+  evidence: No migration script or replay behavior is exercised anywhere in this file.
+looked_past: The test asserting that CapabilityIdentityNotFoundError is not an instance of the three sibling
+  not-found error classes is a type-hierarchy/code-structure check rather than a domain fact, so it is
+  left to whatever pass judges implementation structure.
+candidates_opened:
+- constraints/the-capability-identity-read-refuses-an-unregistered-identity
+- constraints/a-domain-error-unmapped-by-status-is-refused-generically
+- constraints/a-malformed-request-is-refused-with-a-validation-error
+- constraints/no-route-enforces-authentication
+- contracts/integration/capability-registry

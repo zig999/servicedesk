@@ -1,0 +1,74 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the response schema, lines 11-21 — every declared attribute of the aggregate is
+      present exactly once, with payload_notes the only optional field
+    evidence: |
+      export const readCapabilityByIdentityResponseSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+        nature: z.enum(CAPABILITY_NATURES),
+        input_schema: z.string().min(1),
+        output_schema: z.string().min(1),
+        timeout: z.int().positive(),
+        connector: z.string().min(1),
+        concept: z.string().min(1),
+        payload_notes: z.string().optional(),
+      });
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      the response schema's field definitions, lines 12-19 — every attribute the invariant
+      makes required is declared with no `.optional()`, and timeout is constrained to a
+      positive value
+    evidence: |
+      timeout: z.int().positive(),
+      connector: z.string().min(1),
+      concept: z.string().min(1),
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the response schema, lines 11-21 — states exactly the nine attributes the policy
+      names (name, version, nature, input_schema, output_schema, timeout, connector,
+      concept, payload_notes), with payload_notes the sole optional one
+    evidence: |
+      export const readCapabilityByIdentityResponseSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+        nature: z.enum(CAPABILITY_NATURES),
+        input_schema: z.string().min(1),
+        output_schema: z.string().min(1),
+        timeout: z.int().positive(),
+        connector: z.string().min(1),
+        concept: z.string().min(1),
+        payload_notes: z.string().optional(),
+      });
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+      import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
+looked_past: >-
+  payload_notes is the only field without a `.min(1)` guard, so an empty string would pass
+  this schema alongside `undefined`; whether that under-constrains the presentation policy's
+  "stands absent... and never otherwise" turns on how the value populating this schema is
+  produced, which is outside this file, so it is left unreported here rather than raised
+  against a construct this file does not contain.

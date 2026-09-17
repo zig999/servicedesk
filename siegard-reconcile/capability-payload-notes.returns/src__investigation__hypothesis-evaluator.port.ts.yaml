@@ -1,0 +1,145 @@
+read:
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: >-
+      the file itself, as the port interface — imports only local type modules, and the
+      interface it declares is the single point evaluate() is invoked through
+    evidence: |-
+      import type { ObservationOutcome } from './observation-source.port.js';
+      import type { Citation } from './citation.js';
+      import type { EvaluationReason } from './evaluation-reason.js';
+      import type { FieldSemantics } from './field-semantics.js';
+      import type { Usage } from './usage.js';
+      import type { Verdict } from './verdict.js';
+      ...
+      export interface IHypothesisEvaluator {
+
+        evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+      }
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: >-
+      the evaluate() signature, which admits only criterion, evidence and caseContext —
+      nothing that could be a live glossary or registry lookup
+    evidence: |-
+      evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: the IHypothesisEvaluator interface, whose one operation is evaluate
+    evidence: |-
+      export interface IHypothesisEvaluator {
+
+        evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+      }
+  - node: domain/investigation/verdict
+    held_at: >-
+      the verdict discriminant of EvaluationOutcome — literal 'confirmed' and 'refuted' branches
+      plus Exclude<Verdict, 'confirmed' | 'refuted'> for the remaining value
+    evidence: |-
+      readonly verdict: 'confirmed';
+      ...
+      readonly verdict: 'refuted';
+      ...
+      readonly verdict: Exclude<Verdict, 'confirmed' | 'refuted'>;
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: >-
+      the citations field of the confirmed and refuted branches of EvaluationOutcome, typed as
+      a non-empty tuple
+    evidence: "readonly citations: readonly [Citation, ...Citation[]];"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: the third branch of EvaluationOutcome, which requires reason
+    evidence: |-
+      {
+            readonly verdict: Exclude<Verdict, 'confirmed' | 'refuted'>;
+            readonly reason: EvaluationReason;
+            readonly citations: readonly Citation[];
+            ...
+          }
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the EvidenceItem type, limited to concept, fields, concept_description and
+      capability_payload_notes plus ObservationOutcome's observation/result — nothing drawn
+      from a live glossary or registry read
+    evidence: |-
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+      } & ObservationOutcome;
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      import type { ObservationOutcome } from './observation-source.port.js';
+      import type { Citation } from './citation.js';
+      import type { EvaluationReason } from './evaluation-reason.js';
+      import type { FieldSemantics } from './field-semantics.js';
+      import type { Usage } from './usage.js';
+      import type { Verdict } from './verdict.js';
+  - node: domain/investigation/evidence
+    held_at: the EvidenceItem type, projecting the four snapshotted fields the port's evaluate() reads
+    evidence: |-
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+      } & ObservationOutcome;
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+      } & ObservationOutcome;
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      export interface IHypothesisEvaluator {
+
+        evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+      }
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |-
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+      } & ObservationOutcome;
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      export type EvaluationOutcome =
+        | {
+            readonly verdict: 'confirmed';
+            readonly citations: readonly [Citation, ...Citation[]];
+            readonly usage?: Usage;
+            readonly elapsed_ms?: number;
+            readonly prompt?: string;
+          }
+looked_past: >-
+  Six of the thirteen nodes in the pack (capability's own declaration, the two
+  integration rules on a capability's contract and its presentation, and the two
+  schema-migration constraints) describe facts that belong to the capability-registry
+  and persistence layers rather than to this port interface; the file makes no claim
+  about any of them, so there is nothing here for another pass to weigh either.
+candidates_opened:
+  - domain/investigation/evaluation
+  - domain/investigation/usage

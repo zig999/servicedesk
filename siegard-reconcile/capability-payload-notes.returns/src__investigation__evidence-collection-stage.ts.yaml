@@ -1,0 +1,193 @@
+findings:
+  - file: src/investigation/evidence-collection-stage.ts
+    where: the TIMED_OUT branch of settledEvidence(), line 207
+    evidence: |-
+      return evidenceOf(base, { result: 'timeout', resultDetail: `no observation within ${effectiveBoundMs}ms`, elapsedMs });
+    cost: >-
+      This composes the exact text a timeout's result_detail discloses, including the millisecond
+      bound the collection stage computed internally. domain/investigation/evidence-result and
+      rules/investigation/no-stage-aborts-on-its-deadline say collection "records a timeout
+      result," and scenarios/investigation/a-collection-timeout-degrades-to-no-data says only that
+      "the evidence for equipment-state records result timeout" — neither states what the
+      recorded detail says. rules/investigation/no-stage-aborts-on-its-deadline treats this kind
+      of disclosed wording as a decision worth stating explicitly for its own persistence-timeout
+      case ("a fact of what this system discloses, not an implementation detail nobody outside the
+      code could otherwise learn"), yet no node states the collection-timeout wording; a reader
+      checking what a timed-out evidence item tells its consumer has nowhere in the specification
+      to look, and the message can drift with no node to hold it to.
+    kind: unstated
+    correction: >-
+      State the collection-timeout ending's disclosed result_detail content (and whether it may
+      include the effective bound in milliseconds) in a node, e.g. beside
+      rules/investigation/no-stage-aborts-on-its-deadline, the way that node already states the
+      persistence-exception's own message and details.
+read:
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: >-
+      collectEvidence(), the stage-ceiling computation
+    evidence: |-
+      const stageCeilingMs = Math.max(0, Math.min(COLLECTION_STAGE_BUDGET_MS, deadline - now));
+  - node: contracts/investigation/observation-source
+    held_at: >-
+      collectEvidence(), the per-concept parallel dispatch
+    evidence: |-
+      return Promise.all(
+          concepts.map((concept) =>
+            collectOneEvidence({ concept, subject, requester, capabilities, glossary, observationSource, stageCeilingMs, now }),
+          ),
+        );
+  - node: domain/integration/capability
+    held_at: >-
+      resolvedBaseOf() and effectiveBoundMsFor(), reading the resolved capability's own declared
+      attributes
+    evidence: |-
+      origin: capability.connector,
+        capabilityName: capability.name,
+        capabilityVersion: capability.version,
+        fields: fieldSemanticsOf(capability.output_schema),
+        conceptDescription,
+        capabilityPayloadNotes: capability.payload_notes ?? '',
+  - node: domain/investigation/evidence
+    held_at: evidenceOf(), assembling the Evidence value
+    evidence: |-
+      return {
+          concept: base.concept,
+          inputs: base.inputs,
+          observation: ending.observation ?? '',
+          observed_at: base.observedAt,
+          ttl: DEFAULT_EVIDENCE_TTL_SECONDS,
+          origin: base.origin,
+          result: ending.result,
+          result_detail: ending.resultDetail,
+          capability_name: base.capabilityName,
+          capability_version: base.capabilityVersion,
+          elapsed_ms: ending.elapsedMs,
+          fields: base.fields,
+          concept_description: base.conceptDescription,
+          capability_payload_notes: base.capabilityPayloadNotes,
+        };
+  - node: domain/investigation/evidence-result
+    held_at: settledEvidence() and unavailableEvidence(), choosing the ending
+    evidence: |-
+      if (outcome === TIMED_OUT) {
+          return evidenceOf(base, { result: 'timeout', resultDetail: `no observation within ${effectiveBoundMs}ms`, elapsedMs });
+        }
+        if (outcome.result === 'ok') {
+          return evidenceOf(base, { result: 'ok', observation: outcome.observation, elapsedMs });
+        }
+        if (outcome.result === 'unavailable') {
+          return evidenceOf(base, { result: 'unavailable', resultDetail: outcome.result_detail, elapsedMs });
+        }
+        return evidenceOf(base, { result: outcome.result, elapsedMs });
+  - node: domain/investigation/field-semantics
+    held_at: resolvedBaseOf(), the fields snapshot
+    evidence: |-
+      fields: fieldSemanticsOf(capability.output_schema),
+  - node: domain/investigation/subject
+    held_at: collectOneEvidence(), passing the whole subject through unfiltered
+    evidence: |-
+      observationSource.observeConcept({ concept, subject, requester, remainingBudgetMs: stageCeilingMs }),
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      The file never reads or assembles an address, query, headers or body, and carries no
+      placeholder logic; its only outward call is
+      `observationSource.observeConcept({ concept, subject, requester, remainingBudgetMs:
+      stageCeilingMs })`, which hands the whole concern to the observation source.
+  - node: rules/integration/an-unresolvable-observation-ends-unavailable
+    held_at: >-
+      collectOneEvidence()'s unresolved-capability branch, and settledEvidence()'s pass-through of
+      an 'unavailable' outcome
+    evidence: |-
+      if (!resolution.held) {
+          return unavailableEvidence({ concept, inputs, observedAt, attemptStartedAt, conceptDescription });
+        }
+      ...
+      resultDetail: new CapabilityNotResolvedForObservationError(concept).name,
+  - node: rules/investigation/collection-has-its-own-budget-within-the-total
+    held_at: the module-level budget constant and effectiveBoundMsFor()
+    evidence: |-
+      export const COLLECTION_STAGE_BUDGET_MS = 7_000;
+      ...
+      function effectiveBoundMsFor(capability: Capability, stageCeilingMs: number): number {
+        return Math.max(0, Math.min(capability.timeout, stageCeilingMs));
+      }
+  - node: rules/investigation/collection-runs-in-the-requester-scope
+    held_at: requester threaded through collectOneEvidence() into serializeInputs() and observeConcept()
+    evidence: |-
+      function serializeInputs(concept: string, subject: Subject, requester: string): string {
+        return JSON.stringify({ concept, subject, requester });
+      }
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: raceObservation() and settledEvidence(), recording a timeout rather than aborting
+    evidence: |-
+      const timer = setTimeout(() => resolve(TIMED_OUT), boundMs);
+      ...
+      if (outcome === TIMED_OUT) {
+          return evidenceOf(base, { result: 'timeout', resultDetail: `no observation within ${effectiveBoundMs}ms`, elapsedMs });
+        }
+  - node: rules/investigation/one-evidence-per-collected-concept
+    held_at: collectEvidence(), one collectOneEvidence per concept in the plan
+    evidence: |-
+      const concepts = collectionPlan(theCase);
+        return Promise.all(
+          concepts.map((concept) =>
+            collectOneEvidence({ concept, subject, requester, capabilities, glossary, observationSource, stageCeilingMs, now }),
+          ),
+        );
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: settledEvidence()'s TIMED_OUT branch
+    evidence: |-
+      if (outcome === TIMED_OUT) {
+          return evidenceOf(base, { result: 'timeout', resultDetail: `no observation within ${effectiveBoundMs}ms`, elapsedMs });
+        }
+  - node: scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+    held_at: effectiveBoundMsFor() combined with raceObservation()'s timer
+    evidence: |-
+      function effectiveBoundMsFor(capability: Capability, stageCeilingMs: number): number {
+        return Math.max(0, Math.min(capability.timeout, stageCeilingMs));
+      }
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      The file has no reference to a hypothesis, an evaluator, or an evaluate operation; it only
+      produces Evidence items.
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      The file only consumes an already-resolved Capability's fields (capability.connector,
+      .name, .version, .output_schema, .timeout, .payload_notes); it performs no declaration
+      check, default-timeout logic or refusal.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      The file has no read-capability-by-identity presentation logic; it calls
+      `capabilities.readCapability(concept)` for internal resolution during collection, not for
+      presenting a capability record to an operator.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      resolvedBaseOf(), where fields, concept_description and capability_payload_notes are read
+      once during collection and fixed onto the evidence base
+    evidence: |-
+      const [resolution, conceptDescription] = await Promise.all([
+          capabilities.readCapability(concept),
+          conceptDescriptionOf(glossary, concept),
+        ]);
+      ...
+      fields: fieldSemanticsOf(capability.output_schema),
+        conceptDescription,
+        capabilityPayloadNotes: capability.payload_notes ?? '',
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      The file declares no schema, migration or persisted column; it builds an in-memory Evidence
+      value only.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      The file contains no migration script and does not touch schema construction.
+looked_past: >-
+  observeConcept() is called with remainingBudgetMs: stageCeilingMs rather than the
+  capability-bounded effectiveBoundMs used for the race's own timer, which is a question about
+  observation-source.port.ts's own contract for that parameter and outside this file's set, not a
+  fact this file itself states against a node in the pack.

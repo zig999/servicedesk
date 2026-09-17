@@ -1,0 +1,61 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      nowhere -- the file never constructs a Capability aggregate; it only carries a capability
+      reference as two flattened fields on an Evidence fixture.
+    evidence: |-
+      capability_name: `capability-for-${overrides.concept}`,
+      capability_version: '1.0.0',
+  - node: domain/investigation/evidence
+    held_at: the anEvidence factory, used as the shape of every evidence fixture in the file
+    evidence: |-
+      function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
+        return {
+          inputs: 'an-input',
+          observation: 'an-observation',
+          observed_at: '2024-01-01T00:00:00.000Z',
+          ttl: 60,
+          origin: 'a-connector',
+          result: 'ok',
+          capability_name: `capability-for-${overrides.concept}`,
+          capability_version: '1.0.0',
+          elapsed_ms: 12,
+          fields: [],
+          concept_description: '',
+          capability_payload_notes: '',
+          ...overrides,
+        };
+      }
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: >-
+      nowhere -- this file exercises resolveAndNarrow, not the evaluator's own evaluate operation.
+    evidence: |-
+      expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_CRITERION_MARKER_ABC123');
+      expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_WHEN_TO_USE_MARKER_XYZ789');
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere -- the file constructs no capability registration.
+    evidence: "import type { Evidence } from '../../../investigation/evidence.js';"
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere -- no presentation surface or capability-identity read appears in this file.
+    evidence: "import { resolveOutcome, type Verdicts } from '../../../case/case-resolution.js';"
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the import-purity test forbidding any port import, together with the narrowing tests that
+      pass already-collected Evidence objects through unchanged rather than re-deriving them
+    evidence: |-
+      it('imports no port file, since a port models an infrastructure boundary this module never reaches', async () => {
+        const specifiers = await resolveAndNarrowInputImports();
+        expect(specifiers.filter((specifier) => specifier.includes('.port.'))).toEqual([]);
+      });
+      ---
+      expect(result.narrowedInput.evidence).toEqual([citedEvidence]);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere -- no persistence, migration or column mapping appears in this file.
+    evidence: "import { resolveOutcome, type Verdicts } from '../../../case/case-resolution.js';"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere -- no migration script or schema replay appears in this file.
+    evidence: "import { resolveOutcome, type Verdicts } from '../../../case/case-resolution.js';"
+looked_past: >-
+  The file's hypothesis-resolution and narrowing rules are exercised at length but not governed
+  by any node in this file's set; likewise generic import-hygiene checks are architecture
+  assertions, not domain facts.

@@ -1,0 +1,44 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      concept: 'a-concept', inputs: '{}', observation: 'an-observation', observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60, origin: 'a-connector', result: 'ok', capability_name: 'a-capability', capability_version: '1.0.0',
+  - node: domain/investigation/evidence
+    held_at: completeRecord()'s evidence array literal, lines 54-58
+    evidence: |-
+      concept: 'a-concept', inputs: '{}', observation: 'an-observation', observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60, origin: 'a-connector', result: 'ok', capability_name: 'a-capability', capability_version: '1.0.0',
+      elapsed_ms: 10, fields: [], concept_description: '', capability_payload_notes: '',
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |-
+      const runSimulate: RunSimulateMock = vi.fn();
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      import { handleSimulateCaseRequest, type SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      const REQUEST_BODY: SimulateCaseRequestDto = {
+        case: { slug: 'a-slug', version: 1 },
+        subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+        requester: 'a-requester',
+      };
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |-
+      const runSimulate: RunSimulateMock = vi.fn();
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |-
+      import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      import type { InvestigationPipelineResult } from '../../../investigation/investigation-pipeline.js';
+looked_past: >-
+  The test file reuses CaseNotFoundError, CaseVersionNotValidError and SubjectCarriesNoAttributeError and asserts the
+  response omits narrative, ticket_ref and prompts -- all governed by nodes outside this file's set -- opened only to
+  confirm attribution, found consistent, and reported no further since correctness there is not a finding.

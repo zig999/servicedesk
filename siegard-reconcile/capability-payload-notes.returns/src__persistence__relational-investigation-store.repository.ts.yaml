@@ -1,0 +1,143 @@
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the column lists of INVESTIGATION_INSERT_TEXT, investigationSelect, evidenceStatement and
+      the evidence SELECT, each column pairing to a declared attribute of the aggregate or one of
+      its value-objects, or to the capability/case reference columns (capability_name,
+      capability_version, pinned_case_slug, pinned_case_version)
+    evidence: >-
+      INSERT INTO investigations (id, requester, ticket_ref, narrative, subject_type,
+      prompt_version, model, pinned_case_slug, pinned_case_version, assessment_outcome,
+      assessment_action, assessment_recipient, assessment_determining_hypothesis,
+      assessment_text, assessment_register, assessment_usage_input_tokens,
+      assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls,
+      cost_input_tokens, cost_output_tokens, durations_collection, durations_judgment,
+      durations_writing, durations_total)
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: the write() and read() methods, both running their whole body inside one transaction
+    evidence: >-
+      public async write(investigation: Investigation): Promise<void> {
+        await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));
+      }
+  - node: domain/investigation/assessment
+    held_at: assessmentParams (write) and assessmentOf (read)
+    evidence: >-
+      return [assessment.outcome, assessment.referral.action, assessment.referral.recipient,
+      assessment.determining_hypothesis ?? null, assessment.text, assessment.register,
+      assessment.usage.input_tokens, assessment.usage.output_tokens, assessment.elapsed_ms,
+      assessment.prompt];
+  - node: domain/investigation/citation
+    held_at: citationStatement (write) and citationOf (read)
+    evidence: >-
+      params: [investigationId, hypothesis, citation.concept, citation.field ?? null] ...
+      function citationOf(row) { return { concept: row.concept, ...(row.field !== null ? { field: row.field } : {}) }; }
+  - node: domain/investigation/cost
+    held_at: costParams (write) and the cost object built in investigationOf (read)
+    evidence: 'cost: { calls: row.cost_calls, input_tokens: row.cost_input_tokens, output_tokens: row.cost_output_tokens }'
+  - node: domain/investigation/durations
+    held_at: durationsParams (write) and the durations object built in investigationOf (read)
+    evidence: >-
+      durations: { collection: row.durations_collection, judgment: row.durations_judgment,
+      ...(row.durations_writing !== null ? { writing: row.durations_writing } : {}), total: row.durations_total }
+  - node: domain/investigation/evaluation
+    held_at: evaluationStatement (write) and evaluationOf/callRecordOf (read)
+    evidence: >-
+      if (verdict === 'confirmed') { return { hypothesis: row.hypothesis, verdict, citations:
+      nonEmptyCitations(citations, row.hypothesis), ...callRecord }; }
+  - node: domain/investigation/evaluation-reason
+    held_at: the reason column write and reasonOf (read)
+    evidence: 'const reason = evaluation.verdict === ''inconclusive'' ? evaluation.reason : null;'
+  - node: domain/investigation/evidence
+    held_at: evidenceStatement (write) and evidenceOf (read)
+    evidence: >-
+      concept: row.concept, inputs: row.inputs, observation: row.observation, observed_at:
+      row.observed_at.toISOString(), ttl: row.ttl, origin: row.origin, result: resultOf(row.result),
+      ...(row.result_detail !== null ? { result_detail: row.result_detail } : {}), capability_name:
+      row.capability_name, capability_version: row.capability_version, elapsed_ms: row.elapsed_ms,
+      fields: row.fields, concept_description: row.concept_description, capability_payload_notes: row.capability_payload_notes
+  - node: domain/investigation/evidence-result
+    held_at: resultOf/isEvidenceResult, validated against the imported EVIDENCE_RESULTS vocabulary
+    evidence: >-
+      const EVIDENCE_RESULT_VALUES: ReadonlySet<string> = new Set<string>(EVIDENCE_RESULTS); ...
+      function isEvidenceResult(value: string): value is EvidenceResult { return EVIDENCE_RESULT_VALUES.has(value); }
+  - node: domain/investigation/field-semantics
+    held_at: the fields column, written as JSON.stringify(evidence.fields) and read back as row.fields
+    evidence: 'JSON.stringify(evidence.fields),'
+  - node: domain/investigation/investigation
+    held_at: investigationStatement/investigationParams (write) and investigationOf (read)
+    evidence: >-
+      return { id, requester: row.requester, ...(row.ticket_ref !== null ? { ticket_ref: row.ticket_ref } : {}),
+      narrative: row.narrative, subject: { type: row.subject_type, attributes }, pinned_case: { slug:
+      row.pinned_case_slug, version: row.pinned_case_version }, prompt_version: row.prompt_version,
+      model: row.model, evidence, evaluations, assessment: assessmentOf(row), cost: {...}, durations: {...}, written_at: row.written_at.toISOString() }
+  - node: domain/investigation/subject
+    held_at: subject_type column plus the joined subject-attribute-value rows, assembled in investigationOf
+    evidence: 'subject: { type: row.subject_type, attributes },'
+  - node: domain/investigation/subject-attribute-value
+    held_at: subjectAttributeValueStatement (write) and readSubjectAttributeValues (read)
+    evidence: >-
+      text: `INSERT INTO investigation_subject_attribute_values (investigation_id, attribute, value) VALUES ($1, $2, $3)`,
+      params: [investigationId, attribute.attribute, attribute.value],
+  - node: domain/investigation/usage
+    held_at: assessment.usage in assessmentParams/assessmentOf, and evaluation.usage in evaluationStatement/callRecordOf
+    evidence: >-
+      if (row.input_tokens !== null && row.output_tokens !== null) { record.usage = { input_tokens:
+      row.input_tokens, output_tokens: row.output_tokens }; }
+  - node: domain/investigation/verdict
+    held_at: verdictOf/isVerdict, validated against the imported VERDICTS vocabulary
+    evidence: >-
+      const VERDICT_VALUES: ReadonlySet<string> = new Set<string>(VERDICTS); ...
+      function isVerdict(value: string): value is Verdict { return VERDICT_VALUES.has(value); }
+  - node: domain/knowledge/consolidation-register
+    held_at: registerOf/isConsolidationRegister, validated against the imported CONSOLIDATION_REGISTERS vocabulary
+    evidence: >-
+      function registerOf(value: string): ConsolidationRegister { if (!isConsolidationRegister(value)) {
+      throw raiseReadFailure(new Error(`investigations holds an unrecognized assessment_register "${value}"`)); } return value; }
+  - node: rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+    held_at: ticketRefForWrite/holdsNoTicketReference (write) and the ticket_ref spread in investigationOf (read)
+    evidence: >-
+      function ticketRefForWrite(ticketRef) { return holdsNoTicketReference(ticketRef) ? undefined : ticketRef; }
+      function holdsNoTicketReference(value) { return value === undefined || value === ''; }
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: raiseRootInsertFailure, which turns a unique-key refusal on id into a distinguishable InvestigationAlreadyStoredError
+    evidence: >-
+      function raiseRootInsertFailure(id: string): RaiseStoreError {
+        return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));
+      }
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: >-
+      investigationParams, which never carries written_at into the insert, and written_at read
+      back only from the row the store already holds
+    evidence: >-
+      return [...identityParams(investigation), ...assessmentParams(investigation.assessment),
+      ...costParams(investigation.cost), ...durationsParams(investigation.durations)]; ...
+      written_at: row.written_at.toISOString(),
+  - node: domain/integration/capability
+    held_at: the capability_name/capability_version columns on investigation_evidence, pinning the reference
+    evidence: 'capability_name: row.capability_name, capability_version: row.capability_version,'
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: >-
+      export class RelationalInvestigationStore implements IInvestigationStore { public constructor(private
+      readonly connection: IConnectableQueryable) {} public async write(...) ... public async read(...) ... }
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      readonly capability_name: string; readonly capability_version: string;
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      readonly capability_name: string; readonly capability_version: string;
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: evidenceOf, which returns each item's stored concept_description, fields and capability_payload_notes verbatim
+    evidence: >-
+      fields: row.fields, concept_description: row.concept_description, capability_payload_notes: row.capability_payload_notes
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "const INVESTIGATIONS_TABLE = 'investigations';"
+looked_past: >-
+  StoredInvestigation's `hash` field, computed by contentHash() in read(), is declared by
+  investigation-store.port.ts rather than invented here, so whether that field itself answers to
+  a specification node is that port file's judgment, not this repository's.
+candidates_opened:
+  - rules/investigation/a-decided-evaluation-cites-evidence

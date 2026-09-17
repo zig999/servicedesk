@@ -1,0 +1,84 @@
+read:
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      The file never constructs or imports a Capability value; only Evidence's own
+      capability_payload_notes snapshot is exercised.
+  - node: domain/investigation/evidence
+    held_at: the anEvidence builder
+    evidence: |-
+      function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
+        return {
+          inputs: 'an-input',
+          observation: 'an-observation',
+          observed_at: '2024-01-01T00:00:00.000Z',
+          ttl: 60,
+          origin: 'a-connector',
+          result: 'ok',
+          capability_name: `capability-for-${overrides.concept}`,
+          capability_version: '1.0.0',
+          elapsed_ms: 12,
+          fields: [],
+          concept_description: '',
+          capability_payload_notes: '',
+          ...overrides,
+        };
+      }
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: ScriptedHypothesisEvaluator.evaluate and the CaseContext assertions
+    evidence: |-
+      public async evaluate(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): Promise<EvaluationOutcome> {
+        this.calls.push({ criterion, evidence, caseContext });
+      ...and: const expectedContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+      expect(evaluator.calls[0].caseContext).toEqual(expectedContext);
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      No test constructs a capability registration, a timeout, or an IncompleteCapabilityContractError.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      No surface-presentation or read-capability-by-identity concern appears in this file.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the payload-notes and field-snapshot immutability tests, and the no-live-registry-import test
+    evidence: |-
+      it("carries the evidence item's own snapshotted, non-empty capability_payload_notes into the EvidenceItem the evaluator receives, holding exactly the stored value regardless of a capability re-registered under that same name and version after collection", ...
+      expect(evaluator.calls[0]?.evidence[0]?.capability_payload_notes).toBe('notes captured at collection');
+      ...and: it('imports no ICapabilityQuery and reads no capability-registry port at all', async () => {
+        const source = await moduleSource();
+        expect(source).not.toMatch(/ICapabilityQuery/);
+        expect(source).not.toMatch(/capability-query\.port/);
+        expect(source).not.toMatch(/outputSchemasFor/);
+      });
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      This file contains no persistence, migration or relational-column concern.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      This file contains no migration-replay concern of any kind.
+looked_past: >-
+  The functionBodyOf-driven assertions on hypothesisNamed/evidenceFor (no throw, no ??/||, TypeError
+  with no message naming the hypothesis) test an internal error-propagation/fail-fast style rather
+  than any domain value, threshold or refusal, and no node in the specification governs it.
+candidates_opened:
+  - constraints/hypotheses-are-judged-in-isolated-parallel-calls
+  - scenarios/investigation/a-collection-timeout-degrades-to-no-data
+  - scenarios/investigation/a-queued-judgment-is-deadline-exceeded
+  - scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+  - scenarios/investigation/a-foreign-citation-is-refused
+  - rules/investigation/one-evaluation-per-required-hypothesis
+  - rules/investigation/a-decided-evaluation-cites-evidence
+  - rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+  - rules/investigation/a-citation-stays-within-the-hypothesis-collects
+  - rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  - rules/investigation/a-judgment-failure-records-the-last-call-made
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - constraints/the-deadline-is-an-absolute-propagated-instant
+  - constraints/judgment-runs-behind-a-port
+  - domain/investigation/evaluation
+  - domain/investigation/evaluation-reason
+  - domain/investigation/citation
+  - domain/knowledge/case-version

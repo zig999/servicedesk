@@ -1,0 +1,244 @@
+read:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: >-
+      judgeHypotheses, the Promise.all over one judgeOneHypothesis call per required
+      hypothesis, guarded by a CallPool sized from options.poolSize
+    evidence: |
+      const pool = new CallPool(poolSize);
+      ...
+      return Promise.all(
+        requiredNames.map((name) =>
+          judgeOneHypothesis({
+            name,
+            hypothesis: hypothesisNamed(theCase, name),
+            evidence: evidenceFor(name, evidenceByHypothesis),
+            evaluator,
+            pool,
+            deadlineGuard,
+            caseContext,
+          }),
+        ),
+      );
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: >-
+      runIsolatedCall and retryOrFail, both calling evaluator.evaluate(...) where
+      evaluator is typed IHypothesisEvaluator
+    evidence: |
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      ...
+      const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "judgeHypotheses, line 28"
+    evidence: "const deadlineGuard = createDeadlineGuard(Math.max(0, deadline - now));"
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: "toEvidenceItems, lines 203-212"
+    evidence: |
+      function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
+        return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+          capability_payload_notes: item.capability_payload_notes,
+        }));
+      }
+  - node: domain/investigation/citation
+    held_at: "noDataEvaluation, line 227"
+    evidence: "citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),"
+  - node: domain/investigation/evaluation
+    held_at: "asEvaluation and callRecordOf, lines 240-263"
+    evidence: |
+      function asEvaluation(name: string, outcome: EvaluationOutcome): Evaluation {
+        const callRecord = callRecordOf(outcome);
+        if (outcome.verdict === 'confirmed') {
+          return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+        }
+  - node: domain/investigation/evaluation-reason
+    held_at: >-
+      noDataEvaluation, deadlineExceededEvaluation and judgmentFailureEvaluation,
+      lines 222-238
+    evidence: |
+      return { hypothesis: name, verdict: 'inconclusive', reason: 'no-data', ... };
+      function deadlineExceededEvaluation(name: string): Evaluation {
+        return { hypothesis: name, verdict: 'inconclusive', reason: 'deadline-exceeded', citations: [] };
+      }
+      function judgmentFailureEvaluation(name: string, outcome: EvaluationOutcome): Evaluation {
+        ...
+        return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
+      }
+  - node: domain/investigation/evidence
+    held_at: "toEvidenceItems, lines 203-212"
+    evidence: |
+      fields: item.fields,
+      concept_description: item.concept_description,
+      capability_payload_notes: item.capability_payload_notes,
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: "runIsolatedCall, line 85 and retryOrFail, line 112"
+    evidence: "const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);"
+  - node: domain/investigation/verdict
+    held_at: "asEvaluation, lines 242-248"
+    evidence: |
+      if (outcome.verdict === 'confirmed') {
+        return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+      }
+      if (outcome.verdict === 'refuted') {
+        return { hypothesis: name, verdict: 'refuted', citations: outcome.citations, ...callRecord };
+      }
+  - node: domain/knowledge/case-version
+    held_at: "judgeHypotheses line 31 and hypothesisNamed, lines 214-216"
+    evidence: |
+      const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+      ...
+      function hypothesisNamed(theCase: Case, name: string): Hypothesis {
+        return theCase.hypotheses.find((candidate) => candidate.name === name)!;
+      }
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: "runIsolatedCall line 89 and isStructurallyValid, lines 195-201"
+    evidence: |
+      const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence };
+      ...
+      const accepted = acceptedCitations({ ...context, citations });
+      return accepted.length === citations.length;
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: "isStructurallyValid, line 199, delegating to acceptedCitations"
+    evidence: "const accepted = acceptedCitations({ ...context, citations });"
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: "isStructurallyValid, lines 195-198"
+    evidence: |
+      function isStructurallyValid(context: HypothesisCitationContext, citations: readonly Citation[]): boolean {
+        if (citations.length === 0) {
+          return false;
+        }
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: "retryOrFail, lines 107-117"
+    evidence: |
+      if (deadlineGuard.elapsed()) {
+        return judgmentFailureEvaluation(name, first);
+      }
+      const retry = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+      if (retry === DEADLINE_ELAPSED) {
+        return deadlineExceededEvaluation(name);
+      }
+      return citationsAreAcceptable(context, retry) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name, retry);
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "noDataEvaluation, deadlineExceededEvaluation, judgmentFailureEvaluation"
+    evidence: |
+      return { hypothesis: name, verdict: 'inconclusive', reason: 'no-data', citations: nonOkEvidence.map(...) };
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: "toEvidenceItems, lines 203-212, with no glossary or registry import in the file"
+    evidence: |
+      return evidence.map((item): EvidenceItem => ({
+        concept: item.concept,
+        result: 'ok',
+        observation: item.observation,
+        fields: item.fields,
+        concept_description: item.concept_description,
+        capability_payload_notes: item.capability_payload_notes,
+      }));
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "judgeOneHypothesis line 63 and runIsolatedCall/retryOrFail DEADLINE_ELAPSED branches"
+    evidence: |
+      if (!(await acquireSlotOrDeadline(pool, deadlineGuard))) {
+        return deadlineExceededEvaluation(name);
+      }
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: "judgeHypotheses, lines 32-44"
+    evidence: |
+      return Promise.all(
+        requiredNames.map((name) =>
+          judgeOneHypothesis({ ... }),
+        ),
+      );
+  - node: rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+    held_at: >-
+      judgeHypotheses, line 30 — the derivation itself lives in
+      requiresEvaluationOf, imported from ../case/case-resolution.js, not in this file
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      ...
+      const requiredNames = requiresEvaluationOf(theCase);
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: "judgeOneHypothesis, lines 59-62"
+    evidence: |
+      const nonOkEvidence = evidence.filter((item) => item.result !== 'ok');
+      if (nonOkEvidence.length > 0) {
+        return noDataEvaluation(name, nonOkEvidence);
+      }
+  - node: scenarios/investigation/a-foreign-citation-is-refused
+    held_at: "retryOrFail, lines 107-117"
+    evidence: |
+      if (deadlineGuard.elapsed()) {
+        return judgmentFailureEvaluation(name, first);
+      }
+      const retry = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+  - node: scenarios/investigation/a-queued-judgment-is-deadline-exceeded
+    held_at: "acquireSlotOrDeadline, lines 119-129, and its call site line 63"
+    evidence: |
+      async function acquireSlotOrDeadline(pool: CallPool, deadlineGuard: DeadlineGuard): Promise<boolean> {
+        if (deadlineGuard.elapsed()) {
+          return false;
+        }
+  - node: scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+    held_at: "toEvidenceItems, line 208"
+    evidence: "fields: item.fields,"
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case, Hypothesis } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case, Hypothesis } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case, Hypothesis } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case, Hypothesis } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |
+      import { requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case, Hypothesis } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+looked_past: >-
+  The pool-acquisition race in acquireSlotOrDeadline (the orphaned acquisition.then(() =>
+  pool.release()) when the deadline wins the race) and the CallPool's own queue mechanics
+  are implementation choices about concurrency, not domain facts, so they are left for a
+  code review rather than this pass.

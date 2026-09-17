@@ -1,0 +1,51 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file itself, as the next numbered script in the migrations directory, containing a
+      single statement applied wholesale rather than any hand-performed step
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the ALTER TABLE statement, which adds exactly one column pairing with the one
+      domain-model attribute this task adds
+    evidence: |
+      ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: domain/investigation/evidence
+    held_at: >-
+      the ALTER TABLE statement, giving investigation_evidence a required
+      capability_payload_notes column of string type, backfilled to the empty string
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+looked_past: >-
+  The file opens with a roughly forty-line comment block quoting domain/investigation/evidence
+  verbatim and citing migrations 0012 and 0013 as precedent for the DEFAULT-kept-permanently
+  shape; whether that much prose belongs in a migration file at all is the source-carries-no-
+  comments rule's question, not this pass's, so it is not reported as a domain-fact finding here.
