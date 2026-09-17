@@ -26,6 +26,14 @@
       "task": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies"
     },
     {
+      "id": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "kind": "implementation",
+      "file": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key.md",
+      "title": "Drop subject_attributes and its foreign key via migration 0023",
+      "summary": "A new migration (0023-drop-subject-attributes.sql) drops the attribute-to-vocabulary foreign key on investigation_subject_attribute_values and the subject_attributes table itself, preserving that table's own primary key, its foreign key to investigations, and every row already stored under it; every test in src/ that seeded or probed subject_attributes against the post-migration schema is updated to match.",
+      "task": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key"
+    },
+    {
       "id": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
       "kind": "proof",
       "file": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building.md",
@@ -48,6 +56,14 @@
       "title": "Four-vocabulary glossary reduction — proof",
       "summary": "Confirms TERM_VOCABULARIES, the repository's table map, VOCABULARY_ROLES, seed.ts and the fixture tree hold exactly four vocabularies, with two new tests closing gaps the implementer's own rewritten specs left open, and one pre-existing status-map.ts gap (DuplicateGlossaryNameError never mapped) closed as part of this task's own criterion.",
       "task": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies"
+    },
+    {
+      "id": "proof/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "kind": "proof",
+      "file": "proof/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key.md",
+      "title": "Migration 0023 drops subject_attributes and its foreign key, with the schema and row-survival proof to match",
+      "summary": "Adds a filename-order check, a structural probe that the attribute-to-vocabulary foreign key is gone while the investigations foreign key and the composite primary key still enforce, and a replay-across-the-migration check that an already-stored row survives; adjusts the existing full-investigation round-trip assertion to read the attribute name back too, so it also demonstrates the value-object's own free-text pairing.",
+      "task": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key"
     }
   ],
   "edges": [
@@ -118,6 +134,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
       "to": "implementation/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
       "kind": "proves",
@@ -132,6 +172,12 @@
     {
       "from": "proof/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
       "to": "implementation/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "to": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
       "kind": "proves",
       "at": "the path"
     }

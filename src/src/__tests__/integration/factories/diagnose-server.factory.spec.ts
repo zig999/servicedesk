@@ -66,7 +66,6 @@ async function readTermNames(file: string): Promise<readonly string[]> {
 
 async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
   await insertTerms(connection, 'subject_types', await readTermNames('subject-type.json'));
-  await insertTerms(connection, 'subject_attributes', [SEEDED_SUBJECT_ATTRIBUTE_NAME]);
   await insertTerms(connection, 'outcomes', await readTermNames('outcome.json'));
   await insertTerms(connection, 'actions', await readTermNames('action.json'));
   await insertTerms(connection, 'recipients', await readTermNames('recipient.json'));
@@ -244,7 +243,6 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
     await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
   await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [[SEEDED_SUBJECT_ATTRIBUTE_NAME]]);
 
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readTermNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));

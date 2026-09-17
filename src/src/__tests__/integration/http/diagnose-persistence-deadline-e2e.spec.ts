@@ -108,7 +108,6 @@ function freshFixture(): IFixture {
 
 async function seedVocabulary(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
   await connection.query('INSERT INTO subject_types (name) VALUES ($1)', [fixture.subjectType]);
-  await connection.query('INSERT INTO subject_attributes (name) VALUES ($1)', [fixture.subjectAttribute]);
   await connection.query('INSERT INTO outcomes (name) VALUES ($1)', [fixture.outcome]);
   await connection.query('INSERT INTO actions (name) VALUES ($1)', [fixture.action]);
   await connection.query('INSERT INTO recipients (name) VALUES ($1)', [fixture.recipient]);
@@ -204,7 +203,6 @@ async function cleanupFixture(connection: DatabaseConnection, fixture: IFixture)
   await deleteTolerantly(connection, 'DELETE FROM concept_accepts WHERE concept_name = $1', [fixture.concept]);
   await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [fixture.concept]);
   await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = $1', [fixture.subjectType]);
-  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = $1', [fixture.subjectAttribute]);
   await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = $1', [fixture.outcome]);
   await deleteTolerantly(connection, 'DELETE FROM actions WHERE name = $1', [fixture.action]);
   await deleteTolerantly(connection, 'DELETE FROM recipients WHERE name = $1', [fixture.recipient]);

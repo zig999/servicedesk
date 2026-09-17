@@ -86,7 +86,6 @@ function freshFixtureNames(): IFixtures {
 
 async function insertFixtureRows(names: IFixtures): Promise<void> {
   await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [names.subjectType]);
-  await pool.query('INSERT INTO subject_attributes (name) VALUES ($1)', [names.subjectAttribute]);
   await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [names.outcome]);
   await pool.query('INSERT INTO actions (name) VALUES ($1)', [names.action]);
   await pool.query('INSERT INTO recipients (name) VALUES ($1)', [names.recipient]);
@@ -185,7 +184,6 @@ async function cleanupWrittenFixtures(): Promise<void> {
     await deleteTolerantly('DELETE FROM capabilities WHERE name = $1 AND version = $2', [fixtures.capabilityName, fixtures.capabilityVersion]);
     await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [fixtures.concept]);
     await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [fixtures.subjectType]);
-    await deleteTolerantly('DELETE FROM subject_attributes WHERE name = $1', [fixtures.subjectAttribute]);
     await deleteTolerantly('DELETE FROM outcomes WHERE name = $1', [fixtures.outcome]);
     await deleteTolerantly('DELETE FROM actions WHERE name = $1', [fixtures.action]);
     await deleteTolerantly('DELETE FROM recipients WHERE name = $1', [fixtures.recipient]);

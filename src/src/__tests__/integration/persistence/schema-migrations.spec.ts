@@ -33,7 +33,6 @@ const EXPECTED_TABLES = [
   'outcomes',
   'recipients',
   'schema_migrations',
-  'subject_attributes',
   'subject_types',
 ];
 
@@ -248,6 +247,22 @@ async function aStoredInvestigation(client: Client, glossary: IGlossary, id = `i
   return id;
 }
 
+async function seedMinimalPreMigrationVocabulary(client: Client): Promise<IGlossary> {
+  await client.query("INSERT INTO subject_types (name) VALUES ('a-subject-type')");
+  await client.query("INSERT INTO outcomes (name) VALUES ('an-outcome')");
+  await client.query("INSERT INTO actions (name) VALUES ('an-action')");
+  await client.query("INSERT INTO recipients (name) VALUES ('a-recipient')");
+  await client.query("INSERT INTO subject_attributes (name) VALUES ('an-attribute')");
+  return {
+    subjectType: 'a-subject-type',
+    outcome: 'an-outcome',
+    action: 'an-action',
+    recipient: 'a-recipient',
+    subjectAttribute: 'an-attribute',
+    concept: 'unused-before-0023',
+  };
+}
+
 let client: Client;
 let schemaName: string;
 let glossary: IGlossary;
@@ -265,7 +280,6 @@ beforeAll(async () => {
   await client.query("INSERT INTO outcomes (name) VALUES ('an-outcome')");
   await client.query("INSERT INTO actions (name) VALUES ('an-action')");
   await client.query("INSERT INTO recipients (name) VALUES ('a-recipient')");
-  await client.query("INSERT INTO subject_attributes (name) VALUES ('an-attribute')");
   await client.query("INSERT INTO concepts (name, ttl) VALUES ('a-concept', 60)");
   await client.query("INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ('a-concept', 'a-subject-type')");
   await client.query(
@@ -293,6 +307,14 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await client.query('ROLLBACK');
+});
+
+it('places the subject_attributes-dropping migration immediately after 0022-case-version-authored-at-default.sql in filename order', async () => {
+  const files = await migrationFilesInOrder();
+  const priorIndex = files.indexOf('0022-case-version-authored-at-default.sql');
+
+  expect(priorIndex).toBeGreaterThanOrEqual(0);
+  expect(files[priorIndex + 1]).toBe('0023-drop-subject-attributes.sql');
 });
 
 it('applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not', async () => {
@@ -350,6 +372,34 @@ it('adds hypothesis_revisions exactly one new column, state, when migration 0020
   expect(addedColumns).toEqual(['state']);
 });
 
+it('preserves an already-stored subject-attribute-value row when migration 0023 runs on top of every migration before it', async () => {
+  const freshSchema = `fresh_subject_attribute_preservation_${randomUUID().replace(/-/g, '_')}`;
+  await client.query(`CREATE SCHEMA "${freshSchema}"`);
+  await client.query(`SET search_path TO "${freshSchema}"`);
+  const files = await migrationFilesInOrder();
+  const targetIndex = files.findIndex((name) => name.startsWith('0023-'));
+  for (const file of files.slice(0, targetIndex)) {
+    const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+    await client.query(sql);
+  }
+  const preMigrationGlossary = await seedMinimalPreMigrationVocabulary(client);
+  const investigationId = await aStoredInvestigation(client, preMigrationGlossary, `inv-${randomUUID()}`);
+  await insertSubjectAttributeValue(client, { investigationId, attribute: 'an-attribute', value: 'a-preserved-value' });
+
+  const target = files[targetIndex];
+  if (target === undefined) {
+    throw new Error('migration 0023 not found among the migration files');
+  }
+  const targetSql = await readFile(join(MIGRATIONS_DIR, target), 'utf8');
+  await client.query(targetSql);
+
+  const { rows } = await client.query<{ attribute: string; value: string }>(
+    'SELECT attribute, value FROM investigation_subject_attribute_values WHERE investigation_id = $1',
+    [investigationId],
+  );
+  expect(rows).toEqual([{ attribute: 'an-attribute', value: 'a-preserved-value' }]);
+});
+
 it('persists and reads back a full case, hypothesis revision, resolution, referral and its collects', async () => {
   const slug = 'a-full-case';
   await insertCase(client, slug);
@@ -396,17 +446,46 @@ it('persists and reads back a full investigation together with its evidence, eva
   const { rows: citations } = await client.query<{ field: string }>(
     'SELECT field FROM investigation_evaluation_citations WHERE investigation_id = $1', [investigationId],
   );
-  const { rows: attributeValues } = await client.query<{ value: string }>(
-    'SELECT value FROM investigation_subject_attribute_values WHERE investigation_id = $1', [investigationId],
+  const { rows: attributeValues } = await client.query<{ attribute: string; value: string }>(
+    'SELECT attribute, value FROM investigation_subject_attribute_values WHERE investigation_id = $1', [investigationId],
   );
 
   expect(evidence).toEqual([{ observation: 'a real observation' }]);
   expect(evaluations).toEqual([{ verdict: 'confirmed' }]);
   expect(citations).toEqual([{ field: 'a-field' }]);
-  expect(attributeValues).toEqual([{ value: 'a-value' }]);
+  expect(attributeValues).toEqual([{ attribute: glossary.subjectAttribute, value: 'a-value' }]);
 });
 
-it('persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once', async () => {
+it("removes investigation_subject_attribute_values' own foreign key on attribute, so no constraint still ties it to a vocabulary table", async () => {
+  const { rows } = await client.query<{ column_name: string }>(
+    `SELECT kcu.column_name
+     FROM information_schema.table_constraints tc
+     JOIN information_schema.key_column_usage kcu
+       ON kcu.constraint_name = tc.constraint_name AND kcu.constraint_schema = tc.constraint_schema
+     WHERE tc.table_schema = $1 AND tc.table_name = 'investigation_subject_attribute_values'
+       AND tc.constraint_type = 'FOREIGN KEY' AND kcu.column_name = 'attribute'`,
+    [schemaName],
+  );
+
+  expect(rows).toEqual([]);
+});
+
+it("still refuses a subject-attribute-value row whose investigation_id names no stored investigation, through investigation_subject_attribute_values' own foreign key to investigations", async () => {
+  await expect(
+    insertSubjectAttributeValue(client, { investigationId: randomUUID(), attribute: 'an-attribute' }),
+  ).rejects.toMatchObject({ code: FOREIGN_KEY_VIOLATION });
+});
+
+it("refuses a second subject-attribute-value row sharing one investigation, attribute and value already stored, through investigation_subject_attribute_values' own unchanged primary key", async () => {
+  const investigationId = await aStoredInvestigation(client, glossary);
+  await insertSubjectAttributeValue(client, { investigationId, attribute: 'an-attribute', value: 'a-value' });
+
+  await expect(
+    insertSubjectAttributeValue(client, { investigationId, attribute: 'an-attribute', value: 'a-value' }),
+  ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
+});
+
+it('persists and reads back concept, subject-type, action, outcome, recipient and capability rows the suite seeded once', async () => {
   const { rows: conceptRows } = await client.query<{ ttl: number }>('SELECT ttl FROM concepts WHERE name = $1', [glossary.concept]);
   const { rows: acceptsRows } = await client.query<{ subject_type_name: string }>(
     'SELECT subject_type_name FROM concept_accepts WHERE concept_name = $1', [glossary.concept],

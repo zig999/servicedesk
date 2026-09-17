@@ -139,7 +139,6 @@ function freshVocabulary(): IVocabulary {
 
 async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
   await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [vocabulary.subjectType]);
-  await pool.query('INSERT INTO subject_attributes (name) VALUES ($1)', [vocabulary.subjectAttribute]);
   await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [vocabulary.fallbackOutcome]);
   await pool.query('INSERT INTO actions (name) VALUES ($1)', [vocabulary.action]);
   await pool.query('INSERT INTO recipients (name) VALUES ($1)', [vocabulary.recipient]);
@@ -172,7 +171,6 @@ async function cleanupVocabulary(vocabulary: IVocabulary, investigationIds: read
   await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
   await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [vocabulary.concept]);
   await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [vocabulary.subjectType]);
-  await deleteTolerantly('DELETE FROM subject_attributes WHERE name = $1', [vocabulary.subjectAttribute]);
   await deleteTolerantly('DELETE FROM outcomes WHERE name = $1', [vocabulary.fallbackOutcome]);
   await deleteTolerantly('DELETE FROM actions WHERE name = $1', [vocabulary.action]);
   await deleteTolerantly('DELETE FROM recipients WHERE name = $1', [vocabulary.recipient]);

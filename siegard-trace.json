@@ -620,6 +620,10 @@
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
         },
         {
+          "path": "src/migrations/0023-drop-subject-attributes.sql",
+          "digest": "sha256:e38418be43abd9551fcf2c775fed716db3387bc4284d3bd05d97256b4cd44326"
+        },
+        {
           "path": "src/src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
           "digest": "sha256:199e1c5cd56b7c0e0aef854abaeaf251dd6ab5b321203f2cd3e941bd60b94094"
         },
@@ -676,6 +680,10 @@
         {
           "path": "src/migrations/0020-hypothesis-revision-own-state.sql",
           "digest": "sha256:0f7a01bc5cfd52933ed9a6bb5b883268340d784429f6fc8a249624274e5707dc"
+        },
+        {
+          "path": "src/migrations/0023-drop-subject-attributes.sql",
+          "digest": "sha256:e38418be43abd9551fcf2c775fed716db3387bc4284d3bd05d97256b4cd44326"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -3890,6 +3898,14 @@
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
+          "path": "src/migrations/0023-drop-subject-attributes.sql",
+          "digest": "sha256:e38418be43abd9551fcf2c775fed716db3387bc4284d3bd05d97256b4cd44326"
+        },
+        {
+          "path": "src/src/__tests__/integration/persistence/schema-migrations.spec.ts",
+          "digest": "sha256:0a38283d917b7bb400636987a29a0df49380cd43772cb66e8e108e67638ff922"
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
