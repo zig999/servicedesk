@@ -1377,8 +1377,16 @@
     },
     {
       "node": "contracts/investigation/glossary-source",
-      "digest": "sha256:46e67c0ace6ebc03e8378676bc046ca0ddb245a325b763f328b9d400af941572",
+      "digest": "sha256:b258aa6033ae55cefad0438c3f77b8b3778d7544dc58cf6ce8408747be6b7c66",
       "files": [
+        {
+          "path": "src/src/http/simulate-case.controller.ts",
+          "digest": "sha256:e873177c96c66a67d83fffef1b562270bdf27e638713425998f92838b178daa5"
+        },
+        {
+          "path": "src/src/http/simulate-hypothesis.controller.ts",
+          "digest": "sha256:5c18285d35b2c707edcebae060f3a6b9992f7051519aee91d431878719b496ac"
+        },
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:479c32ba97a89f5a13139de01f054239ad0f3181d49f219713b5f652188841da"
@@ -3865,7 +3873,7 @@
     },
     {
       "node": "domain/investigation/subject-attribute-value",
-      "digest": "sha256:e2564e4d4df957fc670bbca57995dea304b3c6ea4dfce1357bf574f8b9568a3e",
+      "digest": "sha256:2bfd19dc9fb350cd82568706db9ac2cb771905649714eead973876f019d4e551",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
@@ -3902,6 +3910,10 @@
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
           "digest": "sha256:a886c99bc70dcece01733d18cc327dda41fde2b6b76834d95ce8def94413dbac"
+        },
+        {
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:8692d7b56dae60361e4fe3413a08f8b4de445a1d0b8889d32f7b5f0c433bfb88"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -7204,6 +7216,14 @@
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
           "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+        },
+        {
+          "path": "src/src/http/simulate-case.controller.ts",
+          "digest": "sha256:e873177c96c66a67d83fffef1b562270bdf27e638713425998f92838b178daa5"
+        },
+        {
+          "path": "src/src/http/simulate-hypothesis.controller.ts",
+          "digest": "sha256:5c18285d35b2c707edcebae060f3a6b9992f7051519aee91d431878719b496ac"
         }
       ]
     },
@@ -7313,11 +7333,15 @@
     },
     {
       "node": "rules/investigation/a-subject-carries-at-least-one-attribute",
-      "digest": "sha256:ba062f6475b2ed8579bca44a53bcb04dfb39534780bdf58b96860923434e603b",
+      "digest": "sha256:4eac53769df966ddd594e73ff5a2fa0904f0eb755c15e89a9e7daf3cd5c08541",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
           "digest": "sha256:d15f46d9dd3b91770a38b8ea3d3ad0bb64cb19fc0e024ca7a07775a0ca1955b1"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:ea867d9ba94197c29df54dd58110a2a9d64ac3d24122af713174f38739f019e6"
         },
         {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",

@@ -1,0 +1,13 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/src/src/http/simulate-case.controller.ts
+  17:9  error  'subject' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/siegfriedneto/projects/servicedeskn1/src/src/http/simulate-hypothesis.controller.ts
+  19:9  error  'subject' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 2 problems (2 errors, 0 warnings)
+

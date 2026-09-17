@@ -3,10 +3,8 @@ import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid.error.js';
-import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
 import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
 import type { ProductionSimulationCall } from '../../../factories/production-simulate.factory.js';
-import type { IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
 import { handleSimulateCaseRequest, type SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
 import type { SimulateCaseRequestDto } from '../../../http/dto/simulate-case.dto.js';
 import type { InvestigationPipelineResult } from '../../../investigation/investigation-pipeline.js';
@@ -75,12 +73,11 @@ function completeRecord(): InvestigationPipelineResult {
 }
 
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
-type ReadVocabularyTermMock = ReturnType<typeof vi.fn<IGlossaryQuery['readVocabularyTerm']>>;
 type RunSimulateMock = ReturnType<typeof vi.fn<(call: ProductionSimulationCall) => Promise<InvestigationPipelineResult>>>;
 
 function buildDependencies(
   readCaseResult: ReadCaseResult,
-): { dependencies: SimulateCaseControllerDependencies; readCase: ReadCaseMock; readVocabularyTerm: ReadVocabularyTermMock; runSimulate: RunSimulateMock } {
+): { dependencies: SimulateCaseControllerDependencies; readCase: ReadCaseMock; runSimulate: RunSimulateMock } {
   const readCase: ReadCaseMock = vi.fn().mockResolvedValue(readCaseResult);
   const caseQuery: ICaseQuery = {
     readCase,
@@ -89,18 +86,9 @@ function buildDependencies(
     listHypotheses: vi.fn(),
     listHypothesisRevisions: vi.fn(),
   };
-  const readVocabularyTerm: ReadVocabularyTermMock = vi.fn().mockImplementation(
-    async (_vocabulary, name: string): Promise<TermResolution> => ({ held: true, term: { name } }),
-  );
-  const glossary: IGlossaryQuery = {
-    readVocabularyTerm,
-    readConcept: vi.fn(),
-    listVocabularyTerms: vi.fn(),
-    listConcepts: vi.fn(),
-  };
   const runSimulate: RunSimulateMock = vi.fn();
-  const dependencies: SimulateCaseControllerDependencies = { caseQuery, glossary, runSimulate };
-  return { dependencies, readCase, readVocabularyTerm, runSimulate };
+  const dependencies: SimulateCaseControllerDependencies = { caseQuery, runSimulate };
+  return { dependencies, readCase, runSimulate };
 }
 
 it('returns the complete record — evidence, evaluations, resolved, assessment, cost and durations — for a draft-state pinned case version, unchanged', async () => {
@@ -150,23 +138,21 @@ it('reads the pinned case through readCase with no branch on its declared state,
   expect(releasedDependencies.runSimulate).toHaveBeenCalledTimes(1);
 });
 
-it('SimulateCaseControllerDependencies declares exactly caseQuery, glossary and runSimulate — no store, event bus or other write-capable dependency the controller could call', () => {
+it('SimulateCaseControllerDependencies declares exactly caseQuery and runSimulate — no store, event bus or other write-capable dependency the controller could call', () => {
 
   expectTypeOf<SimulateCaseControllerDependencies>().toEqualTypeOf<{
     readonly caseQuery: ICaseQuery;
-    readonly glossary: IGlossaryQuery;
     readonly runSimulate: (call: ProductionSimulationCall) => Promise<InvestigationPipelineResult>;
   }>();
 });
 
-it('answers exactly what runSimulate resolved, calling neither a store nor any other dependency beyond caseQuery.readCase and glossary.readVocabularyTerm', async () => {
-  const { dependencies, readCase, readVocabularyTerm, runSimulate } = buildDependencies({ case: heldCase() });
+it('answers exactly what runSimulate resolved, calling neither a store nor any other dependency beyond caseQuery.readCase', async () => {
+  const { dependencies, readCase, runSimulate } = buildDependencies({ case: heldCase() });
   runSimulate.mockResolvedValueOnce(completeRecord());
 
   await handleSimulateCaseRequest(dependencies, REQUEST_BODY);
 
   expect(readCase).toHaveBeenCalledTimes(1);
-  expect(readVocabularyTerm).toHaveBeenCalledTimes(1);
   expect(runSimulate).toHaveBeenCalledTimes(1);
 });
 
@@ -178,36 +164,6 @@ it('refuses a request whose subject carries no attribute-value at all, throwing 
 
   await expect(rejection).rejects.toBeInstanceOf(SubjectCarriesNoAttributeError);
   expect(runSimulate).not.toHaveBeenCalled();
-});
-
-it('refuses a request naming a subject attribute the glossary does not hold, throwing exactly a SubjectAttributeNotInGlossaryError, before runSimulate is ever called', async () => {
-  const { dependencies, readVocabularyTerm, runSimulate } = buildDependencies({ case: heldCase() });
-  readVocabularyTerm.mockImplementation(async (_vocabulary, name: string): Promise<TermResolution> => ({
-    held: false,
-    vocabulary: 'subject-attribute',
-    name,
-  }));
-
-  const rejection = handleSimulateCaseRequest(dependencies, REQUEST_BODY);
-
-  await expect(rejection).rejects.toBeInstanceOf(SubjectAttributeNotInGlossaryError);
-  expect(runSimulate).not.toHaveBeenCalled();
-});
-
-it("names the offending attribute on the thrown refusal, applying the same rule diagnose applies rather than a fixed message", async () => {
-  const { dependencies, readVocabularyTerm } = buildDependencies({ case: heldCase() });
-  readVocabularyTerm.mockImplementation(async (_vocabulary, name: string): Promise<TermResolution> => ({
-    held: false,
-    vocabulary: 'subject-attribute',
-    name,
-  }));
-
-  const rejection = handleSimulateCaseRequest(dependencies, {
-    ...REQUEST_BODY,
-    subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-ungoverned-attribute', value: 'a-value' }] },
-  });
-
-  await expect(rejection).rejects.toMatchObject({ context: { attributes: ['an-ungoverned-attribute'] } });
 });
 
 it('reuses case-query\'s own CaseNotFoundError unchanged for an unknown case slug or version, before runSimulate is ever called', async () => {

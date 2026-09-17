@@ -220,10 +220,9 @@ const EXPECTED_SIMULATE_RESPONSE_BODY = {
   durations: MINIMAL_SIMULATION_RESULT.durations,
 };
 
-function stubSimulateCase(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): SimulateCaseControllerDependencies {
+function stubSimulateCase(caseQuery: ICaseQuery): SimulateCaseControllerDependencies {
   return {
     caseQuery,
-    glossary: glossaryQuery,
     runSimulate: vi.fn().mockResolvedValue(MINIMAL_SIMULATION_RESULT),
   };
 }
@@ -234,10 +233,9 @@ const MINIMAL_HYPOTHESIS_SIMULATION_RESULT: SimulateHypothesisPipelineResult = {
   durations: { collection: 0, judgment: 0, total: 0 },
 };
 
-function stubSimulateHypothesis(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): SimulateHypothesisControllerDependencies {
+function stubSimulateHypothesis(caseQuery: ICaseQuery): SimulateHypothesisControllerDependencies {
   return {
     caseQuery,
-    glossary: glossaryQuery,
     runSimulateHypothesis: vi.fn().mockResolvedValue(MINIMAL_HYPOTHESIS_SIMULATION_RESULT),
   };
 }
@@ -277,8 +275,8 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
   const caseQuery = stubCaseQuery(minimalCase()); const glossaryQuery = stubGlossaryQuery();
   return {
     diagnose,
-    simulateCase: stubSimulateCase(caseQuery, glossaryQuery),
-    simulateHypothesis: stubSimulateHypothesis(caseQuery, glossaryQuery),
+    simulateCase: stubSimulateCase(caseQuery),
+    simulateHypothesis: stubSimulateHypothesis(caseQuery),
     ...stubQueryDependentFields(caseQuery, glossaryQuery),
     readCapability: { capabilityQuery: stubCapabilityQuery() }, readCapabilityByIdentity: stubReadCapabilityByIdentity(),
     readCaseInputRequirements: { caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) } },

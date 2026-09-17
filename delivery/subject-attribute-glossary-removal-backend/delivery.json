@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "implementation",
+      "file": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary.md",
+      "title": "Remove the glossary attribute check from simulate-case and simulate-hypothesis",
+      "summary": "The two simulate controllers stop calling refuseAttributesNotInGlossary and stop declaring a glossary dependency; every call site that supplied one — the server factory and every spec that constructed the dependency object — is updated to match, and status-map.ts now maps SubjectCarriesNoAttributeError to 422.",
+      "task": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary"
+    },
+    {
+      "id": "proof/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "proof",
+      "file": "proof/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary.md",
+      "title": "Backend removal of the glossary attribute check from simulate-case and simulate-hypothesis",
+      "summary": "Proves both controllers no longer refuse a simulate call for an attribute name absent from the glossary, that their dependency types now declare exactly caseQuery plus their own runner, that the factory and every spec construct those dependencies without a glossary, and that a subject carrying no attribute at all still ends in a genuine HTTP 422 reporting SubjectCarriesNoAttributeError.",
+      "task": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "to": "implementation/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

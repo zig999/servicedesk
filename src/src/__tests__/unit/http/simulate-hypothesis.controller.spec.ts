@@ -2,10 +2,8 @@ import { expect, expectTypeOf, it, vi } from 'vitest';
 import type { Case, ManifestEntry } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
 import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
-import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
 import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
 import type { ProductionHypothesisSimulationCall } from '../../../factories/production-simulate-hypothesis.factory.js';
-import type { IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
 import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDependencies } from '../../../http/simulate-hypothesis.controller.js';
 import type { SimulateHypothesisRequestDto } from '../../../http/dto/simulate-hypothesis.dto.js';
 import type { SimulateHypothesisPipelineResult } from '../../../investigation/simulate-hypothesis-pipeline.js';
@@ -72,12 +70,11 @@ function completeRecord(): SimulateHypothesisPipelineResult {
 }
 
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
-type ReadVocabularyTermMock = ReturnType<typeof vi.fn<IGlossaryQuery['readVocabularyTerm']>>;
 type RunSimulateHypothesisMock = ReturnType<typeof vi.fn<(call: ProductionHypothesisSimulationCall) => Promise<SimulateHypothesisPipelineResult>>>;
 
 function buildDependencies(
   readCaseResult: ReadCaseResult,
-): { dependencies: SimulateHypothesisControllerDependencies; readCase: ReadCaseMock; readVocabularyTerm: ReadVocabularyTermMock; runSimulateHypothesis: RunSimulateHypothesisMock } {
+): { dependencies: SimulateHypothesisControllerDependencies; readCase: ReadCaseMock; runSimulateHypothesis: RunSimulateHypothesisMock } {
   const readCase: ReadCaseMock = vi.fn().mockResolvedValue(readCaseResult);
   const caseQuery: ICaseQuery = {
     readCase,
@@ -86,18 +83,9 @@ function buildDependencies(
     listHypotheses: vi.fn(),
     listHypothesisRevisions: vi.fn(),
   };
-  const readVocabularyTerm: ReadVocabularyTermMock = vi.fn().mockImplementation(
-    async (_vocabulary, name: string): Promise<TermResolution> => ({ held: true, term: { name } }),
-  );
-  const glossary: IGlossaryQuery = {
-    readVocabularyTerm,
-    readConcept: vi.fn(),
-    listVocabularyTerms: vi.fn(),
-    listConcepts: vi.fn(),
-  };
   const runSimulateHypothesis: RunSimulateHypothesisMock = vi.fn();
-  const dependencies: SimulateHypothesisControllerDependencies = { caseQuery, glossary, runSimulateHypothesis };
-  return { dependencies, readCase, readVocabularyTerm, runSimulateHypothesis };
+  const dependencies: SimulateHypothesisControllerDependencies = { caseQuery, runSimulateHypothesis };
+  return { dependencies, readCase, runSimulateHypothesis };
 }
 
 it('returns exactly evidence, evaluation and durations, unchanged from what runSimulateHypothesis resolved', async () => {
@@ -124,22 +112,20 @@ it('answers exactly evidence, evaluation and durations — no resolved, no asses
   expect(result).not.toHaveProperty('ticket_ref');
 });
 
-it('SimulateHypothesisControllerDependencies declares exactly caseQuery, glossary and runSimulateHypothesis — no store, event bus or other write-capable dependency the controller could call', () => {
+it('SimulateHypothesisControllerDependencies declares exactly caseQuery and runSimulateHypothesis — no store, event bus or other write-capable dependency the controller could call', () => {
   expectTypeOf<SimulateHypothesisControllerDependencies>().toEqualTypeOf<{
     readonly caseQuery: ICaseQuery;
-    readonly glossary: IGlossaryQuery;
     readonly runSimulateHypothesis: (call: ProductionHypothesisSimulationCall) => Promise<SimulateHypothesisPipelineResult>;
   }>();
 });
 
-it('answers exactly what runSimulateHypothesis resolved, calling neither a store nor any other dependency beyond caseQuery.readCase and glossary.readVocabularyTerm', async () => {
-  const { dependencies, readCase, readVocabularyTerm, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
+it('answers exactly what runSimulateHypothesis resolved, calling neither a store nor any other dependency beyond caseQuery.readCase', async () => {
+  const { dependencies, readCase, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
   runSimulateHypothesis.mockResolvedValueOnce(completeRecord());
 
   await handleSimulateHypothesisRequest(dependencies, REQUEST_BODY);
 
   expect(readCase).toHaveBeenCalledTimes(1);
-  expect(readVocabularyTerm).toHaveBeenCalledTimes(1);
   expect(runSimulateHypothesis).toHaveBeenCalledTimes(1);
 });
 
@@ -161,36 +147,6 @@ it('refuses a request whose subject carries no attribute-value at all, throwing 
 
   await expect(rejection).rejects.toBeInstanceOf(SubjectCarriesNoAttributeError);
   expect(runSimulateHypothesis).not.toHaveBeenCalled();
-});
-
-it('refuses a request naming a subject attribute the glossary does not hold, throwing exactly a SubjectAttributeNotInGlossaryError, before runSimulateHypothesis is ever called', async () => {
-  const { dependencies, readVocabularyTerm, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
-  readVocabularyTerm.mockImplementation(async (_vocabulary, name: string): Promise<TermResolution> => ({
-    held: false,
-    vocabulary: 'subject-attribute',
-    name,
-  }));
-
-  const rejection = handleSimulateHypothesisRequest(dependencies, REQUEST_BODY);
-
-  await expect(rejection).rejects.toBeInstanceOf(SubjectAttributeNotInGlossaryError);
-  expect(runSimulateHypothesis).not.toHaveBeenCalled();
-});
-
-it('names the offending attribute on the thrown refusal, applying the same rule diagnose applies rather than a fixed message', async () => {
-  const { dependencies, readVocabularyTerm } = buildDependencies({ case: heldCase() });
-  readVocabularyTerm.mockImplementation(async (_vocabulary, name: string): Promise<TermResolution> => ({
-    held: false,
-    vocabulary: 'subject-attribute',
-    name,
-  }));
-
-  const rejection = handleSimulateHypothesisRequest(dependencies, {
-    ...REQUEST_BODY,
-    subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-ungoverned-attribute', value: 'a-value' }] },
-  });
-
-  await expect(rejection).rejects.toMatchObject({ context: { attributes: ['an-ungoverned-attribute'] } });
 });
 
 it('computes now and a deadline the specification-declared twenty seconds later, immediately before calling runSimulateHypothesis, and includes both in the call it sends', async () => {

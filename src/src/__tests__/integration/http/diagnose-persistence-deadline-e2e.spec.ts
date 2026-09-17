@@ -11,7 +11,6 @@ import { createCaseInputRequirementsQuery } from '../../../factories/case-input-
 import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
-import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
@@ -269,20 +268,18 @@ function placeholderEnv(): Env {
   };
 }
 
-function buildSimulateCase(delayingConnection: DatabaseConnection, caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateCaseControllerDependencies {
+function buildSimulateCase(caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateCaseControllerDependencies {
   return {
     caseQuery,
-    glossary: createGlossaryQuery(delayingConnection),
     runSimulate: () => {
       throw new Error("simulate-case is not exercised by this file's own test");
     },
   };
 }
 
-function buildSimulateHypothesis(delayingConnection: DatabaseConnection, caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateHypothesisControllerDependencies {
+function buildSimulateHypothesis(caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateHypothesisControllerDependencies {
   return {
     caseQuery,
-    glossary: createGlossaryQuery(delayingConnection),
     runSimulateHypothesis: () => {
       throw new Error("simulate-hypothesis is not exercised by this file's own test");
     },
@@ -309,8 +306,8 @@ function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IF
     connection: delayingConnection,
     caseQuery: dependencies.caseQuery,
     diagnose: dependencies,
-    simulateCase: buildSimulateCase(delayingConnection, dependencies.caseQuery),
-    simulateHypothesis: buildSimulateHypothesis(delayingConnection, dependencies.caseQuery),
+    simulateCase: buildSimulateCase(dependencies.caseQuery),
+    simulateHypothesis: buildSimulateHypothesis(dependencies.caseQuery),
   });
   return { app: buildApp(fullDependencies), capturedId: () => capturedId };
 }

@@ -16,7 +16,6 @@ import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createCaseInputRequirementsQuery } from './case-input-requirements.factory.js';
 import { createCaseQuery } from './case-query.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
-import { createGlossaryQuery } from './glossary.factory.js';
 import { createProductionDiagnoseRunner, type ProductionDiagnoseDependencies } from './production-diagnose.factory.js';
 import {
   createProductionHypothesisSimulationRunner,
@@ -42,11 +41,10 @@ export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstanc
     promptVersion: env.PROMPT_VERSION,
   };
   const runSimulate = createProductionSimulationRunner(simulationRunnerDependencies(env, connection));
-  const simulateCase: SimulateCaseControllerDependencies = { caseQuery, glossary: createGlossaryQuery(connection), runSimulate };
+  const simulateCase: SimulateCaseControllerDependencies = { caseQuery, runSimulate };
   const runSimulateHypothesis = createProductionHypothesisSimulationRunner(hypothesisSimulationRunnerDependencies(env, connection));
   const simulateHypothesis: SimulateHypothesisControllerDependencies = {
     caseQuery,
-    glossary: createGlossaryQuery(connection),
     runSimulateHypothesis,
   };
   return buildApp(buildAppDependencies({ env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis }));

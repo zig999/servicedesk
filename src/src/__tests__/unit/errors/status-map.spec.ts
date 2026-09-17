@@ -26,7 +26,9 @@ import { OpenApiDocumentNotReadableError } from '../../../errors/openapi-documen
 import { OpenApiOperationNotFoundError } from '../../../errors/openapi-operation-not-found.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { statusForError } from '../../../errors/status-map.js';
+import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
+import { buildSubject } from '../../../investigation/subject.js';
 
 it('resolves CaseNotFoundError to 404', () => {
   const error = new CaseNotFoundError('a-slug', 1);
@@ -136,6 +138,20 @@ it('resolves MalformedCapabilityInputSchemaError to 422', () => {
   const error = new MalformedCapabilityInputSchemaError(['a problem']);
 
   const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+it('refuses a subject built with no attribute-value at all with an HTTP 422 response reporting SubjectCarriesNoAttributeError, end to end from the refusal buildSubject actually raises', () => {
+  let refusal: unknown;
+  try {
+    buildSubject('a-subject-type', []);
+  } catch (error) {
+    refusal = error;
+  }
+
+  expect(refusal).toBeInstanceOf(SubjectCarriesNoAttributeError);
+  const status = statusForError(refusal);
 
   expect(status).toBe(422);
 });

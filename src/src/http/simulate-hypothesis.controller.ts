@@ -1,7 +1,5 @@
 import type { ICaseQuery } from '../case/case-query.port.js';
 import type { ProductionHypothesisSimulationCall } from '../factories/production-simulate-hypothesis.factory.js';
-import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
-import { refuseAttributesNotInGlossary } from '../investigation/investigation-factory.js';
 import type { SimulateHypothesisPipelineResult } from '../investigation/simulate-hypothesis-pipeline.js';
 import { buildSubject } from '../investigation/subject.js';
 import type { SimulateHypothesisRequestDto, SimulateHypothesisResponseDto } from './dto/simulate-hypothesis.dto.js';
@@ -10,7 +8,6 @@ const TOTAL_DEADLINE_BUDGET_MS = 20_000;
 
 export type SimulateHypothesisControllerDependencies = {
   readonly caseQuery: ICaseQuery;
-  readonly glossary: IGlossaryQuery;
   readonly runSimulateHypothesis: (call: ProductionHypothesisSimulationCall) => Promise<SimulateHypothesisPipelineResult>;
 };
 
@@ -19,8 +16,7 @@ export async function handleSimulateHypothesisRequest(
   body: SimulateHypothesisRequestDto,
 ): Promise<SimulateHypothesisResponseDto> {
   const { case: pinnedCase } = await dependencies.caseQuery.readCase(body.case.slug, body.case.version);
-  const subject = buildSubject(body.subject.type, body.subject.attributes);
-  await refuseAttributesNotInGlossary(subject, dependencies.glossary);
+  buildSubject(body.subject.type, body.subject.attributes);
   const now = Date.now();
   const { evidence, evaluation, durations } = await dependencies.runSimulateHypothesis({
     subjectType: body.subject.type,

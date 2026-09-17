@@ -5,7 +5,6 @@ import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.j
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import { createDiagnoseRoutesPlugin } from '../../../http/diagnose.routes.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
-import type { IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
 import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
 import { createSimulateCaseRoutesPlugin } from '../../../http/simulate-case.routes.js';
 import type { SimulateHypothesisControllerDependencies } from '../../../http/simulate-hypothesis.controller.js';
@@ -37,17 +36,6 @@ function freshCaseQuery(): ICaseQuery {
   };
 }
 
-function freshGlossaryQuery(): IGlossaryQuery {
-  return {
-    readVocabularyTerm: vi.fn().mockImplementation(
-      async (_vocabulary, name: string): Promise<TermResolution> => ({ held: true, term: { name } }),
-    ),
-    readConcept: vi.fn(),
-    listVocabularyTerms: vi.fn(),
-    listConcepts: vi.fn(),
-  };
-}
-
 function freshDiagnoseDependencies(): DiagnoseControllerDependencies {
   return {
     caseQuery: freshCaseQuery(),
@@ -71,7 +59,6 @@ function freshDiagnoseDependencies(): DiagnoseControllerDependencies {
 function freshSimulateCaseDependencies(): SimulateCaseControllerDependencies {
   return {
     caseQuery: freshCaseQuery(),
-    glossary: freshGlossaryQuery(),
     runSimulate: vi.fn().mockResolvedValue({
       evidence: [],
       evaluations: [],
@@ -95,7 +82,6 @@ function freshSimulateCaseDependencies(): SimulateCaseControllerDependencies {
 function freshSimulateHypothesisDependencies(): SimulateHypothesisControllerDependencies {
   return {
     caseQuery: freshCaseQuery(),
-    glossary: freshGlossaryQuery(),
     runSimulateHypothesis: vi.fn().mockResolvedValue({
       evidence: [],
       evaluation: { hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data', citations: [] },

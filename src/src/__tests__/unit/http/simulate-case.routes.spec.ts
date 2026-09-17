@@ -2,7 +2,6 @@ import Fastify, { type FastifyInstance, type LightMyRequestResponse } from 'fast
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Case } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
-import type { IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { SimulateCaseRequestDto } from '../../../http/dto/simulate-case.dto.js';
 import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
@@ -59,17 +58,8 @@ function buildTestApp(): FastifyInstance {
     listHypotheses: vi.fn(),
     listHypothesisRevisions: vi.fn(),
   };
-  const glossary: IGlossaryQuery = {
-    readVocabularyTerm: vi.fn().mockImplementation(
-      async (_vocabulary, name: string): Promise<TermResolution> => ({ held: true, term: { name } }),
-    ),
-    readConcept: vi.fn(),
-    listVocabularyTerms: vi.fn(),
-    listConcepts: vi.fn(),
-  };
   const dependencies: SimulateCaseControllerDependencies = {
     caseQuery,
-    glossary,
     runSimulate: vi.fn().mockResolvedValue(minimalSimulationResult()),
   };
   const app = Fastify();

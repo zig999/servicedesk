@@ -33,6 +33,7 @@ import { OpenApiDocumentNotFetchedError } from './openapi-document-not-fetched.e
 import { OpenApiDocumentNotReadableError } from './openapi-document-not-readable.error.js';
 import { OpenApiOperationNotFoundError } from './openapi-operation-not-found.error.js';
 import { ReleasedHypothesisRevisionNotAlterableError } from './released-hypothesis-revision-not-alterable.error.js';
+import { SubjectCarriesNoAttributeError } from './subject-carries-no-attribute.error.js';
 import { SubjectDoesNotCoverCaseInputsError } from './subject-does-not-cover-case-inputs.error.js';
 import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
 
@@ -68,6 +69,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConnectorConfigurationNotWellFormedError, 422],
   [IncompleteConnectorConfigurationError, 422],
   [SubjectDoesNotCoverCaseInputsError, 422],
+  [SubjectCarriesNoAttributeError, 422],
   [ConnectorPlaceholderOutsideInputSchemaError, 422],
   [HypothesisRevisionCollectsNoConceptError, 422],
   [ConceptRefusesSubjectTypeError, 422],
