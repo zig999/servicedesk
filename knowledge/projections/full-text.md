@@ -5593,6 +5593,32 @@ entries:
   decided: A case comes into existence only through a create-draft naming a slug no case yet holds; that act creates the case under exactly the slug it carries — supplied by the curator, never derived by the system — together with that case's first version numbered 1, and leaves the case's next_version at 2. A create-draft naming a slug some case already holds creates no second case and is not refused on the slug's account: it originates that existing case's next draft instead, meeting only the refusal a-case-has-at-most-one-draft already states where that case already holds a draft.
   why: One operation rather than two, because a-case-has-at-most-one-draft refuses create-draft with CaseAlreadyHasDraftError only where the case already holds a draft — a refusal unreachable if naming an existing slug were itself refused — and contracts/knowledge/case-lifecycle and domain/knowledge/case's own Responsibility both require create-draft over an already-named case ("revising a released case always starts the next draft"); refusing a taken slug would contradict standing nodes, while creating a second case under one slug would break a-slug-identifies-one-case. The curator supplies the slug because a-slug-identifies-one-case makes it the name every pin and every reader addresses the case by and a-case-listing-answers-cases-in-slug-order makes it the order the catalog is read in, a meaning a minted identifier cannot carry; a-case-authoring-surface-offers-no-submission-while-required-content-is-absent already counts the slug among the content the act requires, which only holds where the act carries one the curator typed. next_version at 2 rather than 1 because domain/knowledge/case requires it greater than every number the case has ever held and a-case-version-number-is-never-reused forbids issuing 1 twice; the first number is 1 rather than 0 because that number is the pin a-successful-case-version-creation-lands-on-the-created-versions-own-surface takes the curator to and domain/knowledge/case-summary's version_count is shown beside.
   noticed: No node states where an ordinary create-draft over an already-named case gets the new draft's own title, when_to_use, subject and fallback — whether the act carries them as the authoring surface's submission does, or whether they are copied from the version it continues from, as a-new-drafts-manifest-is-copied-from-an-existing-version decides for the manifest alone.
+---
+- location: rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent.md
+  field: statement
+  unstated: Whether a value consisting only of whitespace counts as "absent" for the case's own required-content fields (slug, title, when_to_use, subject, and the fallback's own parts) when deciding whether a case-authoring surface withholds its submitting act. Surfaced by /review-change's specification-conformance pass over connector-configuration-draft-status-response-maps-frontend, evidence at frontend/app/src/services/case-creation-form-schema.ts's isBlank, which already treats a whitespace-only string as absent.
+  decided: Absent means holding no content or holding whitespace alone, for every one of this rule's required fields.
+  why: rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation already decided this exact question for a connector name field, on the reasoning that a field holding whitespace alone holds no name a curator meant to fill; the same reasoning transfers without a domain difference to answer for, since a case's slug or title holding whitespace alone is equally unfilled from a reader's standpoint. Deciding it the other way would let a curator satisfy this rule's own gate with content nobody can act on.
+- location: rules/knowledge/a-case-authoring-surface-reads-nothing-about-the-case-it-is-creating.md
+  field: statement
+  unstated: Whether a case-authoring surface must refuse to read the case being created (by its own typed slug) before submitting create-draft. Surfaced by /review-change's specification-conformance pass over case-creation-screen-corrective, evidence at frontend/app/src/routes/case-creation-screen-submission.spec.ts, which asserts zero reads of /v1/cases/{typedSlug} before the POST.
+  decided: A case-authoring surface issues no read against the curator's typed slug before submitting create-draft; the curator's own typed slug is the only thing the surface holds about the case's identity until create-draft answers. Recorded as a new invariant over domain/knowledge/case.
+  why: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug already settles both branches create-draft can take on a typed slug -- creating a case where none holds it, originating the existing case's next draft where one does -- and neither branch is a refusal, so there is no wrong answer for a pre-read to warn the curator away from. A read that confirmed either branch would tell the surface nothing it does not already know how to handle, and would put the surface in the business of judging slug availability, a judgment already placed entirely on create-draft itself.
+- location: rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles.md
+  field: statement
+  unstated: Whose clock, and at which moment of the create-draft or revise act, a case version's authored_at is taken from -- client-submitted or server-assigned. Surfaced by /review-change's specification-conformance pass over case-creation-screen-corrective, evidence at frontend/app/src/hooks/use-case-creation-form.ts, which currently sets authored_at from the browser's own clock (`new Date().toISOString()`) at submit time and sends it as part of the request body.
+  decided: authored_at holds the instant the store settled the write that persisted that version -- never an instant the curator's own surface fixed before submitting, and never the instant a write attempt was issued. It is filled by the settling write alone, so it is not part of what a create-draft or revise request carries to the store. Recorded as a new invariant over domain/knowledge/case-version.
+  why: rules/investigation/written-at-records-when-the-write-settled already decided this exact shape once, for an investigation's own written_at, on the reasoning that an instant fixed before the write describes an event that had not yet happened when it was fixed. A case version is the same shape of record -- something a store persists -- and authored_at is exactly the kind of instant written_at already settles, so the same reasoning decides it the same way rather than leaving one record's creation timestamp server-assigned and a sibling's client-assigned with no stated reason for the difference. This puts the currently delivered frontend, which submits authored_at from the browser's own clock, in breach of the newly-stated rule; the code was not read as an input to this decision, and reconciling it is a separate act.
+- location: rules/knowledge/a-case-versions-listing-answers-highest-numbered-first.md
+  field: statement
+  unstated: What order contracts/knowledge/case-query's list-case-versions operation answers a case's versions in. Surfaced by /review-change's specification-conformance pass over case-creation-screen-corrective, evidence at frontend/app/src/routes/cases-list-screen.tsx's fetchCaseSummary, which treats the item at page offset versionCount-1 as "the highest-numbered version" -- correct only under ascending order, which no node stated.
+  decided: A listing of one case's versions answers them in descending version-number order, the highest-numbered version first and the first-ever version last. Recorded as a new invariant over domain/knowledge/case-version.
+  why: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first already decided this exact shape once, for the sibling listing of one hypothesis's own revisions, on the reasoning that the newest of a set a curator browses is what a curator most often needs and so is what an unconditioned reading answers first. A case's own versions are the same shape of append-only, never-renumbered sequence, so the same reasoning decides the same way. This puts the currently delivered frontend's fetchCaseSummary, which derives the highest-numbered version from the last page offset under an assumed ascending order, in breach of the newly-stated descending order; the code was not read as an input to this decision, and reconciling it is a separate act.
+- location: rules/integration/an-operations-method-lookup-compares-case-insensitively-against-the-documents-own-lower-cased-key.md
+  field: statement
+  unstated: Whether the OpenAPI operation lookup that resolves a path+method pairing for a connector-configuration or capability-schema draft compares the request's HTTP method against the document's own declared operation key case-sensitively or case-insensitively, and what case the document's own key may be declared in. Surfaced by /review-change's specification-conformance pass over connector-configuration-draft-status-response-maps-backend, evidence at src/src/connector-registry/openapi-operation-reader.ts's operationEntry, which lower-cases only the request's method before the lookup, and at that delivery's own test, whose title claims general case-insensitivity while exercising only a document already declared lower-case.
+  decided: An OpenAPI 3.x document declares each path item's own operations under lower-cased HTTP-method keys -- the document format's own fact, never a choice this system makes -- and the lookup compares the request's own method against that key case-insensitively, lower-casing the request's method before the comparison. Recorded as a new invariant over domain/integration/openapi-operation.
+  why: rules/integration/an-openapi-operations-method-is-upper-cased already reads a fetched document's path-item keys as lower-case in its own reasoning, without stating that fact as its own or saying anything about how a lookup compares against it; this rule makes explicit what that reading already rested on -- the OpenAPI 3.x specification itself fixes a path item's operation keys as lower-case, the same way it fixes every other structural key (paths, components, securitySchemes) that this system never chose -- and decides the comparison the currently delivered lookup already performs one direction of (lower-casing the request's method), closing the open half (whether the document's own key could be declared otherwise) by naming it as a format fact rather than a possibility to guard against.
 
 === domain/glossary/_context
 ---
@@ -10014,6 +10040,20 @@ constrains:
 
 a-connector-configuration-draft-states-the-chosen-operations-method already upper-cases the method a chosen operation is drafted under, since the executing connector's own vocabulary — GET, POST, PUT, PATCH, DELETE — is upper-case while an OpenAPI 3.x document names its operations under lower-case path-item keys. Listing the document's own lower-case spelling instead would show an operator a value the draft they choose it into never states, and a-configuration-helper-operation-is-chosen-from-the-fetched-documents-listing already carries the chosen entry's method straight to that draft request.
 
+=== rules/integration/an-operations-method-lookup-compares-case-insensitively-against-the-documents-own-lower-cased-key
+---
+type: invariant
+statement: An OpenAPI 3.x document declares each path item's own operations under lower-cased HTTP-method keys, that casing being the document format's own and never a choice this system makes; reading which operation a request's path and method name compares the request's own method against that key case-insensitively, lower-casing the request's method before the comparison.
+constrains:
+  - domain/integration/openapi-operation
+---
+
+## Description
+
+rules/integration/an-openapi-operations-method-is-upper-cased already reads a fetched document's path-item keys as lower-case, stating that the executing connector's own upper-case vocabulary is why a listed operation's method is shown upper-cased rather than in the document's own spelling. That reading rests on a fact about the document this rule now states directly: the OpenAPI 3.x format itself, not this system, fixes a path item's operation keys as lower-case (get, post, put, patch, delete, and the others this system's own vocabulary never lists) — the same way a fetched document's other structural keys (paths, components, securitySchemes) are the format's own and never this system's to decide.
+
+A request naming a path and a method reaches this comparison however the caller cased the method — an operator choosing an entry from the Configuration Helper's own listing, which an-openapi-operations-method-is-upper-cased already states as upper-case, or a caller composing the request some other way. Comparing case-insensitively, by lower-casing the request's own method before it is read as the document's own key, is what lets the same operation be found regardless of which casing named it, since the document's own key is never anything but lower-case to compare against. This decides only the comparison; a-connector-configuration-draft-states-the-chosen-operations-method and an-openapi-operations-method-is-upper-cased already state what the found operation's own method is shown or drafted as afterward.
+
 === rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
 ---
 type: invariant
@@ -10965,7 +11005,7 @@ Declaring a second element for it would put every attribute of the record in two
 === rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent
 ---
 type: invariant
-statement: A surface authoring a new case does not offer the act that submits it while any content create-draft requires — the case's own slug, and the title, when_to_use, subject and fallback its first version declares — is absent from the surface's own fields, and states in the act's place which of that required content is still absent, named against the field that would carry it.
+statement: A surface authoring a new case does not offer the act that submits it while any content create-draft requires — the case's own slug, and the title, when_to_use, subject and fallback its first version declares — is absent from the surface's own fields, absent meaning holding no content or holding whitespace alone, and states in the act's place which of that required content is still absent, named against the field that would carry it.
 constrains:
   - domain/knowledge/case
 ---
@@ -10974,11 +11014,27 @@ constrains:
 
 The content create-draft requires is fixed by the two elements the act writes: domain/knowledge/case declares slug required, and domain/knowledge/case-version declares title, when_to_use, subject and fallback required on the version the act originates. consolidation_register is declared optional there and never gates the act — a curator who names no register leaves the consolidation step whatever its own adapter defaults to, which is the version's own stated freedom rather than an omission. The manifest is not content this submission carries either: contracts/knowledge/case-lifecycle has the curator start a draft first and place hypotheses into it afterwards, so an empty manifest at create-draft is the composition the contract describes, not a field left blank.
 
+A field holding whitespace alone holds no content in the sense this rule means: a curator who typed only spaces into the slug or title has filled nothing a reader could act on, the same reading rules/integration/a-draft-request-is-offered-only-over-a-named-connector-and-a-chosen-operation already takes of a connector name field holding whitespace alone.
+
 The act is withheld because its outcome is already certain on the surface. constraints/a-malformed-request-is-refused-with-a-validation-error refuses a body missing a required field with an HTTP 400 naming VALIDATION_ERROR, so a submission the surface can already see is short of that content buys a round trip that tells the curator only what the surface is in a position to state beside the field. Withholding an act whose refusal is certain is the reading this specification has already taken over an authoring surface in rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed, and the limit that rule's sibling drew — rules/integration/a-connector-configuration-surfaces-readiness-statements-carry-no-claim-no-rule-decides withholds only where the outcome is certain — holds here too: absence of required content is decided on the surface alone and needs nothing read at the moment of the write.
 
 The statement standing in the act's place is what keeps the withholding legible rather than mute: a curator meeting no submitting act is owed which required content is still absent, against the field that would carry it, so the withholding reads as a condition the curator can clear and never as a screen that does not work.
 
 Where every one of that required content holds content, nothing here decides whether the act is offered; this rule bounds the absent case only. Which control carries the act, its wording, and where it sits are form belonging to the interface, as rules/knowledge/a-presented-case-version-states-its-own-declared-attributes and its siblings have each held.
+
+=== rules/knowledge/a-case-authoring-surface-reads-nothing-about-the-case-it-is-creating
+---
+type: invariant
+statement: A surface authoring a new case issues no read against the slug the curator has typed before submitting create-draft; the curator's own typed slug is the only thing the surface holds about the case's identity until create-draft answers.
+constrains:
+  - domain/knowledge/case
+---
+
+## Description
+
+There is nothing such a read could tell the surface that would change what it does. rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug already settles both branches create-draft can take on the slug the curator names: where no case holds it, create-draft creates one; where a case already holds it, create-draft originates that case's next draft instead — neither branch is a refusal, so a slug the curator typed never has a wrong answer for the surface to warn about in advance. A read that answered "no case holds this slug" would confirm exactly what submitting achieves; a read that answered "a case already holds this slug" would name a condition the act already handles rather than one the curator has to avoid.
+
+Reading anyway would cost the surface a call whose answer changes nothing it does, and would put the surface in the business of judging a slug's availability — a judgment rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug already places entirely on create-draft itself. This rule states only that no such read is issued; what the surface withholds while required content is absent, and how it withholds it, are rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent's own.
 
 === rules/knowledge/a-case-has-at-least-one-hypothesis
 ---
@@ -11230,6 +11286,22 @@ consistency: eventual
 A discarded draft leaves no version behind to read, but its number is not returned to be issued again — reusing it would let two different draft attempts, at different times, ever have answered to the identical pin.
 Reverting to an earlier version's content is therefore always a new, higher version number composed with that earlier version's manifest, never the old number reactivated.
 
+=== rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles
+---
+type: invariant
+statement: A case version's authored_at holds the instant the store settled the write that persisted that version — never an instant the curator's own surface fixed before submitting, and never the instant a write attempt was issued against the store; authored_at is filled by the settling write and by nothing that precedes it, so what a create-draft or a revise request carries to the store is the version's own content less authored_at, and the store answers the persisted version with authored_at fixed.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+authored_at exists so a reader — a curator comparing versions, a-case-summary-is-derived-from-its-existing-versions's own last_updated — can say when a version came into being, which no other attribute of the version recovers.
+
+rules/investigation/written-at-records-when-the-write-settled already decided this exact shape once, for an investigation's own written_at: an instant fixed before the write describes an event that had not yet happened when it was fixed, so an instant a curator's own surface reads at the moment they submit dates the version by the surface that carried it rather than by the write that made it a version at all. The same reasoning holds here without a domain difference to answer for — a case version, like an investigation, is a record a store persists, and authored_at is exactly the kind of instant written_at already settles.
+
+Whatever calls the store fixes a value before the call, so an authored_at supplied by the curator's own surface is fixed no later than the moment the request is issued — the reading this rule refuses — which is why the value is not part of what a create-draft or revise request carries to the store at all: it is what the settling write fills.
+
 === rules/knowledge/a-case-versions-input-requirements-are-derived
 ---
 type: policy
@@ -11246,6 +11318,20 @@ consistency: eventual
 This is where the knowledge and integration contexts negotiate for input, the same as every-collected-concept-has-a-read-only-capability already negotiates for output: a case version's collection plan is knowledge's own fact; which capability currently answers each of its concepts, and what that capability's input schema currently declares (a-capability-input-schema-holds-a-well-formed-object), are integration's. Neither side stores the other's answer — the set is recomputed at every read, never persisted, the same as every other projection this specification derives.
 A concept the collection plan reaches that no registered capability currently answers, or that more than one currently answers, is already a fact an observation of it degrades on its own (an-unresolvable-observation-ends-unavailable); this derivation reads the same absence the same way, contributing nothing rather than guessing.
 Available for a case version in either state, draft or released: a curator composing a draft wants the same read a diagnose will one day be held to, and only the diagnose itself, never this read, refuses a draft (only-a-released-case-version-is-diagnosed).
+
+=== rules/knowledge/a-case-versions-listing-answers-highest-numbered-first
+---
+type: invariant
+statement: A listing of one case's versions answers them in descending version-number order, the case's own highest-numbered version first and its first-ever version last.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first already decided this exact shape once, for the sibling listing of one hypothesis's own revisions: the newest of a set a curator browses is what a curator most often needs, so it is what a reading with no further condition answers first, rather than a reading a curator has to page or sort to reach. A case's own versions are the same shape of set — an append-only sequence a-case-version-number-is-never-reused numbers once and never renumbers — so the reasoning that decided the sibling listing decides this one the same way.
+
+Nothing about which version rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version reads, or which one a-case-summary-is-derived-from-its-existing-versions derives current_state and last_updated from, turns on this listing's own order — both already name "highest-numbered" directly, by the version's own number, never by a position this listing answers it at. This rule states only the order the listing answers in; a reader who wants the highest-numbered version can already name it without reading this listing at all.
 
 === rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version
 ---
