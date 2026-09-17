@@ -67,9 +67,9 @@ describe("ConnectorTestPanelFields — the row's attribute name survives an atte
   });
 });
 
-describe("ConnectorTestPanelFields — a subject attribute-value naming an attribute the glossary does not hold still reaches the outbound Test call (UNDERDETERMINED, from rules/investigation/a-subject-attribute-is-drawn-from-the-glossary)", () => {
+describe("ConnectorTestPanelFields — a subject attribute-value naming an attribute the glossary does not hold never reaches the outbound Test call (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary, already decided for this surface by a-connector-configuration-is-tested-through-a-registered-capability)", () => {
 
-  it("dispatches POST /v1/test-connector carrying a subject attribute-value whose name is not a glossary-held subject attribute, rather than refusing it", async () => {
+  it("issues no POST /v1/test-connector call while a subject attribute-value names an attribute that is not glossary-held", async () => {
     const { dialog, fetchMock } = await mountTestPanelInEditMode({
       ...baseHandlers(),
       [TEST_CONNECTOR_PATH]: () => jsonResponse(testConnectorResult()),

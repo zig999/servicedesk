@@ -92,6 +92,9 @@ describe("ConnectorConfigurationFormFields -- the apply-confirmation dialog's ti
           configuration: '{"distinctive":true}',
           unresolved: [],
           generated_credentials: [],
+          status_readings: [],
+          response_fields: [],
+          reading_notes: [],
         }),
       [operationsReadRoute(OPERATOR_LINK)]: () => jsonResponse({ operations: [HELPER_OPERATION] }),
     });

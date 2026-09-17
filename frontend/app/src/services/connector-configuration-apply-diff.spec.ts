@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   computeApplyConfirmationDiff,
+  NESTED_OBJECT_KEYS,
   type ApplyConfirmationDiff,
 } from "./connector-configuration-apply-diff";
 
@@ -20,7 +21,7 @@ describe("computeApplyConfirmationDiff -- top-level keys the apply would add, re
 });
 
 describe("computeApplyConfirmationDiff -- each of statusMap, responseMap, query and headers is itemised one level deeper when both sides hold it as an object (criterion 4)", () => {
-  const NESTED_KEYS = ["statusMap", "responseMap", "query", "headers"] as const;
+  const NESTED_KEYS = NESTED_OBJECT_KEYS;
 
   it.each(NESTED_KEYS)("computes %s's own added, removed and changed keys", (key) => {
     const fieldText = JSON.stringify({ [key]: { kept: "same", dropped: "old" } });

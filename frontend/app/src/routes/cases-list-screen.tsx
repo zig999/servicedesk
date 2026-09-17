@@ -1,91 +1,13 @@
 import type { ChangeEvent, JSX } from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@tui/ui/button";
-import { apiFetch } from "../services/api-client";
+import { Input } from "@tui/ui/input";
 import {
   StatusTable,
   type StatusTableRow,
 } from "../shared/components/status-table";
-
-type PaginatedResponse<T> = {
-  readonly data: readonly T[];
-  readonly total: number;
-  readonly limit: number;
-  readonly offset: number;
-  readonly pageCount: number;
-};
-
-type CaseIdentity = {
-  readonly slug: string;
-};
-
-type CaseVersionState = "draft" | "released";
-
-type CaseVersionListItem = {
-  readonly version: number;
-  readonly state: CaseVersionState;
-};
-
-type CaseVersionDetail = {
-  readonly authored_at: string;
-};
-
-type CaseSummary = {
-  readonly versionCount: number;
-  readonly currentState?: CaseVersionState;
-  readonly lastUpdated?: string;
-};
-
-function caseVersionsUrl(slug: string, limit: number, offset: number): string {
-  return `/v1/cases/${encodeURIComponent(slug)}/versions?limit=${limit}&offset=${offset}`;
-}
-
-async function fetchCaseSummary(slug: string): Promise<CaseSummary> {
-  const probe = await apiFetch<PaginatedResponse<CaseVersionListItem>>(
-    caseVersionsUrl(slug, 1, 0),
-  );
-  const versionCount = probe.total;
-  if (versionCount === 0) {
-    return { versionCount };
-  }
-
-  const highestOffset = versionCount - 1;
-  const highestPage =
-    highestOffset < probe.data.length
-      ? probe
-      : await apiFetch<PaginatedResponse<CaseVersionListItem>>(
-          caseVersionsUrl(slug, 1, highestOffset),
-        );
-  const highest = highestPage.data[0];
-
-  const detail = await apiFetch<CaseVersionDetail>(
-    `/v1/cases/${encodeURIComponent(slug)}/versions/${highest.version}`,
-  );
-
-  return {
-    versionCount,
-    currentState: highest.state,
-    lastUpdated: detail.authored_at,
-  };
-}
-
-type CaseListEntry = {
-  readonly slug: string;
-  readonly summary: CaseSummary;
-};
-
-async function fetchCasesWithSummaries(): Promise<CaseListEntry[]> {
-  const casesPage = await apiFetch<PaginatedResponse<CaseIdentity>>("/v1/cases");
-  const summaries = await Promise.all(
-    casesPage.data.map((identity) => fetchCaseSummary(identity.slug)),
-  );
-  return casesPage.data.map((identity, index) => ({
-    slug: identity.slug,
-    summary: summaries[index],
-  }));
-}
+import { useCasesList, type CaseListEntry, type CaseVersionState } from "../hooks/use-cases-list";
 
 const CASE_STATE_CELL: Readonly<Record<CaseVersionState, { color: string; label: string }>> = {
   draft: { color: "bg-warning", label: "Draft" },
@@ -138,16 +60,10 @@ export function CasesListScreen(): JSX.Element {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
 
-  const casesQuery = useQuery({
-    queryKey: ["cases-list"],
-    queryFn: fetchCasesWithSummaries,
-  });
+  const casesQuery = useCasesList();
 
   const entries = casesQuery.data ?? [];
-  const filteredEntries = useMemo(
-    () => filterEntriesBySlug(entries, searchText),
-    [entries, searchText],
-  );
+  const filteredEntries = filterEntriesBySlug(entries, searchText);
 
   function handleSearchChange(event: ChangeEvent<HTMLInputElement>): void {
     setSearchText(event.target.value);
@@ -189,13 +105,13 @@ export function CasesListScreen(): JSX.Element {
 
     return (
       <>
-        <input
+        <Input
           type="search"
           value={searchText}
           onChange={handleSearchChange}
           placeholder="Search cases by slug"
           aria-label="Search cases by slug"
-          className="w-full max-w-sm rounded border border-border bg-surface px-3 py-2 text-sm text-foreground"
+          className="w-full max-w-sm"
         />
         <p aria-live="polite" className="text-sm text-muted-foreground">
           {filteredEntries.length} case{filteredEntries.length === 1 ? "" : "s"} found

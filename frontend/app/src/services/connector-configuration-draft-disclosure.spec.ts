@@ -178,16 +178,16 @@ describe("disclosureStateForOutcome -- each status reading is projected into its
     const draft: ConnectorConfigurationDraft = {
       ...BASE_DRAFT,
       status_readings: [
-        { status: "200", ending: "record-stub-response", declared_as: "Successful profile retrieval" },
-        { status: "403", ending: "skip-endpoint" },
+        { status: "200", ending: "ok", declared_as: "Successful profile retrieval" },
+        { status: "403", ending: "unavailable" },
       ],
     };
 
     const state = drafted(disclosureStateForOutcome({ kind: "drafted", draft }));
 
     expect(state.draft.statusReadings).toEqual([
-      { status: "200", ending: "record-stub-response", declaredAs: "Successful profile retrieval" },
-      { status: "403", ending: "skip-endpoint", declaredAs: undefined },
+      { status: "200", ending: "ok", declaredAs: "Successful profile retrieval" },
+      { status: "403", ending: "unavailable", declaredAs: undefined },
     ]);
   });
 });

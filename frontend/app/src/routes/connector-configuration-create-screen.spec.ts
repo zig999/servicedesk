@@ -88,7 +88,7 @@ describe("ConnectorConfigurationCreateScreen -- a route back to the list (criter
   });
 });
 
-describe("ConnectorConfigurationCreateScreen -- the footer Connectors link registers nothing before it navigates (UNDERDETERMINED note: a-connector-configuration-surface-offers-a-route-to-the-listing leaves open whether the route submits before landing on the listing)", () => {
+describe("ConnectorConfigurationCreateScreen -- the footer Connectors link registers nothing before it navigates (a-connector-configuration-surface-offers-a-route-to-the-listing: taking that route issues no register-connector call)", () => {
   it("navigates to /connectors on Connectors without issuing any PUT request -- an implementation that submits register-connector before navigating would fail this", async () => {
     const fetchMock = createFetchStub();
     const router = await mountConnectorConfigurationCreateScreen(fetchMock);

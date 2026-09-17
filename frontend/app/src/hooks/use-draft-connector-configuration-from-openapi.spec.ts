@@ -252,11 +252,11 @@ describe("useDraftConnectorConfigurationFromOpenApi -- idle and pending are thei
   });
 });
 
-describe("ConnectorConfigurationDraftUnresolvedItem -- reason is a plain string, not narrowed to the closed set of four reason literals (inference)", () => {
+describe("ConnectorConfigurationDraftUnresolvedItem -- reason is a plain string, not narrowed to the closed set of three reason literals (inference)", () => {
   it("type-checks a reason value outside the closed reason set", () => {
     const buildItem = (): ConnectorConfigurationDraftUnresolvedItem => ({
       name: "api-key",
-      reason: "a-reason-the-closed-four-value-set-does-not-name",
+      reason: "a-reason-the-closed-three-value-set-does-not-name",
     });
     expect(typeof buildItem).toBe("function");
   });
