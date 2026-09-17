@@ -1,0 +1,52 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the direct INSERT statements against capabilities, concepts, concept_accepts, subject_types, outcomes, actions and recipients
+    evidence: >-
+      'INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)'
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      "answers each of the four vocabularies with the rows written for it, and no other vocabulary's rows"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: >-
+      the "answers no concepts, not a rejection, when no row was ever stored under a given name" test
+    evidence: >-
+      expect(answered.map((concept) => concept.name)).not.toContain(`glossary-store-absent-concept-${randomUUID()}`);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      await store.writeConcepts([{ name: concept.name, ... }, { name: concept.name, ... }]);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';
+looked_past: >-
+  The long, documentation-style it() titles explaining shared-database fixture pinning are a
+  test-authoring/readability concern, not a domain fact in dispute.
+candidates_opened:
+  - domain/glossary/concept
+  - domain/glossary/subject-type
+  - domain/glossary/outcome
+  - domain/glossary/action
+  - domain/glossary/recipient
+  - rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+  - rules/knowledge/a-collected-concept-declares-a-ttl
+  - contracts/glossary/glossary-authoring
+  - scenarios/glossary/a-concept-with-no-description-is-refused

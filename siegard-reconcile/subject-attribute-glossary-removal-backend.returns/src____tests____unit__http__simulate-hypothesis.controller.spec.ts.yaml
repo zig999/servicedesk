@@ -1,0 +1,58 @@
+findings:
+  - file: src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts
+    where: "line 11 (EXPECTED_DEADLINE_BUDGET_MS) and the test titled 'computes now and a deadline the specification-declared twenty seconds later...' (lines 152-165)"
+    evidence: |-
+      const EXPECTED_DEADLINE_BUDGET_MS = 20_000;
+      it('computes now and a deadline the specification-declared twenty seconds later, immediately before calling runSimulateHypothesis, and includes both in the call it sends', async () => {
+      expect(call?.deadline).toBe((call?.now ?? 0) + EXPECTED_DEADLINE_BUDGET_MS);
+    cost: >-
+      rules/investigation/an-answer-arrives-within-the-declared-deadline constrains
+      domain/investigation/investigation, a record neither simulate operation ever creates; its
+      twenty-second breakdown even spends time on writing and persistence stages
+      simulate-hypothesis never reaches. The 20,000ms figure this controller is held to lives
+      only in this test.
+    kind: unstated
+    correction: >-
+      A node stating simulate-hypothesis's own deadline budget (or extending an existing deadline
+      rule's scope to cover it) would have to exist before this test could cite one as
+      specification-declared.
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      The file is a unit test of an HTTP controller; it exercises no migration or schema replay.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      The file mocks caseQuery and runSimulateHypothesis; it touches no relation or column.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      The file never calls a glossary read; concept: 'a-concept' is fixture data from a mock.
+  - node: domain/investigation/subject-attribute-value
+    held_at: "REQUEST_BODY's subject.attributes, line 44"
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: No vocabulary term or concept read by name is exercised anywhere in this file.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: No vocabulary or concept read is exercised anywhere in this file.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: This file tests simulate-hypothesis only; no diagnose door refusal is exercised.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      The only subject-related refusal here is the empty-attributes case; no test composes a
+      subject missing one specific case-input-requirement.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "the test 'refuses a request whose subject carries no attribute-value at all...', lines 142-150"
+    evidence: >-
+      await expect(rejection).rejects.toBeInstanceOf(SubjectCarriesNoAttributeError);
+      expect(runSimulateHypothesis).not.toHaveBeenCalled();
+looked_past: >-
+  The completeRecord() fixture's field sets and the expectTypeOf assertion on
+  SimulateHypothesisControllerDependencies are shape/type-level test conventions, a code-review
+  concern rather than this pass's.

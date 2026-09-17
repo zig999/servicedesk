@@ -1,0 +1,47 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      function fakeBareConnection(query: IConnectableQueryable['query']): IConnectableQueryable { return { query } as unknown as IConnectableQueryable; }
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the assertion in "answers each concept with its name, the subject types it accepts, its ttl
+      and its description" and "inserts each given concept's own name, ttl and description"
+    evidence: |-
+      expect(answered).toEqual([{ name: 'a-concept', accepts: ['a-subject-type'], ttl: 120, description: 'what this concept means for the glossary' }]);
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';"
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      const answered = await store.readTerms(vocabulary); expect(query.mock.calls[0]?.[0]).toBe(`SELECT name FROM ${table}`);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: |-
+      await store.writeTerms('recipient', [{ name: 'a-recipient' }, { name: 'a-recipient' }]);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';"
+looked_past: >-
+  The vocabulary-to-table naming and the generic error-wrapping/rollback mechanics are
+  implementation correctness of the persistence layer, not a domain fact stated only here.
+candidates_opened:
+  - contracts/glossary/glossary-authoring
+  - constraints/the-system-persists-to-one-relational-database
+  - domain/glossary/subject-type
+  - domain/glossary/outcome
+  - domain/glossary/action
+  - domain/glossary/recipient
+  - domain/glossary/concept
+  - rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+  - scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone

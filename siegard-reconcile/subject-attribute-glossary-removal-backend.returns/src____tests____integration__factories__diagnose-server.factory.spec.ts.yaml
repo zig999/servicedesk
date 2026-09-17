@@ -1,0 +1,67 @@
+read:
+  - node: domain/investigation/durations
+    held_at: the IInvestigationRow interface and the persisted-cost-and-durations assertions
+    evidence: >-
+      readonly durations_collection: number; readonly durations_judgment: number; readonly durations_writing: number | null; readonly durations_total: number;
+  - node: domain/knowledge/hypothesis-revision
+    held_at: placeFixtureHypotheses's call to lifecycle.reviseHypothesis
+    evidence: >-
+      const revised = await lifecycle.reviseHypothesis({ slug: fixture.slug, ... });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: >-
+      the test "seeds every hypothesis-revision the fixture case version's manifest references as released"
+    evidence: >-
+      expect(states).toEqual(manifestEntries.map(() => 'released'));
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: nowhere
+    evidence: >-
+      expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: releaseManifestedRevisions, driving the one declared draft-to-released transition
+    evidence: >-
+      async function releaseManifestedRevisions(...) { for (const revision of revisions) { await lifecycle.releaseHypothesisRevision(...); } }
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: the same manifest-state test as domain/knowledge/hypothesis-revision-state
+    evidence: >-
+      expect(states).toEqual(manifestEntries.map(() => 'released'));
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      function requireDatabaseUrl(): string { ... } — only requires an already-provisioned, already-migrated database.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      SELECT id, cost_calls, ... FROM investigations WHERE requester = $1 — reads existing columns by name only.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, concept.ttl]);
+  - node: domain/investigation/subject-attribute-value
+    held_at: requestBodyFor, building the request's subject
+    evidence: >-
+      subject: { type: 'contract', attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      await connection.query(`INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, [name]);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      ON CONFLICT DO NOTHING avoids a duplicate insert; never exercises the rule's own refusal.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      the request always carries the one seeded required attribute; never sends a subject missing one.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      every call in this file is to /v1/diagnose; no simulate call is made.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      the fixture subject always carries exactly one attribute; never exercises the empty-attribute refusal.
+looked_past: >-
+  The test asserting response.json() equals exactly {outcome, referral, text} and the
+  durations_total check using toBeGreaterThanOrEqual rather than a strict bound were examined;
+  neither node pins an exact serialized response shape or a strict inequality, so left for
+  whichever pass reviews the response contract or test rigor.

@@ -1,0 +1,71 @@
+read:
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      every operation routes through runStatement/runInTransaction against the single injected
+      IConnectableQueryable connection
+    evidence: |-
+      return runStatement<GlossaryTerm>(this.connection, { text: `SELECT name FROM ${VOCABULARY_TABLES[vocabulary]}` }, raiseReadFailure,);
+  - node: contracts/glossary/glossary-authoring
+    held_at: writeConcepts, via upsertConceptStatement
+    evidence: >-
+      INSERT INTO ${CONCEPTS_TABLE} (name, ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description = EXCLUDED.description
+  - node: domain/glossary/action
+    held_at: "the action: 'actions' entry of VOCABULARY_TABLES"
+    evidence: "outcome: 'outcomes',\n  action: 'actions',\n  recipient: 'recipients',"
+  - node: domain/glossary/concept
+    held_at: IConceptRow, upsertConceptStatement and readWholeConcepts
+    evidence: |-
+      interface IConceptRow { readonly name: string; readonly ttl: number; readonly description: string; }
+  - node: domain/glossary/outcome
+    held_at: "the outcome: 'outcomes' entry of VOCABULARY_TABLES"
+    evidence: "outcome: 'outcomes',"
+  - node: domain/glossary/recipient
+    held_at: "the recipient: 'recipients' entry of VOCABULARY_TABLES"
+    evidence: "recipient: 'recipients',"
+  - node: domain/glossary/subject-type
+    held_at: "the 'subject-type': 'subject_types' entry of VOCABULARY_TABLES"
+    evidence: "'subject-type': 'subject_types',"
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      readTerms and readConcepts issue a plain SELECT with no duplicate-row check; no
+      DuplicateGlossaryNameError is raised anywhere in this file.
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: insertMissingTerms, via insertMissingTermStatement
+    evidence: "INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING"
+  - node: scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+    held_at: nowhere
+    evidence: >-
+      readWholeConcepts passes row.description straight through with no default or transformation.
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: this file issues no DDL and holds no migration script.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: the file declares no columns or relations, only table names it queries.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      the class's public surface has no method reading one concept by name for a consumer such
+      as investigation collection.
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: no subject or attribute-value construct appears anywhere in this file.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      readTerms and readConcepts run unconditional SELECTs with no by-name lookup and no
+      refusal raised on an empty result.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: this file has no diagnose-door logic; it only persists glossary terms and concepts.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: this file has no simulate logic; it only persists glossary terms and concepts.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: this file has no subject construct at all.
+looked_past: >-
+  readWholeConcepts defaults a concept's accepts to an empty array when no concept_accepts rows
+  join, and writeConcepts never refuses an empty accepts array before writing — a completeness
+  question about enforcement, not a fact the file states against a node.

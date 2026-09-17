@@ -1,0 +1,44 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      import Fastify, { type FastifyInstance, type LightMyRequestResponse } from 'fastify';
+      the file wires an in-memory Fastify instance and mocked dependencies; no migration or
+      database-replay code exists here.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      the file's only persisted-looking shapes are in-memory fixtures heldCase() and
+      minimalSimulationResult(); nothing declares, reads or checks a relation or column.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      runSimulate: vi.fn().mockResolvedValue(minimalSimulationResult())
+  - node: domain/investigation/subject-attribute-value
+    held_at: the REQUEST_BODY constant, line 28
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      runSimulate: vi.fn().mockResolvedValue(minimalSimulationResult())
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      runSimulate: vi.fn().mockResolvedValue(minimalSimulationResult())
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      this door check belongs to diagnose; the mocked pipeline never runs the real coverage check.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      the one request body every test sends always carries the attribute; no test omits one.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      every request built from REQUEST_BODY carries exactly one attribute-value; none carries zero.
+looked_past: >-
+  The three rate-limiting tests assert a fact governed by
+  constraints/the-diagnosis-and-simulation-routes-are-rate-limited, outside this file's node set
+  but found by search, and match it exactly.

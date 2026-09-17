@@ -1,0 +1,108 @@
+findings:
+  - file: src/investigation/run-diagnosis.ts
+    where: "the throw in writeWithinDeadline, line 89, reusing stageBoundMs"
+    evidence: |-
+      const stageBoundMs = persistenceStageBoundMs(now, deadline, elapsedBeforePersistenceMs);
+      const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs));
+      if (!settled) {
+        throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs);
+      }
+    cost: >-
+      The node requires remainingMs to be the milliseconds that remained of the declared
+      deadline when persistence gave up. stageBoundMs is instead the bound persistence was
+      granted at entry, fixed before any write attempt runs. A requester who meets this refusal
+      is told a number that is never the actual deadline slack left when persistence stopped
+      trying — sometimes overstating it as nonzero when in fact none was left.
+    kind: contradicts
+    correction: >-
+      Compute the milliseconds actually remaining of the declared deadline at the instant
+      persistence gives up and pass that value — not the pre-computed stageBoundMs — as the
+      error's remainingMs.
+    node: rules/investigation/no-stage-aborts-on-its-deadline
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: "runDiagnosis, lines 27-42"
+    evidence: |-
+      export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> { ... return investigation.assessment; }
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: nowhere
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "persistenceStageBoundMs, lines 93-95"
+    evidence: |-
+      function persistenceStageBoundMs(now: number, deadline: number, elapsedBeforePersistenceMs: number): number {
+        return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now - elapsedBeforePersistenceMs));
+      }
+  - node: contracts/investigation/case-source
+    held_at: nowhere
+    evidence: "case: options.case,"
+  - node: contracts/investigation/diagnosis
+    held_at: "runDiagnosis, lines 27-42"
+    evidence: |-
+      export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> { ... }
+  - node: domain/investigation/cost
+    held_at: nowhere
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: domain/investigation/durations
+    held_at: nowhere
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: domain/investigation/investigation
+    held_at: "buildInvestigationOptions, lines 55-73"
+    evidence: |-
+      return { id: options.id, requester: options.requester, ... cost, durations, };
+  - node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+    held_at: "the PERSISTENCE_STAGE_BUDGET_MS constant, line 13"
+    evidence: "const PERSISTENCE_STAGE_BUDGET_MS = 2_000;"
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: "raceWriteAttempt, lines 113-119"
+    evidence: |-
+      const settlement = write.then((): WriteAttemptOutcome => 'settled', (error: unknown): WriteAttemptOutcome => (error instanceof InvestigationAlreadyStoredError ? 'settled' : 'failed'),);
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "writeWithinDeadline, persistWithinBound and raceWriteAttempt, lines 84-119"
+    evidence: |-
+      const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs));
+  - node: rules/investigation/replay-is-pinned
+    held_at: "buildInvestigationOptions, lines 63-68"
+    evidence: "case: options.case, prompt_version: options.prompt_version, model: options.model, evidence,"
+  - node: rules/investigation/the-response-follows-the-record
+    held_at: "runDiagnosis, lines 34-41"
+    evidence: |-
+      await writeWithinDeadline({ store: options.store, investigation, now: options.now, deadline: options.deadline, elapsedBeforePersistenceMs, }); return investigation.assessment;
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "buildInvestigationOptions's returned object, lines 57-72 (written_at omitted)"
+    evidence: |-
+      return { id: options.id, ... cost, durations, };
+  - node: scenarios/investigation/no-response-without-a-record
+    held_at: "writeWithinDeadline, lines 84-91"
+    evidence: |-
+      if (!settled) { throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs); }
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import type { IInvestigationStore } from './investigation-store.port.js';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import type { Investigation } from './investigation.js';"
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "import { InvestigationAlreadyStoredError } from '../errors/investigation-already-stored.error.js';"
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "subjectAttributes: options.subjectAttributes,"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: "import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';"
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: same import as above
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> { ... }"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: same function as above
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: same function as above
+looked_past: >-
+  The pure field-forwarding shape of buildInvestigationOptions, and naming/structure choices in
+  writeWithinDeadline's helper functions, are style rather than a domain-fact question.

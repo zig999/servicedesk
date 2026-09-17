@@ -1,0 +1,76 @@
+findings:
+  - file: src/glossary/terms.ts
+    where: "line 7 — `export type SubjectAttribute = GlossaryTerm;`, sitting between SubjectType (line 5) and Outcome (line 9)"
+    evidence: |-
+      export type SubjectAttribute = GlossaryTerm;
+    cost: >-
+      TERM_VOCABULARIES already lists exactly the four vocabularies the glossary publishes, with
+      no 'subject-attribute' entry. Leaving SubjectAttribute typed as a GlossaryTerm — the same
+      governed-name shape as SubjectType, Outcome, Action and Recipient — tells the next reader
+      that a fifth governed vocabulary still exists, exactly the fact
+      domain/investigation/subject-attribute-value says is no longer true.
+    kind: contradicts
+    correction: >-
+      Remove the SubjectAttribute type alias; no node models a governed subject-attribute
+      vocabulary any longer.
+    node: domain/investigation/subject-attribute-value
+read:
+  - node: domain/glossary/action
+    held_at: "line 11 — export type Action = GlossaryTerm;"
+    evidence: "export type Action = GlossaryTerm;"
+  - node: domain/glossary/concept
+    held_at: "lines 19-27 — the Concept type"
+    evidence: |-
+      export type Concept = { readonly name: string; readonly accepts: readonly string[]; readonly ttl: number; readonly description: string; };
+  - node: domain/glossary/outcome
+    held_at: "line 9 and lines 38-41 — NON_CONCLUSION_OUTCOMES"
+    evidence: |-
+      export type Outcome = GlossaryTerm;
+      export const NON_CONCLUSION_OUTCOMES: readonly Outcome[] = [{ name: 'inconclusive-no-data' }, { name: 'inconclusive-hypotheses-exhausted' }];
+  - node: domain/glossary/recipient
+    held_at: "line 13 — export type Recipient = GlossaryTerm;"
+    evidence: "export type Recipient = GlossaryTerm;"
+  - node: domain/glossary/subject-type
+    held_at: "line 5 — export type SubjectType = GlossaryTerm;"
+    evidence: "export type SubjectType = GlossaryTerm;"
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: "lines 38-41 — NON_CONCLUSION_OUTCOMES names exactly the two outcomes the rule requires"
+    evidence: |-
+      export const NON_CONCLUSION_OUTCOMES: readonly Outcome[] = [...]
+  - node: rules/knowledge/a-collected-concept-declares-a-ttl
+    held_at: "line 36 and line 32"
+    evidence: |-
+      export const DEFAULT_CONCEPT_TTL_SECONDS = 60; readonly ttl?: number;
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: The file declares only TypeScript types and constants; no migration construct.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: The file declares only TypeScript types and constants; no column or relation.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: The file exports data shapes only; no API call, no read-concept operation.
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "export type SubjectAttribute = GlossaryTerm;"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: The file declares data shapes only; no read path and no refusal response.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: The file declares data shapes only; no read path and no duplicate check.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: The file declares data shapes only; no diagnose-time check or refusal.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: The file declares data shapes only; no simulate-time behavior.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: The file declares data shapes only; no subject-carries-attribute check.
+looked_past: >-
+  Concept.accepts and ConceptRegistration.accepts are typed as readonly string[] rather than
+  readonly SubjectType[] — not a domain-fact discrepancy, left to construction-quality review.
+candidates_opened:
+  - rules/glossary/a-concept-declares-its-description
+  - scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone

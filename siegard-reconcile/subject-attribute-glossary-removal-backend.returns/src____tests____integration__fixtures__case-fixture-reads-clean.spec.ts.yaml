@@ -1,0 +1,71 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      the two it blocks calling query.readCase(SLUG, VERSION) and asserting the returned case is complete
+    evidence: >-
+      const result = await query.readCase(SLUG, VERSION);
+      expect(result.case.slug).toBe(SLUG);
+      expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      placeFixtureHypotheses and releaseOwnedHypothesisRevision, via reviseHypothesis
+    evidence: >-
+      const revised = await lifecycle.reviseHypothesis({ slug: fixture.slug, hypothesis_name: entry.hypothesis_name, criterion: entry.criterion, collects: entry.collects, resolution: entry.resolution, subject: fixture.subject });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the RELEASED_REVISION_STATE constant and the assertion that every returned row's state equals it
+    evidence: >-
+      const RELEASED_REVISION_STATE = 'released'; expect(rows.every((row) => row.state === RELEASED_REVISION_STATE)).toBe(true);
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the third and last it blocks
+    evidence: >-
+      expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the second-invocation-proof it block
+    evidence: >-
+      const refusal = await lifecycle.releaseHypothesisRevision(ownedSlug, released.hypothesisName, released.revision).catch((error: unknown) => error);
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: the second it block
+    evidence: >-
+      SELECT hr.state FROM hypothesis_revisions hr JOIN case_version_hypotheses cvh ... WHERE cv.slug = $1 AND cv.version = $2 AND cv.state = 'released'
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: >-
+      No block attempts to alter a released revision's criterion, resolution or state.
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: the last it block
+    evidence: >-
+      "reads the shared canonical fixture case whole with no CaseVersionNotValidError, and with every hypothesis still collecting at least one concept..."
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: This file seeds and reads rows over an already-provisioned connection; it runs no migration script.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: The file queries existing tables and columns but asserts nothing about column-to-attribute pairing.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: The file seeds glossary tables for fixture purposes but exercises no read-concept call.
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "subject here names a subject-type string, never an attribute/value pair."
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: No block reads a vocabulary term or concept by an unheld name.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: "insertTerms inserts with ON CONFLICT DO NOTHING, preventing duplicates."
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: No diagnose call is made anywhere in this file.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: No simulate call is made anywhere in this file.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: No call constructs or refuses a subject over its attribute-values.
+looked_past: >-
+  The local RELEASED_REVISION_STATE constant and the try/catch tolerance around Postgres 23503 are
+  implementation choices, not domain facts in tension with a node.
+candidates_opened:
+  - domain/knowledge/case-version-state
+  - rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect

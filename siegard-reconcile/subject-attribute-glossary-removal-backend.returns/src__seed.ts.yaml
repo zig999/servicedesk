@@ -1,0 +1,101 @@
+findings:
+  - file: src/seed.ts
+    where: "seedConcepts(), lines 74-84"
+    evidence: |-
+      await connection.query(
+        `INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)
+         ON CONFLICT (name) DO UPDATE SET description = EXCLUDED.description`,
+        [concept.name, concept.ttl, concept.description],
+      );
+      for (const subjectType of concept.accepts) {
+        await connection.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, subjectType]);
+      }
+    cost: >-
+      Re-seeding an environment where a concept's fixture already exists but its ttl changed, or a
+      subject type was removed from its accepts list, leaves the stored ttl and the stale
+      concept_accepts row exactly as they were: the UPDATE clause touches only description, and the
+      concept_accepts insert only adds pairs, never removes one the fixture no longer names.
+    kind: contradicts
+    node: rules/glossary/a-registered-concept-is-never-removed
+    correction: >-
+      On conflict, update ttl (not only description) from the fixture, and reconcile
+      concept_accepts to the fixture's own accepts list — removing a pair the fixture no longer
+      names.
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "alreadySeeded(), lines 156-159"
+    evidence: |-
+      const stored = await createCaseStore(connection).assembleVersion(CASE_SLUG, CASE_VERSION); return stored !== undefined;
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: "databasePoolOptionsFrom(), lines 165-171"
+    evidence: |-
+      return { maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS, idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS, statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS };
+  - node: domain/glossary/concept
+    held_at: "seedConcepts(), lines 74-84"
+    evidence: "INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3) ..."
+  - node: domain/glossary/outcome
+    held_at: "seedOutcomes(), lines 30-35"
+    evidence: |-
+      const fixtureOutcomes = await fixtureTerms('outcome.json'); const known = new Set(fixtureOutcomes.map((outcome) => outcome.name));
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "placeFixtureHypotheses(), lines 109-116"
+    evidence: |-
+      const revised = await lifecycle.reviseHypothesis({ slug: fixture.slug, ... });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: "releaseManifestedRevisions(), line 135"
+    evidence: "await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);"
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: "seedOutcomes(), lines 33-34, called before seedCase"
+    evidence: |-
+      const missing = NON_CONCLUSION_OUTCOMES.filter((outcome) => !known.has(outcome.name)); await store.insertMissingTerms('outcome', [...fixtureOutcomes, ...missing]);
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "main script, lines 182-184"
+    evidence: |-
+      if (!(await alreadySeeded(connection))) { await seedCase(connection); }
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "collects: entry.collects, — passed straight through, enforcement left to reviseHypothesis."
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: "placeFixtureHypotheses()/releaseManifestedRevisions(), lines 109-135"
+    evidence: |-
+      const revised = await lifecycle.reviseHypothesis({...}); ... await lifecycle.releaseHypothesisRevision(...);
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "seedCase(), lines 151-153"
+    evidence: |-
+      const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version); await releaseManifestedRevisions(lifecycle, fixture.slug, placed); await lifecycle.release(fixture.slug, draft.version);
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "verifySeededCase(), lines 161-163"
+    evidence: "await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "seed.ts assumes an already-provisioned schema and never touches migrations."
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "seed.ts writes through columns a migration already created; it never declares schema."
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "seed.ts authors the glossary's concepts from a fixture; it never reads one on the investigation's own behalf."
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "subject: fixture.subject, — a case-level subject-type reference, never an attribute/value pair."
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: "seed.ts only inserts vocabulary terms; it never reads one by name."
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: "duplicate detection is left entirely to store.insertMissingTerms, not exercised here."
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "seed.ts never diagnoses; it only seeds case, glossary and capability data."
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "seed.ts contains no simulate-case or simulate-hypothesis call."
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "fixture.subject is a case-level subject-type string, never an investigation subject with attribute-values."
+looked_past: >-
+  CaseFixture types fixture.version and fixture.authored_at as required, but seedCase() never
+  passes either to lifecycle.createDraft() — a code-shape question about unused fixture fields,
+  not a domain fact the file states.
+candidates_opened:
+  - rules/glossary/a-registered-concept-is-never-removed

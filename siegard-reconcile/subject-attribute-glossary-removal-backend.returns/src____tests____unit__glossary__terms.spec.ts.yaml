@@ -1,0 +1,49 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      expect(TERM_VOCABULARIES).toEqual(['subject-type', 'outcome', 'action', 'recipient']);
+looked_past: >-
+  The one fact this file states — that the term vocabularies are exactly subject-type, outcome, action and
+  recipient, in that order, with no fifth entry — matches domain/glossary/_context ("the four vocabularies —
+  subject types, outcomes, actions, recipients — and the concepts a case may collect"), a node outside both
+  this delegation's set and the candidate index; since a node does hold it, it is not an unstated fact and I
+  report no finding over it.
+candidates_opened:
+  - domain/glossary/action
+  - domain/glossary/concept
+  - domain/glossary/outcome
+  - domain/glossary/recipient
+  - domain/glossary/subject-type

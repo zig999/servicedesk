@@ -1,0 +1,114 @@
+findings:
+  - file: src/__tests__/integration/persistence/schema-migrations.spec.ts
+    where: "the IGlossary interface (lines 39-46) and its use to build the `glossary` fixture (lines 250-264, 288-296)"
+    evidence: |-
+      interface IGlossary {
+        subjectType: string;
+        outcome: string;
+        action: string;
+        recipient: string;
+        subjectAttribute: string;
+        concept: string;
+      }
+    cost: >-
+      Five of the six fields this type groups together — subjectType, outcome, action, recipient,
+      concept — are governed vocabulary terms this same suite still enforces through a foreign
+      key to a vocabulary table (subject_types, outcomes, actions, recipients, concepts).
+      subjectAttribute is bundled into the same "glossary" shape and populated the same way
+      (`subjectAttribute: 'an-attribute'` in seedMinimalPreMigrationVocabulary and in the shared
+      `glossary` fixture), even after migration 0023 — verified by this very file — drops the
+      vocabulary table and the foreign key that once tied attribute to it. A reader relying on
+      this type to learn which subject facts remain glossary-checked after the drop will read
+      subject-attribute as still belonging to that governed set, when the specification holds
+      the opposite.
+    kind: contradicts
+    correction: >-
+      Drop subjectAttribute from IGlossary (or rename the type so it no longer implies every
+      member is a governed vocabulary term) and carry the attribute name as a plain, separately
+      named string wherever a fixture needs one.
+    node: domain/investigation/subject-attribute-value
+
+read:
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the `investigation_subject_attribute_values` table's `attribute`/`value` column pair, as
+      exercised by `insertSubjectAttributeValue` (lines 234-240) and verified free of a vocabulary
+      foreign key by "removes investigation_subject_attribute_values' own foreign key on attribute,
+      so no constraint still ties it to a vocabulary table" (lines 459-471), and preserved across
+      migration 0023 by "preserves an already-stored subject-attribute-value row when migration
+      0023 runs on top of every migration before it" (lines 375-401)
+    evidence: |-
+      const { rows } = await client.query<{ column_name: string }>(
+          `SELECT kcu.column_name
+           FROM information_schema.table_constraints tc
+           JOIN information_schema.key_column_usage kcu
+             ON kcu.constraint_name = tc.constraint_name AND kcu.constraint_schema = tc.constraint_schema
+           WHERE tc.table_schema = $1 AND tc.table_name = 'investigation_subject_attribute_values'
+             AND tc.constraint_type = 'FOREIGN KEY' AND kcu.column_name = 'attribute'`,
+          [schemaName],
+        );
+
+      expect(rows).toEqual([]);
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      `migrationFilesInOrder`/`applyMigrations` (lines 61-70) and the test "applies every
+      migration script, in the order their file names number them, to a fresh empty database
+      and produces every relation the model needs and none it does not" (lines 320-332)
+    evidence: |-
+      async function applyMigrations(client: Client): Promise<void> {
+        for (const file of await migrationFilesInOrder()) {
+          const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+          await client.query(sql);
+        }
+      }
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the EXPECTED_TABLES assertion (lines 16-37, 327-331) and "shapes schema_migrations as
+      exactly filename and applied_at, the one relation the model exempts" (lines 701-708)
+    evidence: |-
+      it('shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts', async () => {
+        const { rows } = await client.query<{ column_name: string }>(
+          'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2 ORDER BY column_name',
+          [schemaName, 'schema_migrations'],
+        );
+
+        expect(rows.map((row) => row.column_name)).toEqual(['applied_at', 'filename']);
+      });
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      This file never reads a concept from a published glossary API — it seeds glossary rows
+      directly by SQL (e.g. lines 283-284) and never exercises the contract's own read path.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file checks an HTTP 404, a VocabularyTermNotHeldError or a
+      ConceptNotHeldError; the suite only inserts and reads rows directly against the schema.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file inserts a duplicate vocabulary name or checks for a
+      DuplicateGlossaryNameError.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file exercises a diagnose call or a SubjectDoesNotCoverCaseInputsError;
+      the suite is scoped to schema/migration behavior at the persistence layer.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file exercises simulate-case or simulate-hypothesis behavior.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file checks a SubjectCarriesNoAttributeError or a subject carrying
+      zero attribute-values; every subject fixture here always inserts at least one
+      subject-attribute-value row where one is inserted at all.
+
+looked_past: >-
+  Two broad schema tests assert facts about domain elements outside this node set; a spot check
+  of the specification's full-text projection found each named optional column backed elsewhere,
+  so I did not pursue this further as it sits outside the nodes handed to me for this file.
+  Likewise the claim about investigation_evaluation_citations' primary key names a
+  persistence-structure history unrelated to subject-attribute-value; I did not chase it since no
+  node in my set or the candidate index speaks to that table's key history.

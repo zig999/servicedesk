@@ -1,0 +1,75 @@
+read:
+  - node: domain/glossary/action
+    held_at: the fixture-vs-database action-name assertion, lines 247-252
+    evidence: |
+      const { rows } = await connection.query<{ name: string }>('SELECT name FROM actions WHERE name = ANY($1)', [expected]);
+  - node: domain/glossary/concept
+    held_at: the concept fixture-match test, lines 261-285, and the description column test, lines 287-304
+    evidence: |
+      const { rows: conceptRows } = await connection.query<{ name: string; ttl: number }>('SELECT name, ttl FROM concepts WHERE name = ANY($1)', [conceptNames]);
+  - node: domain/glossary/outcome
+    held_at: the non-conclusion-outcomes test, lines 223-231, and the fixture outcome-names test, lines 233-238
+    evidence: |
+      const nonConclusionNames = NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name);
+  - node: domain/glossary/recipient
+    held_at: the recipient names test, lines 254-259
+    evidence: |
+      const { rows } = await connection.query<{ name: string }>('SELECT name FROM recipients WHERE name = ANY($1)', [expected]);
+  - node: domain/glossary/subject-type
+    held_at: the subject-type names test, lines 240-245
+    evidence: |
+      const { rows } = await connection.query<{ name: string }>('SELECT name FROM subject_types WHERE name = ANY($1)', [expected]);
+  - node: domain/knowledge/case-version
+    held_at: the whole-read-back test, lines 330-356
+    evidence: |
+      expect(result.case.slug).toBe(fixture.slug);
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: the reseed-idempotency tests, lines 358-366
+    evidence: |
+      it('resolves without rejecting when seed.ts is run a second time against a database it has already seeded', async () => {
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |
+      connection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: |
+      'SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept FROM capabilities WHERE concept = ANY($1)'
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: |
+      import { createCaseQuery } from '../../factories/case-query.factory.js';
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: |
+      readonly manifest: ReadonlyArray<{ readonly position: number; ... }>;
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |
+      const { rows } = await connection.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [expected]);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: |
+      const { rows: conceptRows } = await connection.query<{ name: string; ttl: number }>('SELECT name, ttl FROM concepts WHERE name = ANY($1)', [conceptNames]);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: |
+      async function readCaseFixture(): Promise<ICaseFixtureDocument> { ... }
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: |
+      async function runSeedScript(runId: number): Promise<void> { ... }
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: |
+      const PLACEHOLDER_ENV: Readonly<Record<string, string>> = { ... };
+looked_past: >-
+  wipeFixtureOwnedRows and cleanupSeededRows repeat an almost identical body of DELETE
+  statements — that duplication is a code-review matter, not a domain fact, and it is left
+  to that pass.
+candidates_opened:
+  - domain/integration/capability
+  - rules/integration/a-capability-is-read-only
+  - rules/knowledge/every-collected-concept-has-a-read-only-capability
+  - domain/knowledge/hypothesis-revision-state
+  - domain/knowledge/case-version-state

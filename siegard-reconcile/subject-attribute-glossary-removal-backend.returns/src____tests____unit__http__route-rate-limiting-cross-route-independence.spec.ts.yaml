@@ -1,0 +1,45 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      function buildThreeRouteTestApp(): FastifyInstance { ... }
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      function buildThreeRouteTestApp(): FastifyInstance { ... }
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      function freshDiagnoseDependencies(): DiagnoseControllerDependencies { ... }
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the subject field of DIAGNOSE_REQUEST, SIMULATE_CASE_REQUEST and SIMULATE_HYPOTHESIS_REQUEST
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] }
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      function freshDiagnoseDependencies(): DiagnoseControllerDependencies { ... }
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      function freshDiagnoseDependencies(): DiagnoseControllerDependencies { ... }
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      readCaseInputRequirements: vi.fn().mockResolvedValue({ requirements: [], capabilities_with_malformed_input_schema: [] }),
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      readCaseInputRequirements: vi.fn().mockResolvedValue({ requirements: [], capabilities_with_malformed_input_schema: [] }),
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      the subject field of DIAGNOSE_REQUEST, SIMULATE_CASE_REQUEST and SIMULATE_HYPOTHESIS_REQUEST
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] }
+looked_past: >-
+  The test only asserts ordinary 200 responses on the routes not over their own limit and on a second
+  address; the 429/RATE_LIMIT_EXCEEDED/retryAfterSeconds/Retry-After details and the sliding-window
+  timing that constraints/the-diagnosis-and-simulation-routes-are-rate-limited also requires are not
+  asserted in this file, which is a coverage question over the wider test suite rather than a
+  conformance question over this one file.

@@ -1,0 +1,55 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      nowhere
+    evidence: >-
+      The file performs no migration replay of any kind; it only issues INSERT/DELETE statements
+      against tables it assumes already exist (e.g. `await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [vocabulary.subjectType]);`).
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      nowhere
+    evidence: >-
+      The file's DML (`INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ...`)
+      exercises the schema but asserts nothing about column-to-attribute pairing; it is ordinary fixture setup, not a check of the constraint.
+  - node: contracts/investigation/glossary-source
+    held_at: >-
+      h1Content's `collects` field and RecordingObservationSource.observeConcept
+    evidence: >-
+      "collects: [vocabulary.concept]," paired with "public async observeConcept({ concept, subject, requester }: ObserveConceptOptions): Promise<ObservationOutcome> {
+      this.calls.push({ concept, subject, requester }); return { result: 'ok', observation: `an-observation-for-${concept}` }; }"
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      callFor's subjectAttributes literal
+    evidence: >-
+      "subjectAttributes: [{ attribute: fixture.subjectAttribute, value: 'contract-1' }],"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: >-
+      nowhere
+    evidence: >-
+      No scenario in this file reads a vocabulary term or concept by an unheld name; every vocabulary row the test needs is inserted before use.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: >-
+      nowhere
+    evidence: >-
+      No scenario in this file exercises a duplicate vocabulary name; each `freshVocabulary()` call mints unique, randomly-suffixed names.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: >-
+      nowhere
+    evidence: >-
+      Every call built by `callFor` supplies exactly one attribute-value covering the case's own requirement; no test in this file omits a required attribute to observe the door refusal.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: >-
+      nowhere
+    evidence: >-
+      This file exercises `createProductionDiagnoseRunner` only, never a simulate-case or simulate-hypothesis call.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      nowhere
+    evidence: >-
+      Every call built by `callFor` carries exactly one attribute-value; no test in this file constructs a subject with zero attribute-values to observe the refusal.
+looked_past: >-
+  The hard-coded pool bounds passed to createDatabaseConnection in beforeAll (maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000)
+  are this test's own scaffolding connection to the database, not the production pool constraints/the-connection-pool-is-bounded-by-configuration governs
+  (that node binds to src/factories/diagnose-server.factory.ts and src/seed.ts), so it is not a departure from that constraint.
+candidates_opened:
+  - constraints/the-connection-pool-is-bounded-by-configuration

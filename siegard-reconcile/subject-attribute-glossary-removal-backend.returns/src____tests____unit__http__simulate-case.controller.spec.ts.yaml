@@ -1,0 +1,54 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      nowhere
+    evidence: >-
+      const dependencies: SimulateCaseControllerDependencies = { caseQuery, runSimulate };
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      nowhere
+    evidence: >-
+      const dependencies: SimulateCaseControllerDependencies = { caseQuery, runSimulate };
+  - node: contracts/investigation/glossary-source
+    held_at: >-
+      nowhere
+    evidence: >-
+      const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions: vi.fn(), listHypotheses: vi.fn(), listHypothesisRevisions: vi.fn() };
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the REQUEST_BODY fixture's subject.attributes entry, line 47
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: >-
+      nowhere
+    evidence: >-
+      const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions: vi.fn(), listHypotheses: vi.fn(), listHypothesisRevisions: vi.fn() };
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: >-
+      nowhere
+    evidence: >-
+      const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions: vi.fn(), listHypotheses: vi.fn(), listHypothesisRevisions: vi.fn() };
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: >-
+      nowhere
+    evidence: >-
+      const result = await handleSimulateCaseRequest(dependencies, REQUEST_BODY);
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: >-
+      nowhere
+    evidence: >-
+      const bodyWithNoAttributes: SimulateCaseRequestDto = { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [] } };
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      the assertion in "refuses a request whose subject carries no attribute-value at all", lines 159-167
+    evidence: >-
+      await expect(rejection).rejects.toBeInstanceOf(SubjectCarriesNoAttributeError);
+      expect(runSimulate).not.toHaveBeenCalled();
+looked_past: >-
+  The "resolved" pipeline field names its determining hypothesis `determining` while the domain/investigation/assessment
+  node's own field is `determining_hypothesis`; the naming difference between the two fixture shapes is a code-shape
+  observation rather than a fact this file's node set governs, so it is left to whichever pass reviews the pipeline's
+  own types.
+candidates_opened:
+  - contracts/investigation/case-simulation

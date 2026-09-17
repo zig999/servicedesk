@@ -1,0 +1,48 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      import { expect, expectTypeOf, it } from 'vitest';
+      import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: same imports as above
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      it('declares no glossary field on BuildInvestigationOptions at all, required or optional, now that the check it fed is gone', () => {
+      type HasGlossaryField = 'glossary' extends keyof BuildInvestigationOptions ? true : false;
+      expectTypeOf<HasGlossaryField>().toEqualTypeOf<false>(); });
+  - node: domain/investigation/subject-attribute-value
+    held_at: "DEFAULT_SUBJECT_ATTRIBUTES and the second test's local subjectAttributes literal, lines 104 and 183-186"
+    evidence: >-
+      const DEFAULT_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id', value: 'subject-1' }];
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: same imports as above
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: same imports as above
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      it('refuses to build when the subject carries no attribute-value at all, naming the violated invariant', async () => {
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: same test as above
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "the first it block, lines 170-180"
+    evidence: >-
+      const refusal = await buildInvestigation(options).catch((error: unknown) => error);
+      expect(refusal.message).toBe('a subject of type "ont" carries no attribute-value; at least one is required');
+looked_past: >-
+  The exact refusal-message wording and error-context shape, plus defensive array-copying tests,
+  are implementation-level assertions the specification's own node text does not go to that
+  granularity on.
+candidates_opened:
+  - domain/investigation/investigation
+  - rules/investigation/written-at-records-when-the-write-settled
+  - rules/investigation/one-evaluation-per-required-hypothesis
+  - rules/investigation/one-evidence-per-collected-concept
+  - rules/investigation/replay-is-pinned
+  - constraints/the-domain-depends-on-no-infrastructure

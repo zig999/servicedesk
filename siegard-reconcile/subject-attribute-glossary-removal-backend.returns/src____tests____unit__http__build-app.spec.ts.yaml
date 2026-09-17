@@ -1,0 +1,93 @@
+findings:
+  - file: src/__tests__/unit/http/build-app.spec.ts
+    where: >-
+      the test "refuses with 400 a request whose subject carries no attribute at all"
+      (diagnose route), around line 612-624
+    evidence: |-
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/diagnose',
+        payload: validRequestBody({ subject: { type: 'a-subject-type', attributes: [] } }),
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(built.runDiagnose).not.toHaveBeenCalled();
+    cost: >-
+      The specification's own decision for this exact condition (decision-log.md, location
+      rules/investigation/a-subject-carries-at-least-one-attribute.md: "A call whose subject
+      carries no attribute-value is refused with an HTTP 422 response reporting a
+      SubjectCarriesNoAttributeError", precisely because "400 being reserved by
+      a-malformed-request-is-refused-with-a-validation-error for the route's declared shape")
+      calls for HTTP 422 and a named domain error here, not the generic 400 this test locks in
+      with no error-class assertion at all.
+    kind: contradicts
+    node: rules/investigation/a-subject-carries-at-least-one-attribute
+    correction: >-
+      assert HTTP 422 and a SubjectCarriesNoAttributeError body for this request, matching the
+      node's statement
+  - file: src/__tests__/unit/http/build-app.spec.ts
+    where: >-
+      the test "refuses with 400 a simulate-case request whose subject carries no attribute at
+      all, at the wire, before the route ever reaches its own controller", around line 696-707
+    evidence: |-
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/simulate',
+        payload: { ...validSimulateRequestBody(), subject: { type: 'a-subject-type', attributes: [] } },
+      });
+
+      expect(response.statusCode).toBe(400);
+    cost: >-
+      Same rule, same decided response: rules/investigation/a-subject-carries-at-least-one-attribute
+      names no exception for simulate. This test's own title frames the 400 as a wire-level shape
+      check, but the node's decided fact is a domain refusal (422, SubjectCarriesNoAttributeError),
+      not a shape violation.
+    kind: contradicts
+    node: rules/investigation/a-subject-carries-at-least-one-attribute
+    correction: >-
+      assert HTTP 422 and a SubjectCarriesNoAttributeError body for this request, matching the
+      node's statement
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      The file's own scope is confined to the HTTP layer and it never touches a migration script.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      Persistence is entirely mocked away — function stubCaseStore(): ICaseStore { ... }
+  - node: contracts/investigation/glossary-source
+    held_at: stubGlossaryQuery()'s readConcept, used to build BuildAppDependencies
+    evidence: >-
+      readConcept: async (name) => ({ held: true, concept: { name, accepts: ['a-subject-type'], ttl: 60, description: 'a fixture concept' } }),
+  - node: domain/investigation/subject-attribute-value
+    held_at: validRequestBody()'s subject.attributes construction
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      stubGlossaryQuery always answers held; the file never exercises the unheld-name refusal.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      stubGlossaryQuery never models a duplicate name.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] })
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      Same stub as above — no requirement ever declared required.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      the "refuses with 400 a request whose subject carries no attribute at all" test (line 612)
+      and the simulate-case counterpart (line 696) — held, but at the wrong status
+    evidence: "expect(response.statusCode).toBe(400);"
+looked_past: >-
+  The file also asserts the API layer's authentication-free posture and Fastify-only imports;
+  the former matches constraints/no-route-enforces-authentication's own fitness, the latter is a
+  code-organization concern, so neither is reported here.
+candidates_opened:
+  - constraints/the-system-persists-to-one-relational-database

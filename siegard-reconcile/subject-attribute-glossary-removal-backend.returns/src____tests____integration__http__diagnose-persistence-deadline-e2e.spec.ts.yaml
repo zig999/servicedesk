@@ -1,0 +1,77 @@
+findings:
+  - file: src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts
+    where: the title string of the third `it()` block, lines 472-476
+    evidence: >-
+      "declares TOTAL_DEADLINE_BUDGET_MS, the total deadline this file injects into the diagnose runner, equal to " +
+        "rules/investigation/an-answer-arrives-within-the-declared-deadline's own declared total of 20000ms " +
+        '(2000 overhead/margin + 7000 collection + 5000 judgment + 4000 writing + 2000 persistence), never a locally ' +
+        'chosen figure that diverges from it'
+    cost: >-
+      The only assertion this test makes is `expect(declared).toBe(20_000)` — it never reads back or checks the
+      per-stage split. If the specification's own breakdown of the twenty-second budget changes, this title keeps
+      stating the old split as fact and nothing here would catch the drift; a reader who trusts this title for the
+      breakdown reads a business decision that may no longer be the one the node holds.
+    kind: contradicts
+    correction: >-
+      Drop the parenthetical breakdown from the title (or state it without the specific numbers), leaving the
+      title tied only to the figure the test actually verifies — the 20000ms total.
+    node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: seedFixture / createDraftAndRevision, lines 168-177 and 419-434
+    evidence: >-
+      const revised = await lifecycle.reviseHypothesis({ slug: fixture.slug, hypothesis_name: 'h1', ... });
+  - node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+    held_at: >-
+      TOTAL_DEADLINE_BUDGET_MS (line 40), its injection into the runner (line 293), and the assertions at lines
+      354-355 and 480
+    evidence: >-
+      const TOTAL_DEADLINE_BUDGET_MS = 20_000; ... expect(declared).toBe(20_000);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the second `it()` block, lines 451-453
+    evidence: >-
+      const refusal = await releaseRevisionDirectly(connection, identity).catch((error: unknown) => error);
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      await connection.query('INSERT INTO subject_types (name) VALUES ($1)', [fixture.subjectType]);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      await connection.query(`INSERT INTO capabilities (...) VALUES (...)`, [fixture.capabilityName, fixture.concept]);
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
+  - node: domain/investigation/subject-attribute-value
+    held_at: fixtureSubject, lines 219-221
+    evidence: >-
+      return { type: fixture.subjectType, attributes: [{ attribute: fixture.subjectAttribute, value: 'a-value' }] };
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      await connection.query('INSERT INTO subject_types (name) VALUES ($1)', [fixture.subjectType]);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      await connection.query('INSERT INTO outcomes (name) VALUES ($1)', [fixture.outcome]);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      subject: fixtureSubject(fixture), in the POST /v1/diagnose payload at lines 397-401
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      runSimulate: () => { throw new Error("simulate-case is not exercised by this file's own test"); }
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      attributes: [{ attribute: fixture.subjectAttribute, value: 'a-value' }]
+looked_past: >-
+  The persistence-deadline refusal's exact status code, error name, message text and details shape are checked
+  against rules/investigation/no-stage-aborts-on-its-deadline, a candidate outside this file's own node set, and
+  are consistent with it; whether the delay/retry mechanics this file drives are the cleanest way to provoke that
+  refusal is a code-quality question left to another pass.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline

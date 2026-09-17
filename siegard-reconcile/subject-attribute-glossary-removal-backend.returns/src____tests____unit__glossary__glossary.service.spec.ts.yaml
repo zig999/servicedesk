@@ -1,0 +1,86 @@
+findings:
+  - file: src/__tests__/unit/glossary/glossary.service.spec.ts
+    where: "the test 'does not treat a whitespace-only description as naming none...', lines 302-316"
+    evidence: |-
+      const registered = await glossary.registerConcept({
+        name: 'a-whitespace-description-concept',
+        accepts: ['a-subject-type'],
+        description: '   ',
+      });
+
+      expect(registered.description).toBe('   ');
+    cost: >-
+      No node decides whether a whitespace-only description counts as "no description" for
+      rules/glossary/a-concept-declares-its-description's own refusal, yet this test fixes the
+      answer as "no, it is a real description, stored verbatim" — the opposite of the idiom the
+      specification applies everywhere else a required text field is checked (a connector name, a
+      case's slug/title/subject/fallback), where "whitespace alone holds none" is the decided
+      reading.
+    kind: unstated
+    correction: >-
+      Decide, into rules/glossary/a-concept-declares-its-description (or a sibling node), whether
+      a whitespace-only description is read as no description, and record the decision in the
+      decision log.
+    node: rules/glossary/a-concept-declares-its-description
+  - file: src/__tests__/unit/glossary/glossary.service.spec.ts
+    where: "the test 'answers a page count of zero for a non-positive limit, rather than dividing by it (API-03)', lines 513-521"
+    evidence: |-
+      const page = await glossary.listVocabularyTerms('subject-type', { offset: 0, limit: 0 });
+
+      expect(page.pageCount).toBe(0);
+    cost: >-
+      constraints/listings-are-paged states a limit is "an optional positive integer" and that "no
+      request with a non-positive limit reaches the count, because
+      a-malformed-request-is-refused-with-a-validation-error refuses it first" — this case is never
+      supposed to reach this computation, yet this test fixes a defined answer for it.
+    kind: contradicts
+    correction: >-
+      Either remove the test (a non-positive limit is refused before reaching the service), or
+      record in the specification that listVocabularyTerms is also required to tolerate a
+      non-positive limit and answer a zero page count.
+    node: constraints/listings-are-paged
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "class InMemoryGlossaryStore implements IGlossaryStore { private readonly records = new Map<TermVocabulary, readonly GlossaryTerm[]>();"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "class InMemoryGlossaryStore implements IGlossaryStore { ... }"
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "import { GlossaryService } from '../../../glossary/glossary.service.js';"
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "import { GlossaryService } from '../../../glossary/glossary.service.js';"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      const resolution = await glossary.readVocabularyTerm('outcome', 'inconclusive-no-data');
+      expect(resolution).toEqual({ held: true, term: { name: 'inconclusive-no-data' } });
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: >-
+      the refusal assertions in 'refuses a vocabulary whose records hold one name twice' (lines
+      75-88), 'refuses concepts whose registrations hold one name twice' (lines 90-101), 'refuses
+      a duplicated outcome vocabulary before seeding writes anything' (lines 103-113), and
+      'refuses listing a vocabulary whose records hold one name twice...' (lines 502-511)
+    evidence: >-
+      expect(refusal).toBeInstanceOf(DuplicateGlossaryNameError);
+      expect(refusal).toMatchObject({ context: { vocabulary: 'action', name: 'repeated-term' } });
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "import { GlossaryService } from '../../../glossary/glossary.service.js';"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "import { GlossaryService } from '../../../glossary/glossary.service.js';"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "import { GlossaryService } from '../../../glossary/glossary.service.js';"
+looked_past: >-
+  The test citing a closed plan task by name for its own scenario naming reads only as provenance
+  for test naming, states no domain fact of its own, and settling whether the citation should be
+  removed is a comment/prose judgment rather than a specification-conformance one.
+candidates_opened:
+  - rules/glossary/a-concept-declares-its-description
+  - rules/knowledge/a-collected-concept-declares-a-ttl
+  - contracts/knowledge/vocabulary-terms
+  - rules/glossary/the-non-conclusion-outcomes-precede-the-first-case

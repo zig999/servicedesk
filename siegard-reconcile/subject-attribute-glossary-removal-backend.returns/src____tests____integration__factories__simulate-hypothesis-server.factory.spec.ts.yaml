@@ -1,0 +1,58 @@
+findings:
+  - file: src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts
+    where: "the `consolidation_register` field of the `CaseFixtureDocument` type, line 117"
+    evidence: "readonly consolidation_register?: 'formal' | 'plain';"
+    cost: >-
+      The register's closed vocabulary — formal or plain — is spelled out a second time here
+      instead of being read from the domain type that already carries it. If
+      domain/knowledge/consolidation-register's enumeration ever changed, this literal union
+      would not change with it.
+    kind: contradicts
+    correction: >-
+      Type this field from the shared consolidation-register type the domain module already
+      exposes instead of restating the literal union 'formal' | 'plain' locally.
+    node: domain/knowledge/consolidation-register
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      seedingConnection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES (...) ON CONFLICT DO NOTHING
+  - node: contracts/investigation/glossary-source
+    held_at: the assertions on the evidence array's concept field in the first two tests
+    evidence: "expect(evidence.map((item) => item.concept)).toEqual(['equipment-status']);"
+  - node: domain/investigation/subject-attribute-value
+    held_at: "requestBodyFor(), line 276"
+    evidence: "attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }]"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      await insertTerms(connection, 'subject_types', await readTermNames('subject-type.json'));
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: "INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "url: '/v1/simulate/hypothesis',"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }]"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }]"
+looked_past: >-
+  The fourth test's title claims the missing-hypothesis refusal happens "before the route ever
+  reaches its own controller" without verifying it; a testing-practice question, not reported here.
+  The hardcoded Postgres error code '23503' and numeric env fixture values are test plumbing, not
+  domain facts.
+candidates_opened:
+  - contracts/investigation/case-simulation
+  - domain/investigation/durations
+  - domain/investigation/subject
+  - rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  - rules/investigation/a-simulation-writes-no-investigation
+  - rules/investigation/a-simulation-carries-its-requester
+  - domain/knowledge/consolidation-register

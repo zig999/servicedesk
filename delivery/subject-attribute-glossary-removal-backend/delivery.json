@@ -64,6 +64,47 @@
       "title": "Migration 0023 drops subject_attributes and its foreign key, with the schema and row-survival proof to match",
       "summary": "Adds a filename-order check, a structural probe that the attribute-to-vocabulary foreign key is gone while the investigations foreign key and the composite primary key still enforce, and a replay-across-the-migration check that an already-stored row survives; adjusts the existing full-investigation round-trip assertion to read the attribute name back too, so it also demonstrates the value-object's own free-text pairing.",
       "task": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key"
+    },
+    {
+      "id": "review/subject-attribute-glossary-removal-backend",
+      "kind": "review",
+      "file": "review/subject-attribute-glossary-removal-backend.md",
+      "title": "Subject-attribute glossary removal, four passes over the whole change",
+      "summary": "Coverage, conformance, standard and failures over the 36 files the four tasks of subject-attribute-glossary-removal-backend wrote or touched: the glossary vocabulary's own reduction, the check removed from both simulate controllers and from investigation building, and the subject_attributes table's own drop.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A diagnose whose subject omits an attribute the pinned case version's own requirements name required is still refused with an HTTP 422 response reporting a SubjectDoesNotCoverCaseInputsError.",
+        "A read of a vocabulary term by a name the named vocabulary does not hold is still refused with an HTTP 404 response reporting a VocabularyTermNotHeldError, for each of the four remaining vocabularies.",
+        "A read over a vocabulary holding one name more than once is still refused with an HTTP 500 response reporting a DuplicateGlossaryNameError, for each of the four remaining vocabularies.",
+        "A simulate-case request whose subject carries no attribute at all is still refused with an HTTP 422 response reporting SubjectCarriesNoAttributeError.",
+        "A simulate-hypothesis request whose subject carries no attribute at all is still refused with an HTTP 422 response reporting SubjectCarriesNoAttributeError.",
+        "BuildInvestigationOptions declares no glossary field.",
+        "Case coherence validation reports the same violations for every case fixture as it did before this change.",
+        "InvestigationPipelineOptions.glossary and SimulateHypothesisPipelineOptions.glossary remain declared and are still supplied by simulate.factory.ts, production-simulate-hypothesis.factory.ts and diagnose.factory.ts.",
+        "Neither controller gains a case-input-requirements coverage refusal in place of the removed check.",
+        "Neither controller imports refuseAttributesNotInGlossary or IGlossaryQuery.",
+        "No file in src/ imports or names SubjectAttributeNotInGlossaryError.",
+        "No spec in src/ constructs a simulate-case or simulate-hypothesis controller dependency object carrying a glossary, and none stubs a vocabulary-term read for either controller.",
+        "No test in src/ reads from or writes to the subject_attributes table.",
+        "SimulateCaseControllerDependencies declares exactly caseQuery and runSimulate.",
+        "SimulateHypothesisControllerDependencies declares exactly caseQuery and runSimulateHypothesis.",
+        "VOCABULARY_ROLES in validate-case-coherence.ts holds no subject-attribute entry.",
+        "diagnose-server.factory.ts constructs both controller dependency objects with no glossary field.",
+        "investigation-factory.spec.ts asserts no glossary refusal and constructs no glossary stub.",
+        "investigation_subject_attribute_values' primary key over (investigation_id, attribute, value) is unchanged by the migration.",
+        "refuseAttributesNotInGlossary is gone from the tree rather than left exported with no caller.",
+        "relational-glossary-store.repository.ts's vocabulary-to-table map names no subject_attributes table.",
+        "run-diagnosis's buildInvestigationOptions builds its literal with no glossary line.",
+        "seed.ts calls insertMissingTerms for exactly the four remaining vocabularies.",
+        "src's test suite passes.",
+        "src/src/errors/subject-attribute-not-in-glossary.error.ts no longer exists.",
+        "src/src/fixtures/glossary/subject-attribute.json is gone from the tree, and the other five fixture files under src/src/fixtures/glossary are still read by seed.ts."
+      ],
+      "findings": 16
     }
   ],
   "edges": [
@@ -180,6 +221,30 @@
       "to": "implementation/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-backend",
+      "to": "task/subject-attribute-check-removal/stop-checking-simulate-subject-attributes-against-the-glossary",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-backend",
+      "to": "task/subject-attribute-check-removal/remove-the-glossary-check-from-investigation-building",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-backend",
+      "to": "task/subject-attribute-vocabulary-removal/drop-subject-attribute-from-the-glossary-vocabularies",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/subject-attribute-glossary-removal-backend",
+      "to": "task/subject-attribute-vocabulary-removal/drop-the-subject-attributes-table-and-its-foreign-key",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

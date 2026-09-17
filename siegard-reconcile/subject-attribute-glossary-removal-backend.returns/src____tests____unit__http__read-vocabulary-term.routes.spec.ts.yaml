@@ -1,0 +1,62 @@
+findings:
+  - file: src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts
+    where: line 103, inside the 404-refusal test (lines 93-104)
+    evidence: |-
+      expect(body.error.details).toEqual({ vocabulary: 'recipient', name: 'an-absent-term' });
+    cost: >-
+      The specification's own governing node for this refusal states only the status and the
+      error class; this test additionally fixes, as a guaranteed contract, that the response
+      body's error.details carries {vocabulary, name}, a fact no node holds.
+    kind: unstated
+    correction: >-
+      Decide, and record in rules/glossary/a-glossary-read-by-an-unheld-name-is-refused (or a
+      decision-log entry locating it there), what a VocabularyTermNotHeldError refusal's details
+      payload carries.
+    node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+  - file: src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts
+    where: line 60, inside the case/hyphenation-preservation test (lines 53-61)
+    evidence: |-
+      expect(built.readVocabularyTerm).toHaveBeenCalledWith('outcome', 'Mixed-Case-Term');
+    cost: >-
+      Whether a vocabulary-term name is looked up exactly as spelled or normalized before
+      resolution is fixed here as "never normalized" for one route's own test, with no node
+      stating this matching semantics either way.
+    kind: unstated
+    correction: >-
+      Decide, in a node describing how the published glossary read resolves a vocabulary-term
+      name, whether the name is matched exactly as given or normalized before lookup.
+    node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { createReadVocabularyTermRoutesPlugin } from '../../../http/read-vocabulary-term.routes.js';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import { createReadVocabularyTermRoutesPlugin } from '../../../http/read-vocabulary-term.routes.js';"
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "readConcept: () => Promise.reject(new Error('read-vocabulary-term.routes.spec.ts never exercises readConcept')),"
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "import type { GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: the 404-refusal test, lines 93-104
+    evidence: >-
+      expect(response.statusCode).toBe(404); expect(body.error.code).toBe('VocabularyTermNotHeldError');
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: "built.readVocabularyTerm.mockResolvedValueOnce({ held: false, vocabulary: 'recipient', name: 'an-absent-term' });"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+looked_past: >-
+  The mock-scaffolding rejection messages and the "four term vocabularies" phrasing in a test
+  title are test-authoring choices and already-consistent phrasing rather than domain facts.
+candidates_opened:
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

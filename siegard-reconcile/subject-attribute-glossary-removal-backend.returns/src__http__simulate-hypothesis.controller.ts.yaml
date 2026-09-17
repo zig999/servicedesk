@@ -1,0 +1,64 @@
+findings:
+  - file: src/http/simulate-hypothesis.controller.ts
+    where: "the module-level constant TOTAL_DEADLINE_BUDGET_MS and its use in the deadline field passed to runSimulateHypothesis"
+    evidence: |-
+      const TOTAL_DEADLINE_BUDGET_MS = 20_000;
+      deadline: now + TOTAL_DEADLINE_BUDGET_MS,
+    cost: >-
+      rules/investigation/an-answer-arrives-within-the-declared-deadline is scoped explicitly to
+      "a diagnosis" and includes writing/persistence stages simulate-hypothesis never runs. This
+      controller nonetheless binds simulate-hypothesis to the same 20,000ms ceiling with no node
+      naming that figure for this operation.
+    kind: unstated
+    correction: >-
+      Add a node (or extend an existing one) stating simulate-hypothesis's own total deadline
+      budget explicitly, with a decision-log entry disclosing the value.
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: the shape of the call to runSimulateHypothesis and of the returned response
+    evidence: |-
+      const { evidence, evaluation, durations } = await dependencies.runSimulateHypothesis({...});
+      return { evidence, evaluation, durations };
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: no call in this file reads a concept from the glossary directly.
+  - node: domain/investigation/subject
+    held_at: the buildSubject call and the subjectType/subjectAttributes fields forwarded
+    evidence: "buildSubject(body.subject.type, body.subject.attributes);"
+  - node: domain/knowledge/case-version
+    held_at: the destructured pinnedCase read from caseQuery.readCase and forwarded as case
+    evidence: "const { case: pinnedCase } = await dependencies.caseQuery.readCase(body.case.slug, body.case.version);"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      no check against a case-input-requirement, and no refusal for a missing required
+      attribute, is present in this file.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the buildSubject invocation, whose own refusal logic lives inside buildSubject itself
+    evidence: "buildSubject(body.subject.type, body.subject.attributes);"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: the file contains no migration, schema or persistence code.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: the file contains no relation, column or schema-declaring construct.
+  - node: domain/investigation/subject-attribute-value
+    held_at: body.subject.attributes, forwarded to buildSubject and as subjectAttributes
+    evidence: "subjectAttributes: body.subject.attributes,"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: no call in this file reads a vocabulary term or concept by name.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: no vocabulary or concept read of any kind appears in this file.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      the function performs no door check over case-input-requirements — consistent with this
+      rule's own scope to diagnose only.
+looked_past: >-
+  The discarded return value of buildSubject (called only for its validating side effect) is a
+  style choice, not a domain fact.
+candidates_opened:
+  - rules/investigation/an-answer-arrives-within-the-declared-deadline
+  - constraints/the-deadline-is-an-absolute-propagated-instant

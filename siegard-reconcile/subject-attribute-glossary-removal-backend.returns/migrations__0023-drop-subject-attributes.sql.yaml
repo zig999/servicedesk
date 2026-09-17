@@ -1,0 +1,67 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file itself — a plain numbered script beside its siblings, applied through its own DDL
+      statements with no manually-performed step
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: the DROP TABLE statement removing the table paired with no Domain Model element
+    evidence: "DROP TABLE subject_attributes;"
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the ALTER TABLE ... DROP CONSTRAINT statement, which removes the governed-vocabulary link
+      and leaves `attribute` as the bare, unconstrained string the node's own type declares
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: |
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+looked_past: >-
+  The comment's claim that this migration "mirrors 0022-case-version-authored-at-default.sql's
+  own destructive-but-preserving shape" is a documentation-accuracy question about a sibling
+  file's own comment, not a domain fact any specification node governs, so it is left for
+  whichever judgment answers comment quality rather than reported here.

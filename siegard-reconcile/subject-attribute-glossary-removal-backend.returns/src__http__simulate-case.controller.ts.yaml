@@ -1,0 +1,50 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: the destructuring of runSimulate's result and the return statement, lines 18-24
+    evidence: |-
+      const { evidence, evaluations, resolved, assessment, cost, durations } = await dependencies.runSimulate({...});
+      return { evidence, evaluations, resolved, assessment, cost, durations };
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      no read-concept dependency is imported or called here; the concept read happens inside runSimulate's own pipeline.
+  - node: domain/investigation/subject
+    held_at: the buildSubject call, line 17
+    evidence: "buildSubject(body.subject.type, body.subject.attributes);"
+  - node: domain/knowledge/case-version-state
+    held_at: the readCase call, line 16
+    evidence: "const { case: pinnedCase } = await dependencies.caseQuery.readCase(body.case.slug, body.case.version);"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      no requirement check or refusal branch appears between buildSubject and runSimulate.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the buildSubject call, line 17
+    evidence: "buildSubject(body.subject.type, body.subject.attributes);"
+  - node: scenarios/investigation/a-draft-case-version-is-simulated
+    held_at: the return statement, line 24
+    evidence: "return { evidence, evaluations, resolved, assessment, cost, durations };"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: the file is an HTTP controller with no migration or schema-defining code
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: no relation or column is declared or touched here
+  - node: domain/investigation/subject-attribute-value
+    held_at: the subjectAttributes field of the runSimulate call, line 20
+    evidence: "subjectAttributes: body.subject.attributes,"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: no vocabulary-term or concept read, and no refusal for one, appears in this file
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: no vocabulary or concept read occurs here
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      no SubjectDoesNotCoverCaseInputsError refusal is present; this door belongs to diagnose, which this file is not.
+looked_past: >-
+  buildSubject(body.subject.type, body.subject.attributes) is called for its side effect and its
+  return value is discarded, with the raw fields forwarded to runSimulate instead — a
+  construction-boundary detail internal to subject.js, not a domain fact this file states
+  differently.

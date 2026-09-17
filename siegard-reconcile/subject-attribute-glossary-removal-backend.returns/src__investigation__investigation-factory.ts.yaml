@@ -1,0 +1,73 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's import list, lines 1-11"
+    evidence: |-
+      import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case } from '../case/case.js';
+      import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
+      import { buildSubject } from './subject.js';
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: |-
+      const counts = countsByKey(evidence.map((item) => item.concept));
+      This treats concept as an opaque string key; the file performs no glossary read-concept call.
+  - node: domain/investigation/investigation
+    held_at: "the returned object literal, lines 40-55"
+    evidence: |-
+      return { id: options.id, requester: options.requester, ... written_at: options.written_at! };
+  - node: domain/investigation/subject
+    held_at: "line 38 (build) and line 45 (assignment)"
+    evidence: |-
+      const subject = buildSubject(subjectType, subjectAttributes);
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: |-
+      import type { SubjectAttributeValue } from './subject-attribute-value.js';
+      The type is only imported and threaded through; its shape is not declared in this file.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: |-
+      const subject = buildSubject(subjectType, subjectAttributes);
+      This file passes subjectAttributes straight into buildSubject with no length check of its own.
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: "evaluationTotalityViolations, lines 97-116"
+    evidence: |-
+      const required = requiresEvaluationOf(theCase);
+      const counts = countsByKey(evaluations.map((item) => item.hypothesis));
+  - node: rules/investigation/one-evidence-per-collected-concept
+    held_at: "evidenceTotalityViolations, lines 76-95"
+    evidence: |-
+      const plan = collectionPlan(theCase);
+      const counts = countsByKey(evidence.map((item) => item.concept));
+  - node: rules/investigation/replay-is-pinned
+    held_at: "the returned object's pinned_case, model, prompt_version and evidence fields, lines 46-49"
+    evidence: |-
+      pinned_case: pinnedCaseOf(theCase), prompt_version: options.prompt_version, model: options.model, evidence: [...evidence],
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the returned object's written_at field, line 54"
+    evidence: |-
+      written_at: options.written_at!,
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: The file contains no migration or schema-replay logic; it is a pure in-memory factory.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: The file contains no column or relation declaration.
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: The file makes no vocabulary or concept read.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: The file makes no read over a vocabulary or its concepts.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      The file has no door-refusal logic referencing case-input-requirement; its only refusal,
+      refuseTotalityViolations, checks evidence/evaluation totality, not subject-attribute coverage.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: The file has no simulate-specific branch and no reference to case-input-requirement.
+looked_past: >-
+  BuildInvestigationOptions declares written_at?: string as optional while the return statement
+  forces it with options.written_at! — a type-safety looseness in the factory's own input
+  contract, not a domain fact the source states on its own authority.

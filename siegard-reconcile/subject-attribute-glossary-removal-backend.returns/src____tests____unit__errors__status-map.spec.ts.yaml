@@ -1,0 +1,36 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { statusForError } from '../../../errors/status-map.js';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import { statusForError } from '../../../errors/status-map.js';"
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "import { buildSubject } from '../../../investigation/subject.js';"
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "buildSubject('a-subject-type', []);"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: "import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';"
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: "it('returns undefined for a typed domain error the table does not name', () => { const error = new IncoherentCaseError('a-slug', ['a violation']);"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the SubjectDoesNotCoverCaseInputsError test, lines 159-167
+    evidence: >-
+      const error = new SubjectDoesNotCoverCaseInputsError([...]); const status = statusForError(error); expect(status).toBe(422);
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "buildSubject('a-subject-type', []);"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the buildSubject/SubjectCarriesNoAttributeError test, lines 145-157
+    evidence: >-
+      expect(refusal).toBeInstanceOf(SubjectCarriesNoAttributeError); const status = statusForError(refusal); expect(status).toBe(422);
+looked_past: >-
+  The test's own description at line 179 says "across all seven" while the suite actually carries
+  eight distinct 409-mapped errors — a wording slip in test prose, not a domain-fact conformance
+  matter, left for code review.
+candidates_opened:
+  - rules/knowledge/case-terms-exist-in-the-glossary

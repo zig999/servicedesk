@@ -1,0 +1,46 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: the whole-document round-trip assertions repeated across the file
+    evidence: >-
+      expect(omittingWrittenAt(document)).toEqual(omittingWrittenAt(investigation));
+  - node: contracts/investigation/glossary-source
+    held_at: the evidence fixture's own concept field
+    evidence: >-
+      function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][number] { return { concept: fixtures.concept, ... } }
+  - node: domain/investigation/subject-attribute-value
+    held_at: the subject literal inside anIntegrationInvestigation
+    evidence: >-
+      subject: { type: fixtures.subjectType, attributes: [{ attribute: fixtures.subjectAttribute, value: 'a-value' }] }
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      insertFixtureRows inserts directly with pool.query('INSERT INTO subject_types (name) VALUES ($1)', [names.subjectType])
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      the same direct INSERTs in insertFixtureRows are the only vocabulary interaction in the file
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      const store = new RelationalInvestigationStore(pool); await store.write(investigation);
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      the file never calls a simulate-case or simulate-hypothesis path
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      every fixture the file builds carries exactly one attribute-value
+looked_past: >-
+  The file's own test-harness choices — hardcoded pool bounds, the deleteTolerantly helper
+  swallowing foreign-key errors during cleanup, and near-duplicate round-trip assertions — are
+  construction quality rather than a domain fact, left to whatever pass reviews the code as code.
+candidates_opened:
+  - domain/investigation/durations
+  - domain/investigation/evidence
+  - rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+  - rules/investigation/an-investigation-is-written-once

@@ -1,0 +1,47 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      readVocabularyTerm: () => Promise.reject(new Error('readVocabularyTerm is not scripted for this file')),
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      readConcept: () => Promise.reject(new Error('readConcept is not scripted for this file')),
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "readConcept: () => Promise.reject(new Error('readConcept is not scripted for this file')),"
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the test "answers 400 for a GET of /v1/glossary/subject-attribute, the vocabulary this reduction dropped, never reaching listVocabularyTerms"
+    evidence: >-
+      const response = await app.inject({ method: 'GET', url: '/v1/glossary/subject-attribute' });
+      expect(response.statusCode).toBe(400);
+      expect(built.listVocabularyTerms).not.toHaveBeenCalled();
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      readVocabularyTerm: () => Promise.reject(new Error('readVocabularyTerm is not scripted for this file')),
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: >-
+      the test "answers a listing whose vocabulary holds one name twice with an HTTP 500 response reporting DuplicateGlossaryNameError"
+    evidence: >-
+      built.listVocabularyTerms.mockRejectedValueOnce(new DuplicateGlossaryNameError('action', 'repeated-term'));
+      expect(response.statusCode).toBe(500);
+      expect(body.error.code).toBe('DuplicateGlossaryNameError');
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "readVocabularyTerm: () => Promise.reject(...); listVocabularyTerms,"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "readVocabularyTerm: () => Promise.reject(...); listVocabularyTerms,"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: "readVocabularyTerm: () => Promise.reject(...); listVocabularyTerms,"
+looked_past: >-
+  The test's own local numbers for defaultLimit (20) and maxLimit (50) are the fixture's arbitrary
+  choice of deployment-configuration values constraints/listings-are-paged explicitly leaves
+  unnamed; general test-authoring style is not a domain-conformance concern.
+candidates_opened:
+  - constraints/listings-are-paged
+  - constraints/a-malformed-request-is-refused-with-a-validation-error
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

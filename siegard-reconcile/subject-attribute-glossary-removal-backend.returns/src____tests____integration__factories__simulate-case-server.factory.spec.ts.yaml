@@ -1,0 +1,57 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      seedingConnection = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
+      await ensureFixtureSeeded(seedingConnection);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      insertCapabilities' INSERT statement and insertConcepts' INSERT statements
+    evidence: >-
+      INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'POST', url: '/v1/simulate', payload: requestBodyFor(RELEASED_SLUG, RELEASED_VERSION, requester) });
+  - node: domain/investigation/subject-attribute-value
+    held_at: "requestBodyFor(), line 341"
+    evidence: >-
+      subject: { type: 'contract', attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      async function insertTerms(connection: DatabaseConnection, table: string, names: readonly string[]): Promise<void> {
+        for (const name of names) {
+          await connection.query(`INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, [name]);
+        }
+      }
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      await connection.query(`INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, [name]);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'POST', url: '/v1/simulate', payload: requestBodyFor(RELEASED_SLUG, RELEASED_VERSION, requester) });
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: >-
+      the draft-state test, lines 361-372 — it dispatches simulate against a case version pinned to draft and
+      still asserts 200 with the complete record, without the subject naming every attribute the case's own
+      requirements might separately hold
+    evidence: >-
+      'answers 200 with the complete record likewise for a draft-state pinned case version, never released',
+      async () => {
+        expect(draftVersion).toBeDefined();
+        const response = await app.inject({ method: 'POST', url: '/v1/simulate', payload: requestBodyFor(DRAFT_SLUG, draftVersion as number, requester) });
+        expect(response.statusCode).toBe(200);
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "requestBodyFor(), lines 338-344"
+    evidence: >-
+      subject: { type: 'contract', attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }] },
+looked_past: >-
+  SEEDED_SUBJECT_ATTRIBUTE_NAME is named as though it were inserted into a governed vocabulary the way subject_types,
+  outcomes, actions and recipients are, but no insertTerms-style seeding call ever writes it anywhere — that naming
+  is a code-quality/comment-style matter, not a domain fact the source states or misstates, so I leave it to a
+  different pass.
+candidates_opened:
+  - contracts/investigation/case-simulation

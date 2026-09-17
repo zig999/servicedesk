@@ -1,0 +1,53 @@
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: "databasePoolOptionsFrom(), lines 53-59"
+    evidence: |
+      function databasePoolOptionsFrom(env: Env): IDatabaseConnectionPoolOptions {
+        return { maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS, idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS, statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS };
+      }
+  - node: constraints/the-database-is-externally-provisioned
+    held_at: "line 28"
+    evidence: "const connection = createDatabaseConnection(env.DATABASE_URL, poolOptions);"
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "createDiagnoseHttpServer(), lines 27-45"
+    evidence: |
+      const connection = createDatabaseConnection(env.DATABASE_URL, poolOptions);
+      const caseQuery = createCaseQuery(connection);
+      const caseInputRequirementsQuery = createCaseInputRequirementsQuery(connection);
+  - node: contracts/knowledge/case-input-requirements
+    held_at: "lines 34 and 36-42"
+    evidence: |
+      const caseInputRequirementsQuery = createCaseInputRequirementsQuery(connection);
+      const diagnose: DiagnoseControllerDependencies = { caseQuery, caseInputRequirementsQuery, runDiagnose, };
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: No migration, script or schema-replay construct appears anywhere in this file.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: The file only opens a connection and wires query/runner factories; no column or relation declared.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: |
+      const observationSource = new HttpDeclarativeObservationSource({ capabilities: createCapabilityQuery(connection), connectorConfigurations: createConnectorConfigurationRegistry(connection), });
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "const simulateCase: SimulateCaseControllerDependencies = { caseQuery, runSimulate };"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: No read-by-name or refusal code appears in the file.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: The file performs no read over a vocabulary or over concepts.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: "const caseInputRequirementsQuery = createCaseInputRequirementsQuery(connection); is wiring alone."
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "const simulateCase: SimulateCaseControllerDependencies = { caseQuery, runSimulate };"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: |
+      const simulateHypothesis: SimulateHypothesisControllerDependencies = { caseQuery, runSimulateHypothesis, };
+looked_past: >-
+  runnerDependencies, simulationRunnerDependencies and hypothesisSimulationRunnerDependencies
+  repeat several fields verbatim — a code-shape observation, not a domain-fact departure.

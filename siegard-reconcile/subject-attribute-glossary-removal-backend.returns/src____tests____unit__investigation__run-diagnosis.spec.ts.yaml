@@ -1,0 +1,45 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "import { runDiagnosis, type RunDiagnosisOptions } from '../../../investigation/run-diagnosis.js';"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "import { runDiagnosis, type RunDiagnosisOptions } from '../../../investigation/run-diagnosis.js';"
+  - node: contracts/investigation/glossary-source
+    held_at: the FakeGlossaryQuery.readConcept stub passed as the pipeline's glossary option
+    evidence: |-
+      public async readConcept(name: string): Promise<ConceptResolution> { return { held: false, name }; }
+      concept_description: '',
+  - node: domain/investigation/subject-attribute-value
+    held_at: the A_SUBJECT_ATTRIBUTES constant and the SubjectAttributeValue-typed field it seeds
+    evidence: "const A_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id', value: 'subject-1' }];"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: |-
+      public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> { ... }
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: |-
+      public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> { ... }
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      it('fails fast on an empty subject attribute set before collecting any evidence, judging any hypothesis or writing anything', async () => {
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "import { runDiagnosis, type RunDiagnosisOptions } from '../../../investigation/run-diagnosis.js';"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      the "fails fast on an empty subject attribute set" test, asserting the rejection and the absence of any downstream call
+    evidence: |-
+      await expect(runDiagnosis(options)).rejects.toThrow(/carries no attribute-value/);
+      expect(observationSource.calls).toBe(0); expect(evaluator.calls).toBe(0); expect(store.writeCount).toBe(0);
+looked_past: >-
+  The file's own deadline, retry, cost and durations tests state numeric and behavioral facts
+  none of this batch's nine nodes hold; a spot check against the trace-bound candidates and
+  decision-log entries found them consistent, left to whichever pass answers for those nodes.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - constraints/diagnosis-answers-synchronously
+  - constraints/the-deadline-is-an-absolute-propagated-instant
+  - domain/investigation/durations

@@ -1,0 +1,134 @@
+findings:
+  - file: src/errors/status-map.ts
+    where: "the STATUS_BY_ERROR_CLASS map, lines 43-83 (and its import list, lines 1-39)"
+    evidence: |-
+      [InvestigationWriteDeadlineExceededError, 500],
+        [DuplicateGlossaryNameError, 500],
+      ]);
+    cost: >-
+      DuplicateConceptAnswerError is a fully implemented, named error carrying its own concept
+      and answers context, but it is imported and named nowhere in this map. A concept read that
+      finds two capabilities answering it throws this class, statusForError finds no matching
+      entry and falls through to a generic 500/INTERNAL_ERROR, indistinguishable from any other
+      unanticipated server fault.
+    kind: contradicts
+    correction: >-
+      import DuplicateConceptAnswerError from './duplicate-concept-answer.error.js' and add
+      [DuplicateConceptAnswerError, 500] to STATUS_BY_ERROR_CLASS.
+    node: rules/integration/one-capability-answers-one-concept
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: the fallback branch of statusForError
+    evidence: "return undefined;"
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the CapabilityIdentityNotFoundError entry
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the ConnectorConfigurationNotFoundError, ConnectorConfigurationNotWellFormedError and IncompleteConnectorConfigurationError entries"
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: contracts/investigation/diagnosis
+    held_at: "the SubjectDoesNotCoverCaseInputsError, SubjectCarriesNoAttributeError and InvestigationWriteDeadlineExceededError entries"
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the CaseAlreadyHasDraftError, CaseHoldsNoDraftError, ManifestPositionOccupiedError etc. entries"
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the ConceptDescriptionRequiredError entry
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: the VocabularyTermNotHeldError and ConceptNotHeldError entries
+    evidence: "[VocabularyTermNotHeldError, 404],"
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: the DuplicateGlossaryNameError entry
+    evidence: "[DuplicateGlossaryNameError, 500],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: the MalformedCapabilityInputSchemaError entry
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "the ConnectorConfigurationNotWellFormedError and IncompleteConnectorConfigurationError entries"
+    evidence: "[ConnectorConfigurationNotWellFormedError, 422],"
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: the IncompleteConnectorConfigurationError entry
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the ConnectorConfigurationNotFoundError entry
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: the ConnectorPlaceholderOutsideInputSchemaError entry
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError entries
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: the OpenApiDocumentNotReadableError entry
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: the OpenApiDocumentNotReadableError entry
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: the OpenApiOperationNotFoundError entry
+    evidence: "[OpenApiOperationNotFoundError, 422],"
+  - node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError entries
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: the OpenApiDocumentNotFetchedError entry
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the SubjectDoesNotCoverCaseInputsError entry
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: the HypothesisNotInManifestError entry
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the SubjectCarriesNoAttributeError entry
+    evidence: "[SubjectCarriesNoAttributeError, 422],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the InvestigationWriteDeadlineExceededError entry
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the CaseVersionNotValidError entry
+    evidence: "[CaseVersionNotValidError, 409],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: the ConceptRefusesSubjectTypeError entry
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the HypothesisRevisionCollectsNoConceptError entry
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the CaseHoldsNoDraftError entry
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the HypothesisRevisionNotDraftAtReleaseError entry
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: the ReleasedHypothesisRevisionNotAlterableError entry
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: the ConceptNotInGlossaryError entry
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the ConceptDescriptionRequiredError entry
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: the SubjectDoesNotCoverCaseInputsError entry
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: "type DomainErrorClass = new (...args: never[]) => Error;"
+  - node: domain/investigation/subject-attribute-value
+    held_at: nowhere
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422], [SubjectCarriesNoAttributeError, 422],"
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: "const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>(["
+looked_past: >-
+  statusForError's linear instanceof scan over insertion order would resolve ambiguously were two
+  mapped classes ever related by inheritance — a robustness property of the lookup, not a domain
+  fact.

@@ -1,0 +1,41 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      No construct in this file concerns schema migration or replay.
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      No construct in this file concerns schema columns or persisted relations.
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: >-
+      No construct in this file reads a concept from the glossary; dependencies are stubbed with vi.fn().
+  - node: domain/investigation/subject-attribute-value
+    held_at: REQUEST_BODY's subject.attributes entry
+    evidence: >-
+      subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      No construct in this file reads a glossary term or asserts a 404/VocabularyTermNotHeldError.
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      No construct in this file reads a vocabulary or asserts a duplicate-name refusal.
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      This file exercises the simulate-hypothesis route only; no diagnose call is made.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      REQUEST_BODY always carries one attribute-value; no test omits a required attribute.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      REQUEST_BODY always carries one attribute-value; no test sends an empty-attribute subject.
+looked_past: >-
+  The file's actual assertions (rate limiting: 10/minute, 429, Retry-After: 60) are governed by
+  constraints/the-diagnosis-and-simulation-routes-are-rate-limited, a node outside the pack given
+  for this file, and match it exactly.

@@ -1,0 +1,48 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: >-
+      await connection.query(`INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, [name]);
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: nowhere
+    evidence: >-
+      await connection.query('DELETE FROM investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
+  - node: contracts/investigation/glossary-source
+    held_at: >-
+      insertConcepts and insertCapabilities in ensureFixtureSeeded
+    evidence: >-
+      await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, concept.ttl]);
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      const SEEDED_SUBJECT declaration
+    evidence: >-
+      const SEEDED_SUBJECT: Subject = { type: 'contract', attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }] };
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      async function insertTerms(connection: DatabaseConnection, table: string, names: readonly string[]): Promise<void> {
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: >-
+      await connection.query(`INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, [name]);
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: nowhere
+    evidence: >-
+      expect(response.statusCode).toBe(200);
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: >-
+      runSimulate: () => { throw new Error("simulate-case is not exercised by this file's own tests"); },
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      const SEEDED_SUBJECT: Subject = { type: 'contract', attributes: [{ attribute: SEEDED_SUBJECT_ATTRIBUTE_NAME, value: 'CTR-0001' }] };
+looked_past: >-
+  The TOTAL_DEADLINE_BUDGET_MS literal and the second test's grep for the @anthropic-ai/sdk
+  import specifier are engineering/test-scaffolding concerns (a value needed to invoke the
+  runner's signature, and a test-isolation safeguard) rather than domain facts the source
+  states on its own authority, so neither is reported as a finding.
+candidates_opened:
+  - rules/investigation/an-answer-arrives-within-the-declared-deadline
+  - constraints/the-deadline-is-an-absolute-propagated-instant
+  - constraints/the-domain-depends-on-no-infrastructure
