@@ -9,6 +9,20 @@
       "summary": "The whole backend path of the payload_notes attribute, from a capability's registration and identity read, through the evidence snapshot taken at collection, to the judgment call and the prompt it assembles."
     },
     {
+      "id": "epic/inconclusive-response-not-judgment-failure",
+      "kind": "epic",
+      "file": "epic/inconclusive-response-not-judgment-failure.md",
+      "title": "A well-formed inconclusive model answer is not recorded as a judgment failure",
+      "summary": "Corrective increment: outcomeFromModelText must record a well-formed {\"verdict\":\"inconclusive\"} model response distinctly from a response that could not be parsed, so an infrastructure failure is never conflated with a genuine domain answer."
+    },
+    {
+      "id": "epic/register-capability-dto-refusal-order",
+      "kind": "epic",
+      "file": "epic/register-capability-dto-refusal-order.md",
+      "title": "register-capability reaches the registry contract-completeness refusal",
+      "summary": "Corrective increment: a required-attribute absence or empty string in a register-capability submission must reach the registry's own completeness check and its HTTP 422 refusal, not stop at the DTO's HTTP 400 shape validation."
+    },
+    {
       "id": "inventory/capability-payload-notes-surface",
       "kind": "inventory",
       "file": "inventory/capability-payload-notes-surface.md",
@@ -54,6 +68,22 @@
       "title": "The judgment prompt states an item's payload notes",
       "summary": "The production evaluator's prompt stating each evidence item's capability payload notes beside that item's observation, omitted where the snapshot is empty.",
       "epic": "capability-payload-notes"
+    },
+    {
+      "id": "task/inconclusive-response-not-judgment-failure/distinct-reason",
+      "kind": "task",
+      "file": "task/inconclusive-response-not-judgment-failure/distinct-reason.md",
+      "title": "A well-formed inconclusive model response is recorded distinctly from a judgment failure",
+      "summary": "outcomeFromModelText records a well-formed {\"verdict\":\"inconclusive\"} response with reason not-grounded, never under the same \"judgment-failure\" reason a parse failure or a malformed response uses.",
+      "epic": "inconclusive-response-not-judgment-failure"
+    },
+    {
+      "id": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "kind": "task",
+      "file": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal.md",
+      "title": "A register-capability submission missing a required attribute reaches the registry's own completeness refusal",
+      "summary": "Loosen register-capability.dto.ts's shape validation so an absent or empty required attribute passes the HTTP shape check and is refused by the capability registry's own 422 IncompleteCapabilityContractError instead.",
+      "epic": "register-capability-dto-refusal-order"
     }
   ],
   "edges": [
@@ -116,6 +146,120 @@
       "to": "constraints/the-schema-replays-from-its-scripts",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/inconclusive-response-not-judgment-failure",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/register-capability-dto-refusal-order",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/register-capability-dto-refusal-order",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/register-capability-dto-refusal-order",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/register-capability-dto-refusal-order",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[3]"
     },
     {
       "from": "task/capability-payload-notes/capability-declares-payload-notes",
@@ -248,6 +392,36 @@
       "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
       "kind": "implements",
       "at": "implements[3]"
+    },
+    {
+      "from": "task/inconclusive-response-not-judgment-failure/distinct-reason",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/inconclusive-response-not-judgment-failure/distinct-reason",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[2]"
     }
   ]
 }

@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: A registered capability declares its input schema, its output schema and its timeout as a positive integer count of milliseconds; a registration that states no timeout takes the default of sixty seconds; an attribute that is absent or an empty string is undeclared, and a registration leaving any required attribute undeclared is refused with an HTTP 422 response reporting an IncompleteCapabilityContractError.
+statement: A registered capability declares its input schema, its output schema and its timeout as a positive integer count of milliseconds; a registration that states no timeout takes the default of sixty seconds; an attribute that is absent or an empty string is undeclared, and a registration leaving any required attribute undeclared is refused with an HTTP 422 response reporting an IncompleteCapabilityContractError naming every attribute left undeclared.
 constrains:
   - domain/integration/capability
 ---

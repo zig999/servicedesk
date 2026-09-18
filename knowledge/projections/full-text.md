@@ -5574,6 +5574,33 @@ entries:
   unstated: The element states what capability_payload_notes holds for a capability that declared no payload notes and for an evidence item collected before the attribute existed, but says nothing about an observation whose producing capability never resolved at all -- where there is no capability to take payload notes from -- even though the sibling fields attribute carries an explicit honest-empty rule for exactly that case.
   decided: An evidence item recorded for an observation whose producing capability never resolved carries capability_payload_notes as the empty string, the same honest-empty value an item collected from a capability declaring none carries, and the observation's own ending is unchanged by it.
   why: The attribute is required, so the never-resolved case must read as something, and the empty string is the only value that is honest -- the source of the notes does not exist, exactly as it does not for a capability declaring none, and any other filling would invent an account no capability ever gave; a value meaning "unknown" distinct from "none" would additionally give judgment a distinction it cannot act on, since both mean the observation is grounded by no operator's account.
+- location: domain/investigation/evaluation-reason.md
+  field: values
+  unstated: No node names the reason for an evaluation inconclusive because a judgment call that completed within its deadline, over evidence that collected with result ok, returned a well-formed response whose verdict was itself inconclusive; the enumeration held only missing data, a failed judgment call and an expired deadline, and that event is none of the three.
+  decided: A fourth value, not-grounded, and rules/investigation/an-inconclusive-evaluation-declares-its-reason's own statement names the case -- a judgment call that returned a well-formed inconclusive verdict within its deadline over evidence that collected ok declares not-grounded, never judgment-failure.
+  why: rules/investigation/judgment-does-not-infer already fixes this event as an answer the domain asked for rather than a fault -- "evidence grounds verdicts, and absence of ground is a reason, not an invitation" -- so filing it under judgment-failure records a judgment call that worked as an infrastructure failure, precisely the confusion domain/investigation/evaluation-reason's own Description forbids, and not-grounded is that rule's own word for the condition the response reports.
+- location: rules/integration/a-capability-declares-its-contract.md
+  field: statement
+  unstated: Whether the refusal of a registration leaving a required attribute undeclared reports which required attribute or attributes were undeclared, or reports only its HTTP status and its error identity. The statement and the three decision-log entries that wrote it settled the status, the error identity, the empty-string reading and the timeout bounds, and said nothing about what the refusal carries beyond the error's own name.
+  decided: The IncompleteCapabilityContractError names every attribute left undeclared.
+  why: >-
+    The specification's standing test for a refusal carrying values beyond its own identity, logged at a-hypothesis-revision-moves-through-its-declared-lifecycle, is whether the caller can derive the value from its own request; a submitter cannot, because the required set is the registry's own (name, version, nature, input_schema, output_schema, connector, concept) and because an attribute supplied as an empty string counts as undeclared -- a reading no one outside the specification applies to their own submission -- so a bare error name leaves the operator to guess which field to fix. The sibling refusal of this same registration already discloses exactly this way: a-capability-input-schema-holds-a-well-formed-object reports a MalformedCapabilityInputSchemaError "naming every departure", and one registration keeps one idiom for its refusals, as a-capability-is-read-only and a-capability-declares-well-formed-schemas were each decided on. Every attribute rather than the first met, for the same reason that rule names every departure -- an operator answering one refusal at a time relearns the same refusal once per missing field.
+- location: rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read.md
+  field: statement
+  unstated: >-
+    No node states when a surface addressed by a capability's own name and version must tell the operator that a registration it submitted was made, relative to that surface's own subsequent read-capability-by-identity of the registered capability. a-submitted-registration-states-its-outcome-to-the-operator states that the outcome is owed and what it names, and expressly leaves what the surface presents while the submission is in flight and where it goes afterwards undecided; a-registration-outcome-is-never-stated-before-the-registry-answers fixes only the lower bound, that neither outcome is stated of a submission the registry has not answered; a-successful-capability-registration-lands-on-the-capabilitys-own-surface lands the operator on the identity-keyed surface and states nothing of what that surface then says about the write; and a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed states the windows of that identity read without reaching any submission the operator made. So whether the statement is owed at the registry's answer to the write or may be held back until the surface's own identity read answered fell to whatever a surface happened to render.
+  decided: >-
+    Owed as soon as the registry answers the write. The surface states that the registration was made at the moment the registry's answer reaches it, withholds that statement for no subsequent read-capability-by-identity of the registered capability it issues, and the statement stands alike while such a read is outstanding, once it has answered and where it failed -- that read neither delaying it, bringing it forward, withdrawing it nor changing what it names. Recorded as a new policy over domain/integration/capability, eventual, at rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read. Not decided here -- whether such a surface issues a further identity read at all, what it presents while one is outstanding, what becomes of an edit it holds, and which control carries the statement, its wording and its placement.
+  why: >-
+    The registry's answer is the moment the fact being stated becomes true, and the interval in which the registry has registered while the surface says nothing is exactly the surface a-submitted-registration-states-its-outcome-to-the-operator's own reasoning refuses -- one indistinguishable from a surface whose submission never left, where the operator's next act is a second register-capability that replaces what was just registered rather than creating what they believe they are creating. Binding the statement to the identity read would make a read's answer speak for a write's -- a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed has the surface state that the capability could not be read where that read fails, so an operator whose registration succeeded would meet a surface saying only that, which reads exactly like a registration that did not take, the two-situations-reading-alike presentation this specification refuses wherever it meets it, and worse here because the remedies differ in kind, a failed read being worth issuing again while a-registration-outcome-is-never-stated-before-the-registry-answers records that a write repeated is a second write and never a recovery of the first, leaving that operator no act that resolves the call they are uncertain about. a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding already refuses withholding what a surface knows while a further read runs, on the reasoning that the unsettled reading exists for an interval in which nothing is known and that withholding puts a blank where the registry answered; a surface holding the registry's answer to its own write is in that position exactly. Nothing is lost on the other side, because the outcome statement carries no capability attribute -- a-presented-capability-states-its-declared-attributes-as-the-read-answered-them fixes the presented attributes to the identity read's own answer and refuses a submission's content as a source for any of them, while this statement names only that the registration was made and the name and version the submission carried, so stating it at once satisfies both rules at the same time. Home is a new rule rather than the shared outcome node, whose statement is written once for both registries and whose Description records that pairing deliberately -- the connector configuration screen's further-read readings are already decided in rules of their own while the capability surface's are not, so folding this into the shared node would state for the sibling registry a fact this decision did not weigh. Policy over domain/integration/capability at eventual consistency, the shape and the reason both neighbours over this same surface take -- the surface never performs the write it reports, so what it states settles only when a separately issued call settles.
+- location: rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers.md
+  field: statement
+  unstated: >-
+    No node states what the fields of a surface addressed by a capability's own name and version hold between the registry answering that a registration submitted from it was made and that surface's subsequent read-capability-by-identity of the registered capability answering, for the fields the operator had changed away from what the surface's prior read of that identity answered. a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read decides only when the outcome is stated and records expressly that what becomes of an edit the surface holds is not decided there; a-presented-capability-states-its-declared-attributes-as-the-read-answered-them fixes the presented attributes to the identity read's own answer but states only what the presentation carries before and apart from an edit the operator made; a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface states an act over such an edit and not what happens to it when the operator submits. So whether an operator who has just saved goes on seeing the content they submitted, or watches those fields go back to what the earlier read answered, fell to whatever a surface happened to render.
+  decided: >-
+    The fields stand as submitted. From the registry's answer until that surface's subsequent read-capability-by-identity of the registered capability answers, no field the operator had changed away from the content the prior read answered is changed by that answer or by that read being outstanding -- each holds the content the operator submitted in it, and none is returned to the content that prior read answered, emptied, or set from any other answer. Recorded as a new invariant over domain/integration/capability at rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers. Not decided here -- which reading such a surface stands in while that further read is outstanding, whether it issues one at all, and what its fields hold once that read answers, fails or is refused.
+  why: >-
+    Setting those fields back to what the prior read answered is the whole effect of the act a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface permits only on the operator's own further, explicit act, performed on no act of the operator's at all, and that rule's own reason for demanding the act is live in this interval -- the operator stays on the surface and continues, so the next edit is made over content that silently changed and may be submitted over a write that replaces the identity whole. It is also content the registry no longer holds, register-capability having replaced what stood at the identity with the submitted contract and answered that it did, so reverting shows the operator a superseded registration as their own working content at the very moment a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read has the surface state that the registration was made. Leaving them alone puts no submission content into the presentation that a-presented-capability-states-its-declared-attributes-as-the-read-answered-them refuses as a source, because the submission carried what those fields already held and nothing is set into them at all -- that rule stating what the presentation carries apart from an edit the operator made.
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement
@@ -6432,12 +6459,13 @@ values:
   - no-data
   - judgment-failure
   - deadline-exceeded
+  - not-grounded
 ---
 
 ## Description
 
-Why an evaluation is inconclusive: missing data, a failed judgment call, or a deadline that expired before or during the call.
-The three are distinct causes and none is the umbrella of the others — confusing them poisons the projections and points curation at the wrong place.
+Why an evaluation is inconclusive: missing data, a failed judgment call, a deadline that expired before or during the call, or a completed judgment whose own well-formed answer is that the evidence grounds neither verdict.
+The four are distinct causes and none is the umbrella of the others — confusing them poisons the projections and points curation at the wrong place.
 
 ## Responsibility
 
@@ -7239,7 +7267,7 @@ Offering it is a fact about what the operator can do there; which control carrie
 === rules/integration/a-capability-declares-its-contract
 ---
 type: invariant
-statement: A registered capability declares its input schema, its output schema and its timeout as a positive integer count of milliseconds; a registration that states no timeout takes the default of sixty seconds; an attribute that is absent or an empty string is undeclared, and a registration leaving any required attribute undeclared is refused with an HTTP 422 response reporting an IncompleteCapabilityContractError.
+statement: A registered capability declares its input schema, its output schema and its timeout as a positive integer count of milliseconds; a registration that states no timeout takes the default of sixty seconds; an attribute that is absent or an empty string is undeclared, and a registration leaving any required attribute undeclared is refused with an HTTP 422 response reporting an IncompleteCapabilityContractError naming every attribute left undeclared.
 constrains:
   - domain/integration/capability
 ---
@@ -7342,6 +7370,69 @@ The refusal of an unregistered identity and the refusal past the rate limit stay
 Which control carries each statement, its wording, and where on the surface it sits are form and belong to the interface, as this specification's other surface rules leave them.
 
 Consistency is eventual because the surface never holds the registration it presents: what it states is drawn from a read of the capability issued separately, and the two windows this rule states are precisely the interval in which that read has not settled.
+
+=== rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read
+---
+type: policy
+statement: >-
+  A surface addressed by a capability's own name and version that submits a registration to
+  the capability registry states to the operator that the registration was made as soon as
+  the registry answers that write, and withholds that statement for no subsequent
+  read-capability-by-identity of the registered capability that surface issues, the
+  statement standing alike while such a read is outstanding, once it has answered and where
+  it failed.
+expression: >-
+  For an operator submitting a registration r through register-capability of
+  contracts/integration/capability-registry from a surface s addressed by the name n and
+  the version v that r carries, and the moment m at which the registry's answer that r
+  registered reaches s: the registered outcome
+  a-submitted-registration-states-its-outcome-to-the-operator owes stands at s from m. It
+  stands from m whether or not s issues a further read-capability-by-identity of (n, v),
+  and whatever the state of such a read: that read being outstanding neither delays it nor
+  withholds it, that read answering neither brings it forward nor changes what it names,
+  and that read failing neither withdraws it nor converts it into a statement that the
+  registration was not made. Nothing here is stated of a submission the registry refused or
+  has not answered, those staying
+  a-submitted-registration-states-its-outcome-to-the-operator's and
+  a-registration-outcome-is-never-stated-before-the-registry-answers's own; and this
+  carries no capability attribute into that statement, what s presents of the declared
+  attributes standing at (n, v) staying
+  a-presented-capability-states-its-declared-attributes-as-the-read-answered-them's own,
+  drawn from that identity read's own answer and from no other.
+constrains:
+  - domain/integration/capability
+consistency: eventual
+---
+
+## Description
+
+`register-capability` of `contracts/integration/capability-registry` is submitted from a surface addressed by the very identity it writes: `a-successful-capability-registration-lands-on-the-capabilitys-own-surface` lands every successful submission on the surface `read-capability-by-identity` answers, and an operator editing a standing registration is on that surface before they submit at all.
+Such a surface therefore has a read of its own over the identity it just wrote, and `a-submitted-registration-states-its-outcome-to-the-operator` fixes only the lower bound of when the outcome reaches the operator — `a-registration-outcome-is-never-stated-before-the-registry-answers` holding that neither outcome is stated of a submission the registry has not answered — while saying nothing about an upper one.
+So whether the operator learns their registration was made at the registry's own answer, or only once the surface had read the identity back, fell to whatever a surface happened to render.
+
+The registry's answer is the moment, because it is the moment the fact being stated becomes true and the whole reason the statement is owed.
+`a-submitted-registration-states-its-outcome-to-the-operator`'s own reasoning is that both writes are create-or-replace and total, so a surface that looks after the submission exactly as it looked before it leaves the operator unable to tell a registration made from one that never left — and an interval in which the registry has registered and the surface still says nothing is precisely that surface.
+The hazard that reasoning names is live in it: an operator who is told nothing resubmits, and a second `register-capability` at the same identity is a replacement of what was just registered rather than the creation they believe they are making, the same hazard that rule's neighbour raises against leaving an operator on the authoring surface.
+
+Binding the statement to the identity read would make a read's answer speak for a write's.
+`a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` states two windows in which that read has not settled, and a read that fails leaves the surface stating that the capability could not be read; an operator who had just registered successfully would then meet a surface saying only that, which reads exactly like a registration that did not take.
+That is the two-situations-reading-alike presentation this specification has refused wherever it has met it, and it is worse here than in the windows that rule covers, because the remedy differs in kind: a failed read is worth issuing again and that rule offers the act, while `a-registration-outcome-is-never-stated-before-the-registry-answers` records that a write repeated is a second write and never a recovery of the first, so an operator left uncertain about the write has no act that resolves it and the one act the surface offers them resolves the wrong call.
+
+Withholding what the surface already knows is the harm the sibling registry's own further-read rule refuses in terms.
+`a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding` puts a screen holding an answer in the reading that answer belongs to rather than in the unsettled one, on the reasoning that the outstanding window exists for an interval in which nothing is known and that withholding puts a blank where the registry answered.
+A surface holding the registry's answer to its own write is in that position exactly: nothing about the outcome is unknown to it, so the premise for saying nothing is absent.
+
+Nothing here moves what the surface presents.
+`a-presented-capability-states-its-declared-attributes-as-the-read-answered-them` fixes every declared attribute of the presented identity to that read's own answer and expressly refuses the content a `register-capability` submission carried as a source for any of them, and this states none of those attributes: the outcome statement names that the registration was made and the name and version the submission carried, which `a-submitted-registration-states-its-outcome-to-the-operator` already fixes as its content, and names no nature, schema, timeout, connector, concept or payload notes at all.
+Stating the outcome at the registry's answer therefore puts no submitted value into the presentation, and a surface that satisfies both rules states the outcome at once while still presenting only what its identity read answers.
+
+Nothing else about the interval is decided here.
+Whether such a surface issues a further identity read at all, what it presents while one is outstanding, and what becomes of an edit it holds are stated by no node and are not stated by this one; the refused outcome and the unrecognised-refusal branch stay `a-submitted-registration-states-its-outcome-to-the-operator`'s, the bound against stating an outcome early stays `a-registration-outcome-is-never-stated-before-the-registry-answers`'s, and where the operator lands stays `a-successful-capability-registration-lands-on-the-capabilitys-own-surface`'s.
+No call is refused, no attribute is added to `domain/integration/capability`, and no operation is published.
+Which control carries the statement, its wording, where it sits and how long it stands are form and belong to the interface, exactly as every other surface rule of this specification leaves them.
+
+Home is a new rule rather than `a-submitted-registration-states-its-outcome-to-the-operator` itself, whose statement is written once for both registries and whose Description records that pairing deliberately: the capability surface is the one of the two whose further-read behaviour this specification has not stated, the sibling screen's further-read readings being decided in rules of their own, so folding this into the shared node would state for the connector configuration registry a fact this decision did not weigh.
+A policy over `domain/integration/capability` at eventual consistency, the shape and reasoning both neighbours over this same surface already take: the surface never performs the write it reports, so what it states settles only when a call issued separately to the registry settles.
 
 === rules/integration/a-capability-listing-routes-presence-turns-on-nothing-further
 ---
@@ -9586,6 +9677,67 @@ A draft is a reading of one operation of one document for one connector, and a-r
 The same misreading arises without a second request: an operator who changes the link, the operation or the connector name and applies the draft still standing applies text drafted from what they moved away from, and the unresolved items and the reading notes beside it describe an operation they are no longer looking at.
 The act is still offered because the draft is still exactly what it was — what changed is the surface around it, and the operator who knows that may still want it.
 
+=== rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers
+---
+type: invariant
+statement: >-
+  Where a surface addressed by a capability's own name and version has submitted a
+  registration the capability registry answered as registered, no field of that surface the
+  operator had changed away from the content the surface's prior read of that identity
+  answered is changed by that answer or by the surface's subsequent
+  read-capability-by-identity of the registered capability being outstanding, each such
+  field holding, until that read answers, the content the operator submitted in it and none
+  of them being returned to the content that prior read answered, emptied, or set from any
+  other answer.
+expression: >-
+  For a name n and a version v, a surface s addressed by (n, v) presenting the capability
+  that read-capability-by-identity of contracts/integration/capability-registry answered at
+  that identity, and a registration r the operator submitted from s through
+  register-capability which the registry answered as registered: from the moment that
+  answer reaches s until the moment a subsequent read-capability-by-identity of (n, v)
+  issued from s answers, every field of s the operator had changed away from the content
+  that prior read answered holds exactly what r carried for it. Neither the registry's
+  answer to the write nor that subsequent read standing outstanding sets any such field: no
+  one of them is set to the content that prior read answered, no one of them stands empty,
+  and no one of them holds content drawn from any other answer — not a page of
+  list-capabilities, not the answer of read-capability for the concept this capability
+  answers, and not the answer of any read of another identity. A further change the
+  operator themselves makes to such a field in this interval is theirs and is no departure
+  from this. Nothing here turns on which of s's fields the edit touched, on how much of it
+  was made, on whether what r carried differs from what that prior read answered, or on how
+  the operator reached s. Nothing is stated of the moment that subsequent read answers or
+  of anything after it, of a surface whose submission the registry refused or has not
+  answered, of a surface that issues no such read at all, or of a field the operator never
+  changed.
+constrains:
+  - domain/integration/capability
+---
+
+## Description
+
+`a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read` has such a surface state that the registration was made at the registry's own answer to the write, and closes by recording that whether the surface issues a further identity read at all, what it presents while one is outstanding, and what becomes of an edit it holds are stated by no node and are not stated there.
+`a-presented-capability-states-its-declared-attributes-as-the-read-answered-them` fixes every declared attribute of the presented identity to that read's own answer, and stands aside in terms from the fields at issue here: it states what the presentation carries before and apart from any edit, an edit the operator makes to a field being theirs and no statement of that reading.
+So for the fields the operator changed and then submitted, what stands in them between the registry answering the write and the surface's own further read of that identity answering fell to whatever a surface happened to render, including going back, under the operator, to what the earlier read had answered.
+
+Returning those fields to the content the prior read answered is `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface`'s act performed without the act.
+That rule states an act whose whole effect is to set every field of the surface to the content of the registration the surface last read, and it takes effect only where the operator states in a further, explicit act that it is to be performed, on the reasoning that a discard leaves the operator on the same surface and continuing, so a mis-triggered one is built upon — the next edit is made over content that silently reverted, and may be submitted over a write both registries make total.
+A surface that sets those fields back on its own in this interval produces that act's whole effect on no act of the operator's at all, and the hazard that rule names is live in it.
+
+The content that prior read answered is also, by this point, content the registry no longer holds.
+`register-capability` replaces whatever stood at the identity with the whole declared contract submitted, and the registry has answered that the submission registered, so a surface putting the earlier answer back into the operator's fields shows them as their own working content a registration that has been replaced, in the same moment the surface states to them that the registration was made.
+One surface stating two things that read against each other is the presentation this specification refuses wherever it meets it, and `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` holds the three readings of this very surface apart for that reason.
+
+Nothing is filled into the fields from the submission, either.
+`a-presented-capability-states-its-declared-attributes-as-the-read-answered-them` refuses the content a `register-capability` submission carried as a source for an attribute it presents, and this draws on it for nothing: what the submission carried for these fields is what the fields already held, and what is stated here is that the answer to that submission sets them to nothing at all.
+
+Nothing else about the interval moves.
+The outcome statement and its timing stay `a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read`'s and `a-submitted-registration-states-its-outcome-to-the-operator`'s; which of the three readings such a surface stands in while a further identity read is outstanding, whether it issues one at all, and what its fields hold once that read answers, fails or is refused are stated by no node and are not stated here; the discard act and what it returns the fields to stay `a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface`'s and `a-surface-holding-no-read-registration-offers-no-discard`'s; the two unsettled windows and the reattempt stay `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed`'s.
+No call is refused, no attribute is added to `domain/integration/capability`, and no operation is published.
+Which control carries each field, its label, its order and its placement are form and belong to the interface, exactly as this specification's other surface rules leave them.
+
+Home is a new rule rather than `a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read`, whose one condition is what the surface tells the operator about the write and whose Description records this as a fact it does not reach, and rather than `a-presented-capability-states-its-declared-attributes-as-the-read-answered-them`, which states what the presentation carries apart from any edit and would be given a second condition about fields it deliberately leaves alone.
+An invariant over `domain/integration/capability`, holding immediately inside that one aggregate: what is stated is that content already standing on the surface is not changed, which settles at the surface and waits on no separately issued call, unlike the neighbouring rules over this surface that state what a read's answer is presented as and take eventual consistency for exactly that reason.
+
 === rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
 ---
 type: policy
@@ -10836,7 +10988,7 @@ Unlike those, ticket_ref is optional, so the reading ends at absence rather than
 === rules/investigation/an-inconclusive-evaluation-declares-its-reason
 ---
 type: invariant
-statement: Every inconclusive evaluation declares its reason, and a no-data reason cites the evidence whose result is not ok.
+statement: Every inconclusive evaluation declares its reason, a no-data reason cites the evidence whose result is not ok, and an evaluation whose judgment call returned a well-formed inconclusive verdict within its deadline over evidence that collected ok declares not-grounded rather than judgment-failure.
 constrains:
   - domain/investigation/evaluation
 ---
@@ -10845,6 +10997,7 @@ constrains:
 
 Inconclusive by technical failure, by queue and by missing data must be distinguishable, or an infrastructure failure is read as a domain fact — the pathology the rest of the system exists to avoid.
 A judgment that never received a slot, or that started and did not return in time, is deadline-exceeded: nothing failed and the data arrived.
+A judgment that ran to completion and answered, in a response the system could read, that the evidence grounds neither verdict is not-grounded: the call succeeded and the answer is the one the judgment was asked for, while judgment-failure is reserved for a response the system could not read at all.
 
 === rules/investigation/an-investigation-is-written-once
 ---

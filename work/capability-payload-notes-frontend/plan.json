@@ -9,6 +9,20 @@
       "summary": "Carry the capability's optional payload_notes attribute through the frontend's shared capability contract declarations, both form hooks' read and write paths, and the one field-rendering component the registration screen and the detail view both compose."
     },
     {
+      "id": "epic/detail-surface-presents-submitted-values-after-save",
+      "kind": "epic",
+      "file": "epic/detail-surface-presents-submitted-values-after-save.md",
+      "title": "The capability detail surface presents the registry's own answer after a save, not the submission",
+      "summary": "Corrective increment: use-capability-detail.ts's post-save reset must source the presented fields and schema baselines from the registry's own PUT response, not from the values the submission carried."
+    },
+    {
+      "id": "epic/payload-notes-dropped-when-untouched",
+      "kind": "epic",
+      "file": "epic/payload-notes-dropped-when-untouched.md",
+      "title": "An untouched but previously-declared payload_notes survives resubmission",
+      "summary": "Corrective increment: both capability form hooks must forward an untouched but previously-loaded payload_notes value unconditionally on submission, the same as every other declared attribute, instead of dropping it from the PUT body whenever the operator did not personally edit it this session."
+    },
+    {
       "id": "inventory/capability-payload-notes-frontend-surface",
       "kind": "inventory",
       "file": "inventory/capability-payload-notes-frontend-surface.md",
@@ -46,6 +60,22 @@
       "title": "payload notes presented from the identity read's own answer",
       "summary": "Seed the form values both capability form hooks present from the payload_notes the identity read answered, absent where that answer carried none, and return the field to that content on discard.",
       "epic": "capability-payload-notes-surface"
+    },
+    {
+      "id": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "kind": "task",
+      "file": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer.md",
+      "title": "The capability detail surface presents a subsequent read's own answer after a save, never the submission",
+      "summary": "use-capability-detail.ts's onSuccess stops resetting the form and schema baselines from the submitted values; the outcome (toast) still fires at the registry's answer, but the presented fields and baselines change only once the invalidated identity-keyed query's own refetch has answered.",
+      "epic": "detail-surface-presents-submitted-values-after-save"
+    },
+    {
+      "id": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "kind": "task",
+      "file": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally.md",
+      "title": "An untouched, previously-declared payload_notes is forwarded on resubmission",
+      "summary": "Both capability form hooks forward payload_notes from the form's current value unconditionally, the same as every other declared attribute, instead of only when the operator dirtied it this session.",
+      "epic": "payload-notes-dropped-when-untouched"
     }
   ],
   "edges": [
@@ -158,6 +188,168 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/detail-surface-presents-submitted-values-after-save",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/payload-notes-dropped-when-untouched",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "task/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
       "to": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "kind": "depends_on",
@@ -228,6 +420,36 @@
       "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
       "kind": "implements",
       "at": "implements[2]"
+    },
+    {
+      "from": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
     }
   ]
 }
