@@ -1,0 +1,97 @@
+read:
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: >-
+      the IHypothesisEvaluator interface declaration, together with the file's import list carrying no
+      LLM client
+    evidence: |-
+      export interface IHypothesisEvaluator {
+
+        evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+      }
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: the evaluate() parameter list and the CaseContext type
+    evidence: |-
+      evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+      ...
+      export type CaseContext = {
+        readonly title: string;
+        readonly whenToUse: string;
+      };
+  - node: domain/investigation/evidence
+    held_at: the EvidenceItem type
+    evidence: |-
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+        readonly observed_at: string;
+        readonly ttl: number;
+      } & ObservationOutcome;
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: the IHypothesisEvaluator interface's evaluate operation
+    evidence: "evaluate(\n    criterion: string,\n    evidence: readonly EvidenceItem[],\n    caseContext: CaseContext,\n  ): Promise<EvaluationOutcome>;"
+  - node: domain/investigation/verdict
+    held_at: the verdict literals across the EvaluationOutcome union
+    evidence: |-
+      readonly verdict: 'confirmed';
+      ...
+      readonly verdict: 'refuted';
+      ...
+      readonly verdict: Exclude<Verdict, 'confirmed' | 'refuted'>;
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: the citations field of the confirmed and refuted EvaluationOutcome variants
+    evidence: "readonly citations: readonly [Citation, ...Citation[]];"
+  - node: rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    held_at: the EvidenceItem.observed_at field
+    evidence: "readonly observed_at: string;"
+  - node: rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation
+    held_at: the EvidenceItem.ttl field
+    evidence: "readonly ttl: number;"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: the non-confirmed/refuted EvaluationOutcome variant
+    evidence: |-
+      readonly verdict: Exclude<Verdict, 'confirmed' | 'refuted'>;
+        readonly reason: EvaluationReason;
+        readonly citations: readonly Citation[];
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: the evaluate() evidence parameter and the EvidenceItem type it is typed against
+    evidence: |-
+      evidence: readonly EvidenceItem[],
+      ...
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+        readonly observed_at: string;
+        readonly ttl: number;
+      } & ObservationOutcome;
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: "import type { Citation } from './citation.js';"
+  - node: rules/investigation/judgment-reads-the-current-instant-fresh
+    held_at: nowhere
+    evidence: "evaluate(\n    criterion: string,\n    evidence: readonly EvidenceItem[],\n    caseContext: CaseContext,\n  ): Promise<EvaluationOutcome>;"
+  - node: rules/investigation/an-observation-is-recorded-as-json-object-text
+    held_at: nowhere
+    evidence: "} & ObservationOutcome;"
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: "readonly fields: readonly FieldSemantics[];"
+looked_past: >-
+  The usage?/elapsed_ms?/prompt? triple is written out identically on all three EvaluationOutcome
+  variants rather than factored into a shared base, which is a structural/style observation and not a
+  domain-fact departure.
+candidates_opened:
+  - domain/investigation/evaluation
+  - domain/investigation/usage
+  - domain/investigation/evaluation-reason

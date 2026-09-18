@@ -1,0 +1,199 @@
+read:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: |-
+      judgeHypotheses: a CallPool sized by poolSize gates concurrency, and each required hypothesis gets its own judgeOneHypothesis call run under Promise.all
+    evidence: |-
+      const pool = new CallPool(poolSize);
+      ...
+      return Promise.all(
+          requiredNames.map((name) =>
+            judgeOneHypothesis({
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: |-
+      runIsolatedCall and retryOrFail, which invoke only the injected IHypothesisEvaluator
+    evidence: |-
+      const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: |-
+      judgeHypotheses, computing the remaining time from the absolute now/deadline instants it received
+    evidence: |-
+      const deadlineGuard = createDeadlineGuard(Math.max(0, deadline - now));
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: |-
+      toEvidenceItems and the caseContext literal, which admit only the permitted evidence fields and only title/whenToUse from the case
+    evidence: |-
+      return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+          capability_payload_notes: item.capability_payload_notes,
+          observed_at: item.observed_at,
+          ttl: item.ttl,
+        }));
+      ...
+      const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+  - node: domain/investigation/citation
+    held_at: |-
+      noDataEvaluation, constructing concept-only citations for the no-call path
+    evidence: |-
+      citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+  - node: domain/investigation/evaluation
+    held_at: |-
+      asEvaluation / judgmentFailureEvaluation / deadlineExceededEvaluation / noDataEvaluation, each building the Evaluation shape
+    evidence: |-
+      return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+  - node: domain/investigation/evaluation-reason
+    held_at: |-
+      the reason literals in noDataEvaluation, deadlineExceededEvaluation, judgmentFailureEvaluation, and the pass-through of outcome.reason in asEvaluation
+    evidence: |-
+      reason: 'no-data',
+      ...
+      reason: 'deadline-exceeded'
+      ...
+      return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
+  - node: domain/investigation/evidence
+    held_at: |-
+      toEvidenceItems, reading each item's own snapshotted concept, fields, concept_description, capability_payload_notes, observed_at and ttl
+    evidence: |-
+      fields: item.fields,
+          concept_description: item.concept_description,
+          capability_payload_notes: item.capability_payload_notes,
+          observed_at: item.observed_at,
+          ttl: item.ttl,
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: |-
+      the evaluator.evaluate(...) call sites in runIsolatedCall and retryOrFail
+    evidence: |-
+      evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext)
+  - node: domain/investigation/verdict
+    held_at: |-
+      asEvaluation's branches on outcome.verdict
+    evidence: |-
+      if (outcome.verdict === 'confirmed') {
+          return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+        }
+        if (outcome.verdict === 'refuted') {
+  - node: domain/knowledge/case-version
+    held_at: |-
+      judgeHypotheses, reading theCase.title, theCase.when_to_use and theCase.hypotheses via requiresEvaluationOf and hypothesisNamed
+    evidence: |-
+      const requiredNames = requiresEvaluationOf(theCase);
+        const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: |-
+      the HypothesisCitationContext built from hypothesis.collects for the evaluator-response path, and noDataEvaluation drawing citations directly from that hypothesis's own evidence for the no-call path
+    evidence: |-
+      const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence };
+      ...
+      citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: |-
+      isStructurallyValid's call to acceptedCitations, gating acceptance of a returned outcome's citations
+    evidence: |-
+      const accepted = acceptedCitations({ ...context, citations });
+        return accepted.length === citations.length;
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: |-
+      isStructurallyValid, rejecting zero citations and thereby forcing retryOrFail rather than a confirmed/refuted evaluation with none
+    evidence: |-
+      if (citations.length === 0) {
+          return false;
+        }
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: |-
+      retryOrFail, using `first`'s record when the deadline admits no retry and `retry`'s record once a retry ran
+    evidence: |-
+      if (deadlineGuard.elapsed()) {
+          return judgmentFailureEvaluation(name, first);
+        }
+        const retry = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+        ...
+        return citationsAreAcceptable(context, retry) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name, retry);
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: |-
+      the nonOkEvidence branch declaring no-data, and asEvaluation forwarding the evaluator's own outcome.reason for any other inconclusive result
+    evidence: |-
+      if (nonOkEvidence.length > 0) {
+          return noDataEvaluation(name, nonOkEvidence);
+        }
+      ...
+      return { hypothesis: name, verdict: outcome.verdict, reason: outcome.reason, citations: outcome.citations, ...callRecord };
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: |-
+      toEvidenceItems, copying each item's own already-snapshotted fields/concept_description/capability_payload_notes/observed_at/ttl, with no capability-registry or glossary import anywhere in the file
+    evidence: |-
+      fields: item.fields,
+          concept_description: item.concept_description,
+          capability_payload_notes: item.capability_payload_notes,
+          observed_at: item.observed_at,
+          ttl: item.ttl,
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: |-
+      deadlineExceededEvaluation, returned in place of aborting when the deadline elapses
+    evidence: |-
+      function deadlineExceededEvaluation(name: string): Evaluation {
+        return { hypothesis: name, verdict: 'inconclusive', reason: 'deadline-exceeded', citations: [] };
+      }
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: |-
+      judgeHypotheses, mapping every name in requiredNames to exactly one judgeOneHypothesis result
+    evidence: |-
+      const requiredNames = requiresEvaluationOf(theCase);
+      ...
+      return Promise.all(
+          requiredNames.map((name) =>
+            judgeOneHypothesis({
+  - node: rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+    held_at: nowhere
+    evidence: |-
+      const requiredNames = requiresEvaluationOf(theCase);
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: |-
+      judgeOneHypothesis's nonOkEvidence branch, returning noDataEvaluation
+    evidence: |-
+      const nonOkEvidence = evidence.filter((item) => item.result !== 'ok');
+        if (nonOkEvidence.length > 0) {
+          return noDataEvaluation(name, nonOkEvidence);
+        }
+  - node: scenarios/investigation/a-foreign-citation-is-refused
+    held_at: |-
+      runIsolatedCall's citationsAreAcceptable check leading into retryOrFail
+    evidence: |-
+      if (citationsAreAcceptable(context, first)) {
+          return asEvaluation(name, first);
+        }
+        return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext, first });
+  - node: scenarios/investigation/a-queued-judgment-is-deadline-exceeded
+    held_at: |-
+      judgeOneHypothesis's acquireSlotOrDeadline check
+    evidence: |-
+      if (!(await acquireSlotOrDeadline(pool, deadlineGuard))) {
+          return deadlineExceededEvaluation(name);
+        }
+  - node: scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+    held_at: |-
+      toEvidenceItems, carrying each item's own already-collected fields/concept_description/capability_payload_notes straight through, with no capability-registry lookup in this file
+    evidence: |-
+      fields: item.fields,
+          concept_description: item.concept_description,
+          capability_payload_notes: item.capability_payload_notes,
+  - node: rules/investigation/judgment-reads-the-current-instant-fresh
+    held_at: nowhere
+    evidence: |-
+      evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext) — no current-instant argument is passed; this file's own `now` option is used only to compute deadlineGuard's remaining time, never threaded into the evaluate call.
+  - node: rules/investigation/an-observation-is-recorded-as-json-object-text
+    held_at: nowhere
+    evidence: |-
+      observation: item.observation,
+  - node: rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    held_at: nowhere
+    evidence: |-
+      observed_at: item.observed_at,
+  - node: rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation
+    held_at: nowhere
+    evidence: |-
+      ttl: item.ttl,
+looked_past: |-
+  The CallPool's manual FIFO waiting queue and the acquire-then-immediately-release pattern in acquireSlotOrDeadline for a slot won by the deadline are implementation mechanics, not a domain fact, so I did not weigh their style or robustness (nor the bare non-null assertions in hypothesisNamed/evidenceFor) as a conformance matter.

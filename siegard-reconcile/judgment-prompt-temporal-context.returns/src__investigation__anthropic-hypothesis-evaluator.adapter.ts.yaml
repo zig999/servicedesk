@@ -1,0 +1,153 @@
+read:
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: >-
+      the class declaration and its constructor, where the Anthropic SDK is the only LLM client the file
+      imports and it is isolated behind the port's own interface
+    evidence: |-
+      import Anthropic from '@anthropic-ai/sdk';
+      ...
+      export class AnthropicHypothesisEvaluator implements IHypothesisEvaluator {
+        private readonly client: Anthropic;
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: buildUserPrompt and fieldElement
+    evidence: |-
+      return [
+        '<judgment_input>',
+        '<criterion>',
+        escapeForXmlText(criterion),
+        '</criterion>',
+        '<evidence>',
+        evidenceBlock(evidence),
+        '</evidence>',
+        `<current_instant>${escapeForXmlText(currentInstant)}</current_instant>`,
+        '<case_title>',
+        escapeForXmlText(caseContext.title),
+        '</case_title>',
+        '<case_when_to_use>',
+        escapeForXmlText(caseContext.whenToUse),
+        '</case_when_to_use>',
+        '</judgment_input>',
+      ].join('\n');
+      ...
+      const typeAttribute = field.type !== undefined ? ` type="${escapeForXmlAttribute(field.type)}"` : '';
+      const description = field.description !== undefined ? escapeForXmlText(field.description) : '';
+  - node: domain/integration/capability
+    held_at: capabilityPayloadNotesLines, and the SYSTEM_PROMPT clause governing capability_payload_notes
+    evidence: |-
+      function capabilityPayloadNotesLines(capabilityPayloadNotes: string): readonly string[] {
+        return capabilityPayloadNotes === ''
+          ? []
+          : [`<capability_payload_notes>${escapeForXmlText(capabilityPayloadNotes)}</capability_payload_notes>`];
+      }
+  - node: domain/investigation/citation
+    held_at: isCitation and the Citation values built in noDataOutcome
+    evidence: |-
+      function isCitation(value: unknown): value is Citation {
+        return isPlainObject(value) && typeof value.concept === 'string' && typeof value.field === 'string';
+      }
+      ...
+      citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+  - node: domain/investigation/evaluation
+    held_at: the EvaluationOutcome literals returned by noDataOutcome, judgmentFailureOutcome, notGroundedOutcome and outcomeFromModelText
+    evidence: |-
+      function judgmentFailureOutcome(callRecord?: CallRecord): EvaluationOutcome {
+        return { verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
+      }
+  - node: domain/investigation/evidence
+    held_at: itemBlock
+    evidence: |-
+      function itemBlock(item: EvidenceItem): string {
+        return [
+          `<item concept="${escapeForXmlAttribute(item.concept)}">`,
+          ...conceptDescriptionLines(item.concept_description),
+          fieldsBlock(item.fields),
+          ...capabilityPayloadNotesLines(item.capability_payload_notes),
+          `<observed_at>${escapeForXmlText(item.observed_at)}</observed_at>`,
+          `<ttl>${item.ttl}</ttl>`,
+          `<observation>${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</observation>`,
+          '</item>',
+        ].join('\n');
+      }
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: the evaluate method
+    evidence: |-
+      public async evaluate(
+        criterion: string,
+        evidence: readonly EvidenceItem[],
+        caseContext: CaseContext,
+      ): Promise<EvaluationOutcome> {
+  - node: domain/investigation/usage
+    held_at: the usage field carried through outcomeFromModelText
+    evidence: |-
+      return outcomeFromModelText(textOf(message), { usage: message.usage, elapsed_ms: elapsedMs, prompt });
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: >-
+      the vocabulary handed to the model (fieldElement's rendered field names, and the SYSTEM_PROMPT clause
+      constraining citations to them); the runtime check that a returned citation's field actually exists
+      among that cited item's own fields is not performed in this file
+    evidence: |-
+      A citation's field must be copied exactly from the name one of its own item's <field> elements declares
+      — never invented, never the observation's own text, and never a field named on another item.
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: parseJudgment
+    evidence: |-
+      const citations = value.citations;
+      if (!isCitationArray(citations) || !isNonEmpty(citations)) {
+        return undefined;
+      }
+  - node: rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    held_at: itemBlock's observed_at line
+    evidence: '`<observed_at>${escapeForXmlText(item.observed_at)}</observed_at>`'
+  - node: rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation
+    held_at: itemBlock's ttl line
+    evidence: '`<ttl>${item.ttl}</ttl>`'
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: noDataOutcome, judgmentFailureOutcome and notGroundedOutcome
+    evidence: |-
+      function notGroundedOutcome(callRecord: CallRecord): EvaluationOutcome {
+        return { verdict: 'inconclusive', reason: 'not-grounded', citations: [], ...callRecord };
+      }
+  - node: rules/investigation/an-observation-is-recorded-as-json-object-text
+    held_at: itemBlock's observation line and the SYSTEM_PROMPT's parsing instruction
+    evidence: |-
+      Each <item> inside <evidence> names its own concept and carries its own <observation> — a JSON-encoded
+      string; parse it, rather than reading it as free text, before checking any value it carries against the
+      <criterion>.
+  - node: rules/investigation/judgment-does-not-infer
+    held_at: the SYSTEM_PROMPT's second paragraph
+    evidence: |-
+      The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never
+      an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <current_instant>,
+      <case_title> and <case_when_to_use> the block carries.
+  - node: rules/investigation/judgment-reads-the-current-instant-fresh
+    held_at: evaluate
+    evidence: 'const currentInstant = new Date().toISOString();'
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: itemBlock, which reads only the item's own snapshotted attributes with no registry or glossary import anywhere in the file
+    evidence: |-
+      `<item concept="${escapeForXmlAttribute(item.concept)}">`,
+      ...conceptDescriptionLines(item.concept_description),
+      fieldsBlock(item.fields),
+      ...capabilityPayloadNotesLines(item.capability_payload_notes),
+  - node: scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+    held_at: conceptDescriptionLines
+    evidence: |-
+      function conceptDescriptionLines(conceptDescription: string): readonly string[] {
+        return conceptDescription === '' ? [] : [`<concept_description>${escapeForXmlText(conceptDescription)}</concept_description>`];
+      }
+  - node: domain/investigation/verdict
+    held_at: isVerdict
+    evidence: |-
+      function isVerdict(value: unknown): value is Verdict {
+        return typeof value === 'string' && (VERDICTS as readonly string[]).includes(value);
+      }
+looked_past: >-
+  The SYSTEM_PROMPT's instruction that evidence items be judged in complete cross-item isolation is a
+  reasoning aid for the model rather than a checkable business rule, and the escapeForXmlText/escapeForXmlAttribute
+  escaping of an already-JSON-encoded observation is a code-quality concern about string handling, not a
+  domain-conformance question, so neither is reported here.
+candidates_opened:
+  - rules/investigation/a-citation-stays-within-the-hypothesis-collects
+  - scenarios/investigation/a-foreign-citation-is-refused
+  - domain/investigation/evaluation-reason
+  - constraints/hypotheses-are-judged-in-isolated-parallel-calls

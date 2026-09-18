@@ -1,0 +1,34 @@
+certified:
+  - node: rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+        name: >-
+          renders each evidence item's own observed_at, unmodified, into that item's own <observed_at> element
+    why: >-
+      The named test binds one half of the fact at one boundary: it feeds a Z-suffixed instant
+      ('2023-11-05T08:15:30.000Z') and asserts that exact text inside that item's own
+      <observed_at> element, so it would fail if the adapter reformatted the value into a
+      local-zone reading on the way into the judgment prompt. What it does not exercise is the
+      rest of what the node states. First, it proves pass-through, not UTC: the fixture is
+      already UTC and the assertion is satisfied by any code that copies the string through, so
+      an observed_at arriving as a local-zone reading of the moment (an offset other than Z, or
+      an offset-less local timestamp) would be rendered into <observed_at> just as faithfully
+      and the test would still pass — the "never a local-zone reading of that moment" half goes
+      untested. Second, the node states the instant is carried as UTC "wherever the item is
+      stored, returned, presented or judged", and nothing in the named test reaches the store,
+      the returned representation, or the presented surface; only the judged boundary of this
+      one adapter is touched. Every other test in the file also carries Z-suffixed observed_at
+      fixtures, but none asserts anything about the zone, and none was offered as proof here.
+    remainder: testable
+    remainder_why: >-
+      Two assertions close it at this boundary and one per remaining boundary. At the judgment
+      boundary: one input — an evidence item whose observed_at is a local-zone reading of a
+      moment, e.g. '2023-11-05T05:15:30.000-03:00' — against one expected result, that what
+      reaches that item's <observed_at> element is the UTC instant
+      '2023-11-05T08:15:30.000Z' (or that the local-zone reading is refused rather than carried
+      through). Then the same pairing at each of the other boundaries the node names: an item
+      written with a local-zone reading read back from the store as the UTC instant, the same
+      item returned by the API as the UTC instant, and the same item presented as the UTC
+      instant. Each is one input against one expected result, and the set of boundaries the node
+      names is finite.

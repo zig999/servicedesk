@@ -1,0 +1,26 @@
+certified:
+  - node: rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+        name: >-
+          renders each evidence item's own ttl, paired with that same item's own observed_at, into that item's own block alone — never mixed with another item's values
+    why: >-
+      The "from that item's own observed_at" half is exercised whole: the test gives two items with
+      distinct pairs (observed_at 2023-01-01 with ttl 30, observed_at 2023-06-01 with ttl 90) and asserts
+      each block contains its own ttl beside its own observed_at and not the other item's ttl, so the
+      pairing failing — a shared anchor, a ttl attached to the wrong item's observation — fails the test.
+      The "counted in seconds" half goes unexercised. The test asserts only that the integer is echoed
+      back as `<ttl>30</ttl>` and `<ttl>90</ttl>`; nothing asserts the unit that figure is counted in, so
+      if the item's ttl were read as minutes, or as a window whose unit the reader must guess, every
+      assertion in the test still passes unchanged. The only other assertion in the file touching ttl as
+      freshness context (the test at line 222, asserting the system prompt names `<observed_at>` and
+      `<ttl>` together with `<current_instant>` as recency-and-staleness context) is outside the offered
+      proof, and it too names no unit — so it would not close this half were it offered.
+    remainder: testable
+    remainder_why: >-
+      One input — an evidence item carrying an observed_at and a ttl of N — against one expected result:
+      what is rendered for the judge states that window as N seconds counted from that item's own
+      observed_at, so that reading the same N as minutes, or emitting the figure with no unit fixed to it,
+      fails the assertion. Written that way the unit half fails exactly when the fact stops holding, which
+      the pass-through assertion on the bare integer cannot do.

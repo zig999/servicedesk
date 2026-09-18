@@ -1,0 +1,85 @@
+read:
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: >-
+      the equality assertions on the evidence and caseContext objects handed to evaluate(),
+      e.g. the assertion that only concept, result, observation, fields, concept_description,
+      capability_payload_notes, observed_at and ttl reach the evaluator, and that the same
+      title/when_to_use context reaches every call
+    evidence: >-
+      expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 }]);
+      ... const expectedContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use }; expect(evaluator.calls[0].caseContext).toEqual(expectedContext);
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: ScriptedHypothesisEvaluator.evaluate(), lines 114-122
+    evidence: >-
+      public async evaluate(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): Promise<EvaluationOutcome> { this.calls.push({ criterion, evidence, caseContext }); const queue = this.queues.get(criterion); const answer = queue?.shift(); ...; return answer(); }
+  - node: domain/investigation/evidence
+    held_at: the anEvidence() fixture, lines 76-92
+    evidence: >-
+      function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence { return { inputs: 'an-input', observation: 'an-observation', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60, origin: 'a-connector', result: 'ok', capability_name: `capability-for-${overrides.concept}`, capability_version: '1.0.0', elapsed_ms: 12, fields: [], concept_description: '', capability_payload_notes: '', ...overrides }; }
+  - node: domain/investigation/citation
+    held_at: the citation-shape assertions at lines ~462-467 and ~481-484
+    evidence: >-
+      expect('field' in citation).toBe(false); ... expect(citations).toEqual([{ concept: 'concept-denied' }, { concept: 'concept-timeout' }]);
+      expect('field' in citation).toBe(true); expect(citation).toEqual({ concept: 'concept-a', field: 'field-a' });
+  - node: domain/investigation/verdict
+    held_at: the verdict assertion at line 157
+    evidence: >-
+      expect(result.map((evaluation) => evaluation.verdict)).toEqual(['inconclusive', 'confirmed', 'inconclusive']);
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the capability_payload_notes passthrough test (lines 226-242) and the no-registry-import
+      test (lines 906-912)
+    evidence: >-
+      expect(evaluator.calls[0]?.evidence[0]?.capability_payload_notes).toBe('notes captured at collection');
+      ... expect(source).not.toMatch(/ICapabilityQuery/); expect(source).not.toMatch(/capability-query\.port/); expect(source).not.toMatch(/outputSchemasFor/);
+  - node: rules/investigation/judgment-reads-the-current-instant-fresh
+    held_at: nowhere
+    evidence: >-
+      type RecordedCall = { readonly criterion: string; readonly evidence: readonly EvidenceItem[]; readonly caseContext: CaseContext; }; — the recorded call, and every evaluate() call assertion in the file, carries no current-instant value at all; `now: 0` is only ever passed into judgeHypotheses() itself, e.g. `judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 2, now: 0, deadline: 10_000 })`.
+  - node: rules/investigation/an-observation-is-recorded-as-json-object-text
+    held_at: nowhere
+    evidence: >-
+      observation: 'observed-a' is asserted through as an opaque string — expect(forH1?.evidence).toEqual([{ ..., observation: 'observed-a', ... }]) — the file never parses an observation as JSON object text.
+  - node: rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    held_at: the observed_at fixture value and its passthrough assertion, lines 80 and 198
+    evidence: "observed_at: '2024-01-01T00:00:00.000Z'"
+  - node: rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation
+    held_at: the ttl fixture value and its passthrough assertion, lines 81 and 199
+    evidence: "ttl: 60"
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: the re-registration field test, lines 805-825
+    evidence: >-
+      const wouldOnlyExistAfterReregistration: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'field-after-reregistration' }]; ... expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]); expect(evaluator.calls).toHaveLength(2);
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: the zero-citation confirmed test, lines 519-532
+    evidence: >-
+      const zeroCitationConfirmed = { verdict: 'confirmed', citations: [] } as unknown as EvaluationOutcome; ... expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: >-
+      the no-data-citing-every-non-ok-evidence test (lines 416-443) and the deadline-exceeded
+      tests (lines 375-414)
+    evidence: >-
+      expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'concept-denied' }, { concept: 'concept-timeout' }] }]);
+looked_past: >-
+  A handful of inline `//` comments in the fixtures (e.g. "invalid citation forces a retry",
+  "field never declared", "out of collects") narrate what the adjoining assertion already
+  proves in code, and the tests asserting hypothesisNamed's/evidenceFor's exact function
+  signatures, absence of throw and absence of `??`/`||` fallback are checks on internal
+  implementation shape rather than a domain fact — both are another judgment's to weigh, not
+  this pass's.
+candidates_opened:
+  - rules/investigation/one-evaluation-per-required-hypothesis
+  - rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+  - constraints/hypotheses-are-judged-in-isolated-parallel-calls
+  - constraints/judgment-runs-behind-a-port
+  - constraints/the-deadline-is-an-absolute-propagated-instant
+  - domain/investigation/evaluation
+  - domain/investigation/evaluation-reason
+  - rules/investigation/a-citation-stays-within-the-hypothesis-collects
+  - rules/investigation/a-judgment-failure-records-the-last-call-made
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - scenarios/investigation/a-foreign-citation-is-refused
+  - scenarios/investigation/a-queued-judgment-is-deadline-exceeded
+  - scenarios/investigation/a-collection-timeout-degrades-to-no-data
+  - scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+  - domain/knowledge/case-version

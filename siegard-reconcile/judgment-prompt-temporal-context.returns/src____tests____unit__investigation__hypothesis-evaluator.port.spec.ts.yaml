@@ -1,0 +1,116 @@
+findings:
+  - file: src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts
+    where: >-
+      the test "attaches the deterministic zero-valued usage and elapsed_ms even where a seeded
+      outcome carries no prompt at all, leaving the answered outcome without a prompt key of its
+      own" (lines 132–143)
+    evidence: |-
+      fake.seed(A_CRITERION, { verdict: 'confirmed', citations });
+      const evaluator = evaluatorOver(fake);
+
+      const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+
+      expect(outcome.usage).toEqual(ZEROED_USAGE);
+      expect(outcome.elapsed_ms).toBe(ZEROED_ELAPSED_MS);
+      expect(outcome).not.toHaveProperty('prompt');
+    cost: >-
+      A confirmed verdict is a call that happened, and this test asserts, as a valid outcome
+      shape, that such a call carries usage and elapsed_ms while lacking a prompt entirely. A
+      reader building or reviewing a real IHypothesisEvaluator adapter against this port's own
+      test suite is shown that split as sanctioned, when domain/investigation/evaluation holds
+      usage, elapsed_ms and prompt together as one call's own record, and
+      rules/investigation/a-judgment-failure-records-the-last-call-made is built on that trio
+      never separating ("a usage summed across two attempts, paired with one attempt's elapsed_ms
+      and prompt, would describe a call that never happened and leave a reader unable to hold the
+      tokens against the prompt shown"). The next implementer has nowhere in this file to learn
+      that a completed call without a materialized prompt is not a shape the specification
+      admits.
+    kind: contradicts
+    node: domain/investigation/evaluation
+    correction: >-
+      Either seed and require a prompt whenever usage/elapsed_ms accompany a call that happened
+      (any non-no-data outcome), or drop the `.not.toHaveProperty('prompt')` assertion so the test
+      no longer presents "usage/elapsed_ms present, prompt absent" as a valid completed-call
+      shape.
+read:
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: >-
+      the file never assembles or inspects a prompt; `evaluator.evaluate(A_CRITERION,
+      SOME_EVIDENCE, A_CASE_CONTEXT)` (line 38) is the only call through the port, and the one
+      `prompt` value that appears is a literal string carried straight through the fake
+      (`prompt: 'the materialized judgment prompt'`, line 118) — nothing here assembles or
+      constrains prompt content.
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: the `evaluate` calls made through `IHypothesisEvaluator`, e.g. line 38
+    evidence: >-
+      import type { CaseContext, EvidenceItem, IHypothesisEvaluator } from
+      '../../../investigation/hypothesis-evaluator.port.js'; ... const outcome = await
+      evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+  - node: domain/investigation/evidence
+    held_at: the `SOME_EVIDENCE` fixture, lines 13-24
+    evidence: |-
+      const SOME_EVIDENCE: readonly EvidenceItem[] = [
+        {
+          concept: 'a-concept',
+          result: 'ok',
+          observation: 'an-observed-value',
+          fields: [{ name: 'a-field', type: 'string', description: 'a description of a-field' }],
+          concept_description: 'what a-concept means',
+          capability_payload_notes: '',
+          observed_at: '2024-01-01T00:00:00.000Z',
+          ttl: 60,
+        },
+      ];
+  - node: domain/investigation/citation
+    held_at: the citation literals used across outcomes, e.g. line 34
+    evidence: "const citations: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];"
+  - node: domain/investigation/verdict
+    held_at: the verdict values asserted in the seeded outcomes, e.g. lines 35, 46, 56, 66
+    evidence: >-
+      fake.seed(A_CRITERION, { verdict: 'confirmed', citations }); ... { verdict: 'refuted',
+      citations } ... { verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: the `SOME_EVIDENCE` fixture's shape, lines 13-24
+    evidence: >-
+      the fixture carries exactly concept, fields, concept_description, capability_payload_notes,
+      observed_at and ttl alongside the observation — no other evidence attribute appears.
+  - node: rules/investigation/judgment-reads-the-current-instant-fresh
+    held_at: nowhere
+    evidence: >-
+      evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT) (line 38) — the call carries
+      no current-instant argument, and nothing in this file reads or asserts a "now" value.
+  - node: rules/investigation/an-observation-is-recorded-as-json-object-text
+    held_at: nowhere
+    evidence: >-
+      observation: 'an-observed-value' (line 17) — a plain string, never parsed as JSON anywhere
+      in this file; the FakeHypothesisEvaluator.evaluate this file exercises takes `_evidence` and
+      never reads it at all.
+  - node: rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    held_at: the `SOME_EVIDENCE` fixture, line 21
+    evidence: "observed_at: '2024-01-01T00:00:00.000Z',"
+  - node: rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation
+    held_at: the `SOME_EVIDENCE` fixture, line 22
+    evidence: "ttl: 60,"
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: the confirmed-verdict test, lines 18 and 34
+    evidence: >-
+      fields: [{ name: 'a-field', ... }] (line 18) matched by citations: [{ concept: 'a-concept',
+      field: 'a-field' }] (line 34).
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: the confirmed/refuted outcomes' non-empty citation tuples, e.g. line 34
+    evidence: "const citations: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];"
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: the tests at lines 54-62 and 64-73
+    evidence: >-
+      fake.seed(A_CRITERION, { verdict: 'inconclusive', reason: 'judgment-failure', citations: []
+      }); ... fake.seed(A_CRITERION, { verdict: 'inconclusive', reason: 'no-data', citations: []
+      });
+looked_past: >-
+  the refuted-verdict test's citation ({ concept: 'another-concept', field: 'another-field' })
+  names a concept and field absent from SOME_EVIDENCE, and FakeHypothesisEvaluator's own
+  unconditional zeroing of usage/elapsed_ms lives in fake-hypothesis-evaluator.adapter.ts, outside
+  this file's set — both are left for whatever pass next reaches those files.
+candidates_opened:
+  - domain/investigation/evaluation
+  - rules/investigation/a-judgment-failure-records-the-last-call-made

@@ -1,0 +1,12 @@
+certified:
+  - node: rules/investigation/judgment-reads-the-current-instant-fresh
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+        name: >-
+          reads the current instant fresh from the clock on every separate evaluate() call — including the call judgment-stage.ts issues as a retry — rather than reusing the value an earlier call already read
+    why: >-
+      The named test binds most of the fact and would fail if it stopped holding: it fixes the clock at 2024-03-01T10:00:00.000Z, evaluates, advances the clock to 10:05:00.000Z, evaluates again, and asserts each sent prompt carries its own <current_instant> equal to the clock as it stood at that call. A value read once and cached (in the constructor or on the first call) fails the second assertion; a value carried over from the evidence's own collection fails both, since SOME_OK_EVIDENCE's observed_at is 2024-01-01T00:00:00.000Z and neither expected literal is it; a value rendered off the UTC reference fails against the Z-suffixed literal the assertion spells. What goes unexercised is the half of "never one instant shared across two separate judgment requests for the same hypothesis" that the test's own name claims — the retry judgment-stage.ts issues. Nothing in the offered proof imports, drives or stubs judgment-stage.ts; the test makes two direct evaluate() calls, so a retry that resends the prompt an earlier judgment already built — sharing that judgment's instant across both requests for the same hypothesis — leaves every assertion here passing. The test name states that case; the assertions do not reach it.
+    remainder: testable
+    remainder_why: >-
+      One input — judgment-stage.ts driving a retry for one hypothesis against an evaluator stub, with the clock advanced between the first attempt and the retry — against one expected result: the retry arrives at the evaluator as a separate evaluate() invocation carrying the later instant, never the instant the first attempt read.
