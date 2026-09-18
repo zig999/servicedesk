@@ -42,6 +42,38 @@
       "task": "task/capability-payload-notes/judgment-prompt-renders-payload-notes"
     },
     {
+      "id": "implementation/inconclusive-response-not-judgment-failure/distinct-reason",
+      "kind": "implementation",
+      "file": "implementation/inconclusive-response-not-judgment-failure/distinct-reason.md",
+      "title": "A well-formed inconclusive judgment declares reason not-grounded, distinct from judgment-failure",
+      "summary": "anthropic-hypothesis-evaluator.adapter.ts's outcomeFromModelText now routes a well-formed {\"verdict\":\"inconclusive\"} model answer to a new notGroundedOutcome, leaving judgmentFailureOutcome for a response that failed to parse, matched no recognized shape, or never arrived at all.",
+      "task": "task/inconclusive-response-not-judgment-failure/distinct-reason"
+    },
+    {
+      "id": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "kind": "implementation",
+      "file": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal.md",
+      "title": "register-capability.dto.ts's required attributes reach the registry's own completeness refusal",
+      "summary": "Loosened register-capability.dto.ts's shape schemas so an absent or empty required attribute (name, version, nature, input_schema, output_schema, connector, concept) passes the route's shape validation unchanged and is refused instead by capability-registry.service.ts's existing IncompleteCapabilityContractError, mapped to HTTP 422 by the existing status map.",
+      "task": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal"
+    },
+    {
+      "id": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "kind": "implementation",
+      "file": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422.md",
+      "title": "Confirm the registry's own 422 is already what these six requests reach",
+      "summary": "Implementation record confirming register-capability.dto.ts's already-loosened shape schemas (delivered by register-capability-dto-refusal-order/reaches-the-registry-refusal) are what make all six criteria true, so this corrective task required no further source edit.",
+      "task": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422"
+    },
+    {
+      "id": "implementation/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "kind": "implementation",
+      "file": "implementation/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded.md",
+      "title": "Confirm not-grounded is already the adapter's reason for a well-formed inconclusive answer",
+      "summary": "Implementation record confirming the production adapter, unchanged, already returns reason 'not-grounded' for a well-formed {\"verdict\":\"inconclusive\"} model answer and unchanged 'judgment-failure' for parse/shape/provider failures, so this corrective task required no source edit.",
+      "task": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded"
+    },
+    {
       "id": "proof/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proof",
       "file": "proof/capability-payload-notes/capability-declares-payload-notes.md",
@@ -80,6 +112,38 @@
       "title": "The judgment prompt renders each item's own capability payload notes",
       "summary": "Four tests prove the adapter states an item's own capability_payload_notes beside its observation when non-empty, omits the tag entirely when empty, never leaks one item's notes into another item's block, and that a field named only in payload notes still fails citation validation.",
       "task": "task/capability-payload-notes/judgment-prompt-renders-payload-notes"
+    },
+    {
+      "id": "proof/inconclusive-response-not-judgment-failure/distinct-reason",
+      "kind": "proof",
+      "file": "proof/inconclusive-response-not-judgment-failure/distinct-reason.md",
+      "title": "A well-formed inconclusive judgment declares not-grounded, proved by the corrected sibling test",
+      "summary": "The same test corrected by stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded proves this task's own criteria -- the well-formed-inconclusive case declares not-grounded, and every parse-failure/unrecognized-shape/provider-rejection case still declares judgment-failure.",
+      "task": "task/inconclusive-response-not-judgment-failure/distinct-reason"
+    },
+    {
+      "id": "proof/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "kind": "proof",
+      "file": "proof/register-capability-dto-refusal-order/reaches-the-registry-refusal.md",
+      "title": "register-capability.dto.ts's loosened shape schemas reach the registry's own completeness refusal",
+      "summary": "One new test proves criterion 2 (an empty-string required body attribute reaches the registry's 422); criteria 1, 3 and 4 are already proven by pre-existing tests in the same file, cited rather than duplicated; the implemented nodes whose fact spans files this task does not touch go to untested.",
+      "task": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal"
+    },
+    {
+      "id": "proof/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "kind": "proof",
+      "file": "proof/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422.md",
+      "title": "The six route tests now assert the registry's own 422",
+      "summary": "The six stale 400 assertions in register-capability.routes.spec.ts are rewritten to mock the registry's own refusal and assert its 422 response, with registerCapability called exactly once in each case.",
+      "task": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422"
+    },
+    {
+      "id": "proof/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "kind": "proof",
+      "file": "proof/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded.md",
+      "title": "not-grounded reason restored to the well-formed-inconclusive test",
+      "summary": "The one stale assertion in anthropic-hypothesis-evaluator.adapter.spec.ts now reads reason not-grounded for a well-formed {\"verdict\":\"inconclusive\"} model answer, its own test renamed to match, with every sibling judgment-failure assertion in the file left untouched.",
+      "task": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded"
     },
     {
       "id": "review/capability-payload-notes",
@@ -241,6 +305,102 @@
       "at": "the path"
     },
     {
+      "from": "implementation/inconclusive-response-not-judgment-failure/distinct-reason",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/inconclusive-response-not-judgment-failure/distinct-reason",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/inconclusive-response-not-judgment-failure/distinct-reason",
+      "to": "task/inconclusive-response-not-judgment-failure/distinct-reason",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "task/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "to": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-payload-notes/capability-declares-payload-notes",
       "to": "implementation/capability-payload-notes/capability-declares-payload-notes",
       "kind": "proves",
@@ -267,6 +427,30 @@
     {
       "from": "proof/capability-payload-notes/judgment-prompt-renders-payload-notes",
       "to": "implementation/capability-payload-notes/judgment-prompt-renders-payload-notes",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/inconclusive-response-not-judgment-failure/distinct-reason",
+      "to": "implementation/inconclusive-response-not-judgment-failure/distinct-reason",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "to": "implementation/register-capability-dto-refusal-order/reaches-the-registry-refusal",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "implementation/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "to": "implementation/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
       "kind": "proves",
       "at": "the path"
     },

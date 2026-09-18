@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/register-capability-payload-notes-corrections-suite-4",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-18T11:54:24.295+00:00",
+      "ended_at": "2026-09-18T11:54:41.767+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-18T11:54:41.767+00:00",
+      "ended_at": "2026-09-18T11:54:55.745+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-18T11:54:55.745+00:00",
+      "ended_at": "2026-09-18T11:54:58.170+00:00"
+    },
+    {
+      "name": "test-unit",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test-unit.log",
+      "started_at": "2026-09-18T11:54:58.170+00:00",
+      "ended_at": "2026-09-18T11:56:08.173+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-18T11:56:08.173+00:00",
+      "ended_at": "2026-09-18T11:58:58.457+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

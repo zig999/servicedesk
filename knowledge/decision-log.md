@@ -4929,11 +4929,14 @@ entries:
     eligible for both meets, and what the register-capability route declares as its own request
     shape.
   decided: >-
-    The route's declared shape requires no capability attribute to be present or non-empty --
-    empty name and version path segments, an absent or empty body, and absent or empty
-    attributes all pass it, while any value actually supplied is still held to its declared type
-    and bounds -- and such a request therefore meets the registry's IncompleteCapabilityContractError
-    refusal. Recorded as a new architecture constraint over the integration context at
+    The route's declared shape requires no capability attribute to be present or non-empty for
+    a request that states a JSON object body -- empty name and version path segments, an empty
+    JSON object body, and absent or empty attributes all pass it, while any value actually
+    supplied is still held to its declared type and bounds, and such a request therefore meets
+    the registry's IncompleteCapabilityContractError refusal. A request carrying no body at all
+    (parsed as undefined, not an empty JSON object) is not this route's declared shape at all
+    and stays refused at HTTP 400 before the registry is ever reached. Recorded as a new
+    architecture constraint over the integration context at
     constraints/the-register-capability-route-defers-completeness-to-the-registry.
   why: >-
     This specification already reserves the shape refusal for what departs from a route's
@@ -4943,6 +4946,20 @@ entries:
     rules/integration/a-capability-declares-its-contract unreachable through the only route that
     can produce it, and would answer an operator who omitted one field with a refusal that names
     none.
+- location: constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry.md
+  field: statement
+  unstated: >-
+    No node stated which validation refuses a register-capability request whose nature is a
+    non-empty string outside the capability-nature vocabulary -- the route's own declared-shape
+    check with HTTP 400 VALIDATION_ERROR, or the registry with HTTP 422 -- nor what the route
+    declares as the shape of a supplied nature.
+  found: >-
+    work/capability-payload-notes/intake/register-capability-routes-spec-expects-stale-400s.md --
+    "`src/__tests__/unit/http/register-capability.routes.spec.ts` asserts HTTP 400 for six cases
+    that `register-capability-dto-refusal-order/reaches-the-registry-refusal`'s legitimate
+    delivery now routes to the registry's own HTTP 422 ... refusal instead: an out-of-vocabulary
+    nature, ... Each of these now reaches registerCapability and is refused there with 422, not
+    intercepted at 400 by the route's own shape validation."
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement

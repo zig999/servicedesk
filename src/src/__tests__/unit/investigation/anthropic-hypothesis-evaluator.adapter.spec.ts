@@ -479,13 +479,13 @@ it('parses a refuted answer wrapped in an untagged ``` code fence', async () => 
   expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
-it("maps the model's own well-formed inconclusive answer to reason judgment-failure", async () => {
+it("maps the model's own well-formed inconclusive answer to reason not-grounded", async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'not-grounded', citations: [] });
   expect(outcome.usage).toBeUndefined();
   expect(outcome.elapsed_ms).toEqual(expect.any(Number));
   expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);

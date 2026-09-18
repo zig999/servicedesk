@@ -53,8 +53,9 @@ Derived by spec.py from the specification files; never edited.
 - the-openapi-document-is-fetched-by-the-backend (integration)
 - the-pool-bounds-are-positive-integers (system)
 - the-register-capability-route-defers-completeness-to-the-registry (integration)
+- the-register-capability-route-defers-the-nature-vocabulary-to-the-registry (integration)
 - the-schema-replays-from-its-scripts (system)
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-322 decision(s) disclosed, 4 fact(s) recorded as read in the decision log.
+322 decision(s) disclosed, 5 fact(s) recorded as read in the decision log.

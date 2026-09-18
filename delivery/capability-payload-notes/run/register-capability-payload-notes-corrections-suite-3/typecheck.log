@@ -1,0 +1,5 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+sh: 1: tsc: not found

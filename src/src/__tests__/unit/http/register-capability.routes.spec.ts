@@ -5,6 +5,7 @@ import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
 import { ConceptAlreadyAnsweredError } from '../../../errors/concept-already-answered.error.js';
 import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
+import { IncompleteCapabilityContractError } from '../../../errors/incomplete-capability-contract.error.js';
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
@@ -169,9 +170,10 @@ it('refuses with the status the status map assigns CapabilityNotReadOnlyError wh
   expect(body.error.details).toEqual({ nature: 'mutating' });
 });
 
-it('answers 400 for an out-of-vocabulary nature, without ever reaching registerCapability', async () => {
+it('refuses with the status the status map assigns CapabilityNotReadOnlyError for an out-of-vocabulary nature, reaching registerCapability rather than being intercepted by shape validation', async () => {
   const built = buildTestApp();
   app = built.app;
+  built.registerCapability.mockRejectedValueOnce(new CapabilityNotReadOnlyError('not-a-vocabulary-value'));
 
   const response = await app.inject({
     method: 'PUT',
@@ -179,8 +181,11 @@ it('answers 400 for an out-of-vocabulary nature, without ever reaching registerC
     payload: validBody({ nature: 'not-a-vocabulary-value' }),
   });
 
-  expect(response.statusCode).toBe(400);
-  expect(built.registerCapability).not.toHaveBeenCalled();
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('CapabilityNotReadOnlyError');
+  expect(body.error.details).toEqual({ nature: 'not-a-vocabulary-value' });
+  expect(built.registerCapability).toHaveBeenCalledTimes(1);
 });
 
 it('refuses with the status the status map assigns ConceptAlreadyAnsweredError when the registry refuses an already-answered concept', async () => {
@@ -403,11 +408,12 @@ it('answers 200 for a request carrying an authorization header naming no credent
   expect(response.statusCode).toBe(200);
 });
 
-it('refuses a registration whose body omits input_schema outright, never calling registerCapability with it absent or empty', async () => {
+it('refuses with the status the status map assigns IncompleteCapabilityContractError naming input_schema, when the body omits input_schema outright, reaching registerCapability', async () => {
   const built = buildTestApp();
   app = built.app;
   const bodyWithoutInputSchema: Record<string, unknown> = validBody();
   delete bodyWithoutInputSchema.input_schema;
+  built.registerCapability.mockRejectedValueOnce(new IncompleteCapabilityContractError(['input_schema is undeclared']));
 
   const response = await app.inject({
     method: 'PUT',
@@ -415,15 +421,19 @@ it('refuses a registration whose body omits input_schema outright, never calling
     payload: bodyWithoutInputSchema,
   });
 
-  expect(response.statusCode).toBe(400);
-  expect(built.registerCapability).not.toHaveBeenCalled();
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('IncompleteCapabilityContractError');
+  expect(body.error.details).toEqual({ problems: ['input_schema is undeclared'] });
+  expect(built.registerCapability).toHaveBeenCalledTimes(1);
 });
 
-it('refuses a registration whose body omits output_schema outright, never calling registerCapability with it absent or empty', async () => {
+it('refuses with the status the status map assigns IncompleteCapabilityContractError naming output_schema, when the body omits output_schema outright, reaching registerCapability', async () => {
   const built = buildTestApp();
   app = built.app;
   const bodyWithoutOutputSchema: Record<string, unknown> = validBody();
   delete bodyWithoutOutputSchema.output_schema;
+  built.registerCapability.mockRejectedValueOnce(new IncompleteCapabilityContractError(['output_schema is undeclared']));
 
   const response = await app.inject({
     method: 'PUT',
@@ -431,47 +441,98 @@ it('refuses a registration whose body omits output_schema outright, never callin
     payload: bodyWithoutOutputSchema,
   });
 
-  expect(response.statusCode).toBe(400);
-  expect(built.registerCapability).not.toHaveBeenCalled();
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('IncompleteCapabilityContractError');
+  expect(body.error.details).toEqual({ problems: ['output_schema is undeclared'] });
+  expect(built.registerCapability).toHaveBeenCalledTimes(1);
 });
 
-it('answers 400 for a wholly empty body, without ever reaching registerCapability', async () => {
+it('refuses with the status the status map assigns IncompleteCapabilityContractError naming every required body attribute a wholly empty body leaves undeclared, reaching registerCapability', async () => {
   const built = buildTestApp();
   app = built.app;
+  built.registerCapability.mockRejectedValueOnce(
+    new IncompleteCapabilityContractError([
+      'nature is undeclared',
+      'input_schema is undeclared',
+      'output_schema is undeclared',
+      'connector is undeclared',
+      'concept is undeclared',
+    ]),
+  );
 
   const response = await app.inject({ method: 'PUT', url: '/v1/capabilities/a-name/1.0.0', payload: {} });
 
-  expect(response.statusCode).toBe(400);
-  expect(built.registerCapability).not.toHaveBeenCalled();
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('IncompleteCapabilityContractError');
+  expect(body.error.details).toEqual({
+    problems: [
+      'nature is undeclared',
+      'input_schema is undeclared',
+      'output_schema is undeclared',
+      'connector is undeclared',
+      'concept is undeclared',
+    ],
+  });
+  expect(built.registerCapability).toHaveBeenCalledTimes(1);
 });
 
 it(
-  'answers 400 via validation for a request with an empty :name segment, never 404 "route not found" — Fastify still matches the ' +
-    'route with an empty string param for this segment, and registerCapabilityParamsSchema (z.string().min(1)) is what refuses it',
+  'refuses with the status the status map assigns IncompleteCapabilityContractError naming name, for a request with an empty ' +
+    ':name segment and an otherwise complete body, never 404 "route not found" — Fastify still matches the route with an empty ' +
+    'string param for this segment, and it is the registry\'s own completeness refusal that names it, reaching registerCapability',
   async () => {
     const built = buildTestApp();
     app = built.app;
+    built.registerCapability.mockRejectedValueOnce(new IncompleteCapabilityContractError(['name is undeclared']));
 
     const response = await app.inject({ method: 'PUT', url: '/v1/capabilities//1.0.0', payload: validBody() });
 
-    expect(response.statusCode).toBe(400);
-    expect(built.registerCapability).not.toHaveBeenCalled();
+    expect(response.statusCode).toBe(422);
+    const body = response.json() as { error: { code: string; details?: unknown } };
+    expect(body.error.code).toBe('IncompleteCapabilityContractError');
+    expect(body.error.details).toEqual({ problems: ['name is undeclared'] });
+    expect(built.registerCapability).toHaveBeenCalledTimes(1);
   },
 );
 
 it(
-  'answers 400 via validation for a request with an empty :version segment, never 404 "route not found" — Fastify still matches the ' +
-    'route with an empty string param for this segment, and registerCapabilityParamsSchema (z.string().min(1)) is what refuses it',
+  'refuses with the status the status map assigns IncompleteCapabilityContractError naming version, for a request with an empty ' +
+    ':version segment and an otherwise complete body, never 404 "route not found" — Fastify still matches the route with an ' +
+    'empty string param for this segment, and it is the registry\'s own completeness refusal that names it, reaching registerCapability',
   async () => {
     const built = buildTestApp();
     app = built.app;
+    built.registerCapability.mockRejectedValueOnce(new IncompleteCapabilityContractError(['version is undeclared']));
 
     const response = await app.inject({ method: 'PUT', url: '/v1/capabilities/a-name/', payload: validBody() });
 
-    expect(response.statusCode).toBe(400);
-    expect(built.registerCapability).not.toHaveBeenCalled();
+    expect(response.statusCode).toBe(422);
+    const body = response.json() as { error: { code: string; details?: unknown } };
+    expect(body.error.code).toBe('IncompleteCapabilityContractError');
+    expect(body.error.details).toEqual({ problems: ['version is undeclared'] });
+    expect(built.registerCapability).toHaveBeenCalledTimes(1);
   },
 );
+
+it('refuses with the status the status map assigns IncompleteCapabilityContractError naming connector, when the body states connector as an empty string, reaching registerCapability rather than being intercepted by shape validation', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerCapability.mockRejectedValueOnce(new IncompleteCapabilityContractError(['connector is undeclared']));
+
+  const response = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ connector: '' }),
+  });
+
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('IncompleteCapabilityContractError');
+  expect(body.error.details).toEqual({ problems: ['connector is undeclared'] });
+  expect(built.registerCapability).toHaveBeenCalledTimes(1);
+});
 
 it("answers the unchanged generic envelope, never the rejected call's own error text, when registerCapability rejects with a generic, non-domain error", async () => {
   const built = buildTestApp();

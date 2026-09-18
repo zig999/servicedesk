@@ -299,33 +299,45 @@
     },
     {
       "from": "epic/register-capability-routes-spec-expects-stale-400s",
-      "to": "contracts/integration/capability-registry",
+      "to": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
       "kind": "covers",
       "at": "covers[1]"
     },
     {
       "from": "epic/register-capability-routes-spec-expects-stale-400s",
-      "to": "domain/integration/capability",
+      "to": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
       "kind": "covers",
       "at": "covers[2]"
     },
     {
       "from": "epic/register-capability-routes-spec-expects-stale-400s",
-      "to": "domain/integration/capability-nature",
+      "to": "contracts/integration/capability-registry",
       "kind": "covers",
       "at": "covers[3]"
     },
     {
       "from": "epic/register-capability-routes-spec-expects-stale-400s",
-      "to": "rules/integration/a-capability-declares-its-contract",
+      "to": "domain/integration/capability",
       "kind": "covers",
       "at": "covers[4]"
     },
     {
       "from": "epic/register-capability-routes-spec-expects-stale-400s",
-      "to": "rules/integration/a-capability-is-read-only",
+      "to": "domain/integration/capability-nature",
       "kind": "covers",
       "at": "covers[5]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[7]"
     },
     {
       "from": "epic/stale-judgment-failure-assertions-for-inconclusive",
@@ -533,13 +545,13 @@
     },
     {
       "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
-      "to": "domain/integration/capability-nature",
+      "to": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
       "kind": "implements",
       "at": "implements[3]"
     },
     {
       "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
-      "to": "contracts/integration/capability-registry",
+      "to": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
       "kind": "implements",
       "at": "implements[4]"
     },

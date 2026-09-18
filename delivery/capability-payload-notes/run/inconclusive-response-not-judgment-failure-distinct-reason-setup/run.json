@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/inconclusive-response-not-judgment-failure-distinct-reason-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-18T11:13:41.858+00:00",
+      "ended_at": "2026-09-18T11:13:47.108+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -296,9 +296,9 @@ This refusal answers configuration read as the deployment starts and is not the 
 
 === constraints/the-register-capability-route-defers-completeness-to-the-registry
 ---
-statement: The register-capability route's declared request shape requires no capability attribute to be present or non-empty — its name and version path segments each admit an empty segment, its body admits an absent or empty body and every attribute absent or empty, and only a value actually supplied is held to its declared type and bounds — so a request omitting a required attribute, supplying one as an empty string, or carrying no body passes this route's shape validation and meets the registry's own IncompleteCapabilityContractError refusal instead.
+statement: The register-capability route's declared request shape requires no capability attribute to be present or non-empty for a request that states a JSON object body — its name and version path segments each admit an empty segment, and its body admits an empty JSON object and every attribute absent or empty, with only a value actually supplied held to its declared type and bounds — so such a request, omitting a required attribute, supplying one as an empty string, or stating an empty JSON object body, passes this route's shape validation and meets the registry's own IncompleteCapabilityContractError refusal instead.
 scope: integration
-fitness: An automated test sends a register-capability request omitting a required body attribute, one supplying a required attribute as an empty string, one with an empty name path segment and one carrying no body at all, and asserts each answer is the registry's HTTP 422 IncompleteCapabilityContractError refusal rather than an HTTP 400 VALIDATION_ERROR one.
+fitness: An automated test sends a register-capability request omitting a required body attribute, one supplying a required attribute as an empty string, one with an empty name path segment and one stating a wholly empty JSON object ({}) as its body, and asserts each answer is the registry's HTTP 422 IncompleteCapabilityContractError refusal rather than an HTTP 400 VALIDATION_ERROR one.
 ---
 
 ## Description
@@ -308,6 +308,23 @@ Stated for this one route because the registry's completeness refusal is otherwi
 The declared shape still decides everything that is not a question of completeness — a value actually supplied but of the wrong type, or outside the bounds declared for it, fails here as on any other route — so what this loosens reaches only the presence and the emptiness of the attributes a capability's contract is judged complete by.
 
 It travels to no other route: where a route's own rules make an absent or empty field a question of the shape it declares rather than of content the domain weighs, the standing shape refusal answers it.
+
+A request carrying no body at all — no JSON value, parsed as undefined rather than an empty object — is not this route's declared shape at all, and stays refused at HTTP 400 before the registry is ever reached; only a request that states a JSON object body, however incomplete, is what this constraint's loosening reaches.
+
+=== constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry
+---
+statement: The register-capability route's declared request shape admits any string as a capability's nature rather than only the capability-nature vocabulary, so a request supplying a nature that is a non-empty string outside that vocabulary passes this route's shape validation and meets the registry's HTTP 422 CapabilityNotReadOnlyError refusal instead of an HTTP 400 VALIDATION_ERROR one.
+scope: integration
+fitness: An automated test sends a register-capability request whose nature is a non-empty string outside the capability-nature vocabulary and asserts the answer is the registry's HTTP 422 CapabilityNotReadOnlyError refusal rather than an HTTP 400 VALIDATION_ERROR one.
+---
+
+## Description
+
+Stated for this one route because which natures may be held is a judgment the registry makes over content, not a question of the shape a request arrived in: the registry weighs every nature it does not recognise as read-only the same way, so an operator who named a nature this system has no such thing as is told what is actually wrong with his registration instead of that his body failed a shape check that names no domain condition.
+
+What this loosens is the set of values one supplied attribute may take, and nothing else; an absent or empty nature is a question of completeness, answered where this route's completeness deferral answers it.
+
+It travels to no other route: where the values an enumeration admits are the shape a route declares rather than content the domain weighs, the standing shape refusal answers a value outside them.
 
 === constraints/the-schema-replays-from-its-scripts
 ---
@@ -5627,11 +5644,14 @@ entries:
     eligible for both meets, and what the register-capability route declares as its own request
     shape.
   decided: >-
-    The route's declared shape requires no capability attribute to be present or non-empty --
-    empty name and version path segments, an absent or empty body, and absent or empty
-    attributes all pass it, while any value actually supplied is still held to its declared type
-    and bounds -- and such a request therefore meets the registry's IncompleteCapabilityContractError
-    refusal. Recorded as a new architecture constraint over the integration context at
+    The route's declared shape requires no capability attribute to be present or non-empty for
+    a request that states a JSON object body -- empty name and version path segments, an empty
+    JSON object body, and absent or empty attributes all pass it, while any value actually
+    supplied is still held to its declared type and bounds, and such a request therefore meets
+    the registry's IncompleteCapabilityContractError refusal. A request carrying no body at all
+    (parsed as undefined, not an empty JSON object) is not this route's declared shape at all
+    and stays refused at HTTP 400 before the registry is ever reached. Recorded as a new
+    architecture constraint over the integration context at
     constraints/the-register-capability-route-defers-completeness-to-the-registry.
   why: >-
     This specification already reserves the shape refusal for what departs from a route's
@@ -5641,6 +5661,20 @@ entries:
     rules/integration/a-capability-declares-its-contract unreachable through the only route that
     can produce it, and would answer an operator who omitted one field with a refusal that names
     none.
+- location: constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry.md
+  field: statement
+  unstated: >-
+    No node stated which validation refuses a register-capability request whose nature is a
+    non-empty string outside the capability-nature vocabulary -- the route's own declared-shape
+    check with HTTP 400 VALIDATION_ERROR, or the registry with HTTP 422 -- nor what the route
+    declares as the shape of a supplied nature.
+  found: >-
+    work/capability-payload-notes/intake/register-capability-routes-spec-expects-stale-400s.md --
+    "`src/__tests__/unit/http/register-capability.routes.spec.ts` asserts HTTP 400 for six cases
+    that `register-capability-dto-refusal-order/reaches-the-registry-refusal`'s legitimate
+    delivery now routes to the registry's own HTTP 422 ... refusal instead: an out-of-vocabulary
+    nature, ... Each of these now reaches registerCapability and is refused there with 422, not
+    intercepted at 400 by the route's own shape validation."
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement

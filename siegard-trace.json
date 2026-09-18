@@ -51,7 +51,7 @@
         },
         {
           "path": "src/src/http/dto/register-capability.dto.ts",
-          "digest": "sha256:cc1fa4e0665f7f2e7ecabc39cd74c39b139e382b3366c9b58a75c8ce7adf9c8b"
+          "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
         },
         {
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
@@ -576,6 +576,26 @@
         {
           "path": "src/src/config/env.ts",
           "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
+        }
+      ]
+    },
+    {
+      "node": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
+      "digest": "sha256:9173d172cc07e9e31170a0567c537fe6f8a8c0b2db44936d8c059d877602c5b5",
+      "files": [
+        {
+          "path": "src/src/http/dto/register-capability.dto.ts",
+          "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
+        }
+      ]
+    },
+    {
+      "node": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
+      "digest": "sha256:c635d8dfca09cc1713b8228df30ccd3d4eeca98edcdfcc536669949ba3375909",
+      "files": [
+        {
+          "path": "src/src/http/dto/register-capability.dto.ts",
+          "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
         }
       ]
     },
@@ -2410,6 +2430,10 @@
           "digest": "sha256:fa1dfa0cb0a90288709a63240289fa601d5617981e1edc0055867519034ea919"
         },
         {
+          "path": "src/src/http/dto/register-capability.dto.ts",
+          "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
+        },
+        {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
           "digest": "sha256:0bb0c7da926651d101d91edd64c88b454f795ce235af9efcf70b04323cc69b66"
         },
@@ -3497,7 +3521,7 @@
     },
     {
       "node": "domain/investigation/evaluation-reason",
-      "digest": "sha256:10e91ea37bff620a565a090515f8ee3f4a6891a58ce6986b38b2715a500cb65f",
+      "digest": "sha256:b2f86ed97700be66f571bc32b334f5c76309aaee7ab9024316409033a013aae8",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -3529,7 +3553,7 @@
         },
         {
           "path": "src/src/investigation/evaluation-reason.ts",
-          "digest": "sha256:8c7626a1cc353ee667ec1f865f65d61858f0aa4882621739c1b5343d93b5a194"
+          "digest": "sha256:b9f8fbba350d6d920d7411cfd378c5ac851b2871809b06151fc927bf4b840b46"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -5377,7 +5401,7 @@
     },
     {
       "node": "rules/integration/a-capability-declares-its-contract",
-      "digest": "sha256:7ecef635d660efe9a8a3c30cc4b7ae900b90a7b7c681bb2a46a2a6fd529256af",
+      "digest": "sha256:2e059bb9843c8c7dad554edf1b791541ff452e947539b465aed087a44b7ff03f",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
@@ -5409,7 +5433,7 @@
         },
         {
           "path": "src/src/http/dto/register-capability.dto.ts",
-          "digest": "sha256:cc1fa4e0665f7f2e7ecabc39cd74c39b139e382b3366c9b58a75c8ce7adf9c8b"
+          "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -5504,6 +5528,10 @@
         {
           "path": "src/src/errors/capability-not-read-only.error.ts",
           "digest": "sha256:0dc42f7baed312da076acbe708af9290736ab6a9b1ab2f289c30a8b5a008463b"
+        },
+        {
+          "path": "src/src/http/dto/register-capability.dto.ts",
+          "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
         }
       ]
     },
@@ -7487,11 +7515,11 @@
     },
     {
       "node": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
-      "digest": "sha256:9501a01dae497f735cc78b0a3fea64952e1cf4fb5d0a917fbc4cf89830c1367e",
+      "digest": "sha256:7ce077d593d831d9774e6f31617a353c8e807c5749ddfb4f420efe41da021759",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:8b5bd9368f9a1bd04cbdb6da9f543fa552d198b883725e32ca0210e3b68da123"
+          "digest": "sha256:ab10363675d13d3b16c4f761b9217d371c3d6954165ba0a593066ea0d9175208"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",

@@ -1,20 +1,19 @@
 import { z } from 'zod';
-import { CAPABILITY_NATURES } from '../../capability-registry/capability.js';
 
 export const registerCapabilityParamsSchema = z.object({
-  name: z.string().min(1),
-  version: z.string().min(1),
+  name: z.string(),
+  version: z.string(),
 });
 
 export type RegisterCapabilityParamsDto = z.infer<typeof registerCapabilityParamsSchema>;
 
 export const registerCapabilityBodySchema = z.object({
-  nature: z.enum(CAPABILITY_NATURES),
-  input_schema: z.string().min(1),
-  output_schema: z.string().min(1),
+  nature: z.string().optional(),
+  input_schema: z.string().optional(),
+  output_schema: z.string().optional(),
   timeout: z.number().int().positive().optional(),
-  connector: z.string().min(1),
-  concept: z.string().min(1),
+  connector: z.string().optional(),
+  concept: z.string().optional(),
   payload_notes: z.string().optional(),
 });
 

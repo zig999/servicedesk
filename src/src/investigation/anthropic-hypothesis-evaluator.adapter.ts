@@ -93,6 +93,10 @@ function judgmentFailureOutcome(callRecord?: CallRecord): EvaluationOutcome {
   return { verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
 }
 
+function notGroundedOutcome(callRecord: CallRecord): EvaluationOutcome {
+  return { verdict: 'inconclusive', reason: 'not-grounded', citations: [], ...callRecord };
+}
+
 function textOf(message: Anthropic.Message): string {
   return message.content
     .filter((block): block is Anthropic.TextBlock => block.type === 'text')
@@ -102,8 +106,11 @@ function textOf(message: Anthropic.Message): string {
 
 function outcomeFromModelText(text: string, callRecord: CallRecord): EvaluationOutcome {
   const parsed = parseJudgment(text);
-  if (parsed === undefined || parsed.verdict === 'inconclusive') {
+  if (parsed === undefined) {
     return judgmentFailureOutcome(callRecord);
+  }
+  if (parsed.verdict === 'inconclusive') {
+    return notGroundedOutcome(callRecord);
   }
   if (parsed.verdict === 'confirmed') {
     return { verdict: 'confirmed', citations: parsed.citations, ...callRecord };

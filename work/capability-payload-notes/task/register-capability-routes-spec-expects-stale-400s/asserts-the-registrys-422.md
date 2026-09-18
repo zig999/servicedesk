@@ -32,8 +32,8 @@ implements:
 - rules/integration/a-capability-declares-its-contract
 - rules/integration/a-capability-is-read-only
 - domain/integration/capability
-- domain/integration/capability-nature
-- contracts/integration/capability-registry
+- constraints/the-register-capability-route-defers-completeness-to-the-registry
+- constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry
 ---
 ## What it is
 
