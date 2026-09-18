@@ -105,6 +105,7 @@ type ScriptedAnswer = () => Promise<EvaluationOutcome>;
 
 class ScriptedHypothesisEvaluator implements IHypothesisEvaluator {
   public readonly calls: RecordedCall[] = [];
+  public readonly callInstants: string[] = [];
   private readonly queues = new Map<string, ScriptedAnswer[]>();
 
   public script(criterion: string, ...answers: readonly ScriptedAnswer[]): void {
@@ -113,6 +114,7 @@ class ScriptedHypothesisEvaluator implements IHypothesisEvaluator {
 
   public async evaluate(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): Promise<EvaluationOutcome> {
     this.calls.push({ criterion, evidence, caseContext });
+    this.callInstants.push(new Date().toISOString());
     const queue = this.queues.get(criterion);
     const answer = queue?.shift();
     if (answer === undefined) {
@@ -327,6 +329,28 @@ it("retries once on a decided answer whose citations fail structural validation,
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }]);
   expect(evaluator.calls).toHaveLength(2);
+});
+
+it("issues a retry as a genuinely separate evaluate() call happening only after real time has elapsed since the first attempt — so an evaluator that reads its own clock fresh at call time reads a later instant on the retry, never the first attempt's own reading", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script(
+    'h1 criterion',
+    resolvesAfter(50, { verdict: 'confirmed', citations: [{ concept: 'concept-foreign', field: 'field-a' }] }), // invalid citation forces a retry
+    immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
+  ]);
+
+  const resultPromise = judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+  await vi.advanceTimersByTimeAsync(50);
+  await resultPromise;
+
+  expect(evaluator.callInstants).toHaveLength(2);
+  expect(new Date(evaluator.callInstants[1]!).getTime()).toBeGreaterThan(new Date(evaluator.callInstants[0]!).getTime());
 });
 
 it("passes the pinned case's own title and when_to_use, unchanged, to both the first evaluate() call and the retry it forces", async () => {

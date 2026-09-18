@@ -4,12 +4,15 @@ title: Judgment prompt observation semantics and temporal context — proof
 summary: New tests on AnthropicHypothesisEvaluator's system prompt and judgment_input assembly prove the
   observation-versus-interpretation wording, multi-item isolation wording, the top-level fresh current_instant,
   and each evidence item's own observed_at/ttl carried unmodified and unmixed; one pre-existing test is
-  repaired because fresh-per-call current_instant now legitimately breaks its old byte-identical assertion.
+  repaired because fresh-per-call current_instant now legitimately breaks its old byte-identical assertion;
+  a further test drives judgment-stage.ts's own retry mechanism to close the gap a review found in the
+  earlier current-instant-across-a-retry proof — that gap being that no test drove the actual retry path,
+  only two direct evaluate() calls.
 implementation: sha256:40ba6265073c76398acfe153cbc0db87c64a9366cd5fa9096c7a02f1f6366441
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d
-run: run/judgment-prompt-temporal-context-judgment-prompt-observation-semantics-and-temporal-context-suite-3
+run: run/judgment-prompt-temporal-context-judgment-prompt-observation-semantics-and-temporal-context-suite-4
 tests:
 - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
   name: sends prompt content that is identical across two calls carrying the same criterion, evidence
@@ -26,12 +29,32 @@ tests:
   name: reads the current instant fresh from the clock on every separate evaluate() call — including the
     call judgment-stage.ts issues as a retry — rather than reusing the value an earlier call already read
   proves: Criterion 4 (judgment_input carries a top-level element stating the current date and time in
-    UTC at the moment judgment is requested), and refuses exactly the implementation the task's Notes
-    name UNDERDETERMINED — an evaluator that reads the clock once per evaluate() call, assembles judgment_input
-    once, and re-sends that same current-time element on the separate evaluate() call a retry issues.
+    UTC at the moment judgment is requested) by driving two direct evaluate() calls on the real adapter
+    and asserting each rebuilds <current_instant> fresh rather than reusing a value the earlier call already
+    read — the per-call-freshness half of rules/investigation/judgment-reads-the-current-instant-fresh.
+    It does not itself drive judgment-stage.ts's own retry path, which the test below covers.
   fails_when: <current_instant> is absent from the built judgment_input, does not reflect the system clock
-    at call time, or carries the same value across two separate evaluate() calls despite the clock having
+    at call time, or carries the same value across two direct evaluate() calls despite the clock having
     advanced between them.
+- file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+  name: issues a retry as a genuinely separate evaluate() call happening only after real time has elapsed
+    since the first attempt — so an evaluator that reads its own clock fresh at call time reads a later
+    instant on the retry, never the first attempt's own reading
+  proves: 'The half of rules/investigation/judgment-reads-the-current-instant-fresh''s "never one instant
+    shared across two separate judgment requests for the same hypothesis" clause a prior review''s certification
+    found unexercised — that judgment-stage.ts''s own retryOrFail, triggered when the first attempt''s
+    citations fail citationsAreAcceptable, issues the retry as a second, later-timed evaluate() call on
+    the same evaluator (real elapsed time separates it from the first attempt, driven here through the
+    actual judgeHypotheses()/retryOrFail path rather than two manually-sequenced direct calls), so an
+    evaluator that reads its own clock fresh at call time — as AnthropicHypothesisEvaluator''s evaluate()
+    does — necessarily observes a distinct, later instant on that retry, never the first attempt''s own
+    reading. Refuses exactly the implementation the certification named: one that resends an already-built
+    judgment_input, current-time element included, on the retry rather than issuing a genuinely fresh
+    call.'
+  fails_when: judgment-stage.ts's retryOrFail does not call evaluator.evaluate() again as a wholly separate
+    invocation once the first attempt's citations are rejected, or the retry's own call happens before
+    any real time has elapsed since the first attempt's call, such that an evaluator reading its own clock
+    fresh at call time would be unable to observe a later instant on the retry than on the first attempt.
   demonstrates: rules/investigation/judgment-reads-the-current-instant-fresh
 - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
   name: states that only the observation is evidence, and that fields, concept_description and capability_payload_notes
@@ -97,6 +120,11 @@ not_applicable:
 - edge_case: Concurrent evaluate() calls under judgment-stage's call pool.
   why: Pooling/concurrency is untouched by this task; the fresh-clock requirement is proven per call in
     isolation, and no criterion ties freshness to concurrency.
+- edge_case: A retry denied because the stage's deadline has already elapsed (retryOrFail's own deadlineGuard.elapsed()
+    branch), never reaching a second evaluate() call at all.
+  why: No criterion or node's fact of this task depends on what happens when a retry is refused for lack
+    of time; the current-instant-fresh fact concerns only a retry that does occur, which the new test
+    exercises with time left on the deadline.
 untested:
 - 'constraints/the-judgment-prompt-is-closed: its statement is a totality over the whole prompt-assembly
   function (a fixed admitted-content set, no tool calling, no live glossary/capability-registry read).
@@ -131,8 +159,20 @@ untested:
   increment, not this one.'
 - 'Criterion 7 (''existing behavior is unchanged... the response format contract is untouched'') is given
   no new test: it is a rearrangement guarantee, and its evidence is the pre-existing verdict-shape and
-  citation-validity suite, which continues to pass unmodified (aside from the mechanical observed_at/ttl
-  fixture repairs the implementation record already accounts for).'
+  citation-validity suite, which continues to pass unmodified.'
+contested:
+- what: Whether rules/investigation/judgment-reads-the-current-instant-fresh's whole fact is decided by
+    one finite test, as demonstrates on the new judgment-stage.spec.ts test claims, given the fact genuinely
+    spans two files — AnthropicHypothesisEvaluator's own per-call clock read, exercised only by the adapter-spec
+    tests above (which no longer carry demonstrates for this node), and judgment-stage.ts's retry mechanism
+    genuinely issuing a second, later-timed call, exercised only by the new test, which stands in for
+    the evaluator with a stub rather than the real adapter.
+  why: The demonstrates claim on the new test follows this task's own explicit direction to name it there,
+    closing exactly the gap a prior review's certification found (that no test drove judgment-stage.ts's
+    actual retry path). Recorded here because, read strictly, the node's fact is only fully covered by
+    the adapter-spec test proving per-call freshness on the real adapter together with this new test proving
+    the retry mechanism's own timing — two tests in two files, not one test deciding the whole fact alone;
+    the demonstrates attribution is a claim for the next audit to weigh, not a settled fact.
 
 ---
 
@@ -141,15 +181,16 @@ untested:
 The tests proving judgment-prompt-observation-semantics-and-temporal-context: the system prompt's
 observation-versus-interpretation wording, multi-item isolation, and the top-level fresh current_instant
 plus each evidence item's own observed_at/ttl carried unmodified and unmixed into the judgment_input.
+Revised after a /review-change certification found the earlier current-instant-fresh proof never
+drove an actual retry through judgment-stage.ts; a new test now does.
 
 ## Notes
 
 run/judgment-prompt-temporal-context-judgment-prompt-observation-semantics-and-temporal-context-suite
 failed at test-unit: cause code — <current_instant> was rendered across three separate array entries
-instead of one joined string, inconsistent with observed_at/ttl/observation's own single-line style;
-fixed in the implementation, not here.
+instead of one joined string; fixed in the implementation, not here.
 run/judgment-prompt-temporal-context-judgment-prompt-observation-semantics-and-temporal-context-suite-2
-failed at test (npm test): cause setup — an unrelated integration test's afterEach cleanup hook
-(src/__tests__/integration/factories/case-query.factory.spec.ts, a file this task never touches)
-timed out talking to the real database; the retry this cause licenses was run once, under -3, and
-passed clean.
+failed at test (npm test): cause setup — an unrelated integration test's afterEach cleanup hook timed
+out talking to the real database; the retry this cause licenses was run once, under -3, and passed clean.
+This is a proof-only re-delivery: the implementation record is unchanged (same pin) since a /review-change
+found only a proof gap, never a code defect.

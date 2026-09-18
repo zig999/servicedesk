@@ -14,7 +14,7 @@
       "kind": "proof",
       "file": "proof/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context.md",
       "title": "Judgment prompt observation semantics and temporal context — proof",
-      "summary": "New tests on AnthropicHypothesisEvaluator's system prompt and judgment_input assembly prove the observation-versus-interpretation wording, multi-item isolation wording, the top-level fresh current_instant, and each evidence item's own observed_at/ttl carried unmodified and unmixed; one pre-existing test is repaired because fresh-per-call current_instant now legitimately breaks its old byte-identical assertion.",
+      "summary": "New tests on AnthropicHypothesisEvaluator's system prompt and judgment_input assembly prove the observation-versus-interpretation wording, multi-item isolation wording, the top-level fresh current_instant, and each evidence item's own observed_at/ttl carried unmodified and unmixed; one pre-existing test is repaired because fresh-per-call current_instant now legitimately breaks its old byte-identical assertion; a further test drives judgment-stage.ts's own retry mechanism to close the gap a review found in the earlier current-instant-across-a-retry proof — that gap being that no test drove the actual retry path, only two direct evaluate() calls.",
       "task": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context"
     },
     {
