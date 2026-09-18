@@ -1,0 +1,281 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/recursive-output-schema-field-paths",
+      "kind": "epic",
+      "file": "epic/recursive-output-schema-field-paths.md",
+      "title": "Recursive output-schema field paths",
+      "summary": "Everything the backend needs for a capability output schema to be read into full-path field names and for those names to be carried and cited."
+    },
+    {
+      "id": "inventory/investigation-field-semantics-recursion",
+      "kind": "inventory",
+      "file": "inventory/investigation-field-semantics-recursion.md",
+      "title": "Investigation module — field-semantics recursive path reading",
+      "summary": "The investigation domain module under src/src/investigation, where output_schema field naming is read for both citation validation and hypothesis-judgment prompts."
+    },
+    {
+      "id": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "task",
+      "file": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
+      "title": "Read output-schema fields by their full path",
+      "summary": "The recursive walk of a capability output schema that names one field per node it reaches.",
+      "epic": "recursive-output-schema-field-paths"
+    },
+    {
+      "id": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "task",
+      "file": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names.md",
+      "title": "Carry path-shaped field names into the judgment prompt",
+      "summary": "The judgment prompt rendering of a path-shaped snapshotted field name, unchanged in what else the prompt admits.",
+      "epic": "recursive-output-schema-field-paths"
+    },
+    {
+      "id": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "task",
+      "file": "task/recursive-output-schema-field-paths/nested-citation-is-accepted.md",
+      "title": "Accept a citation naming a nested field",
+      "summary": "Citation acceptance decided against the cited evidence item's own snapshotted names, path-shaped names included.",
+      "epic": "recursive-output-schema-field-paths"
+    },
+    {
+      "id": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "task",
+      "file": "task/recursive-output-schema-field-paths/observation-load-stays-top-level.md",
+      "title": "Keep the observation load bounded to top-level properties",
+      "summary": "The observation's field load, still read against the output schema's own top-level properties after the recursive reading arrives.",
+      "epic": "recursive-output-schema-field-paths"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "domain/investigation/field-semantics",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/recursive-output-schema-field-paths",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "domain/investigation/field-semantics",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "domain/investigation/field-semantics",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
