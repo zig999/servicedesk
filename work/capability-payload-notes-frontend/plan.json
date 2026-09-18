@@ -23,6 +23,13 @@
       "summary": "Corrective increment: both capability form hooks must forward an untouched but previously-loaded payload_notes value unconditionally on submission, the same as every other declared attribute, instead of dropping it from the PUT body whenever the operator did not personally edit it this session."
     },
     {
+      "id": "epic/save-tests-expect-immediate-reset",
+      "kind": "epic",
+      "file": "epic/save-tests-expect-immediate-reset.md",
+      "title": "The capability detail save tests assert the refetch-timed reset, not an immediate one",
+      "summary": "Corrective increment: use-capability-detail-save.spec.ts and capability-detail-screen-save.spec.ts each assert isDirty/Save clears synchronously at the registry's answer, falsified by detail-surface-presents-submitted-values-after-save/ presents-the-registrys-answer's legitimate delivery."
+    },
+    {
       "id": "inventory/capability-payload-notes-frontend-surface",
       "kind": "inventory",
       "file": "inventory/capability-payload-notes-frontend-surface.md",
@@ -76,6 +83,14 @@
       "title": "An untouched, previously-declared payload_notes is forwarded on resubmission",
       "summary": "Both capability form hooks forward payload_notes from the form's current value unconditionally, the same as every other declared attribute, instead of only when the operator dirtied it this session.",
       "epic": "payload-notes-dropped-when-untouched"
+    },
+    {
+      "id": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "kind": "task",
+      "file": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset.md",
+      "title": "The two save tests assert the refetch-timed reset, not an immediate one",
+      "summary": "use-capability-detail-save.spec.ts and capability-detail-screen-save.spec.ts each rewritten to assert isDirty/Save stays in its submitted state until the invalidated identity-keyed query's own refetch answers, then clears/re-disables.",
+      "epic": "save-tests-expect-immediate-reset"
     }
   ],
   "edges": [
@@ -350,6 +365,24 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/save-tests-expect-immediate-reset",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/save-tests-expect-immediate-reset",
+      "to": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/save-tests-expect-immediate-reset",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
       "from": "task/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
       "to": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "kind": "depends_on",
@@ -450,6 +483,18 @@
       "to": "domain/integration/capability",
       "kind": "implements",
       "at": "implements[0]"
+    },
+    {
+      "from": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "to": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "implements",
+      "at": "implements[1]"
     }
   ]
 }
