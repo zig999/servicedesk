@@ -3,10 +3,12 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { useCapabilityDetail } from "./use-capability-detail";
 import {
   CAPABILITY_PATH,
+  LOADED_CAPABILITY,
   NAME,
   VERSION,
   createWrapper,
   defaultHandlers,
+  jsonResponse,
   readyState,
   stubFetch,
 } from "./use-capability-detail.test-support";
@@ -37,6 +39,8 @@ function parsedPutBody(fetchMock: Mock<FetchFn>): unknown {
 }
 
 const EDITED_PAYLOAD_NOTES = "an operator's own edited account of what this observation returns";
+const PREVIOUSLY_DECLARED_PAYLOAD_NOTES =
+  "a previously declared account of what this observation returns, untouched this session";
 
 describe("useCapabilityDetail -- the submitted body carries payload_notes as the form value holds it (criterion 1)", () => {
   it("forwards a payload_notes value the operator just set into the PUT body, unchanged", async () => {
@@ -96,5 +100,37 @@ describe("useCapabilityDetail -- payload_notes typed then cleared is submitted a
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
     expect(parsedPutBody(fetchMock)).toEqual(expect.objectContaining({ payload_notes: "" }));
+  });
+});
+
+describe("useCapabilityDetail -- an untouched, previously-declared payload_notes survives resubmission after editing only an unrelated field", () => {
+  it("carries the previously loaded payload_notes forward in the submitted body, unchanged", async () => {
+    const fetchMock = stubFetch(
+      defaultHandlers({
+        [CAPABILITY_PATH]: () =>
+          jsonResponse({
+            ...LOADED_CAPABILITY,
+            payload_notes: PREVIOUSLY_DECLARED_PAYLOAD_NOTES,
+          }),
+      }),
+    );
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).form.setValue("connector", "a-different-connector", {
+        shouldDirty: true,
+      });
+    });
+    act(() => {
+      readyState(result.current).onSubmit();
+    });
+
+    await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+    expect(parsedPutBody(fetchMock)).toEqual(
+      expect.objectContaining({ payload_notes: PREVIOUSLY_DECLARED_PAYLOAD_NOTES }),
+    );
   });
 });

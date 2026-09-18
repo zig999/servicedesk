@@ -27,6 +27,13 @@ const EXISTING_CAPABILITY: Capability = {
 };
 
 const EDITED_PAYLOAD_NOTES = "an operator's own edited account of what this observation returns";
+const PREVIOUSLY_DECLARED_PAYLOAD_NOTES =
+  "a previously declared account of what this observation returns, untouched this session";
+
+const EXISTING_CAPABILITY_WITH_PAYLOAD_NOTES: Capability = {
+  ...EXISTING_CAPABILITY,
+  payload_notes: PREVIOUSLY_DECLARED_PAYLOAD_NOTES,
+};
 
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
@@ -111,5 +118,51 @@ describe("useCapabilityForm -- the submitted body carries payload_notes as the f
     expect(parsedPutBody(fetchMock)).toEqual(
       expect.objectContaining({ payload_notes: EDITED_PAYLOAD_NOTES }),
     );
+  });
+});
+
+describe("useCapabilityForm -- an untouched, previously-declared payload_notes survives resubmission after editing only an unrelated field", () => {
+  it("carries the previously loaded payload_notes forward in the submitted body, unchanged", async () => {
+    const fetchMock = stubFetch();
+    const { result } = renderHook(
+      () => useCapabilityForm(EXISTING_CAPABILITY_WITH_PAYLOAD_NOTES, () => {}),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).form.setValue("connector", "a-different-connector", {
+        shouldDirty: true,
+      });
+    });
+    act(() => {
+      readyState(result.current).onSubmit();
+    });
+
+    await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+    expect(parsedPutBody(fetchMock)).toEqual(
+      expect.objectContaining({ payload_notes: PREVIOUSLY_DECLARED_PAYLOAD_NOTES }),
+    );
+  });
+});
+
+describe("useCapabilityForm -- payload_notes explicitly cleared is submitted as exactly an empty string, not the prior text", () => {
+  it("carries payload_notes as an empty string in the submitted body", async () => {
+    const fetchMock = stubFetch();
+    const { result } = renderHook(
+      () => useCapabilityForm(EXISTING_CAPABILITY_WITH_PAYLOAD_NOTES, () => {}),
+      { wrapper: createWrapper() },
+    );
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).form.setValue("payload_notes", "", { shouldDirty: true });
+    });
+    act(() => {
+      readyState(result.current).onSubmit();
+    });
+
+    await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+    expect(parsedPutBody(fetchMock)).toEqual(expect.objectContaining({ payload_notes: "" }));
   });
 });

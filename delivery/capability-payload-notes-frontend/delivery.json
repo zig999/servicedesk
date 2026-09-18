@@ -34,6 +34,14 @@
       "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
     },
     {
+      "id": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "kind": "implementation",
+      "file": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally.md",
+      "title": "Both capability form hooks forward payload_notes unconditionally",
+      "summary": "use-capability-detail.ts and use-capability-form.ts drop the dirtyFields.payload_notes gate from their PUT-body mutationFns, forwarding the form's current payload_notes value the same way every other declared attribute already is.",
+      "task": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally"
+    },
+    {
       "id": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
       "kind": "proof",
       "file": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration.md",
@@ -64,6 +72,14 @@
       "title": "payload_notes seeded and restored from the capability identity read, proof",
       "summary": "Six new tests, across three files, establish that both capability form hooks state payload_notes exactly as the identity read answered it -- present, absent, from the first ready render, immune to a stale sibling cache, and restored on discard.",
       "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
+    },
+    {
+      "id": "proof/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "kind": "proof",
+      "file": "proof/payload-notes-dropped-when-untouched/forwarded-unconditionally.md",
+      "title": "Both capability form hooks forward an untouched, previously-declared payload_notes unconditionally",
+      "summary": "Six tests, three newly written and three already standing, together show that use-capability-detail and use-capability-form each carry payload_notes forward exactly as the form holds it on resubmission -- an existing value survives editing an unrelated field, an explicit clear submits as an empty string, and an explicit new value submits as typed -- across both hooks.",
+      "task": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally"
     },
     {
       "id": "review/capability-payload-notes-frontend",
@@ -153,6 +169,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "to": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
       "to": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
       "kind": "proves",
@@ -173,6 +201,12 @@
     {
       "from": "proof/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
       "to": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "to": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
       "kind": "proves",
       "at": "the path"
     },

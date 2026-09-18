@@ -2307,11 +2307,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:4111b7af5cecef876b997c735d771774221a3ddbc55531d5c19885f30048eb11"
+          "digest": "sha256:5cae5b078ad4024b00bce90c241af5417720a21aa23e8655c955e7f4e016589a"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
-          "digest": "sha256:161779d4e5a9df7aa5104fd1e829084a5991ea8044147623a3dfc2f7c0517a66"
+          "digest": "sha256:ea95b415b4922e8e8f4f5b9655e1fad28892b06beac716a6ccf23e155e296d49"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
