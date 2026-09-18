@@ -12,9 +12,9 @@ attributes:
 
 ## Description
 
-One field a capability's own output schema declares, read structurally from that schema's own top-level `properties` object: the key names the field, and its own `type` and `description`, where the schema states them, are read as this field's declared semantics.
+One field a capability's own output schema declares, its own name the path rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads for it, and its own `type` and `description`, where the schema states them at the node that path reaches, read as this field's declared semantics.
 No other content of that schema is read or validated — an operator's own hint, never enforced.
 
 ## Responsibility
 
-Carry one field's name and, where the schema declares them, its type and description, snapshotted onto the evidence item that names it.
+Carry one field's own name and, where the schema declares them, its type and description, snapshotted onto the evidence item that names it.

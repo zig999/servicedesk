@@ -5842,6 +5842,61 @@ entries:
     by exactly the margin the caching introduced. domain/investigation/hypothesis-evaluator is the home
     because evaluate is the one operation that reads this instant at all; no evidence item nor the evaluation
     it produces owns a clock reading of its own.
+- location: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema.md
+  field: statement
+  unstated: A hypothesis's criterion, brought as material for this analysis, reasons over attributes an
+    output schema declares only beneath an array's own items -- installations[].state and
+    installations[].pushEnabled, on a capability already registered with installations as a bare top-level
+    array. No node stated how, or whether, a field nested this way is named at all; domain/investigation/field-semantics
+    read only the schema's own top-level properties keys, so no such field was ever a field-semantics element,
+    and a citation naming state or pushEnabled had nothing to name. The material states no grammar for such
+    a name, and no output schema on file declares an items that is itself an array of schemas, or a
+    patternProperties or additionalProperties object.
+  decided: 'A field-semantics element''s own name is the path built by concatenating each object''s own
+    key onto its parent''s own path with a `.` -- the schema''s own root key alone, with no leading `.` --
+    and each array''s own items, itself one schema, onto its parent''s own path with `[]`, walking every
+    properties object and items schema the top-level properties object leads to, and naming one field per
+    node the walk reaches rather than only its leaves; an items declared as more than one schema is walked
+    no further, and a patternProperties or additionalProperties object is not walked, each naming no field
+    of its own.'
+  why: The grammar composes without inventing new syntax for the operator to learn -- it is exactly how
+    JSON Schema itself nests properties and items, read all the way down instead of stopping at the root.
+    Naming every node the walk reaches, not only its leaves, keeps every citation valid before this change
+    valid after it, since installations itself stays a name a citation may still give. Tuple-shaped items
+    and dynamically-keyed properties are decided unsupported because no schema this specification or the
+    registry's own stored capabilities show ever declares either -- deciding a shape nothing exercises would
+    be inventing a case rather than reading one, and the value such a node holds remains legible to a
+    judgment reading the observation directly even where no field-semantics name can cite it individually.
+- location: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it.md
+  field: statement
+  unstated: Whether the surface telling an operator what the system reads out of an output schema entry
+    keeps stating the schema's own top-level properties convention once
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema widens what
+    domain/investigation/field-semantics itself reads, or goes on describing a narrower reading than the
+    one that now actually runs.
+  decided: The statement and expression now describe a field's own name as the path
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads, through the
+    schema's own top-level properties object and every properties object and items schema reachable
+    beneath it, rather than as the bare keys of that top-level object alone.
+  why: The same reasoning that put this statement here in the first place -- the operator's own typing
+    decides what every later citation may name, and nothing else on the surface tells them so -- fails the
+    moment the surface teaches a narrower rule than the one the system actually applies; leaving the old
+    text standing would have the surface itself become a second, wrong, home for this fact the moment the
+    reading widened.
+- location: rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim.md
+  field: statement
+  unstated: Whether the set of nodes an-output-schema-entry-states-what-the-system-reads-from-it's own
+    statement is held to bounded by grows once that statement starts repeating a claim
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema now holds, rather than
+    domain/investigation/field-semantics alone.
+  decided: The statement now names domain/investigation/field-semantics,
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, and
+    rules/glossary/a-description-states-meaning-never-policy as the three nodes the surface's own claims
+    must already be held by.
+  why: This rule's whole purpose is closing the set the surface may draw from; leaving the new rule off
+    that list while the surface's own statement already repeats its claim would make this rule's own check
+    false the instant the sibling statement changed, which is exactly the drift this rule exists to catch
+    in the surface rather than commit in itself.
 
 ---
 
@@ -6719,12 +6774,12 @@ attributes:
 
 ## Description
 
-One field a capability's own output schema declares, read structurally from that schema's own top-level `properties` object: the key names the field, and its own `type` and `description`, where the schema states them, are read as this field's declared semantics.
+One field a capability's own output schema declares, its own name the path rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads for it, and its own `type` and `description`, where the schema states them at the node that path reaches, read as this field's declared semantics.
 No other content of that schema is read or validated — an operator's own hint, never enforced.
 
 ## Responsibility
 
-Carry one field's name and, where the schema declares them, its type and description, snapshotted onto the evidence item that names it.
+Carry one field's own name and, where the schema declares them, its type and description, snapshotted onto the evidence item that names it.
 
 === domain/investigation/hypothesis-evaluator
 ---
@@ -7454,7 +7509,7 @@ constrains:
 
 ## Description
 
-The output schema already lives by this same convention — a top-level properties object, its keys the field names a citation may name — but only by an inference this specification discloses, never checked at registration, because nothing yet reads an output schema's own content to decide anything at write time.
+The output schema already lives by a related convention — a `properties` object at its own root, read recursively through every `properties` object and `items` schema reachable beneath it (rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema), the field names a citation may name — but only by an inference this specification discloses, never checked at registration, because nothing yet reads an output schema's own content to decide anything at write time.
 This rule is that same convention, now declared and enforced for the input schema alone: a properties key names one subject attribute the capability uses, and required names which of those it cannot observe without. An empty properties object is a valid declaration on its own — a capability whose connector reads nothing from the subject, only a credential or the requester, declares no attribute and requires none.
 Distinct from a-capability-declares-well-formed-schemas, which only ever asks whether the text parses: a schema that parses and still holds no properties object, or a required naming a key properties does not hold, is well-formed JSON and malformed all the same, and this rule is what catches it.
 A capability registered before this rule existed, whose stored input schema does not hold this shape, is read as declaring properties and required both empty — malformed is nothing declared, never a fault at read — the same posture a-capability-declares-well-formed-schemas already gives a schema that fails to parse at all, wherever anything reads a schema's content.
@@ -10472,22 +10527,27 @@ type: policy
 statement: >-
   A surface offering an operator entry of the output schema a capability registration
   declares states, at that entry, what the system reads out of what is entered there: that
-  it is entered as JSON; that the fields it declares are the keys of that schema's own
-  top-level `properties` object; that each such key's own `type` and `description`, where
-  the schema states them, are read as that field's declared semantics; that no other
-  content of the schema is read or validated; and that a `description` entered there
-  states what a value means and names no decision.
+  it is entered as JSON; that a field's own name is the path
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads for
+  it, through that schema's own top-level `properties` object and every `properties` object
+  and `items` schema reachable beneath it; that each such node's own `type` and
+  `description`, where the schema states them, are read as that field's declared semantics;
+  that no other content of the schema is read or validated; and that a `description`
+  entered there states what a value means and names no decision.
 expression: >-
   For an operator on a surface s offering entry of the output_schema a capability
   registration declares — an authoring at an identity nothing is registered at, or an edit
   of the registration a surface read at one, alike — s states, wherever that entry stands:
-  that what is entered is JSON; that the field names read from it are the keys of its own
-  top-level `properties` object; that such a key's own declared `type` and `description`,
+  that what is entered is JSON; that the field names read from it are the paths
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads,
+  through its own top-level `properties` object and every `properties` object and `items`
+  schema reachable beneath it; that such a node's own declared `type` and `description`,
   where the entered schema states them, are read as that field's declared semantics; that
   nothing else in the entered schema is read or validated; and that a `description`
   entered there states what its value means and names no decision the case's own criterion
   or this specification's own rules and scenarios govern. Each of those five claims is the
-  statement of domain/investigation/field-semantics or of
+  statement of domain/investigation/field-semantics,
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, or of
   rules/glossary/a-description-states-meaning-never-policy, and s states no sixth claim
   about what an output schema is read for and carries no worked example of its own. s
   refuses no entry and checks no entered content against any of the five: what a
@@ -10502,11 +10562,11 @@ consistency: eventual
 
 ## Description
 
-An output schema is the one attribute of a capability registration whose content an operator authors freely and the system later reads structurally rather than storing whole: `domain/investigation/field-semantics` reads one field per key of that schema's own top-level `properties` object, with that key's own `type` and `description` as the field's declared semantics, and reads nothing else in it — "an operator's own hint, never enforced". No node stated whether the operator authoring it learns that at the moment of authoring. Left unstated, the one person whose typing decides what every later citation may name (`a-cited-field-exists-in-the-capability-output-schema`) learns which part of their text is load-bearing only by having a registration come back wrong, or never.
+An output schema is the one attribute of a capability registration whose content an operator authors freely and the system later reads structurally rather than storing whole: `domain/investigation/field-semantics` reads one field per node its own path reaches, walking every `properties` object and `items` schema the top-level `properties` object leads to, with that node's own `type` and `description` as the field's declared semantics, and reads nothing else in it — "an operator's own hint, never enforced". No node stated whether the operator authoring it learns that at the moment of authoring. Left unstated, the one person whose typing decides what every later citation may name (`a-cited-field-exists-in-the-capability-output-schema`) learns which part of their text is load-bearing only by having a registration come back wrong, or never.
 
-The statement is owed at the entry rather than left out, because nothing else in the system tells the operator this and nothing refuses them for getting it wrong. `a-capability-declares-well-formed-schemas` asks only whether the text parses, and `a-capability-input-schema-holds-a-well-formed-object` records that the output schema's `properties` convention holds "only by an inference this specification discloses, never checked at registration" — so a schema declaring its fields somewhere other than a top-level `properties` object is accepted whole and reads, downstream, as no fields at all. That is silence at a surface, which this specification has refused wherever it has met it: `a-composed-subject-presents-every-case-input-requirement` states an empty requirements read to the composer explicitly rather than leaving an unexplained absence, and `a-submitted-registration-states-its-outcome-to-the-operator` states an outcome the operator could not otherwise infer from the surface they stand on. Here the unstated thing is upstream of both — not what happened, but what the entry is for.
+The statement is owed at the entry rather than left out, because nothing else in the system tells the operator this and nothing refuses them for getting it wrong. `a-capability-declares-well-formed-schemas` asks only whether the text parses, and `a-capability-input-schema-holds-a-well-formed-object` records that the output schema's `properties` convention holds "only by an inference this specification discloses, never checked at registration" — so a schema declaring its fields somewhere other than a `properties` object reached this way is accepted whole and reads, downstream, as no fields at all. That is silence at a surface, which this specification has refused wherever it has met it: `a-composed-subject-presents-every-case-input-requirement` states an empty requirements read to the composer explicitly rather than leaving an unexplained absence, and `a-submitted-registration-states-its-outcome-to-the-operator` states an outcome the operator could not otherwise infer from the surface they stand on. Here the unstated thing is upstream of both — not what happened, but what the entry is for.
 
-Whether what this surface states is bounded to what the two nodes above already hold, adding nothing, is `an-output-schema-entrys-statement-carries-no-sixth-claim`'s own.
+Whether what this surface states is bounded to what the three nodes above already hold, adding nothing, is `an-output-schema-entrys-statement-carries-no-sixth-claim`'s own.
 
 Nothing about any element changes and no hint comes into the specification. `domain/knowledge/case-input-requirement`'s standing decision keeps a property's own declared `type` and `description` outside what any element carries — presentation guidance for whoever displays an entry, never part of what the entry states — and this decides only what a surface says to the person doing the entering, carrying no schema content anywhere.
 
@@ -10519,9 +10579,11 @@ Consistency is eventual because the surface holds nothing this statement is true
 type: policy
 statement: >-
   Every claim an-output-schema-entry-states-what-the-system-reads-from-it makes is one
-  domain/investigation/field-semantics or rules/glossary/a-description-states-meaning-never-policy
-  already holds — the surface states no further fact about how the schema is read, carries no
-  worked example of its own, and refuses nothing on any of these grounds.
+  domain/investigation/field-semantics,
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, or
+  rules/glossary/a-description-states-meaning-never-policy already holds — the surface states no further
+  fact about how the schema is read, carries no worked example of its own, and refuses nothing on any of
+  these grounds.
 constrains:
   - domain/integration/capability
   - domain/investigation/field-semantics
@@ -10530,7 +10592,7 @@ consistency: eventual
 
 ## Description
 
-What the statement says is bounded by the two nodes that already hold it, and adds nothing. The distinction between meaning and decision is part of what to enter, not a separate lesson: a `description` is published vocabulary, and `a-description-states-meaning-never-policy` holds that one naming a decision is a second home for a fact the specification places elsewhere — an operator typing it into a schema is exactly how that second home gets made, and the entry is the one place where saying so prevents it rather than reporting it. The surface stating those facts is not itself a home for them: it states them as guidance drawn from the nodes that hold them, which is why it carries no worked example of its own and states no sixth claim — the example illustrating meaning against decision belongs to the node that draws the distinction, and a surface carrying its own would be a fact of the business living in a screen.
+What the statement says is bounded by the three nodes that already hold it, and adds nothing. The distinction between meaning and decision is part of what to enter, not a separate lesson: a `description` is published vocabulary, and `a-description-states-meaning-never-policy` holds that one naming a decision is a second home for a fact the specification places elsewhere — an operator typing it into a schema is exactly how that second home gets made, and the entry is the one place where saying so prevents it rather than reporting it. The surface stating those facts is not itself a home for them: it states them as guidance drawn from the nodes that hold them, which is why it carries no worked example of its own and states no sixth claim — the example illustrating meaning against decision belongs to the node that draws the distinction, and a surface carrying its own would be a fact of the business living in a screen.
 
 Refusing nothing here is the same reading: what a registration is refused for stays `a-capability-declares-its-contract`'s and `a-capability-declares-well-formed-schemas`' own, and this surface promises no check neither of them performs.
 
@@ -10940,6 +11002,21 @@ consistency: eventual
 Everything an-unresolvable-observation-ends-unavailable already treats as a per-capability ending during collection is checked once, at the door, for whatever a case's own derived requirements demand: a subject missing what those requirements name required is refused before any capability is ever called, rather than discovered concept by concept mid-collection at the cost of the calls that already ran.
 An attribute a case-input-requirement leaves optional never enters this refusal: absent, the observation asking for it degrades to unavailable on its own (an-unresolvable-observation-ends-unavailable), never blocking the rest of the diagnose.
 The test of one connector configuration through a registered capability (a-connector-configuration-is-tested-through-a-registered-capability) is not held to this refusal: it exists to diagnose exactly this seam between a subject and a capability's own call, and the resolver's own unresolved-placeholder answer, surfaced raw, is its diagnosis.
+
+=== rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+---
+type: invariant
+statement: A field-semantics element's own name is the path a capability's output schema's `properties` object is walked to reach it, built by concatenating, in the order the walk reaches them, each object's own key onto its parent's own path with a `.` -- a key at the schema's own root naming a field by that key alone, with no leading `.` -- and each array's own `items`, where that `items` is itself one schema, onto its parent's own path with `[]` before any name reached beneath it; that path, and, where the schema states them at the node the path reaches, that same node's own `type` and `description`, are what one field-semantics element carries, for every node the walk reaches and not only its leaves; an `items` declared as more than one schema is walked no further, naming no field beneath it, and a node's own `patternProperties` or `additionalProperties` is not walked and names no field of its own, whichever content either declares.
+constrains:
+  - domain/investigation/field-semantics
+---
+
+## Description
+
+This is the fact rules/investigation/a-cited-field-exists-in-the-capability-output-schema and constraints/the-judgment-prompt-is-closed both read domain/investigation/field-semantics through: before this rule, the walk stopped at the schema's own root, so a field declared only beneath an array's own `items` -- `installations[].state`, say -- was never a field-semantics element at all, and no citation could ever name it, however plainly the schema declared it nested.
+An `items` schema is walked exactly as a `properties` object's own value already was, because domain/integration/capability already reads an output schema structurally and never validates it -- nothing about walking one level of nesting differs from walking another.
+A tuple-shaped `items` and a dynamically-keyed `patternProperties` or `additionalProperties` are decided unsupported rather than left to guess at, because no output schema this specification's own material or the registry's own stored capabilities show declares either -- deciding a shape nothing exercises would be inventing a case, not reading one. The value such a node holds, where a schema declares one, is still read into the observation domain/investigation/evidence carries and stays legible to a judgment reading that observation directly; only a citation naming it by a field-semantics name of its own is unavailable, exactly as rules/investigation/a-cited-field-exists-in-the-capability-output-schema already leaves inconclusive whatever no field grounds.
+This rule does not reach how a connector configuration's own responseMap addresses a position in a response body already returned, nor how many of a capability's own output schema properties a responseMap's own keys must name: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches and rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads hold those, over that schema's own top-level properties alone, and neither widens with this one.
 
 === rules/investigation/a-judgment-failure-records-the-last-call-made
 ---
@@ -13490,6 +13567,24 @@ involves:
 
 The unsubmitted edit is destroyed by an apply exactly as it would be by a register-connector submission; the confirmation is the further explicit act that keeps it from vanishing on a first gesture.
 
+=== scenarios/investigation/a-citation-names-a-nested-output-schema-field
+---
+subject: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+given:
+  - a hypothesis's evidence for concept tech-profile snapshotted the fields login, installations and installations[].state from its producing capability's output schema
+when:
+  - the evaluator's response cites concept tech-profile and field installations[].state
+then:
+  - the citation is accepted
+involves:
+  - domain/investigation/citation
+  - domain/investigation/evidence
+---
+
+## Description
+
+Before rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, installations[].state was never among an item's own snapshotted field names, so this same citation was foreign to its own evidence and refused; it grounds a decided verdict now that the path it names is one field-semantics reads.
+
 === scenarios/investigation/a-collection-timeout-degrades-to-no-data
 ---
 subject: rules/investigation/no-stage-aborts-on-its-deadline
@@ -13623,6 +13718,27 @@ involves:
 ## Description
 
 The concept this capability answers asks the composer for nothing at all; without this disclosure nothing would tell them why, and the capability would stay malformed until someone happened to notice on their own.
+
+=== scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+---
+subject: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+given:
+  - a capability tech-profile's output schema declares a top-level properties object holding login and installations, installations' own items an object whose own properties hold state
+when:
+  - an investigation collects tech-profile's concept
+then:
+  - the evidence item's fields carries a field named login
+  - the evidence item's fields carries a field named installations
+  - the evidence item's fields carries a field named installations[].state
+  - the evidence item's fields carries no field named state alone
+involves:
+  - domain/integration/capability
+  - domain/investigation/evidence
+---
+
+## Description
+
+A field state declared only beneath installations' own items is a field-semantics element of its own, named installations[].state rather than state, exactly as a field declared at the schema's own root always was.
 
 === scenarios/investigation/a-queued-judgment-is-deadline-exceeded
 ---

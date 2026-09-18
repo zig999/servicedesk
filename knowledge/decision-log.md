@@ -5127,5 +5127,60 @@ entries:
     by exactly the margin the caching introduced. domain/investigation/hypothesis-evaluator is the home
     because evaluate is the one operation that reads this instant at all; no evidence item nor the evaluation
     it produces owns a clock reading of its own.
+- location: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema.md
+  field: statement
+  unstated: A hypothesis's criterion, brought as material for this analysis, reasons over attributes an
+    output schema declares only beneath an array's own items -- installations[].state and
+    installations[].pushEnabled, on a capability already registered with installations as a bare top-level
+    array. No node stated how, or whether, a field nested this way is named at all; domain/investigation/field-semantics
+    read only the schema's own top-level properties keys, so no such field was ever a field-semantics element,
+    and a citation naming state or pushEnabled had nothing to name. The material states no grammar for such
+    a name, and no output schema on file declares an items that is itself an array of schemas, or a
+    patternProperties or additionalProperties object.
+  decided: 'A field-semantics element''s own name is the path built by concatenating each object''s own
+    key onto its parent''s own path with a `.` -- the schema''s own root key alone, with no leading `.` --
+    and each array''s own items, itself one schema, onto its parent''s own path with `[]`, walking every
+    properties object and items schema the top-level properties object leads to, and naming one field per
+    node the walk reaches rather than only its leaves; an items declared as more than one schema is walked
+    no further, and a patternProperties or additionalProperties object is not walked, each naming no field
+    of its own.'
+  why: The grammar composes without inventing new syntax for the operator to learn -- it is exactly how
+    JSON Schema itself nests properties and items, read all the way down instead of stopping at the root.
+    Naming every node the walk reaches, not only its leaves, keeps every citation valid before this change
+    valid after it, since installations itself stays a name a citation may still give. Tuple-shaped items
+    and dynamically-keyed properties are decided unsupported because no schema this specification or the
+    registry's own stored capabilities show ever declares either -- deciding a shape nothing exercises would
+    be inventing a case rather than reading one, and the value such a node holds remains legible to a
+    judgment reading the observation directly even where no field-semantics name can cite it individually.
+- location: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it.md
+  field: statement
+  unstated: Whether the surface telling an operator what the system reads out of an output schema entry
+    keeps stating the schema's own top-level properties convention once
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema widens what
+    domain/investigation/field-semantics itself reads, or goes on describing a narrower reading than the
+    one that now actually runs.
+  decided: The statement and expression now describe a field's own name as the path
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads, through the
+    schema's own top-level properties object and every properties object and items schema reachable
+    beneath it, rather than as the bare keys of that top-level object alone.
+  why: The same reasoning that put this statement here in the first place -- the operator's own typing
+    decides what every later citation may name, and nothing else on the surface tells them so -- fails the
+    moment the surface teaches a narrower rule than the one the system actually applies; leaving the old
+    text standing would have the surface itself become a second, wrong, home for this fact the moment the
+    reading widened.
+- location: rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim.md
+  field: statement
+  unstated: Whether the set of nodes an-output-schema-entry-states-what-the-system-reads-from-it's own
+    statement is held to bounded by grows once that statement starts repeating a claim
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema now holds, rather than
+    domain/investigation/field-semantics alone.
+  decided: The statement now names domain/investigation/field-semantics,
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, and
+    rules/glossary/a-description-states-meaning-never-policy as the three nodes the surface's own claims
+    must already be held by.
+  why: This rule's whole purpose is closing the set the surface may draw from; leaving the new rule off
+    that list while the surface's own statement already repeats its claim would make this rule's own check
+    false the instant the sibling statement changed, which is exactly the drift this rule exists to catch
+    in the surface rather than commit in itself.
 
 ---
