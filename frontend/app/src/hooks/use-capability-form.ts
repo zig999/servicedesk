@@ -92,6 +92,7 @@ export function useCapabilityForm(
       timeout: existing?.timeout,
       connector: existing?.connector ?? "",
       concept: existing?.concept ?? "",
+      payload_notes: existing?.payload_notes,
     },
   });
 

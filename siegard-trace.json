@@ -6252,6 +6252,10 @@
       "digest": "sha256:a5bc0f34130dd44154fcc8a0bf06f35ce79b4a9d85fcc4ae48112cf4a0fcd900",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:738900e461eea4c4202a8b08dec945aa5c23ebef2b7e9ca998c617b235f929f2"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
           "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
         },
@@ -6381,7 +6385,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:57cab358bb32a689a765dcf94196002deff3a1ec396b46028c498a673f3e7630"
+          "digest": "sha256:738900e461eea4c4202a8b08dec945aa5c23ebef2b7e9ca998c617b235f929f2"
         },
         {
           "path": "src/src/http/dto/read-capability-by-identity.dto.ts",

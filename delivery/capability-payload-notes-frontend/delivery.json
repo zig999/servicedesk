@@ -10,12 +10,28 @@
       "task": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract"
     },
     {
+      "id": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer.md",
+      "title": "Seed and restore payload_notes from the capability identity read",
+      "summary": "Both capability form hooks now build their defaultValues' payload_notes from the same Capability answer they already read every other optional attribute from, so the field presents, discards and restores exactly as that read answered it.",
+      "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
+    },
+    {
       "id": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "kind": "proof",
       "file": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract.md",
       "title": "payload_notes as an optional attribute in the capability form schema and read type",
       "summary": "Proves capabilityFormSchema parses, omits and empty-strings payload_notes without a validation issue, and that the Capability read type accepts a read answer with or without payload_notes.",
       "task": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract"
+    },
+    {
+      "id": "proof/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer.md",
+      "title": "payload_notes seeded and restored from the capability identity read, proof",
+      "summary": "Six new tests, across three files, establish that both capability form hooks state payload_notes exactly as the identity read answered it -- present, absent, from the first ready render, immune to a stale sibling cache, and restored on discard.",
+      "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
     }
   ],
   "edges": [
@@ -32,8 +48,32 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "to": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "to": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
+      "to": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
       "kind": "proves",
       "at": "the path"
     }

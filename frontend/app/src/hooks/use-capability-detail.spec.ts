@@ -244,3 +244,76 @@ describe("useCapabilityDetail -- returning to the baseline clears isDirty (crite
     expect(readyState(result.current).isDirty).toBe(false);
   });
 });
+
+const LOADED_PAYLOAD_NOTES = "an operator's own account of what this observation actually returns";
+const STALE_LIST_PAYLOAD_NOTES = "content a stale list-capabilities cache entry happened to carry";
+
+describe("useCapabilityDetail -- payload_notes presented from the identity read's own answer, where the answer carried content", () => {
+  it("carries the read answer's own payload_notes content in the ready-phase form values", async () => {
+    stubFetch(
+      defaultHandlers({
+        [CAPABILITY_PATH]: () =>
+          jsonResponse({ ...LOADED_CAPABILITY, payload_notes: LOADED_PAYLOAD_NOTES }),
+      }),
+    );
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+    expect(readyState(result.current).form.getValues("payload_notes")).toBe(LOADED_PAYLOAD_NOTES);
+  });
+});
+
+describe("useCapabilityDetail -- payload_notes presented from the identity read's own answer, where the answer carried none", () => {
+  it("states no payload_notes content in the ready-phase form values", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+    expect(readyState(result.current).form.getValues("payload_notes")).toBeUndefined();
+  });
+});
+
+describe("useCapabilityDetail -- payload_notes holds the answered content from the first moment the form values stand", () => {
+  it("carries the read answer's payload_notes already in the render log's first ready entry, not a later one", async () => {
+    stubFetch(
+      defaultHandlers({
+        [CAPABILITY_PATH]: () =>
+          jsonResponse({ ...LOADED_CAPABILITY, payload_notes: LOADED_PAYLOAD_NOTES }),
+      }),
+    );
+    const log: CapabilityDetailState[] = [];
+    renderHook(() => useLoggedCapabilityDetail(NAME, VERSION, log), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(log.some((entry) => entry.phase === "ready")).toBe(true));
+
+    expect(readyState(firstReadyEntry(log)).form.getValues("payload_notes")).toBe(
+      LOADED_PAYLOAD_NOTES,
+    );
+  });
+});
+
+describe("useCapabilityDetail -- no payload_notes content is presented that the identity read's own answer did not carry", () => {
+  it("presents the identity GET's own payload_notes, not a different value a stale capabilities-list cache entry for this same (name, version) already carried", async () => {
+    const { Wrapper, queryClient } = createWrapper();
+    queryClient.setQueryData(["capabilities"], {
+      data: [{ ...LOADED_CAPABILITY, payload_notes: STALE_LIST_PAYLOAD_NOTES }],
+    });
+    stubFetch(
+      defaultHandlers({
+        [CAPABILITY_PATH]: () =>
+          jsonResponse({ ...LOADED_CAPABILITY, payload_notes: LOADED_PAYLOAD_NOTES }),
+      }),
+    );
+
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), { wrapper: Wrapper });
+
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+    expect(readyState(result.current).form.getValues("payload_notes")).toBe(LOADED_PAYLOAD_NOTES);
+  });
+});

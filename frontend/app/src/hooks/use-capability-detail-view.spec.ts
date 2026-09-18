@@ -108,6 +108,36 @@ describe("useCapabilityDetailView -- onDiscard resets to what was just saved rat
   });
 });
 
+const LOADED_PAYLOAD_NOTES = "an operator's own account of what this observation actually returns";
+
+describe("useCapabilityDetailView -- onDiscard returns payload_notes to the content the identity read answered", () => {
+  it("returns an edited payload_notes field to the read answer's own content once discard is performed", async () => {
+    stubFetch({
+      [CAPABILITY_PATH]: () =>
+        jsonResponse({ ...LOADED_CAPABILITY, payload_notes: LOADED_PAYLOAD_NOTES }),
+    });
+    const { result } = renderHook(() => useCapabilityDetailView(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+    expect(readyState(result.current).form.getValues("payload_notes")).toBe(LOADED_PAYLOAD_NOTES);
+
+    act(() => {
+      readyState(result.current).form.setValue("payload_notes", "an edit the operator made", {
+        shouldDirty: true,
+      });
+    });
+    expect(readyState(result.current).isDirty).toBe(true);
+
+    act(() => {
+      readyState(result.current).onDiscard();
+    });
+
+    expect(readyState(result.current).form.getValues("payload_notes")).toBe(LOADED_PAYLOAD_NOTES);
+    expect(readyState(result.current).isDirty).toBe(false);
+  });
+});
+
 describe("useCapabilityDetailView -- justSaved (criterion 7)", () => {
   it("is false before any save has happened", async () => {
     stubFetch();

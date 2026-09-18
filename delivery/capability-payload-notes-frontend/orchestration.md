@@ -1,2 +1,3 @@
 - Invoked /plan-work for scope "faça o frontend" against target frontend, slug capability-payload-notes-frontend (derived, per this repo's backend/frontend slug convention). Commit dbe20de0. Outcome: plan validated, 1 epic + 4 tasks.
 - Invoked /implement-task for task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract. Commit 86c0a346. Outcome: implementation + proof records written, build and suite both green, 1 node bound into siegard-trace.json.
+- Invoked /implement-task for task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer. Commit (pending, next). Outcome: implementation + proof records written, build and suite both green, 2 nodes bound into siegard-trace.json.

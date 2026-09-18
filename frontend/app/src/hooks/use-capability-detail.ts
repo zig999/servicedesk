@@ -84,6 +84,7 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
         timeout: query.data.timeout,
         connector: query.data.connector,
         concept: query.data.concept,
+        payload_notes: query.data.payload_notes,
       });
       setInputSchemaValue(query.data.input_schema);
       setInputSchemaValid(getJsonTextareaMinifiedValue(query.data.input_schema) !== null);
