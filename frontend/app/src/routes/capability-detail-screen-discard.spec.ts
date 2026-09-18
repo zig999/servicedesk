@@ -1,12 +1,15 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
+  CAPABILITY_PATH,
+  LOADED_CAPABILITY,
   LOADED_INPUT_SCHEMA,
   LOADED_OUTPUT_SCHEMA,
   UPDATED_INPUT_SCHEMA,
   UPDATED_OUTPUT_SCHEMA,
   baseHandlers,
   createFetchStub,
+  jsonResponse,
   mountCapabilityDetailScreen,
   prettyPrinted,
   putCallCount,
@@ -162,9 +165,41 @@ describe("CapabilityDetailScreen -- the Discard confirmation Dialog's own wordin
   });
 });
 
-describe("CapabilityDetailScreen -- discard falls back to what was just saved, not the original pre-save values (disclosed inference)", () => {
-  it("resets both schema fields to their just-saved values once a save has succeeded and the confirmation Dialog is confirmed, rather than the values loaded before it", async () => {
-    const { inputSchemaField, outputSchemaField, fetchMock } = await mountReady();
+describe("CapabilityDetailScreen -- discard falls back to the surface's own last identity read, which after a save is that save's own refetched answer", () => {
+  it("resets both schema fields to the post-save refetch's own answer once the confirmation Dialog is confirmed, rather than the values loaded before it", async () => {
+    let getCount = 0;
+    const fetchMock = createFetchStub(
+      baseHandlers(LOADED_INPUT_SCHEMA, LOADED_OUTPUT_SCHEMA, {
+        [CAPABILITY_PATH]: (method) => {
+          if (method !== "GET") {
+            return jsonResponse({
+              ...LOADED_CAPABILITY,
+              input_schema: LOADED_INPUT_SCHEMA,
+              output_schema: LOADED_OUTPUT_SCHEMA,
+            });
+          }
+          getCount += 1;
+          return getCount === 1
+            ? jsonResponse({
+                ...LOADED_CAPABILITY,
+                input_schema: LOADED_INPUT_SCHEMA,
+                output_schema: LOADED_OUTPUT_SCHEMA,
+              })
+            : jsonResponse({
+                ...LOADED_CAPABILITY,
+                input_schema: UPDATED_INPUT_SCHEMA,
+                output_schema: UPDATED_OUTPUT_SCHEMA,
+              });
+        },
+      }),
+    );
+    await mountCapabilityDetailScreen(fetchMock);
+    const inputSchemaField = await screen.findByLabelText<HTMLTextAreaElement>("Input schema");
+    const outputSchemaField = screen.getByLabelText<HTMLTextAreaElement>("Output schema");
+    await waitFor(() => {
+      expect(inputSchemaField.value).toBe(prettyPrinted(LOADED_INPUT_SCHEMA));
+      expect(outputSchemaField.value).toBe(prettyPrinted(LOADED_OUTPUT_SCHEMA));
+    });
 
     fireEvent.change(inputSchemaField, { target: { value: UPDATED_INPUT_SCHEMA } });
     fireEvent.change(outputSchemaField, { target: { value: UPDATED_OUTPUT_SCHEMA } });

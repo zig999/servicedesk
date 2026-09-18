@@ -1,11 +1,15 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import {
+  CAPABILITY_PATH,
+  LOADED_CAPABILITY,
   LOADED_INPUT_SCHEMA,
+  LOADED_OUTPUT_SCHEMA,
   UPDATED_INPUT_SCHEMA,
   UPDATED_OUTPUT_SCHEMA,
   baseHandlers,
   createFetchStub,
+  jsonResponse,
   mountCapabilityDetailScreen,
   parsedPutBody,
   prettyPrinted,
@@ -74,8 +78,28 @@ describe("CapabilityDetailScreen -- Save is gated on isDirty (criterion 4)", () 
 });
 
 describe("CapabilityDetailScreen -- a successful save (criterion 7)", () => {
-  it("shows an inline success acknowledgement and keeps the screen showing the just-saved values", async () => {
-    const { inputSchemaField, outputSchemaField, fetchMock } = await mountReady();
+  it("shows an inline success acknowledgement immediately, holding the just-saved values until the invalidated refetch answers, then adopts that refetch's own answer", async () => {
+    let getCallCount = 0;
+    const refetchGate: { resolve: ((response: Response) => void) | null } = { resolve: null };
+    const fetchMock = createFetchStub(
+      baseHandlers(undefined, undefined, {
+        [CAPABILITY_PATH]: (method) => {
+          if (method === "PUT") {
+            return jsonResponse(LOADED_CAPABILITY);
+          }
+          getCallCount += 1;
+          if (getCallCount === 1) {
+            return jsonResponse(LOADED_CAPABILITY);
+          }
+          return new Promise<Response>((resolve) => {
+            refetchGate.resolve = resolve;
+          });
+        },
+      }),
+    );
+    await mountCapabilityDetailScreen(fetchMock);
+    const inputSchemaField = await screen.findByLabelText<HTMLTextAreaElement>("Input schema");
+    const outputSchemaField = screen.getByLabelText<HTMLTextAreaElement>("Output schema");
 
     fireEvent.change(inputSchemaField, { target: { value: UPDATED_INPUT_SCHEMA } });
     fireEvent.change(outputSchemaField, { target: { value: UPDATED_OUTPUT_SCHEMA } });
@@ -93,16 +117,48 @@ describe("CapabilityDetailScreen -- a successful save (criterion 7)", () => {
 
     expect(JSON.parse(inputSchemaField.value)).toEqual(JSON.parse(UPDATED_INPUT_SCHEMA));
     expect(JSON.parse(outputSchemaField.value)).toEqual(JSON.parse(UPDATED_OUTPUT_SCHEMA));
+
+    refetchGate.resolve?.(jsonResponse(LOADED_CAPABILITY));
+
+    await waitFor(() =>
+      expect(JSON.parse(inputSchemaField.value)).toEqual(JSON.parse(LOADED_INPUT_SCHEMA)),
+    );
+    expect(JSON.parse(outputSchemaField.value)).toEqual(JSON.parse(LOADED_OUTPUT_SCHEMA));
   });
 
-  it("re-disables Save immediately after the save succeeds, with no further edits", async () => {
-    const { inputSchemaField } = await mountReady();
+  it("keeps Save enabled immediately after the save succeeds, and re-disables it only once the invalidated query's own refetch answers", async () => {
+    let getCallCount = 0;
+    const refetchGate: { resolve: ((response: Response) => void) | null } = { resolve: null };
+    const fetchMock = createFetchStub(
+      baseHandlers(undefined, undefined, {
+        [CAPABILITY_PATH]: (method) => {
+          if (method === "PUT") {
+            return jsonResponse(LOADED_CAPABILITY);
+          }
+          getCallCount += 1;
+          if (getCallCount === 1) {
+            return jsonResponse(LOADED_CAPABILITY);
+          }
+          return new Promise<Response>((resolve) => {
+            refetchGate.resolve = resolve;
+          });
+        },
+      }),
+    );
+    await mountCapabilityDetailScreen(fetchMock);
+    const inputSchemaField = await screen.findByLabelText<HTMLTextAreaElement>("Input schema");
 
     fireEvent.change(inputSchemaField, { target: { value: UPDATED_INPUT_SCHEMA } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await screen.findByText("Saved.");
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+
+    refetchGate.resolve?.(jsonResponse({ ...LOADED_CAPABILITY, input_schema: UPDATED_INPUT_SCHEMA }));
+
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true),
+    );
   });
 
   it("clears the acknowledgement once the operator edits again, so it never outlives the values it acknowledged", async () => {

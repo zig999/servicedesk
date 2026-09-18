@@ -19,9 +19,26 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("useCapabilityDetail -- a successful save re-baselines and clears isDirty (criterion 5)", () => {
-  it("clears isDirty right after a successful save, with no further edits", async () => {
-    stubFetch(defaultHandlers());
+describe("useCapabilityDetail -- a successful save clears isDirty only once its own refetch answers (criterion 5)", () => {
+  it("keeps isDirty true immediately after a successful save, and clears it only once the invalidated query's own refetch answers with matching values", async () => {
+    let getCallCount = 0;
+    const refetchGate: { resolve: ((response: Response) => void) | null } = { resolve: null };
+    stubFetch(
+      defaultHandlers({
+        [CAPABILITY_PATH]: (method) => {
+          if (method === "PUT") {
+            return jsonResponse(LOADED_CAPABILITY);
+          }
+          getCallCount += 1;
+          if (getCallCount === 1) {
+            return jsonResponse(LOADED_CAPABILITY);
+          }
+          return new Promise<Response>((resolve) => {
+            refetchGate.resolve = resolve;
+          });
+        },
+      }),
+    );
     const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
       wrapper: createWrapper().Wrapper,
     });
@@ -36,10 +53,17 @@ describe("useCapabilityDetail -- a successful save re-baselines and clears isDir
       readyState(result.current).onSubmit();
     });
 
+    await waitFor(() => expect(readyState(result.current).isSubmitSuccessful).toBe(true));
+    expect(readyState(result.current).isDirty).toBe(true);
+    expect(readyState(result.current).inputSchema.value).toBe(UPDATED_INPUT_SCHEMA);
+
+    refetchGate.resolve?.(jsonResponse({ ...LOADED_CAPABILITY, input_schema: UPDATED_INPUT_SCHEMA }));
+
     await waitFor(() => expect(readyState(result.current).isDirty).toBe(false));
+    expect(readyState(result.current).inputSchema.value).toBe(UPDATED_INPUT_SCHEMA);
   });
 
-  it("re-baselines both JSON fields to the values just submitted, not whatever the PUT response body's own schema fields carry", async () => {
+  it("re-baselines both JSON fields to the refetched answer, not whatever was just submitted, once that refetch has landed", async () => {
     stubFetch(
       defaultHandlers({
         [CAPABILITY_PATH]: (method) =>
@@ -65,7 +89,7 @@ describe("useCapabilityDetail -- a successful save re-baselines and clears isDir
     });
 
     await waitFor(() => expect(readyState(result.current).isDirty).toBe(false));
-    expect(readyState(result.current).inputSchema.value).toBe(UPDATED_INPUT_SCHEMA);
+    expect(readyState(result.current).inputSchema.value).toBe(LOADED_CAPABILITY.input_schema);
   });
 });
 

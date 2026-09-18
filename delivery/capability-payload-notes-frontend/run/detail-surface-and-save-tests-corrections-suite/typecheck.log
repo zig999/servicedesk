@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-capability-detail-save.spec.ts(60,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+src/routes/capability-detail-screen-save.spec.ts(129,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.

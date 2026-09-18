@@ -72,9 +72,24 @@ describe("useCapabilityDetailView -- onDiscard resets every field to the most re
   });
 });
 
-describe("useCapabilityDetailView -- onDiscard resets to what was just saved rather than the original pre-save values (an inference the implementation recorded)", () => {
-  it("discards back to the just-saved schema values after a successful save, not the values loaded before it", async () => {
-    stubFetch();
+describe("useCapabilityDetailView -- onDiscard resets to the surface's own last identity read, which after a save is that save's own refetched answer", () => {
+  it("discards back to the schema values the post-save refetch answered with, not the values loaded before it", async () => {
+    let getCount = 0;
+    stubFetch({
+      [CAPABILITY_PATH]: (method) => {
+        if (method !== "GET") {
+          return jsonResponse(LOADED_CAPABILITY);
+        }
+        getCount += 1;
+        return getCount === 1
+          ? jsonResponse(LOADED_CAPABILITY)
+          : jsonResponse({
+              ...LOADED_CAPABILITY,
+              input_schema: UPDATED_INPUT_SCHEMA,
+              output_schema: UPDATED_OUTPUT_SCHEMA,
+            });
+      },
+    });
     const { result } = renderHook(() => useCapabilityDetailView(NAME, VERSION), {
       wrapper: createWrapper().Wrapper,
     });

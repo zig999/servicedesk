@@ -6417,7 +6417,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:738900e461eea4c4202a8b08dec945aa5c23ebef2b7e9ca998c617b235f929f2"
+          "digest": "sha256:3768fd77ed55150330bab171b099da47e9ff60a174618f9df9943c2e0ff63c61"
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
@@ -6632,6 +6632,16 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-helper-fields.tsx",
           "digest": "sha256:011bceb50f69f34516fce7d4cd322272322820447582e6990134694bb1b3ff46"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "digest": "sha256:cca3e4c346131ebb5eac79978d46f1920ab17bc1020c04ee0730676469ee168a",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:3768fd77ed55150330bab171b099da47e9ff60a174618f9df9943c2e0ff63c61"
         }
       ]
     },

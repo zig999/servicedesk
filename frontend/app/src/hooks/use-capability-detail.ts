@@ -73,9 +73,9 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     defaultValues: { name, version },
   });
 
-  const [syncedCapabilityData, setSyncedCapabilityData] = useState(query.data);
-  if (query.data !== syncedCapabilityData) {
-    setSyncedCapabilityData(query.data);
+  const [syncedDataUpdatedAt, setSyncedDataUpdatedAt] = useState(query.dataUpdatedAt);
+  if (query.dataUpdatedAt !== syncedDataUpdatedAt) {
+    setSyncedDataUpdatedAt(query.dataUpdatedAt);
     if (query.data) {
       form.reset({
         name: query.data.name,
@@ -113,11 +113,7 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
           }),
         },
       ),
-    onSuccess: (_data, values) => {
-      form.reset(values);
-      setInputSchemaBaseline(inputSchemaValue);
-      setOutputSchemaBaseline(outputSchemaValue);
-
+    onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
       void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
     },

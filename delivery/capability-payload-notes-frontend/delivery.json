@@ -34,12 +34,28 @@
       "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
     },
     {
+      "id": "implementation/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "kind": "implementation",
+      "file": "implementation/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer.md",
+      "title": "Stop reseeding the capability detail form from the submission it just sent",
+      "summary": "use-capability-detail.ts's mutation onSuccess now only invalidates the identity-keyed query; the pre-existing sync effect over query.data is the sole place fields and schema baselines are ever set once a save succeeds.",
+      "task": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer"
+    },
+    {
       "id": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
       "kind": "implementation",
       "file": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally.md",
       "title": "Both capability form hooks forward payload_notes unconditionally",
       "summary": "use-capability-detail.ts and use-capability-form.ts drop the dirtyFields.payload_notes gate from their PUT-body mutationFns, forwarding the form's current payload_notes value the same way every other declared attribute already is.",
       "task": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally"
+    },
+    {
+      "id": "implementation/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "kind": "implementation",
+      "file": "implementation/save-tests-expect-immediate-reset/asserts-refetch-timed-reset.md",
+      "title": "The two save-flow tests assert the refetch-timed reset, not the removed synchronous one",
+      "summary": "use-capability-detail-save.spec.ts and capability-detail-screen-save.spec.ts each had one test rewritten so it asserts isDirty/Save stays in its submitted state right after a successful save and clears/re-disables only once the invalidated identity-keyed query's own refetch answers.",
+      "task": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset"
     },
     {
       "id": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
@@ -74,12 +90,28 @@
       "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
     },
     {
+      "id": "proof/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "kind": "proof",
+      "file": "proof/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer.md",
+      "title": "Proof that the capability detail surface presents the registry's own subsequent read, not the submission, after a save",
+      "summary": "Two dedicated hook-level test files prove criteria 1, 2, 3 and 4 directly, isolating the invalidated refetch behind a controllable promise; criterion 5 is proved by two pre-existing, unaffected tests; and two further pre-existing tests (onDiscard after a save) this task's change also falsified are corrected here to assert discard falls back to the surface's own last identity read rather than a hardcoded just-saved value.",
+      "task": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer"
+    },
+    {
       "id": "proof/payload-notes-dropped-when-untouched/forwarded-unconditionally",
       "kind": "proof",
       "file": "proof/payload-notes-dropped-when-untouched/forwarded-unconditionally.md",
       "title": "Both capability form hooks forward an untouched, previously-declared payload_notes unconditionally",
       "summary": "Six tests, three newly written and three already standing, together show that use-capability-detail and use-capability-form each carry payload_notes forward exactly as the form holds it on resubmission -- an existing value survives editing an unrelated field, an explicit clear submits as an empty string, and an explicit new value submits as typed -- across both hooks.",
       "task": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally"
+    },
+    {
+      "id": "proof/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "kind": "proof",
+      "file": "proof/save-tests-expect-immediate-reset/asserts-refetch-timed-reset.md",
+      "title": "Corrective proof -- save tests assert the refetch-timed reset",
+      "summary": "use-capability-detail-save.spec.ts and capability-detail-screen-save.spec.ts's two rewritten tests hold the registry's own write-answer and the invalidated identity query's own refetch-answer apart, proving isDirty/Save clear only at the latter.",
+      "task": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset"
     },
     {
       "id": "review/capability-payload-notes-frontend",
@@ -169,6 +201,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "task/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
       "to": "domain/integration/capability",
       "kind": "encodes",
@@ -177,6 +227,12 @@
     {
       "from": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
       "to": "task/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "to": "task/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
       "kind": "implements",
       "at": "the path"
     },
@@ -205,8 +261,20 @@
       "at": "the path"
     },
     {
+      "from": "proof/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "to": "implementation/detail-surface-presents-submitted-values-after-save/presents-the-registrys-answer",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/payload-notes-dropped-when-untouched/forwarded-unconditionally",
       "to": "implementation/payload-notes-dropped-when-untouched/forwarded-unconditionally",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
+      "to": "implementation/save-tests-expect-immediate-reset/asserts-refetch-timed-reset",
       "kind": "proves",
       "at": "the path"
     },
