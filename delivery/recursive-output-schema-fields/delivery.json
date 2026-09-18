@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
+      "title": "Recursive output-schema field-semantics path reading",
+      "summary": "fieldSemanticsOf now walks a capability output schema's properties and single-schema items recursively, naming every node it reaches by its full dotted/bracketed path.",
+      "task": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
+      "title": "Recursive path-naming proof for fieldSemanticsOf",
+      "summary": "Tests pin the walk's full-path naming (including the emitted array-items node itself), its two exclusions, its reuse of the shared JSON guards, its freedom from framework imports, and the nested field's arrival on a collected evidence item, while leaving the domain-wide dependency shape and the untouched parts of Evidence unproven by any single test.",
+      "task": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -170,3 +170,59 @@ it("does not import declaredFieldsOf from citation-validation.ts, keeping fieldS
 
   expect(importedNames).not.toContain('declaredFieldsOf');
 });
+
+it('imports no framework, driver or provider-client package directly — every import specifier is a relative path, reaching its two JSON-guard helpers from the sibling domain module alone', async () => {
+  const specifiers = await fieldSemanticsImports();
+
+  const nonRelativeSpecifiers = specifiers.filter((specifier) => !specifier.startsWith('.'));
+
+  expect(nonRelativeSpecifiers).toEqual([]);
+});
+
+const RULE_EXERCISE_SCHEMA = JSON.stringify({
+  type: 'object',
+  properties: {
+    profile: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+      },
+    },
+    installations: {
+      type: 'array',
+      items: {
+        type: 'object',
+        description: 'one installation record',
+        properties: {
+          state: { type: 'string' },
+        },
+      },
+    },
+    coordinates: {
+      items: [{ type: 'string' }, { type: 'number' }],
+    },
+    extras: {
+      patternProperties: {
+        '^x-': { type: 'string', properties: { hidden: { type: 'string' } } },
+      },
+    },
+    metadata: {
+      additionalProperties: { type: 'string', properties: { concealed: { type: 'string' } } },
+    },
+  },
+});
+
+it("names every node the walk reaches by its full dot- and bracket-concatenated path, carrying each one's own declared type and description, while walking no further beneath a tuple-shaped items, a patternProperties or an additionalProperties (rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema)", () => {
+  const fields = fieldSemanticsOf(RULE_EXERCISE_SCHEMA);
+
+  expect(fields).toEqual([
+    { name: 'profile', type: 'object' },
+    { name: 'profile.name', type: 'string' },
+    { name: 'installations', type: 'array' },
+    { name: 'installations[]', type: 'object', description: 'one installation record' },
+    { name: 'installations[].state', type: 'string' },
+    { name: 'coordinates' },
+    { name: 'extras' },
+    { name: 'metadata' },
+  ]);
+});

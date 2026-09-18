@@ -913,6 +913,56 @@ it("records fields as one entry per top-level property the resolved capability's
   ]);
 });
 
+const NESTED_OUTPUT_SCHEMA = JSON.stringify({
+  type: 'object',
+  properties: {
+    login: { type: 'string' },
+    installations: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          state: {
+            type: 'string',
+            description: 'the installation state',
+            minLength: 1,
+            enum: ['up', 'down'],
+          },
+        },
+      },
+    },
+  },
+});
+
+it("snapshots installations[].state, installations and login among the collected evidence item's own fields, and no field named state alone, for a capability whose output schema declares state beneath installations' own items (scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path)", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'tech-profile', output_schema: NESTED_OUTPUT_SCHEMA }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('tech-profile', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const theCase = aCase([{ name: 'h1', collects: ['tech-profile'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  const fieldNames = result[0]?.fields.map((field) => field.name) ?? [];
+  expect(fieldNames).toContain('login');
+  expect(fieldNames).toContain('installations');
+  expect(fieldNames).not.toContain('state');
+  expect(result[0]?.fields.find((field) => field.name === 'installations[].state')).toEqual({
+    name: 'installations[].state',
+    type: 'string',
+    description: 'the installation state',
+  });
+});
+
 it("records concept_description exactly as the glossary held that concept's description at the moment of collection", async () => {
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(aCapability({ concept: 'a-concept' }));

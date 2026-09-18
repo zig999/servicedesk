@@ -464,6 +464,10 @@
           "digest": "sha256:96add48e39ba5954ff4b38c8e3871aa02b280bc714defaba2182e68105e669e3"
         },
         {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        },
+        {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
         },
@@ -3638,6 +3642,10 @@
           "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
         },
         {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        },
+        {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:94ee31912a74a9b0518c35fb077048bc5b0673bd105ef1fc86a8648a046fd1bf"
         },
@@ -3727,7 +3735,7 @@
     },
     {
       "node": "domain/investigation/field-semantics",
-      "digest": "sha256:2c31f8d54409ebf444b7fa9b07a19e420c229b2ae62590903bbab921f39b56da",
+      "digest": "sha256:2408529318141418d654e045936ca7e7f06e6ae598deb9ba2863cfb0ca500f9f",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -3759,7 +3767,7 @@
         },
         {
           "path": "src/src/investigation/field-semantics.ts",
-          "digest": "sha256:ec8e302d1b434a27610bf7ce6daf18b552709618557fbbcc6051a0fdc623c9e7"
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -7296,6 +7304,16 @@
       ]
     },
     {
+      "node": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "digest": "sha256:c912d2209935e1ecde4163e7bd9c97e0dee53fef257c55ad94acc055187dca3a",
+      "files": [
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-judgment-failure-records-the-last-call-made",
       "digest": "sha256:93111c5b0cfeec7e7cb10e9f98b818920ec4e56f4eec674fd553fe7fdd0cdc51",
       "files": [
@@ -9668,6 +9686,16 @@
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
           "digest": "sha256:cca067eb58a97281f532fc46546f4b0ceda7dc32cd7a9a5acf5e351a701fc2c7"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "digest": "sha256:7d39d6091f89e93570f5b4fd8187bc9091ac03015269af57a2aa02d5152032d6",
+      "files": [
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
         }
       ]
     },

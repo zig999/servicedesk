@@ -14,11 +14,33 @@ export function fieldSemanticsOf(outputSchema: string | undefined): readonly Fie
   if (!isPlainObject(parsed) || !isPlainObject(parsed.properties)) {
     return [];
   }
-  return Object.entries(parsed.properties).map(([name, value]) => fieldSemanticsFrom(name, value));
+  return fieldsFromProperties(parsed.properties);
 }
 
-function fieldSemanticsFrom(name: string, value: unknown): FieldSemantics {
+function fieldsFromProperties(properties: Record<string, unknown>, parentPath?: string): readonly FieldSemantics[] {
+  return Object.entries(properties).flatMap(([key, value]) => fieldsFromNode(pathWith(parentPath, key), value));
+}
+
+function pathWith(parentPath: string | undefined, key: string): string {
+  return parentPath === undefined ? key : `${parentPath}.${key}`;
+}
+
+function fieldsFromNode(path: string, value: unknown): readonly FieldSemantics[] {
   const declared = isPlainObject(value) ? value : {};
+  return [fieldSemanticsFrom(path, declared), ...descendantFieldsOf(path, declared)];
+}
+
+function descendantFieldsOf(path: string, declared: Record<string, unknown>): readonly FieldSemantics[] {
+  if (isPlainObject(declared.properties)) {
+    return fieldsFromProperties(declared.properties, path);
+  }
+  if (isPlainObject(declared.items)) {
+    return fieldsFromNode(`${path}[]`, declared.items);
+  }
+  return [];
+}
+
+function fieldSemanticsFrom(name: string, declared: Record<string, unknown>): FieldSemantics {
   return {
     name,
     ...(typeof declared.type === 'string' ? { type: declared.type } : {}),
