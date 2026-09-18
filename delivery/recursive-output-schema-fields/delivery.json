@@ -10,12 +10,28 @@
       "task": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths"
     },
     {
+      "id": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names.md",
+      "title": "Judgment prompt rendering already carries path-shaped field names verbatim",
+      "summary": "Verified that anthropic-hypothesis-evaluator.adapter.ts existing field-rendering code passes FieldSemantics.name, type and description through unmodified and reads nothing beyond the given evidence item, so a path-shaped name such as installations[].state already renders exactly and the file needed no change.",
+      "task": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names"
+    },
+    {
       "id": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "kind": "proof",
       "file": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
       "title": "Recursive path-naming proof for fieldSemanticsOf",
       "summary": "Tests pin the walk's full-path naming (including the emitted array-items node itself), its two exclusions, its reuse of the shared JSON guards, its freedom from framework imports, and the nested field's arrival on a collected evidence item, while leaving the domain-wide dependency shape and the untouched parts of Evidence unproven by any single test.",
       "task": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names.md",
+      "title": "Judgment prompt renders a path-shaped field name unchanged",
+      "summary": "Proves the five rendering criteria for path-shaped and ordinary field names against the unmodified anthropic-hypothesis-evaluator.adapter.ts, adding the one test the existing suite lacked -- a path-shaped name such as installations[].state rendered verbatim.",
+      "task": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names"
     }
   ],
   "edges": [
@@ -56,8 +72,38 @@
       "at": "the path"
     },
     {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "to": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
       "kind": "proves",
       "at": "the path"
     }

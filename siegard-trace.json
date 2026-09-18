@@ -3762,6 +3762,10 @@
           "digest": "sha256:201acb95872f0d5c232f531be93d1f8e5c465a5e05b29304221c0b268ccc1743"
         },
         {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
+        },
+        {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:8fc102bf4b80496b87dfad6f6d5fae07232e4e99bf666c8f41974b2a6b60b44f"
         },
