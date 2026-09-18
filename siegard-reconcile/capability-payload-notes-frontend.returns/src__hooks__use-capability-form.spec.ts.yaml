@@ -1,0 +1,35 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the two Capability fixtures and the ready-phase form-value assertions, lines 11-32 and
+      80-82, 94-96
+    evidence: |-
+      payload_notes: "an operator's own account of what this observation actually returns",
+      ...
+      expect(readyState(result.current).form.getValues("payload_notes")).toBe(
+        EXISTING_CAPABILITY_WITH_PAYLOAD_NOTES.payload_notes,
+      );
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      the file only exercises payload_notes seeding into ready-phase form values (lines 71-97);
+      no test in this file exercises timeout defaulting, the required-attribute refusal or the
+      422 IncompleteCapabilityContractError this rule states
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the two describe/it blocks and their assertions, lines 72-83 and 87-97
+    evidence: |-
+      expect(readyState(result.current).form.getValues("payload_notes")).toBe(
+        EXISTING_CAPABILITY_WITH_PAYLOAD_NOTES.payload_notes,
+      );
+      ...
+      expect(readyState(result.current).form.getValues("payload_notes")).toBeUndefined();
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      the file contains no test exercising a discard act or any return of fields to a prior
+      read's content; it covers only the two seeding scenarios at lines 71-97
+looked_past: >-
+  Whether the absence of a test for a-capability-declares-its-contract's refusal/default
+  behavior and for the discard act is a coverage gap this file should close is a testing-scope
+  question, not a domain-fact conformance finding, so it is left unreported.

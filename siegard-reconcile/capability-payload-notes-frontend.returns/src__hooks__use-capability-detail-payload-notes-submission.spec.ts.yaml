@@ -1,0 +1,37 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      lines 65-80, the "untouched payload_notes" test — onSubmit is invoked without touching the
+      field and the PUT still dispatches with the key absent
+    evidence: |-
+      act(() => {
+        readyState(result.current).onSubmit();
+      });
+
+      await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+      expect(parsedPutBody(fetchMock)).not.toHaveProperty("payload_notes");
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      The file's three describe blocks (lines 41, 65, 82) exercise only payload_notes forwarding,
+      omission and empty-string submission; none submits with nature, a schema, timeout, connector
+      or concept left undeclared, so this rule's own statement — refusal of a registration leaving
+      a required attribute undeclared — is never exercised here.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      Every test in this file drives `onSubmit()` after `waitFor(() => expect(result.current.phase).toBe("ready"))`
+      and asserts on the PUT body; none inspects what the ready-state form fields display before an
+      edit, so the read-and-present behavior this rule states is not exercised in this file.
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      No test in this file calls a discard/reset act or asserts a field returning to its last-read
+      content; the file's assertions run only against `putCallCount` and `parsedPutBody` after
+      `onSubmit()`.
+looked_past: >-
+  use-capability-detail.ts's own `form.formState.dirtyFields.payload_notes` conditional was opened
+  only to confirm this spec's assertions match the implementation it exercises, not reviewed here
+  as a file of its own set; likewise the read-and-present and discard behaviors this file's nodes
+  also govern belong to the sibling use-capability-detail-view.spec.ts and use-capability-detail.ts,
+  not to this file.

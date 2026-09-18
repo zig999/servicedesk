@@ -1,0 +1,53 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the `baseCapability` fixture (lines 4-13) and the `payload_notes` field set or
+      omitted on the two `Capability`-typed literals (lines 17-20, 28)
+    evidence: |
+      const baseCapability = {
+        name: "geo-lookup",
+        version: "1.0.0",
+        nature: "read-only" as const,
+        input_schema: "{}",
+        output_schema: "{}",
+        timeout: 5000,
+        connector: "http-generic",
+        concept: "address",
+      };
+      ...
+      const answer: Capability = {
+        ...baseCapability,
+        payload_notes: "Returns null rather than a value when the address cannot be geocoded.",
+      };
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      The file only assembles a literal fixture with every required field already
+      populated (`timeout: 5000`, `input_schema: "{}"`, etc.); it contains no
+      assertion of a refusal on an undeclared attribute, no test of the sixty-second
+      default, and no IncompleteCapabilityContractError case.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the two `it` blocks at lines 16-31, narrowly for the `payload_notes` clause of
+      the rule
+    evidence: |
+      expect(answer.payload_notes).toBe(
+        "Returns null rather than a value when the address cannot be geocoded.",
+      );
+      ...
+      expect(answer.payload_notes).toBeUndefined();
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      The file contains no discard act, no surface state and no registration read;
+      it only spreads `baseCapability` into two object literals and checks
+      `payload_notes`.
+looked_past: >-
+  The file typechecks and spreads plain object literals rather than exercising the
+  `use-capabilities` hook itself (no render, no call, no runtime read path), so it
+  covers the `payload_notes` clause only at the type level — a coverage/test-design
+  question rather than a stated-fact one, so it is left to whichever pass judges test
+  design.
+candidates_opened:
+  - domain/integration/capability-nature
+  - rules/integration/a-capability-is-read-only

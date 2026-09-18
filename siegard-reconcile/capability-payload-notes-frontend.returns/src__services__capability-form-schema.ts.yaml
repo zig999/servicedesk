@@ -1,0 +1,85 @@
+findings:
+  - file: src/services/capability-form-schema.ts
+    where: "line 3, the CAPABILITY_NATURES constant"
+    evidence: |-
+      export const CAPABILITY_NATURES = ["read-only", "mutating"] as const;
+    cost: >-
+      The enumeration's two values now live in two places — the specification's
+      node and this frontend constant used to build the form's zod enum. A future
+      change to domain/integration/capability-nature (a renamed value, a third
+      nature added) has no reason to touch this file, so the form's accepted
+      values can silently drift from what the specification declares, and whoever
+      edits the node will not know a second copy needs the same edit.
+    kind: contradicts
+    node: domain/integration/capability-nature
+    correction: >-
+      Derive the form's allowed nature values from a single shared source (the
+      specification's own enumeration, surfaced once) instead of restating
+      "read-only" and "mutating" as a local TypeScript constant.
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the capabilityFormSchema object, lines 5-13, for the attributes it
+      validates
+    evidence: |-
+      export const capabilityFormSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+        nature: z.enum(CAPABILITY_NATURES),
+        timeout: z.number().int().positive().optional(),
+        connector: z.string().min(1),
+        concept: z.string().min(1),
+        payload_notes: z.string().optional(),
+      });
+  - node: domain/integration/capability-nature
+    held_at: >-
+      line 3 (the CAPABILITY_NATURES constant) and line 8
+      (`nature: z.enum(CAPABILITY_NATURES)`)
+    evidence: |-
+      export const CAPABILITY_NATURES = ["read-only", "mutating"] as const;
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: "the timeout field, line 9"
+    evidence: |-
+      timeout: z.number().int().positive().optional(),
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      import { z } from "zod";
+
+      export const CAPABILITY_NATURES = ["read-only", "mutating"] as const;
+
+      export const capabilityFormSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+        nature: z.enum(CAPABILITY_NATURES),
+        timeout: z.number().int().positive().optional(),
+        connector: z.string().min(1),
+        concept: z.string().min(1),
+        payload_notes: z.string().optional(),
+      });
+
+      export type CapabilityFormValues = z.infer<typeof capabilityFormSchema>;
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      import { z } from "zod";
+
+      export const CAPABILITY_NATURES = ["read-only", "mutating"] as const;
+
+      export const capabilityFormSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+        nature: z.enum(CAPABILITY_NATURES),
+        timeout: z.number().int().positive().optional(),
+        connector: z.string().min(1),
+        concept: z.string().min(1),
+        payload_notes: z.string().optional(),
+      });
+
+      export type CapabilityFormValues = z.infer<typeof capabilityFormSchema>;
+looked_past: >-
+  The schema omits input_schema and output_schema, which domain/integration/capability
+  also lists as required attributes, but the candidate index binds the well-formed-schema
+  rules governing those two fields to capability-form-fields.tsx and the hooks files rather
+  than to this file, so whether their validation is correctly placed there is that file's
+  judgment, not this one's.

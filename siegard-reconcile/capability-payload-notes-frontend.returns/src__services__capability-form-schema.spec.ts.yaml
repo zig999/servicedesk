@@ -1,0 +1,47 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the three `it` blocks under the describe block (lines 14-39), exercising
+      `capabilityFormSchema.safeParse` for a supplied `payload_notes` string, an
+      omitted one, and an empty string
+    evidence: |-
+      it("reports no validation issue when payload_notes is left out of the form value", () => {
+          const result = capabilityFormSchema.safeParse(validFormValueWithout());
+
+          expect(result.success).toBe(true);
+          expect(result.success && result.data.payload_notes).toBeUndefined();
+        });
+
+        it("reports no validation issue for a payload_notes value that is an empty string", () => {
+          const result = capabilityFormSchema.safeParse(validFormValueWithout({ payload_notes: "" }));
+
+          expect(result.success).toBe(true);
+          expect(result.success && result.data.payload_notes).toBe("");
+        });
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      const validFormValueWithout = (overrides: Record<string, unknown> = {}) => ({
+        name: "geo-lookup",
+        version: "1.0.0",
+        nature: "read-only",
+        connector: "http-generic",
+        concept: "address",
+        ...overrides,
+      });
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      const result = capabilityFormSchema.safeParse(
+          validFormValueWithout({
+            payload_notes: "Returns null rather than a value when the address cannot be geocoded.",
+          }),
+        );
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      describe("capabilityFormSchema -- payload_notes as an optional free-text attribute", () => {
+looked_past: >-
+  the describe block's title text restates the domain fact that payload_notes is
+  "an optional free-text attribute," but as a vitest test label rather than a
+  duplicated business rule governing behavior, so it is not a second-home finding.

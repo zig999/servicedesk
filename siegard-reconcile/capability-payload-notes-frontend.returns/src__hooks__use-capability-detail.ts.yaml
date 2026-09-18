@@ -1,0 +1,193 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the identity-keyed read and the create-or-replace write, lines 62-68 and 98-117
+    evidence: |-
+      apiFetch<Capability>(
+              `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+            )
+      ...
+      apiFetch<Capability>(
+              `/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`,
+              { method: "PUT", ... }
+            )
+  - node: domain/integration/capability
+    held_at: >-
+      the load-time sync of the read answer onto the form, lines 80-88
+    evidence: |-
+      form.reset({
+              name: query.data.name,
+              version: query.data.version,
+              nature: query.data.nature,
+              timeout: query.data.timeout,
+              connector: query.data.connector,
+              concept: query.data.concept,
+              payload_notes: query.data.payload_notes,
+            });
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      timeout: values.timeout, connector: values.connector, concept: values.concept, — the
+      submitted body forwards these by name with no required-ness or default-timeout check of its
+      own; the 422/IncompleteCapabilityContractError refusal this invariant states is the
+      registry's own and is never restated here.
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: the submit guard, lines 176-178
+    evidence: |-
+      if (!inputSchemaValid || !outputSchemaValid) {
+          return;
+        }
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: the query.isError / isLoading branches, lines 143-168
+    evidence: |-
+      if (query.error instanceof ApiError && query.error.code === "CapabilityIdentityNotFoundError") {
+            return { phase: "not-registered", onCancel };
+          }
+          return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+              conceptOptions.refetch();
+            },
+            onCancel,
+          };
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      return {
+          phase: "ready",
+          form,
+          conceptOptions: conceptOptions.concepts,
+          inputSchema: { value: inputSchemaValue, isValid: inputSchemaValid, onChange: handleInputSchemaChange },
+          outputSchema: { value: outputSchemaValue, isValid: outputSchemaValid, onChange: handleOutputSchemaChange },
+          isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+        };
+      — no act resets the fields to the last-read content, and the baseline data such an act would
+      need (query.data, inputSchemaBaseline, outputSchemaBaseline) is not exposed either.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the load-time sync effect, lines 76-94 (correctly sourced from query.data there; see the
+      finding below for where the file departs from this at onSuccess)
+    evidence: |-
+      setInputSchemaValue(query.data.input_schema);
+            setInputSchemaValid(getJsonTextareaMinifiedValue(query.data.input_schema) !== null);
+            setInputSchemaBaseline(query.data.input_schema);
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: onCancel, lines 46-52
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/capabilities" });
+        };
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: >-
+      the mutation's onError and the isSubmitSuccessful flag, lines 126-128 and 209
+    evidence: |-
+      onError: (error) => {
+          toast.error(saveFailureMessage(error));
+        },
+      ...
+      isSubmitSuccessful: mutation.isSuccess,
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: onCancel, lines 46-52 (never calls mutation.mutate)
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/capabilities" });
+        };
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: onCancel's else-branch, line 51
+    evidence: 'void navigate({ to: "/capabilities" });'
+
+findings:
+  - file: src/hooks/use-capability-detail.ts
+    where: the mutationFn PUT body, lines 112-114
+    evidence: |-
+      ...(form.formState.dirtyFields.payload_notes
+                ? { payload_notes: values.payload_notes }
+                : {}),
+    cost: >-
+      Every other declared attribute (nature, timeout, connector, concept, both schemas) is
+      forwarded unconditionally on every submission, but payload_notes alone is included only when
+      react-hook-form marks it dirty in this session. An operator who loads a capability that
+      already carries payload notes, edits some other field (e.g. connector) without touching the
+      notes textarea, and submits, sends a PUT body with no payload_notes key at all; since
+      register-capability replaces whatever stood at the identity with the whole declared contract
+      submitted, and an absent declaration is read as "a capability that simply has none," the
+      existing payload notes are silently wiped even though the operator never declared or cleared
+      them. No node decided that an untouched optional field should be dropped from a total-replace
+      submission rather than resubmitted with its current value.
+    kind: unstated
+    correction: >-
+      Forward payload_notes by name unconditionally, the same way every other field already is, or
+      have the specification decide how an edit that leaves payload_notes untouched should be
+      submitted.
+    node: domain/integration/capability
+  - file: src/hooks/use-capability-detail.ts
+    where: the mutation's onSuccess callback, lines 118-121
+    evidence: |-
+      onSuccess: (_data, values) => {
+          form.reset(values);
+          setInputSchemaBaseline(inputSchemaValue);
+          setOutputSchemaBaseline(outputSchemaValue);
+    cost: >-
+      The registry's own response to the PUT call is received as `_data` and discarded unused;
+      the fields presented right after a successful save are reset to `values` — the content the
+      register-capability submission carried — and the schema baselines are taken from the
+      in-memory textarea values rather than from any answer the registry gave back. Until the
+      invalidated ["capability", name, version] query refetches and overwrites this, the surface
+      is showing exactly the source of content the rule names and forbids by name ("not... the
+      content a register-capability submission carried"), so an operator inspecting the surface
+      immediately after saving is shown the submission, not a confirmed read.
+    kind: contradicts
+    correction: >-
+      Source the post-save presentation from the registry's own answer (the mutation's response,
+      or the awaited refetch of read-capability-by-identity) rather than from the submitted form
+      values.
+    node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+  - file: src/hooks/use-capability-detail.ts
+    where: the "ready" phase's returned state, lines 193-212
+    evidence: |-
+      return {
+          phase: "ready",
+          form,
+          conceptOptions: conceptOptions.concepts,
+          inputSchema: { value: inputSchemaValue, isValid: inputSchemaValid, onChange: handleInputSchemaChange },
+          outputSchema: { value: outputSchemaValue, isValid: outputSchemaValid, onChange: handleOutputSchemaChange },
+          isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+        };
+    cost: >-
+      No act in the returned state sets every field back to the content the read last answered
+      while staying on the surface — onCancel only ever leaves the surface (back, or to the
+      capabilities listing). The data such an act would need (query.data and the schema baselines
+      inputSchemaBaseline/outputSchemaBaseline) is tracked internally but never exposed, so no
+      consuming component could implement the act even by calling into `form` directly. An
+      operator who wants to put an edit down and keep working from the loaded content has only the
+      full leave-and-return-through-the-listing route, paying navigation for something the
+      specification says should cost the registry, and the operator, nothing.
+    kind: contradicts
+    correction: >-
+      Expose an act (and the baseline data it needs) from the hook that resets form fields and
+      both schema values/baselines to the last-read content without leaving the surface, taking
+      effect only on a further explicit confirmation.
+    node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+
+looked_past: >-
+  The REST path convention, the react-query cache keys, and the client-side JSON-minification
+  helper are implementation detail with no distinct domain-fact claim of their own, and the
+  general shape of the isSubmittingRef double-submit guard is UI-state bookkeeping outside this
+  pass's judgment.

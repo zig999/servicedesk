@@ -1,0 +1,35 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the `EXISTING_CAPABILITY` fixture (no `payload_notes` key, matching a capability that
+      declared none) and the operator edit exercised on that optional attribute
+    evidence: >-
+      readyState(result.current).form.setValue("payload_notes", EDITED_PAYLOAD_NOTES, {
+      shouldDirty: true });
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      const EXISTING_CAPABILITY: Capability = { name: NAME, version: VERSION, nature:
+      "read-only", input_schema: '{"type":"object"}', output_schema: '{"type":"string"}',
+      timeout: 30, connector: "some-connector", concept: "some-concept" }; — the fixture
+      supplies every required attribute but this file exercises no incomplete-contract or
+      422 refusal path
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the hook is rendered from the read answer `EXISTING_CAPABILITY` and only then does the
+      operator change the `payload_notes` field, matching the rule's own carve-out for a field
+      the operator has themselves changed
+    evidence: >-
+      const { result } = renderHook(() => useCapabilityForm(EXISTING_CAPABILITY, () => {}), {
+      wrapper: createWrapper() }); ... readyState(result.current).form.setValue("payload_notes",
+      EDITED_PAYLOAD_NOTES, { shouldDirty: true });
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      act(() => { readyState(result.current).onSubmit(); }); — this file exercises submission
+      only; no discard act is invoked or asserted anywhere in it
+looked_past: >-
+  the stubbed `sonner` toast module is imported and cleared in afterEach but never asserted on
+  in this file's one test, which is a test-authoring concern rather than a domain-fact question.
+candidates_opened:
+  - rules/integration/a-submitted-registration-states-its-outcome-to-the-operator

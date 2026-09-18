@@ -1,0 +1,51 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the render-log assertion of first-ready form values (lines 99-110) and the payload_notes
+      absence assertion (line 276)
+    evidence: |-
+      expect({
+        nature: values.nature,
+        timeout: values.timeout,
+        connector: values.connector,
+        concept: values.concept,
+      }).toEqual({
+        nature: LOADED_CAPABILITY.nature,
+        timeout: LOADED_CAPABILITY.timeout,
+        connector: LOADED_CAPABILITY.connector,
+        concept: LOADED_CAPABILITY.concept,
+      });
+      ...
+      expect(readyState(result.current).form.getValues("payload_notes")).toBeUndefined();
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      this file's tests exercise only how already-loaded attribute values are presented (e.g.
+      `nature: values.nature` compared against `LOADED_CAPABILITY.nature` at lines 100-110); none
+      of them drives a registration, asserts the sixty-second default timeout, an integer-timeout
+      refusal, or the IncompleteCapabilityContractError this invariant states — that surface is
+      outside what this read-only detail hook exercises.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the four `payload_notes` describe blocks (lines 251-319) and the earlier list-cache-independence
+      and first-ready-entry blocks (lines 45-112)
+    evidence: |-
+      it("presents the identity GET's own payload_notes, not a different value a stale capabilities-list cache entry for this same (name, version) already carried", async () => {
+        ...
+        expect(readyState(result.current).form.getValues("payload_notes")).toBe(LOADED_PAYLOAD_NOTES);
+      });
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: >-
+      the isDirty-against-baseline and returning-to-baseline describe blocks (lines 133-246)
+    evidence: |-
+      act(() => {
+        readyState(result.current).inputSchema.onChange(LOADED_INPUT_SCHEMA, true);
+      });
+      expect(readyState(result.current).isDirty).toBe(false);
+looked_past: >-
+  The LOADED_PAYLOAD_NOTES fixture text ("an operator's own account of what this observation
+  actually returns") closely echoes domain/integration/capability's own description of payload
+  notes, but payload_notes is explicitly free operator text with no controlled vocabulary the
+  fixture could misstate, and no assertion in the file turns on that wording's meaning, so it
+  reads as an evocative test value rather than a restated rule — a naming choice, not a domain-fact
+  finding.

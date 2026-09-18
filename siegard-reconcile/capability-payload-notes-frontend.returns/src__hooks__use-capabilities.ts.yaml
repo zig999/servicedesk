@@ -1,0 +1,55 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the queryFn passed to useQuery, which issues the list-capabilities read against the
+      registry's published surface
+    evidence: |-
+      queryFn: () => apiFetch<CapabilitiesPage>("/v1/capabilities"),
+  - node: domain/integration/capability
+    held_at: the Capability type declaration, lines 6-16
+    evidence: |-
+      export type Capability = {
+        readonly name: string;
+        readonly version: string;
+        readonly nature: CapabilityNature;
+        readonly input_schema: string;
+        readonly output_schema: string;
+        readonly timeout: number;
+        readonly connector: string;
+        readonly concept: string;
+        readonly payload_notes?: string;
+      };
+  - node: domain/integration/capability-nature
+    held_at: the CapabilityNature type declaration, line 4
+    evidence: |-
+      export type CapabilityNature = "read-only" | "mutating";
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      the whole of useCapabilities() only fetches a page of capabilities and reshapes the
+      response into `capabilities`, `isLoading`, `isError` and `refetch` — no timeout default,
+      required-attribute check or IncompleteCapabilityContractError refusal appears anywhere in
+      the file, which is consistent with this being a read/list hook rather than the
+      registration path the rule constrains
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: >-
+      queryFn: () => apiFetch<CapabilitiesPage>("/v1/capabilities") reads list-capabilities, not
+      read-capability-by-identity of contracts/integration/capability-registry that this policy
+      governs; nothing in the file presents a single identity-keyed capability's attributes
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      return {
+        capabilities: query.data?.data ?? [],
+        isLoading: query.isLoading,
+        isError: query.isError,
+        refetch: () => {
+          void query.refetch();
+        },
+      };
+looked_past: >-
+  the hook reads only query.data?.data from the first page apiFetch returns and never surfaces
+  or requests further pages, which bears on constraints/listings-are-paged rather than on any
+  node in this file's set or the supplied candidate index, so it is left for whichever pass
+  covers that node.

@@ -1,0 +1,81 @@
+findings:
+  - file: src/hooks/use-capability-detail-view.spec.ts
+    where: >-
+      the describe block at lines 75-109, "onDiscard resets to what was just saved rather than
+      the original pre-save values (an inference the implementation recorded)", and its
+      assertions at lines 106-107
+    evidence: |-
+      describe("useCapabilityDetailView -- onDiscard resets to what was just saved rather than the original pre-save values (an inference the implementation recorded)", () => {
+        it("discards back to the just-saved schema values after a successful save, not the values loaded before it", async () => {
+      ...
+          expect(readyState(result.current).inputSchema.value).toBe(UPDATED_INPUT_SCHEMA);
+          expect(readyState(result.current).outputSchema.value).toBe(UPDATED_OUTPUT_SCHEMA);
+    cost: >-
+      rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+      ties discard strictly to "the content of the registration that read answered ... and to
+      the content of no other answer," and its own description states that what a surface's read
+      does after a successful submission is untouched by that rule; the sibling rules
+      (a-successful-capability-registration-lands-on-the-capabilitys-own-surface,
+      a-submitted-registration-states-its-outcome-to-the-operator) each explicitly disclaim
+      deciding what follows a successful save. Whether a save's own response — rather than a
+      subsequent read-capability-by-identity — becomes the new baseline onDiscard reverts to is
+      a business decision about which answer the surface may treat as "that read answered," and
+      it exists only in this hook and this test, flagged by its own title as "an inference the
+      implementation recorded" rather than something the specification decided. A future change
+      to either the discard rule or to what a save's response is allowed to stand in for could
+      silently disagree with this baseline, and nobody reading the specification would find it.
+    kind: unstated
+    correction: >-
+      Decide, into the specification (most naturally alongside
+      a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface or
+      a-successful-capability-registration-lands-on-the-capabilitys-own-surface) and disclose in
+      the decision log, whether a successful register-capability response becomes the content
+      onDiscard reverts to ahead of any further read-capability-by-identity — then let this test
+      cite that decision instead of calling it an inference.
+
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the discard assertions comparing restored field values to the fixtures answering for the
+      registered capability's own declared attributes — input_schema, output_schema, connector
+      and payload_notes
+    evidence: |-
+      expect(readyState(result.current).form.getValues("connector")).toBe(
+        LOADED_CAPABILITY.connector,
+      );
+      ...
+      expect(readyState(result.current).form.getValues("payload_notes")).toBe(LOADED_PAYLOAD_NOTES);
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      describe("useCapabilityDetailView -- onDiscard resets every field to the most recently loaded-or-saved values (criterion 5)", () => {
+      ...
+      describe("useCapabilityDetailView -- justSaved (criterion 7)", () => {
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the assertions that reset fields are compared against the identity read's own answered
+      content (LOADED_INPUT_SCHEMA, LOADED_OUTPUT_SCHEMA, LOADED_CAPABILITY.connector,
+      LOADED_PAYLOAD_NOTES) rather than any other source
+    evidence: |-
+      expect(readyState(result.current).inputSchema.value).toBe(LOADED_INPUT_SCHEMA);
+      expect(readyState(result.current).outputSchema.value).toBe(LOADED_OUTPUT_SCHEMA);
+      expect(readyState(result.current).isDirty).toBe(false);
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: >-
+      the three onDiscard test blocks (lines 26-48, 50-72, 113-139), each of which dirties a
+      field then calls onDiscard() and asserts every field returns to the loaded content and
+      isDirty clears
+    evidence: |-
+      act(() => {
+        readyState(result.current).onDiscard();
+      });
+
+      expect(readyState(result.current).inputSchema.value).toBe(LOADED_INPUT_SCHEMA);
+      expect(readyState(result.current).outputSchema.value).toBe(LOADED_OUTPUT_SCHEMA);
+      expect(readyState(result.current).isDirty).toBe(false);
+
+looked_past: >-
+  The justSaved acknowledgement's own timing (instant on a successful save, clearing on the next
+  edit, staying false while a save is pending) restates surface-acknowledgement behavior that
+  a-submitted-registration-states-its-outcome-to-the-operator explicitly leaves as form — "how
+  long it stands ... belong[s] to the interface" — so it is not reported here.

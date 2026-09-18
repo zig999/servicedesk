@@ -1,0 +1,48 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the detail-screen assertions treating payload_notes as the optional field the domain
+      declares, lines 84-85 and 92-93
+    evidence: |-
+      const control = await screen.findByLabelText<HTMLTextAreaElement>("Payload notes");
+      expect(control.value).toBe(SEEDED_NOTES);
+      ...
+      const control = await screen.findByLabelText<HTMLTextAreaElement>("Payload notes");
+      expect(control.value).toBe("");
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: >-
+      the file's own scope, stated in its top-level describe blocks, is limited to payload
+      notes rendering, submission and presentation — "CapabilityFormFields -- Payload notes
+      renders as a control bound to the form's payload_notes field, inside the same FormField
+      wrapper the other attribute fields use, reaching the registration screen (criteria 1, 2,
+      6)" — none of the four describe blocks in this file exercises timeout defaults, required
+      attributes or the IncompleteCapabilityContractError refusal this node states
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: >-
+      the detail-screen describe block "Payload notes presents the value the form holds, and
+      nothing where the form holds none, reaching the capability detail surface (criteria 5,
+      7)", lines 73-95
+    evidence: |-
+      it("presents the identity read's own payload_notes content, where the read answered with content", async () => {
+        ...
+        expect(control.value).toBe(SEEDED_NOTES);
+      });
+
+      it("presents no payload_notes content, where the read answered with none", async () => {
+        ...
+        expect(control.value).toBe("");
+      });
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      the file exercises only rendering, typed-value submission and read-seeded presentation of
+      the Payload notes control — no describe or it block in this file mounts a discard act or
+      asserts a field returning to a prior read's content, e.g. the four top-level describe
+      titles at lines 25, 37, 62 and 73 name only binding, submission, multi-line acceptance and
+      read-presentation
+looked_past: >-
+  the assertion that no aria-describedby region is rendered absent an error, and the choice of a
+  native textarea over a single-line input for the multi-line criterion, are control-type and
+  accessibility details the presentation rule itself leaves to the interface rather than domain
+  facts, so they are not reported here.

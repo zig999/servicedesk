@@ -1,0 +1,133 @@
+findings:
+  - file: src/hooks/use-capability-form.ts
+    where: "SAVE_FAILURE_MESSAGE_BY_KIND, lines 43-52"
+    evidence: |-
+      const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+        "capability-not-read-only":
+          "This capability's declared nature is not read-only; the registry only accepts read-only capabilities.",
+        "incomplete-capability-contract":
+          "This capability does not declare its contract completely; every field of its contract is required.",
+        "capability-schema-not-well-formed":
+          "The input schema or the output schema is not syntactically valid JSON.",
+        "concept-already-answered":
+          "Another capability already answers this concept; each concept resolves to exactly one capability.",
+      };
+    cost: >-
+      domain/integration/capability-registry's own Responsibility names six distinct grounds on which
+      the registry refuses a capability registration — not read-only, an incomplete contract, a schema
+      that is not valid JSON, an input schema that does not hold a well-formed shape, a connector whose
+      registered configuration already embeds an undeclared placeholder, and a concept another capability
+      already answers — but this table gives a distinguishing message to only four of the six. A
+      registration refused on either of the other two grounds falls through `?? GENERIC_SAVE_FAILURE_MESSAGE`
+      via saveFailureMessage, the same text an operator sees for a refusal whose condition the surface does
+      not recognise at all, so an operator told a named refusal answered their submission cannot tell it
+      apart from one the surface never named.
+    kind: contradicts
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    correction: >-
+      add a distinguishing message for a refusal on the input schema's well-formed shape and for a refusal
+      on an undeclared connector placeholder, so every condition register-capability can name is stated
+      apart from the others and apart from an unrecognised refusal.
+  - file: src/hooks/use-capability-form.ts
+    where: "the mutationFn request body, lines 106-116"
+    evidence: |-
+      body: JSON.stringify({
+        nature: values.nature,
+        input_schema: getJsonTextareaMinifiedValue(inputSchemaValue),
+        output_schema: getJsonTextareaMinifiedValue(outputSchemaValue),
+        timeout: values.timeout,
+        connector: values.connector,
+        concept: values.concept,
+        ...(form.formState.dirtyFields.payload_notes
+          ? { payload_notes: values.payload_notes }
+          : {}),
+      }),
+    cost: >-
+      Every other attribute is sent from the form's current value regardless of whether the operator
+      touched it, so an untouched field still carries forward what was loaded. payload_notes alone is
+      singled out: it is included only when `dirtyFields.payload_notes` is true, even though
+      `values.payload_notes` already holds the correct, previously-declared text when untouched. Since
+      register-capability "replac[es] whatever already stood at that identity" (contracts/integration/capability-registry),
+      an operator who edits an existing capability's timeout or connector without retyping its payload
+      notes submits a write that omits payload_notes entirely, and the registered capability's
+      previously-declared notes is silently gone — a rule about which loaded, unedited attribute may drop
+      out of a resubmission that no node states, and that applies to this one attribute alone.
+    kind: unstated
+    node: domain/integration/capability
+    correction: >-
+      state, for the one optional attribute a registration may leave undeclared, whether an untouched but
+      previously-loaded value participates in a resubmission the way every other declared attribute
+      already does — and if so, send it unconditionally as the other fields are sent.
+read:
+  - node: contracts/integration/capability-registry
+    held_at: "the mutation's PUT call, lines 100-118"
+    evidence: |-
+      apiFetch<Capability>(
+        `/v1/capabilities/${encodeURIComponent(values.name)}/${encodeURIComponent(values.version)}`,
+        { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ... }) },
+      )
+  - node: domain/integration/capability
+    held_at: "the useForm defaultValues, lines 88-96, mirrored in the PUT body, lines 106-116"
+    evidence: |-
+      defaultValues: {
+        name: existing?.name ?? "",
+        version: existing?.version ?? "",
+        nature: existing?.nature ?? "read-only",
+        timeout: existing?.timeout,
+        connector: existing?.connector ?? "",
+        concept: existing?.concept ?? "",
+        payload_notes: existing?.payload_notes,
+      }
+  - node: domain/integration/capability-registry
+    held_at: "the mutation calling register-capability, lines 99-118"
+    evidence: "mutationFn: (values: CapabilityFormValues) => apiFetch<Capability>(...,{ method: \"PUT\", ... })"
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: "SAVE_FAILURE_MESSAGE_BY_KIND[\"incomplete-capability-contract\"], line 46-47"
+    evidence: "\"incomplete-capability-contract\": \"This capability does not declare its contract completely; every field of its contract is required.\""
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: "SAVE_FAILURE_MESSAGE_BY_KIND[\"capability-schema-not-well-formed\"], line 48-49, and the submit guard, line 144-146"
+    evidence: |-
+      "capability-schema-not-well-formed": "The input schema or the output schema is not syntactically valid JSON."
+      if (!inputSchemaValid || !outputSchemaValid) { return; }
+  - node: rules/integration/a-capability-is-read-only
+    held_at: "SAVE_FAILURE_MESSAGE_BY_KIND[\"capability-not-read-only\"], line 44-45"
+    evidence: "\"capability-not-read-only\": \"This capability's declared nature is not read-only; the registry only accepts read-only capabilities.\""
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "mutation.onSuccess / mutation.onError, lines 119-126 (see finding: two of the six named refusal conditions are not distinguished)"
+    evidence: |-
+      onSuccess: (_data, values) => {
+        toast.success(`Capability ${values.name} ${values.version} registered.`);
+        void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+        onSaved();
+      },
+      onError: (error) => {
+        toast.error(saveFailureMessage(error));
+      },
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "onCancel, lines 73-79"
+    evidence: |-
+      if (router.history.canGoBack()) {
+        router.history.back();
+        return;
+      }
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "onCancel's fallback, line 78"
+    evidence: "void navigate({ to: \"/capabilities\" });"
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: "SAVE_FAILURE_MESSAGE_BY_KIND[\"concept-already-answered\"], line 50-51"
+    evidence: "\"concept-already-answered\": \"Another capability already answers this concept; each concept resolves to exactly one capability.\""
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: "the useForm defaultValues, lines 88-96, seeded field-for-field from `existing`"
+    evidence: "payload_notes: existing?.payload_notes"
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: >-
+      CapabilityFormState's "ready" phase offers only `onSubmit` and `onCancel` (lines 27-38); no discard
+      or reset act that returns fields to the loaded registration while remaining on the surface is
+      exposed anywhere in the hook, and `void form.formState.isDirty;` (line 140) reads the dirty flag
+      without wiring it to any such act.
+looked_past: >-
+  The `void form.formState.isDirty;` statement (line 140) and the isDispatchingRef double-submit guard
+  (lines 71, 151-158) are implementation mechanics with no domain content, and the SAVE_FAILURE_MESSAGE_BY_KIND
+  gap's exact reachability depends on UiErrorStateKind's own definition in ../services/error-ui-state,
+  which is outside this file's set and this pass's evidence.

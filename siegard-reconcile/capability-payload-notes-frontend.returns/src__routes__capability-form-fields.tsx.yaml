@@ -1,0 +1,194 @@
+findings:
+  - file: src/routes/capability-form-fields.tsx
+    where: the Name and Version Input fields, lines 124-140
+    evidence: |-
+      <Input
+        {...register("name")}
+        disabled={isEditingIdentity || isSubmitting}
+      ...
+      <Input
+        {...register("version")}
+        disabled={isEditingIdentity || isSubmitting}
+    cost: >-
+      An operator opening an existing capability's edit surface cannot change Name or
+      Version at all, while Nature, Timeout and Connector on that same surface stay
+      editable — a distinction drawn only for the two attributes that form the capability's
+      identity. Nothing in domain/integration/capability or in the rules governing
+      register-capability's create-or-replace states that an identity, once registered,
+      may not be re-typed on the surface that loaded it; the specification only ever
+      distinguishes "creating a capability at a new name and version" from "replacing
+      whatever already stood at that identity" as two branches of one write. The rule that
+      forecloses one of those branches from this screen lives only in this disabled prop, so
+      a reader checking what governs a capability's identity will not find this restriction
+      in the specification, and a later change to it would not be recognized as touching
+      anything the business decided.
+    kind: unstated
+    correction: >-
+      A node constraining domain/integration/capability (or a surface rule alongside the
+      other capability-form-fields rules already in this pack) would need to state whether
+      an operator editing a registered capability may change its name or version, so that
+      this disablement follows a decided fact rather than standing as the only place the
+      decision is recorded.
+
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the form fields for the aggregate's own declared attributes — Concept, Name,
+      Version, Nature, Timeout, Connector, Payload notes, Input schema and Output schema
+    evidence: |-
+      <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
+        <Input
+          {...register("connector")}
+      ...
+      <FormField
+        label="Payload notes"
+        errorId="payload_notes-error"
+        error={errors.payload_notes?.message}
+      >
+        <Textarea
+          {...register("payload_notes", {
+            setValueAs: (value: string) => (value === "" ? undefined : value),
+          })}
+
+  - node: domain/integration/capability-nature
+    held_at: the NATURE_OPTIONS mapping and the Nature Select control
+    evidence: |-
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+
+  - node: domain/investigation/field-semantics
+    held_at: the help paragraph beneath the Output schema field
+    evidence: |-
+      O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir
+      dele são as chaves do próprio objeto <code>properties</code> de nível
+      superior deste schema. O <code>type</code> e a <code>description</code>{" "}
+      declarados por cada uma dessas chaves, onde o schema os declara, são lidos
+      como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é
+      lido ou validado.
+
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: the last sentence of that same help paragraph
+    evidence: |-
+      Uma <code>description</code> aqui declara o que seu valor
+      significa e não nomeia nenhuma decisão.
+
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: >-
+      the placement of CapabilitySchemaHelperFields directly beneath the grid holding
+      both the Input schema and Output schema fields
+    evidence: |-
+      <CapabilitySchemaHelperFields
+        state={schemaHelper}
+        onApplyInputSchema={inputSchemaApply.onApply}
+        onApplyOutputSchema={outputSchemaApply.onApply}
+      />
+
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: nowhere
+    evidence: |-
+      const isSaveDisabled =
+        isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;
+      This file only consumes a precomputed isValid flag to gate the Save button; it
+      neither states nor enforces the well-formed-JSON refusal itself.
+
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: |-
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+      Both natures are offered as selectable options; the file states or enforces
+      nothing about the registry's read-only refusal.
+
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: nowhere
+    evidence: |-
+      const {
+        register,
+        control,
+        formState: { errors },
+      } = form;
+      This file only renders whatever values the parent's react-hook-form instance
+      already carries; it performs no read and states nothing about that read's answer.
+
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: the help paragraph beneath the Output schema field
+    evidence: |-
+      O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir
+      dele são as chaves do próprio objeto <code>properties</code> de nível
+      superior deste schema. O <code>type</code> e a <code>description</code>{" "}
+      declarados por cada uma dessas chaves, onde o schema os declara, são lidos
+      como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é
+      lido ou validado. Uma <code>description</code> aqui declara o que seu valor
+      significa e não nomeia nenhuma decisão.
+
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: >-
+      the two independently constructed apply hooks and the two separate confirmation
+      dialogs, one per schema field
+    evidence: |-
+      const inputSchemaApply = useApplyToJsonSchemaField(
+        inputSchema,
+        isDirty ?? inputSchema.value !== "",
+      );
+      const outputSchemaApply = useApplyToJsonSchemaField(
+        outputSchema,
+        isDirty ?? outputSchema.value !== "",
+      );
+      ...
+      <ConnectorConfigurationApplyConfirmationDialog
+        diff={inputSchemaApply.applyConfirmationDiff}
+        onOpenChange={inputSchemaApply.onApplyConfirmationOpenChange}
+        onConfirm={inputSchemaApply.onConfirmApply}
+      />
+      <ConnectorConfigurationApplyConfirmationDialog
+        diff={outputSchemaApply.applyConfirmationDiff}
+        onOpenChange={outputSchemaApply.onApplyConfirmationOpenChange}
+        onConfirm={outputSchemaApply.onConfirmApply}
+      />
+
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: |-
+      <Select
+        value={field.value}
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        options={conceptSelectOptions}
+      This renders a single-value concept picker; it neither states nor enforces the
+      one-capability-per-concept refusal.
+
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: |-
+      const schemaHelper = useCapabilitySchemaHelper();
+      This file only holds the hook's returned state; whether a draft's arrival leaves
+      the two schema fields untouched is implemented inside that hook, not here.
+
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      <Input
+        type="number"
+        {...register("timeout", {
+          setValueAs: (value: string) => (value === "" ? undefined : Number(value)),
+        })}
+      This file converts an empty string to undefined but states no default, no
+      positivity check and no integer check; the contract's completeness and default are
+      not stated here.
+
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      {trailingActions}
+      No discard control or discard logic appears in this file; trailingActions is
+      opaque content supplied by the parent.
+
+looked_past: >-
+  The Save button's disablement on isDirty === false and on invalid schema JSON, and the
+  isDirty-or-nonempty heuristic each schema-apply hook is given as its "has an unsubmitted
+  edit" flag, are interaction mechanics rather than a restated or new domain fact, so they
+  are left to another pass.
