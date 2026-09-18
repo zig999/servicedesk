@@ -2303,7 +2303,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
-          "digest": "sha256:6a550980a55f0ba9c00a1ba35ca1bcbc92a28e9a95a593772f89140548969e78"
+          "digest": "sha256:b4c8de032139ad167ff413b98957a0e25f8aba7594c5109dcd323e8ac8e11e74"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
@@ -2355,7 +2355,7 @@
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
-          "digest": "sha256:9e9c469010bab3f6af92239cb02e84336f304b94394ce32ae9f7d57931be56a7"
+          "digest": "sha256:0f006e62593be181d838ea936ef531445b55a66defbde11c5f5af30d0ba70626"
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",

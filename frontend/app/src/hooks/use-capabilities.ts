@@ -12,6 +12,7 @@ export type Capability = {
   readonly timeout: number;
   readonly connector: string;
   readonly concept: string;
+  readonly payload_notes?: string;
 };
 
 type CapabilitiesPage = {

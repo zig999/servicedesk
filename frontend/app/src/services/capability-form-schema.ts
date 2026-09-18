@@ -9,6 +9,7 @@ export const capabilityFormSchema = z.object({
   timeout: z.number().int().positive().optional(),
   connector: z.string().min(1),
   concept: z.string().min(1),
+  payload_notes: z.string().optional(),
 });
 
 export type CapabilityFormValues = z.infer<typeof capabilityFormSchema>;

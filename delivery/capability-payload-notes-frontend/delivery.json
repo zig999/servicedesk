@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract.md",
+      "title": "payload_notes declared in the capability form schema and read type",
+      "summary": "Adds payload_notes as an optional free-text field to capabilityFormSchema and to the Capability read type, so a form value or a read answer may each carry or omit it.",
+      "task": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract"
+    },
+    {
+      "id": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract.md",
+      "title": "payload_notes as an optional attribute in the capability form schema and read type",
+      "summary": "Proves capabilityFormSchema parses, omits and empty-strings payload_notes without a validation issue, and that the Capability read type accepts a read answer with or without payload_notes.",
+      "task": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "to": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "to": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
