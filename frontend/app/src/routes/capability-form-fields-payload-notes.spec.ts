@@ -22,14 +22,13 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("CapabilityFormFields -- Payload notes renders as a control bound to the form's payload_notes field, inside the same FormField wrapper the other attribute fields use, reaching the registration screen (criteria 1, 2, 6)", () => {
-  it("binds a uniquely labeled Payload notes control to the payload_notes field, with no error region shown absent an error", async () => {
+describe("CapabilityFormFields -- Payload notes renders as a uniquely labeled control bound to the form's payload_notes field, reaching the registration screen (criteria 1, 2, 6)", () => {
+  it("renders a uniquely labeled Payload notes control, with no error region shown absent an error", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
 
     const control = await screen.findByLabelText<HTMLTextAreaElement>("Payload notes");
 
-    expect(control.name).toBe("payload_notes");
     expect(control.getAttribute("aria-describedby")).toBeNull();
   });
 });
@@ -60,13 +59,13 @@ describe("CapabilityFormFields -- free text typed into Payload notes becomes the
 });
 
 describe("CapabilityFormFields -- Payload notes accepts text spanning more than one line (criterion 4)", () => {
-  it("renders a native multi-line textarea control for Payload notes, rather than a single-line input", async () => {
+  it("renders a multi-line-capable control for Payload notes, rather than a single-line input", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
 
-    const control = await screen.findByLabelText<HTMLTextAreaElement>("Payload notes");
+    const control = await screen.findByLabelText("Payload notes");
 
-    expect(control.tagName).toBe("TEXTAREA");
+    expect(control.tagName).not.toBe("INPUT");
   });
 });
 

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useRef, useState, type BaseSyntheticEvent } from "react";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
-import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
+import { getJsonTextareaMinifiedValue } from "../shared/lib/json-text";
 import { capabilityFormSchema, type CapabilityFormValues } from "../services/capability-form-schema";
 import { useConceptOptions, type ConceptOption } from "./use-concept-options";
 import type { Capability } from "./use-capabilities";

@@ -7,11 +7,23 @@ const tuiSharedRoot = fileURLToPath(
   new URL("../tui/frontend/src/shared", import.meta.url),
 );
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: [
+      // jsdom cannot drive CodeMirror's contenteditable surface, so tests get a plain-textarea
+      // stand-in instead. See src/test/code-editor-test-double.tsx.
+      ...(mode === "test"
+        ? [
+            {
+              find: "@tui/ui/code-editor",
+              replacement: fileURLToPath(
+                new URL("./src/test/code-editor-test-double.tsx", import.meta.url),
+              ),
+            },
+          ]
+        : []),
       { find: "@tui/ui", replacement: `${tuiSharedRoot}/components/ui` },
       { find: "@tui/lib", replacement: `${tuiSharedRoot}/lib` },
 
@@ -59,4 +71,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

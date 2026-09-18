@@ -91,7 +91,7 @@ describe(
 
 describe(
   "ConnectorConfigurationFormFields -- text that fails to parse at all draws only " +
-    "JsonTextareaField's own error, never the not-an-object statement (the two not-well-formed " +
+    "JsonCodeEditorField's own error, never the not-an-object statement (the two not-well-formed " +
     "sub-cases do not overlap)",
   () => {
     it("renders only the Invalid JSON error, withholds Save, and renders no not-an-object statement", async () => {

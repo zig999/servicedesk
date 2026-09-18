@@ -3,10 +3,10 @@ import { Controller, type UseFormReturn } from "react-hook-form";
 import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Select, type SelectOption } from "@tui/ui/select";
-import { Textarea } from "@tui/ui/textarea";
+import { CodeEditor } from "@tui/ui/code-editor";
 import { Button } from "@tui/ui/button";
 import { ButtonFooter } from "../shared/components/button-footer";
-import { JsonTextareaField } from "../shared/components/json-textarea-field";
+import { JsonCodeEditorField } from "../shared/components/json-code-editor-field";
 import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capability-form-schema";
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
@@ -179,23 +179,33 @@ export function CapabilityFormFields({
         />
       </FormField>
 
-      <FormField
-        label="Payload notes"
-        errorId="payload_notes-error"
-        error={errors.payload_notes?.message}
-      >
-        <Textarea
-          {...register("payload_notes", {
-            setValueAs: (value: string) => (value === "" ? undefined : value),
-          })}
-          disabled={isSubmitting}
-          aria-invalid={errors.payload_notes != null}
-          aria-describedby={errors.payload_notes != null ? "payload_notes-error" : undefined}
+      <div className="flex flex-col gap-1">
+        <Controller
+          control={control}
+          name="payload_notes"
+          render={({ field }) => (
+            <CodeEditor
+              id="payload_notes"
+              label="Payload notes"
+              value={field.value ?? ""}
+              onChange={(value) => field.onChange(value === "" ? undefined : value)}
+              language="plaintext"
+              height="10rem"
+              disabled={isSubmitting}
+              aria-invalid={errors.payload_notes != null}
+              aria-describedby={errors.payload_notes != null ? "payload_notes-error" : undefined}
+            />
+          )}
         />
-      </FormField>
+        {errors.payload_notes?.message != null && (
+          <p id="payload_notes-error" role="alert" className="text-sm text-destructive">
+            {errors.payload_notes.message}
+          </p>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <JsonTextareaField
+        <JsonCodeEditorField
           id="input_schema"
           label="Input schema"
           value={inputSchema.value}
@@ -205,7 +215,7 @@ export function CapabilityFormFields({
         />
 
         <div className="flex flex-col gap-1">
-          <JsonTextareaField
+          <JsonCodeEditorField
             id="output_schema"
             label="Output schema"
             value={outputSchema.value}

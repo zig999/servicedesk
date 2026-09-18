@@ -4,7 +4,7 @@ import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
 import { ButtonFooter } from "../shared/components/button-footer";
-import { JsonTextareaField } from "../shared/components/json-textarea-field";
+import { JsonCodeEditorField } from "../shared/components/json-code-editor-field";
 import { configurationTextParsesToNonObject } from "../services/connector-configuration-well-formedness";
 import { ConnectorConfigurationApplyConfirmationDialog } from "./connector-configuration-apply-confirmation-dialog";
 import { ConnectorConfigurationHelper } from "./connector-configuration-helper";
@@ -184,7 +184,7 @@ export function ConnectorConfigurationFormFields({
         />
       </FormField>
 
-      <JsonTextareaField
+      <JsonCodeEditorField
         id="configuration"
         label={FORM_CONFIGURATION_FIELD_LABEL}
         value={configuration.value}

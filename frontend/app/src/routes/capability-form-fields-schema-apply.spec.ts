@@ -34,7 +34,7 @@ function operationsReadJsonResponse(): Response {
   return jsonResponse({ operations: [HELPER_OPERATION] });
 }
 
-// Already pretty-printed (2-space indent) so JsonTextareaField's own beautify-on-change
+// Already pretty-printed (2-space indent) so JsonCodeEditorField's own beautify-on-change
 // effect never rewrites these once they land in a field -- the proof's own assertions
 // compare this exact literal against the field's rendered value.
 const TYPED_INPUT_TEXT = JSON.stringify({ operator: "typed-input" }, null, 2);

@@ -5,7 +5,7 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { apiFetch, ApiError } from "../services/api-client";
-import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
+import { getJsonTextareaMinifiedValue } from "../shared/lib/json-text";
 import {
   capabilityFormSchema,
   type CapabilityFormValues,
