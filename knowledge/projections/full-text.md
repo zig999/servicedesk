@@ -294,6 +294,21 @@ Refusing at startup is what keeps the configuration the single source of the bou
 
 This refusal answers configuration read as the deployment starts and is not the request-time refusal a-malformed-request-is-refused-with-a-validation-error states; no caller ever sees it, because a refused deployment answers no request.
 
+=== constraints/the-register-capability-route-defers-completeness-to-the-registry
+---
+statement: The register-capability route's declared request shape requires no capability attribute to be present or non-empty — its name and version path segments each admit an empty segment, its body admits an absent or empty body and every attribute absent or empty, and only a value actually supplied is held to its declared type and bounds — so a request omitting a required attribute, supplying one as an empty string, or carrying no body passes this route's shape validation and meets the registry's own IncompleteCapabilityContractError refusal instead.
+scope: integration
+fitness: An automated test sends a register-capability request omitting a required body attribute, one supplying a required attribute as an empty string, one with an empty name path segment and one carrying no body at all, and asserts each answer is the registry's HTTP 422 IncompleteCapabilityContractError refusal rather than an HTTP 400 VALIDATION_ERROR one.
+---
+
+## Description
+
+Stated for this one route because the registry's completeness refusal is otherwise unreachable through it: a shape check that rejects an absent or empty required attribute answers such a request before the registry ever sees it, and the operator meets a generic shape refusal where a named, per-attribute one is owed.
+
+The declared shape still decides everything that is not a question of completeness — a value actually supplied but of the wrong type, or outside the bounds declared for it, fails here as on any other route — so what this loosens reaches only the presence and the emptiness of the attributes a capability's contract is judged complete by.
+
+It travels to no other route: where a route's own rules make an absent or empty field a question of the shape it declares rather than of content the domain weighs, the standing shape refusal answers it.
+
 === constraints/the-schema-replays-from-its-scripts
 ---
 statement: The schema is reconstructible on an empty database by applying the migration scripts in the order they are numbered.
@@ -5601,6 +5616,31 @@ entries:
     The fields stand as submitted. From the registry's answer until that surface's subsequent read-capability-by-identity of the registered capability answers, no field the operator had changed away from the content the prior read answered is changed by that answer or by that read being outstanding -- each holds the content the operator submitted in it, and none is returned to the content that prior read answered, emptied, or set from any other answer. Recorded as a new invariant over domain/integration/capability at rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers. Not decided here -- which reading such a surface stands in while that further read is outstanding, whether it issues one at all, and what its fields hold once that read answers, fails or is refused.
   why: >-
     Setting those fields back to what the prior read answered is the whole effect of the act a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface permits only on the operator's own further, explicit act, performed on no act of the operator's at all, and that rule's own reason for demanding the act is live in this interval -- the operator stays on the surface and continues, so the next edit is made over content that silently changed and may be submitted over a write that replaces the identity whole. It is also content the registry no longer holds, register-capability having replaced what stood at the identity with the submitted contract and answered that it did, so reverting shows the operator a superseded registration as their own working content at the very moment a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read has the surface state that the registration was made. Leaving them alone puts no submission content into the presentation that a-presented-capability-states-its-declared-attributes-as-the-read-answered-them refuses as a source, because the submission carried what those fields already held and nothing is set into them at all -- that rule stating what the presentation carries apart from an edit the operator made.
+- location: constraints/the-register-capability-route-defers-completeness-to-the-registry.md
+  field: statement
+  unstated: >-
+    Whether a register-capability request that omits a required capability attribute, supplies
+    one as an empty string (an empty name or version path segment included), or carries no body
+    at all is refused by the route's own declared-shape validation with HTTP 400
+    VALIDATION_ERROR, or passes that validation and is refused by the registry with HTTP 422
+    reporting IncompleteCapabilityContractError -- that is, which of the two refusals a request
+    eligible for both meets, and what the register-capability route declares as its own request
+    shape.
+  decided: >-
+    The route's declared shape requires no capability attribute to be present or non-empty --
+    empty name and version path segments, an absent or empty body, and absent or empty
+    attributes all pass it, while any value actually supplied is still held to its declared type
+    and bounds -- and such a request therefore meets the registry's IncompleteCapabilityContractError
+    refusal. Recorded as a new architecture constraint over the integration context at
+    constraints/the-register-capability-route-defers-completeness-to-the-registry.
+  why: >-
+    This specification already reserves the shape refusal for what departs from a route's
+    declared shape and answers empty-or-missing required content as a domain refusal, and the
+    empty string counting as undeclared is a reading only the registry applies -- so a shape
+    check refusing these requests first would make the named, per-attribute refusal of
+    rules/integration/a-capability-declares-its-contract unreachable through the only route that
+    can produce it, and would answer an operator who omitted one field with a refusal that names
+    none.
 ---
 - location: rules/integration/a-pending-schema-draft-request-is-not-dispatched-again.md
   field: statement

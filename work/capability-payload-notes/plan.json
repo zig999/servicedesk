@@ -23,6 +23,20 @@
       "summary": "Corrective increment: a required-attribute absence or empty string in a register-capability submission must reach the registry's own completeness check and its HTTP 422 refusal, not stop at the DTO's HTTP 400 shape validation."
     },
     {
+      "id": "epic/register-capability-routes-spec-expects-stale-400s",
+      "kind": "epic",
+      "file": "epic/register-capability-routes-spec-expects-stale-400s.md",
+      "title": "register-capability's route test asserts the registry's own refusal, not a stale 400",
+      "summary": "Corrective increment: register-capability.routes.spec.ts asserts HTTP 400 for six cases register-capability-dto-refusal-order/reaches-the-registry-refusal's legitimate delivery now routes to the registry's own 422 refusal instead."
+    },
+    {
+      "id": "epic/stale-judgment-failure-assertions-for-inconclusive",
+      "kind": "epic",
+      "file": "epic/stale-judgment-failure-assertions-for-inconclusive.md",
+      "title": "The judgment-failure assertion for a well-formed inconclusive answer is corrected to not-grounded",
+      "summary": "Corrective increment: anthropic-hypothesis-evaluator.adapter.spec.ts's test for a well-formed but inconclusive model answer asserts the now-superseded reason judgment-failure, falsified by inconclusive-response-not-judgment-failure/distinct-reason's legitimate delivery."
+    },
+    {
       "id": "inventory/capability-payload-notes-surface",
       "kind": "inventory",
       "file": "inventory/capability-payload-notes-surface.md",
@@ -84,6 +98,22 @@
       "title": "A register-capability submission missing a required attribute reaches the registry's own completeness refusal",
       "summary": "Loosen register-capability.dto.ts's shape validation so an absent or empty required attribute passes the HTTP shape check and is refused by the capability registry's own 422 IncompleteCapabilityContractError instead.",
       "epic": "register-capability-dto-refusal-order"
+    },
+    {
+      "id": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "kind": "task",
+      "file": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422.md",
+      "title": "The six route tests assert the registry's own 422, not a stale 400",
+      "summary": "register-capability.routes.spec.ts's six now-false 400 assertions are rewritten to assert the registry's own 422 refusal and that registerCapability is reached and refuses.",
+      "epic": "register-capability-routes-spec-expects-stale-400s"
+    },
+    {
+      "id": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "kind": "task",
+      "file": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded.md",
+      "title": "The well-formed-inconclusive test asserts reason not-grounded, not judgment-failure",
+      "summary": "anthropic-hypothesis-evaluator.adapter.spec.ts's test for a well-formed inconclusive model answer is rewritten to assert the reason the production adapter now actually returns.",
+      "epic": "stale-judgment-failure-assertions-for-inconclusive"
     }
   ],
   "edges": [
@@ -262,6 +292,66 @@
       "at": "covers[3]"
     },
     {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/register-capability-routes-spec-expects-stale-400s",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/stale-judgment-failure-assertions-for-inconclusive",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/stale-judgment-failure-assertions-for-inconclusive",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/stale-judgment-failure-assertions-for-inconclusive",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/stale-judgment-failure-assertions-for-inconclusive",
+      "to": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
       "from": "task/capability-payload-notes/capability-declares-payload-notes",
       "to": "domain/integration/capability",
       "kind": "implements",
@@ -422,6 +512,48 @@
       "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "kind": "implements",
       "at": "implements[2]"
+    },
+    {
+      "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/register-capability-routes-spec-expects-stale-400s/asserts-the-registrys-422",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/stale-judgment-failure-assertions-for-inconclusive/corrected-to-not-grounded",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "implements",
+      "at": "implements[1]"
     }
   ]
 }
