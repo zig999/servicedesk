@@ -3,6 +3,7 @@ import { Controller, type UseFormReturn } from "react-hook-form";
 import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Select, type SelectOption } from "@tui/ui/select";
+import { Textarea } from "@tui/ui/textarea";
 import { Button } from "@tui/ui/button";
 import { ButtonFooter } from "../shared/components/button-footer";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
@@ -175,6 +176,21 @@ export function CapabilityFormFields({
           disabled={isSubmitting}
           aria-invalid={errors.connector != null}
           aria-describedby={errors.connector != null ? "connector-error" : undefined}
+        />
+      </FormField>
+
+      <FormField
+        label="Payload notes"
+        errorId="payload_notes-error"
+        error={errors.payload_notes?.message}
+      >
+        <Textarea
+          {...register("payload_notes", {
+            setValueAs: (value: string) => (value === "" ? undefined : value),
+          })}
+          disabled={isSubmitting}
+          aria-invalid={errors.payload_notes != null}
+          aria-describedby={errors.payload_notes != null ? "payload_notes-error" : undefined}
         />
       </FormField>
 

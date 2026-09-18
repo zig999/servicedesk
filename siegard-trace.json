@@ -2307,11 +2307,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:5cae5b078ad4024b00bce90c241af5417720a21aa23e8655c955e7f4e016589a"
+          "digest": "sha256:4111b7af5cecef876b997c735d771774221a3ddbc55531d5c19885f30048eb11"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
-          "digest": "sha256:199cfe3a588365259dc9078127e3eb2cf8dc79b2a9628390cef7f1a260c5d867"
+          "digest": "sha256:161779d4e5a9df7aa5104fd1e829084a5991ea8044147623a3dfc2f7c0517a66"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -2331,7 +2331,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
+          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -6390,6 +6390,10 @@
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
           "digest": "sha256:738900e461eea4c4202a8b08dec945aa5c23ebef2b7e9ca998c617b235f929f2"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
         },
         {
           "path": "src/src/http/dto/read-capability-by-identity.dto.ts",

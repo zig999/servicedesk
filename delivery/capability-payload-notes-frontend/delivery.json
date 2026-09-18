@@ -18,6 +18,14 @@
       "task": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract"
     },
     {
+      "id": "implementation/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form.md",
+      "title": "Payload notes control rendered on the shared capability form fields component, corrected a second time against a live dirty-state regression the first correction's own gate exposed",
+      "summary": "Adds a bare, multi-line Textarea for payload_notes inside capability-form-fields.tsx's existing FormField wrapper, gates both capability form hooks' PUT bodies on react-hook-form's own dirtyFields rather than on value, and now makes use-capability-form.ts's own render actually subscribe to react-hook-form's dirty-state proxy so that gate evaluates against current state instead of a never-refreshed initial snapshot.",
+      "task": "task/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form"
+    },
+    {
       "id": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
       "kind": "implementation",
       "file": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer.md",
@@ -40,6 +48,14 @@
       "title": "payload_notes as an optional attribute in the capability form schema and read type",
       "summary": "Proves capabilityFormSchema parses, omits and empty-strings payload_notes without a validation issue, and that the Capability read type accepts a read answer with or without payload_notes.",
       "task": "task/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract"
+    },
+    {
+      "id": "proof/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form.md",
+      "title": "Payload notes control rendered on capability-form-fields.tsx",
+      "summary": "Proves the payload_notes control renders bound to the form field inside the shared FormField wrapper, accepts free text (including multi-line text) that reaches the submitted value, presents the read answer's own content (or nothing where the answer carried none), and reaches both the registration and detail surfaces through the one shared component.",
+      "task": "task/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form"
     },
     {
       "id": "proof/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
@@ -82,6 +98,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "to": "task/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
       "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
       "kind": "encodes",
@@ -108,6 +142,12 @@
     {
       "from": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "to": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
+      "to": "implementation/capability-payload-notes-surface/payload-notes-field-rendered-on-the-capability-form",
       "kind": "proves",
       "at": "the path"
     },

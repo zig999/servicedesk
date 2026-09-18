@@ -110,7 +110,9 @@ export function useCapabilityForm(
             timeout: values.timeout,
             connector: values.connector,
             concept: values.concept,
-            payload_notes: values.payload_notes,
+            ...(form.formState.dirtyFields.payload_notes
+              ? { payload_notes: values.payload_notes }
+              : {}),
           }),
         },
       ),
@@ -134,6 +136,8 @@ export function useCapabilityForm(
   if (conceptOptions.isLoading) {
     return { phase: "loading", onCancel };
   }
+
+  void form.formState.isDirty;
 
   const submit = form.handleSubmit((values) => {
 
