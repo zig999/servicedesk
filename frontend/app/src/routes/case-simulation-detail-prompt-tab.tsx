@@ -13,7 +13,7 @@ export function CaseSimulationDetailPromptTab({
   }
 
   return (
-    <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">
+    <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono whitespace-pre-wrap break-words">
       {judgmentCall.prompt}
     </pre>
   );

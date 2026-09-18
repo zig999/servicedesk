@@ -96,7 +96,7 @@ export function CaseSimulationSubjectPanel({
                       {field.capabilities.map((capability) => (
                         <li
                           key={`${capability.name}-${capability.version}`}
-                          className="text-sm text-muted-foreground"
+                          className="text-sm text-muted-foreground break-words"
                         >
                           ← {capability.connector} ({capability.name} {capability.version})
                           {capability.inputSchemaHint.trim() !== "" && (
