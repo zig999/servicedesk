@@ -109,6 +109,7 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
             timeout: values.timeout,
             connector: values.connector,
             concept: values.concept,
+            payload_notes: values.payload_notes,
           }),
         },
       ),

@@ -2307,11 +2307,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:57cab358bb32a689a765dcf94196002deff3a1ec396b46028c498a673f3e7630"
+          "digest": "sha256:5cae5b078ad4024b00bce90c241af5417720a21aa23e8655c955e7f4e016589a"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
-          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+          "digest": "sha256:199cfe3a588365259dc9078127e3eb2cf8dc79b2a9628390cef7f1a260c5d867"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -5380,8 +5380,12 @@
       "digest": "sha256:7ecef635d660efe9a8a3c30cc4b7ae900b90a7b7c681bb2a46a2a6fd529256af",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:5cae5b078ad4024b00bce90c241af5417720a21aa23e8655c955e7f4e016589a"
+        },
+        {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
-          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+          "digest": "sha256:199cfe3a588365259dc9078127e3eb2cf8dc79b2a9628390cef7f1a260c5d867"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",

@@ -1,0 +1,5 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-capability-form-payload-notes-submission.spec.ts(39,43): error TS6133: 'init' is declared but its value is never read.

@@ -110,6 +110,7 @@ export function useCapabilityForm(
             timeout: values.timeout,
             connector: values.connector,
             concept: values.concept,
+            payload_notes: values.payload_notes,
           }),
         },
       ),

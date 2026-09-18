@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "kind": "implementation",
+      "file": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration.md",
+      "title": "payload notes forwarded from both capability form hooks' submitted bodies",
+      "summary": "Each of the two capability form hooks now forwards payload_notes by name from its already-seeded form value into the PUT body it submits, exactly like the existing timeout precedent.",
+      "task": "task/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration"
+    },
+    {
       "id": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "kind": "implementation",
       "file": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract.md",
@@ -16,6 +24,14 @@
       "title": "Seed and restore payload_notes from the capability identity read",
       "summary": "Both capability form hooks now build their defaultValues' payload_notes from the same Capability answer they already read every other optional attribute from, so the field presents, discards and restores exactly as that read answered it.",
       "task": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer"
+    },
+    {
+      "id": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "kind": "proof",
+      "file": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration.md",
+      "title": "payload_notes forwarded from both capability form hooks' submitted bodies",
+      "summary": "Hook-level tests proving both PUT-body-building hooks forward payload_notes by name from live form state, submit it as absent-or-empty where the operator declared none, and do not refuse a submission that leaves it so.",
+      "task": "task/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration"
     },
     {
       "id": "proof/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
@@ -35,6 +51,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "to": "task/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/capability-payload-notes-surface/payload-notes-declared-in-the-frontend-capability-contract",
       "to": "domain/integration/capability",
@@ -63,6 +97,12 @@
       "from": "implementation/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
       "to": "task/capability-payload-notes-surface/payload-notes-seeded-from-the-read-answer",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "to": "implementation/capability-payload-notes-surface/payload-notes-carried-in-the-submitted-registration",
+      "kind": "proves",
       "at": "the path"
     },
     {
