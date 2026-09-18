@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/judgment-prompt-temporal-context-judgment-prompt-observation-semantics-and-temporal-context-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-18T17:49:08.206+00:00",
+      "ended_at": "2026-09-18T17:49:24.657+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

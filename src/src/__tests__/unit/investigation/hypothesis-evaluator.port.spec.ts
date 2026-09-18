@@ -18,6 +18,8 @@ const SOME_EVIDENCE: readonly EvidenceItem[] = [
     fields: [{ name: 'a-field', type: 'string', description: 'a description of a-field' }],
     concept_description: 'what a-concept means',
     capability_payload_notes: '',
+    observed_at: '2024-01-01T00:00:00.000Z',
+    ttl: 60,
   },
 ];
 

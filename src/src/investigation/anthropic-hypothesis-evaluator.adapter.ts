@@ -13,7 +13,13 @@ import { VERDICTS, type Verdict } from './verdict.js';
 
 const SYSTEM_PROMPT = `You judge whether the criterion of one troubleshooting hypothesis is confirmed or refuted, using only the evidence given to you.
 
-Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept, carries a <concept_description> naming what that concept means wherever one is known (absent where none is — the item is then known by its concept alone, with no stated meaning), lists its own <field> elements inside <fields> — each naming itself and, wherever known, its own type and a description of what it means — carries a <capability_payload_notes> element wherever the capability that produced this observation declared free-text notes on what its payload actually returns (absent where none were declared) — context grounding the observation, never a fact to verify and never a field name you may cite — and carries its own <observation>.
+Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <current_instant>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence.
+
+Each <item> inside <evidence> names its own concept and carries its own <observation> — a JSON-encoded string; parse it, rather than reading it as free text, before checking any value it carries against the <criterion>. That parsed observation is the data you validate the criterion against, and only it is evidence. An item's <fields> — each <field> naming itself and, wherever known, its own type and a description of what it means —, its <concept_description> naming what its concept means wherever one is known (absent where none is — the item is then known by its concept alone, with no stated meaning), and its <capability_payload_notes> element wherever the capability that produced this observation declared free-text notes on what its payload actually returns (absent where none were declared) all exist only to help you read that observation correctly, never as evidence in themselves and never a fact to verify; <concept_description> and <capability_payload_notes> are never field names you may cite — only a <field>'s own name, exactly as that item declares it, may ground a citation. Each item also carries its own <observed_at> — the UTC instant its observation was captured — and its own <ttl> — how many seconds that observation was considered fresh for, counted from that same <observed_at>.
+
+Where <evidence> carries more than one <item>, evaluate each in complete isolation from every other: a <field>'s value, an <observation>, an <observed_at> or a <ttl> read from one <item> is never attributed to another item, even where two items declare a field of the same name.
+
+The <judgment_input> block also carries a top-level <current_instant> — the current date and time in UTC at the moment this judgment was requested. Whenever the <criterion> depends on how recent or how stale an observation is, reason about it using that item's own <observed_at> and <ttl> together with <current_instant>; neither <current_instant> nor any item's own <observed_at> or <ttl> is itself citable evidence.
 
 Answer with exactly one JSON object and nothing else — no prose before or after it, no markdown code fence — matching exactly one of these three shapes:
 
@@ -51,7 +57,8 @@ export class AnthropicHypothesisEvaluator implements IHypothesisEvaluator {
     if (nonOkEvidence.length > 0) {
       return noDataOutcome(nonOkEvidence);
     }
-    const prompt = buildUserPrompt(criterion, evidence, caseContext);
+    const currentInstant = new Date().toISOString();
+    const prompt = buildUserPrompt({ criterion, evidence, caseContext, currentInstant });
     const startedAt = Date.now();
     const message = await this.requestJudgment(prompt);
     const elapsedMs = Date.now() - startedAt;
@@ -137,7 +144,15 @@ function parseJudgment(text: string): ParsedJudgment | undefined {
   return { verdict: value.verdict, citations };
 }
 
-function buildUserPrompt(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): string {
+type UserPromptInput = {
+  readonly criterion: string;
+  readonly evidence: readonly EvidenceItem[];
+  readonly caseContext: CaseContext;
+  readonly currentInstant: string;
+};
+
+function buildUserPrompt(input: UserPromptInput): string {
+  const { criterion, evidence, caseContext, currentInstant } = input;
   return [
     '<judgment_input>',
     '<criterion>',
@@ -146,6 +161,7 @@ function buildUserPrompt(criterion: string, evidence: readonly EvidenceItem[], c
     '<evidence>',
     evidenceBlock(evidence),
     '</evidence>',
+    `<current_instant>${escapeForXmlText(currentInstant)}</current_instant>`,
     '<case_title>',
     escapeForXmlText(caseContext.title),
     '</case_title>',
@@ -166,6 +182,8 @@ function itemBlock(item: EvidenceItem): string {
     ...conceptDescriptionLines(item.concept_description),
     fieldsBlock(item.fields),
     ...capabilityPayloadNotesLines(item.capability_payload_notes),
+    `<observed_at>${escapeForXmlText(item.observed_at)}</observed_at>`,
+    `<ttl>${item.ttl}</ttl>`,
     `<observation>${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</observation>`,
     '</item>',
   ].join('\n');

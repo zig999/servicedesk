@@ -495,11 +495,11 @@
     },
     {
       "node": "constraints/the-judgment-prompt-is-closed",
-      "digest": "sha256:992a8319983ac7e6657582103128b8c16fa070041ed5ee1daceba50ec08ea171",
+      "digest": "sha256:13cad1c21ef616768585166ef14c1e13a3611db79998999eb190c180fe0ad939",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:8b5bd9368f9a1bd04cbdb6da9f543fa552d198b883725e32ca0210e3b68da123"
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
@@ -3638,12 +3638,16 @@
           "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
         },
         {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:94ee31912a74a9b0518c35fb077048bc5b0673bd105ef1fc86a8648a046fd1bf"
+        },
+        {
           "path": "src/src/investigation/investigation-pipeline.ts",
           "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:f1366f4a978df7291d235bfe2acd83eb004025f078912c0f6a4477cbe7b414bc"
+          "digest": "sha256:359d9debe24fe78849d0af6b0a54817e25bf23b05157fc939f49562f9b582025"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -3765,11 +3769,11 @@
     },
     {
       "node": "domain/investigation/hypothesis-evaluator",
-      "digest": "sha256:262aa9e7f85e0bcf8ba148d6c7215a0a202fe17091e41e5b5aa72ba4b5489a48",
+      "digest": "sha256:8212abe2d821d3de8f2f02e8f294b09aab0b041f3117143098c3cce1c605c0df",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:8b5bd9368f9a1bd04cbdb6da9f543fa552d198b883725e32ca0210e3b68da123"
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
@@ -7524,6 +7528,34 @@
       ]
     },
     {
+      "node": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "digest": "sha256:4d7d2f1c5656ac5e55ef9031fecf4df4bf8694962c9c74c014fc05d0862147be",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
+        },
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:94ee31912a74a9b0518c35fb077048bc5b0673bd105ef1fc86a8648a046fd1bf"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "digest": "sha256:0218385c9b1ed3516b0562dd0794ec8d7b16910d912c724fa23182f9d8d1861f",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
+        },
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:94ee31912a74a9b0518c35fb077048bc5b0673bd105ef1fc86a8648a046fd1bf"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
       "digest": "sha256:7ce077d593d831d9774e6f31617a353c8e807c5749ddfb4f420efe41da021759",
       "files": [
@@ -7560,6 +7592,16 @@
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
           "digest": "sha256:1f74bc028aedb353476b8924c74c4f89cfd8b0318737514e5580c00a47a8e320"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-observation-is-recorded-as-json-object-text",
+      "digest": "sha256:86bf021f2779dfb4f2ec4b996b2259d13988629a53eda9107657436fa3d62564",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
         }
       ]
     },
@@ -7614,8 +7656,18 @@
       ]
     },
     {
+      "node": "rules/investigation/judgment-reads-the-current-instant-fresh",
+      "digest": "sha256:131ac850d1142032ce0c262cb26107786d595c650a83132a7a9e7813edac355a",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/judgment-reads-the-evidence-snapshot",
-      "digest": "sha256:453ab7c6753034980beddf08d877c74af8b267da35fe4d515e048bae3c479b9e",
+      "digest": "sha256:dfe0674a27814fdc6157916008bf9d58652b5e3344ffe802056cfc6c5ede5d74",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -7631,7 +7683,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:f1366f4a978df7291d235bfe2acd83eb004025f078912c0f6a4477cbe7b414bc"
+          "digest": "sha256:359d9debe24fe78849d0af6b0a54817e25bf23b05157fc939f49562f9b582025"
         }
       ]
     },

@@ -41,6 +41,8 @@ const SOME_OK_EVIDENCE: readonly EvidenceItem[] = [
     fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
     concept_description: 'what concept-one means',
     capability_payload_notes: '',
+    observed_at: '2024-01-01T00:00:00.000Z',
+    ttl: 60,
   },
 ];
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
@@ -62,9 +64,9 @@ afterEach(() => {
 
 it('answers inconclusive with reason no-data, citing exactly the evidence items whose result is not ok', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
-    { concept: 'concept-denied', result: 'denied', fields: [], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
+    { concept: 'concept-denied', result: 'denied', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
   ];
   const evaluator = createEvaluator();
 
@@ -82,8 +84,8 @@ it('answers inconclusive with reason no-data, citing exactly the evidence items 
 
 it("omits the field key entirely from each citation a no-data outcome constructs for its non-ok evidence — never field: '' — so 'field' in citation is false for every one of them", async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
   ];
   const evaluator = createEvaluator();
 
@@ -123,8 +125,8 @@ it("leaves a refuted answer's citation carrying both concept and field exactly a
 
 it('never calls the provider when the evidence carries any non-ok result', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
   ];
   const evaluator = createEvaluator();
 
@@ -133,7 +135,7 @@ it('never calls the provider when the evidence carries any non-ok result', async
   expect(createMock).not.toHaveBeenCalled();
 });
 
-it('sends byte-identical prompt content across two calls carrying the same criterion, evidence (including its own field semantics and concept description) and case context', async () => {
+it("sends prompt content that is identical across two calls carrying the same criterion, evidence (including its own field semantics and concept description) and case context, apart from each call's own freshly-read <current_instant>", async () => {
   createMock.mockResolvedValue(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
   const evidenceForEachCall = (): readonly EvidenceItem[] => [
@@ -144,6 +146,8 @@ it('sends byte-identical prompt content across two calls carrying the same crite
       fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
       concept_description: 'what concept-one means',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
   const caseContextForEachCall = (): CaseContext => ({ title: 'a-title', whenToUse: 'a-when-to-use' });
@@ -151,9 +155,79 @@ it('sends byte-identical prompt content across two calls carrying the same crite
   await evaluator.evaluate(A_CRITERION, evidenceForEachCall(), caseContextForEachCall());
   await evaluator.evaluate(A_CRITERION, evidenceForEachCall(), caseContextForEachCall());
 
-  const firstContent = createMock.mock.calls[0]?.[0]?.messages[0]?.content;
-  const secondContent = createMock.mock.calls[1]?.[0]?.messages[0]?.content;
-  expect(firstContent).toBe(secondContent);
+  const withoutCurrentInstant = (content: string): string =>
+    content.replace(/<current_instant>.*?<\/current_instant>/, '<current_instant/>');
+  const firstContent = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const secondContent = createMock.mock.calls[1]?.[0]?.messages[0]?.content ?? '';
+  expect(withoutCurrentInstant(firstContent)).toBe(withoutCurrentInstant(secondContent));
+});
+
+it('reads the current instant fresh from the clock on every separate evaluate() call — including the call judgment-stage.ts issues as a retry — rather than reusing the value an earlier call already read', async () => {
+  vi.useFakeTimers();
+  try {
+    vi.setSystemTime(new Date('2024-03-01T10:00:00.000Z'));
+    createMock.mockResolvedValue(messageWithText('{"verdict":"inconclusive"}'));
+    const evaluator = createEvaluator();
+
+    await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+    vi.setSystemTime(new Date('2024-03-01T10:05:00.000Z'));
+    await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+    const firstContent = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+    const secondContent = createMock.mock.calls[1]?.[0]?.messages[0]?.content ?? '';
+    expect(firstContent).toContain('<current_instant>2024-03-01T10:00:00.000Z</current_instant>');
+    expect(secondContent).toContain('<current_instant>2024-03-01T10:05:00.000Z</current_instant>');
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it('states that only the observation is evidence, and that fields, concept_description and capability_payload_notes are reading aids rather than evidence in themselves', async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+
+  await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  const system = createMock.mock.calls[0]?.[0]?.system ?? '';
+  expect(system).toContain('is the data you validate the criterion against, and only it is evidence');
+  expect(system).toContain('<fields>');
+  expect(system).toContain('<concept_description>');
+  expect(system).toContain('<capability_payload_notes>');
+  expect(system).toContain('never as evidence in themselves and never a fact to verify');
+});
+
+it('states that <observation> is a JSON-encoded string to parse before checking any value against the criterion', async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+
+  await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  const system = createMock.mock.calls[0]?.[0]?.system ?? '';
+  expect(system).toContain('a JSON-encoded string');
+  expect(system).toContain('parse it, rather than reading it as free text');
+  expect(system).toContain('before checking any value it carries against the <criterion>');
+});
+
+it("states that multiple evidence items are evaluated in complete isolation, never attributing one item's field value to another even where both declare a field of the same name", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+
+  await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  const system = createMock.mock.calls[0]?.[0]?.system ?? '';
+  expect(system).toContain('evaluate each in complete isolation from every other');
+  expect(system).toContain('is never attributed to another item, even where two items declare a field of the same name');
+});
+
+it("states that <current_instant> and each item's own <observed_at>/<ttl> are recency-and-staleness context, used together, and are never themselves citable evidence", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+
+  await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  const system = createMock.mock.calls[0]?.[0]?.system ?? '';
+  expect(system).toContain('<observed_at> and <ttl> together with <current_instant>');
+  expect(system).toContain("neither <current_instant> nor any item's own <observed_at> or <ttl> is itself citable evidence");
 });
 
 it('carries the given criterion, evidence observation, its own concept description, its own field semantics, case title and case when_to_use inside one delimited block', async () => {
@@ -167,6 +241,8 @@ it('carries the given criterion, evidence observation, its own concept descripti
       fields: [{ name: 'the-marker-field', type: 'the-marker-type', description: 'the-marker-field-description' }],
       concept_description: 'the-marker-concept-description',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
   const caseContext: CaseContext = { title: 'the-marker-title', whenToUse: 'the-marker-when-to-use' };
@@ -195,6 +271,41 @@ function itemBlockOf(content: string, concept: string): string {
   return content.slice(start, end + '</item>'.length);
 }
 
+it("renders each evidence item's own observed_at, unmodified, into that item's own <observed_at> element", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    { ...SOME_OK_EVIDENCE[0]!, concept: 'concept-with-observed-at', observed_at: '2023-11-05T08:15:30.000Z' },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const item = itemBlockOf(content, 'concept-with-observed-at');
+  expect(item).toContain('<observed_at>2023-11-05T08:15:30.000Z</observed_at>');
+});
+
+it("renders each evidence item's own ttl, paired with that same item's own observed_at, into that item's own block alone — never mixed with another item's values", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    { ...SOME_OK_EVIDENCE[0]!, concept: 'concept-one', observed_at: '2023-01-01T00:00:00.000Z', ttl: 30 },
+    { ...SOME_OK_EVIDENCE[0]!, concept: 'concept-two', observed_at: '2023-06-01T00:00:00.000Z', ttl: 90 },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const itemOne = itemBlockOf(content, 'concept-one');
+  const itemTwo = itemBlockOf(content, 'concept-two');
+  expect(itemOne).toContain('<ttl>30</ttl>');
+  expect(itemOne).toContain('<observed_at>2023-01-01T00:00:00.000Z</observed_at>');
+  expect(itemOne).not.toContain('<ttl>90</ttl>');
+  expect(itemTwo).toContain('<ttl>90</ttl>');
+  expect(itemTwo).toContain('<observed_at>2023-06-01T00:00:00.000Z</observed_at>');
+  expect(itemTwo).not.toContain('<ttl>30</ttl>');
+});
+
 it("renders each evidence item's own field semantics as its own <field> elements inside its own <fields>, each carrying its own name plus its own type attribute and description text exactly where the snapshot declared them, and never invented where it declared neither", async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
@@ -209,8 +320,10 @@ it("renders each evidence item's own field semantics as its own <field> elements
       ],
       concept_description: 'what concept-one means',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
-    { concept: 'concept-two', result: 'ok', observation: 'observation-two', fields: [], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-two', result: 'ok', observation: 'observation-two', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
   ];
 
   await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
@@ -239,6 +352,8 @@ it("renders a field's own type attribute independently of its own description te
       ],
       concept_description: '',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
 
@@ -260,6 +375,8 @@ it("renders each evidence item's own concept description as its own <concept_des
       fields: [{ name: 'a-field' }],
       concept_description: 'what concept-with-a-description means',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
 
@@ -285,6 +402,8 @@ it('omits the <concept_description> tag entirely for an item whose concept_descr
       fields: [{ name: 'a-field' }],
       concept_description: '',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
 
@@ -308,6 +427,8 @@ it("renders an evidence item's own capability_payload_notes inside its own <capa
       fields: [{ name: 'a-field' }],
       concept_description: '',
       capability_payload_notes: 'the payload actually nests status under a raw key',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
 
@@ -329,6 +450,8 @@ it("omits the <capability_payload_notes> tag entirely for an item whose capabili
       fields: [{ name: 'a-field' }],
       concept_description: '',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
 
@@ -345,22 +468,8 @@ it("renders each evidence item's own capability_payload_notes into that item's o
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
   const evidence: readonly EvidenceItem[] = [
-    {
-      concept: 'concept-one',
-      result: 'ok',
-      observation: 'observation-one',
-      fields: [{ name: 'a-field' }],
-      concept_description: '',
-      capability_payload_notes: 'notes-belonging-to-item-one',
-    },
-    {
-      concept: 'concept-two',
-      result: 'ok',
-      observation: 'observation-two',
-      fields: [{ name: 'a-field' }],
-      concept_description: '',
-      capability_payload_notes: 'notes-belonging-to-item-two',
-    },
+    { concept: 'concept-one', result: 'ok', observation: 'observation-one', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: 'notes-belonging-to-item-one', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
+    { concept: 'concept-two', result: 'ok', observation: 'observation-two', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: 'notes-belonging-to-item-two', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
   ];
 
   await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
@@ -385,6 +494,8 @@ it("escapes reserved XML characters in an item's own concept_description and fie
       fields: [{ name: 'a-<field>-&-name', type: 'a-<type>', description: 'a-<description>-&-text' }],
       concept_description: 'a-<concept-description>-&-text',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ];
 
@@ -675,8 +786,8 @@ it("reports elapsed_ms and the exact prompt sent, but never invents a usage fiel
 
 it('a no-data outcome, answered without ever reaching the provider, still carries none of usage, elapsed_ms or prompt', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '' },
-    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 },
   ];
   const evaluator = createEvaluator();
 

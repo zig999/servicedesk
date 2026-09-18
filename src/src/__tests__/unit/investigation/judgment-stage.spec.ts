@@ -195,8 +195,8 @@ it("calls evaluate() with only the judged hypothesis's own criterion and its own
   expect(evaluator.calls).toHaveLength(2);
   const forH1 = evaluator.calls.find((call) => call.criterion === 'h1 criterion');
   const forH2 = evaluator.calls.find((call) => call.criterion === 'h2 criterion');
-  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', fields: [], concept_description: '', capability_payload_notes: '' }]);
-  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', fields: [], concept_description: '', capability_payload_notes: '' }]);
+  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 }]);
+  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', fields: [], concept_description: '', capability_payload_notes: '', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 }]);
 });
 
 it("passes each evidence item's own snapshotted field semantics and concept description to evaluate() — read straight from the evidence it was given, never resolved live — before the first call is ever made, never only after a decided answer", async () => {
@@ -217,6 +217,8 @@ it("passes each evidence item's own snapshotted field semantics and concept desc
       fields: fieldsDeclaring('field-a', 'field-b'),
       concept_description: 'a concept description',
       capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
     },
   ]);
 });
