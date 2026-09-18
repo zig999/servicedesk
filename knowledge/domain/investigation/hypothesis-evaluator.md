@@ -11,4 +11,4 @@ The rule it applies is not in code but in the case's prose, so the tension betwe
 
 ## Responsibility
 
-Given one hypothesis's criterion, its own evidence — each item's own snapshotted concept, field semantics and capability payload notes alongside its observation — and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred, reading nothing live from the glossary or the capability registry.
+Given one hypothesis's criterion, its own evidence — each item's own snapshotted concept, field semantics, capability payload notes, observed_at and ttl alongside its observation — the current instant read fresh at the moment of judgment, and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred, reading nothing live from the glossary or the capability registry.

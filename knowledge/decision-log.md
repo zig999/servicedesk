@@ -5070,4 +5070,62 @@ entries:
     "Each item''s own <observed_at> states when its <observation> was captured, in UTC, and <ttl_seconds>
     states how many seconds that observation was considered fresh for from that moment."'
 
+- location: rules/investigation/judgment-reads-the-evidence-snapshot.md
+  field: statement
+  unstated: Whether observed_at and ttl, both already required attributes of domain/investigation/evidence,
+    are among the snapshotted attributes this rule holds judgment to reading only -- its enumerated list
+    named concept, field semantics and capability payload notes and stopped there, before either temporal
+    attribute existed as part of what a criterion could depend on.
+  decided: 'observed_at and ttl join the enumerated list judgment may read from the evidence snapshot,
+    on the same terms as the three already there: fixed at collection, read from the item alone, never
+    re-read live.'
+  why: A criterion can turn on how recent or stale an observation is, and the two attributes that answer
+    that -- when the observation was captured, and how long it stood fresh -- already exist on every evidence
+    item; the corrective increment judgment-prompt-temporal-context (work/judgment-prompt-temporal-context)
+    surfaced that a judgment prompt carrying neither makes such a criterion structurally unjudgeable,
+    and an execution-contract-binder over that increment's task returned this rule's own closed wording
+    as a blocking contradiction of the criteria asking for it. Widening the enumeration rather than replacing
+    it keeps the rule's whole point -- collection-time fixing, no live re-read -- and simply admits two
+    attributes that were always part of the same snapshot.
+- location: constraints/the-judgment-prompt-is-closed.md
+  field: statement
+  unstated: Whether a judgment prompt's evidence items may carry their own observed_at and ttl, and whether
+    the prompt may carry any element read fresh at the moment of assembly rather than snapshotted at collection
+    -- the statement enumerated the prompt's permitted content exhaustively and neither was in it, and
+    the fitness held assembly to being a function of only the snapshotted evidence and the two case facts,
+    admitting nothing read at assembly time itself.
+  decided: 'The permitted content widens to include each evidence item''s own observed_at and ttl (joining
+    rules/investigation/judgment-reads-the-evidence-snapshot''s own widening), and to include the current
+    instant, read fresh in UTC at the moment of assembly rather than snapshotted at any earlier instant.
+    The fitness widens the same way: assembly remains a function of its declared inputs, that list now
+    naming the current instant among them, and the no-live-registry-or-glossary-read half is unchanged.'
+  why: Same occasion as rules/investigation/judgment-reads-the-evidence-snapshot's widening -- a criterion
+    depending on recency or staleness needs both the evidence's own captured-at and a now to measure it
+    against, and this constraint is what closes the prompt's contents, so admitting the fact there without
+    admitting it here would leave the rule granting evidence a widened read that the prompt itself still
+    refuses to carry. The current instant is admitted as its own kind of content, distinct from the evidence
+    widening, because nothing collected it and no item snapshots it; rules/investigation/judgment-reads-the-current-instant-fresh
+    is the new rule stating what disciplines that one non-snapshotted element, so this constraint's own
+    closed-block guarantee -- nothing here is a live registry or glossary read -- still holds of it.
+- location: rules/investigation/judgment-reads-the-current-instant-fresh.md
+  field: statement
+  unstated: What the 'now' a hypothesis's judgment reasons about recency or staleness against actually
+    is -- neither its time reference nor which clock the system reads it from, nor whether it is read
+    once per judgment or reused. rules/investigation/an-evidence-items-observed-at-is-a-utc-instant, itself
+    decided in the same corrective increment this analysis answers, named this exact silence in passing
+    while deciding a neighboring fact about evidence's own observed_at.
+  decided: 'A new invariant over domain/investigation/hypothesis-evaluator: judgment reads the current
+    instant fresh from the clock, in UTC, at the moment that judgment is requested -- never a value carried
+    over from any evidence collection, and never one instant shared across two separate judgment requests
+    for the same hypothesis.'
+  why: UTC because the two sides of any staleness comparison -- an evidence item's own observed_at and
+    this instant -- must read against one clock or the comparison answers a different question depending
+    on which reader's zone is asked, the same reasoning rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    already gives for observed_at itself. Read fresh at request time, rather than at collection or cached
+    across requests, because judgment is what actually asks the recency question -- collection has already
+    ended by then, possibly long before, and a judgment answered from a stale 'now' would misjudge staleness
+    by exactly the margin the caching introduced. domain/investigation/hypothesis-evaluator is the home
+    because evaluate is the one operation that reads this instant at all; no evidence item nor the evaluation
+    it produces owns a clock reading of its own.
+
 ---

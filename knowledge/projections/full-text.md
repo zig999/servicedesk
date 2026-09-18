@@ -254,17 +254,17 @@ The cache is a day-two lever: it shortens the tail, never the cold path the dead
 
 === constraints/the-judgment-prompt-is-closed
 ---
-statement: A judgment prompt contains only one hypothesis's criterion, its own evidence — each item carrying its snapshotted concept meaning and field semantics (name, and type and description where declared) exactly as they stood when that evidence was collected — and the pinned case's title and when_to_use, in a delimited data block, with no tool calling available to the model; prompt assembly makes no live read of the glossary or the capability registry.
+statement: A judgment prompt contains only one hypothesis's criterion, its own evidence — each item carrying its snapshotted concept meaning, field semantics (name, and type and description where declared), observed_at and ttl exactly as they stood when that evidence was collected — the current instant, read fresh in UTC at the moment judgment is requested, and the pinned case's title and when_to_use, in a delimited data block, with no tool calling available to the model; prompt assembly makes no live read of the glossary or the capability registry.
 scope: investigation
-fitness: Prompt assembly is a pure function of the hypothesis's criterion, its own evidence's own snapshotted fields, and the pinned case's title and when_to_use, and the provider call grants no tools; nothing prompt assembly reads is answered by a registry or glossary lookup made at judgment time.
+fitness: Prompt assembly is a function of the hypothesis's criterion, its own evidence's own snapshotted fields, the current instant read fresh at the moment of assembly, and the pinned case's title and when_to_use, and the provider call grants no tools; nothing prompt assembly reads is answered by a registry or glossary lookup made at judgment time.
 ---
 
 ## Description
 
 Without tool calling the model cannot be led to act, and the delimited block plus the fixed system rule keep a free-text field from leading it to judge wrongly — data is data, never instruction.
-The case's title and when_to_use enter as situational context, so the model judges knowing which troubleshooting scenario it stands in; no other hypothesis's criterion and none of the subject's identifying attributes enter, and the block stays closed — only its permitted content grew by these two case facts, and again by the semantics domain/investigation/evidence now snapshots.
+The case's title and when_to_use enter as situational context, so the model judges knowing which troubleshooting scenario it stands in; no other hypothesis's criterion and none of the subject's identifying attributes enter, and the block stays closed — only its permitted content grew by these two case facts, again by the semantics domain/investigation/evidence now snapshots, and again by each item's own observed_at and ttl and by the current instant.
 rules/investigation/a-cited-field-exists-in-the-capability-output-schema demands a citation's field exist among the field names its own evidence item snapshotted, and a model never shown those field names has no way to satisfy it; they enter per evidence item alongside their own type and description and the observation, still as data the model reads and never as an instruction.
-rules/investigation/judgment-reads-the-evidence-snapshot is what keeps this pure: the semantics that ground a judgment are fixed at collection, inside the evidence itself, so a capability re-registered or a concept re-described after collection never changes what an already-collected item's judgment sees.
+rules/investigation/judgment-reads-the-evidence-snapshot is what keeps the evidence half of this closed: the semantics that ground a judgment are fixed at collection, inside the evidence itself, so a capability re-registered or a concept re-described after collection never changes what an already-collected item's judgment sees. The current instant is the one admitted content this cannot hold still, by its own nature — rules/investigation/judgment-reads-the-current-instant-fresh is what keeps it honest instead: read fresh at assembly, in UTC, never carried over from evidence collection and never held across two separate judgment requests.
 
 === constraints/the-openapi-document-is-fetched-by-the-backend
 ---
@@ -5785,6 +5785,64 @@ entries:
     "Each item''s own <observed_at> states when its <observation> was captured, in UTC, and <ttl_seconds>
     states how many seconds that observation was considered fresh for from that moment."'
 
+- location: rules/investigation/judgment-reads-the-evidence-snapshot.md
+  field: statement
+  unstated: Whether observed_at and ttl, both already required attributes of domain/investigation/evidence,
+    are among the snapshotted attributes this rule holds judgment to reading only -- its enumerated list
+    named concept, field semantics and capability payload notes and stopped there, before either temporal
+    attribute existed as part of what a criterion could depend on.
+  decided: 'observed_at and ttl join the enumerated list judgment may read from the evidence snapshot,
+    on the same terms as the three already there: fixed at collection, read from the item alone, never
+    re-read live.'
+  why: A criterion can turn on how recent or stale an observation is, and the two attributes that answer
+    that -- when the observation was captured, and how long it stood fresh -- already exist on every evidence
+    item; the corrective increment judgment-prompt-temporal-context (work/judgment-prompt-temporal-context)
+    surfaced that a judgment prompt carrying neither makes such a criterion structurally unjudgeable,
+    and an execution-contract-binder over that increment's task returned this rule's own closed wording
+    as a blocking contradiction of the criteria asking for it. Widening the enumeration rather than replacing
+    it keeps the rule's whole point -- collection-time fixing, no live re-read -- and simply admits two
+    attributes that were always part of the same snapshot.
+- location: constraints/the-judgment-prompt-is-closed.md
+  field: statement
+  unstated: Whether a judgment prompt's evidence items may carry their own observed_at and ttl, and whether
+    the prompt may carry any element read fresh at the moment of assembly rather than snapshotted at collection
+    -- the statement enumerated the prompt's permitted content exhaustively and neither was in it, and
+    the fitness held assembly to being a function of only the snapshotted evidence and the two case facts,
+    admitting nothing read at assembly time itself.
+  decided: 'The permitted content widens to include each evidence item''s own observed_at and ttl (joining
+    rules/investigation/judgment-reads-the-evidence-snapshot''s own widening), and to include the current
+    instant, read fresh in UTC at the moment of assembly rather than snapshotted at any earlier instant.
+    The fitness widens the same way: assembly remains a function of its declared inputs, that list now
+    naming the current instant among them, and the no-live-registry-or-glossary-read half is unchanged.'
+  why: Same occasion as rules/investigation/judgment-reads-the-evidence-snapshot's widening -- a criterion
+    depending on recency or staleness needs both the evidence's own captured-at and a now to measure it
+    against, and this constraint is what closes the prompt's contents, so admitting the fact there without
+    admitting it here would leave the rule granting evidence a widened read that the prompt itself still
+    refuses to carry. The current instant is admitted as its own kind of content, distinct from the evidence
+    widening, because nothing collected it and no item snapshots it; rules/investigation/judgment-reads-the-current-instant-fresh
+    is the new rule stating what disciplines that one non-snapshotted element, so this constraint's own
+    closed-block guarantee -- nothing here is a live registry or glossary read -- still holds of it.
+- location: rules/investigation/judgment-reads-the-current-instant-fresh.md
+  field: statement
+  unstated: What the 'now' a hypothesis's judgment reasons about recency or staleness against actually
+    is -- neither its time reference nor which clock the system reads it from, nor whether it is read
+    once per judgment or reused. rules/investigation/an-evidence-items-observed-at-is-a-utc-instant, itself
+    decided in the same corrective increment this analysis answers, named this exact silence in passing
+    while deciding a neighboring fact about evidence's own observed_at.
+  decided: 'A new invariant over domain/investigation/hypothesis-evaluator: judgment reads the current
+    instant fresh from the clock, in UTC, at the moment that judgment is requested -- never a value carried
+    over from any evidence collection, and never one instant shared across two separate judgment requests
+    for the same hypothesis.'
+  why: UTC because the two sides of any staleness comparison -- an evidence item's own observed_at and
+    this instant -- must read against one clock or the comparison answers a different question depending
+    on which reader's zone is asked, the same reasoning rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
+    already gives for observed_at itself. Read fresh at request time, rather than at collection or cached
+    across requests, because judgment is what actually asks the recency question -- collection has already
+    ended by then, possibly long before, and a judgment answered from a stale 'now' would misjudge staleness
+    by exactly the margin the caching introduced. domain/investigation/hypothesis-evaluator is the home
+    because evaluate is the one operation that reads this instant at all; no evidence item nor the evaluation
+    it produces owns a clock reading of its own.
+
 ---
 
 === domain/glossary/_context
@@ -6682,7 +6740,7 @@ The rule it applies is not in code but in the case's prose, so the tension betwe
 
 ## Responsibility
 
-Given one hypothesis's criterion, its own evidence — each item's own snapshotted concept, field semantics and capability payload notes alongside its observation — and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred, reading nothing live from the glossary or the capability registry.
+Given one hypothesis's criterion, its own evidence — each item's own snapshotted concept, field semantics, capability payload notes, observed_at and ttl alongside its observation — the current instant read fresh at the moment of judgment, and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred, reading nothing live from the glossary or the capability registry.
 
 === domain/investigation/investigation
 ---
@@ -11196,10 +11254,23 @@ constrains:
 
 The instruction is fixed in the judgment prompt: evidence grounds verdicts, and absence of ground is a reason, not an invitation.
 
+=== rules/investigation/judgment-reads-the-current-instant-fresh
+---
+type: invariant
+statement: A hypothesis's judgment reads the current instant, in UTC, read fresh from the clock at the moment that judgment is requested, never a value carried over from any evidence's own collection and never one instant shared across two separate judgment requests for the same hypothesis.
+constrains:
+  - domain/investigation/hypothesis-evaluator
+---
+
+## Description
+
+A criterion can turn on how recent or how stale an observation is, and answering that needs a "now" to measure every evidence item's own observed_at and ttl against. That "now" is not itself evidence — nothing was collected at it, and no capability answered it — so it stands apart from what rules/investigation/judgment-reads-the-evidence-snapshot fixes at collection: this is read once per judgment, at the instant judgment itself is requested, never at the earlier instant any of that hypothesis's evidence happened to be collected at and never reused from a judgment already answered.
+UTC is the same reference rules/investigation/an-evidence-items-observed-at-is-a-utc-instant already fixes for observed_at, so the two sides of a staleness comparison — the evidence's own captured-at and the judgment's own now — read against one clock rather than two.
+
 === rules/investigation/judgment-reads-the-evidence-snapshot
 ---
 type: invariant
-statement: A hypothesis's judgment reads only its own evidence's snapshotted concept, field semantics and capability payload notes, fixed at the moment that evidence was collected; it never re-reads the glossary or the capability registry.
+statement: A hypothesis's judgment reads only its own evidence's snapshotted concept, field semantics, capability payload notes, observed_at and ttl, fixed at the moment that evidence was collected; it never re-reads the glossary or the capability registry.
 constrains:
   - domain/investigation/evidence
 ---
@@ -11208,6 +11279,7 @@ constrains:
 
 Two verified defects made a live read costly: a capability registration silently replaces whatever it already held at that name and version, and a citation vocabulary drawn from a live lookup fails silently once collection and judgment disagree about which registration answered a concept.
 The snapshot domain/investigation/evidence carries — fields, concept_description and capability_payload_notes — is what a hypothesis's judgment reads instead, always; nothing later than collection can change what an already-collected item's judgment sees. capability_payload_notes reaches the judgment the same way concept_description already does: as context grounding the observation, never as a fact anything validates or a vocabulary any citation is held to — an evidence item whose capability declared none reads it the same honest-empty way collection already recorded.
+observed_at and ttl join that same snapshot for the same reason the others do: a hypothesis's criterion can turn on how recent or how stale an observation is, and the item alone — never a live reading of anything — is what answers that, exactly as it already answers a citation's field or a concept's meaning. rules/investigation/an-evidence-items-observed-at-is-a-utc-instant and rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation fix what each of the two means; this rule only adds them to what judgment may read.
 
 === rules/investigation/no-stage-aborts-on-its-deadline
 ---

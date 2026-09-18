@@ -1,0 +1,706 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/judgment-prompt-temporal-context",
+      "kind": "epic",
+      "file": "epic/judgment-prompt-temporal-context.md",
+      "title": "Judgment prompt observation semantics and temporal context",
+      "summary": "The single corrective task that clarifies, in the hypothesis-judgment system prompt, that an evidence item's observation is the data validated against the criterion (with fields/concept_description/capability_payload_notes as interpretive aids and multiple items evaluated in isolation), and carries the current UTC time and each item's own observed-at/ttl into the judgment_input so recency- and staleness-dependent criteria become judgeable."
+    },
+    {
+      "id": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "kind": "task",
+      "file": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context.md",
+      "title": "Judgment prompt states observation semantics and carries temporal context",
+      "summary": "Fixes the hypothesis-judgment system prompt and judgment_input assembly in AnthropicHypothesisEvaluator to state the observation-versus-interpretation relationship, isolate multiple evidence items, and carry current time plus each item's own observed-at/ttl.",
+      "epic": "judgment-prompt-temporal-context"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/judgment-reads-the-current-instant-fresh",
+      "kind": "covers",
+      "at": "covers[100]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/field-semantics",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-authoring-surface-offers-a-schema-helper",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-keyed-surface-states-a-successful-registration-without-waiting-for-its-own-read",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-capability-listing-routes-presence-turns-on-nothing-further",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-connector-configuration-draft-names-subject-placeholders-from-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-connector-configuration-surface-states-a-subject-placeholder-no-registered-capability-declares",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-refused-schema-draft-states-its-refusal-to-the-operator",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers",
+      "kind": "covers",
+      "at": "covers[36]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-return-to-origin-routes-presence-turns-on-nothing-further",
+      "kind": "covers",
+      "at": "covers[37]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-return-to-origin-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[38]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing",
+      "kind": "covers",
+      "at": "covers[39]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading",
+      "kind": "covers",
+      "at": "covers[40]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers",
+      "kind": "covers",
+      "at": "covers[41]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-submitted-registration-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[42]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-successful-capability-registration-lands-on-the-capabilitys-own-surface",
+      "kind": "covers",
+      "at": "covers[43]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/a-surface-holding-no-read-registration-offers-no-discard",
+      "kind": "covers",
+      "at": "covers[44]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-abandoned-capability-registration-entry-registers-nothing",
+      "kind": "covers",
+      "at": "covers[45]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing",
+      "kind": "covers",
+      "at": "covers[46]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing",
+      "kind": "covers",
+      "at": "covers[47]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-answered-schema-draft-request-states-its-draft-to-the-operator",
+      "kind": "covers",
+      "at": "covers[48]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-authoring-surface-includes-an-unsubmitted-edit-of-a-standing-registration",
+      "kind": "covers",
+      "at": "covers[49]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "covers",
+      "at": "covers[50]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "covers",
+      "at": "covers[51]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "covers",
+      "at": "covers[52]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[53]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit",
+      "kind": "covers",
+      "at": "covers[54]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[55]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[56]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival",
+      "kind": "covers",
+      "at": "covers[57]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[58]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[59]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "covers",
+      "at": "covers[60]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-composed-subjects-input-names-every-capability-that-asks-for-it",
+      "kind": "covers",
+      "at": "covers[61]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "kind": "covers",
+      "at": "covers[62]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set",
+      "kind": "covers",
+      "at": "covers[63]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "covers",
+      "at": "covers[64]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-judgment-failure-records-the-last-call-made",
+      "kind": "covers",
+      "at": "covers[65]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "kind": "covers",
+      "at": "covers[66]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-simulation-carries-its-requester",
+      "kind": "covers",
+      "at": "covers[67]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "covers",
+      "at": "covers[68]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[69]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[70]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "covers",
+      "at": "covers[71]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[72]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[73]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "covers",
+      "at": "covers[74]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[75]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[76]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "covers",
+      "at": "covers[77]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/knowledge/a-concept-answered-by-none-or-several-capabilities-contributes-no-input-requirement",
+      "kind": "covers",
+      "at": "covers[78]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[79]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[80]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "covers",
+      "at": "covers[81]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/integration/a-mismatched-parameter-name-resolves-regardless",
+      "kind": "covers",
+      "at": "covers[82]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "covers",
+      "at": "covers[83]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects",
+      "kind": "covers",
+      "at": "covers[84]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "covers",
+      "at": "covers[85]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[86]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "covers",
+      "at": "covers[87]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "covers",
+      "at": "covers[88]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator",
+      "kind": "covers",
+      "at": "covers[89]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
+      "kind": "covers",
+      "at": "covers[90]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "covers",
+      "at": "covers[91]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-simulated-subject-omitting-a-required-attribute-degrades",
+      "kind": "covers",
+      "at": "covers[92]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "covers",
+      "at": "covers[93]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "covers",
+      "at": "covers[94]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "covers",
+      "at": "covers[95]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[96]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/an-observation-is-recorded-as-json-object-text",
+      "kind": "covers",
+      "at": "covers[97]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "covers",
+      "at": "covers[98]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "covers",
+      "at": "covers[99]"
+    },
+    {
+      "from": "epic/judgment-prompt-temporal-context",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/judgment-reads-the-current-instant-fresh",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/an-observation-is-recorded-as-json-object-text",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/judgment-prompt-temporal-context/judgment-prompt-observation-semantics-and-temporal-context",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "implements",
+      "at": "implements[9]"
+    }
+  ]
+}
