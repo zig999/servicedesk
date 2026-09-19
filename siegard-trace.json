@@ -3305,7 +3305,7 @@
         },
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+          "digest": "sha256:b5b39066a68d164afd9d42f5a484b577133c239277fb7bcb82a6290f38d81c23"
         },
         {
           "path": "src/src/investigation/citation.ts",
@@ -7245,7 +7245,7 @@
         },
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+          "digest": "sha256:b5b39066a68d164afd9d42f5a484b577133c239277fb7bcb82a6290f38d81c23"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",

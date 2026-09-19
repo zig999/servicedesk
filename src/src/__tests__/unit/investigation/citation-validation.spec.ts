@@ -69,6 +69,31 @@ it("accepts a citation naming a concept in the hypothesis's collects and a field
   expect(isCitationValid(context, citation)).toBe(true);
 });
 
+it('accepts a citation naming a collected concept and carrying no field, when its own cited evidence item snapshotted no fields at all -- the no-data-verdict case', () => {
+  const evidence = anEvidence({ concept: 'a-collected-concept', fields: [] });
+  const context: HypothesisCitationContext = {
+    collects: ['a-collected-concept'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'a-collected-concept' };
+
+  expect(isCitationValid(context, citation)).toBe(true);
+});
+
+it("accepts a citation naming a collected concept and carrying no field even where its own cited evidence item snapshotted one or more fields -- fieldless acceptance holds whatever field names that item snapshotted", () => {
+  const evidence = anEvidence({
+    concept: 'a-collected-concept',
+    fields: fieldsDeclaring('a-declared-field', 'another-declared-field'),
+  });
+  const context: HypothesisCitationContext = {
+    collects: ['a-collected-concept'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'a-collected-concept' };
+
+  expect(isCitationValid(context, citation)).toBe(true);
+});
+
 it('refuses a citation whose concept has no matching entry in the supplied evidence at all, answering false rather than throwing', () => {
   const context: HypothesisCitationContext = {
     collects: ['a-collected-concept-with-no-evidence'],
