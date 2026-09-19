@@ -6961,11 +6961,21 @@
     },
     {
       "node": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
-      "digest": "sha256:74e9067974e9cc76a61469fca3e03619efbbe579bd2b7112642798ea6ef21968",
+      "digest": "sha256:75471f9af70020cc5d6aa28d92f966d4240148a04f34f14caa42f9e50ef40603",
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "digest": "sha256:218971b5028c5bbb09ce99acfa4c3c2e3044df49a319a54cbd85d1101eee4480",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         }
       ]
     },
@@ -7329,6 +7339,10 @@
       "node": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
       "digest": "sha256:c912d2209935e1ecde4163e7bd9c97e0dee53fef257c55ad94acc055187dca3a",
       "files": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+        },
         {
           "path": "src/src/investigation/field-semantics.ts",
           "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
