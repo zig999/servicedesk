@@ -6876,6 +6876,10 @@
         {
           "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
           "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },

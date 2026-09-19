@@ -58,6 +58,10 @@ function unavailableForUnreachableConnector(connector: string, cause: unknown): 
   return { result: 'unavailable', result_detail: `${error.name}: ${connector}` };
 }
 
+function unavailableForMalformedHttpConfiguration(error: MalformedHttpConnectorConfigurationError): ObservationOutcome {
+  return { result: 'unavailable', result_detail: `${error.name}: ${error.context.problems.join('; ')}` };
+}
+
 function effectiveTimeoutMsFor(capability: Capability, remainingBudgetMs: number | undefined): number {
   return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
 }
@@ -154,7 +158,7 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
       return { ok: true, value: asHttpConnectorCallConfiguration(connector, configuration) };
     } catch (error) {
       if (error instanceof MalformedHttpConnectorConfigurationError) {
-        return { ok: false, outcome: unavailableFor(error) };
+        return { ok: false, outcome: unavailableForMalformedHttpConfiguration(error) };
       }
       throw error;
     }

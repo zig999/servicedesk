@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "kind": "implementation",
+      "file": "implementation/malformed-http-config-detail-fix/result-detail-states-vocabulary.md",
+      "title": "Malformed HTTP configuration's result_detail states its malformed-key vocabulary",
+      "summary": "unavailableFor's MalformedHttpConnectorConfigurationError branch now routes through a dedicated enrichment that appends the error's own already-computed problems to result_detail, keyed to exactly the key(s) actually malformed, mirroring unavailableForUnreachableConnector's established enrichment pattern.",
+      "task": "task/malformed-http-config-detail-fix/result-detail-states-vocabulary"
+    },
+    {
+      "id": "proof/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "kind": "proof",
+      "file": "proof/malformed-http-config-detail-fix/result-detail-states-vocabulary.md",
+      "title": "A malformed HTTP connector configuration's result_detail states its vocabulary",
+      "summary": "Five tests in the adapter's existing spec file -- four corrected in place, one newly added -- establish that unavailableForMalformedHttpConfiguration's result_detail states the error's name plus exactly the vocabulary of whichever key(s) are actually malformed, and issues no HTTP call.",
+      "task": "task/malformed-http-config-detail-fix/result-detail-states-vocabulary"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "to": "task/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "to": "implementation/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

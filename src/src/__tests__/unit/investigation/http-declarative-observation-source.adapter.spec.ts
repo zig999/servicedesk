@@ -595,7 +595,7 @@ it("answers unavailable naming ConnectorConfigurationNotRegisteredError, issuing
   expect(httpClient).not.toHaveBeenCalled();
 });
 
-it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration does not declare a recognized method", async () => {
+it("answers unavailable naming MalformedHttpConnectorConfigurationError and the methods vocabulary, not the evidence-result endings vocabulary, issuing no call, when the connector's own configuration does not declare a recognized method", async () => {
   const httpClient = newHttpClient();
   const adapter = anAdapter({
     capability: aCapability({ concept: 'a-concept' }),
@@ -605,11 +605,15 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
 
   const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
-  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(outcome.result).toBe('unavailable');
+  const detail = outcome.result === 'unavailable' ? outcome.result_detail : undefined;
+  expect(detail).toContain(MalformedHttpConnectorConfigurationError.name);
+  expect(detail).toContain(`method is not one of ${HTTP_METHODS.join(', ')}`);
+  expect(detail).not.toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
   expect(httpClient).not.toHaveBeenCalled();
 });
 
-it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration does not declare a responseMap", async () => {
+it("answers unavailable naming MalformedHttpConnectorConfigurationError and neither vocabulary, issuing no call, when the connector's own configuration does not declare a responseMap", async () => {
   const httpClient = newHttpClient();
   const adapter = anAdapter({
     capability: aCapability({ concept: 'a-concept' }),
@@ -619,11 +623,15 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
 
   const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
-  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(outcome.result).toBe('unavailable');
+  const detail = outcome.result === 'unavailable' ? outcome.result_detail : undefined;
+  expect(detail).toContain(MalformedHttpConnectorConfigurationError.name);
+  expect(detail).not.toContain(`method is not one of ${HTTP_METHODS.join(', ')}`);
+  expect(detail).not.toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
   expect(httpClient).not.toHaveBeenCalled();
 });
 
-it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration does not declare a statusMap", async () => {
+it("answers unavailable naming MalformedHttpConnectorConfigurationError and the evidence-result endings vocabulary, not the methods vocabulary, issuing no call, when the connector's own configuration does not declare a statusMap", async () => {
   const httpClient = newHttpClient();
   const adapter = anAdapter({
     capability: aCapability({ concept: 'a-concept' }),
@@ -633,7 +641,11 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
 
   const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
-  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(outcome.result).toBe('unavailable');
+  const detail = outcome.result === 'unavailable' ? outcome.result_detail : undefined;
+  expect(detail).toContain(MalformedHttpConnectorConfigurationError.name);
+  expect(detail).toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
+  expect(detail).not.toContain(`method is not one of ${HTTP_METHODS.join(', ')}`);
   expect(httpClient).not.toHaveBeenCalled();
 });
 
@@ -661,7 +673,7 @@ it('states neither the HTTP methods nor the evidence-result endings as literal e
   expect(source).not.toContain(EVIDENCE_RESULTS.join(', '));
 });
 
-it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration declares a responseMap holding a non-string value", async () => {
+it("answers unavailable naming MalformedHttpConnectorConfigurationError and neither vocabulary, issuing no call, when the connector's own configuration declares a responseMap holding a non-string value", async () => {
   const httpClient = newHttpClient();
   const adapter = anAdapter({
     capability: aCapability({ concept: 'a-concept' }),
@@ -671,7 +683,29 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
 
   const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
-  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(outcome.result).toBe('unavailable');
+  const detail = outcome.result === 'unavailable' ? outcome.result_detail : undefined;
+  expect(detail).toContain(MalformedHttpConnectorConfigurationError.name);
+  expect(detail).not.toContain(`method is not one of ${HTTP_METHODS.join(', ')}`);
+  expect(detail).not.toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it("answers unavailable naming MalformedHttpConnectorConfigurationError and both the methods vocabulary and the evidence-result endings vocabulary, issuing no call, when the connector's own configuration malforms both its method and its statusMap", async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ method: 'TRACE', statusMap: { '200': 'not-an-accepted-ending' } }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome.result).toBe('unavailable');
+  const detail = outcome.result === 'unavailable' ? outcome.result_detail : undefined;
+  expect(detail).toContain(MalformedHttpConnectorConfigurationError.name);
+  expect(detail).toContain(`method is not one of ${HTTP_METHODS.join(', ')}`);
+  expect(detail).toContain(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
   expect(httpClient).not.toHaveBeenCalled();
 });
 

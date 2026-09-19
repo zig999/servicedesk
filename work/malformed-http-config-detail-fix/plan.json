@@ -1,0 +1,160 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/malformed-http-config-detail-fix",
+      "kind": "epic",
+      "file": "epic/malformed-http-config-detail-fix.md",
+      "title": "Malformed HTTP connector configuration detail fix",
+      "summary": "A corrective increment: unavailableFor discards the malformed-configuration vocabulary its own error already computed."
+    },
+    {
+      "id": "task/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "kind": "task",
+      "file": "task/malformed-http-config-detail-fix/result-detail-states-vocabulary.md",
+      "title": "A malformed HTTP connector configuration's result_detail states its vocabulary",
+      "summary": "unavailableFor's handling of MalformedHttpConnectorConfigurationError enriches result_detail with exactly the vocabulary of the key(s) actually malformed, instead of stating only the error's class name.",
+      "epic": "malformed-http-config-detail-fix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/an-unclassified-status-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/an-unreachable-connector-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "contracts/integration/concept-observation",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "contracts/investigation/observation-source",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "contracts/system/corporate-records",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/malformed-http-config-detail-fix",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/malformed-http-config-detail-fix/result-detail-states-vocabulary",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
