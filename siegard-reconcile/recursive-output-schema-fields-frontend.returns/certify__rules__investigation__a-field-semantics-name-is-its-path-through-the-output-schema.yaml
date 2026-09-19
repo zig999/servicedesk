@@ -1,0 +1,20 @@
+certified:
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    state: uncovered
+    why: >-
+      Nothing in the offered proof derives or asserts a field-semantics name. All ten guidance
+      tests (criteria 1-10) assert only that a rendered paragraph's text matches a regex
+      describing the rule -- findGuidanceParagraph reads a p on the capability create and detail
+      screens and matches CLAIM_PATTERNS. Those assertions bind the wording of prose, not the
+      walk. The two behavioural tests (criteria 11, 12) assert only that a Save button lacks a
+      disabled attribute -- a non-refusal by a surface the guidance itself states reads and
+      validates nothing, so it holds whichever names the walk produces from those schemas, or
+      none. No test in this set submits a schema and asserts the resulting field-semantics
+      element set. The tests that would prove this fact are wherever
+      domain/investigation/field-semantics is derived, which is outside the proof this pack
+      offers.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result: an output schema exercising every clause of the
+      rule, against the exact field-semantics element set it yields. The assertion has to be made
+      where the walk runs, not on the capability form's guidance paragraph.

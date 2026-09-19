@@ -97,6 +97,27 @@
         "The prompt carries no output schema text and no other output-schema content beyond the field semantics the evidence item snapshotted."
       ],
       "findings": 11
+    },
+    {
+      "id": "review/recursive-output-schema-fields-frontend",
+      "kind": "review",
+      "file": "review/recursive-output-schema-fields-frontend.md",
+      "title": "Output-schema entry disclosure, review",
+      "summary": "What four passes found over the frontend delivery rewriting the Output-schema disclosure paragraph and its pinning test to state the recursive path reading.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "An output schema declaring its properties only beneath a nested items schema is not refused by this surface.",
+        "An output schema whose nested node carries neither type nor description is not refused by this surface.",
+        "The paragraph carries no worked example of its own -- no concrete field name, path, or schema snippet illustrating the path grammar.",
+        "The paragraph contains none of the following, in Portuguese or English -- recusa, rejeição, erro, inválido, obrigatório, verificação, checagem, somente leitura, read-only, natureza -- the vocabulary the surface own existing disclosure test already forbids.",
+        "The paragraph makes no claim about what an entered output schema is read for beyond those already held by domain/investigation/field-semantics, rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema and rules/glossary/a-description-states-meaning-never-policy.",
+        "The paragraph renders with the same text beside the Output schema entry on the capability create screen and on the capability detail screen."
+      ],
+      "findings": 1
     }
   ],
   "edges": [
@@ -297,6 +318,12 @@
       "to": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
       "kind": "reviews",
       "at": "tasks[3]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields-frontend",
+      "to": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

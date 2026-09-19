@@ -1,0 +1,73 @@
+certified:
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    state: partial
+    tests:
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          states that the read field names are the paths through the schema's own top-level
+          properties object and every properties object and items schema reachable beneath it
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          states that each object's own key is joined onto its parent's own path with a dot,
+          and an array's own items is joined onto its parent's own path with brackets
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: states that the entered content is JSON
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          states that the type and description declared at the node each path reaches, where
+          the schema states them, are read as that field's declared semantics
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: states that no other content of the entered schema is read or validated
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          states that a description entered there states what its value means and names no
+          decision
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: carries no sentence that fails to match one of the six known claim statements
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          carries no digit, which every worked example over this schema has so far
+          instantiated as a concrete code
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: carries no brace, which a worked JSON snippet would need to show a concrete shape
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: names no refusal, check or read-only-nature vocabulary anywhere in the guidance
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: renders identical guidance text beside the Output schema entry on both screens
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          does not disable Save for an output schema whose properties are declared only
+          beneath a nested items schema
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: >-
+          does not disable Save for an output schema whose nested node carries neither type
+          nor description
+    why: >-
+      The five claims are exercised whole on the authoring surface, and the edit surface is
+      reached transitively -- criterion 10 asserts the detail screen's paragraph text is
+      identical to the create screen's, so a claim dropped on edit fails there. Three stated
+      parts of the fact go unexercised. First, "s refuses no entry and checks no entered
+      content against any of the five" is measured only as the absence of a disabled attribute
+      on Save: a surface that accepted the same two schemas but rendered an inline rejection
+      beside the entry would pass criteria 11 and 12 unchanged, and neither shape is submitted
+      on the edit surface at all. The two shapes submitted are also not the case the node names
+      as the reason the statement is owed -- a schema declaring its fields somewhere other than
+      a properties object reached this way; nothing in the set submits one. Second, "s states no
+      sixth claim" is tested by splitting the paragraph on "." and requiring each sentence to
+      match one of six patterns, but the patterns are unanchored substrings: a sixth claim
+      appended as a clause inside an existing sentence matches CLAIM_PATTERNS[0] and the test
+      passes. Third, "carries no worked example of its own" is asserted as the absence of
+      digits and of braces, a proxy for the thing: a prose example naming a concrete field path
+      carries neither and passes. Separately, findGuidanceParagraph returns null when no
+      matching p exists, and the negative assertions (criteria 8 and 9) then run against "" and
+      pass vacuously.
+    remainder: testable
+    remainder_why: >-
+      Four assertions close it. (1) On the edit surface, the same two schema shapes plus one
+      declaring its fields outside any properties object, against the result that Save stays
+      enabled and no rejection or error text renders anywhere on the form; repeat the
+      no-rejection-text half on the create screen. (2) Anchor the six claim patterns with ^/$
+      over each split sentence, or assert the paragraph's textContent equals one expected
+      string. (3) Replace the digit and brace proxies with an assertion the fact states -- the
+      guidance names no concrete field, key or value. (4) Assert findGuidanceParagraph returns a
+      non-null element before each negative assertion.

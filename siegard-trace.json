@@ -2355,7 +2355,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -2469,7 +2469,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -3751,7 +3751,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -5305,7 +5305,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
@@ -5411,7 +5411,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
@@ -6441,7 +6441,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "src/src/http/dto/read-capability-by-identity.dto.ts",
@@ -7087,7 +7087,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",

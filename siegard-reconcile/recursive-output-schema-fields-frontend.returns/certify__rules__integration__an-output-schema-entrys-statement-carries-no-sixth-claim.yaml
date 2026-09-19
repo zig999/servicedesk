@@ -1,0 +1,42 @@
+certified:
+  - node: rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim
+    state: partial
+    tests:
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: carries no sentence that fails to match one of the six known claim statements
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: carries no digit, which every worked example over this schema has so far instantiated as a concrete code
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: carries no brace, which a worked JSON snippet would need to show a concrete shape
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: names no refusal, check or read-only-nature vocabulary anywhere in the guidance
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: renders identical guidance text beside the Output schema entry on both screens
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: does not disable Save for an output schema whose properties are declared only beneath a nested items schema
+      - file: src/routes/capability-form-fields-output-schema-guidance.spec.ts
+        name: does not disable Save for an output schema whose nested node carries neither type nor description
+    why: >-
+      All three limbs of the fact are reached, and each is reached by a proxy that a violation can
+      pass. (1) "states no further fact about how the schema is read": the criterion 7 test splits
+      the guidance on "." and asserts each resulting sentence contains one of the six known claim
+      statements, so a further fact appended inside an existing sentence still satisfies the
+      substring match and passes; and every assertion in the file reads only the single p that
+      findGuidanceParagraph locates by the JSON claim, so a further claim rendered in a sibling
+      element beside the Output schema entry is never read at all. (2) "carries no worked example
+      of its own": exercised only as the absence of a digit and the absence of a brace. The example
+      the node names -- the one illustrating meaning against decision -- is prose, carries neither
+      a digit nor a brace, and would pass both tests. (3) "refuses nothing on any of these
+      grounds": the criterion 11 and 12 tests submit real schemas and do exercise two grounds;
+      nothing in the set submits a schema whose description names a decision rather than a
+      meaning, so the third bounding node's ground is unexercised. Both refusal tests also read
+      refusal solely as the Save button's disabled attribute.
+    remainder: testable
+    remainder_why: >-
+      Four assertions close it. First, against the rendered guidance, assert the text equals the
+      concatenation of exactly the six known statements -- an equality, not six substring matches.
+      Second, for the worked example, assert the guidance contains no example marker over its own
+      content. Third, fill the create screen with an output schema whose node carries a
+      description naming a decision, and expect Save enabled and the form submitting. Fourth, for
+      each of those three inputs assert the submit actually reaches the stub and no refusal
+      message renders beside the field.
