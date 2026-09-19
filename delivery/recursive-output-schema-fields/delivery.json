@@ -64,6 +64,23 @@
       "title": "Observation load stays top-level under a nested output schema",
       "summary": "Two new tests on the existing HTTP declarative observation-source adapter spec pin the top-level boundary explicitly against a nested output schema (installations declaring state beneath its items), demonstrating both the bounding rule and the response-map-key-names-nothing scenario; the second UNDERDETERMINED note is left unresolved with why.",
       "task": "task/recursive-output-schema-field-paths/observation-load-stays-top-level"
+    },
+    {
+      "id": "review/recursive-output-schema-fields",
+      "kind": "review",
+      "file": "review/recursive-output-schema-fields.md",
+      "title": "Recursive output-schema field paths, review",
+      "summary": "What four passes found over the four deliveries making field-semantics.ts read a capability output schema recursively and its three consumers stay correct.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Prompt assembly makes no read of the capability registry.",
+        "The prompt carries no output schema text and no other output-schema content beyond the field semantics the evidence item snapshotted."
+      ],
+      "findings": 11
     }
   ],
   "edges": [
@@ -210,6 +227,30 @@
       "to": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

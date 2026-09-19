@@ -1,0 +1,133 @@
+findings:
+  - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+    where: "lines 150-173, the 'imports no HTTP client package' and 'defaults its own HTTP client to the platform global fetch' tests"
+    evidence: |-
+      const forbidden = ['axios', 'node-fetch', 'got', 'undici', 'superagent', 'request'];
+      const offenders = forbidden.filter((name) => source.includes(`'${name}'`) || source.includes(`"${name}"`));
+
+      expect(offenders).toEqual([]);
+    cost: >-
+      The adapter's binding to the platform's own global fetch, and the specific ban on axios,
+      node-fetch, got, undici, superagent and request, lives only in this test. A reader of the
+      specification looking for what HTTP transport the observe-concept adapter may depend on
+      finds nothing — none of `contracts/integration/concept-observation`,
+      `rules/integration/an-http-connector-configuration-declares-its-call` or
+      `constraints/the-domain-depends-on-no-infrastructure` (which binds the domain layer, not
+      this infrastructure adapter) states it — so a future change introducing one of these
+      packages would violate only this test file, never a documented rule.
+    kind: unstated
+    correction: >-
+      State, in a node scoping this adapter's own infrastructure boundary (the way
+      `constraints/the-domain-depends-on-no-infrastructure` states the domain layer's), that the
+      HTTP connector adapter reaches the network only through the platform's own fetch and depends
+      on no HTTP client package.
+  - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+    where: "lines 828-852, the two request-body-serialization tests"
+    evidence: |-
+      expect(httpClient.mock.calls[0]?.[1]?.body).toBe(JSON.stringify({ subjectId: 'a-subject-id' }));
+    cost: >-
+      How the connector call's own resolved body reaches the wire — a non-string resolved body is
+      JSON-encoded, an already-string one is sent verbatim without double-encoding — is asserted
+      only here. `rules/integration/an-http-connector-configuration-declares-its-call` states the
+      body may be "of any shape" with placeholders substituted as plain text, but is silent on the
+      wire encoding once that substitution resolves; `rules/investigation/an-observation-is-recorded-as-json-object-text`
+      states the symmetric rule for the read side (the evidence's own observation) but nothing
+      states it for the outbound call, so this encoding rule lives only in code a test happens to
+      pin down.
+    kind: unstated
+    correction: >-
+      State, beside `rules/integration/an-http-connector-configuration-declares-its-call`, how a
+      resolved request body is placed on the wire — JSON-encoded when not already a string, sent
+      verbatim when it is.
+read:
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: |-
+      expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ installations: [{ state: 'up' }] }) });
+  - node: domain/investigation/evidence
+    held_at: >-
+      partially — the outcome literals returned by observeConcept carry two of the entity's
+      attributes, result and observation (and, on failure, result_detail); nothing else the entity
+      declares (concept, inputs, observed_at, ttl, origin, elapsed_ms, fields, concept_description,
+      capability_payload_notes) is constructed or asserted in this file.
+    evidence: |-
+      expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ status: 'operational' }) });
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: nowhere
+    evidence: |-
+      'installations[].state': 'data.installations[0].state',
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: nowhere
+    evidence: |-
+      expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ installations: [{ state: 'up' }] }) });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the "is imported by no domain module" test, which audits case/glossary/investigation source
+      files for any import of this adapter
+    evidence: |-
+      expect(offenders).toEqual([]);
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: |-
+      import {
+        asHttpConnectorCallConfiguration,
+        HttpDeclarativeObservationSource,
+        type IConnectorConfigurationQuery,
+      } from '../../../investigation/http-declarative-observation-source.adapter.js';
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |-
+      import {
+        asHttpConnectorCallConfiguration,
+        HttpDeclarativeObservationSource,
+        type IConnectorConfigurationQuery,
+      } from '../../../investigation/http-declarative-observation-source.adapter.js';
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      import {
+        asHttpConnectorCallConfiguration,
+        HttpDeclarativeObservationSource,
+        type IConnectorConfigurationQuery,
+      } from '../../../investigation/http-declarative-observation-source.adapter.js';
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: |-
+      import {
+        asHttpConnectorCallConfiguration,
+        HttpDeclarativeObservationSource,
+        type IConnectorConfigurationQuery,
+      } from '../../../investigation/http-declarative-observation-source.adapter.js';
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: nowhere
+    evidence: |-
+      import {
+        asHttpConnectorCallConfiguration,
+        HttpDeclarativeObservationSource,
+        type IConnectorConfigurationQuery,
+      } from '../../../investigation/http-declarative-observation-source.adapter.js';
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: nowhere
+    evidence: |-
+      import {
+        asHttpConnectorCallConfiguration,
+        HttpDeclarativeObservationSource,
+        type IConnectorConfigurationQuery,
+      } from '../../../investigation/http-declarative-observation-source.adapter.js';
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: >-
+      the whole family of ok-ending tests keying the observation by the intersection of
+      responseMap keys, output-schema top-level properties and resolving paths (lines 503-521,
+      867-937, 940-992)
+    evidence: |-
+      expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ matched_field: 'resolved-value' }) });
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: "the test at lines 970-992, built from the scenario's own given/when/then"
+    evidence: |-
+      expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ installations: ['a', 'b'] }) });
+looked_past: >-
+  The test at lines 809-813 asserting that the exported asHttpConnectorCallConfiguration throws
+  unwrapped for a caller that narrows a configuration directly is an internal API-shape assertion
+  with no domain content, and the it()-title citations of scenario names (e.g. "exactly as the
+  response-map-key-names-nothing scenario states") are test-naming style rather than a domain fact
+  or a comment on production code, so neither is reported here.

@@ -1,0 +1,61 @@
+certified:
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: carries an observation on the ok ending
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          keys the ok observation by the capability's own output_schema property names, dropping a
+          response-map field the schema does not declare, and never surfacing the response's own raw
+          field name
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: treats a response body that is not valid JSON as nothing extracted, rather than throwing, on the ok path
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          excludes an output-schema property from the ok observation when no responseMap key names it,
+          even though the response body happens to carry a same-named field
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          carries no field for a responseMap key that is itself a declared output-schema property when
+          its own path does not resolve in the response body
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          ends ok with an empty observation, refusing nothing at read time, when every responseMap key
+          names no output-schema property at all
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          carries exactly the field whose name is at once a responseMap key and a declared
+          output-schema property with a resolving path, excluding a schema-only property, a
+          responseMap-only key and a key whose own path fails to resolve, all present in the same call
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          keeps the ok observation to installations alone under a nested output schema — excluding
+          installations[].state even though its own responseMap path resolves, a top-level property
+          whose own path never resolves, and a top-level property no responseMap key names
+      - file: src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts
+        name: >-
+          carries installations with its resolved value, no field named id and no field named login,
+          ending ok — exactly as the response-map-key-names-nothing scenario states
+    why: >-
+      Both exclusions the fact names are exercised, separately and together: a responseMap key naming
+      no top-level output-schema property contributes nothing, an output-schema property no
+      responseMap key names is absent, and the nested case pins "own top-level properties object" by
+      excluding installations[].state whose path does resolve. What goes unexercised is inside the
+      third conjunct, "whose responseMap path resolves in the response body". Every resolving path in
+      the set resolves to a non-empty string or a non-empty array, so a path that resolves to a false,
+      zero, empty-string or null value in the body is never submitted; an implementation that decided
+      resolution by truthiness would drop a field the fact says the observation carries and every
+      named test would still pass. Separately, every capability in the set declares an output schema
+      that has a top-level properties object, so the case where that object is absent — under which
+      the intersection is empty and the observation must carry nothing — is never submitted, and an
+      implementation that fell back to carrying every responseMap key when it found no properties
+      object would also pass the whole set.
+    remainder: testable
+    remainder_why: >-
+      Two inputs against two expected results. First: an ok call whose responseMap names a declared
+      top-level output-schema property by a path resolving in the body to a falsy JSON value — false,
+      0, "" or null — expecting the observation to carry that field with that value rather than to
+      omit it. Second: an ok call for a capability whose output schema declares no top-level
+      properties object at all, with a responseMap whose paths all resolve, expecting an empty
+      observation.

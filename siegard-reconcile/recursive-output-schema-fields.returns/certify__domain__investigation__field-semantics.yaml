@@ -1,0 +1,30 @@
+certified:
+  - node: domain/investigation/field-semantics
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+        name: >-
+          records fields as one entry per top-level property the resolved capability's own output schema declares, carrying each key's own type and description exactly where the schema states them as strings
+      - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+        name: >-
+          snapshots installations[].state, installations and login among the collected evidence item's own fields, and no field named state alone, for a capability whose output schema declares state beneath installations' own items (scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path)
+      - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+        name: >-
+          records fields on a denied ending too, since the capability still resolved even though the observation itself was denied — fields is a fact of the resolved capability, not of how the observation ended
+      - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+        name: >-
+          records fields as an empty array for a concept whose capability never resolved, there being no output schema to read
+      - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+        name: >-
+          renders each evidence item's own field semantics as its own <field> elements inside its own <fields>, each carrying its own name plus its own type attribute and description text exactly where the snapshot declared them, and never invented where it declared neither
+      - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+        name: >-
+          renders a field's own type attribute independently of its own description text — present for one without the other in either direction, and never coupling the two together
+      - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+        name: >-
+          renders a path-shaped field name exactly as its own evidence item carries it, with no splitting or reinterpretation of the path syntax
+    why: >-
+      The value object's three attributes are exercised whole and would fail if they stopped holding: the two-field output-schema test asserts name with type and description where the schema states them and no description where it states none, by exact equality, so an invented or dropped attribute fails; the nested-schema test asserts the field reached at installations[].state equals exactly {name, type, description}, and since that schema node also declares minLength and enum, the sentence "No other content of that schema is read or validated" is exercised rather than merely stated; the denied-ending and never-resolved tests fix the field set onto the evidence item independently of how the observation ended. What is unexercised is the Responsibility's word "snapshotted". Nothing in the offered set re-registers the same concept's capability with a different output schema after collection and reads the already-produced evidence item's fields back — so an implementation that resolved fields lazily from the registry at read time, rather than copying them onto the item at collection, would pass every named test. The sibling attribute carries exactly that proof ("leaves an already-produced evidence item's capability_payload_notes unaffected by a later re-registration of the same producing capability"), which shows the project treats snapshot-versus-re-read as a distinct assertion, and no counterpart exists for fields.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result, in the shape the payload_notes re-registration test already takes: collect evidence for a concept whose capability declares an output schema with a known field, then re-register that same concept's capability with a different output schema, and assert the already-produced evidence item's fields still carry the originally declared name, type and description — unchanged by the later registration.

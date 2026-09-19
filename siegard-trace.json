@@ -469,7 +469,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -3471,7 +3471,7 @@
         },
         {
           "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
-          "digest": "sha256:1f9d1e8cb024281cc7f3705f79858f8f772311946f8c50edb719a50e199081ef"
+          "digest": "sha256:4fc165058da6155c1d29c2165fd9089d35379ac8658955e5c1c770a1f0bcd2e1"
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
@@ -7355,7 +7355,7 @@
         },
         {
           "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
-          "digest": "sha256:6371e5db1b72e3f816e32b81b3ec1dd86a5275ce9a5abfce1d0017fa32821e2c"
+          "digest": "sha256:4fc165058da6155c1d29c2165fd9089d35379ac8658955e5c1c770a1f0bcd2e1"
         }
       ]
     },
@@ -9603,6 +9603,14 @@
           "path": "src/src/investigation/field-semantics.ts",
           "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
         }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/investigation/citation-validation.spec.ts",
+          "digest": "sha256:58f02a6e186dcd788c31e210d59776d6f43ed4457e70e5073796978d9e54cb89"
+        }
       ]
     },
     {
@@ -9742,6 +9750,14 @@
         {
           "path": "src/src/investigation/field-semantics.ts",
           "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/investigation/evidence-collection-stage.spec.ts",
+          "digest": "sha256:8d431e7f4338775d1da4ba90b76c10d506ee70b9e5c911324b6b1a82fa693257"
         }
       ]
     },

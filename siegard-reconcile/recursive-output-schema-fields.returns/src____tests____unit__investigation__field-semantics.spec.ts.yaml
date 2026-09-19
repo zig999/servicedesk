@@ -1,0 +1,86 @@
+read:
+  - node: domain/investigation/field-semantics
+    held_at: >-
+      the assertions that a field carries its own name plus, only where the schema states them as
+      strings, its type and description, and nothing else of the schema's content
+    evidence: |-
+      expect(fields).toEqual([{ name: 'a-field', type: 'string', description: 'a description' }]);
+  - node: domain/investigation/evidence
+    held_at: >-
+      the honest-empty return for a field-semantics read with no output schema to read at all
+    evidence: |-
+      expect(fieldSemanticsOf(undefined)).toEqual([]);
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: >-
+      the RULE_EXERCISE_SCHEMA assertion enumerating every node the walk reaches — including the
+      non-leaf profile and installations[] entries — and stopping, unwalked, at coordinates
+      (tuple-shaped items), extras (patternProperties) and metadata (additionalProperties)
+    evidence: |-
+      expect(fields).toEqual([
+        { name: 'profile', type: 'object' },
+        { name: 'profile.name', type: 'string' },
+        { name: 'installations', type: 'array' },
+        { name: 'installations[]', type: 'object', description: 'one installation record' },
+        { name: 'installations[].state', type: 'string' },
+        { name: 'coordinates' },
+        { name: 'extras' },
+        { name: 'metadata' },
+      ]);
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: >-
+      the same RULE_EXERCISE_SCHEMA assertion's installations[].state entry, naming a field
+      declared only beneath an array's own items by its full bracketed path
+    evidence: |-
+      { name: 'installations[].state', type: 'string' },
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the assertion that every import specifier fieldSemanticsOf's module carries is a relative
+      path, none reaching a framework, driver or provider-client package
+    evidence: |-
+      const nonRelativeSpecifiers = specifiers.filter((specifier) => !specifier.startsWith('.'));
+
+      expect(nonRelativeSpecifiers).toEqual([]);
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: >-
+      the only citation-validation-adjacent assertions in this file check which names are imported
+      from citation-validation.ts — `expect(importedNames).toEqual(expect.arrayContaining(['parseJsonOrUndefined',
+      'isPlainObject']));` — never the prompt's own closed content
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      no assertion in this file reads or rebuilds a hypothesis's judgment input; the file's scope
+      stops at fieldSemanticsOf's own return value
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      no assertion in this file constructs or inspects a citation; citation-validation.ts is
+      referenced here only as the source of two shared JSON-guard helper names
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: |-
+      expect(importedNames).not.toContain('declaredFieldsOf');
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: nowhere
+    evidence: >-
+      no assertion in this file names a hypothesis-revision or a collects set
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: nowhere
+    evidence: >-
+      this file's own nested-path scenario (RULE_EXERCISE_SCHEMA) exercises fieldSemanticsOf's
+      naming alone, never a citation being accepted or refused
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      no assertion in this file constructs a connector configuration or a responseMap
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: nowhere
+    evidence: >-
+      no assertion in this file exercises a response body, a responseMap or an observation result
+looked_past: >-
+  the tests asserting that field-semantics.ts declares no local parseJsonOrUndefined/isPlainObject
+  and imports neither declaredFieldsOf nor anything from capability-input-schema-shape.ts are
+  code-organization checks (avoiding duplicated helpers) rather than assertions of a domain fact,
+  as is the broad set of graceful-empty-array assertions for malformed/undefined schema input,
+  which restate no threshold or rule beyond the general never-throw, honest-empty posture the
+  specification already states elsewhere for missing snapshot data.

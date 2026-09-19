@@ -1,0 +1,51 @@
+certified:
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/field-semantics.spec.ts
+        name: >-
+          names every node the walk reaches by its full dot- and bracket-concatenated path, carrying each one's own declared type and description, while walking no further beneath a tuple-shaped items, a patternProperties or an additionalProperties (rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema)
+      - file: src/__tests__/unit/investigation/field-semantics.spec.ts
+        name: >-
+          answers one entry per top-level property key the schema declares, in the order the schema states them
+      - file: src/__tests__/unit/investigation/field-semantics.spec.ts
+        name: >-
+          carries a key's own type and description together when the schema states both as strings
+      - file: src/__tests__/unit/investigation/field-semantics.spec.ts
+        name: >-
+          carries only the type, with no description key at all, when the schema declares a type but no description
+      - file: src/__tests__/unit/investigation/field-semantics.spec.ts
+        name: >-
+          carries only the description, with no type key at all, when the schema declares a description but no type
+      - file: src/__tests__/unit/investigation/field-semantics.spec.ts
+        name: >-
+          carries neither type nor description for a key whose own declared value is an empty object
+    why: >-
+      The exhaustive `toEqual` over RULE_EXERCISE_SCHEMA exercises most of the fact and would fail on either an
+      omitted or an excess element: a root key named by that key alone with no leading `.` (`profile`,
+      `installations`), a key concatenated onto a parent's own path with `.` (`profile.name`), an array's own
+      single-schema `items` concatenated with `[]` before any name beneath it (`installations[]`,
+      `installations[].state`), every node and not only leaves (`profile` and `installations` each carry an
+      element of their own), the node's own `type` and `description` at the node the path reaches (only
+      `installations[]` carries the description its `items` states, and it does not leak to `installations` or to
+      `installations[].state`), a tuple-shaped `items` walked no further (`coordinates` names itself and nothing
+      beneath it), and `patternProperties`/`additionalProperties` neither walked nor naming a field of their own
+      whichever content they declare (`extras` and `metadata` name themselves, and the `hidden` and `concealed`
+      keys each declares beneath are absent). What goes unexercised is the `[]` step over a parent path that is
+      not a root key: every array in the set is declared directly under the schema's own root, so nothing
+      composes `[]` onto an already-composed path. An implementation that appended `[]` only for root-level
+      arrays — leaving `profile.installations[].state` unnamed, or a nested array's items unwalked — would pass
+      this set whole, yet the fact, which states the `[]` concatenation over "its parent's own path" generally,
+      would have stopped holding. The set's `.` step is exercised over a derived parent (`installations[]` +
+      `.state`); the `[]` step is not. The file's remaining tests assert the module's import shape and the
+      absence of local helper declarations — they bind where the code's helpers come from, not what a
+      field-semantics name is, and bear on the fact not at all.
+    remainder: testable
+    remainder_why: >-
+      One input — an output schema declaring an array beneath a nested object and an array beneath another
+      array's own `items`, for instance `properties.profile.properties.installations` as an array whose `items`
+      is one object schema declaring `state`, and `properties.matrix` as an array whose `items` is itself an
+      array whose `items` declares `cell` — against one expected result: elements named
+      `profile.installations`, `profile.installations[]`, `profile.installations[].state`, `matrix`, `matrix[]`,
+      `matrix[][]` and `matrix[][].cell`, each carrying that node's own stated `type` and `description` and
+      nothing more, asserted as the whole answer so that a walk capped at any fixed depth fails.

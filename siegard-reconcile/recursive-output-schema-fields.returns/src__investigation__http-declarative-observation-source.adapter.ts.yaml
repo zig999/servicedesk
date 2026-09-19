@@ -1,0 +1,223 @@
+findings:
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: >-
+      resolveHttpConnectorCallConfiguration's catch (lines 149-161), which routes a
+      MalformedHttpConnectorConfigurationError through the generic unavailableFor helper (lines
+      52-54), discarding the vocabulary httpConfigurationProblems computed for it (lines 256-268)
+    evidence: |-
+      function unavailableFor(error: Error): ObservationOutcome {
+        return { result: 'unavailable', result_detail: error.name };
+      }
+      ...
+      if (error instanceof MalformedHttpConnectorConfigurationError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+      ...
+      if (!isHttpMethod(configuration.method)) {
+        problems.push(`method is not one of ${HTTP_METHODS.join(', ')}`);
+      }
+      ...
+      if (!isStatusEndingMap(configuration.statusMap)) {
+        problems.push(`statusMap is not a plain object mapping a status to one of ${EVIDENCE_RESULTS.join(', ')}`);
+      }
+    cost: >-
+      An operator reading the evidence recorded for an observation refused over a malformed
+      connector configuration sees only the bare class name "MalformedHttpConnectorConfigurationError"
+      as result_detail. The vocabulary this same file computes — which methods the connector
+      accepts, or which evidence-result endings a statusMap may map a status to — is built into
+      `problems` and handed to the error, then dropped: `unavailableFor` reads only `error.name`.
+      The file already knows how to enrich a detail when one is owed (`unavailableForUnreachableConnector`
+      appends the connector name explicitly), so this is not a uniform convention but a gap in the
+      one case the specification says needs the extra text, and the operator has to go elsewhere
+      to learn which key was wrong or what it should have been.
+    kind: contradicts
+    node: rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+    correction: >-
+      unavailableFor would need a MalformedHttpConnectorConfigurationError-specific branch —
+      mirroring unavailableForUnreachableConnector's own explicit enrichment — that folds the
+      computed `problems` vocabulary into result_detail alongside the error's name, instead of
+      returning error.name alone.
+read:
+  - node: constraints/evidence-normalization-is-an-anticorruption-layer
+    held_at: >-
+      observationOf (lines 230-234), which keeps only the extracted values whose responseMap
+      key also names a declared output-schema field, so no source-system-only name survives into
+      the returned observation
+    evidence: |-
+      const extracted = extractResponseFields(responseMap, body);
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the class implementing the domain's IObservationSource port, with the framework dependency
+      (fetch) confined to this adapter rather than reaching into domain code
+    evidence: |-
+      import type { IObservationSource, ObservationOutcome, ObserveConceptOptions, Subject } from './observation-source.port.js';
+      ...
+      this.httpClient = options.httpClient ?? fetch;
+  - node: contracts/integration/concept-observation
+    held_at: the observeConcept method (lines 76-91)
+    evidence: "public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {"
+  - node: contracts/integration/corporate-records-source
+    held_at: >-
+      resolveConnectorConfiguration, resolving whichever connector the capability names rather
+      than a fixed system (lines 104, 139-147)
+    evidence: |-
+      const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);
+      ...
+      const resolution = await this.connectorConfigurations.readConnectorConfiguration(connector);
+  - node: contracts/investigation/observation-source
+    held_at: the observeConcept method, one call per concept (lines 76-91)
+    evidence: "public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {"
+  - node: contracts/system/corporate-records
+    held_at: >-
+      the same generic connector resolution as corporate-records-source — no vendor name is
+      ever written into this file
+    evidence: "const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);"
+  - node: domain/integration/capability
+    held_at: >-
+      effectiveTimeoutMsFor and observationOf, reading capability.timeout, capability.connector
+      and capability.output_schema (lines 61-63, 82-83, 230-233)
+    evidence: |-
+      return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+      ...
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+  - node: domain/investigation/evidence-result
+    held_at: DEFAULT_STATUS_ENDING and isEvidenceResult (lines 32, 270-272)
+    evidence: |-
+      const DEFAULT_STATUS_ENDING: EvidenceResult = 'unavailable';
+      ...
+      function isEvidenceResult(value: unknown): value is EvidenceResult {
+        return typeof value === 'string' && (EVIDENCE_RESULTS as readonly string[]).includes(value);
+      }
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      "return { ok: true, value: resolveConnectorRequest({ configuration, subject, requester }) };"
+      — the address/query/headers/body and placeholder mechanism this rule states is delegated
+      whole to resolveConnectorRequest, never restated in this file
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: observationOf (lines 230-234)
+    evidence: |-
+      const extracted = extractResponseFields(responseMap, body);
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: rules/integration/an-unclassified-status-ends-unavailable
+    held_at: endingForStatus (lines 217-220)
+    evidence: |-
+      const mapped = statusMap[String(status)];
+      return isEvidenceResult(mapped) ? mapped : DEFAULT_STATUS_ENDING;
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: unavailableForUnreachableConnector and issueRequestOrUnreachable (lines 56-59, 187-200)
+    evidence: |-
+      const error = new ConnectorUnreachableError(connector, { cause });
+      return { result: 'unavailable', result_detail: `${error.name}: ${connector}` };
+      ...
+      } catch (error) {
+        return { ok: false, outcome: unavailableForUnreachableConnector(connector, error) };
+      }
+  - node: rules/integration/an-unresolvable-observation-ends-unavailable
+    held_at: resolveCapability, resolveConnectorConfiguration and resolveAssembledRequest (lines 123-176)
+    evidence: |-
+      if (!resolution.held) {
+        return { ok: false, outcome: unavailableFor(new CapabilityNotResolvedForObservationError(concept)) };
+      }
+      ...
+      if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+  - node: rules/integration/evidence-arrives-in-the-glossary-vocabulary
+    held_at: observationOf (lines 230-234), the same mechanism as evidence-normalization-is-an-anticorruption-layer
+    evidence: |-
+      const extracted = extractResponseFields(responseMap, body);
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: rules/investigation/collection-has-its-own-budget-within-the-total
+    held_at: effectiveTimeoutMsFor (lines 61-63)
+    evidence: "return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);"
+  - node: rules/investigation/collection-runs-in-the-requester-scope
+    held_at: >-
+      the requester parameter threaded from observeConcept through resolvePreparedCall into
+      resolveConnectorRequest (lines 76-77, 116, 163-169)
+    evidence: |-
+      const prepared = await this.resolvePreparedCall(concept, subject, requester);
+      ...
+      return { ok: true, value: resolveConnectorRequest({ configuration, subject, requester }) };
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the timed-out branch of observeConcept, recording a result rather than throwing (lines 87-89)
+    evidence: |-
+      if (call.value.kind === 'timed-out') {
+        return { result: 'timeout' };
+      }
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: observationOf (lines 230-234)
+    evidence: |-
+      const extracted = extractResponseFields(responseMap, body);
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+    held_at: resolveAssembledRequest's catch of ConnectorPlaceholderNotResolvedError (lines 168-176)
+    evidence: |-
+      if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: the same timed-out branch as no-stage-aborts-on-its-deadline (lines 87-89)
+    evidence: |-
+      if (call.value.kind === 'timed-out') {
+        return { result: 'timeout' };
+      }
+  - node: scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+    held_at: effectiveTimeoutMsFor (lines 61-63)
+    evidence: "return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);"
+  - node: domain/investigation/field-semantics
+    held_at: nowhere
+    evidence: >-
+      "const declaredFields = declaredFieldsOf(capability.output_schema);" — this file consumes
+      only a flat array of field names; it never carries a field's own type or description
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      "return { result: 'ok', observation: JSON.stringify(observation) };" — this file returns
+      only an ObservationOutcome (result, result_detail, observation); it never assembles fields,
+      concept_description, capability_payload_notes, elapsed_ms, observed_at, ttl, origin or inputs
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: nowhere
+    evidence: "import { declaredFieldsOf } from './citation-validation.js';"
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: nowhere
+    evidence: "import { declaredFieldsOf } from './citation-validation.js';"
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: >-
+      the file's whole surface is observeConcept and its private helpers for issuing one HTTP
+      call and mapping its response; no prompt-assembly code appears anywhere in it
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      the file's whole surface is observeConcept and its private helpers for issuing one HTTP
+      call and mapping its response; no judgment-reading code appears anywhere in it
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      no citation object, nor any field named "field" or "concept" paired for traceability,
+      appears anywhere in this file
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: >-
+      no citation object, nor any field named "field" or "concept" paired for traceability,
+      appears anywhere in this file
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: nowhere
+    evidence: >-
+      no citation object, nor any field named "field" or "concept" paired for traceability,
+      appears anywhere in this file
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: nowhere
+    evidence: >-
+      no citation object, nor any field named "field" or "concept" paired for traceability,
+      appears anywhere in this file
+looked_past: >-
+  The file repeats a Resolution<T>/discriminated-union pattern across five near-identical
+  resolve* methods and a further issueRequest/issueRequestOrUnreachable pair; that is a
+  structural, not a domain, concern and is left to whichever pass reviews code shape.
