@@ -26,6 +26,14 @@
       "task": "task/evidence-detail/evidence-wire-fields"
     },
     {
+      "id": "implementation/evidence-detail/hypothesis-evidence-display",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/hypothesis-evidence-display.md",
+      "title": "Per-hypothesis Evidence tab renders observed_at, ttl, inputs and capability payload notes",
+      "summary": "CaseSimulationDetailEvidenceTab now presents each evidence item's observed_at, ttl, inputs and capability_payload_notes, reusing the existing pretty-print and status-dot conventions rather than duplicating them.",
+      "task": "task/evidence-detail/hypothesis-evidence-display"
+    },
+    {
       "id": "proof/case-run-record/run-carries-its-record",
       "kind": "proof",
       "file": "proof/case-run-record/run-carries-its-record.md",
@@ -48,6 +56,14 @@
       "title": "capability_payload_notes and its unconverted siblings cross the simulate-response wire boundary",
       "summary": "Two new spec files pin the type-level requiredness of capability_payload_notes on both wire-shaped evidence types and the unconverted, unsubstituted pass-through of capability_payload_notes, observed_at, ttl and inputs from a mocked response to each hook's caller, plus fields/concept_description/result_detail crossing the same actual response round-trip.",
       "task": "task/evidence-detail/evidence-wire-fields"
+    },
+    {
+      "id": "proof/evidence-detail/hypothesis-evidence-display",
+      "kind": "proof",
+      "file": "proof/evidence-detail/hypothesis-evidence-display.md",
+      "title": "Per-hypothesis Evidence tab presents observed_at, ttl, inputs and capability payload notes",
+      "summary": "New tests over case-simulation-detail-evidence-tab.tsx cover the five new render obligations this task adds; criterion 6 is left to the pre-existing snapshot tests since that behavior did not change; every node the task implements is recorded untested because none is decidable whole by a test confined to this presentational component.",
+      "task": "task/evidence-detail/hypothesis-evidence-display"
     }
   ],
   "edges": [
@@ -172,6 +188,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "task/evidence-detail/hypothesis-evidence-display",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-run-record/run-carries-its-record",
       "to": "implementation/case-run-record/run-carries-its-record",
       "kind": "proves",
@@ -186,6 +244,12 @@
     {
       "from": "proof/evidence-detail/evidence-wire-fields",
       "to": "implementation/evidence-detail/evidence-wire-fields",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/hypothesis-evidence-display",
+      "to": "implementation/evidence-detail/hypothesis-evidence-display",
       "kind": "proves",
       "at": "the path"
     }

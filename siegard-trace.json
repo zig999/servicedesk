@@ -1314,6 +1314,10 @@
           "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
           "digest": "sha256:4fe2fa1fbc9d990c19c719c9a21aa070e1c64485c02b0b1599ec2022b376e17b"
         },
@@ -3599,7 +3603,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
-          "digest": "sha256:b9f3a7cc76e6290f1114b648e2693a1506c9088b7c1e15a98096eb9768198bbb"
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
@@ -7412,6 +7416,16 @@
       ]
     },
     {
+      "node": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "digest": "sha256:b9829f11eadedbf7508fe489b507884fda7bf0eabc797e2da1c9acf5abaab433",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
       "digest": "sha256:34984f8cd1ed47ef3915642719d1855acdcc5b0b02cd31fb98ba56b88b97526b",
       "files": [
@@ -7660,6 +7674,10 @@
           "digest": "sha256:42fcaf9c1c849b42eaaae2dc4a80ba9534c328c7a1e0286cdf053ecdea85ebf7"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
         },
@@ -7684,6 +7702,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
           "digest": "sha256:42fcaf9c1c849b42eaaae2dc4a80ba9534c328c7a1e0286cdf053ecdea85ebf7"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -7905,7 +7927,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
-          "digest": "sha256:b9f3a7cc76e6290f1114b648e2693a1506c9088b7c1e15a98096eb9768198bbb"
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
         }
       ]
     },

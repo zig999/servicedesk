@@ -17,12 +17,11 @@ const EVIDENCE_RESULT_CELL: Record<
   unavailable: { color: "bg-muted-foreground", label: "unavailable" },
 };
 
-function prettyPrintObservation(observation: string): string {
+function prettyPrintJson(value: string): string {
   try {
-
-    return JSON.stringify(JSON.parse(observation), null, 2);
+    return JSON.stringify(JSON.parse(value), null, 2);
   } catch {
-    return observation;
+    return value;
   }
 }
 
@@ -35,6 +34,13 @@ function renderConceptDescription(conceptDescription: string | undefined): JSX.E
       {conceptDescription === "" ? "No description recorded for this concept." : conceptDescription}
     </p>
   );
+}
+
+function renderCapabilityPayloadNotes(notes: string): JSX.Element | null {
+  if (notes === "") {
+    return null;
+  }
+  return <p className="text-sm text-muted-foreground">{notes}</p>;
 }
 
 function renderFieldSemantics(
@@ -93,16 +99,25 @@ export function CaseSimulationDetailEvidenceTab({
                   {item.capabilityName} {item.capabilityVersion} → {item.connector}
                 </span>
                 <span className="text-sm text-muted-foreground">{item.elapsedMs} ms</span>
+                <span className="text-sm text-muted-foreground">{item.observedAt} UTC</span>
+                <span className="text-sm text-muted-foreground">ttl {item.ttl}s</span>
               </div>
               {item.resultDetail !== undefined && (
                 <p className="text-sm text-muted-foreground">{item.resultDetail}</p>
               )}
               {renderConceptDescription(item.conceptDescription)}
               {renderFieldSemantics(item.fields)}
+              {renderCapabilityPayloadNotes(item.capabilityPayloadNotes)}
+              <details>
+                <summary className="cursor-pointer text-sm text-muted-foreground">Inputs</summary>
+                <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">
+                  {prettyPrintJson(item.inputs)}
+                </pre>
+              </details>
               <details>
                 <summary className="cursor-pointer text-sm text-muted-foreground">Observation</summary>
                 <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">
-                  {prettyPrintObservation(item.observation)}
+                  {prettyPrintJson(item.observation)}
                 </pre>
               </details>
             </li>
