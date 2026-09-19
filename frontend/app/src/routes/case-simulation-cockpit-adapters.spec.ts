@@ -246,6 +246,7 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         elapsed_ms: 120,
         capability_name: "fetch-billing-account",
         capability_version: "1",
+        capability_payload_notes: "",
       },
     ];
 

@@ -15,6 +15,7 @@ function baseEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): Simula
     capability_name: "perfil-mobile-tecnico-reader",
     capability_version: "1.0.0",
     elapsed_ms: 340,
+    capability_payload_notes: "",
     ...overrides,
   };
 }
@@ -56,6 +57,7 @@ describe("Evidence (use-simulate-hypothesis) -- fields and concept_description a
       capability_name: "perfil-mobile-tecnico-reader",
       capability_version: "1.0.0",
       elapsed_ms: 340,
+      capability_payload_notes: "",
     };
 
     expect(item.fields).toBeUndefined();
@@ -75,6 +77,7 @@ describe("Evidence (use-simulate-hypothesis) -- fields and concept_description a
       capability_name: "perfil-mobile-tecnico-reader",
       capability_version: "1.0.0",
       elapsed_ms: 340,
+      capability_payload_notes: "",
       fields,
       concept_description: "a situação cadastral do contrato",
     };

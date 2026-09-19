@@ -243,6 +243,7 @@ export function simulateCaseResult(overrides: Partial<SimulateCaseResult> = {}):
         elapsed_ms: 120,
         capability_name: "fetch-billing-account",
         capability_version: "1",
+        capability_payload_notes: "",
       },
     ],
     evaluations: [confirmedCaseEvaluation("hypothesis-a"), inconclusiveCaseEvaluation("hypothesis-b")],
@@ -292,6 +293,7 @@ function hypothesisEvidence(): readonly HypothesisEvidence[] {
       capability_name: "fetch-billing-account",
       capability_version: "1",
       elapsed_ms: 120,
+      capability_payload_notes: "",
     },
   ];
 }

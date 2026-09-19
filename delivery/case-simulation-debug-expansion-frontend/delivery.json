@@ -10,12 +10,28 @@
       "task": "task/case-run-record/run-carries-its-record"
     },
     {
+      "id": "implementation/evidence-detail/evidence-wire-fields",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/evidence-wire-fields.md",
+      "title": "capability_payload_notes crosses the simulate-response wire boundary",
+      "summary": "Both simulate-response evidence types (SimulateEvidenceItem and the hypothesis-run Evidence) now declare capability_payload_notes as a required string alongside their existing required inputs, observed_at and ttl, with neither hook doing anything that would drop, convert or substitute any of the four en route to its caller.",
+      "task": "task/evidence-detail/evidence-wire-fields"
+    },
+    {
       "id": "proof/case-run-record/run-carries-its-record",
       "kind": "proof",
       "file": "proof/case-run-record/run-carries-its-record.md",
       "title": "A run entry keeps its own returned record",
       "summary": "toNewCaseResultRun fills the widened CaseResultRun shape from a simulate-case response, and useCaseSimulationHistory keeps each recorded run's durations, cost, consolidation record and payload isolated from the next.",
       "task": "task/case-run-record/run-carries-its-record"
+    },
+    {
+      "id": "proof/evidence-detail/evidence-wire-fields",
+      "kind": "proof",
+      "file": "proof/evidence-detail/evidence-wire-fields.md",
+      "title": "capability_payload_notes and its unconverted siblings cross the simulate-response wire boundary",
+      "summary": "Two new spec files pin the type-level requiredness of capability_payload_notes on both wire-shaped evidence types and the unconverted, unsubstituted pass-through of capability_payload_notes, observed_at, ttl and inputs from a mocked response to each hook's caller, plus fields/concept_description/result_detail crossing the same actual response round-trip.",
+      "task": "task/evidence-detail/evidence-wire-fields"
     }
   ],
   "edges": [
@@ -74,8 +90,44 @@
       "at": "the path"
     },
     {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "task/evidence-detail/evidence-wire-fields",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-run-record/run-carries-its-record",
       "to": "implementation/case-run-record/run-carries-its-record",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/evidence-wire-fields",
+      "to": "implementation/evidence-detail/evidence-wire-fields",
       "kind": "proves",
       "at": "the path"
     }

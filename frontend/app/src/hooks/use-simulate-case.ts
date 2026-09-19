@@ -75,6 +75,8 @@ export type SimulateEvidenceItem = {
   readonly fields?: readonly SimulateFieldSemantics[];
 
   readonly concept_description?: string;
+
+  readonly capability_payload_notes: string;
 };
 
 export type SimulateEvaluation =

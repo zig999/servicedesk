@@ -34,6 +34,7 @@ describe("CaseSimulationDetailPanel -- a single-hypothesis run's own evidence re
         capability_name: "fetch-billing-account",
         capability_version: "1",
         elapsed_ms: 120,
+        capability_payload_notes: "",
       },
     ];
     const normalized = fromHypothesisEvaluation(evaluation, evidence);
@@ -181,6 +182,7 @@ describe("CaseSimulationDetailPanel -- the rest of the Detail panel stays correc
         capability_name: "fetch-billing-account",
         capability_version: "1",
         elapsed_ms: 120,
+        capability_payload_notes: "",
       },
     ];
     const normalized = { ...fromHypothesisEvaluation(evaluation, evidence), stale: true };

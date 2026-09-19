@@ -108,6 +108,7 @@ export function evidenceItem(): Evidence {
     capability_name: "fetch-billing-account",
     capability_version: "1",
     elapsed_ms: 120,
+    capability_payload_notes: "",
   };
 }
 

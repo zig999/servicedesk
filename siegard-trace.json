@@ -1291,11 +1291,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -3587,11 +3587,11 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:6bf0582a4a0c7919a3c40d97f43941014211c30266637e705165d647617e5226"
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:374a33e97f035c39fe8d33b2636e24d4f8e3a3a01ce045f8b51c0ad82e7c6de9"
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -7638,6 +7638,14 @@
       "digest": "sha256:4d7d2f1c5656ac5e55ef9031fecf4df4bf8694962c9c74c014fc05d0862147be",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
+        },
+        {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
         },
@@ -7651,6 +7659,14 @@
       "node": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
       "digest": "sha256:0218385c9b1ed3516b0562dd0794ec8d7b16910d912c724fa23182f9d8d1861f",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
+        },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"

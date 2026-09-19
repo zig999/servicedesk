@@ -28,6 +28,7 @@ describe("fromHypothesisEvaluation -- carries the run's own evidence onto the no
         capability_name: "fetch-billing-account",
         capability_version: "1",
         elapsed_ms: 120,
+        capability_payload_notes: "",
       },
     ];
 
