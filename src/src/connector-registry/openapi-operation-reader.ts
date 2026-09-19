@@ -88,10 +88,10 @@ type RawOpenApiParameter = PlainObject & {
 
 export function readOpenApiOperation(documentText: string, path: string, method: string): OpenApiOperationReading {
   const document = readOpenApiDocument(documentText);
-  const { pathItem, operation, operationKey } = operationEntry(document, path, method);
+  const { pathItem, operation } = operationEntry(document, path, method);
   const parameterDetails = parameterDetailsOf(document, pathItem, operation);
   return {
-    method: operationKey,
+    method: method.toUpperCase(),
     parameters: parametersOf(parameterDetails),
     parameterDetails,
     requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
