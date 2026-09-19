@@ -204,9 +204,9 @@ describe("ConnectorConfigurationHelperFields -- every status reading the answer 
       draft: {
         ...BASE_DRAFT,
         status_readings: [
-          { status: "200", ending: "record-stub-response", declared_as: "Successful profile retrieval" },
-          { status: "403", ending: "forbidden-not-drafted" },
-          { status: "503", ending: "unavailable-not-drafted" },
+          { status: "200", ending: "ok", declared_as: "Successful profile retrieval" },
+          { status: "403", ending: "denied" },
+          { status: "503", ending: "unavailable" },
         ],
       },
     };
@@ -215,9 +215,9 @@ describe("ConnectorConfigurationHelperFields -- every status reading the answer 
 
     const items = screen.getAllByRole("listitem").map(normalized);
     expect(items).toEqual([
-      "Status 200 — desfecho: record-stub-response (declarado como: Successful profile retrieval)",
-      "Status 403 — desfecho: forbidden-not-drafted",
-      "Status 503 — desfecho: unavailable-not-drafted",
+      "Status 200 — desfecho: ok (declarado como: Successful profile retrieval)",
+      "Status 403 — desfecho: denied",
+      "Status 503 — desfecho: unavailable",
     ]);
   });
 });
