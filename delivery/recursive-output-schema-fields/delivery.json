@@ -18,6 +18,14 @@
       "task": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names"
     },
     {
+      "id": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted.md",
+      "title": "Nested-citation acceptance already holds against the evidence snapshot",
+      "summary": "Investigation confirms citation-validation.ts's existing string-equality membership check accepts and refuses path-shaped field names correctly with no source change.",
+      "task": "task/recursive-output-schema-field-paths/nested-citation-is-accepted"
+    },
+    {
       "id": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "kind": "proof",
       "file": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
@@ -32,6 +40,14 @@
       "title": "Judgment prompt renders a path-shaped field name unchanged",
       "summary": "Proves the five rendering criteria for path-shaped and ordinary field names against the unmodified anthropic-hypothesis-evaluator.adapter.ts, adding the one test the existing suite lacked -- a path-shaped name such as installations[].state rendered verbatim.",
       "task": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted.md",
+      "title": "Nested-citation acceptance is pinned by a path-shaped-field test",
+      "summary": "Adds the missing path-shaped-field representatives to citation-validation.spec.ts, proving criteria 1-3 hold for a nested field name and demonstrating the nested-citation scenario, while leaving the no-data-citation and cross-file snapshot facts recorded as unproven.",
+      "task": "task/recursive-output-schema-field-paths/nested-citation-is-accepted"
     }
   ],
   "edges": [
@@ -96,6 +112,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "to": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "kind": "proves",
@@ -104,6 +162,12 @@
     {
       "from": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
       "to": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
       "kind": "proves",
       "at": "the path"
     }

@@ -3630,6 +3630,10 @@
           "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
         },
         {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:8fc102bf4b80496b87dfad6f6d5fae07232e4e99bf666c8f41974b2a6b60b44f"
         },
@@ -9560,6 +9564,20 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
           "digest": "sha256:682d36f8dacf21671fb8db022970db3d621e740129c84e03672adabc5dc10656"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "digest": "sha256:c901dfacb36b374d8268639017f277da85e4bf56cbdee2fa6b76c91006ecedcd",
+      "files": [
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
         }
       ]
     },
