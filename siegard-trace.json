@@ -1307,7 +1307,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
-          "digest": "sha256:5607a022b18cb0ec2634a564a7ce43cd69a3ef70b985b5f7439043ad7aa83ad9"
+          "digest": "sha256:d226327836a0a457c1f56dcc96e962b5d39dad5db187aefc43178057cb6b8966"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
@@ -1319,7 +1319,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+          "digest": "sha256:da589875aaaeaa32bd1bc3d933b1e0c322b7e003ad2ef84fc0c11c2dd5cc7ea8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -3640,6 +3640,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
           "digest": "sha256:959bb577b94f22977dda70710d9a68578dc34c448a59588e68fa3e56b641c913"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -7473,11 +7477,15 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
-          "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
+          "digest": "sha256:151d55548c1fa0cda8319dda09373dd54bcf931ddf1d85637a388e7bb017be04"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         }
       ]
     },
@@ -7567,7 +7575,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
-          "digest": "sha256:5607a022b18cb0ec2634a564a7ce43cd69a3ef70b985b5f7439043ad7aa83ad9"
+          "digest": "sha256:d226327836a0a457c1f56dcc96e962b5d39dad5db187aefc43178057cb6b8966"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
@@ -7718,6 +7726,16 @@
       ]
     },
     {
+      "node": "rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation",
+      "digest": "sha256:4ca92983cb8da789e817bcc1ab2a19809f3f336bc35b80da5002cf60bd4f2fca",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
       "digest": "sha256:4d7d2f1c5656ac5e55ef9031fecf4df4bf8694962c9c74c014fc05d0862147be",
       "files": [
@@ -7736,6 +7754,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -7766,6 +7788,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -7988,6 +8014,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         }
       ]
     },

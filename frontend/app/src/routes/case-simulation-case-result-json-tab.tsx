@@ -3,7 +3,7 @@ import type { JSX } from "react";
 const CREDENTIAL_PLACEHOLDER_PATTERN = /\$\{credential:[^}]*\}/g;
 const REDACTED_CREDENTIAL_VALUE = "***REDACTED***";
 
-function redactResolvedCredentialValue(inputs: string): string {
+export function redactResolvedCredentialValue(inputs: string): string {
   return inputs.replace(CREDENTIAL_PLACEHOLDER_PATTERN, REDACTED_CREDENTIAL_VALUE);
 }
 

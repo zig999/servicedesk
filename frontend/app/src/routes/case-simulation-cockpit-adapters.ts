@@ -205,6 +205,18 @@ export function toDetailEvidence(
   }));
 }
 
+export function toDetailEvidenceFromRawResponse(
+  rawResponse: unknown,
+): readonly DetailEvidenceItem[] {
+  if (typeof rawResponse !== "object" || rawResponse === null || !("evidence" in rawResponse)) {
+    return [];
+  }
+  if (!Array.isArray(rawResponse.evidence)) {
+    return [];
+  }
+  return toDetailEvidence(rawResponse.evidence);
+}
+
 export function toHypothesisRevisionSummary(
   manifest: readonly CaseVersionManifestEntry[] | undefined,
   hypothesisName: string,

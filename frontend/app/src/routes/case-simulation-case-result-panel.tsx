@@ -7,6 +7,8 @@ import { CaseSimulationCaseResultCompare } from "./case-simulation-case-result-c
 import { CaseSimulationCaseResultDebugTab } from "./case-simulation-case-result-debug-tab";
 import { CaseSimulationCaseResultTotalsTab } from "./case-simulation-case-result-totals-tab";
 import { CaseSimulationCaseResultJsonTab } from "./case-simulation-case-result-json-tab";
+import { CaseSimulationCaseResultEvidenceTab } from "./case-simulation-case-result-evidence-tab";
+import { toDetailEvidenceFromRawResponse } from "./case-simulation-cockpit-adapters";
 import {
   formatRunTime,
   resolveCompareRuns,
@@ -33,6 +35,7 @@ export function CaseSimulationCaseResultPanel({
   const lastRun = runs[runs.length - 1];
   const shownRun = runs.find((run) => run.id === shownRunId) ?? lastRun;
   const compareRuns = resolveCompareRuns(runs, selectedRunIds);
+  const shownRunEvidence = toDetailEvidenceFromRawResponse(shownRun.rawResponse);
 
   function handleToggleSelection(id: string): void {
     setSelectedRunIds((previous) => toggleCompareSelection(previous, id));
@@ -68,10 +71,14 @@ export function CaseSimulationCaseResultPanel({
         <h2 className="text-lg font-semibold text-foreground">Debug</h2>
         <Tabs defaultValue="prompt">
           <TabsList>
+            <TabsTrigger value="evidence">Evidence</TabsTrigger>
             <TabsTrigger value="prompt">Prompt</TabsTrigger>
             <TabsTrigger value="totals">Totals</TabsTrigger>
             <TabsTrigger value="json">JSON</TabsTrigger>
           </TabsList>
+          <TabsContent value="evidence">
+            <CaseSimulationCaseResultEvidenceTab evidence={shownRunEvidence} />
+          </TabsContent>
           <TabsContent value="prompt">
             <CaseSimulationCaseResultDebugTab
               consolidationCall={shownRun.consolidationCall}

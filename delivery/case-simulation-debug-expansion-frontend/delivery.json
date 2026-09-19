@@ -34,6 +34,14 @@
       "task": "task/case-run-record/run-totals"
     },
     {
+      "id": "implementation/evidence-detail/case-evidence-display",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/case-evidence-display.md",
+      "title": "Case-level Debug Evidence tab",
+      "summary": "Adds a fourth Evidence tab to the case result Debug block, presenting one entry per evidence item the shown run collected, reusing the per-hypothesis Evidence tab's own per-item rendering (extracted into a shared component) rather than duplicating it.",
+      "task": "task/evidence-detail/case-evidence-display"
+    },
+    {
       "id": "implementation/evidence-detail/evidence-adapter-fields",
       "kind": "implementation",
       "file": "implementation/evidence-detail/evidence-adapter-fields.md",
@@ -88,6 +96,14 @@
       "title": "Run totals presented in the case result Debug block",
       "summary": "Tests the new CaseSimulationCaseResultTotalsTab and its wiring into the panel's Debug tabs, covering the run's cost, its durations (including the no-writing boundary and the total-is-not-a-stage-sum requirement), and that the shown figures follow the shown run.",
       "task": "task/case-run-record/run-totals"
+    },
+    {
+      "id": "proof/evidence-detail/case-evidence-display",
+      "kind": "proof",
+      "file": "proof/evidence-detail/case-evidence-display.md",
+      "title": "Case result Debug Evidence tab -- proof",
+      "summary": "Tests establish that the shared per-item evidence renderer and the new case-level Evidence tab present one entry per collected item, mask a resolved credential in inputs, omit any Observation claim for a non-ok item while still surfacing its result and result_detail, render observed_at and ttl verbatim from the item, and follow the shown run's own record when an earlier run is selected.",
+      "task": "task/evidence-detail/case-evidence-display"
     },
     {
       "id": "proof/evidence-detail/evidence-adapter-fields",
@@ -284,6 +300,60 @@
       "at": "the path"
     },
     {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "task/evidence-detail/case-evidence-display",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/evidence-detail/evidence-adapter-fields",
       "to": "domain/investigation/evidence",
       "kind": "encodes",
@@ -412,6 +482,12 @@
     {
       "from": "proof/case-run-record/run-totals",
       "to": "implementation/case-run-record/run-totals",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/case-evidence-display",
+      "to": "implementation/evidence-detail/case-evidence-display",
       "kind": "proves",
       "at": "the path"
     },
