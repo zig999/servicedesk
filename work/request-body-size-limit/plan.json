@@ -1,0 +1,94 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/request-body-size-limit",
+      "kind": "epic",
+      "file": "epic/request-body-size-limit.md",
+      "title": "Configured request-body size limit",
+      "summary": "A corrective increment: the HTTP server carries no configured request-body size ceiling, leaving EDG-06 unanswered."
+    },
+    {
+      "id": "task/request-body-size-limit/configured-body-limit",
+      "kind": "task",
+      "file": "task/request-body-size-limit/configured-body-limit.md",
+      "title": "HTTP server enforces a configured request-body size ceiling",
+      "summary": "Closes EDG-06: env.ts gains a configured MAX_REQUEST_BODY_BYTES ceiling and build-app.ts passes it to Fastify's own bodyLimit option.",
+      "epic": "request-body-size-limit"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "constraints/the-pool-bounds-are-positive-integers",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/integration/capability-schema-draft",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/integration/openapi-document-operations",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/request-body-size-limit",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "covers",
+      "at": "covers[9]"
+    }
+  ]
+}

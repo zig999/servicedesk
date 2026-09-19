@@ -174,6 +174,7 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
   const { env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis } = inputs;
   const resources = composeResources(env, connection, caseQuery);
   return {
+    bodyLimit: env.MAX_REQUEST_BODY_BYTES,
     diagnose,
     simulateCase,
     simulateHypothesis,

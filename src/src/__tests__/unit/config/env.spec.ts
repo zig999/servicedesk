@@ -183,3 +183,58 @@ it.each(poolBoundCases)('$description for $field', ({ field, value, valid }) => 
   expect(Number.isInteger(env[field])).toBe(true);
   expect(env[field]).toBeGreaterThan(0);
 });
+
+it('defaults MAX_REQUEST_BODY_BYTES to 1048576 when the given environment names none', () => {
+  const env = loadEnv(validEnvSource());
+
+  expect(env.MAX_REQUEST_BODY_BYTES).toBe(1_048_576);
+});
+
+it('parses a configured MAX_REQUEST_BODY_BYTES as a number, distinct from its default', () => {
+  const env = loadEnv(validEnvSource({ MAX_REQUEST_BODY_BYTES: '2000000' }));
+
+  expect(env.MAX_REQUEST_BODY_BYTES).toBe(2_000_000);
+});
+
+it('throws InvalidEnvironmentError naming MAX_REQUEST_BODY_BYTES when it is set to a non-numeric value', () => {
+  const nonNumeric = validEnvSource({ MAX_REQUEST_BODY_BYTES: 'not-a-number' });
+
+  let caught: unknown;
+  try {
+    loadEnv(nonNumeric);
+  } catch (error) {
+    caught = error;
+  }
+
+  expect(caught).toBeInstanceOf(InvalidEnvironmentError);
+  const issues = (caught as InvalidEnvironmentError).context.issues;
+  expect(issues.some((issue) => issue.includes('MAX_REQUEST_BODY_BYTES'))).toBe(true);
+});
+
+interface IMaxRequestBodyBytesInvalidCase {
+  description: string;
+  value: string;
+}
+
+const maxRequestBodyBytesInvalidCases: IMaxRequestBodyBytesInvalidCase[] = [
+  { description: 'a non-integer value', value: '2.5' },
+  { description: 'a zero value', value: '0' },
+];
+
+it.each(maxRequestBodyBytesInvalidCases)(
+  'throws InvalidEnvironmentError naming MAX_REQUEST_BODY_BYTES for $description',
+  ({ value }) => {
+    const source = validEnvSource({ MAX_REQUEST_BODY_BYTES: value });
+
+    let caught: unknown;
+    try {
+      loadEnv(source);
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).toBeInstanceOf(InvalidEnvironmentError);
+    const issues = (caught as InvalidEnvironmentError).context.issues;
+    expect(issues.some((issue) => issue.includes('MAX_REQUEST_BODY_BYTES'))).toBe(true);
+  },
+);

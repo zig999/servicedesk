@@ -836,3 +836,44 @@ it('issues no register-capability call while draft-capability-schema-from-openap
   expect(response.statusCode).toBe(200);
   expect(registerCapabilitySpy).not.toHaveBeenCalled();
 });
+
+const CONFIGURED_BODY_LIMIT_FOR_TEST = 300;
+
+it('answers 200 and invokes the diagnose handler for a request whose body sits within the configured bodyLimit', async () => {
+  const runDiagnose = vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>();
+  runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'p' });
+  const diagnose: DiagnoseControllerDependencies = {
+    caseQuery: stubCaseQuery(minimalCase()),
+    caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) },
+    runDiagnose,
+    model: 'a-model',
+    promptVersion: 'a-prompt-version',
+  };
+  app = buildApp({ ...stubBuildAppDependencies(diagnose), bodyLimit: CONFIGURED_BODY_LIMIT_FOR_TEST });
+
+  const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody() });
+
+  expect(response.statusCode).toBe(200);
+  expect(runDiagnose).toHaveBeenCalledTimes(1);
+});
+
+it('refuses with 413 a request whose body exceeds the configured bodyLimit, invoking no route handler', async () => {
+  const runDiagnose = vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>();
+  const diagnose: DiagnoseControllerDependencies = {
+    caseQuery: stubCaseQuery(minimalCase()),
+    caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) },
+    runDiagnose,
+    model: 'a-model',
+    promptVersion: 'a-prompt-version',
+  };
+  app = buildApp({ ...stubBuildAppDependencies(diagnose), bodyLimit: CONFIGURED_BODY_LIMIT_FOR_TEST });
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/v1/diagnose',
+    payload: validRequestBody({ narrative: 'x'.repeat(1000) }),
+  });
+
+  expect(response.statusCode).toBe(413);
+  expect(runDiagnose).not.toHaveBeenCalled();
+});

@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/request-body-size-limit/configured-body-limit",
+      "kind": "implementation",
+      "file": "implementation/request-body-size-limit/configured-body-limit.md",
+      "title": "HTTP server enforces a configured request-body size ceiling",
+      "summary": "envSchema gains MAX_REQUEST_BODY_BYTES (positive integer, defaulting to 1048576) and build-app.ts constructs Fastify with its own bodyLimit option set from it, refusing an oversized body with a 413 before any route handler runs.",
+      "task": "task/request-body-size-limit/configured-body-limit"
+    },
+    {
+      "id": "proof/request-body-size-limit/configured-body-limit",
+      "kind": "proof",
+      "file": "proof/request-body-size-limit/configured-body-limit.md",
+      "title": "Configured request-body size ceiling -- proof",
+      "summary": "Tests envSchema's MAX_REQUEST_BODY_BYTES field (default, coercion, positive-integer boundaries), the factory's wiring of env.MAX_REQUEST_BODY_BYTES onto BuildAppDependencies.bodyLimit, and buildApp()'s Fastify instance refusing an oversized body with 413 before any route handler runs.",
+      "task": "task/request-body-size-limit/configured-body-limit"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/request-body-size-limit/configured-body-limit",
+      "to": "task/request-body-size-limit/configured-body-limit",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/request-body-size-limit/configured-body-limit",
+      "to": "implementation/request-body-size-limit/configured-body-limit",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
