@@ -1,15 +1,22 @@
 import type { JSX } from "react";
-import type { SimulationJudgmentCall } from "./case-simulation-detail-types";
+
+export type PromptTabCall =
+  | { readonly called: true; readonly prompt: string }
+  | { readonly called: false };
 
 export type CaseSimulationDetailPromptTabProps = {
-  readonly judgmentCall: SimulationJudgmentCall;
+  readonly judgmentCall: PromptTabCall;
+  readonly notCalledMessage?: string;
 };
+
+const DEFAULT_NOT_CALLED_MESSAGE = "Judgment was never called for this hypothesis.";
 
 export function CaseSimulationDetailPromptTab({
   judgmentCall,
+  notCalledMessage = DEFAULT_NOT_CALLED_MESSAGE,
 }: CaseSimulationDetailPromptTabProps): JSX.Element {
   if (!judgmentCall.called) {
-    return <p>Judgment was never called for this hypothesis.</p>;
+    return <p>{notCalledMessage}</p>;
   }
 
   return (

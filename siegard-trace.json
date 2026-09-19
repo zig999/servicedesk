@@ -3176,6 +3176,10 @@
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
           "digest": "sha256:ab20622baa2fa8cb37f575588546dcf82bcc2425fcfd6e814334f0180c841cc3"
         },
@@ -4008,6 +4012,10 @@
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
           "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
@@ -4608,6 +4616,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
@@ -7410,8 +7422,16 @@
       "digest": "sha256:f5768ebd6e97c3a06b0c272e73cd7083a0b1d807caec53c61147f77bb9872157",
       "files": [
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
           "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-prompt-tab.tsx",
+          "digest": "sha256:3c4f3a5ab9febebe454cf4f53a4969f678f45db709a7f48bafbde96b7624a9df"
         }
       ]
     },
@@ -7509,6 +7529,10 @@
       "node": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
       "digest": "sha256:cd1207e038f62351b6d1b8b7feda00ffdfe9739c6c2346dd3075ff963d1e4394",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:111245ac34c043193244b49266abab7321ea3df1435de60b83eb9304a97d4123"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
           "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
