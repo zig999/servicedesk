@@ -1311,7 +1311,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:256064ca45ab6f23b1d9f8619e6eca75ecec957a7cf4279d6e66171e9dc70ee2"
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
@@ -3177,11 +3177,11 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:bf75d1a3012534efe676c76785e02ddeaf05f3ea92eafe7c986a7829857405b7"
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -3334,6 +3334,14 @@
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+        },
+        {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
@@ -3370,6 +3378,10 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -3992,6 +4004,14 @@
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:06e3a17809d40cdf88ffbe77f2219e622c1c571e99fc8ff51c468c9b99b32db0"
         },
@@ -4584,6 +4604,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -7378,6 +7402,16 @@
       ]
     },
     {
+      "node": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "digest": "sha256:f5768ebd6e97c3a06b0c272e73cd7083a0b1d807caec53c61147f77bb9872157",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
       "digest": "sha256:34984f8cd1ed47ef3915642719d1855acdcc5b0b02cd31fb98ba56b88b97526b",
       "files": [
@@ -7454,6 +7488,20 @@
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
           "digest": "sha256:c685a28dfe414f8f3bc5e1713f0ce1a85b55456b2418f87253aa429c17b5ca02"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "digest": "sha256:cd1207e038f62351b6d1b8b7feda00ffdfe9739c6c2346dd3075ff963d1e4394",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         }
       ]
     },

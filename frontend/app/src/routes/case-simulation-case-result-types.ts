@@ -1,3 +1,5 @@
+import type { SimulationDurations } from "./case-simulation-hypotheses-table-row";
+
 export type SimulationVerdict = "confirmed" | "refuted" | "inconclusive";
 
 export type SimulationReferral = {
@@ -12,6 +14,26 @@ export type CaseResultRunHypothesisVerdict = {
   readonly verdict: SimulationVerdict;
 };
 
+export type CaseResultUsage = {
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+};
+
+export type CaseResultCost = {
+  readonly calls: number;
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+};
+
+export type CaseResultConsolidationCall =
+  | {
+      readonly called: true;
+      readonly usage: CaseResultUsage;
+      readonly elapsedMs: number;
+      readonly prompt: string;
+    }
+  | { readonly called: false };
+
 export type CaseResultRun = {
   readonly id: string;
   readonly ranAt: string;
@@ -22,6 +44,10 @@ export type CaseResultRun = {
   readonly register: SimulationConsolidationRegister;
   readonly hypotheses: readonly CaseResultRunHypothesisVerdict[];
   readonly stale: boolean;
+  readonly durations: SimulationDurations;
+  readonly cost: CaseResultCost;
+  readonly consolidationCall: CaseResultConsolidationCall;
+  readonly rawResponse: unknown;
 };
 
 export const VERDICT_CELL: Record<

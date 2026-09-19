@@ -1,0 +1,83 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-run-record/run-carries-its-record",
+      "kind": "implementation",
+      "file": "implementation/case-run-record/run-carries-its-record.md",
+      "title": "CaseResultRun carries its own run's durations, cost, consolidation record and payload",
+      "summary": "Widens CaseResultRun/NewCaseResultRun with the run's durations, cost, a discriminated consolidation-call record and the raw simulate-case payload, fills all of it in toNewCaseResultRun from the simulate-case response, and completes five pre-existing test fixtures that construct these types.",
+      "task": "task/case-run-record/run-carries-its-record"
+    },
+    {
+      "id": "proof/case-run-record/run-carries-its-record",
+      "kind": "proof",
+      "file": "proof/case-run-record/run-carries-its-record.md",
+      "title": "A run entry keeps its own returned record",
+      "summary": "toNewCaseResultRun fills the widened CaseResultRun shape from a simulate-case response, and useCaseSimulationHistory keeps each recorded run's durations, cost, consolidation record and payload isolated from the next.",
+      "task": "task/case-run-record/run-carries-its-record"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "task/case-run-record/run-carries-its-record",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-run-record/run-carries-its-record",
+      "to": "implementation/case-run-record/run-carries-its-record",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

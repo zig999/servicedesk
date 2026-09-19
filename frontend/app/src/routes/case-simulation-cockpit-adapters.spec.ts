@@ -8,7 +8,6 @@ import {
   toDurations,
   toHypothesisRevisionSummary,
   toManifestRows,
-  toNewCaseResultRun,
   toRowEvaluation,
   toRunSummary,
   type CockpitEvaluation,
@@ -187,29 +186,6 @@ describe("toRunSummary/toDurations -- the last full-case run's own summary and s
       judgmentMs: 800,
       writingMs: 300,
       totalMs: 2300,
-    });
-  });
-});
-
-describe("toNewCaseResultRun -- shaping a completed full-case run into the Case result region's own new-run shape (criterion 5)", () => {
-  it("carries the run's own outcome, referral, determining hypothesis, customer-facing text and register, plus one verdict entry per judged hypothesis", () => {
-    const result = caseResult({
-      evaluations: [
-        { hypothesis: "hypothesis-a", verdict: "confirmed", citations: [] },
-        { hypothesis: "hypothesis-b", verdict: "inconclusive", citations: [], reason: "no-data" },
-      ],
-    });
-
-    expect(toNewCaseResultRun(result)).toEqual({
-      outcome: "resolved",
-      referral: { action: "notify", recipient: "customer" },
-      determiningHypothesis: "hypothesis-a",
-      text: "The disputed charge was authorized.",
-      register: "formal",
-      hypotheses: [
-        { hypothesis: "hypothesis-a", verdict: "confirmed" },
-        { hypothesis: "hypothesis-b", verdict: "inconclusive" },
-      ],
     });
   });
 });

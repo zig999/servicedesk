@@ -11,6 +11,7 @@ import type {
   SimulationRunSummary,
   SimulationDurations,
 } from "./case-simulation-hypotheses-table-row";
+import type { CaseResultCost } from "./case-simulation-case-result-types";
 import type {
   SimulationEvaluation as DetailEvaluation,
   SimulationEvidenceItem as DetailEvidenceItem,
@@ -119,6 +120,14 @@ export function toDurations(result: SimulateCaseResult): SimulationDurations {
   };
 }
 
+export function toCost(result: SimulateCaseResult): CaseResultCost {
+  return {
+    calls: result.cost.calls,
+    inputTokens: result.cost.input_tokens,
+    outputTokens: result.cost.output_tokens,
+  };
+}
+
 export function toNewCaseResultRun(result: SimulateCaseResult): NewCaseResultRun {
   return {
     outcome: result.assessment.outcome,
@@ -130,6 +139,18 @@ export function toNewCaseResultRun(result: SimulateCaseResult): NewCaseResultRun
       hypothesis: evaluation.hypothesis,
       verdict: evaluation.verdict,
     })),
+    durations: toDurations(result),
+    cost: toCost(result),
+    consolidationCall: {
+      called: true,
+      usage: {
+        inputTokens: result.assessment.usage.input_tokens,
+        outputTokens: result.assessment.usage.output_tokens,
+      },
+      elapsedMs: result.assessment.elapsed_ms,
+      prompt: result.assessment.prompt,
+    },
+    rawResponse: result,
   };
 }
 

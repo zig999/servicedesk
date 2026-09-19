@@ -14,6 +14,15 @@ function makeRun(overrides: Partial<CaseResultRun> = {}): CaseResultRun {
     register: "formal",
     hypotheses: [],
     stale: false,
+    durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
+    cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
+    consolidationCall: {
+      called: true,
+      usage: { inputTokens: 100, outputTokens: 50 },
+      elapsedMs: 50,
+      prompt: "prompt",
+    },
+    rawResponse: {},
     ...overrides,
   };
 }

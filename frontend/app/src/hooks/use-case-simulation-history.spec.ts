@@ -9,6 +9,15 @@ function newRun(overrides: Partial<NewCaseResultRun> = {}): NewCaseResultRun {
     text: "Thanks for reaching out.",
     register: "formal",
     hypotheses: [],
+    durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
+    cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
+    consolidationCall: {
+      called: true,
+      usage: { inputTokens: 100, outputTokens: 50 },
+      elapsedMs: 50,
+      prompt: "prompt",
+    },
+    rawResponse: {},
     ...overrides,
   };
 }
@@ -65,6 +74,57 @@ describe("useCaseSimulationHistory -- appending this session's own run history (
     });
 
     expect(result.current.runs.map((run) => run.outcome)).toEqual(["A", "B"]);
+  });
+
+  it("keeps an earlier run's own durations, cost, consolidation record and payload unchanged once a second, different run completes", () => {
+    const { result } = renderHook(() => useCaseSimulationHistory());
+
+    act(() => {
+      result.current.recordRun(
+        newRun({
+          durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
+          cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
+          consolidationCall: {
+            called: true,
+            usage: { inputTokens: 100, outputTokens: 50 },
+            elapsedMs: 50,
+            prompt: "first prompt",
+          },
+          rawResponse: { marker: "first" },
+        }),
+      );
+    });
+    act(() => {
+      result.current.recordRun(
+        newRun({
+          durations: { collectionMs: 999, judgmentMs: 999, writingMs: 999, totalMs: 999 },
+          cost: { calls: 9, inputTokens: 999, outputTokens: 999 },
+          consolidationCall: {
+            called: true,
+            usage: { inputTokens: 999, outputTokens: 999 },
+            elapsedMs: 999,
+            prompt: "second prompt",
+          },
+          rawResponse: { marker: "second" },
+        }),
+      );
+    });
+
+    const [first] = result.current.runs;
+    expect(first?.durations).toEqual({
+      collectionMs: 100,
+      judgmentMs: 200,
+      writingMs: 50,
+      totalMs: 350,
+    });
+    expect(first?.cost).toEqual({ calls: 1, inputTokens: 100, outputTokens: 50 });
+    expect(first?.consolidationCall).toEqual({
+      called: true,
+      usage: { inputTokens: 100, outputTokens: 50 },
+      elapsedMs: 50,
+      prompt: "first prompt",
+    });
+    expect(first?.rawResponse).toEqual({ marker: "first" });
   });
 });
 
