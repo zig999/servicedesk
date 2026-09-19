@@ -1306,6 +1306,10 @@
           "digest": "sha256:ab20622baa2fa8cb37f575588546dcf82bcc2425fcfd6e814334f0180c841cc3"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
+          "digest": "sha256:c55c78c4384fa2ab18c78a34f02f4bb0353d7b4e60fc89a9ab90da738bb41d2a"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
           "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
         },
@@ -3342,6 +3346,10 @@
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
+          "digest": "sha256:c55c78c4384fa2ab18c78a34f02f4bb0353d7b4e60fc89a9ab90da738bb41d2a"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
           "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
@@ -3386,6 +3394,10 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
+          "digest": "sha256:c55c78c4384fa2ab18c78a34f02f4bb0353d7b4e60fc89a9ab90da738bb41d2a"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
@@ -7531,7 +7543,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
-          "digest": "sha256:111245ac34c043193244b49266abab7321ea3df1435de60b83eb9304a97d4123"
+          "digest": "sha256:39494587a4d60593141547b4af9f777b7f901980b9d365352aa3f1817d4e01f4"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",

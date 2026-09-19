@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
 import { CaseSimulationStatusDot } from "./case-simulation-status-dot";
 import { CaseSimulationCaseResultCompare } from "./case-simulation-case-result-compare";
 import { CaseSimulationCaseResultDebugTab } from "./case-simulation-case-result-debug-tab";
+import { CaseSimulationCaseResultTotalsTab } from "./case-simulation-case-result-totals-tab";
 import {
   formatRunTime,
   resolveCompareRuns,
@@ -67,11 +68,18 @@ export function CaseSimulationCaseResultPanel({
         <Tabs defaultValue="prompt">
           <TabsList>
             <TabsTrigger value="prompt">Prompt</TabsTrigger>
+            <TabsTrigger value="totals">Totals</TabsTrigger>
           </TabsList>
           <TabsContent value="prompt">
             <CaseSimulationCaseResultDebugTab
               consolidationCall={shownRun.consolidationCall}
               register={shownRun.register}
+            />
+          </TabsContent>
+          <TabsContent value="totals">
+            <CaseSimulationCaseResultTotalsTab
+              cost={shownRun.cost}
+              durations={shownRun.durations}
             />
           </TabsContent>
         </Tabs>
