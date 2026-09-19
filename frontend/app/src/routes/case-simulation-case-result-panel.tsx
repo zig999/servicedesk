@@ -6,6 +6,7 @@ import { CaseSimulationStatusDot } from "./case-simulation-status-dot";
 import { CaseSimulationCaseResultCompare } from "./case-simulation-case-result-compare";
 import { CaseSimulationCaseResultDebugTab } from "./case-simulation-case-result-debug-tab";
 import { CaseSimulationCaseResultTotalsTab } from "./case-simulation-case-result-totals-tab";
+import { CaseSimulationCaseResultJsonTab } from "./case-simulation-case-result-json-tab";
 import {
   formatRunTime,
   resolveCompareRuns,
@@ -69,6 +70,7 @@ export function CaseSimulationCaseResultPanel({
           <TabsList>
             <TabsTrigger value="prompt">Prompt</TabsTrigger>
             <TabsTrigger value="totals">Totals</TabsTrigger>
+            <TabsTrigger value="json">JSON</TabsTrigger>
           </TabsList>
           <TabsContent value="prompt">
             <CaseSimulationCaseResultDebugTab
@@ -81,6 +83,9 @@ export function CaseSimulationCaseResultPanel({
               cost={shownRun.cost}
               durations={shownRun.durations}
             />
+          </TabsContent>
+          <TabsContent value="json">
+            <CaseSimulationCaseResultJsonTab rawResponse={shownRun.rawResponse} />
           </TabsContent>
         </Tabs>
       </div>

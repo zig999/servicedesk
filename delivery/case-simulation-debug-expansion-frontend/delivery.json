@@ -10,6 +10,14 @@
       "task": "task/case-run-record/consolidation-debug"
     },
     {
+      "id": "implementation/case-run-record/raw-payload",
+      "kind": "implementation",
+      "file": "implementation/case-run-record/raw-payload.md",
+      "title": "Case result Debug JSON tab, with resolved-credential masking",
+      "summary": "A new JSON tab on the Case result Debug block renders the shown run's whole simulate-case payload, masking any resolved credential value found inside an evidence item's inputs with the fixed text ***REDACTED*** before stringifying.",
+      "task": "task/case-run-record/raw-payload"
+    },
+    {
       "id": "implementation/case-run-record/run-carries-its-record",
       "kind": "implementation",
       "file": "implementation/case-run-record/run-carries-its-record.md",
@@ -56,6 +64,14 @@
       "title": "Case-level Debug block for the consolidation call's record",
       "summary": "New tests over the shown run's consolidation prompt, token usage, elapsed_ms and register, and over the shown-run switch and the Debug block's presence, leaving the broader shown-run rule, the assessment record whole, and the case-simulation contract unproven where no finite frontend test can decide them.",
       "task": "task/case-run-record/consolidation-debug"
+    },
+    {
+      "id": "proof/case-run-record/raw-payload",
+      "kind": "proof",
+      "file": "proof/case-run-record/raw-payload.md",
+      "title": "Case result Debug JSON tab -- raw payload view with resolved-credential masking",
+      "summary": "Two spec files prove the JSON tab shows the shown run's whole simulate-case payload verbatim except for a resolved credential value inside an evidence item's inputs, which is masked with the fixed text ***REDACTED*** and nothing else.",
+      "task": "task/case-run-record/raw-payload"
     },
     {
       "id": "proof/case-run-record/run-carries-its-record",
@@ -132,6 +148,54 @@
     {
       "from": "implementation/case-run-record/consolidation-debug",
       "to": "task/case-run-record/consolidation-debug",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "task/case-run-record/raw-payload",
       "kind": "implements",
       "at": "the path"
     },
@@ -330,6 +394,12 @@
     {
       "from": "proof/case-run-record/consolidation-debug",
       "to": "implementation/case-run-record/consolidation-debug",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-run-record/raw-payload",
+      "to": "implementation/case-run-record/raw-payload",
       "kind": "proves",
       "at": "the path"
     },
