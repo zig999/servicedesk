@@ -2,6 +2,13 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/output-schema-entry-disclosure",
+      "kind": "epic",
+      "file": "epic/output-schema-entry-disclosure.md",
+      "title": "The Output schema entry's disclosure",
+      "summary": "What the capability registration surface tells an operator about what the system reads out of the output schema they enter."
+    },
+    {
       "id": "epic/recursive-output-schema-field-paths",
       "kind": "epic",
       "file": "epic/recursive-output-schema-field-paths.md",
@@ -14,6 +21,21 @@
       "file": "inventory/investigation-field-semantics-recursion.md",
       "title": "Investigation module — field-semantics recursive path reading",
       "summary": "The investigation domain module under src/src/investigation, where output_schema field naming is read for both citation validation and hypothesis-judgment prompts."
+    },
+    {
+      "id": "inventory/output-schema-guidance-text",
+      "kind": "inventory",
+      "file": "inventory/output-schema-guidance-text.md",
+      "title": "Output schema help text and its pinning test",
+      "summary": "The Output schema field's disclosure paragraph and the spec test that pins its exact wording, both needing the top-level-only claim replaced with a recursive one."
+    },
+    {
+      "id": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "task",
+      "file": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading.md",
+      "title": "State the recursive path reading at the Output schema entry",
+      "summary": "The disclosure paragraph beside the Output schema entry names the full path through every nested properties object and items schema, in place of the top-level-only keys it names today.",
+      "epic": "output-schema-entry-disclosure"
     },
     {
       "id": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
@@ -49,6 +71,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "epic/output-schema-entry-disclosure",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/output-schema-entry-disclosure",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/output-schema-entry-disclosure",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
     {
       "from": "epic/recursive-output-schema-field-paths",
       "to": "domain/investigation/field-semantics",
@@ -162,6 +202,24 @@
       "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "implements",
+      "at": "implements[2]"
     },
     {
       "from": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
