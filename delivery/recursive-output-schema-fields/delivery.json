@@ -26,6 +26,14 @@
       "task": "task/recursive-output-schema-field-paths/nested-citation-is-accepted"
     },
     {
+      "id": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level.md",
+      "title": "Observation load stays top-level, verified against a nested output schema",
+      "summary": "Confirms citation-validation.ts's declaredFieldsOf and the adapter's observationOf were unaffected by the recursive field-semantics change; no source change was needed.",
+      "task": "task/recursive-output-schema-field-paths/observation-load-stays-top-level"
+    },
+    {
       "id": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "kind": "proof",
       "file": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
@@ -48,6 +56,14 @@
       "title": "Nested-citation acceptance is pinned by a path-shaped-field test",
       "summary": "Adds the missing path-shaped-field representatives to citation-validation.spec.ts, proving criteria 1-3 hold for a nested field name and demonstrating the nested-citation scenario, while leaving the no-data-citation and cross-file snapshot facts recorded as unproven.",
       "task": "task/recursive-output-schema-field-paths/nested-citation-is-accepted"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/observation-load-stays-top-level.md",
+      "title": "Observation load stays top-level under a nested output schema",
+      "summary": "Two new tests on the existing HTTP declarative observation-source adapter spec pin the top-level boundary explicitly against a nested output schema (installations declaring state beneath its items), demonstrating both the bounding rule and the response-map-key-names-nothing scenario; the second UNDERDETERMINED note is left unresolved with why.",
+      "task": "task/recursive-output-schema-field-paths/observation-load-stays-top-level"
     }
   ],
   "edges": [
@@ -154,6 +170,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "to": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
       "kind": "proves",
@@ -168,6 +202,12 @@
     {
       "from": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted",
       "to": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
       "kind": "proves",
       "at": "the path"
     }

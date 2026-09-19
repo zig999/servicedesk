@@ -936,3 +936,57 @@ it('carries exactly the field whose name is at once a responseMap key and a decl
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ matched_field: 'resolved-value' }) });
 });
+
+it("keeps the ok observation to installations alone under a nested output schema — excluding installations[].state even though its own responseMap path resolves, a top-level property whose own path never resolves, and a top-level property no responseMap key names", async () => {
+  const capability = aCapability({
+    concept: 'a-concept',
+    output_schema: JSON.stringify({
+      type: 'object',
+      properties: {
+        installations: { type: 'array', items: { type: 'object', properties: { state: { type: 'string' } } } },
+        status: { type: 'string' },
+        login: { type: 'string' },
+      },
+    }),
+  });
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ data: { installations: [{ state: 'up' }] } }));
+  const adapter = anAdapter({
+    capability,
+    connectorConfiguration: anHttpConfiguration({
+      responseMap: {
+        installations: 'data.installations',
+        status: 'a_path_the_body_never_carries',
+        'installations[].state': 'data.installations[0].state',
+      },
+    }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ installations: [{ state: 'up' }] }) });
+});
+
+it('carries installations with its resolved value, no field named id and no field named login, ending ok — exactly as the response-map-key-names-nothing scenario states', async () => {
+  const capability = aCapability({
+    concept: 'tech-profile',
+    connector: 'fsm-http',
+    output_schema: JSON.stringify({
+      type: 'object',
+      properties: { login: { type: 'string' }, installations: { type: 'array', items: { type: 'string' } } },
+    }),
+  });
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ data: { id: 'u1', installations: ['a', 'b'] } }));
+  const adapter = anAdapter({
+    capability,
+    connectorConfiguration: anHttpConfiguration({
+      responseMap: { id: 'data.id', installations: 'data.installations' },
+      statusMap: { '200': 'ok' },
+    }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'tech-profile', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ installations: ['a', 'b'] }) });
+});

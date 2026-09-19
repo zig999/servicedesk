@@ -6880,6 +6880,20 @@
       ]
     },
     {
+      "node": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "digest": "sha256:f6b1e68b88eb1bd2d3eef3f411d6302c0f959a0da691027926bc4663725f719d",
+      "files": [
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft",
       "digest": "sha256:ce620facbf97d0330a11de5836ae9554c4fe4ad419fce7384bf978c080600801",
       "files": [
@@ -9400,6 +9414,16 @@
         {
           "path": "src/src/connector-registry/subject-placeholder-resolution.ts",
           "digest": "sha256:beff76949c071723dcecd4f5e007e0ed812b3c32666b1b201817f48f77c42245"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "digest": "sha256:935a030c6abbc62318d3bd2e2b51e8555f13fe7bfe2fd0802795b7525720ba8f",
+      "files": [
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
