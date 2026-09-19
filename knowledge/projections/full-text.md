@@ -5897,6 +5897,137 @@ entries:
     that list while the surface's own statement already repeats its claim would make this rule's own check
     false the instant the sibling statement changed, which is exactly the drift this rule exists to catch
     in the surface rather than commit in itself.
+- location: rules/investigation/presentation-reads-the-evidence-snapshot.md
+  field: statement
+  unstated: Whether capability_payload_notes, already a required attribute of domain/investigation/evidence and
+    already admitted to a hypothesis's judgment as a snapshotted read, is among the snapshotted semantics this
+    rule holds an operator-facing surface to showing — its enumeration named concept_description and field
+    semantics and stopped there, leaving a surface that displays an evidence item's payload notes with no stated
+    source for them and no stated bar on reading the capability registry live to fill or refresh them.
+  decided: Capability payload notes join the enumerated snapshot an operator-facing surface shows, on the same
+    terms as concept_description and field semantics already there — shown exactly as the item's own snapshot
+    carries them, with no capability-registry read issued at presentation to enrich, refresh or substitute for
+    them.
+  why: A capability registration replaces whatever it held at the same name and version, so payload notes read
+    live at presentation can describe an observation the displayed item never made — the identical divergence
+    that made concept_description and field semantics snapshot-only for this surface and made payload notes
+    snapshot-only for the judgment, and it does not weaken because the reader is a person rather than a model.
+- location: rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked.md
+  field: statement
+  unstated: What an operator-facing surface presenting a collected evidence item shows of that item's inputs —
+    whether they are shown at all, and whether a resolved credential value carried into the call is withheld
+    from that presentation. domain/investigation/evidence declares inputs a required serialized string and says
+    nothing of its presentation; rules/investigation/presentation-reads-the-evidence-snapshot decides the
+    concept_description and field-semantics halves of that same presentation and names inputs nowhere; and
+    rules/integration/a-diagnostic-response-masks-a-resolved-credential binds the connector-diagnostics read
+    alone, not this one.
+  decided: An operator-facing surface presenting a collected evidence item shows that item's inputs — the
+    serialized inputs the collection was issued with — masking whatever value a credential placeholder resolved
+    to within them, so the operator reads what was asked of the capability and never a credential's real value.
+  why: Shown, because contracts/investigation/case-simulation already commits the whole record — evidence
+    included — to the curator, and rules/investigation/the-customer-sees-only-the-text already places evidence
+    on the operational side of the one disclosure boundary this specification draws; withholding inputs would
+    keep from the operator the only statement of what was asked, leaving an unexpected observation
+    undiagnosable. Masked in the one part, because this specification already decided this question once for
+    the other operator-facing read into a connector's call — rules/integration/a-diagnostic-response-masks-a-resolved-credential,
+    with rules/integration/an-unreachable-connector-ends-unavailable noting that a resolved call's own text may
+    hold that value — and deciding the second read differently would publish two answers to the same question
+    about the same secret. Masking the value and not the field is the smallest form that keeps the diagnostic
+    worth of inputs while carrying that restraint.
+- location: rules/investigation/a-simulation-session-retains-its-runs-and-shows-one.md
+  field: statement
+  unstated: Whether a curator's simulation surface keeps more than one run's result during a session and, if it
+    does, how the curator reaches a retained one and what the surface then shows of it — the staleness rule's
+    scenarios speak of "the shown result" from "a prior run" without any node stating that earlier runs are
+    retained at all, that the curator selects among them, or that a retained run is presented from its own
+    record rather than from the latest call's.
+  decided: The surface retains the runs made during a session and shows one at a time; every part of the shown
+    run — evidence, evaluations, assessment, cost, durations — is presented from that run's own returned record,
+    and selecting an earlier run from the session's history presents that run's record in place of the one
+    shown.
+  why: A simulation leaves no record anywhere but the one it returns, so a surface that keeps only the latest
+    run makes the earlier ones unanswerable the instant a second run starts, and a surface that keeps a list
+    while drawing its figures from the latest call attributes to a named run evidence, costs and prompts that
+    run never produced — stating of it something no run returned.
+- location: rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object.md
+  field: statement
+  unstated: What an evidence item's inputs attribute carries where the collection it records sent no inputs at
+    all — evidence declares inputs a required string pinned as the recorded ask, and its own text fixes
+    honest-empty readings for capability_payload_notes, fields and concept_description, but no node gives
+    inputs one, leaving a parameterless call (and a call that never reached its connector) with no stated value
+    for a required attribute.
+  decided: The empty JSON object text `{}` — never an empty string, never an absent value and never an invented
+    parameter.
+  why: inputs is kept to be replayed and to key the evidence cache, so it has to read as the payload it
+    records; `{}` is exactly the payload a parameterless call sent, while an empty string is not a serialized
+    payload at all and reads identically to an ask nobody recorded, which would make every replay and every
+    cache key branch on a case the empty object already answers honestly.
+- location: rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked.md
+  field: statement
+  unstated: What an operator-facing surface puts in place of a credential value it masks within a presented
+    evidence item's inputs — whether a fixed placeholder text and which one. This rule fixed that masking
+    replaces the resolved value and never the field that held it, and stopped there;
+    rules/integration/a-diagnostic-response-masks-a-resolved-credential fixes that the other operator-facing
+    read into a connector's call masks and never how; no node in the specification states any masking
+    rendering at all.
+  decided: The fixed text ***REDACTED*** put in the masked value's place — the same text for every masked
+    value, whichever credential it came from and however long that value was.
+  why: A rendering that varied with the credential's name, the value's length or its content would disclose
+    in the shape of the mask a part of what masking exists to withhold, so one fixed text is the only form
+    that withholds whole; and a mask indistinguishable from content would be read as a literal the call
+    carried, which is why the text is bracketed by asterisks and names itself in English rather than being a
+    bare string. ***REDACTED*** rather than some other constant because this system's only other
+    operator-facing read into a connector's call already puts exactly that text in a resolved credential's
+    place in what has been delivered (src/src/http/test-connector.controller.ts,
+    REDACTED_CREDENTIAL_MARKER), and the decision that brought this rule into being refused to publish two
+    answers to one question about one secret — an operator who meets the same mark on both reads learns the
+    withholding once, while two renderings would leave them deciding which one means withheld.
+- location: rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation.md
+  field: statement
+  unstated: domain/investigation/evidence declares observation a required string and
+    rules/investigation/an-observation-is-recorded-as-json-object-text fixes its content only for an item
+    that ended ok; domain/investigation/evidence-result already holds what a reader may take from a non-ok
+    item's observation — only ok carries a usable one, the other three being facts about the attempt —
+    while no node states what that required string itself records when the result is a timeout, a denial
+    or an unavailability.
+  decided: The empty JSON object text `{}` — never an empty string, never an absent value and never a
+    message or error name — from which a reader parsing it takes no observed field to read or cite, reading
+    the cause from the item's result and result_detail instead.
+  why: The observation string is parsed as one JSON object wherever it is read, so the only value that
+    keeps every item on that one parse path is a well-formed object carrying no field; an empty string or an
+    absent value would be indistinguishable from an observation never recorded, and a cause rendered into
+    the field a reader parses for observed data would be read as data the collection never returned.
+- location: rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations.md
+  field: statement
+  unstated: Whether a simulate-hypothesis call's returned record carries the run's own cost totals (calls,
+    input tokens, output tokens) and its stage durations, the same as a simulate-case call's record does —
+    contracts/investigation/case-simulation narrows simulate-hypothesis only in what it collects and judges
+    and in resolving no outcome, without saying whether the run's own totals travel with it too.
+  decided: A simulate-hypothesis call's returned record carries that run's own cost and its stage durations,
+    each covering the narrowed run alone, the same as a simulate-case call's record carries the whole run's.
+  why: domain/investigation/usage already defines cost as the total across every call an investigation or a
+    simulation made, and a simulate-hypothesis call is a simulation under that same contract;
+    domain/investigation/durations already measures total to the moment the record is assembled and, for a
+    simulation, before the answer leaves, and already holds writing absent for a run that never reaches
+    consolidation — which no run but this one ever is. The reading was already carried in three nodes'
+    own prose; this rule is where it becomes addressable rather than inferred from a narrowing's silence.
+- location: rules/investigation/a-presented-consolidation-prompt-is-shown-whole.md
+  field: statement
+  unstated: What an operator-facing surface presenting an assessment's consolidation prompt shows of that
+    prompt — whether it is shown entire or whether a value a credential placeholder resolved to is withheld
+    from within it. domain/investigation/assessment declares prompt a required string recording the prompt
+    as it materialized and says nothing of its presentation; the two masking rules that exist —
+    rules/integration/a-diagnostic-response-masks-a-resolved-credential and
+    rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked — each
+    bind a different read.
+  decided: Whole — the surface shows the consolidation prompt exactly as the assessment's own record
+    carries it, masking no resolved credential value and withholding no other part.
+  why: The masking both sibling rules carry is bounded to one text, the connector call a credential
+    placeholder resolves into, and a consolidation prompt is assembled from the narrowed writing input —
+    evaluations, the evidence their citations name and the register — rather than from a connector's call,
+    so that restraint has nothing here to act on, while masking a prompt against the chance that it might
+    would show the curator a text the writing call never received and destroy the one thing a materialized
+    prompt is kept for.
 
 ---
 
@@ -11067,6 +11198,44 @@ The block costs a bounded wait rather than a lock — a simulation runs the same
 Keyed by the operation and the subject together: simulate-case and simulate-hypothesis answer two different questions about one case version, and a curator watching one has no reason to be shut out of the other; a second subject composed on another screen is a different subject and blocks nothing.
 This is not a refusal the contract answers. No request is issued, so nothing at contracts/investigation/case-simulation ever sees the suppressed attempt, and no status or error name belongs to it — unlike a refusal the specification does state, which is always a request that reached the operation.
 
+=== rules/investigation/a-presented-consolidation-prompt-is-shown-whole
+---
+type: invariant
+statement: An operator-facing surface presenting an assessment's consolidation prompt shows that prompt whole, exactly as that assessment's own record carries it, masking no value a credential placeholder resolved to and withholding no other part of it.
+constrains:
+  - domain/investigation/assessment
+---
+
+## Description
+
+The prompt stands on the operational side of the one disclosure boundary this specification draws: rules/investigation/the-customer-sees-only-the-text keeps everything but the assessment's text from the end customer, and contracts/investigation/case-simulation faces that same withheld detail at the curator instead, the assessment among it. rules/investigation/a-simulation-session-retains-its-runs-and-shows-one fixes which record a shown run's assessment is drawn from; how much of the prompt inside it a surface then shows is this rule's own question, and the answer is all of it — a materialized prompt is the only statement of what the writing call was actually given, and a curator reading an unexpected text against a partial prompt is reading it against a text no call ever received.
+
+Nothing is held back, because nothing here is what the two sibling restraints hold back. rules/integration/a-diagnostic-response-masks-a-resolved-credential and rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked each keep one value out of one text — the connector call a credential placeholder resolves into, from configuration the connector reads from the environment rather than from anything a curator authors — and a consolidation prompt is not that text: constraints/the-consolidation-prompt-is-closed admits the required hypotheses' evaluations, the evidence their citations name and the case's own register, the narrowed writing input rules/investigation/the-writing-input-is-narrowed fixes, never a connector's own assembled call.
+
+Where a resolved credential value could reach such a prompt at all, that is a question about what a consolidation prompt may carry, which constraints/the-consolidation-prompt-is-closed governs, and never a reason for this surface to show a curator a prompt other than the one that ran; masking a prompt against the chance of a value it was never shown to hold would cost the fidelity the record is kept for and buy no secrecy the prompt's own closure does not already owe.
+
+=== rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked
+---
+type: invariant
+statement: >-
+  An operator-facing surface presenting a collected evidence item shows that item's inputs
+  — the serialized inputs the collection was issued with — masking whatever value a
+  credential placeholder resolved to within them by putting the fixed text `***REDACTED***`
+  in that value's place, the same text for every masked value whichever credential it came
+  from and however long the value was, so the operator reads what was asked of the
+  capability and never a credential's real value.
+constrains:
+  - domain/investigation/evidence
+---
+
+## Description
+
+An observation read without what was asked for it is half a record: the same operator who can see that a collection returned ok, at which instant and under which semantics cannot tell, from the observation alone, which subject attributes and which arguments the call actually carried, and so cannot tell an honest answer to the wrong question from a wrong answer to the right one. contracts/investigation/case-simulation already faces the whole record at the curator — evidence per concept among it — and rules/investigation/the-customer-sees-only-the-text already fixes that this operational detail faces the operation and not the end customer, so inputs are shown rather than dropped, on the same surface and beside the same item.
+What is withheld is one part and only one: a connector's call may embed a placeholder naming a credential the connector reads from environment configuration rather than from any operator-editable text, and rules/integration/an-unreachable-connector-ends-unavailable already records that the resolved call's own text may hold what such a placeholder resolved to. rules/integration/a-diagnostic-response-masks-a-resolved-credential holds exactly that value out of the other read this system offers an operator into a connector's call; a presented evidence item's inputs are the second such read, and they carry the same restraint rather than a second answer to one question.
+Masking replaces the resolved value and never the field that held it, so the shape of what was issued stays legible; an item whose inputs carry no credential value is shown whole, and an item recorded with empty inputs shows that emptiness, the same honest degradation the record itself already carries elsewhere.
+What stands in the withheld value's place is one fixed text and the same one every time. A rendering that followed the value — its length, its first or last characters, the credential's own name — would hand back in the shape of the mask a part of exactly what the mask exists to withhold, and a rendering an operator cannot tell apart from content would turn an honest withholding into a record read as if the call had carried that literal. `***REDACTED***` is neither: it is not the shape of any credential and not the shape of the `${credential:<name>}` placeholder that rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms admits, so the operator reading inputs sees at once that a value was held back there and which field held it.
+rules/integration/a-diagnostic-response-masks-a-resolved-credential fixes that its own read masks and fixes no rendering for it, so the text stated here diverges from no rendering this specification already holds; whether that read's response carries this same text stays that rule's own question, and this rule claims nothing about it.
+
 === rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
 ---
 type: policy
@@ -11080,6 +11249,22 @@ consistency: eventual
 ## Description
 
 `simulate-hypothesis` narrows its run to one hypothesis named by the request; a name the pinned case version's manifest currently holds no entry for is not an ordinary empty result the caller could read as though something answered to it, but a refusal of its own — the same distinction `a-case-read-by-an-unknown-slug-or-version-is-refused`, `a-connector-configuration-read-by-an-unregistered-name-is-refused` and `a-glossary-read-by-an-unheld-name-is-refused` already draw for a miss elsewhere in this specification.
+
+=== rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations
+---
+type: invariant
+statement: A simulate-hypothesis call's returned record carries that run's own cost and its stage durations, each covering the narrowed run alone, the same as a simulate-case call's record carries the whole run's.
+constrains:
+  - domain/investigation/cost
+  - domain/investigation/durations
+---
+
+## Description
+
+contracts/investigation/case-simulation states what `simulate-case` hands back — evidence per concept, evaluation per hypothesis, the resolved outcome, the assessment, cost and durations — and narrows `simulate-hypothesis` in two named respects only: what is collected and judged, and that no outcome is resolved. The run's own totals are not among the narrowings, and this rule is where that reading is addressable rather than inferred from a narrowing's silence.
+Nothing here is new. domain/investigation/usage already defines cost as the total across every call an investigation or a simulation made, and a `simulate-hypothesis` call is a simulation under that same contract; domain/investigation/durations already measures total to the moment the record is assembled and, for a simulation, before the answer leaves, and already holds writing absent for a run that never reaches consolidation — which no run but this one ever is.
+Covering the narrowed run alone is what the two value-objects mean here: the cost totals the judgment call that one named hypothesis revision provoked and no consolidation call, since none is made, and the durations carry collection, judgment and total, with writing absent by domain/investigation/durations' own conditional presence rather than by anything this rule adds.
+rules/investigation/a-simulation-session-retains-its-runs-and-shows-one presents every part of a shown run, cost and durations alike, from that run's own returned record; a hypothesis run whose record carried neither would leave that surface nothing to present and nothing honest to say instead.
 
 === rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
 ---
@@ -11129,6 +11314,30 @@ consistency: eventual
 ## Description
 
 A curator judges a simulation result against the case content it was run against, not against whatever that content has since become; editing the version or a hypothesis it manifests, after a result was already shown, is exactly the gap this closes. The rule names no mechanism for detecting the change — hashing, timestamps, a version counter — because none of those is a fact the specification decides; it is free to name the coarsest safe answer (every return from editing) or a finer one, provided a real change is never missed.
+
+=== rules/investigation/a-simulation-session-retains-its-runs-and-shows-one
+---
+type: policy
+statement: A curator's simulation surface retains the runs made during a session and shows one of them
+  at a time, presenting every part of the shown run — its evidence, its evaluations, its assessment, its
+  cost and its durations alike — from that run's own returned record, so that selecting an earlier run
+  from the session's history presents that run's record in place of the one shown.
+constrains:
+  - domain/investigation/evidence
+  - domain/investigation/evaluation
+  - domain/investigation/assessment
+  - domain/investigation/cost
+  - domain/investigation/durations
+consistency: eventual
+---
+
+## Description
+
+A simulation writes no investigation, emits no event and lets nothing it collects reach a cache (rules/investigation/a-simulation-writes-no-investigation), so the record a run returns is the only account of that run that will ever exist: the moment the surface drops it, nothing anywhere can answer what that run collected, what it judged, what it cost or how long it took. Keeping the session's runs is what lets a curator compose a subject, run it, change one attribute, run it again and read the two against each other — the comparison the curator's own entry to the engine exists for (contracts/investigation/case-simulation).
+
+Presenting the shown run from its own record is the load-bearing half. A surface that lists runs but draws what it shows from whatever the most recent call returned states, of the run named beside those figures, something that run never returned — evidence a later call collected, a cost no part of it incurred, a consolidation prompt it never sent. The honesty rules/investigation/presentation-reads-the-evidence-snapshot demands of one evidence item against a live registry is the same demand made here of a whole run against its siblings.
+
+The retention is the session's and no store's: nothing outlives the curator leaving, and nothing retained here is ever read back into a later collection — a retained run is a record on a screen, never a cached observation (scenarios/investigation/a-simulation-never-enters-the-cache). The history named here is the one rules/investigation/a-simulation-result-is-stale-once-its-source-changes already reads a shown result as coming from, and the result its scenarios mark stale is whichever run this rule has the surface showing.
 
 === rules/investigation/a-simulation-writes-no-investigation
 ---
@@ -11216,6 +11425,50 @@ ticket_ref is optional: not every diagnose call carries a ticket (domain/investi
 An empty string correlates with nothing, so admitting it as a value would leave two encodings of the same nothing — a record holding no ticket reference and a record holding an empty one — that an audit would have to distinguish while neither reaches a ticket.
 This is the reading the specification already gives an empty attribute elsewhere: a-capability-declares-its-contract calls an attribute that is absent or an empty string undeclared, a-connector-configuration-names-its-connector treats an empty string as no name at all, and a-diagnosed-subject-covers-its-cases-required-attributes and a-simulation-carries-its-requester each read "or an empty one" as the absence of the value.
 Unlike those, ticket_ref is optional, so the reading ends at absence rather than at a refusal: nothing is missing when a call carries no ticket.
+
+=== rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object
+---
+type: invariant
+statement: >-
+  An evidence item whose collection sent no inputs at all — because the capability it ran asked for
+  none, or because the attempt ended before anything reached the connector — records its inputs as the
+  empty JSON object text `{}`, never an empty string, never an absent value and never an invented
+  parameter.
+constrains:
+  - domain/investigation/evidence
+---
+
+## Description
+
+domain/investigation/evidence declares inputs a required string, which pins what was asked of the connector so the same ask can be replayed and so the evidence cache can be keyed by it; a string leaves open what is recorded when there was nothing to ask, and a call carrying no parameter is an ordinary outcome rather than a failure to record one.
+
+The empty object is what was actually sent, expressed the same way a populated ask is: a reader replaying the item replays a parameterless call without first testing whether the recorded text is a payload at all, and the cache key that folds inputs in gets one definite value for every such collection instead of one value per collector's idea of nothing.
+
+An empty string would not carry that: it is indistinguishable from an item whose inputs were never recorded, so a reader meeting it learns nothing about whether the call was parameterless or the record incomplete — the same confusion between an honest emptiness and an unrecorded fact that domain/investigation/evidence's own readings for its snapshotted semantics exist to prevent.
+
+This fixes what is recorded, never what any reader does with it: an item that sent no inputs still ends exactly as its own result states, and nothing here refuses, degrades or re-collects it.
+
+=== rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation
+---
+type: invariant
+statement: >-
+  An evidence item whose result is timeout, denied or unavailable records its observation as the empty
+  JSON object text `{}` — never an empty string, never an absent value and never a message, an error
+  name or any other rendering of the cause — so a reader parsing it finds no observed field to read or
+  cite and learns what happened from that item's own result and result_detail instead.
+constrains:
+  - domain/investigation/evidence
+---
+
+## Description
+
+domain/investigation/evidence declares observation a required string, and rules/investigation/an-observation-is-recorded-as-json-object-text fixes what that string holds only for an item that ended ok, deliberately leaving the other three endings outside itself. domain/investigation/evidence-result already holds what such an item is worth to a reader — the attempt's own fact rather than a usable observation — but the field is required all the same, and a required field with no decided value is filled by whoever writes the record next.
+
+The empty object is that value, for the reason rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object already gives for the sibling string on this same element: one definite text for every collection that observed nothing, instead of one text per collector's idea of nothing, and one parse rather than a test of whether the recorded text is a payload at all. An empty string would not carry that — it is indistinguishable from an item whose observation was never recorded, so a reader meeting it cannot tell an honest emptiness from an incomplete record, the same confusion the element's own readings for its snapshotted semantics exist to prevent.
+
+What a reader takes from it follows from the shape: parsing yields an object with no field, so no field name domain/investigation/field-semantics snapshots is present, nothing is citable from the item, and the account of what happened is read from result and result_detail — where rules/integration/an-unresolvable-observation-ends-unavailable, rules/integration/an-unreachable-connector-ends-unavailable and rules/integration/an-unclassified-status-ends-unavailable each already put their cause. A cause written into observation instead would sit in exactly the text a judgment and an operator-facing presentation parse for what was observed, and prose explaining the absence of data would be read as data the collection never returned.
+
+This fixes what is recorded and nothing else: an item that observed nothing still ends exactly as its own result states, nothing here refuses, degrades or re-collects it, and constraints/the-evidence-cache-admits-only-ok-results keeps every such item out of the cache regardless.
 
 === rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
 ---
@@ -11422,7 +11675,7 @@ A draft exists to be composed and previewed while it is still incomplete or unde
 === rules/investigation/presentation-reads-the-evidence-snapshot
 ---
 type: invariant
-statement: An operator-facing surface presenting a collected evidence item shows its concept_description and its field semantics exactly as that item's own snapshot carries them; it issues no glossary or capability-registry read at presentation to enrich, refresh or substitute for that snapshot.
+statement: An operator-facing surface presenting a collected evidence item shows its concept_description, its field semantics and its capability payload notes exactly as that item's own snapshot carries them; it issues no glossary or capability-registry read at presentation to enrich, refresh or substitute for that snapshot.
 constrains:
   - domain/investigation/evidence
 ---
@@ -11430,7 +11683,8 @@ constrains:
 ## Description
 
 The same risk rules/investigation/judgment-reads-the-evidence-snapshot already closes for a hypothesis's judgment reaches a second consumer of the same record: a currently-registered concept's or capability's live description can silently diverge from what actually grounded the collected item, and a surface that quietly substitutes today's registry state for what the evidence actually snapshotted would show an operator a meaning nothing collected against.
-The snapshot domain/investigation/evidence carries — fields and concept_description — is what an operator-facing surface reads and shows instead, always; a concept collected before it declared a description shows empty, and a capability whose connector never resolved shows no fields, the same honest degradation the record itself already carries, never a live-filled substitute.
+The snapshot domain/investigation/evidence carries — fields, concept_description and capability_payload_notes — is what an operator-facing surface reads and shows instead, always; a concept collected before it declared a description shows empty, and a capability whose connector never resolved shows no fields, the same honest degradation the record itself already carries, never a live-filled substitute.
+capability_payload_notes belongs to that same snapshot and is shown the same way, for the reason rules/investigation/judgment-reads-the-evidence-snapshot already gives for admitting it to the judgment: a capability registration silently replaces whatever it already held at that name and version, so the payload notes registered today can be an account of an observation this item never made. A capability that declared none shows empty, and an observation whose capability never resolved shows that same empty string domain/investigation/evidence already records — never the notes some later or other registration happens to hold.
 
 === rules/investigation/replay-is-pinned
 ---
