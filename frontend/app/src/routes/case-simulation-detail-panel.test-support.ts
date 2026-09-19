@@ -14,9 +14,13 @@ export function testEvidenceItem(
     result: "ok",
     elapsedMs: 120,
     observation: JSON.stringify({ balance: 42 }),
+    inputs: "{}",
+    observedAt: "2026-01-01T00:00:00.000Z",
+    ttl: 3600,
     capabilityName: "translate-text",
     capabilityVersion: "1.0.0",
     connector: "deepl-connector",
+    capabilityPayloadNotes: "",
     ...overrides,
   };
 }

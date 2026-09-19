@@ -10,6 +10,14 @@
       "task": "task/case-run-record/run-carries-its-record"
     },
     {
+      "id": "implementation/evidence-detail/evidence-adapter-fields",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/evidence-adapter-fields.md",
+      "title": "toDetailEvidence carries inputs, observedAt, ttl and capabilityPayloadNotes forward",
+      "summary": "SimulationEvidenceItem (DetailEvidenceItem) now declares inputs, observedAt, ttl and capabilityPayloadNotes, and toDetailEvidence copies all four straight from its argument instead of dropping them; a pre-existing local test fixture was completed to satisfy the widened type.",
+      "task": "task/evidence-detail/evidence-adapter-fields"
+    },
+    {
       "id": "implementation/evidence-detail/evidence-wire-fields",
       "kind": "implementation",
       "file": "implementation/evidence-detail/evidence-wire-fields.md",
@@ -24,6 +32,14 @@
       "title": "A run entry keeps its own returned record",
       "summary": "toNewCaseResultRun fills the widened CaseResultRun shape from a simulate-case response, and useCaseSimulationHistory keeps each recorded run's durations, cost, consolidation record and payload isolated from the next.",
       "task": "task/case-run-record/run-carries-its-record"
+    },
+    {
+      "id": "proof/evidence-detail/evidence-adapter-fields",
+      "kind": "proof",
+      "file": "proof/evidence-detail/evidence-adapter-fields.md",
+      "title": "toDetailEvidence carries inputs, observedAt, ttl and capabilityPayloadNotes through, protected end-to-end",
+      "summary": "DetailEvidenceItem's four widened fields and toDetailEvidence's verbatim pass-through of them are proven at the adapter's own unit boundary by a dedicated spec, and kept accurate at the full cockpit-hook boundary by extending four pre-existing regression tests to the widened, specification-conformant shape.",
+      "task": "task/evidence-detail/evidence-adapter-fields"
     },
     {
       "id": "proof/evidence-detail/evidence-wire-fields",
@@ -90,6 +106,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "task/evidence-detail/evidence-adapter-fields",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/evidence-detail/evidence-wire-fields",
       "to": "contracts/investigation/case-simulation",
       "kind": "encodes",
@@ -122,6 +174,12 @@
     {
       "from": "proof/case-run-record/run-carries-its-record",
       "to": "implementation/case-run-record/run-carries-its-record",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/evidence-adapter-fields",
+      "to": "implementation/evidence-detail/evidence-adapter-fields",
       "kind": "proves",
       "at": "the path"
     },

@@ -24,9 +24,13 @@ export type SimulationEvidenceItem = {
   readonly resultDetail?: string;
   readonly elapsedMs: number;
   readonly observation: string;
+  readonly inputs: string;
+  readonly observedAt: string;
+  readonly ttl: number;
   readonly capabilityName: string;
   readonly capabilityVersion: string;
   readonly connector: string;
+  readonly capabilityPayloadNotes: string;
 
   readonly fields?: readonly SimulationFieldSemantics[];
 

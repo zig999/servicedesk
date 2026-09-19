@@ -257,9 +257,13 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         resultDetail: "cached",
         elapsedMs: 120,
         observation: "the account shows one authorized charge",
+        inputs: "{}",
+        observedAt: "2026-08-01T00:00:00.000Z",
+        ttl: 3600,
         capabilityName: "fetch-billing-account",
         capabilityVersion: "1",
         connector: "billing-connector",
+        capabilityPayloadNotes: "",
       },
     ]);
   });

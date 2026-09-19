@@ -192,9 +192,13 @@ export function toDetailEvidence(
     resultDetail: item.result_detail,
     elapsedMs: item.elapsed_ms,
     observation: item.observation,
+    inputs: item.inputs,
+    observedAt: item.observed_at,
+    ttl: item.ttl,
     capabilityName: item.capability_name,
     capabilityVersion: item.capability_version,
     connector: item.origin,
+    capabilityPayloadNotes: item.capability_payload_notes,
 
     fields: item.fields,
     conceptDescription: item.concept_description,

@@ -12,9 +12,13 @@ function realDetailEvidenceItem(overrides: Partial<SimulationEvidenceItem> = {})
     result: "ok",
     elapsedMs: 340,
     observation: '{"status":"active"}',
+    inputs: "{}",
+    observedAt: "2026-01-01T00:00:00.000Z",
+    ttl: 3600,
     capabilityName: "perfil-mobile-tecnico-reader",
     capabilityVersion: "1.0.0",
     connector: "mobile-tecnico-connector",
+    capabilityPayloadNotes: "",
     ...overrides,
   };
 }
