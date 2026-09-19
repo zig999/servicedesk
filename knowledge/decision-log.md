@@ -5127,5 +5127,23 @@ entries:
     by exactly the margin the caching introduced. domain/investigation/hypothesis-evaluator is the home
     because evaluate is the one operation that reads this instant at all; no evidence item nor the evaluation
     it produces owns a clock reading of its own.
+- location: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone.md
+  field: statement
+  unstated: What a listing of every case answers, and what its entry for each case carries, when one listed
+    case's current version fails a validator rule of validation-runs-at-every-read at that reading -- whether
+    the other cases' summaries still stand and what stands in place of that one case's summary. The by-name
+    refusal covers a read naming a version, and the keyed-surface statement covers a reader who named one
+    case by its slug; neither reaches a listing that names no case and no version.
+  decided: The listing still answers an entry for every case; every other entry carries its own summary unchanged,
+    and the entry for the case whose highest-numbered version fails a validator rule at that reading carries
+    its slug and the explicit statement that this case's current version does not read back as a case, in
+    place of the whole summary -- no current_state, version_count, last_updated, title, when_to_use or released_version.
+    Recorded as a new policy over domain/knowledge/case, domain/knowledge/case-version and domain/knowledge/case-summary,
+    eventual.
+  why: A case's summary is derived from that case's own versions alone, so one case's version failing validation
+    is a fact about that entry and about no other, and the material's own scope names a single invalid case
+    taking the whole listing down as the defect rather than the design; the statement is what sends the curator
+    to correct that version, where any summary fact presented beside it would state as the case's current
+    content exactly what validation has just declined to read back as a case.
 
 ---

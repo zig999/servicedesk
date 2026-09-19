@@ -5842,6 +5842,24 @@ entries:
     by exactly the margin the caching introduced. domain/investigation/hypothesis-evaluator is the home
     because evaluate is the one operation that reads this instant at all; no evidence item nor the evaluation
     it produces owns a clock reading of its own.
+- location: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone.md
+  field: statement
+  unstated: What a listing of every case answers, and what its entry for each case carries, when one listed
+    case's current version fails a validator rule of validation-runs-at-every-read at that reading -- whether
+    the other cases' summaries still stand and what stands in place of that one case's summary. The by-name
+    refusal covers a read naming a version, and the keyed-surface statement covers a reader who named one
+    case by its slug; neither reaches a listing that names no case and no version.
+  decided: The listing still answers an entry for every case; every other entry carries its own summary unchanged,
+    and the entry for the case whose highest-numbered version fails a validator rule at that reading carries
+    its slug and the explicit statement that this case's current version does not read back as a case, in
+    place of the whole summary -- no current_state, version_count, last_updated, title, when_to_use or released_version.
+    Recorded as a new policy over domain/knowledge/case, domain/knowledge/case-version and domain/knowledge/case-summary,
+    eventual.
+  why: A case's summary is derived from that case's own versions alone, so one case's version failing validation
+    is a fact about that entry and about no other, and the material's own scope names a single invalid case
+    taking the whole listing down as the defect rather than the design; the statement is what sends the curator
+    to correct that version, where any summary fact presented beside it would state as the case's current
+    content exactly what validation has just declined to read back as a case.
 
 ---
 
@@ -11637,6 +11655,52 @@ constrains:
 contracts/knowledge/case-query publishes list-cases as the listing a curator browses every case by, and contracts/knowledge/case-lifecycle publishes create-draft as the act that originates a case's first draft — but no node said the curator standing at that listing is offered any way to reach that act, so the offer's existence, and the readings of the listing it survives, fell to whatever an interface happened to render.
 The listing's own read answers which cases exist and nothing about whether a new one may be authored, so making the route turn on that read's state would withhold an act for a reason unrelated to it. The readings a condition would drop the route from are precisely the ones where the curator has nothing else on the surface to act on: a read still outstanding, a read that failed, and — most of all — a read that came back holding no case, where authoring one is the only thing left to do.
 Which control carries the route, its wording and where it sits are form, belonging to the interface, as rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest, rules/knowledge/a-presented-case-version-states-its-own-declared-attributes and every other presentation rule of this specification leave them. This rule states that the route is offered and on which readings; it states nothing about what taking it writes, nor about what the authoring surface it reaches presents.
+
+=== rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+---
+type: policy
+statement: >-
+  A listing of every case answers an entry for every case it carries whether or not each
+  case's current version reads back as a case at that reading, every entry whose own
+  case's current version reads back carrying that case's own summary unaffected by any
+  other case, and an entry whose case's highest-numbered version fails some validator
+  rule of validation-runs-at-every-read at that reading carrying, in place of the whole
+  summary it would otherwise have carried, the explicit statement that this case's
+  current version does not read back as a case at that reading.
+expression: >-
+  For a listing of every case answering cases c1..cn and any c_i among them: let v_i be
+  the version, among the versions c_i currently holds, whose version number is highest.
+  Where v_i exists and some validator rule of validation-runs-at-every-read does not hold
+  for v_i at the moment of that reading, the listing still answers an entry for c_i; that
+  entry carries c_i's own slug and states that the version c_i currently uses does not
+  read back as a case at that reading; it states no fact of c_i's summary — none of
+  current_state, version_count, last_updated, title, when_to_use or released_version —
+  and no other attribute of v_i nor any fact derived from one; and every entry c_j for j
+  other than i answers exactly as it would where every validator rule held for v_i,
+  carrying c_j's own summary. Where every validator rule holds for v_i at that reading,
+  the entry for c_i carries c_i's summary and states none of this.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+  - domain/knowledge/case-summary
+consistency: eventual
+---
+
+## Description
+
+`validation-runs-at-every-read` makes a stored version read back as a case only while every validator rule holds at that reading, and no field marks one that currently fails a rule. So a curator opening the catalog can hold a case whose highest-numbered version — the version `a-cases-current-pins-come-from-its-highest-numbered-version` already fixed as the one a case currently uses — yields no case at that moment. The listing owes an answer for that case and an answer for every other, and no node stated either.
+
+Every other case's entry stands because nothing about those cases changed. `a-case-summary-is-derived-from-its-existing-versions` computes each summary from that case's own versions alone, and `a-slug-identifies-one-case` keeps the cases disjoint, so one case's version failing a validator rule is a fact about that case and about no other. Withholding the catalog for it would hide every case needing no correction while telling the curator nothing about the one that does. `a-case-listing-answers-cases-in-slug-order` also fixes which cases a page carries from their slugs alone, so a page that dropped such a case, or refused over it, would make the page a reader reaches turn on a fact no slug carries.
+
+`a-case-version-failing-validation-at-a-read-is-refused-by-name` answers a read naming a stored case version, and answers it with nothing partial. This listing names no version: it answers the cases currently held, and what it learns about one case's current version bears on that case's own entry. The refusal by name is therefore not what the listing becomes.
+
+What the entry carries instead is the state `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` already owes a reader who named that one case by its slug. That node does not reach here — its reader named a case and this listing's reader named none — but the state is the same state and the act it sends the curator to, correcting that version, is the same act.
+
+The summary cannot stand beside the statement. current_state, last_updated, title and when_to_use are read off the case's versions, and `a-case-is-read-whole` leaves nothing partial to present, so showing any of them would state as the case's current content exactly what validation has just declined to read back as a case. version_count counts the versions the case holds rather than reading an attribute off the failing one, but it is a fact of the summary and the summary is what the statement stands in place of; an entry showing one summary field while withholding the rest is the partly-derived answer this specification refuses everywhere else. The slug stays, because `domain/knowledge/case` declares it on the case's own identity rather than on any version, and it is what orders the entry and what the reader addresses the case by.
+
+This is not the absence a case holding no version shows. There, `a-case-summary-is-derived-from-its-existing-versions` answers version_count zero with current_state and last_updated simply absent; here the entry states a fact about a version that exists and does not currently read back, so the two entries differ in what they carry, not only in degree.
+
+The rule adds no attribute, moves no pin and refuses no call. Which control carries the statement, how it is worded and where in the entry it sits are form and belong to the interface, as they do wherever else this specification states what a surface tells a reader. Consistency is eventual: the fact spans the case listed and the version whose validation is judged, each read separately.
 
 === rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
 ---
