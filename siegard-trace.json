@@ -1315,7 +1315,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -3197,11 +3197,11 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+          "digest": "sha256:f2cf8c887c7b5eeef19853ae9e67533d1e872541ea89c24f31028f4253911a55"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -7604,12 +7604,16 @@
       "digest": "sha256:cd1207e038f62351b6d1b8b7feda00ffdfe9739c6c2346dd3075ff963d1e4394",
       "files": [
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-compare.tsx",
+          "digest": "sha256:335f4dbc61361f64ba3a8570bc2b35aba40a8bf7c1468bd92f78a7d2ad266eb8"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
-          "digest": "sha256:d226327836a0a457c1f56dcc96e962b5d39dad5db187aefc43178057cb6b8966"
+          "digest": "sha256:cbc4a7f01afd1843679bb00d712cd46bf91b3372c98b8664a81a38b2d51f4a6f"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -8081,6 +8085,14 @@
       "node": "rules/investigation/the-consolidation-answer-states-its-register",
       "digest": "sha256:ceb5b1df0e605c53a9a9011ba70723d1b1ad4fb969f5f060d08365c4b251aaef",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:f2cf8c887c7b5eeef19853ae9e67533d1e872541ea89c24f31028f4253911a55"
+        },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
           "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
@@ -10099,7 +10111,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",

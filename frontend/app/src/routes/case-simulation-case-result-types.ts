@@ -34,19 +34,28 @@ export type CaseResultConsolidationCall =
     }
   | { readonly called: false };
 
+export type CaseResultAssessmentCall =
+  | {
+      readonly called: true;
+      readonly outcome: string;
+      readonly referral: SimulationReferral;
+      readonly determiningHypothesis?: string;
+      readonly text: string;
+      readonly register: SimulationConsolidationRegister;
+      readonly usage: CaseResultUsage;
+      readonly elapsedMs: number;
+      readonly prompt: string;
+    }
+  | { readonly called: false };
+
 export type CaseResultRun = {
   readonly id: string;
   readonly ranAt: string;
-  readonly outcome: string;
-  readonly referral: SimulationReferral;
-  readonly determiningHypothesis?: string;
-  readonly text: string;
-  readonly register: SimulationConsolidationRegister;
   readonly hypotheses: readonly CaseResultRunHypothesisVerdict[];
   readonly stale: boolean;
   readonly durations: SimulationDurations;
   readonly cost: CaseResultCost;
-  readonly consolidationCall: CaseResultConsolidationCall;
+  readonly consolidationCall: CaseResultAssessmentCall;
   readonly rawResponse: unknown;
 };
 

@@ -130,11 +130,6 @@ export function toCost(result: SimulateCaseResult): CaseResultCost {
 
 export function toNewCaseResultRun(result: SimulateCaseResult): NewCaseResultRun {
   return {
-    outcome: result.assessment.outcome,
-    referral: result.assessment.referral,
-    determiningHypothesis: result.assessment.determining_hypothesis,
-    text: result.assessment.text,
-    register: result.assessment.register,
     hypotheses: result.evaluations.map((evaluation) => ({
       hypothesis: evaluation.hypothesis,
       verdict: evaluation.verdict,
@@ -143,6 +138,11 @@ export function toNewCaseResultRun(result: SimulateCaseResult): NewCaseResultRun
     cost: toCost(result),
     consolidationCall: {
       called: true,
+      outcome: result.assessment.outcome,
+      referral: result.assessment.referral,
+      determiningHypothesis: result.assessment.determining_hypothesis,
+      text: result.assessment.text,
+      register: result.assessment.register,
       usage: {
         inputTokens: result.assessment.usage.input_tokens,
         outputTokens: result.assessment.usage.output_tokens,

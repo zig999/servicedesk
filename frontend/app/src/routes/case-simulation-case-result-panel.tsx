@@ -21,6 +21,8 @@ export type CaseSimulationCaseResultPanelProps = {
   readonly runs: readonly CaseResultRun[];
 };
 
+const NOT_CALLED_MESSAGE = "No consolidation call was made for this run.";
+
 export function CaseSimulationCaseResultPanel({
   runs,
 }: CaseSimulationCaseResultPanelProps): JSX.Element | null {
@@ -46,25 +48,36 @@ export function CaseSimulationCaseResultPanel({
       <h2 className="text-lg font-semibold text-foreground">Case result</h2>
 
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-sm text-foreground">
-          Outcome {shownRun.outcome} · Referral {shownRun.referral.action} /{" "}
-          {shownRun.referral.recipient} · Determining{" "}
-          {shownRun.determiningHypothesis ?? "Fallback"}
-        </p>
+        {shownRun.consolidationCall.called ? (
+          <p className="text-sm text-foreground">
+            Outcome {shownRun.consolidationCall.outcome} · Referral{" "}
+            {shownRun.consolidationCall.referral.action} /{" "}
+            {shownRun.consolidationCall.referral.recipient} · Determining{" "}
+            {shownRun.consolidationCall.determiningHypothesis ?? "Fallback"}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">{NOT_CALLED_MESSAGE}</p>
+        )}
         {shownRun.stale && <CaseSimulationStatusDot color="bg-warning" label="Stale" />}
       </div>
 
       <div className="rounded-md border border-border bg-muted p-3">
-        <p className="text-sm text-muted-foreground">
-          Customer-facing text ({shownRun.register})
-        </p>
-        <div className="flex flex-col gap-2">
-          {shownRun.text.split(/\n{2,}/).map((paragraph) => (
-            <p key={paragraph} className="whitespace-pre-wrap text-sm">
-              {paragraph}
+        {shownRun.consolidationCall.called ? (
+          <>
+            <p className="text-sm text-muted-foreground">
+              Customer-facing text ({shownRun.consolidationCall.register})
             </p>
-          ))}
-        </div>
+            <div className="flex flex-col gap-2">
+              {shownRun.consolidationCall.text.split(/\n{2,}/).map((paragraph) => (
+                <p key={paragraph} className="whitespace-pre-wrap text-sm">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">{NOT_CALLED_MESSAGE}</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border pt-4">
@@ -80,10 +93,14 @@ export function CaseSimulationCaseResultPanel({
             <CaseSimulationCaseResultEvidenceTab evidence={shownRunEvidence} />
           </TabsContent>
           <TabsContent value="prompt">
-            <CaseSimulationCaseResultDebugTab
-              consolidationCall={shownRun.consolidationCall}
-              register={shownRun.register}
-            />
+            {shownRun.consolidationCall.called ? (
+              <CaseSimulationCaseResultDebugTab
+                consolidationCall={shownRun.consolidationCall}
+                register={shownRun.consolidationCall.register}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">{NOT_CALLED_MESSAGE}</p>
+            )}
           </TabsContent>
           <TabsContent value="totals">
             <CaseSimulationCaseResultTotalsTab
@@ -106,7 +123,10 @@ export function CaseSimulationCaseResultPanel({
                 checked={selectedRunIds.includes(run.id)}
                 onChange={() => handleToggleSelection(run.id)}
               >
-                #{index + 1} {formatRunTime(run.ranAt)} · {run.outcome}
+                #{index + 1} {formatRunTime(run.ranAt)} ·{" "}
+                {run.consolidationCall.called
+                  ? run.consolidationCall.outcome
+                  : "no consolidation call"}
                 {run.stale ? " · stale" : ""}
               </Checkbox>
               <Button

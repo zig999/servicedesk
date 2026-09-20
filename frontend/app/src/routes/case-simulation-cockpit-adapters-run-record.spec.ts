@@ -34,11 +34,6 @@ describe("toNewCaseResultRun -- shaping a completed full-case run into the widen
     const run = toNewCaseResultRun(result);
 
     expect(run).toEqual({
-      outcome: "resolved",
-      referral: { action: "notify", recipient: "customer" },
-      determiningHypothesis: "hypothesis-a",
-      text: "The disputed charge was authorized.",
-      register: "formal",
       hypotheses: [
         { hypothesis: "hypothesis-a", verdict: "confirmed" },
         { hypothesis: "hypothesis-b", verdict: "inconclusive" },
@@ -47,6 +42,11 @@ describe("toNewCaseResultRun -- shaping a completed full-case run into the widen
       cost: { calls: 1, inputTokens: 200, outputTokens: 90 },
       consolidationCall: {
         called: true,
+        outcome: "resolved",
+        referral: { action: "notify", recipient: "customer" },
+        determiningHypothesis: "hypothesis-a",
+        text: "The disputed charge was authorized.",
+        register: "formal",
         usage: { inputTokens: 200, outputTokens: 90 },
         elapsedMs: 950,
         prompt: "consolidate the assessment",
@@ -69,6 +69,11 @@ describe("toNewCaseResultRun -- shaping a completed full-case run into the widen
 
     expect(run.consolidationCall).toEqual({
       called: true,
+      outcome: "resolved",
+      referral: { action: "notify", recipient: "customer" },
+      determiningHypothesis: "hypothesis-a",
+      text: "The disputed charge was authorized.",
+      register: "formal",
       usage: { inputTokens: 200, outputTokens: 90 },
       elapsedMs: 950,
       prompt: "consolidate the assessment",
@@ -81,7 +86,13 @@ describe("toNewCaseResultRun -- shaping a completed full-case run into the widen
     (register) => {
       const result = caseResult({ assessment: { ...caseResult().assessment, register } });
 
-      expect(toNewCaseResultRun(result).register).toBe(register);
+      const run = toNewCaseResultRun(result);
+      if (!run.consolidationCall.called) {
+        throw new Error(
+          "case-simulation-cockpit-adapters-run-record.spec.ts: expected a called consolidation call",
+        );
+      }
+      expect(run.consolidationCall.register).toBe(register);
     },
   );
 });

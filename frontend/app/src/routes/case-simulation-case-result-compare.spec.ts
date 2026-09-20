@@ -11,16 +11,16 @@ function makeRun(overrides: Partial<CaseResultRun> = {}): CaseResultRun {
   return {
     id: "run-1",
     ranAt: "2024-01-01T00:00:00.000Z",
-    outcome: "resolved",
-    referral: { action: "notify", recipient: "customer" },
-    text: "Thanks for reaching out.",
-    register: "formal",
     hypotheses: [],
     stale: false,
     durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
     cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
     consolidationCall: {
       called: true,
+      outcome: "resolved",
+      referral: { action: "notify", recipient: "customer" },
+      text: "Thanks for reaching out.",
+      register: "formal",
       usage: { inputTokens: 100, outputTokens: 50 },
       elapsedMs: 50,
       prompt: "prompt",
@@ -119,5 +119,23 @@ describe("CaseSimulationCaseResultCompare -- side-by-side verdicts (criterion 4)
 
     expect(screen.getByText("inconclusive")).toBeTruthy();
     expect(screen.queryByText(/no.data/i)).toBeNull();
+  });
+});
+
+describe("CaseSimulationCaseResultCompare -- needs none of the five assessment fields to compare hypotheses (criterion 7)", () => {
+  it("renders both runs' own hypothesis verdicts side by side when one of the two runs made no consolidation call at all", () => {
+    const first = makeRun({
+      hypotheses: [makeVerdict({ hypothesis: "H1", verdict: "confirmed" })],
+      consolidationCall: { called: false },
+    });
+    const second = makeRun({
+      hypotheses: [makeVerdict({ hypothesis: "H1", verdict: "refuted" })],
+    });
+
+    render(createElement(CaseSimulationCaseResultCompare, { runs: [first, second] }));
+
+    const [firstSide, secondSide] = screen.getAllByText(/^(confirmed|refuted)$/);
+    expect(firstSide.textContent).toBe("confirmed");
+    expect(secondSide.textContent).toBe("refuted");
   });
 });

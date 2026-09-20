@@ -2,26 +2,33 @@ import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { CaseSimulationCaseResultPanel } from "./case-simulation-case-result-panel";
-import type { CaseResultRun } from "./case-simulation-case-result-types";
+import type { CaseResultAssessmentCall, CaseResultRun } from "./case-simulation-case-result-types";
+
+function calledAssessment(
+  overrides: Partial<Extract<CaseResultAssessmentCall, { called: true }>> = {},
+): CaseResultAssessmentCall {
+  return {
+    called: true,
+    outcome: "resolved",
+    referral: { action: "notify", recipient: "customer" },
+    text: "Thanks for reaching out.",
+    register: "formal",
+    usage: { inputTokens: 100, outputTokens: 50 },
+    elapsedMs: 50,
+    prompt: "prompt",
+    ...overrides,
+  };
+}
 
 function makeRun(overrides: Partial<CaseResultRun> = {}): CaseResultRun {
   return {
     id: "run-1",
     ranAt: "2024-01-01T00:00:00.000Z",
-    outcome: "resolved",
-    referral: { action: "notify", recipient: "customer" },
-    text: "Thanks for reaching out.",
-    register: "formal",
     hypotheses: [],
     stale: false,
     durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
     cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
-    consolidationCall: {
-      called: true,
-      usage: { inputTokens: 100, outputTokens: 50 },
-      elapsedMs: 50,
-      prompt: "prompt",
-    },
+    consolidationCall: calledAssessment(),
     rawResponse: {},
     ...overrides,
   };
@@ -43,21 +50,19 @@ describe("CaseSimulationCaseResultPanel -- the Debug block reflects the shown ru
         runs: [
           makeRun({
             id: "run-1",
-            consolidationCall: {
-              called: true,
+            consolidationCall: calledAssessment({
               usage: { inputTokens: 11, outputTokens: 22 },
               elapsedMs: 33,
               prompt: "earlier prompt",
-            },
+            }),
           }),
           makeRun({
             id: "run-2",
-            consolidationCall: {
-              called: true,
+            consolidationCall: calledAssessment({
               usage: { inputTokens: 44, outputTokens: 55 },
               elapsedMs: 66,
               prompt: "later prompt",
-            },
+            }),
           }),
         ],
       }),

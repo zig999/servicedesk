@@ -34,6 +34,14 @@
       "task": "task/case-run-record/run-totals"
     },
     {
+      "id": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/assessment-under-its-call.md",
+      "title": "Nest CaseResultRun's assessment inside its consolidation discriminant",
+      "summary": "outcome, referral, determiningHypothesis, text and register now live only inside CaseResultRun's consolidationCall.called-true branch (alongside usage, elapsedMs and prompt), with the production builder, both render sites, the nine pre-existing fixture builders and the run-record assertion all updated to that shape, plus one additional real reader of the type fixed for the same reason.",
+      "task": "task/conformant-record-shapes/assessment-under-its-call"
+    },
+    {
       "id": "implementation/conformant-record-shapes/evidence-semantics-always-present",
       "kind": "implementation",
       "file": "implementation/conformant-record-shapes/evidence-semantics-always-present.md",
@@ -120,6 +128,14 @@
       "title": "Run totals presented in the case result Debug block",
       "summary": "Tests the new CaseSimulationCaseResultTotalsTab and its wiring into the panel's Debug tabs, covering the run's cost, its durations (including the no-writing boundary and the total-is-not-a-stage-sum requirement), and that the shown figures follow the shown run.",
       "task": "task/case-run-record/run-totals"
+    },
+    {
+      "id": "proof/conformant-record-shapes/assessment-under-its-call",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/assessment-under-its-call.md",
+      "title": "A run's assessment is present only where a writing call produced one -- proof",
+      "summary": "New tests establish that a shown run whose consolidation discriminant states no call happened presents a static, non-borrowed message wherever the assessment would render (panel and compare), that the false branch is expressible without any of the five fields, and every pre-existing citation confirms the nine fixture builders, the production builder and the run-record spec already carry the nested shape across the type-checked tree.",
+      "task": "task/conformant-record-shapes/assessment-under-its-call"
     },
     {
       "id": "proof/conformant-record-shapes/evidence-semantics-always-present",
@@ -376,6 +392,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "task/conformant-record-shapes/assessment-under-its-call",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/conformant-record-shapes/evidence-semantics-always-present",
       "to": "domain/investigation/evidence",
       "kind": "encodes",
@@ -606,6 +658,12 @@
     {
       "from": "proof/case-run-record/run-totals",
       "to": "implementation/case-run-record/run-totals",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/assessment-under-its-call",
+      "to": "implementation/conformant-record-shapes/assessment-under-its-call",
       "kind": "proves",
       "at": "the path"
     },

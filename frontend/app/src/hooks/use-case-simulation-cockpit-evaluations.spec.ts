@@ -177,7 +177,13 @@ describe("useCaseSimulationCockpit -- only a full-case run populates the Case re
     });
 
     await waitFor(() => expect(result.current.caseResultRuns).toHaveLength(1));
-    expect(result.current.caseResultRuns[0]?.outcome).toBe("resolved");
+    const run = result.current.caseResultRuns[0];
+    if (!run || !run.consolidationCall.called) {
+      throw new Error(
+        "use-case-simulation-cockpit-evaluations.spec.ts: expected a called consolidation call",
+      );
+    }
+    expect(run.consolidationCall.outcome).toBe("resolved");
   });
 });
 
