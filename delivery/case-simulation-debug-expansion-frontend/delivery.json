@@ -42,6 +42,14 @@
       "task": "task/conformant-record-shapes/evidence-semantics-always-present"
     },
     {
+      "id": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/hypothesis-run-cost.md",
+      "title": "SimulateHypothesisResult carries the narrowed run's own cost",
+      "summary": "SimulateHypothesisResult now declares a required cost (reusing SimulateCost) beside its durations, with writing typed as conditionally absent, and every fixture builder that constructs the type across the hooks and routes trees was extended to supply it so the frontend still type-checks.",
+      "task": "task/conformant-record-shapes/hypothesis-run-cost"
+    },
+    {
       "id": "implementation/conformant-record-shapes/not-grounded-reason",
       "kind": "implementation",
       "file": "implementation/conformant-record-shapes/not-grounded-reason.md",
@@ -120,6 +128,14 @@
       "title": "Evidence fields/concept_description required-member and honest-empty-render proof",
       "summary": "Every criterion of evidence-semantics-always-present is backed by a test that fails if it stopped holding -- three new type-refusal tests pin the requiredness on all three evidence types, and the pre-existing, task-modified snapshot/adapter/render tests are cited as the proof for the passthrough, collapse and test-file criteria; neither implemented node's fact is decided whole by any test here.",
       "task": "task/conformant-record-shapes/evidence-semantics-always-present"
+    },
+    {
+      "id": "proof/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/hypothesis-run-cost.md",
+      "title": "SimulateHypothesisResult carries the narrowed run's own cost -- proof",
+      "summary": "Tests demonstrate the cost and durations shapes SimulateHypothesisResult now declares, prove the unaltered pass-through of a response's cost through useSimulateHypothesis's onSimulate, prove the shared cockpit fixture returns a cost, and repair the one pre-existing totality assertion this task's required field legitimately falsifies.",
+      "task": "task/conformant-record-shapes/hypothesis-run-cost"
     },
     {
       "id": "proof/conformant-record-shapes/not-grounded-reason",
@@ -372,6 +388,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "task/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/conformant-record-shapes/not-grounded-reason",
       "to": "domain/investigation/evaluation-reason",
       "kind": "encodes",
@@ -572,6 +612,12 @@
     {
       "from": "proof/conformant-record-shapes/evidence-semantics-always-present",
       "to": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/hypothesis-run-cost",
+      "to": "implementation/conformant-record-shapes/hypothesis-run-cost",
       "kind": "proves",
       "at": "the path"
     },

@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
+import type { SimulateCost } from "./use-simulate-case";
 
 export type SimulateHypothesisSubjectAttribute = {
   readonly attribute: string;
@@ -93,12 +94,14 @@ export type Evidence = {
 export type Durations = {
   readonly collection: number;
   readonly judgment: number;
+  readonly writing?: number;
   readonly total: number;
 };
 
 export type SimulateHypothesisResult = {
   readonly evidence: readonly Evidence[];
   readonly evaluation: Evaluation;
+  readonly cost: SimulateCost;
   readonly durations: Durations;
 };
 

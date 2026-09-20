@@ -1,6 +1,7 @@
 import { createElement, type ReactElement, type ReactNode } from "react";
 import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { SimulateCost } from "./use-simulate-case";
 import type {
   Durations,
   Evaluation,
@@ -118,10 +119,19 @@ export function hypothesisDurations(): Durations {
   return { collection: 400, judgment: 300, total: 700 };
 }
 
+export function hypothesisCost(): SimulateCost {
+  return { calls: 1, input_tokens: 150, output_tokens: 60 };
+}
+
 export function simulateHypothesisResult(
   evaluation: Evaluation = confirmedEvaluation(),
 ): SimulateHypothesisResult {
-  return { evidence: [evidenceItem()], evaluation, durations: hypothesisDurations() };
+  return {
+    evidence: [evidenceItem()],
+    evaluation,
+    cost: hypothesisCost(),
+    durations: hypothesisDurations(),
+  };
 }
 
 export function definedResult(result: SimulateHypothesisResult | null): SimulateHypothesisResult {

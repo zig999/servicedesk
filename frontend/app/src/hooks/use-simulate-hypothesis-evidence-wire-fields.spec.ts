@@ -14,6 +14,7 @@ import {
   confirmedEvaluation,
   createWrapper,
   definedResult,
+  hypothesisCost,
   hypothesisDurations,
   jsonResponse,
   stubFetch,
@@ -43,7 +44,12 @@ function baseEvidenceItem(overrides: Partial<Evidence> = {}): Evidence {
 }
 
 function resultWithEvidence(evidence: Evidence): SimulateHypothesisResult {
-  return { evidence: [evidence], evaluation: confirmedEvaluation(), durations: hypothesisDurations() };
+  return {
+    evidence: [evidence],
+    evaluation: confirmedEvaluation(),
+    cost: hypothesisCost(),
+    durations: hypothesisDurations(),
+  };
 }
 
 describe("The hypothesis-run Evidence type declares capability_payload_notes as a required string field (criterion 2)", () => {

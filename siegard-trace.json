@@ -3354,6 +3354,10 @@
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:859328a4f146eb298f83357cc8cf91934a5629e2ca0407cb72c2086b6b1eeeff"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
           "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
         },
@@ -3405,7 +3409,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:859328a4f146eb298f83357cc8cf91934a5629e2ca0407cb72c2086b6b1eeeff"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
@@ -7520,6 +7524,16 @@
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations",
+      "digest": "sha256:65e9e0bbbd7ad7b8ed1f4781a8b297fd7cb009917dac74e6924e36a68852bf0a",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:859328a4f146eb298f83357cc8cf91934a5629e2ca0407cb72c2086b6b1eeeff"
         }
       ]
     },
