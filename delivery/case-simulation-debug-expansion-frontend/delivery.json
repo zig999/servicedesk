@@ -220,6 +220,35 @@
         "toDetailEvidence derives those four values from its argument alone, issuing no glossary read and no capability-registry read."
       ],
       "findings": 21
+    },
+    {
+      "id": "review/case-simulation-debug-expansion-frontend-corrections",
+      "kind": "review",
+      "file": "review/case-simulation-debug-expansion-frontend-corrections.md",
+      "title": "case-simulation-debug-expansion-frontend-corrections, first review",
+      "summary": "Coverage, specification-conformance and standard-conformance over the 4 corrective tasks (evidence-semantics-always-present, not-grounded-reason, hypothesis-run-cost, assessment-under-its-call) that fixed findings 1-4 of this initiative's own earlier review; the captured build+suite ran clean, so no failures pass finding applies.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A simulate response whose evaluation carries reason not-grounded reaches verdictCell with a label rather than an absent lookup.",
+        "CaseResultRun in src/routes/case-simulation-case-result-types.ts declares outcome, referral, determiningHypothesis, text and register only within the called true branch of its consolidation discriminant.",
+        "No branch of CaseResultRun states any of those five fields where the discriminant states that no consolidation call happened.",
+        "No call site in src/hooks/use-case-simulation-cockpit.ts or in any spec reading hypSim's result declares a hypothesis-result literal of its own to supply the new field.",
+        "No evaluation-reason union in the cockpit admits a value the specification's own enumeration does not declare.",
+        "That cost field reuses the SimulateCost already declared in src/hooks/use-simulate-case.ts rather than a second declaration of the same three members.",
+        "The durations a hypothesis run carries express writing as absent rather than as a figure, since that run reaches no consolidation call.",
+        "The frontend type-checks with no error arising from CaseResultRun in any file that declares, builds or reads one.",
+        "The frontend type-checks with no error arising from SimulateHypothesisResult in any file that declares, builds or consumes one.",
+        "The frontend type-checks with no error arising from an evaluation reason in any file that declares or consumes one.",
+        "The frontend type-checks with no error arising from fields or concept_description in any file that declares, converts or renders an evidence item.",
+        "renderConceptDescription in src/routes/case-simulation-evidence-item.tsx has one rendering for an empty concept_description and no separate rendering for an absent one.",
+        "renderFieldSemantics in src/routes/case-simulation-evidence-item.tsx has one rendering for an empty fields list and no separate rendering for an absent one.",
+        "toDetailEvidence in src/routes/case-simulation-cockpit-adapters.ts carries fields and conceptDescription from the source item with no fallback for an absent value."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -756,6 +785,30 @@
       "to": "task/evidence-detail/case-evidence-display",
       "kind": "reviews",
       "at": "tasks[7]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/not-grounded-reason",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/assessment-under-its-call",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }
