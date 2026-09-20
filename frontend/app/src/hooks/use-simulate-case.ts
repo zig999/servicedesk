@@ -28,7 +28,11 @@ export type SimulateEvidenceResult = "ok" | "unavailable" | "denied" | "timeout"
 
 export type SimulateVerdict = "confirmed" | "refuted" | "inconclusive";
 
-export type SimulateEvaluationReason = "no-data" | "judgment-failure" | "deadline-exceeded";
+export type SimulateEvaluationReason =
+  | "no-data"
+  | "judgment-failure"
+  | "deadline-exceeded"
+  | "not-grounded";
 
 export type SimulateUsage = {
   readonly input_tokens: number;

@@ -42,6 +42,14 @@
       "task": "task/conformant-record-shapes/evidence-semantics-always-present"
     },
     {
+      "id": "implementation/conformant-record-shapes/not-grounded-reason",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/not-grounded-reason.md",
+      "title": "not-grounded joins every evaluation-reason union in the case-simulation cockpit",
+      "summary": "Widens all four separately-declared evaluation-reason unions in the cockpit to admit not-grounded and adds the matching REASON_LABEL entry so a response carrying it gets a label.",
+      "task": "task/conformant-record-shapes/not-grounded-reason"
+    },
+    {
       "id": "implementation/evidence-detail/case-evidence-display",
       "kind": "implementation",
       "file": "implementation/evidence-detail/case-evidence-display.md",
@@ -112,6 +120,14 @@
       "title": "Evidence fields/concept_description required-member and honest-empty-render proof",
       "summary": "Every criterion of evidence-semantics-always-present is backed by a test that fails if it stopped holding -- three new type-refusal tests pin the requiredness on all three evidence types, and the pre-existing, task-modified snapshot/adapter/render tests are cited as the proof for the passthrough, collapse and test-file criteria; neither implemented node's fact is decided whole by any test here.",
       "task": "task/conformant-record-shapes/evidence-semantics-always-present"
+    },
+    {
+      "id": "proof/conformant-record-shapes/not-grounded-reason",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/not-grounded-reason.md",
+      "title": "not-grounded joins every evaluation-reason union the case-simulation cockpit declares",
+      "summary": "Proves each of the four separately-declared evaluation-reason unions admits not-grounded and no stray value, that REASON_LABEL is total over exactly the domain's four causes with a wording for not-grounded distinct from the other causes, and that verdictCell resolves that reason to a label rather than an absent lookup.",
+      "task": "task/conformant-record-shapes/not-grounded-reason"
     },
     {
       "id": "proof/evidence-detail/case-evidence-display",
@@ -356,6 +372,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/conformant-record-shapes/not-grounded-reason",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/not-grounded-reason",
+      "to": "task/conformant-record-shapes/not-grounded-reason",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/evidence-detail/case-evidence-display",
       "to": "contracts/investigation/case-simulation",
       "kind": "encodes",
@@ -544,6 +572,12 @@
     {
       "from": "proof/conformant-record-shapes/evidence-semantics-always-present",
       "to": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/not-grounded-reason",
+      "to": "implementation/conformant-record-shapes/not-grounded-reason",
       "kind": "proves",
       "at": "the path"
     },

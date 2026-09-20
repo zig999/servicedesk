@@ -3577,19 +3577,19 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+          "digest": "sha256:08698e011d3c6a59b909ab6ab8dfec6f85231ee29835cdfeb3af4b05db28a59c"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:6c9fd45381c095d9751630a68c6f0799e13d2f09045eb8052cb4cbf4f2eaf137"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:bf75d1a3012534efe676c76785e02ddeaf05f3ea92eafe7c986a7829857405b7"
+          "digest": "sha256:70bf335cf19f1a326cc2c8868e8bab4aac1ca14fae571f803db5eb6e2bef9b5f"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
-          "digest": "sha256:59f0279c725716efffe545d64b677233198ff1a7031d2b86692d924f1e69de53"
+          "digest": "sha256:ff24bee6462391606c4938822c347e3a3908149906a98728452d6d187768e5e0"
         },
         {
           "path": "src/migrations/0005-investigation.sql",

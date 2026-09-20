@@ -25,7 +25,7 @@ export type CockpitEvaluation = {
   readonly hypothesis: string;
   readonly verdict: "confirmed" | "refuted" | "inconclusive";
   readonly citations: readonly { readonly concept: string; readonly field: string }[];
-  readonly reason?: "no-data" | "judgment-failure" | "deadline-exceeded";
+  readonly reason?: "no-data" | "judgment-failure" | "deadline-exceeded" | "not-grounded";
   readonly usage?: { readonly input_tokens: number; readonly output_tokens: number };
   readonly elapsed_ms?: number;
   readonly prompt?: string;

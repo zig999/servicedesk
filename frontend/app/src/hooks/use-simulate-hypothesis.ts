@@ -35,7 +35,11 @@ export type Citation = {
   readonly field: string;
 };
 
-export type EvaluationReason = "no-data" | "judgment-failure" | "deadline-exceeded";
+export type EvaluationReason =
+  | "no-data"
+  | "judgment-failure"
+  | "deadline-exceeded"
+  | "not-grounded";
 
 export type Verdict = "confirmed" | "refuted" | "inconclusive";
 
