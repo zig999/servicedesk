@@ -6046,6 +6046,176 @@ entries:
     so that restraint has nothing here to act on, while masking a prompt against the chance that it might
     would show the curator a text the writing call never received and destroy the one thing a materialized
     prompt is kept for.
+- location: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case.md
+  field: statement
+  unstated: What a surface presenting one case version a reader named by that case's slug and that version's
+    number tells that reader when its read of the version is refused because some validator rule of
+    validation-runs-at-every-read does not hold for it at that reading — whether any attribute of the version
+    or any entry of its manifest accompanies the statement, and how it is told apart from a read of that
+    version that did not complete. a-case-version-failing-validation-at-a-read-is-refused-by-name decides
+    only what the read answers over the wire; a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    is bound to a reader who named a case by its slug and named no version of it, and
+    a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone to a listing
+    naming no case and no version, so none of the three reaches a reader who named both.
+  decided: The surface states explicitly that the version named does not read back as a case at that reading,
+    presents no attribute of that version and no entry of its manifest as the content standing at that
+    identity, and states it distinguishably from what it states for a read of that version that did not
+    complete; where every validator rule holds, it states none of this. Recorded as a new invariant over
+    domain/knowledge/case-version.
+  why: The two readings ask different acts of the curator who meets them — a version failing a validator
+    rule is one to correct, a read that did not complete is one to attempt again — so presenting either as
+    the other sends the reader to the wrong act, and no attribute or manifest entry may stand beside the
+    statement because constraints/a-case-is-read-whole answers a complete validated version or nothing,
+    leaving nothing partial that could be shown without stating as this identity's content exactly what
+    validation has just declined to read back as a case.
+- location: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading.md
+  field: statement
+  unstated: Whether a surface presenting one case version a reader named by the case's slug together with
+    that version's own number carries a route to that version's own manifest, and whether that route's
+    presence turns on the read of that version having read back as a case at that reading.
+    a-listed-case-version-offers-a-route-to-its-own-manifest owes the route from a listing of one case's
+    versions and is written over that listing alone; a-presented-case-version-states-its-own-declared-attributes
+    says what that version's own surface states and not what it offers; a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    presumes "any route this specification owes from a case's surfaces" without stating that this is one; and
+    no node reaches the reading a-case-version-failing-validation-at-a-read-is-refused-by-name refuses the
+    version's own read on.
+  decided: The surface offers a route to that same version's own manifest on every reading, its presence
+    turning on nothing further — not on the version's state, and not on whether the version read back as a
+    case at that reading, including a read that has not yet answered, a read that failed, and a read refused
+    because a validator rule does not hold for that version. Recorded as a new invariant over
+    domain/knowledge/case-version.
+  why: The manifest this route reaches is where the entry that ends this very condition is composed —
+    validation-runs-at-every-read makes a version whose manifest declares no hypothesis not read back as a
+    case, and placing a hypothesis into that version's own manifest is the only correction for it — so a
+    route whose presence turned on the version already reading back as a case would be withheld exactly on
+    the reading where it is the curator's only remaining act, leaving a stored draft with no way forward on
+    any surface.
+- location: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for.md
+  field: statement
+  unstated: No node states which refusals of place-hypothesis and of remove-hypothesis a surface presenting
+    a case version's manifest holds a presentation of its own for, nor what it states to the curator for
+    each. a-hypothesis-position-is-unique-within-its-case and a-case-has-at-least-one-hypothesis state the
+    wire refusal, its status and its error name and nothing about a surface;
+    a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete is written over
+    the reads such a surface makes and expressly says nothing about which refusals a surface does hold a
+    presentation for; and scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    names the unrecognised-failure notice only in prose and only for release-hypothesis — so both the named
+    tellings and the boundary between them and that notice fell to whatever the interface happened to
+    render.
+  decided: Exactly two — a place-hypothesis refused as ManifestPositionOccupiedError, stated as this
+    version's manifest already placing a different hypothesis at the position that placement named; and a
+    remove-hypothesis refused as ManifestWouldHoldNoHypothesisError, stated as this version's manifest
+    having to declare at least one hypothesis and the entry therefore still standing. The two are told apart
+    from each other, each states that the manifest stands exactly as it stood before the act, and every
+    other refusal either act carries is presented as the notice the surface shows for a request that failed
+    for a reason it does not recognise, disclosing nothing further about it.
+  why: Each of the two named refusals states a condition the curator clears by a next act the manifest
+    surface is already showing them — placing at a free position, or placing a second hypothesis before
+    removing the last — whereas a refusal the surface cannot name leaves the write's outcome unknown and
+    supports only attempting it again, so a telling that did not hold the three apart would send the
+    curator to an act that does not apply to what actually happened; the manifest-stands-unchanged clause
+    is part of each named telling because the surface is displaying the manifest the refused act was aimed
+    at, where a refusal alone cannot be told from an effect the surface has simply not re-read.
+- location: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case.md
+  field: statement
+  unstated: a-hypothesis-is-revised-only-against-its-cases-draft anchors the concept-acceptance check to
+    the case's draft version, and validation-runs-at-every-read makes a stored draft read back as a case
+    only while every validator rule holds, but no node says whether a revise-hypothesis is accepted, or
+    what the check then reads, while that anchoring draft version does not read back as a case at that
+    reading — nor what the check compares against when the draft version's own declared subject type is
+    the attribute failing a validator rule.
+  decided: The revise is accepted — no validator rule failing over the draft version refuses it and none
+    reaches it as a CaseVersionNotValidError — and the concept-acceptance check reads the draft version's
+    declared subject type exactly as the draft's own stored record carries it, including where that
+    declared subject type is itself what fails a validator rule, in which case a concept the revision
+    collects that does not accept the stored value is refused by the existing HTTP 422
+    ConceptRefusesSubjectTypeError and by no refusal of its own.
+  why: constraints/a-case-is-read-whole already binds wholeness to the read that answers a diagnosis and
+    states that a hypothesis, its revisions and a draft's manifest entries may otherwise be created, read
+    and revised independently, so the check's read of one declared attribute is not the read
+    validation-runs-at-every-read and a-case-version-failing-validation-at-a-read-is-refused-by-name govern;
+    domain/knowledge/case-version lets a draft's manifest be freely composed and
+    contracts/knowledge/case-lifecycle has every validator rule answer together at release, so gating the
+    composing act on the draft already being valid would make a draft whose manifest is still empty
+    unfixable by the only act that could fix it. Reading the stored subject type as it stands keeps
+    a-revise-hypothesis-requests-own-subject-type-is-never-read's single source intact; an unheld subject
+    type is accepted by no concept, so a-concept-accepts-the-declared-subject-type's existing named refusal
+    already answers that case truthfully and no new refusal is introduced.
+- location: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete.md
+  field: statement
+  unstated: What a surface composing a hypothesis revision states when a read it made for something other
+    than the case version — the glossary's terms it offers, or the revisions the hypothesis already holds
+    — does not complete, and whether that statement is the one it makes for a read of the case version
+    that did not complete. a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    and a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete both govern
+    a read the surface made for the case a reader named, and a-case-version-failing-validation-at-a-read-is-refused-by-name
+    answers only that read over the wire; case-terms-exist-in-the-glossary and the two
+    hypothesis-revisions-listing rules establish the other two reads exist without saying anything about a
+    surface that meets one of them failing, so a composing surface whose glossary or revisions read fails
+    is addressed by no node.
+  decided: The surface states explicitly that the read it made for that thing did not complete and which
+    of the two it was, in terms distinct from what it states where its read of the case version did not
+    complete, presenting nothing that read would have carried and stating nothing of the case version — not
+    that the version fails to read back as a case, and not that the version's own read did not complete —
+    on account of it. Recorded as a new policy over domain/knowledge/hypothesis-revision,
+    domain/knowledge/case-version and domain/glossary/concept, eventual.
+  why: This specification holds surface statements apart exactly where they send the reader to different
+    acts and collapses them exactly where the act is one — a case-version read that did not complete
+    leaves the curator no anchor to compose against, while a glossary or revisions read that did not
+    complete leaves the anchor read and one part of the composition unfilled, so the read to attempt again
+    is that one, and presenting them alike would, on a surface whose case-version read answered, report a
+    failure of a read that did not fail. Naming which read failed is the form already given a failed read
+    by rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed, and the
+    containment a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    already applies across a listing's entries, taken here across one screen's reads.
+- location: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions.md
+  field: statement
+  unstated: Whether a surface presenting a case version's manifest offers the curator the act of placing a
+    hypothesis into that manifest, on which readings of that surface the offer stands, and whether the
+    version's state narrows it. contracts/knowledge/case-lifecycle publishes place-hypothesis and
+    domain/knowledge/case-version declares it among the version's operations, both stating what the call
+    does and neither stating that any surface offers it; a-listed-case-version-offers-a-route-to-its-own-manifest
+    carries the curator to the manifest and expressly decides nothing about what may be done through the
+    route; a-newly-created-draft-offers-no-act-before-its-own-record-arrives withholds release, discard and
+    update-draft in one interval and names no other act; and no node states what a manifest surface offers
+    on a reading whose read of the version was refused or whose answer carries no entry at all.
+  decided: A surface presenting a case version's manifest offers the curator the act of placing a
+    hypothesis into that version's manifest on every reading of that surface except one whose read
+    answered that the version is released — including a reading whose read of the version was refused,
+    whatever that refusal named, and a reading whose read answered a manifest holding no entry at all.
+    Recorded as a new invariant over domain/knowledge/case-version and domain/knowledge/manifest-entry.
+  why: >-
+    A placing ends nothing and overwrites nothing — it adds an entry the curator composed, and each way
+    it can collide with a manifest nobody has read is already refused by a named refusal — so the only
+    reading where offering it is certainly futile is one whose read answered that the version is released
+    and can never be composed again, while the readings where the surface has read least, a refusal and a
+    manifest holding no entry, are exactly the ones where the placing is the curator's only correction — a
+    draft whose manifest holds no entry fails validation at every read, so withholding the offer there
+    withholds the one act that ends the refusal.
+- location: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case.md
+  field: statement
+  unstated: Whether a surface on which a curator composes a hypothesis revision presents that composition at
+    all, and keeps the act that issues the revise offered, on a reading whose read of the anchoring case
+    version was refused because some validator rule of validation-runs-at-every-read does not hold for that
+    version. a-hypothesis-composition-states-which-of-its-reads-did-not-complete is written over this surface
+    and expressly leaves open whether composing or any act on it stays offered;
+    a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case and
+    a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case reach this reading but
+    each closes by sending what a surface offers elsewhere;
+    a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case answers
+    only the call, not the surface; and a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    is written over the manifest surface and the placing act alone.
+  decided: The surface presents the composition's own fields and keeps offered the act whose performance
+    issues the revise, on that reading, turning on nothing about which validator rule failed over the
+    version — its manifest holding no entry at all included, and its own declared subject type being the
+    failing attribute included — while every other reading of that surface, and everything the surface
+    states, is left where it stood. Recorded as a new policy over domain/knowledge/hypothesis-revision and
+    domain/knowledge/case-version, eventual.
+  why: A draft whose manifest declares no hypothesis fails a validator rule at every read, and the revision
+    composed on this surface is the content place-hypothesis then puts into that manifest, so a composition
+    withheld on this reading withholds the only content the correcting act has to place — while the revise
+    that act issues is already accepted on exactly this reading, and never answered as a
+    CaseVersionNotValidError, so the offer leads to a call that lands rather than to a refusal.
 
 ---
 
@@ -12369,6 +12539,101 @@ constrains:
 
 A revision without collection can cite nothing, and the citation obligation on decided evaluations would be unsatisfiable for it.
 
+=== rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+---
+type: policy
+statement: >-
+  A surface on which a curator composes a hypothesis revision presents that
+  composition's own fields and keeps offered the act whose performance issues the
+  revise, on a reading whose read of the case version that composition is anchored to
+  was refused because some validator rule of validation-runs-at-every-read does not
+  hold for that version at that reading.
+expression: >-
+  For a curator composing a revision of hypothesis h anchored to case version v, and a
+  reading of the composing surface where that surface's read of v was refused because
+  some validator rule of validation-runs-at-every-read does not hold for v at that
+  reading: the surface presents the fields the composition is made of, and it offers an
+  act whose performance issues a revise-hypothesis for h. Neither presence turns on
+  which validator rule failed over v — v's manifest holding no entry at all included,
+  and v's own declared subject type being the failing attribute included — and nothing
+  further about that refusal narrows either. This settles no other reading of that
+  surface: not one whose read of v answered, and not one whose read of v has not
+  answered or did not complete. What the surface states on this reading is untouched
+  here, and what a revise-hypothesis the act issues is then answered with is untouched
+  too: a-hypothesis-is-revised-only-against-its-cases-draft and
+  a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+  each answer their own call exactly as they did before, and nothing is written by the
+  composition's presence.
+constrains:
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+`a-hypothesis-composition-states-which-of-its-reads-did-not-complete` is written over this very surface and says, in as many words, that it decides only what is stated there — that whether composing, or any act on the surface, stays offered while a read has not completed is not settled by it and is not narrowed by anything it states.
+`a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` and `a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case` reach the reading this rule is about, and each closes on the same boundary: what a surface offers a curator over such a version is decided where this specification decides what surfaces offer, and not there.
+So whether the composition itself survives a refused read of its anchor fell to whatever a surface happened to render.
+
+The refused reading is the one the composition exists for. `validation-runs-at-every-read` makes a draft whose manifest declares no hypothesis not read back as a case, `a-case-version-failing-validation-at-a-read-is-refused-by-name` gives that read its refusal, and `a-new-drafts-manifest-is-copied-from-an-existing-version` leaves a case's first-ever draft with no manifest to copy — so the empty manifest is where every case begins and the refusal is where every case begins with it. The revision composed here is the content `place-hypothesis` then puts into that manifest; a composition withheld on this reading withholds the one thing the correcting act has to place, and the curator who must repair the version is left holding a route with nothing at the end of it.
+
+The act the surface keeps offered is already an act that lands. `a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case` states that a revise is accepted while its case's draft does not read back as a case, that no validator rule failing over that draft refuses it, and that none of them reaches the curator as a CaseVersionNotValidError. An offer standing here is therefore not an offer of something the store will decline; the two readings are the two halves of one correction, and deciding them apart would leave the call accepted and unreachable.
+
+The composition takes nothing from the read that was refused, which is why presenting it states nothing that read declined to answer. `domain/knowledge/hypothesis-revision` makes the criterion, the collected concepts and the resolution the hypothesis's own content, reached by the hypothesis's revisions and by the glossary — the two reads `a-hypothesis-composition-states-which-of-its-reads-did-not-complete` holds apart from the version's — and `a-revise-hypothesis-requests-own-subject-type-is-never-read` keeps the subject type off the request altogether, leaving the version's read supplying no field the composition is made of. What the neighbouring rules forbid stands exactly as they wrote it: the surface still states that the version does not read back as a case, and still presents no attribute of that version and no entry of its manifest as the content standing at that identity. Nothing here is an attribute of the version; it is the curator's own unwritten content.
+
+`a-newly-created-draft-offers-no-act-before-its-own-record-arrives` withholds three acts in its own interval, and its reason does not transfer. Each of those three — release, discard, the correction of the version's declared attributes — is performed against content that surface is forbidden to show, so each is an ending or a blind overwrite. Composing a revision is neither. It ends nothing; and where it overwrites, `a-hypothesis-revision-is-overwritten-while-unreleased` puts the overwrite on the hypothesis's own highest draft revision, which the revisions read showed the curator — a different read from the one refused here, whose failure teaches the surface nothing about the revision's content.
+
+This is the last link of a chain this specification has already laid on this same reading. `a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading` carries the curator from a refused version to its manifest, and `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` keeps the placing offered when they arrive; a composition withheld would break the route at its end, after two nodes have spent their reasoning getting the curator there.
+
+This decides the refused reading alone. What the surface offers where its read of the version answered, where it has not answered, or where it did not complete is not settled here, and what the surface states on any of them stays where `a-hypothesis-composition-states-which-of-its-reads-did-not-complete` and its two neighbours put it. Which control carries the composition and the act, how each is worded and where it sits are form and belong to the interface, as this specification's other surface rules leave them.
+
+Consistency is eventual: the fact spans the hypothesis-revision being composed and the case version the composition is anchored to, each read separately.
+
+=== rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+---
+type: policy
+statement: >-
+  A surface on which a curator composes a hypothesis revision states explicitly, where a
+  read it made for something other than the case version that composition is anchored to
+  — the glossary's terms it offers, or the revisions the hypothesis being revised already
+  holds — does not complete, that the read it made for that thing did not complete and
+  which of them it was, in terms distinct from what the same surface states where its read
+  of the case version did not complete, and presents nothing that read would have carried
+  and states nothing of the case version on account of it.
+expression: >-
+  For a curator composing a revision of hypothesis h anchored to case version v, and a read
+  r the composing surface made for something other than v — the glossary's terms the
+  composition offers for the revision's collected concepts and for its resolution, or the
+  revisions h currently holds — where r does not complete, whether refused or failing to
+  answer at all: the surface states that the read of the glossary's terms, or the read of
+  h's revisions, whichever r was, did not complete. What it states there differs from what
+  the same surface states where its read of v did not complete, so that a curator tells the
+  two apart and neither is presented as the other. It states no attribute of v, and nothing
+  about whether v reads back as a case, on account of r. Nothing r would have carried — a
+  glossary term, or a revision of h — is presented as having been read. Where r completes,
+  the surface states none of this for r.
+constrains:
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+  - domain/glossary/concept
+consistency: eventual
+---
+
+## Description
+
+A curator composing a hypothesis revision is served by more than one read, and only one of them is the case version. That version is the anchor `a-hypothesis-is-revised-only-against-its-cases-draft` makes a submitted revise answer to, and what a surface states when its read of a case does not complete is already fixed — held apart from its two neighbours by `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case`, and absorbing a refusal the surface cannot name by `a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete`. The glossary's terms are a second read: `case-terms-exist-in-the-glossary` makes every concept a revision collects, and every outcome, action and recipient its resolution names, a term the published language already holds, so a composition offering them reads them from the glossary through `contracts/glossary/glossary-query`. The revisions the hypothesis already holds are a third, ordered by `a-hypothesis-revisions-listing-answers-highest-revision-first` and carrying each revision's own state under `a-hypothesis-revisions-listing-discloses-each-revisions-own-state`, answered by `list-hypothesis-revisions` of `contracts/knowledge/case-query`. Neither of the two is a read the surface made for the case, so neither node above reaches them, and no node said what the surface states when one of them does not complete.
+
+The statement is not the one the case version's own failed read receives. The three statements `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` holds apart are held apart because each sends the reader to a different act, and its neighbour collapses an uninterpretable refusal into one of them precisely because the act there is the same. Here the act is not the same. A read of the case version that did not complete leaves the curator with no anchor at all — nothing is known about the version the composition would be checked against. A glossary read or a revisions read that did not complete leaves that anchor read and the composition standing, with one part of it unfilled; what the curator attempts again is that read, not the version's. Presenting the two alike names the wrong read as the one to retry, and on a surface whose case-version read did complete it tells the curator that read failed when it answered — a true-sounding statement of a cause that did not occur.
+
+Naming which read is what makes the distinction usable rather than merely drawn, and it is the shape this specification already gives a failed read. `rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` states that the capability at the identity the operator named could not be read, naming the thing read rather than reporting an unattributed failure, and `a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone` keeps one failing read a fact about the one case it is a fact about instead of about the whole listing. Holding the statement to the read it belongs to is that same containment taken across the reads of one screen.
+
+Nothing of the case version is stated on account of either read, for the reason its own rule already gives: each of that rule's three statements asserts something about the case, and a glossary read that did not complete taught the surface nothing about the version. Stating that the current version does not read back would send the curator to correct a version nothing was learned about, and stating that the read of the case version did not complete would report a failure of a read that answered. Nothing the failed read would have carried is presented either — a term or a revision shown beside the statement would be content nobody read, the substitution `a-manifest-entrys-pinned-revision-is-always-shown` refuses for a pin and `a-case-is-read-whole` leaves nothing partial to make.
+
+This decides only what is stated. Which reads a composition makes, and whether composing, or any act on the surface, stays offered while one of these reads has not completed, are not settled here and are not narrowed by anything stated here. Which control carries each statement, how it is worded and where it sits are form and belong to the interface, as they do wherever else this specification states what a surface tells a reader.
+
+Consistency is eventual: the fact spans the glossary's terms, the revisions of the hypothesis and the case version the composition is anchored to, each read separately and one of them in another context.
+
 === rules/knowledge/a-hypothesis-declares-a-criterion
 ---
 type: invariant
@@ -12614,6 +12879,95 @@ A manifest entry's pinned revision is the entry's own reference, not a fact reco
 What that omission would cost is the same cost this specification has already refused twice: `a-case-holding-no-versions-is-told-explicitly` refuses an unexplained emptiness over a stored set because absence, a failed read and a pending read then read alike, and `a-released-version-keeps-its-original-revision` is the very guarantee a curator would be unable to verify — the released version's own revision is exactly the one an older page is most likely not to carry, since later revisions accumulate past it.
 The rule is a policy over two aggregates read separately, so it holds eventually: the manifest and the revisions arrive as two answers, and the entry's own reference is what governs where they disagree.
 
+=== rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+---
+type: invariant
+statement: >-
+  A surface presenting a case version's manifest holds a presentation of its own for
+  exactly two refusals of the acts that compose that manifest — a place-hypothesis
+  refused as ManifestPositionOccupiedError, which it states to the curator as this
+  version's manifest already placing a different hypothesis at the position that
+  placement named, and a remove-hypothesis refused as
+  ManifestWouldHoldNoHypothesisError, which it states as this version's manifest having
+  to declare at least one hypothesis and the entry therefore still standing — each of
+  the two told apart from the other, each stating that the manifest stands exactly as it
+  stood before the act, and every other refusal either act carries presented instead as
+  the notice that surface shows for a request that failed for a reason it does not
+  recognise, disclosing nothing further about it.
+expression: >-
+  For a case version v and a surface presenting v's manifest to a curator: where a
+  place-hypothesis that surface issued over v is refused carrying
+  ManifestPositionOccupiedError, the surface states that v's manifest already places a
+  different hypothesis at the position that placement named and that v's manifest stands
+  unchanged; where a remove-hypothesis that surface issued over v is refused carrying
+  ManifestWouldHoldNoHypothesisError, the surface states that v's manifest declares at
+  least one entry and that the entry the removal named is still held; those two
+  statements are distinguishable from one another and from the statement the surface
+  makes for a place-hypothesis or remove-hypothesis refused with any other error code,
+  which is that the request failed for a reason the surface does not recognise and
+  nothing else — not the error code, not the refusal's message, not any value it
+  carries.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+The composing acts a manifest surface exists to offer are refused by name, and a name this specification has already stated a condition for is a name the curator can act on. `a-hypothesis-position-is-unique-within-its-case` refuses a placement at a position a different hypothesis already holds, and the act that clears it — choosing another position, or moving the entry holding this one — is available on the very surface the refusal arrives at. `a-case-has-at-least-one-hypothesis` refuses a removal that would empty the manifest, and the act that clears it is placing a second hypothesis first. Neither refusal reports a breakage: in both, the manifest stands exactly as the curator left it and the version is no worse off than before the act.
+
+`a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete` draws this same line for the reads a case-keyed surface makes, reserving the undifferentiated telling for a code that surface holds no reading of. It is written over reads, and a refused write is not a read that did not complete: the curator issued an act, and what the manifest on screen now holds is the question. So the notice owed for the residue is the one `scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so` already names in its own text — what the frontend shows when a request fails for a reason it does not recognise. That scenario's own reasoning is why the two named refusals may not fall there: a curator shown the unrecognised-failure notice learns the outcome is unknown and retries, reloads or escalates, while a curator told the position is taken, or that the manifest's floor was reached, learns which next act clears the condition.
+
+That the manifest stands unchanged belongs to each named telling because the surface is displaying the very thing the act was aimed at. Without it, a refusal read beside a manifest the surface has not re-read leaves the curator unable to tell a write that was refused from one whose effect has not yet appeared — the indistinguishability `a-release-refusal-with-no-named-violation-says-so` refuses for a curator left to interpret a refusal on their own.
+
+The rule adds no attribute, moves no pin and refuses no call; which control carries each statement, how it is worded and where it sits are form and belong to the interface, as they do everywhere else this specification states what a surface tells a reader. It decides nothing about `remove-hypothesis-for-an-absent-name-succeeds-with-no-effect`, which is no refusal at all and so has no refusal presentation to hold, and nothing about what `place-hypothesis` answers for a hypothesis the manifest already holds, which `a-hypothesis-is-manifested-at-most-once-in-a-case-version` expressly leaves open.
+
+=== rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+---
+type: invariant
+statement: >-
+  A surface presenting a case version's manifest offers the curator the act of placing a
+  hypothesis into that version's manifest on every reading of that surface except one
+  whose read answered that the version is released — including a reading whose read of
+  the version was refused, whatever that refusal named, and a reading whose read answered
+  a manifest holding no entry at all.
+expression: >-
+  For a case version v and a surface presenting v's manifest to the curator: that surface
+  offers an act whose performance issues a place-hypothesis over v, and the offer's
+  presence turns on one thing alone — where the read that surface made for v answered and
+  that answer states v's state as released, the act is not offered. Every other reading
+  carries it: an answer stating v's state as draft, whether v's manifest carries entries
+  or carries none at all; a read of v refused, whatever the refusal named, the refusal
+  a-case-version-failing-validation-at-a-read-is-refused-by-name states included; and a
+  read of v that has not yet answered. Nothing else narrows the offer — not how many
+  entries v's manifest holds, not whether v reads back as a case at that reading, and not
+  the surface v's manifest was reached from. What a place-hypothesis then issued answers
+  is untouched here: a-case-version-moves-through-its-declared-lifecycle,
+  a-hypothesis-is-manifested-at-most-once-in-a-case-version and
+  a-hypothesis-position-is-unique-within-its-case each answer their own call exactly as
+  they did before, and no entry is written by the offer's presence.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+`a-listed-case-version-offers-a-route-to-its-own-manifest` carries the curator to a version's manifest on every reading of a case's versions listing and says, in as many words, that it decides nothing about what may then be done through the route.
+What the manifest surface at the end of that route *offers* was addressable nowhere: `contracts/knowledge/case-lifecycle` publishes `place-hypothesis` and `domain/knowledge/case-version` declares it among the version's own operations, both stating what the call does and neither stating that any surface offers it, so whether a curator standing on a manifest can reach the act at all — and on which readings — fell to whatever a surface happened to render.
+
+Placing is the act the manifest exists to be composed by. `a-cases-current-pins-come-from-its-highest-numbered-version` already states that a hypothesis with no entry must stay in view precisely so the curator can reach `place-hypothesis` for it, and `a-revise-offers-the-draft-manifest-only-when-the-pin-must-move` routes a completed revise to the draft's manifest on the ground that nothing written reaches any version until the hypothesis is placed there. Both nodes send the curator somewhere on the assumption that the placing is reachable once they arrive; this states that it is.
+
+The two readings where the surface knows least are the readings where the offer matters most.
+A read of the version refused tells the surface nothing about the manifest, and `validation-runs-at-every-read` makes one refusal in particular — the version that does not read back as a case — the state a placing is the correction for: a draft whose manifest holds no entry fails validation at every read, so a surface that withheld the placing on that refusal would withhold the only act that ends the refusal, leaving the version unreachable by the very curator who must repair it.
+A manifest answered holding no entry is the same condition read from the other end, and `a-case-has-at-least-one-hypothesis` names it as what a release will be held to. Neither reading is an edge of the store: `a-new-drafts-manifest-is-copied-from-an-existing-version` gives a case's first-ever draft no manifest to copy, so the empty manifest is where every case begins.
+
+The version's own state is the one thing that narrows the offer, and it narrows it exactly where the surface has read it. `a-case-version-is-written-once` and `domain/knowledge/case-version` free the manifest to be composed while draft state holds and never after, and `a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis` already holds the division this takes: a version's state governs what may be composed, never how much of what is true about it a reader is shown. So a surface that has read the version as released offers no placing — the composition that version can never take — while a surface whose read was refused or has not answered has read no state to withhold on, and the stored state still answers the call itself if one is issued.
+
+This withholds nothing `a-newly-created-draft-offers-no-act-before-its-own-record-arrives` offers and offers nothing it withholds. That rule names three acts — release, discard, the correction of the version's own declared attributes — and withholds each because it is performed against content the surface is forbidden to show in that interval: two irreversible endings and a blind overwrite. A placing is none of those. It ends nothing, alters no entry and overwrites no value: it adds an entry the curator composed themselves, and every way it can collide with a manifest nobody has read is already refused by name — `a-hypothesis-position-is-unique-within-its-case` for an occupied position, `a-hypothesis-is-manifested-at-most-once-in-a-case-version` for a hypothesis already held, `a-case-version-moves-through-its-declared-lifecycle` for a version not in draft. The curator learns the conflict from a refusal that names it, having lost nothing; that is why the interval that withholds those three acts does not withhold this one.
+
+Which control carries the offer, its wording and where it sits are form and belong to the interface, as this specification's other surface rules leave them.
+
 === rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
 ---
 type: policy
@@ -12715,6 +13069,49 @@ the stored version.
 Which control carries each act, whether an interface renders an act it does not yet offer
 as absent or as present and not yet performable, its wording and where it sits are form and
 belong to the interface, as this specification's other surface rules leave them.
+
+=== rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+---
+type: invariant
+statement: >-
+  A surface presenting one case version a reader named — by that case's own slug together
+  with that version's own number — offers the curator a route to that same version's own
+  manifest on every reading of that surface, its presence turning on nothing further: not
+  on that version's state, and not on whether the read of that version read back as a case
+  at that reading, including a reading where that read has not yet answered, a reading
+  where it failed, and a reading where it was refused because some validator rule does not
+  hold for that version.
+expression: >-
+  For a case c, a version v of c, and a surface presenting v to a reader who named c's slug
+  together with v's own version number: that surface carries a route to the manifest of
+  that same v, and never to the manifest of any other version of c. The route's presence
+  turns on nothing further — not on which of draft or released v's state holds, not on
+  whether every validator rule of validation-runs-at-every-read holds for v at that
+  reading, and not on what that surface's own read of v answered: it stands alike while no
+  answer for v has arrived, where that read failed, and where that read was refused because
+  v does not currently read back as a case. A surface presenting no case version carries no
+  such route, there being no version whose manifest to reach.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+`a-listed-case-version-offers-a-route-to-its-own-manifest` owes this route from a listing of one case's versions, and is written over that listing alone — its expression opens on "a case c and a listing of the versions c currently holds", and every version it reaches is one that listing presents.
+A reader who named one version is on no listing: that is the surface `a-successful-case-version-creation-lands-on-the-created-versions-own-surface` takes a curator to once a create-draft succeeds, and the one `a-presented-case-version-states-its-own-declared-attributes` states that version's own attributes on. Whether it carries the same route, and whether it carries it on a reading where the version's own read did not answer as a case, stood decided nowhere.
+
+The reason the listing owes the route holds here unchanged. A version's manifest is where the revisions that version uses stand, and it is addressed by the case's slug together with that version's own number — exactly the two facts this surface was reached by. A route owed from the listing and withheld here would hand the further reader what the nearer reader is left to construct.
+
+The presence turns on nothing about the read, on the ground `a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading` already states for a route: the read backing a surface answers what is stored and nothing about whether the act the route reaches may be performed, so a route conditioned on that read withholds an act for a reason unrelated to it, and the readings a condition would drop it from are precisely the ones where the reader has nothing else on the surface to act on.
+Here that is sharpest at the refused reading. `validation-runs-at-every-read` makes a version that declares no hypothesis not read back as a case at all, `a-case-version-failing-validation-at-a-read-is-refused-by-name` gives that reading its own refusal, and the manifest this route reaches is precisely where `place-hypothesis` (`contracts/knowledge/case-lifecycle`) composes the entry that ends the condition. A route dropped there is dropped exactly where it is the only correction left.
+
+The version's state does not narrow it either, on the answer `a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis` fixed and `a-cases-current-pins-come-from-its-highest-numbered-version` and `a-listed-case-version-offers-a-route-to-its-own-manifest` each took after it: a version's state answers whether it may still be composed and whether it may be diagnosed against, never how much of what is true about it a reader is shown.
+
+Nothing here weakens what the surface states. `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` forbids presenting any attribute of a version that does not validate as the case's current content, and this route is no attribute of the version: it carries the case's slug and the version's number, which the reader themself supplied, and discloses nothing the read answered. `a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete` is untouched for the same reason, and `a-newly-created-draft-offers-no-act-before-its-own-record-arrives` already says of its own interval that any route this specification owes from a case's surfaces is offered in it exactly as outside it — this states one such route, rather than an act over a record nobody has read.
+
+What may then be done through the route this decides nothing about: composing a manifest stays exactly where `case-version` and `a-case-version-is-written-once` already put it — freely while draft state holds, never once released — so a released version's manifest is reached to be read and never to be altered.
+`a-revise-offers-the-draft-manifest-only-when-the-pin-must-move` is written over a completed revise and carries the fact that the draft is not yet using what was just written; this carries nothing beyond where a version's manifest is read, so the two do not stand in each other's way.
+No manifest entry gains a disclosure, no pin moves, and no call is refused. Which control carries the route, its wording and where it sits are form and belong to the interface, not here.
 
 === rules/knowledge/a-presented-case-version-states-its-own-declared-attributes
 ---
@@ -13040,6 +13437,48 @@ This rule states when the route is offered, and nothing about what may then be d
 Consistency is eventual because the fact spans two aggregates: the hypothesis whose revision was written, and the case version whose manifest is read to answer whether that revision is the one it pins.
 Which control carries the offer, its wording and where it sits are form and belong to the interface, not here.
 
+=== rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+---
+type: policy
+statement: >-
+  A revise-hypothesis is accepted while its case's draft version does not read back as a
+  case at that reading — no validator rule failing over that draft version refusing the
+  revise, and none of them reaching it as a CaseVersionNotValidError — and the
+  concept-acceptance check reads that draft version's declared subject type exactly as the
+  draft's own stored record carries it, the case where that declared subject type is itself
+  the attribute failing a validator rule included, so that a concept the revision collects
+  which does not accept the stored value is refused by the ConceptRefusesSubjectTypeError
+  a-concept-accepts-the-declared-subject-type already states and by no refusal of its own.
+expression: >-
+  For a revise of hypothesis h whose case c holds draft version d: the revise's acceptance
+  turns on the checks written over the revision itself — d holding draft state, the glossary
+  holding every concept the revision names, and every concept it collects accepting d's
+  declared subject type — and on no validator rule of validation-runs-at-every-read over d.
+  Any such rule failing over d at that reading, its manifest holding no entry included, is
+  never a ground of refusal for the revise and is never answered to the curator as a
+  CaseVersionNotValidError. The subject type the concept-acceptance check compares against is
+  the value d's own stored record carries in its subject attribute, read whatever that
+  value's own standing: where d's subject names a subject type the glossary does not hold, no
+  concept declares acceptance of it, and the revise is refused with the HTTP 422
+  ConceptRefusesSubjectTypeError rather than by any refusal naming d's validity.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis-revision
+  - domain/glossary/concept
+consistency: eventual
+---
+
+## Description
+
+`a-hypothesis-is-revised-only-against-its-cases-draft` anchors the check to the case's draft version without saying what happens when that draft, at the moment of the revise, is one of the drafts `validation-runs-at-every-read` declines to read back as a case. This states that the anchor holds anyway.
+
+The two readings are different readings. `validation-runs-at-every-read` and `a-case-version-failing-validation-at-a-read-is-refused-by-name` govern a read that names a stored case version to get a case back, and `constraints/a-case-is-read-whole` already holds wholeness there and nowhere else — it says in the same breath that a hypothesis, its revisions and a draft's own manifest entries may otherwise be created, read, revised or removed independently. The concept-acceptance check is that other kind of reading: it needs one declared attribute of the draft's own record, not a case assembled whole.
+
+Gating the revise on the draft's validity would make the correcting act require the correction. A draft whose manifest holds no entry fails a validator rule for exactly that reason, and revising and placing a hypothesis is the one route out of it; `domain/knowledge/case-version` states that a draft's manifest may be freely composed while draft state holds, and `contracts/knowledge/case-lifecycle` puts every validator rule answering together at the single moment of release, before the version stands immutable. A revise refused because the draft is not yet whole would close the only door to making it whole, and would answer a composition step with a refusal the specification reserves for a read asking for a case.
+
+The failing attribute being the subject type itself changes what the check concludes, never where it reads. `a-revise-hypothesis-requests-own-subject-type-is-never-read` keeps the draft version the one source of that value, so there is no second value to fall back to and no reason to skip the check: the stored value is read as it stands. Where that value names a subject type `case-terms-exist-in-the-glossary` finds the glossary does not hold, every concept's declared acceptance is a set of glossary subject types, so no concept accepts it and the check fails of its own accord — answered by the refusal `a-concept-accepts-the-declared-subject-type` already names, with no second refusal invented for a condition the existing one already reaches. Correcting that value stays where `domain/knowledge/case-version` and `update-draft` already put it, and this rule says nothing about it.
+
 === rules/knowledge/a-slug-identifies-one-case
 ---
 type: invariant
@@ -13132,6 +13571,49 @@ It states what the surface discloses and nothing about whether the release may t
 
 The rule is a policy holding eventually because the conditions are read across aggregate roots: the case version whose release is offered, and — for the condition this specification currently states — each pinned hypothesis-revision, whose own release reaches into no version's manifest to change it.
 Which control carries the statements, their wording and where they sit are form and belong to the interface, not here.
+
+=== rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+---
+type: invariant
+statement: >-
+  A surface presenting one case version a reader named by that case's slug and that
+  version's number states explicitly, whenever some validator rule of
+  validation-runs-at-every-read does not hold for that version at that reading, that
+  the version named does not read back as a case right now; it presents no attribute
+  of that version and no entry of that version's manifest as the content standing at
+  that identity, and what it states there is distinct from what the same surface
+  states for a read of that version that did not complete, so that a reader tells the
+  two apart.
+expression: >-
+  For a case slug s, a version number n a reader named, and a surface presenting the
+  case version stored at (s, n): where a stored case version answers (s, n) and some
+  validator rule of validation-runs-at-every-read does not hold for it at the moment
+  of that reading, the surface states that the version at (s, n) does not read back as
+  a case at that reading, and states as the content standing at (s, n) no attribute of
+  that version — its title, when_to_use, authored_at, subject, fallback,
+  consolidation_register, state or released_at — no entry of its manifest, neither an
+  entry's position nor the hypothesis revision an entry references, and no fact
+  derived from any of them. What it states there is distinguishable by the reader from
+  what the same surface states where a read of (s, n) did not complete, and neither of
+  those two is presented as the other. Where every validator rule holds for that
+  version at that reading, the surface states none of this.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+`validation-runs-at-every-read` makes this a standing state of the store rather than an edge of it: a stored version, draft or released, is read as a case only while every validator rule holds at that reading, and no field marks one that currently fails a rule. So a reader who reached a surface by naming a case's slug together with a version's number can meet a version that is stored, at the identity they named, where the read yields no case at all — the state `a-case-version-failing-validation-at-a-read-is-refused-by-name` answers over the wire with an HTTP 409 reporting a CaseVersionNotValidError.
+
+That refusal states what the read answers and stops there; what the surface rendering it tells its reader is a separate question, and the two nodes that answer it for the neighbouring surfaces do not reach this one. `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` is written over a reader who named a case by its slug and named no version of it, and reads the case's highest-numbered version for that reason; `a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone` is written over a listing whose reader named no case and no version. Here the reader named both, the version they named is the one judged, and neither node's condition is this one.
+
+The statement is owed for the reason this specification has already given it three times. `a-case-holding-no-versions-is-told-explicitly` refuses a silence because an absence, a failed read and a pending read then read alike; `a-cases-current-pins-come-from-its-highest-numbered-version` took that same answer for a hypothesis the current version's manifest holds no entry for; and `a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed` took it again in the sibling registry for a surface keyed on an identity its operator named. A version that does not validate is one the curator must correct, and a read that did not complete is one the curator must attempt again — different acts, so a surface rendering either like the other sends the reader to the wrong one.
+
+No attribute of the version accompanies the statement, and no entry of its manifest does. `constraints/a-case-is-read-whole` answers a complete, validated version or nothing at all, so there is nothing partial to present honestly: a title, a fallback, a state, or a manifest entry's position and pinned revision shown beside the statement would state as the content standing at that identity exactly what validation has just declined to read back as a case. The manifest is named alongside the version's own attributes because `domain/knowledge/case-version` declares it a required attribute of the version and `domain/knowledge/manifest-entry` is a value object within that same version, so an entry recovered and shown is as much the version's content as its title is — and `a-manifest-entrys-pinned-revision-is-always-shown` already refuses a pin sourced from anything but a record read whole. The slug and the version number the reader themselves named are not attributes presented as that content; they are the identity the reader addressed the surface by.
+
+`a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete` reserves the read-that-did-not-complete statement for a refusal whose error code the surface holds no presentation of its own for, and says nothing about a code the surface does hold one for. This gives the version-keyed surface that presentation for exactly this condition, so the condition never falls to that statement, and the two stay distinguishable to the reader rather than one absorbing the other.
+
+The rule adds no attribute, moves no pin, offers no act and refuses no call; what a surface offers a curator over such a version is decided where this specification decides what surfaces offer, and not here. It is an invariant over `domain/knowledge/case-version` alone because slug-together-with-version-number is that element's own identity, the same reading `a-successful-case-version-creation-lands-on-the-created-versions-own-surface` took for the surface it lands a curator on, and the condition is decidable from that one version and its own manifest without a second aggregate being read. Which control carries the statement, how it is worded and where on the surface it sits are form and belong to the interface, as they do wherever else this specification states what a surface tells a reader.
 
 === rules/knowledge/an-abandoned-case-version-edit-writes-nothing
 ---

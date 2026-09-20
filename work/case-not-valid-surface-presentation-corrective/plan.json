@@ -9,11 +9,42 @@
       "summary": "Corrective increment: case-keyed surfaces treat a CaseVersionNotValidError refusal as an undifferentiated generic load failure instead of the distinct presentation and standing manifest route the specification already decided."
     },
     {
+      "id": "inventory/case-version-editor-and-manifest-builder-and-hypothesis-composition-load-error",
+      "kind": "inventory",
+      "file": "inventory/case-version-editor-and-manifest-builder-and-hypothesis-composition-load-error.md",
+      "title": "Version editor, manifest builder, and hypothesis composition on GET case-version load error",
+      "summary": "The area the manifest-builder/hypothesis-composition scope lands in: three route/hook pairs under frontend/app/src that each fold a CaseVersionNotValidError into the same generic load-error phase, and the sibling case-detail/cases-list hooks that already carry the three-way distinction they should reuse."
+    },
+    {
+      "id": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "task",
+      "file": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
+      "title": "Hypothesis composition opens for a version that does not read back as a case",
+      "summary": "The New Hypothesis and Revise Hypothesis screens presenting their composition form for a version whose read is refused because validation does not hold for it at that reading.",
+      "epic": "case-not-valid-surface-presentation"
+    },
+    {
       "id": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "task",
       "file": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
       "title": "Isolate one case's invalid current version from the cases list",
       "summary": "A listing of every case still presents every other case's own summary, and the failing case's own entry, when one case's current version fails validation at that reading.",
+      "epic": "case-not-valid-surface-presentation"
+    },
+    {
+      "id": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "task",
+      "file": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back.md",
+      "title": "The manifest builder composes a version that does not read back as a case",
+      "summary": "The manifest builder's own presentation of a version whose read is refused because validation does not hold for it, together with the composing acts that reading must still offer.",
+      "epic": "case-not-valid-surface-presentation"
+    },
+    {
+      "id": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "task",
+      "file": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back.md",
+      "title": "The version editor states a version that does not read back as a case",
+      "summary": "The case version editor's own presentation of a version whose read is refused because validation does not hold for it at that reading, held apart from the statement it makes for a read that did not complete.",
       "epic": "case-not-valid-surface-presentation"
     }
   ],
@@ -278,9 +309,51 @@
     },
     {
       "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[139]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
       "to": "constraints/the-concept-read-refuses-an-unanswered-concept",
       "kind": "covers",
       "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "covers",
+      "at": "covers[140]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "covers",
+      "at": "covers[141]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "covers",
+      "at": "covers[142]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[143]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "kind": "covers",
+      "at": "covers[144]"
+    },
+    {
+      "from": "epic/case-not-valid-surface-presentation",
+      "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[145]"
     },
     {
       "from": "epic/case-not-valid-surface-presentation",
@@ -853,6 +926,36 @@
       "at": "covers[9]"
     },
     {
+      "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
       "from": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
       "kind": "implements",
@@ -867,6 +970,48 @@
     {
       "from": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
       "kind": "implements",
       "at": "implements[2]"
     }
