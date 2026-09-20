@@ -1,0 +1,87 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's one and only import statement, line 1 — everything else in the file is local
+      computation with no framework, driver or client import anywhere
+    evidence: |-
+      import { isPlainObject, parseJsonOrUndefined } from './citation-validation.js';
+  - node: domain/investigation/evidence
+    held_at: >-
+      the `fieldSemanticsOf` function, lines 9-18, which is what produces the array snapshotted
+      onto evidence's own `fields` attribute (the rest of the evidence value-object — concept,
+      observed_at, ttl, result, etc. — is not defined in this file)
+    evidence: |-
+      export function fieldSemanticsOf(outputSchema: string | undefined): readonly FieldSemantics[] {
+  - node: domain/investigation/field-semantics
+    held_at: "the `FieldSemantics` type, lines 3-7, and `fieldSemanticsFrom`, lines 43-49"
+    evidence: |-
+      export type FieldSemantics = {
+        readonly name: string;
+        readonly type?: string;
+        readonly description?: string;
+      };
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: >-
+      the path-building recursion across `fieldsFromProperties`, `pathWith`, `fieldsFromNode`
+      and `descendantFieldsOf`, lines 20-41
+    evidence: |-
+      function pathWith(parentPath: string | undefined, key: string): string {
+        return parentPath === undefined ? key : `${parentPath}.${key}`;
+      }
+      ...
+      if (isPlainObject(declared.items)) {
+        return fieldsFromNode(`${path}[]`, declared.items);
+      }
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: >-
+      the same items recursion in `descendantFieldsOf`, lines 37-39, which is what makes
+      `installations[].state` one of the field-semantics elements a later citation can name
+    evidence: |-
+      if (isPlainObject(declared.items)) {
+        return fieldsFromNode(`${path}[]`, declared.items);
+      }
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: >-
+      `fieldsFromProperties`/`pathWith` (lines 20-26) for the root-level names, and
+      `descendantFieldsOf`/`fieldsFromNode` (lines 28-41) for the nested one — together they
+      produce `login`, `installations` and `installations[].state`, and never emit `state` alone
+    evidence: |-
+      function fieldsFromProperties(properties: Record<string, unknown>, parentPath?: string): readonly FieldSemantics[] {
+        return Object.entries(properties).flatMap(([key, value]) => fieldsFromNode(pathWith(parentPath, key), value));
+      }
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: |-
+      export type FieldSemantics = {
+        readonly name: string;
+        readonly type?: string;
+        readonly description?: string;
+      };
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: |-
+      export function fieldSemanticsOf(outputSchema: string | undefined): readonly FieldSemantics[] {
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      readonly name: string;
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: |-
+      readonly name: string;
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: nowhere
+    evidence: |-
+      import { isPlainObject, parseJsonOrUndefined } from './citation-validation.js';
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: |-
+      export function fieldSemanticsOf(outputSchema: string | undefined): readonly FieldSemantics[] {
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: nowhere
+    evidence: |-
+      export function fieldSemanticsOf(outputSchema: string | undefined): readonly FieldSemantics[] {
+looked_past: >-
+  citation-validation.ts's own `declaredFieldsOf` (used by http-declarative-observation-source.adapter.ts)
+  reads only the output schema's top-level property keys rather than this file's own nested-path
+  walk, which is a fact about those other two files' own conformance, not this one's.

@@ -11,6 +11,7 @@ import type {
   SimulationRunSummary,
   SimulationDurations,
 } from "./case-simulation-hypotheses-table-row";
+import type { CaseResultCost } from "./case-simulation-case-result-types";
 import type {
   SimulationEvaluation as DetailEvaluation,
   SimulationEvidenceItem as DetailEvidenceItem,
@@ -24,7 +25,7 @@ export type CockpitEvaluation = {
   readonly hypothesis: string;
   readonly verdict: "confirmed" | "refuted" | "inconclusive";
   readonly citations: readonly { readonly concept: string; readonly field: string }[];
-  readonly reason?: "no-data" | "judgment-failure" | "deadline-exceeded";
+  readonly reason?: "no-data" | "judgment-failure" | "deadline-exceeded" | "not-grounded";
   readonly usage?: { readonly input_tokens: number; readonly output_tokens: number };
   readonly elapsed_ms?: number;
   readonly prompt?: string;
@@ -119,17 +120,37 @@ export function toDurations(result: SimulateCaseResult): SimulationDurations {
   };
 }
 
+export function toCost(result: SimulateCaseResult): CaseResultCost {
+  return {
+    calls: result.cost.calls,
+    inputTokens: result.cost.input_tokens,
+    outputTokens: result.cost.output_tokens,
+  };
+}
+
 export function toNewCaseResultRun(result: SimulateCaseResult): NewCaseResultRun {
   return {
-    outcome: result.assessment.outcome,
-    referral: result.assessment.referral,
-    determiningHypothesis: result.assessment.determining_hypothesis,
-    text: result.assessment.text,
-    register: result.assessment.register,
     hypotheses: result.evaluations.map((evaluation) => ({
       hypothesis: evaluation.hypothesis,
       verdict: evaluation.verdict,
     })),
+    durations: toDurations(result),
+    cost: toCost(result),
+    consolidationCall: {
+      called: true,
+      outcome: result.assessment.outcome,
+      referral: result.assessment.referral,
+      determiningHypothesis: result.assessment.determining_hypothesis,
+      text: result.assessment.text,
+      register: result.assessment.register,
+      usage: {
+        inputTokens: result.assessment.usage.input_tokens,
+        outputTokens: result.assessment.usage.output_tokens,
+      },
+      elapsedMs: result.assessment.elapsed_ms,
+      prompt: result.assessment.prompt,
+    },
+    rawResponse: result,
   };
 }
 
@@ -171,13 +192,29 @@ export function toDetailEvidence(
     resultDetail: item.result_detail,
     elapsedMs: item.elapsed_ms,
     observation: item.observation,
+    inputs: item.inputs,
+    observedAt: item.observed_at,
+    ttl: item.ttl,
     capabilityName: item.capability_name,
     capabilityVersion: item.capability_version,
     connector: item.origin,
+    capabilityPayloadNotes: item.capability_payload_notes,
 
     fields: item.fields,
     conceptDescription: item.concept_description,
   }));
+}
+
+export function toDetailEvidenceFromRawResponse(
+  rawResponse: unknown,
+): readonly DetailEvidenceItem[] {
+  if (typeof rawResponse !== "object" || rawResponse === null || !("evidence" in rawResponse)) {
+    return [];
+  }
+  if (!Array.isArray(rawResponse.evidence)) {
+    return [];
+  }
+  return toDetailEvidence(rawResponse.evidence);
 }
 
 export function toHypothesisRevisionSummary(

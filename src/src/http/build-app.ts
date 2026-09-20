@@ -68,6 +68,7 @@ import { createUpdateDraftRoutesPlugin } from './update-draft.routes.js';
 import { handleUnexpectedError } from './error-handler.middleware.js';
 
 export type BuildAppDependencies = {
+  readonly bodyLimit?: number;
   readonly diagnose: DiagnoseControllerDependencies;
   readonly simulateCase: SimulateCaseControllerDependencies;
   readonly simulateHypothesis: SimulateHypothesisControllerDependencies;
@@ -147,7 +148,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
 }
 
 export function buildApp(dependencies: BuildAppDependencies): FastifyInstance {
-  const app = Fastify();
+  const app = Fastify({ bodyLimit: dependencies.bodyLimit });
   app.setErrorHandler(handleUnexpectedError);
   for (const plugin of routePlugins(dependencies)) {
     app.register(plugin);

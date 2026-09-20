@@ -8,7 +8,6 @@ import {
   toDurations,
   toHypothesisRevisionSummary,
   toManifestRows,
-  toNewCaseResultRun,
   toRowEvaluation,
   toRunSummary,
   type CockpitEvaluation,
@@ -191,29 +190,6 @@ describe("toRunSummary/toDurations -- the last full-case run's own summary and s
   });
 });
 
-describe("toNewCaseResultRun -- shaping a completed full-case run into the Case result region's own new-run shape (criterion 5)", () => {
-  it("carries the run's own outcome, referral, determining hypothesis, customer-facing text and register, plus one verdict entry per judged hypothesis", () => {
-    const result = caseResult({
-      evaluations: [
-        { hypothesis: "hypothesis-a", verdict: "confirmed", citations: [] },
-        { hypothesis: "hypothesis-b", verdict: "inconclusive", citations: [], reason: "no-data" },
-      ],
-    });
-
-    expect(toNewCaseResultRun(result)).toEqual({
-      outcome: "resolved",
-      referral: { action: "notify", recipient: "customer" },
-      determiningHypothesis: "hypothesis-a",
-      text: "The disputed charge was authorized.",
-      register: "formal",
-      hypotheses: [
-        { hypothesis: "hypothesis-a", verdict: "confirmed" },
-        { hypothesis: "hypothesis-b", verdict: "inconclusive" },
-      ],
-    });
-  });
-});
-
 describe("toDetailJudgmentCall -- always { called: false } (this task's own recorded inference)", () => {
   it("answers { called: false } regardless of anything about the evaluation, since neither dispatch hook ever returns a model or a prompt version", () => {
     expect(
@@ -270,6 +246,9 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         elapsed_ms: 120,
         capability_name: "fetch-billing-account",
         capability_version: "1",
+        capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
     ];
 
@@ -280,9 +259,15 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         resultDetail: "cached",
         elapsedMs: 120,
         observation: "the account shows one authorized charge",
+        inputs: "{}",
+        observedAt: "2026-08-01T00:00:00.000Z",
+        ttl: 3600,
         capabilityName: "fetch-billing-account",
         capabilityVersion: "1",
         connector: "billing-connector",
+        capabilityPayloadNotes: "",
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

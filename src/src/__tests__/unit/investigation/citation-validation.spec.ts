@@ -69,6 +69,31 @@ it("accepts a citation naming a concept in the hypothesis's collects and a field
   expect(isCitationValid(context, citation)).toBe(true);
 });
 
+it('accepts a citation naming a collected concept and carrying no field, when its own cited evidence item snapshotted no fields at all -- the no-data-verdict case', () => {
+  const evidence = anEvidence({ concept: 'a-collected-concept', fields: [] });
+  const context: HypothesisCitationContext = {
+    collects: ['a-collected-concept'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'a-collected-concept' };
+
+  expect(isCitationValid(context, citation)).toBe(true);
+});
+
+it("accepts a citation naming a collected concept and carrying no field even where its own cited evidence item snapshotted one or more fields -- fieldless acceptance holds whatever field names that item snapshotted", () => {
+  const evidence = anEvidence({
+    concept: 'a-collected-concept',
+    fields: fieldsDeclaring('a-declared-field', 'another-declared-field'),
+  });
+  const context: HypothesisCitationContext = {
+    collects: ['a-collected-concept'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'a-collected-concept' };
+
+  expect(isCitationValid(context, citation)).toBe(true);
+});
+
 it('refuses a citation whose concept has no matching entry in the supplied evidence at all, answering false rather than throwing', () => {
   const context: HypothesisCitationContext = {
     collects: ['a-collected-concept-with-no-evidence'],
@@ -125,6 +150,46 @@ it('filters a proposed set of citations to only those accepted, keeping the acce
   const result = acceptedCitations(options);
 
   expect(result).toEqual([options.citations[0], options.citations[3]]);
+});
+
+it('accepts a citation naming concept tech-profile and field installations[].state, where that item snapshot carries installations[].state, exactly as the acceptance scenario states it', () => {
+  const evidence = anEvidence({
+    concept: 'tech-profile',
+    fields: fieldsDeclaring('login', 'installations', 'installations[].state'),
+  });
+  const context: HypothesisCitationContext = {
+    collects: ['tech-profile'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'tech-profile', field: 'installations[].state' };
+
+  expect(isCitationValid(context, citation)).toBe(true);
+});
+
+it("refuses a citation naming a path-shaped field, installations[].partition, that its own cited evidence item's snapshot did not carry — a citation is refused for an unmatched name whatever shape that name has", () => {
+  const evidence = anEvidence({
+    concept: 'tech-profile',
+    fields: fieldsDeclaring('login', 'installations', 'installations[].state'),
+  });
+  const context: HypothesisCitationContext = {
+    collects: ['tech-profile'],
+    evidence: [evidence],
+  };
+  const citation: Citation = { concept: 'tech-profile', field: 'installations[].partition' };
+
+  expect(isCitationValid(context, citation)).toBe(false);
+});
+
+it("refuses a citation naming a concept outside the hypothesis's collects even where the field it names, installations[].state, is path-shaped and matches that foreign evidence item's own snapshotted fields", () => {
+  const collectedEvidence = anEvidence({ concept: 'a-collected-concept', fields: fieldsDeclaring('a-field') });
+  const foreignEvidence = anEvidence({ concept: 'tech-profile', fields: fieldsDeclaring('installations[].state') });
+  const context: HypothesisCitationContext = {
+    collects: ['a-collected-concept'],
+    evidence: [collectedEvidence, foreignEvidence],
+  };
+  const citation: Citation = { concept: 'tech-profile', field: 'installations[].state' };
+
+  expect(isCitationValid(context, citation)).toBe(false);
 });
 
 async function moduleSource(): Promise<string> {

@@ -1,0 +1,98 @@
+findings:
+  - file: src/investigation/citation-validation.ts
+    where: "citesADeclaredField, lines 26-32"
+    evidence: |-
+      function citesADeclaredField(context: HypothesisCitationContext, citation: Citation): boolean {
+        const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+        if (citedEvidence === undefined) {
+          return false;
+        }
+        return citedEvidence.fields.some((field) => field.name === citation.field);
+      }
+    cost: >-
+      The invariant scopes the field check to citations that carry a field ("where the citation
+      carries one") and states explicitly that a no-data verdict's citation carries none, since
+      the evidence it cites snapshotted no fields at all. This function applies
+      `fields.some((field) => field.name === citation.field)` unconditionally: when
+      `citation.field` is `undefined` (the no-data case) and `citedEvidence.fields` is `[]` (the
+      same case), `.some(...)` is false on both counts, so `isCitationValid` — and therefore
+      `acceptedCitations` — rejects a citation the specification says is legitimately fieldless.
+      A caller filtering a hypothesis's citations through this module would silently drop every
+      no-data citation, and the next reader chasing the loss would look at the containment rule
+      rather than at this unconditional equality check.
+    kind: contradicts
+    node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    correction: >-
+      Guard the field check on `citation.field` being present — e.g. return `true` (no field to
+      validate) when `citation.field === undefined`, and only run `fields.some(...)` when it is
+      defined — so a fieldless no-data citation is not rejected by this function.
+read:
+  - node: domain/investigation/citation
+    held_at: "citesADeclaredField, line 31"
+    evidence: "return citedEvidence.fields.some((field) => field.name === citation.field);"
+  - node: domain/investigation/evidence
+    held_at: "citesADeclaredField, lines 27 and 31"
+    evidence: |-
+      const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+      ...
+      return citedEvidence.fields.some((field) => field.name === citation.field);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "citesACollectedConcept, line 23"
+    evidence: "return collects.includes(citation.concept);"
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: "declaredFieldsOf, lines 34-43"
+    evidence: |-
+      const parsed = parseJsonOrUndefined(outputSchema);
+      if (!isPlainObject(parsed) || !isPlainObject(parsed.properties)) {
+        return [];
+      }
+      return Object.keys(parsed.properties);
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: "citesACollectedConcept, line 23"
+    evidence: "return collects.includes(citation.concept);"
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: "citesADeclaredField, lines 26-32 — only for the field-present branch; see finding"
+    evidence: "return citedEvidence.fields.some((field) => field.name === citation.field);"
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: "citesADeclaredField, line 31"
+    evidence: "return citedEvidence.fields.some((field) => field.name === citation.field);"
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: "citesADeclaredField, line 31"
+    evidence: "return citedEvidence.fields.some((field) => field.name === citation.field);"
+  - node: scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+    held_at: "citesADeclaredField, lines 27 and 31"
+    evidence: |-
+      const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+      ...
+      return citedEvidence.fields.some((field) => field.name === citation.field);
+  - node: domain/investigation/field-semantics
+    held_at: "citesADeclaredField, line 31"
+    evidence: "return citedEvidence.fields.some((field) => field.name === citation.field);"
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: nowhere
+    evidence: |-
+      export function declaredFieldsOf(outputSchema: string | undefined): readonly string[] {
+        ...
+        return Object.keys(parsed.properties);
+      }
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: nowhere
+    evidence: "return Object.keys(parsed.properties);"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the file's own import list, lines 1-2"
+    evidence: |-
+      import type { Citation } from './citation.js';
+      import type { Evidence } from './evidence.js';
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: |-
+      export function isCitationValid(context: HypothesisCitationContext, citation: Citation): boolean {
+        return citesACollectedConcept(context.collects, citation) && citesADeclaredField(context, citation);
+      }
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: nowhere
+    evidence: "return Object.keys(parsed.properties);"
+looked_past: >-
+  declaredFieldsOf, parseJsonOrUndefined and isPlainObject are exported but never called from
+  isCitationValid/acceptedCitations in this file, and the module's functional decomposition
+  style is a code-structure matter rather than a domain fact, so it is not reported here.

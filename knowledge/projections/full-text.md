@@ -5860,6 +5860,192 @@ entries:
     taking the whole listing down as the defect rather than the design; the statement is what sends the curator
     to correct that version, where any summary fact presented beside it would state as the case's current
     content exactly what validation has just declined to read back as a case.
+- location: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema.md
+  field: statement
+  unstated: A hypothesis's criterion, brought as material for this analysis, reasons over attributes an
+    output schema declares only beneath an array's own items -- installations[].state and
+    installations[].pushEnabled, on a capability already registered with installations as a bare top-level
+    array. No node stated how, or whether, a field nested this way is named at all; domain/investigation/field-semantics
+    read only the schema's own top-level properties keys, so no such field was ever a field-semantics element,
+    and a citation naming state or pushEnabled had nothing to name. The material states no grammar for such
+    a name, and no output schema on file declares an items that is itself an array of schemas, or a
+    patternProperties or additionalProperties object.
+  decided: 'A field-semantics element''s own name is the path built by concatenating each object''s own
+    key onto its parent''s own path with a `.` -- the schema''s own root key alone, with no leading `.` --
+    and each array''s own items, itself one schema, onto its parent''s own path with `[]`, walking every
+    properties object and items schema the top-level properties object leads to, and naming one field per
+    node the walk reaches rather than only its leaves; an items declared as more than one schema is walked
+    no further, and a patternProperties or additionalProperties object is not walked, each naming no field
+    of its own.'
+  why: The grammar composes without inventing new syntax for the operator to learn -- it is exactly how
+    JSON Schema itself nests properties and items, read all the way down instead of stopping at the root.
+    Naming every node the walk reaches, not only its leaves, keeps every citation valid before this change
+    valid after it, since installations itself stays a name a citation may still give. Tuple-shaped items
+    and dynamically-keyed properties are decided unsupported because no schema this specification or the
+    registry's own stored capabilities show ever declares either -- deciding a shape nothing exercises would
+    be inventing a case rather than reading one, and the value such a node holds remains legible to a
+    judgment reading the observation directly even where no field-semantics name can cite it individually.
+- location: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it.md
+  field: statement
+  unstated: Whether the surface telling an operator what the system reads out of an output schema entry
+    keeps stating the schema's own top-level properties convention once
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema widens what
+    domain/investigation/field-semantics itself reads, or goes on describing a narrower reading than the
+    one that now actually runs.
+  decided: The statement and expression now describe a field's own name as the path
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads, through the
+    schema's own top-level properties object and every properties object and items schema reachable
+    beneath it, rather than as the bare keys of that top-level object alone.
+  why: The same reasoning that put this statement here in the first place -- the operator's own typing
+    decides what every later citation may name, and nothing else on the surface tells them so -- fails the
+    moment the surface teaches a narrower rule than the one the system actually applies; leaving the old
+    text standing would have the surface itself become a second, wrong, home for this fact the moment the
+    reading widened.
+- location: rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim.md
+  field: statement
+  unstated: Whether the set of nodes an-output-schema-entry-states-what-the-system-reads-from-it's own
+    statement is held to bounded by grows once that statement starts repeating a claim
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema now holds, rather than
+    domain/investigation/field-semantics alone.
+  decided: The statement now names domain/investigation/field-semantics,
+    rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, and
+    rules/glossary/a-description-states-meaning-never-policy as the three nodes the surface's own claims
+    must already be held by.
+  why: This rule's whole purpose is closing the set the surface may draw from; leaving the new rule off
+    that list while the surface's own statement already repeats its claim would make this rule's own check
+    false the instant the sibling statement changed, which is exactly the drift this rule exists to catch
+    in the surface rather than commit in itself.
+- location: rules/investigation/presentation-reads-the-evidence-snapshot.md
+  field: statement
+  unstated: Whether capability_payload_notes, already a required attribute of domain/investigation/evidence and
+    already admitted to a hypothesis's judgment as a snapshotted read, is among the snapshotted semantics this
+    rule holds an operator-facing surface to showing — its enumeration named concept_description and field
+    semantics and stopped there, leaving a surface that displays an evidence item's payload notes with no stated
+    source for them and no stated bar on reading the capability registry live to fill or refresh them.
+  decided: Capability payload notes join the enumerated snapshot an operator-facing surface shows, on the same
+    terms as concept_description and field semantics already there — shown exactly as the item's own snapshot
+    carries them, with no capability-registry read issued at presentation to enrich, refresh or substitute for
+    them.
+  why: A capability registration replaces whatever it held at the same name and version, so payload notes read
+    live at presentation can describe an observation the displayed item never made — the identical divergence
+    that made concept_description and field semantics snapshot-only for this surface and made payload notes
+    snapshot-only for the judgment, and it does not weaken because the reader is a person rather than a model.
+- location: rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked.md
+  field: statement
+  unstated: What an operator-facing surface presenting a collected evidence item shows of that item's inputs —
+    whether they are shown at all, and whether a resolved credential value carried into the call is withheld
+    from that presentation. domain/investigation/evidence declares inputs a required serialized string and says
+    nothing of its presentation; rules/investigation/presentation-reads-the-evidence-snapshot decides the
+    concept_description and field-semantics halves of that same presentation and names inputs nowhere; and
+    rules/integration/a-diagnostic-response-masks-a-resolved-credential binds the connector-diagnostics read
+    alone, not this one.
+  decided: An operator-facing surface presenting a collected evidence item shows that item's inputs — the
+    serialized inputs the collection was issued with — masking whatever value a credential placeholder resolved
+    to within them, so the operator reads what was asked of the capability and never a credential's real value.
+  why: Shown, because contracts/investigation/case-simulation already commits the whole record — evidence
+    included — to the curator, and rules/investigation/the-customer-sees-only-the-text already places evidence
+    on the operational side of the one disclosure boundary this specification draws; withholding inputs would
+    keep from the operator the only statement of what was asked, leaving an unexpected observation
+    undiagnosable. Masked in the one part, because this specification already decided this question once for
+    the other operator-facing read into a connector's call — rules/integration/a-diagnostic-response-masks-a-resolved-credential,
+    with rules/integration/an-unreachable-connector-ends-unavailable noting that a resolved call's own text may
+    hold that value — and deciding the second read differently would publish two answers to the same question
+    about the same secret. Masking the value and not the field is the smallest form that keeps the diagnostic
+    worth of inputs while carrying that restraint.
+- location: rules/investigation/a-simulation-session-retains-its-runs-and-shows-one.md
+  field: statement
+  unstated: Whether a curator's simulation surface keeps more than one run's result during a session and, if it
+    does, how the curator reaches a retained one and what the surface then shows of it — the staleness rule's
+    scenarios speak of "the shown result" from "a prior run" without any node stating that earlier runs are
+    retained at all, that the curator selects among them, or that a retained run is presented from its own
+    record rather than from the latest call's.
+  decided: The surface retains the runs made during a session and shows one at a time; every part of the shown
+    run — evidence, evaluations, assessment, cost, durations — is presented from that run's own returned record,
+    and selecting an earlier run from the session's history presents that run's record in place of the one
+    shown.
+  why: A simulation leaves no record anywhere but the one it returns, so a surface that keeps only the latest
+    run makes the earlier ones unanswerable the instant a second run starts, and a surface that keeps a list
+    while drawing its figures from the latest call attributes to a named run evidence, costs and prompts that
+    run never produced — stating of it something no run returned.
+- location: rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object.md
+  field: statement
+  unstated: What an evidence item's inputs attribute carries where the collection it records sent no inputs at
+    all — evidence declares inputs a required string pinned as the recorded ask, and its own text fixes
+    honest-empty readings for capability_payload_notes, fields and concept_description, but no node gives
+    inputs one, leaving a parameterless call (and a call that never reached its connector) with no stated value
+    for a required attribute.
+  decided: The empty JSON object text `{}` — never an empty string, never an absent value and never an invented
+    parameter.
+  why: inputs is kept to be replayed and to key the evidence cache, so it has to read as the payload it
+    records; `{}` is exactly the payload a parameterless call sent, while an empty string is not a serialized
+    payload at all and reads identically to an ask nobody recorded, which would make every replay and every
+    cache key branch on a case the empty object already answers honestly.
+- location: rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked.md
+  field: statement
+  unstated: What an operator-facing surface puts in place of a credential value it masks within a presented
+    evidence item's inputs — whether a fixed placeholder text and which one. This rule fixed that masking
+    replaces the resolved value and never the field that held it, and stopped there;
+    rules/integration/a-diagnostic-response-masks-a-resolved-credential fixes that the other operator-facing
+    read into a connector's call masks and never how; no node in the specification states any masking
+    rendering at all.
+  decided: The fixed text ***REDACTED*** put in the masked value's place — the same text for every masked
+    value, whichever credential it came from and however long that value was.
+  why: A rendering that varied with the credential's name, the value's length or its content would disclose
+    in the shape of the mask a part of what masking exists to withhold, so one fixed text is the only form
+    that withholds whole; and a mask indistinguishable from content would be read as a literal the call
+    carried, which is why the text is bracketed by asterisks and names itself in English rather than being a
+    bare string. ***REDACTED*** rather than some other constant because this system's only other
+    operator-facing read into a connector's call already puts exactly that text in a resolved credential's
+    place in what has been delivered (src/src/http/test-connector.controller.ts,
+    REDACTED_CREDENTIAL_MARKER), and the decision that brought this rule into being refused to publish two
+    answers to one question about one secret — an operator who meets the same mark on both reads learns the
+    withholding once, while two renderings would leave them deciding which one means withheld.
+- location: rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation.md
+  field: statement
+  unstated: domain/investigation/evidence declares observation a required string and
+    rules/investigation/an-observation-is-recorded-as-json-object-text fixes its content only for an item
+    that ended ok; domain/investigation/evidence-result already holds what a reader may take from a non-ok
+    item's observation — only ok carries a usable one, the other three being facts about the attempt —
+    while no node states what that required string itself records when the result is a timeout, a denial
+    or an unavailability.
+  decided: The empty JSON object text `{}` — never an empty string, never an absent value and never a
+    message or error name — from which a reader parsing it takes no observed field to read or cite, reading
+    the cause from the item's result and result_detail instead.
+  why: The observation string is parsed as one JSON object wherever it is read, so the only value that
+    keeps every item on that one parse path is a well-formed object carrying no field; an empty string or an
+    absent value would be indistinguishable from an observation never recorded, and a cause rendered into
+    the field a reader parses for observed data would be read as data the collection never returned.
+- location: rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations.md
+  field: statement
+  unstated: Whether a simulate-hypothesis call's returned record carries the run's own cost totals (calls,
+    input tokens, output tokens) and its stage durations, the same as a simulate-case call's record does —
+    contracts/investigation/case-simulation narrows simulate-hypothesis only in what it collects and judges
+    and in resolving no outcome, without saying whether the run's own totals travel with it too.
+  decided: A simulate-hypothesis call's returned record carries that run's own cost and its stage durations,
+    each covering the narrowed run alone, the same as a simulate-case call's record carries the whole run's.
+  why: domain/investigation/usage already defines cost as the total across every call an investigation or a
+    simulation made, and a simulate-hypothesis call is a simulation under that same contract;
+    domain/investigation/durations already measures total to the moment the record is assembled and, for a
+    simulation, before the answer leaves, and already holds writing absent for a run that never reaches
+    consolidation — which no run but this one ever is. The reading was already carried in three nodes'
+    own prose; this rule is where it becomes addressable rather than inferred from a narrowing's silence.
+- location: rules/investigation/a-presented-consolidation-prompt-is-shown-whole.md
+  field: statement
+  unstated: What an operator-facing surface presenting an assessment's consolidation prompt shows of that
+    prompt — whether it is shown entire or whether a value a credential placeholder resolved to is withheld
+    from within it. domain/investigation/assessment declares prompt a required string recording the prompt
+    as it materialized and says nothing of its presentation; the two masking rules that exist —
+    rules/integration/a-diagnostic-response-masks-a-resolved-credential and
+    rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked — each
+    bind a different read.
+  decided: Whole — the surface shows the consolidation prompt exactly as the assessment's own record
+    carries it, masking no resolved credential value and withholding no other part.
+  why: The masking both sibling rules carry is bounded to one text, the connector call a credential
+    placeholder resolves into, and a consolidation prompt is assembled from the narrowed writing input —
+    evaluations, the evidence their citations name and the register — rather than from a connector's call,
+    so that restraint has nothing here to act on, while masking a prompt against the chance that it might
+    would show the curator a text the writing call never received and destroy the one thing a materialized
+    prompt is kept for.
 
 ---
 
@@ -6737,12 +6923,12 @@ attributes:
 
 ## Description
 
-One field a capability's own output schema declares, read structurally from that schema's own top-level `properties` object: the key names the field, and its own `type` and `description`, where the schema states them, are read as this field's declared semantics.
+One field a capability's own output schema declares, its own name the path rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads for it, and its own `type` and `description`, where the schema states them at the node that path reaches, read as this field's declared semantics.
 No other content of that schema is read or validated — an operator's own hint, never enforced.
 
 ## Responsibility
 
-Carry one field's name and, where the schema declares them, its type and description, snapshotted onto the evidence item that names it.
+Carry one field's own name and, where the schema declares them, its type and description, snapshotted onto the evidence item that names it.
 
 === domain/investigation/hypothesis-evaluator
 ---
@@ -7472,7 +7658,7 @@ constrains:
 
 ## Description
 
-The output schema already lives by this same convention — a top-level properties object, its keys the field names a citation may name — but only by an inference this specification discloses, never checked at registration, because nothing yet reads an output schema's own content to decide anything at write time.
+The output schema already lives by a related convention — a `properties` object at its own root, read recursively through every `properties` object and `items` schema reachable beneath it (rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema), the field names a citation may name — but only by an inference this specification discloses, never checked at registration, because nothing yet reads an output schema's own content to decide anything at write time.
 This rule is that same convention, now declared and enforced for the input schema alone: a properties key names one subject attribute the capability uses, and required names which of those it cannot observe without. An empty properties object is a valid declaration on its own — a capability whose connector reads nothing from the subject, only a credential or the requester, declares no attribute and requires none.
 Distinct from a-capability-declares-well-formed-schemas, which only ever asks whether the text parses: a schema that parses and still holds no properties object, or a required naming a key properties does not hold, is well-formed JSON and malformed all the same, and this rule is what catches it.
 A capability registered before this rule existed, whose stored input schema does not hold this shape, is read as declaring properties and required both empty — malformed is nothing declared, never a fault at read — the same posture a-capability-declares-well-formed-schemas already gives a schema that fails to parse at all, wherever anything reads a schema's content.
@@ -10490,22 +10676,27 @@ type: policy
 statement: >-
   A surface offering an operator entry of the output schema a capability registration
   declares states, at that entry, what the system reads out of what is entered there: that
-  it is entered as JSON; that the fields it declares are the keys of that schema's own
-  top-level `properties` object; that each such key's own `type` and `description`, where
-  the schema states them, are read as that field's declared semantics; that no other
-  content of the schema is read or validated; and that a `description` entered there
-  states what a value means and names no decision.
+  it is entered as JSON; that a field's own name is the path
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads for
+  it, through that schema's own top-level `properties` object and every `properties` object
+  and `items` schema reachable beneath it; that each such node's own `type` and
+  `description`, where the schema states them, are read as that field's declared semantics;
+  that no other content of the schema is read or validated; and that a `description`
+  entered there states what a value means and names no decision.
 expression: >-
   For an operator on a surface s offering entry of the output_schema a capability
   registration declares — an authoring at an identity nothing is registered at, or an edit
   of the registration a surface read at one, alike — s states, wherever that entry stands:
-  that what is entered is JSON; that the field names read from it are the keys of its own
-  top-level `properties` object; that such a key's own declared `type` and `description`,
+  that what is entered is JSON; that the field names read from it are the paths
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema reads,
+  through its own top-level `properties` object and every `properties` object and `items`
+  schema reachable beneath it; that such a node's own declared `type` and `description`,
   where the entered schema states them, are read as that field's declared semantics; that
   nothing else in the entered schema is read or validated; and that a `description`
   entered there states what its value means and names no decision the case's own criterion
   or this specification's own rules and scenarios govern. Each of those five claims is the
-  statement of domain/investigation/field-semantics or of
+  statement of domain/investigation/field-semantics,
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, or of
   rules/glossary/a-description-states-meaning-never-policy, and s states no sixth claim
   about what an output schema is read for and carries no worked example of its own. s
   refuses no entry and checks no entered content against any of the five: what a
@@ -10520,11 +10711,11 @@ consistency: eventual
 
 ## Description
 
-An output schema is the one attribute of a capability registration whose content an operator authors freely and the system later reads structurally rather than storing whole: `domain/investigation/field-semantics` reads one field per key of that schema's own top-level `properties` object, with that key's own `type` and `description` as the field's declared semantics, and reads nothing else in it — "an operator's own hint, never enforced". No node stated whether the operator authoring it learns that at the moment of authoring. Left unstated, the one person whose typing decides what every later citation may name (`a-cited-field-exists-in-the-capability-output-schema`) learns which part of their text is load-bearing only by having a registration come back wrong, or never.
+An output schema is the one attribute of a capability registration whose content an operator authors freely and the system later reads structurally rather than storing whole: `domain/investigation/field-semantics` reads one field per node its own path reaches, walking every `properties` object and `items` schema the top-level `properties` object leads to, with that node's own `type` and `description` as the field's declared semantics, and reads nothing else in it — "an operator's own hint, never enforced". No node stated whether the operator authoring it learns that at the moment of authoring. Left unstated, the one person whose typing decides what every later citation may name (`a-cited-field-exists-in-the-capability-output-schema`) learns which part of their text is load-bearing only by having a registration come back wrong, or never.
 
-The statement is owed at the entry rather than left out, because nothing else in the system tells the operator this and nothing refuses them for getting it wrong. `a-capability-declares-well-formed-schemas` asks only whether the text parses, and `a-capability-input-schema-holds-a-well-formed-object` records that the output schema's `properties` convention holds "only by an inference this specification discloses, never checked at registration" — so a schema declaring its fields somewhere other than a top-level `properties` object is accepted whole and reads, downstream, as no fields at all. That is silence at a surface, which this specification has refused wherever it has met it: `a-composed-subject-presents-every-case-input-requirement` states an empty requirements read to the composer explicitly rather than leaving an unexplained absence, and `a-submitted-registration-states-its-outcome-to-the-operator` states an outcome the operator could not otherwise infer from the surface they stand on. Here the unstated thing is upstream of both — not what happened, but what the entry is for.
+The statement is owed at the entry rather than left out, because nothing else in the system tells the operator this and nothing refuses them for getting it wrong. `a-capability-declares-well-formed-schemas` asks only whether the text parses, and `a-capability-input-schema-holds-a-well-formed-object` records that the output schema's `properties` convention holds "only by an inference this specification discloses, never checked at registration" — so a schema declaring its fields somewhere other than a `properties` object reached this way is accepted whole and reads, downstream, as no fields at all. That is silence at a surface, which this specification has refused wherever it has met it: `a-composed-subject-presents-every-case-input-requirement` states an empty requirements read to the composer explicitly rather than leaving an unexplained absence, and `a-submitted-registration-states-its-outcome-to-the-operator` states an outcome the operator could not otherwise infer from the surface they stand on. Here the unstated thing is upstream of both — not what happened, but what the entry is for.
 
-Whether what this surface states is bounded to what the two nodes above already hold, adding nothing, is `an-output-schema-entrys-statement-carries-no-sixth-claim`'s own.
+Whether what this surface states is bounded to what the three nodes above already hold, adding nothing, is `an-output-schema-entrys-statement-carries-no-sixth-claim`'s own.
 
 Nothing about any element changes and no hint comes into the specification. `domain/knowledge/case-input-requirement`'s standing decision keeps a property's own declared `type` and `description` outside what any element carries — presentation guidance for whoever displays an entry, never part of what the entry states — and this decides only what a surface says to the person doing the entering, carrying no schema content anywhere.
 
@@ -10537,9 +10728,11 @@ Consistency is eventual because the surface holds nothing this statement is true
 type: policy
 statement: >-
   Every claim an-output-schema-entry-states-what-the-system-reads-from-it makes is one
-  domain/investigation/field-semantics or rules/glossary/a-description-states-meaning-never-policy
-  already holds — the surface states no further fact about how the schema is read, carries no
-  worked example of its own, and refuses nothing on any of these grounds.
+  domain/investigation/field-semantics,
+  rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, or
+  rules/glossary/a-description-states-meaning-never-policy already holds — the surface states no further
+  fact about how the schema is read, carries no worked example of its own, and refuses nothing on any of
+  these grounds.
 constrains:
   - domain/integration/capability
   - domain/investigation/field-semantics
@@ -10548,7 +10741,7 @@ consistency: eventual
 
 ## Description
 
-What the statement says is bounded by the two nodes that already hold it, and adds nothing. The distinction between meaning and decision is part of what to enter, not a separate lesson: a `description` is published vocabulary, and `a-description-states-meaning-never-policy` holds that one naming a decision is a second home for a fact the specification places elsewhere — an operator typing it into a schema is exactly how that second home gets made, and the entry is the one place where saying so prevents it rather than reporting it. The surface stating those facts is not itself a home for them: it states them as guidance drawn from the nodes that hold them, which is why it carries no worked example of its own and states no sixth claim — the example illustrating meaning against decision belongs to the node that draws the distinction, and a surface carrying its own would be a fact of the business living in a screen.
+What the statement says is bounded by the three nodes that already hold it, and adds nothing. The distinction between meaning and decision is part of what to enter, not a separate lesson: a `description` is published vocabulary, and `a-description-states-meaning-never-policy` holds that one naming a decision is a second home for a fact the specification places elsewhere — an operator typing it into a schema is exactly how that second home gets made, and the entry is the one place where saying so prevents it rather than reporting it. The surface stating those facts is not itself a home for them: it states them as guidance drawn from the nodes that hold them, which is why it carries no worked example of its own and states no sixth claim — the example illustrating meaning against decision belongs to the node that draws the distinction, and a surface carrying its own would be a fact of the business living in a screen.
 
 Refusing nothing here is the same reading: what a registration is refused for stays `a-capability-declares-its-contract`'s and `a-capability-declares-well-formed-schemas`' own, and this surface promises no check neither of them performs.
 
@@ -10959,6 +11152,21 @@ Everything an-unresolvable-observation-ends-unavailable already treats as a per-
 An attribute a case-input-requirement leaves optional never enters this refusal: absent, the observation asking for it degrades to unavailable on its own (an-unresolvable-observation-ends-unavailable), never blocking the rest of the diagnose.
 The test of one connector configuration through a registered capability (a-connector-configuration-is-tested-through-a-registered-capability) is not held to this refusal: it exists to diagnose exactly this seam between a subject and a capability's own call, and the resolver's own unresolved-placeholder answer, surfaced raw, is its diagnosis.
 
+=== rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+---
+type: invariant
+statement: A field-semantics element's own name is the path a capability's output schema's `properties` object is walked to reach it, built by concatenating, in the order the walk reaches them, each object's own key onto its parent's own path with a `.` -- a key at the schema's own root naming a field by that key alone, with no leading `.` -- and each array's own `items`, where that `items` is itself one schema, onto its parent's own path with `[]` before any name reached beneath it; that path, and, where the schema states them at the node the path reaches, that same node's own `type` and `description`, are what one field-semantics element carries, for every node the walk reaches and not only its leaves; an `items` declared as more than one schema is walked no further, naming no field beneath it, and a node's own `patternProperties` or `additionalProperties` is not walked and names no field of its own, whichever content either declares.
+constrains:
+  - domain/investigation/field-semantics
+---
+
+## Description
+
+This is the fact rules/investigation/a-cited-field-exists-in-the-capability-output-schema and constraints/the-judgment-prompt-is-closed both read domain/investigation/field-semantics through: before this rule, the walk stopped at the schema's own root, so a field declared only beneath an array's own `items` -- `installations[].state`, say -- was never a field-semantics element at all, and no citation could ever name it, however plainly the schema declared it nested.
+An `items` schema is walked exactly as a `properties` object's own value already was, because domain/integration/capability already reads an output schema structurally and never validates it -- nothing about walking one level of nesting differs from walking another.
+A tuple-shaped `items` and a dynamically-keyed `patternProperties` or `additionalProperties` are decided unsupported rather than left to guess at, because no output schema this specification's own material or the registry's own stored capabilities show declares either -- deciding a shape nothing exercises would be inventing a case, not reading one. The value such a node holds, where a schema declares one, is still read into the observation domain/investigation/evidence carries and stays legible to a judgment reading that observation directly; only a citation naming it by a field-semantics name of its own is unavailable, exactly as rules/investigation/a-cited-field-exists-in-the-capability-output-schema already leaves inconclusive whatever no field grounds.
+This rule does not reach how a connector configuration's own responseMap addresses a position in a response body already returned, nor how many of a capability's own output schema properties a responseMap's own keys must name: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches and rules/integration/a-connector-configuration-surface-states-which-response-map-keys-a-registered-capability-reads hold those, over that schema's own top-level properties alone, and neither widens with this one.
+
 === rules/investigation/a-judgment-failure-records-the-last-call-made
 ---
 type: invariant
@@ -11008,6 +11216,44 @@ The block costs a bounded wait rather than a lock — a simulation runs the same
 Keyed by the operation and the subject together: simulate-case and simulate-hypothesis answer two different questions about one case version, and a curator watching one has no reason to be shut out of the other; a second subject composed on another screen is a different subject and blocks nothing.
 This is not a refusal the contract answers. No request is issued, so nothing at contracts/investigation/case-simulation ever sees the suppressed attempt, and no status or error name belongs to it — unlike a refusal the specification does state, which is always a request that reached the operation.
 
+=== rules/investigation/a-presented-consolidation-prompt-is-shown-whole
+---
+type: invariant
+statement: An operator-facing surface presenting an assessment's consolidation prompt shows that prompt whole, exactly as that assessment's own record carries it, masking no value a credential placeholder resolved to and withholding no other part of it.
+constrains:
+  - domain/investigation/assessment
+---
+
+## Description
+
+The prompt stands on the operational side of the one disclosure boundary this specification draws: rules/investigation/the-customer-sees-only-the-text keeps everything but the assessment's text from the end customer, and contracts/investigation/case-simulation faces that same withheld detail at the curator instead, the assessment among it. rules/investigation/a-simulation-session-retains-its-runs-and-shows-one fixes which record a shown run's assessment is drawn from; how much of the prompt inside it a surface then shows is this rule's own question, and the answer is all of it — a materialized prompt is the only statement of what the writing call was actually given, and a curator reading an unexpected text against a partial prompt is reading it against a text no call ever received.
+
+Nothing is held back, because nothing here is what the two sibling restraints hold back. rules/integration/a-diagnostic-response-masks-a-resolved-credential and rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked each keep one value out of one text — the connector call a credential placeholder resolves into, from configuration the connector reads from the environment rather than from anything a curator authors — and a consolidation prompt is not that text: constraints/the-consolidation-prompt-is-closed admits the required hypotheses' evaluations, the evidence their citations name and the case's own register, the narrowed writing input rules/investigation/the-writing-input-is-narrowed fixes, never a connector's own assembled call.
+
+Where a resolved credential value could reach such a prompt at all, that is a question about what a consolidation prompt may carry, which constraints/the-consolidation-prompt-is-closed governs, and never a reason for this surface to show a curator a prompt other than the one that ran; masking a prompt against the chance of a value it was never shown to hold would cost the fidelity the record is kept for and buy no secrecy the prompt's own closure does not already owe.
+
+=== rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked
+---
+type: invariant
+statement: >-
+  An operator-facing surface presenting a collected evidence item shows that item's inputs
+  — the serialized inputs the collection was issued with — masking whatever value a
+  credential placeholder resolved to within them by putting the fixed text `***REDACTED***`
+  in that value's place, the same text for every masked value whichever credential it came
+  from and however long the value was, so the operator reads what was asked of the
+  capability and never a credential's real value.
+constrains:
+  - domain/investigation/evidence
+---
+
+## Description
+
+An observation read without what was asked for it is half a record: the same operator who can see that a collection returned ok, at which instant and under which semantics cannot tell, from the observation alone, which subject attributes and which arguments the call actually carried, and so cannot tell an honest answer to the wrong question from a wrong answer to the right one. contracts/investigation/case-simulation already faces the whole record at the curator — evidence per concept among it — and rules/investigation/the-customer-sees-only-the-text already fixes that this operational detail faces the operation and not the end customer, so inputs are shown rather than dropped, on the same surface and beside the same item.
+What is withheld is one part and only one: a connector's call may embed a placeholder naming a credential the connector reads from environment configuration rather than from any operator-editable text, and rules/integration/an-unreachable-connector-ends-unavailable already records that the resolved call's own text may hold what such a placeholder resolved to. rules/integration/a-diagnostic-response-masks-a-resolved-credential holds exactly that value out of the other read this system offers an operator into a connector's call; a presented evidence item's inputs are the second such read, and they carry the same restraint rather than a second answer to one question.
+Masking replaces the resolved value and never the field that held it, so the shape of what was issued stays legible; an item whose inputs carry no credential value is shown whole, and an item recorded with empty inputs shows that emptiness, the same honest degradation the record itself already carries elsewhere.
+What stands in the withheld value's place is one fixed text and the same one every time. A rendering that followed the value — its length, its first or last characters, the credential's own name — would hand back in the shape of the mask a part of exactly what the mask exists to withhold, and a rendering an operator cannot tell apart from content would turn an honest withholding into a record read as if the call had carried that literal. `***REDACTED***` is neither: it is not the shape of any credential and not the shape of the `${credential:<name>}` placeholder that rules/integration/a-connector-configuration-placeholder-is-written-in-one-of-three-forms admits, so the operator reading inputs sees at once that a value was held back there and which field held it.
+rules/integration/a-diagnostic-response-masks-a-resolved-credential fixes that its own read masks and fixes no rendering for it, so the text stated here diverges from no rendering this specification already holds; whether that read's response carries this same text stays that rule's own question, and this rule claims nothing about it.
+
 === rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
 ---
 type: policy
@@ -11021,6 +11267,22 @@ consistency: eventual
 ## Description
 
 `simulate-hypothesis` narrows its run to one hypothesis named by the request; a name the pinned case version's manifest currently holds no entry for is not an ordinary empty result the caller could read as though something answered to it, but a refusal of its own — the same distinction `a-case-read-by-an-unknown-slug-or-version-is-refused`, `a-connector-configuration-read-by-an-unregistered-name-is-refused` and `a-glossary-read-by-an-unheld-name-is-refused` already draw for a miss elsewhere in this specification.
+
+=== rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations
+---
+type: invariant
+statement: A simulate-hypothesis call's returned record carries that run's own cost and its stage durations, each covering the narrowed run alone, the same as a simulate-case call's record carries the whole run's.
+constrains:
+  - domain/investigation/cost
+  - domain/investigation/durations
+---
+
+## Description
+
+contracts/investigation/case-simulation states what `simulate-case` hands back — evidence per concept, evaluation per hypothesis, the resolved outcome, the assessment, cost and durations — and narrows `simulate-hypothesis` in two named respects only: what is collected and judged, and that no outcome is resolved. The run's own totals are not among the narrowings, and this rule is where that reading is addressable rather than inferred from a narrowing's silence.
+Nothing here is new. domain/investigation/usage already defines cost as the total across every call an investigation or a simulation made, and a `simulate-hypothesis` call is a simulation under that same contract; domain/investigation/durations already measures total to the moment the record is assembled and, for a simulation, before the answer leaves, and already holds writing absent for a run that never reaches consolidation — which no run but this one ever is.
+Covering the narrowed run alone is what the two value-objects mean here: the cost totals the judgment call that one named hypothesis revision provoked and no consolidation call, since none is made, and the durations carry collection, judgment and total, with writing absent by domain/investigation/durations' own conditional presence rather than by anything this rule adds.
+rules/investigation/a-simulation-session-retains-its-runs-and-shows-one presents every part of a shown run, cost and durations alike, from that run's own returned record; a hypothesis run whose record carried neither would leave that surface nothing to present and nothing honest to say instead.
 
 === rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
 ---
@@ -11070,6 +11332,30 @@ consistency: eventual
 ## Description
 
 A curator judges a simulation result against the case content it was run against, not against whatever that content has since become; editing the version or a hypothesis it manifests, after a result was already shown, is exactly the gap this closes. The rule names no mechanism for detecting the change — hashing, timestamps, a version counter — because none of those is a fact the specification decides; it is free to name the coarsest safe answer (every return from editing) or a finer one, provided a real change is never missed.
+
+=== rules/investigation/a-simulation-session-retains-its-runs-and-shows-one
+---
+type: policy
+statement: A curator's simulation surface retains the runs made during a session and shows one of them
+  at a time, presenting every part of the shown run — its evidence, its evaluations, its assessment, its
+  cost and its durations alike — from that run's own returned record, so that selecting an earlier run
+  from the session's history presents that run's record in place of the one shown.
+constrains:
+  - domain/investigation/evidence
+  - domain/investigation/evaluation
+  - domain/investigation/assessment
+  - domain/investigation/cost
+  - domain/investigation/durations
+consistency: eventual
+---
+
+## Description
+
+A simulation writes no investigation, emits no event and lets nothing it collects reach a cache (rules/investigation/a-simulation-writes-no-investigation), so the record a run returns is the only account of that run that will ever exist: the moment the surface drops it, nothing anywhere can answer what that run collected, what it judged, what it cost or how long it took. Keeping the session's runs is what lets a curator compose a subject, run it, change one attribute, run it again and read the two against each other — the comparison the curator's own entry to the engine exists for (contracts/investigation/case-simulation).
+
+Presenting the shown run from its own record is the load-bearing half. A surface that lists runs but draws what it shows from whatever the most recent call returned states, of the run named beside those figures, something that run never returned — evidence a later call collected, a cost no part of it incurred, a consolidation prompt it never sent. The honesty rules/investigation/presentation-reads-the-evidence-snapshot demands of one evidence item against a live registry is the same demand made here of a whole run against its siblings.
+
+The retention is the session's and no store's: nothing outlives the curator leaving, and nothing retained here is ever read back into a later collection — a retained run is a record on a screen, never a cached observation (scenarios/investigation/a-simulation-never-enters-the-cache). The history named here is the one rules/investigation/a-simulation-result-is-stale-once-its-source-changes already reads a shown result as coming from, and the result its scenarios mark stale is whichever run this rule has the surface showing.
 
 === rules/investigation/a-simulation-writes-no-investigation
 ---
@@ -11157,6 +11443,50 @@ ticket_ref is optional: not every diagnose call carries a ticket (domain/investi
 An empty string correlates with nothing, so admitting it as a value would leave two encodings of the same nothing — a record holding no ticket reference and a record holding an empty one — that an audit would have to distinguish while neither reaches a ticket.
 This is the reading the specification already gives an empty attribute elsewhere: a-capability-declares-its-contract calls an attribute that is absent or an empty string undeclared, a-connector-configuration-names-its-connector treats an empty string as no name at all, and a-diagnosed-subject-covers-its-cases-required-attributes and a-simulation-carries-its-requester each read "or an empty one" as the absence of the value.
 Unlike those, ticket_ref is optional, so the reading ends at absence rather than at a refusal: nothing is missing when a call carries no ticket.
+
+=== rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object
+---
+type: invariant
+statement: >-
+  An evidence item whose collection sent no inputs at all — because the capability it ran asked for
+  none, or because the attempt ended before anything reached the connector — records its inputs as the
+  empty JSON object text `{}`, never an empty string, never an absent value and never an invented
+  parameter.
+constrains:
+  - domain/investigation/evidence
+---
+
+## Description
+
+domain/investigation/evidence declares inputs a required string, which pins what was asked of the connector so the same ask can be replayed and so the evidence cache can be keyed by it; a string leaves open what is recorded when there was nothing to ask, and a call carrying no parameter is an ordinary outcome rather than a failure to record one.
+
+The empty object is what was actually sent, expressed the same way a populated ask is: a reader replaying the item replays a parameterless call without first testing whether the recorded text is a payload at all, and the cache key that folds inputs in gets one definite value for every such collection instead of one value per collector's idea of nothing.
+
+An empty string would not carry that: it is indistinguishable from an item whose inputs were never recorded, so a reader meeting it learns nothing about whether the call was parameterless or the record incomplete — the same confusion between an honest emptiness and an unrecorded fact that domain/investigation/evidence's own readings for its snapshotted semantics exist to prevent.
+
+This fixes what is recorded, never what any reader does with it: an item that sent no inputs still ends exactly as its own result states, and nothing here refuses, degrades or re-collects it.
+
+=== rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation
+---
+type: invariant
+statement: >-
+  An evidence item whose result is timeout, denied or unavailable records its observation as the empty
+  JSON object text `{}` — never an empty string, never an absent value and never a message, an error
+  name or any other rendering of the cause — so a reader parsing it finds no observed field to read or
+  cite and learns what happened from that item's own result and result_detail instead.
+constrains:
+  - domain/investigation/evidence
+---
+
+## Description
+
+domain/investigation/evidence declares observation a required string, and rules/investigation/an-observation-is-recorded-as-json-object-text fixes what that string holds only for an item that ended ok, deliberately leaving the other three endings outside itself. domain/investigation/evidence-result already holds what such an item is worth to a reader — the attempt's own fact rather than a usable observation — but the field is required all the same, and a required field with no decided value is filled by whoever writes the record next.
+
+The empty object is that value, for the reason rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object already gives for the sibling string on this same element: one definite text for every collection that observed nothing, instead of one text per collector's idea of nothing, and one parse rather than a test of whether the recorded text is a payload at all. An empty string would not carry that — it is indistinguishable from an item whose observation was never recorded, so a reader meeting it cannot tell an honest emptiness from an incomplete record, the same confusion the element's own readings for its snapshotted semantics exist to prevent.
+
+What a reader takes from it follows from the shape: parsing yields an object with no field, so no field name domain/investigation/field-semantics snapshots is present, nothing is citable from the item, and the account of what happened is read from result and result_detail — where rules/integration/an-unresolvable-observation-ends-unavailable, rules/integration/an-unreachable-connector-ends-unavailable and rules/integration/an-unclassified-status-ends-unavailable each already put their cause. A cause written into observation instead would sit in exactly the text a judgment and an operator-facing presentation parse for what was observed, and prose explaining the absence of data would be read as data the collection never returned.
+
+This fixes what is recorded and nothing else: an item that observed nothing still ends exactly as its own result states, nothing here refuses, degrades or re-collects it, and constraints/the-evidence-cache-admits-only-ok-results keeps every such item out of the cache regardless.
 
 === rules/investigation/an-evidence-items-observed-at-is-a-utc-instant
 ---
@@ -11363,7 +11693,7 @@ A draft exists to be composed and previewed while it is still incomplete or unde
 === rules/investigation/presentation-reads-the-evidence-snapshot
 ---
 type: invariant
-statement: An operator-facing surface presenting a collected evidence item shows its concept_description and its field semantics exactly as that item's own snapshot carries them; it issues no glossary or capability-registry read at presentation to enrich, refresh or substitute for that snapshot.
+statement: An operator-facing surface presenting a collected evidence item shows its concept_description, its field semantics and its capability payload notes exactly as that item's own snapshot carries them; it issues no glossary or capability-registry read at presentation to enrich, refresh or substitute for that snapshot.
 constrains:
   - domain/investigation/evidence
 ---
@@ -11371,7 +11701,8 @@ constrains:
 ## Description
 
 The same risk rules/investigation/judgment-reads-the-evidence-snapshot already closes for a hypothesis's judgment reaches a second consumer of the same record: a currently-registered concept's or capability's live description can silently diverge from what actually grounded the collected item, and a surface that quietly substitutes today's registry state for what the evidence actually snapshotted would show an operator a meaning nothing collected against.
-The snapshot domain/investigation/evidence carries — fields and concept_description — is what an operator-facing surface reads and shows instead, always; a concept collected before it declared a description shows empty, and a capability whose connector never resolved shows no fields, the same honest degradation the record itself already carries, never a live-filled substitute.
+The snapshot domain/investigation/evidence carries — fields, concept_description and capability_payload_notes — is what an operator-facing surface reads and shows instead, always; a concept collected before it declared a description shows empty, and a capability whose connector never resolved shows no fields, the same honest degradation the record itself already carries, never a live-filled substitute.
+capability_payload_notes belongs to that same snapshot and is shown the same way, for the reason rules/investigation/judgment-reads-the-evidence-snapshot already gives for admitting it to the judgment: a capability registration silently replaces whatever it already held at that name and version, so the payload notes registered today can be an account of an observation this item never made. A capability that declared none shows empty, and an observation whose capability never resolved shows that same empty string domain/investigation/evidence already records — never the notes some later or other registration happens to hold.
 
 === rules/investigation/replay-is-pinned
 ---
@@ -13554,6 +13885,24 @@ involves:
 
 The unsubmitted edit is destroyed by an apply exactly as it would be by a register-connector submission; the confirmation is the further explicit act that keeps it from vanishing on a first gesture.
 
+=== scenarios/investigation/a-citation-names-a-nested-output-schema-field
+---
+subject: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+given:
+  - a hypothesis's evidence for concept tech-profile snapshotted the fields login, installations and installations[].state from its producing capability's output schema
+when:
+  - the evaluator's response cites concept tech-profile and field installations[].state
+then:
+  - the citation is accepted
+involves:
+  - domain/investigation/citation
+  - domain/investigation/evidence
+---
+
+## Description
+
+Before rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema, installations[].state was never among an item's own snapshotted field names, so this same citation was foreign to its own evidence and refused; it grounds a decided verdict now that the path it names is one field-semantics reads.
+
 === scenarios/investigation/a-collection-timeout-degrades-to-no-data
 ---
 subject: rules/investigation/no-stage-aborts-on-its-deadline
@@ -13687,6 +14036,27 @@ involves:
 ## Description
 
 The concept this capability answers asks the composer for nothing at all; without this disclosure nothing would tell them why, and the capability would stay malformed until someone happened to notice on their own.
+
+=== scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+---
+subject: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+given:
+  - a capability tech-profile's output schema declares a top-level properties object holding login and installations, installations' own items an object whose own properties hold state
+when:
+  - an investigation collects tech-profile's concept
+then:
+  - the evidence item's fields carries a field named login
+  - the evidence item's fields carries a field named installations
+  - the evidence item's fields carries a field named installations[].state
+  - the evidence item's fields carries no field named state alone
+involves:
+  - domain/integration/capability
+  - domain/investigation/evidence
+---
+
+## Description
+
+A field state declared only beneath installations' own items is a field-semantics element of its own, named installations[].state rather than state, exactly as a field declared at the schema's own root always was.
 
 === scenarios/investigation/a-queued-judgment-is-deadline-exceeded
 ---

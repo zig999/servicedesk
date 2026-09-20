@@ -1,0 +1,127 @@
+findings:
+  - file: src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+    where: >-
+      the assertions inside "states that multiple evidence items are evaluated in complete
+      isolation, never attributing one item's field value to another even where both declare
+      a field of the same name", lines 217-219
+    evidence: |
+      expect(system).toContain('evaluate each in complete isolation from every other');
+      expect(system).toContain('is never attributed to another item, even where two items declare a field of the same name');
+    cost: >-
+      This guarantee — that the judgment must never let one evidence item's field value ground
+      a verdict about another item, even where two items share a field name — is stated only in
+      the adapter's own system prompt and pinned only by this test. Nothing in the specification
+      records that a hypothesis's judgment treats each evidence item in isolation this way, unlike
+      the neighboring prompt facts (observation is JSON text, the current instant is read fresh,
+      the block is closed) which the decision log shows were each deliberately decided. A reader
+      checking whether this cross-item guarantee still holds after a future prompt rewrite has no
+      node to check it against, and the adapter's own prose is the only place the rule can be read
+      back from.
+    kind: unstated
+    correction: >-
+      Decide, as an invariant constraining domain/investigation/hypothesis-evaluator (the same
+      home judgment-reads-the-current-instant-fresh was given for this prompt), that a hypothesis's
+      judgment reads each evidence item's own field values independently of every other item's,
+      and record why in the decision log.
+
+read:
+  - node: domain/investigation/evaluation
+    held_at: >-
+      the outcome-shape assertions across the confirmed/refuted/no-data cases, e.g. lines 747-749
+      and 809-821
+    evidence: |
+      expect(outcome).toMatchObject({ verdict: 'confirmed', citations: [citation], usage: { input_tokens: 77, output_tokens: 88 } });
+      expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+      expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: >-
+      "measures elapsed_ms as the real wall-clock time the provider call itself took, rather than
+      a fixed value", lines 784-792 — this exercises genuine measurement rather than an invented
+      figure, though no case here exercises a call settling in under one millisecond, so the
+      zero-floor half of the rule is not itself exercised in this file
+    evidence: |
+      createMock.mockImplementationOnce(
+        () => new Promise((resolve) => setTimeout(() => resolve(messageWithText('{"verdict":"inconclusive"}')), 20)),
+      );
+      expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(20);
+  - node: domain/investigation/field-semantics
+    held_at: >-
+      the field-rendering tests, e.g. lines 334-335 and 363-364
+    evidence: |
+      expect(itemOne).toContain('<field name="field-one" type="string">field-one description</field>');
+      expect(itemOne).toContain('<field name="field-two"></field>');
+  - node: domain/investigation/evidence
+    held_at: the SOME_OK_EVIDENCE fixture and every inline evidence item literal, e.g. lines 36-47
+    evidence: |
+      { concept: 'concept-one', result: 'ok', observation: 'an-observed-value',
+        fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
+        concept_description: 'what concept-one means', capability_payload_notes: '',
+        observed_at: '2024-01-01T00:00:00.000Z', ttl: 60 }
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: >-
+      "renders a path-shaped field name exactly as its own evidence item carries it", lines 367-387
+    evidence: |
+      fields: [{ name: 'installations[].state', type: 'string', description: 'the installation state' }]
+      expect(content).toContain('<field name="installations[].state" type="string">the installation state</field>');
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: >-
+      the same path-shaped field-name test, lines 367-387 — this only exercises rendering an
+      already-nested name unsplit, not the schema-walk that produces it
+    evidence: |
+      expect(content).toContain('<field name="installations[].state" type="string">the installation state</field>');
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-hypothesis-evaluator.adapter.js';
+      — this file exercises the adapter itself rather than auditing the domain layer's own imports.
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: >-
+      "declares no tools field on the provider request", line 556, and the closed-block marker
+      test, lines 250-262
+    evidence: |
+      expect(Object.hasOwn(params ?? {}, 'tools')).toBe(false);
+      expect(content).toContain('<judgment_input>');
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the per-item observed_at/ttl/fields/concept_description/capability_payload_notes rendering
+      tests, e.g. lines 301-306 and 460-461
+    evidence: |
+      expect(itemOne).toContain('<ttl>30</ttl>');
+      expect(itemOne).toContain('<observed_at>2023-01-01T00:00:00.000Z</observed_at>');
+  - node: domain/investigation/citation
+    held_at: >-
+      the field-presence/absence tests, lines 94-97 and 108-110
+    evidence: |
+      expect('field' in citation!).toBe(false);
+      expect(citation).toEqual({ concept: 'concept-timeout' });
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: >-
+      expect(outcome).toMatchObject({ verdict: 'confirmed', citations: [citation] }); — the
+      model's citation is passed through untouched; no assertion here checks the field against
+      the evidence item's own snapshotted field names.
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: nowhere
+    evidence: >-
+      expect(outcome).toMatchObject({ verdict: 'refuted', citations: [citation] }); — no test in
+      this file exercises a citation naming a concept outside the evaluated evidence.
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: nowhere
+    evidence: >-
+      the same pass-through citation handling as above; the schema-membership acceptance this
+      scenario describes is exercised against citation-validation.ts, not this adapter.
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      this file imports only the AnthropicHypothesisEvaluator adapter and its port types; no
+      HTTP connector, responseMap or output-schema-derived observation construction appears here.
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: nowhere
+    evidence: >-
+      same as above — this file concerns judgment over already-collected evidence, not
+      observation collection from a connector's response.
+
+looked_past: >-
+  The defaulted token ceiling (1024), the caller-configurable model and maxTokens, and the
+  ANTHROPIC_API_KEY environment fallback are adapter configuration for the Anthropic SDK call
+  itself, not domain facts the specification governs, so they are not reported as findings here.

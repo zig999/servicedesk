@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "kind": "implementation",
+      "file": "implementation/no-data-citation-field-check-fix/fieldless-citation-accepted.md",
+      "title": "Fieldless citation no longer rejected as an undeclared field",
+      "summary": "citesADeclaredField in citation-validation.ts now accepts a citation that carries no field, once its cited evidence item is found, instead of failing the unconditional field-name match.",
+      "task": "task/no-data-citation-field-check-fix/fieldless-citation-accepted"
+    },
+    {
+      "id": "proof/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "kind": "proof",
+      "file": "proof/no-data-citation-field-check-fix/fieldless-citation-accepted.md",
+      "title": "Fieldless citation acceptance in citesADeclaredField",
+      "summary": "Two new unit tests cover a fieldless citation being accepted whatever fields its cited evidence item snapshotted, and the pre-existing field-mismatch test continues to cover a named-field citation's refusal; the verdict-conditioned half of both cited nodes remains outside what isCitationValid's signature can decide and is left unproven.",
+      "task": "task/no-data-citation-field-check-fix/fieldless-citation-accepted"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "to": "task/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "to": "implementation/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+read:
+  - node: domain/investigation/field-semantics
+    held_at: >-
+      the `fieldsDeclaring` helper (lines 34-36) and every test's `fields:` array built from it
+    evidence: |-
+      function fieldsDeclaring(...names: readonly string[]): readonly FieldSemantics[] {
+        return names.map((name) => ({ name }));
+      }
+  - node: domain/investigation/evidence
+    held_at: >-
+      the `anEvidence` helper (lines 16-32), constructing one Evidence object per test with all of the node's attributes
+    evidence: >-
+      inputs: 'an-input', observation: 'an-observation', observed_at: '2024-01-01T00:00:00.000Z', ttl: 60, origin:
+      'a-connector', result: 'ok', capability_name: `capability-for-${overrides.concept}`, capability_version:
+      '1.0.0', elapsed_ms: 12, fields: [], concept_description: '', capability_payload_notes: '',
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: >-
+      the tests at lines 130-168, which use bracket-path field names built the way the rule names them
+    evidence: >-
+      fields: fieldsDeclaring('login', 'installations', 'installations[].state') ... const citation: Citation = {
+      concept: 'tech-profile', field: 'installations[].state' };
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: nowhere
+    evidence: >-
+      the `fieldsDeclaring` helper builds each FieldSemantics element directly from a literal name
+      (`names.map((name) => ({ name }))`); this file never walks an output schema to derive a nested path, it only
+      consumes fixture field names already shaped like the scenario's outcome
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: |-
+      import { readFile } from 'node:fs/promises';
+      import { fileURLToPath } from 'node:url';
+      import { expect, it } from 'vitest';
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: >-
+      the file exercises only isCitationValid, acceptedCitations, parseJsonOrUndefined and isPlainObject; no test
+      assembles or inspects a judgment prompt
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: >-
+      the test at lines 96-109 (payload-notes text does not widen citation vocabulary) and the module-source test at
+      lines 174-180 (no live-resolved output-schema map remains)
+    evidence: >-
+      capability_payload_notes: 'the response actually nests the code under a field named raw_status', ...
+      expect(isCitationValid(context, citation)).toBe(false); ... expect(source).not.toMatch(/outputSchemas/);
+  - node: domain/investigation/citation
+    held_at: >-
+      every `Citation` literal built across the tests, e.g. line 45
+    evidence: >-
+      const citation: Citation = { concept: 'a-foreign-concept', field: 'a-field' };
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: the test at lines 50-59
+    evidence: >-
+      const citation: Citation = { concept: 'a-collected-concept', field: 'an-undeclared-field' };
+
+      expect(isCitationValid(context, citation)).toBe(false);
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: the tests at lines 38-48 and 158-168
+    evidence: >-
+      const citation: Citation = { concept: 'a-foreign-concept', field: 'a-field' };
+
+      expect(isCitationValid(context, citation)).toBe(false);
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: the test at lines 130-142
+    evidence: >-
+      const citation: Citation = { concept: 'tech-profile', field: 'installations[].state' };
+
+      expect(isCitationValid(context, citation)).toBe(true);
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      the file imports only Citation, Evidence and FieldSemantics types; no test constructs a connector
+      configuration or a responseMap, so this rule's fact plays no part here
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: nowhere
+    evidence: >-
+      no test in this file constructs a connector configuration, a responseMap key or a response body — the
+      scenario's fact is not exercised here
+looked_past: >-
+  The `anEvidence` helper's flat `capability_name`/`capability_version` fields mirror the `Evidence` type already
+  declared in evidence.ts, which models the capability pin as two scalar attributes rather than
+  domain/investigation/evidence's single `reference` relationship (cardinality "1") to domain/integration/capability
+  — that mismatch, if it is one, belongs to evidence.ts's own conformance reading, since this test file only
+  supplies the fields the imported type already requires.

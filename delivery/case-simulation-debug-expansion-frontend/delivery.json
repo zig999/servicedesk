@@ -1,0 +1,814 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-run-record/consolidation-debug",
+      "kind": "implementation",
+      "file": "implementation/case-run-record/consolidation-debug.md",
+      "title": "Case-level Debug block for the consolidation call's record",
+      "summary": "A Debug block under Case result, with a Prompt tab reused/parameterized from the per-hypothesis Debug, showing the shown run's consolidation prompt, token usage, elapsed_ms and register, and a shown-run selection the block reads from.",
+      "task": "task/case-run-record/consolidation-debug"
+    },
+    {
+      "id": "implementation/case-run-record/raw-payload",
+      "kind": "implementation",
+      "file": "implementation/case-run-record/raw-payload.md",
+      "title": "Case result Debug JSON tab, with resolved-credential masking",
+      "summary": "A new JSON tab on the Case result Debug block renders the shown run's whole simulate-case payload, masking any resolved credential value found inside an evidence item's inputs with the fixed text ***REDACTED*** before stringifying.",
+      "task": "task/case-run-record/raw-payload"
+    },
+    {
+      "id": "implementation/case-run-record/run-carries-its-record",
+      "kind": "implementation",
+      "file": "implementation/case-run-record/run-carries-its-record.md",
+      "title": "CaseResultRun carries its own run's durations, cost, consolidation record and payload",
+      "summary": "Widens CaseResultRun/NewCaseResultRun with the run's durations, cost, a discriminated consolidation-call record and the raw simulate-case payload, fills all of it in toNewCaseResultRun from the simulate-case response, and completes five pre-existing test fixtures that construct these types.",
+      "task": "task/case-run-record/run-carries-its-record"
+    },
+    {
+      "id": "implementation/case-run-record/run-totals",
+      "kind": "implementation",
+      "file": "implementation/case-run-record/run-totals.md",
+      "title": "Case-level Debug gains a run-totals tab",
+      "summary": "The case result Debug block adds a Totals tab presenting the shown run's own cost totals and stage durations, reading from CaseResultRun's already-carried cost and durations fields.",
+      "task": "task/case-run-record/run-totals"
+    },
+    {
+      "id": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/assessment-under-its-call.md",
+      "title": "Nest CaseResultRun's assessment inside its consolidation discriminant",
+      "summary": "outcome, referral, determiningHypothesis, text and register now live only inside CaseResultRun's consolidationCall.called-true branch (alongside usage, elapsedMs and prompt), with the production builder, both render sites, the nine pre-existing fixture builders and the run-record assertion all updated to that shape, plus one additional real reader of the type fixed for the same reason.",
+      "task": "task/conformant-record-shapes/assessment-under-its-call"
+    },
+    {
+      "id": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/evidence-semantics-always-present.md",
+      "title": "Evidence fields/concept_description are required, honest-empty snapshots everywhere",
+      "summary": "SimulateEvidenceItem, Evidence and SimulationEvidenceItem now declare fields and concept_description as required members carrying domain/investigation/evidence's honest-empty value, the two evidence-item render functions collapse their absent-vs-empty branches into one, and every fixture and assertion across the frontend that constructed or checked these two attributes -- in scope and out of it -- was repaired in lockstep so the tree still compiles and the suite still passes.",
+      "task": "task/conformant-record-shapes/evidence-semantics-always-present"
+    },
+    {
+      "id": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/hypothesis-run-cost.md",
+      "title": "SimulateHypothesisResult carries the narrowed run's own cost",
+      "summary": "SimulateHypothesisResult now declares a required cost (reusing SimulateCost) beside its durations, with writing typed as conditionally absent, and every fixture builder that constructs the type across the hooks and routes trees was extended to supply it so the frontend still type-checks.",
+      "task": "task/conformant-record-shapes/hypothesis-run-cost"
+    },
+    {
+      "id": "implementation/conformant-record-shapes/not-grounded-reason",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/not-grounded-reason.md",
+      "title": "not-grounded joins every evaluation-reason union in the case-simulation cockpit",
+      "summary": "Widens all four separately-declared evaluation-reason unions in the cockpit to admit not-grounded and adds the matching REASON_LABEL entry so a response carrying it gets a label.",
+      "task": "task/conformant-record-shapes/not-grounded-reason"
+    },
+    {
+      "id": "implementation/evidence-detail/case-evidence-display",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/case-evidence-display.md",
+      "title": "Case-level Debug Evidence tab",
+      "summary": "Adds a fourth Evidence tab to the case result Debug block, presenting one entry per evidence item the shown run collected, reusing the per-hypothesis Evidence tab's own per-item rendering (extracted into a shared component) rather than duplicating it.",
+      "task": "task/evidence-detail/case-evidence-display"
+    },
+    {
+      "id": "implementation/evidence-detail/evidence-adapter-fields",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/evidence-adapter-fields.md",
+      "title": "toDetailEvidence carries inputs, observedAt, ttl and capabilityPayloadNotes forward",
+      "summary": "SimulationEvidenceItem (DetailEvidenceItem) now declares inputs, observedAt, ttl and capabilityPayloadNotes, and toDetailEvidence copies all four straight from its argument instead of dropping them; a pre-existing local test fixture was completed to satisfy the widened type.",
+      "task": "task/evidence-detail/evidence-adapter-fields"
+    },
+    {
+      "id": "implementation/evidence-detail/evidence-wire-fields",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/evidence-wire-fields.md",
+      "title": "capability_payload_notes crosses the simulate-response wire boundary",
+      "summary": "Both simulate-response evidence types (SimulateEvidenceItem and the hypothesis-run Evidence) now declare capability_payload_notes as a required string alongside their existing required inputs, observed_at and ttl, with neither hook doing anything that would drop, convert or substitute any of the four en route to its caller.",
+      "task": "task/evidence-detail/evidence-wire-fields"
+    },
+    {
+      "id": "implementation/evidence-detail/hypothesis-evidence-display",
+      "kind": "implementation",
+      "file": "implementation/evidence-detail/hypothesis-evidence-display.md",
+      "title": "Per-hypothesis Evidence tab renders observed_at, ttl, inputs and capability payload notes",
+      "summary": "CaseSimulationDetailEvidenceTab now presents each evidence item's observed_at, ttl, inputs and capability_payload_notes, reusing the existing pretty-print and status-dot conventions rather than duplicating them.",
+      "task": "task/evidence-detail/hypothesis-evidence-display"
+    },
+    {
+      "id": "proof/case-run-record/consolidation-debug",
+      "kind": "proof",
+      "file": "proof/case-run-record/consolidation-debug.md",
+      "title": "Case-level Debug block for the consolidation call's record",
+      "summary": "New tests over the shown run's consolidation prompt, token usage, elapsed_ms and register, and over the shown-run switch and the Debug block's presence, leaving the broader shown-run rule, the assessment record whole, and the case-simulation contract unproven where no finite frontend test can decide them.",
+      "task": "task/case-run-record/consolidation-debug"
+    },
+    {
+      "id": "proof/case-run-record/raw-payload",
+      "kind": "proof",
+      "file": "proof/case-run-record/raw-payload.md",
+      "title": "Case result Debug JSON tab -- raw payload view with resolved-credential masking",
+      "summary": "Two spec files prove the JSON tab shows the shown run's whole simulate-case payload verbatim except for a resolved credential value inside an evidence item's inputs, which is masked with the fixed text ***REDACTED*** and nothing else.",
+      "task": "task/case-run-record/raw-payload"
+    },
+    {
+      "id": "proof/case-run-record/run-carries-its-record",
+      "kind": "proof",
+      "file": "proof/case-run-record/run-carries-its-record.md",
+      "title": "A run entry keeps its own returned record",
+      "summary": "toNewCaseResultRun fills the widened CaseResultRun shape from a simulate-case response, and useCaseSimulationHistory keeps each recorded run's durations, cost, consolidation record and payload isolated from the next.",
+      "task": "task/case-run-record/run-carries-its-record"
+    },
+    {
+      "id": "proof/case-run-record/run-totals",
+      "kind": "proof",
+      "file": "proof/case-run-record/run-totals.md",
+      "title": "Run totals presented in the case result Debug block",
+      "summary": "Tests the new CaseSimulationCaseResultTotalsTab and its wiring into the panel's Debug tabs, covering the run's cost, its durations (including the no-writing boundary and the total-is-not-a-stage-sum requirement), and that the shown figures follow the shown run.",
+      "task": "task/case-run-record/run-totals"
+    },
+    {
+      "id": "proof/conformant-record-shapes/assessment-under-its-call",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/assessment-under-its-call.md",
+      "title": "A run's assessment is present only where a writing call produced one -- proof",
+      "summary": "New tests establish that a shown run whose consolidation discriminant states no call happened presents a static, non-borrowed message wherever the assessment would render (panel and compare), that the false branch is expressible without any of the five fields, and every pre-existing citation confirms the nine fixture builders, the production builder and the run-record spec already carry the nested shape across the type-checked tree.",
+      "task": "task/conformant-record-shapes/assessment-under-its-call"
+    },
+    {
+      "id": "proof/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/evidence-semantics-always-present.md",
+      "title": "Evidence fields/concept_description required-member and honest-empty-render proof",
+      "summary": "Every criterion of evidence-semantics-always-present is backed by a test that fails if it stopped holding -- three new type-refusal tests pin the requiredness on all three evidence types, and the pre-existing, task-modified snapshot/adapter/render tests are cited as the proof for the passthrough, collapse and test-file criteria; neither implemented node's fact is decided whole by any test here.",
+      "task": "task/conformant-record-shapes/evidence-semantics-always-present"
+    },
+    {
+      "id": "proof/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/hypothesis-run-cost.md",
+      "title": "SimulateHypothesisResult carries the narrowed run's own cost -- proof",
+      "summary": "Tests demonstrate the cost and durations shapes SimulateHypothesisResult now declares, prove the unaltered pass-through of a response's cost through useSimulateHypothesis's onSimulate, prove the shared cockpit fixture returns a cost, and repair the one pre-existing totality assertion this task's required field legitimately falsifies.",
+      "task": "task/conformant-record-shapes/hypothesis-run-cost"
+    },
+    {
+      "id": "proof/conformant-record-shapes/not-grounded-reason",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/not-grounded-reason.md",
+      "title": "not-grounded joins every evaluation-reason union the case-simulation cockpit declares",
+      "summary": "Proves each of the four separately-declared evaluation-reason unions admits not-grounded and no stray value, that REASON_LABEL is total over exactly the domain's four causes with a wording for not-grounded distinct from the other causes, and that verdictCell resolves that reason to a label rather than an absent lookup.",
+      "task": "task/conformant-record-shapes/not-grounded-reason"
+    },
+    {
+      "id": "proof/evidence-detail/case-evidence-display",
+      "kind": "proof",
+      "file": "proof/evidence-detail/case-evidence-display.md",
+      "title": "Case result Debug Evidence tab -- proof",
+      "summary": "Tests establish that the shared per-item evidence renderer and the new case-level Evidence tab present one entry per collected item, mask a resolved credential in inputs, omit any Observation claim for a non-ok item while still surfacing its result and result_detail, render observed_at and ttl verbatim from the item, and follow the shown run's own record when an earlier run is selected.",
+      "task": "task/evidence-detail/case-evidence-display"
+    },
+    {
+      "id": "proof/evidence-detail/evidence-adapter-fields",
+      "kind": "proof",
+      "file": "proof/evidence-detail/evidence-adapter-fields.md",
+      "title": "toDetailEvidence carries inputs, observedAt, ttl and capabilityPayloadNotes through, protected end-to-end",
+      "summary": "DetailEvidenceItem's four widened fields and toDetailEvidence's verbatim pass-through of them are proven at the adapter's own unit boundary by a dedicated spec, and kept accurate at the full cockpit-hook boundary by extending four pre-existing regression tests to the widened, specification-conformant shape.",
+      "task": "task/evidence-detail/evidence-adapter-fields"
+    },
+    {
+      "id": "proof/evidence-detail/evidence-wire-fields",
+      "kind": "proof",
+      "file": "proof/evidence-detail/evidence-wire-fields.md",
+      "title": "capability_payload_notes and its unconverted siblings cross the simulate-response wire boundary",
+      "summary": "Two new spec files pin the type-level requiredness of capability_payload_notes on both wire-shaped evidence types and the unconverted, unsubstituted pass-through of capability_payload_notes, observed_at, ttl and inputs from a mocked response to each hook's caller, plus fields/concept_description/result_detail crossing the same actual response round-trip.",
+      "task": "task/evidence-detail/evidence-wire-fields"
+    },
+    {
+      "id": "proof/evidence-detail/hypothesis-evidence-display",
+      "kind": "proof",
+      "file": "proof/evidence-detail/hypothesis-evidence-display.md",
+      "title": "Per-hypothesis Evidence tab presents observed_at, ttl, inputs and capability payload notes",
+      "summary": "New tests over case-simulation-detail-evidence-tab.tsx cover the five new render obligations this task adds; criterion 6 is left to the pre-existing snapshot tests since that behavior did not change; every node the task implements is recorded untested because none is decidable whole by a test confined to this presentational component.",
+      "task": "task/evidence-detail/hypothesis-evidence-display"
+    },
+    {
+      "id": "review/case-simulation-debug-expansion-frontend",
+      "kind": "review",
+      "file": "review/case-simulation-debug-expansion-frontend.md",
+      "title": "case-simulation-debug-expansion-frontend, first review",
+      "summary": "Coverage, specification-conformance and standard-conformance over the 8 delivered tasks expanding the simulate screen's Debug surface; the captured build+suite ran clean, so no failures pass finding applies.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A run entry recorded from a simulate-hypothesis call, which resolves no assessment, carries no consolidation record rather than an invented one.",
+        "An item whose capability payload notes are empty is presented with no notes rather than with text drawn from anywhere else.",
+        "Both types declare inputs, observed_at and ttl.",
+        "CaseResultRun declares fields for the run's durations, its cost, the consolidation call's prompt, usage, elapsed_ms and register, and the whole payload the simulate call returned.",
+        "DetailEvidenceItem declares one field for each of inputs, observed_at, ttl and capability payload notes.",
+        "Each entry presents concept_description and field semantics from the item's own snapshot, issuing no glossary or capability-registry read.",
+        "Each entry presents that item's observed_at, ttl, inputs and capability payload notes.",
+        "Every existing producer of a run entry constructs the widened shape, so no call site is left building an incomplete run.",
+        "The tab presents concept_description and field semantics from the item's own snapshot and issues no glossary or capability-registry read to enrich, refresh or substitute for it.",
+        "The totals presented are the shown run's own, so selecting an earlier run in the session history presents that run's totals.",
+        "The values presented are the shown run's own, so selecting an earlier run in the session history presents that run's consolidation record.",
+        "Whatever value a credential placeholder resolved to within a presented evidence item's inputs is shown as the fixed text ***REDACTED***.",
+        "toDetailEvidence derives those four values from its argument alone, issuing no glossary read and no capability-registry read."
+      ],
+      "findings": 21
+    },
+    {
+      "id": "review/case-simulation-debug-expansion-frontend-corrections",
+      "kind": "review",
+      "file": "review/case-simulation-debug-expansion-frontend-corrections.md",
+      "title": "case-simulation-debug-expansion-frontend-corrections, first review",
+      "summary": "Coverage, specification-conformance and standard-conformance over the 4 corrective tasks (evidence-semantics-always-present, not-grounded-reason, hypothesis-run-cost, assessment-under-its-call) that fixed findings 1-4 of this initiative's own earlier review; the captured build+suite ran clean, so no failures pass finding applies.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A simulate response whose evaluation carries reason not-grounded reaches verdictCell with a label rather than an absent lookup.",
+        "CaseResultRun in src/routes/case-simulation-case-result-types.ts declares outcome, referral, determiningHypothesis, text and register only within the called true branch of its consolidation discriminant.",
+        "No branch of CaseResultRun states any of those five fields where the discriminant states that no consolidation call happened.",
+        "No call site in src/hooks/use-case-simulation-cockpit.ts or in any spec reading hypSim's result declares a hypothesis-result literal of its own to supply the new field.",
+        "No evaluation-reason union in the cockpit admits a value the specification's own enumeration does not declare.",
+        "That cost field reuses the SimulateCost already declared in src/hooks/use-simulate-case.ts rather than a second declaration of the same three members.",
+        "The durations a hypothesis run carries express writing as absent rather than as a figure, since that run reaches no consolidation call.",
+        "The frontend type-checks with no error arising from CaseResultRun in any file that declares, builds or reads one.",
+        "The frontend type-checks with no error arising from SimulateHypothesisResult in any file that declares, builds or consumes one.",
+        "The frontend type-checks with no error arising from an evaluation reason in any file that declares or consumes one.",
+        "The frontend type-checks with no error arising from fields or concept_description in any file that declares, converts or renders an evidence item.",
+        "renderConceptDescription in src/routes/case-simulation-evidence-item.tsx has one rendering for an empty concept_description and no separate rendering for an absent one.",
+        "renderFieldSemantics in src/routes/case-simulation-evidence-item.tsx has one rendering for an empty fields list and no separate rendering for an absent one.",
+        "toDetailEvidence in src/routes/case-simulation-cockpit-adapters.ts carries fields and conceptDescription from the source item with no fallback for an absent value."
+      ],
+      "findings": 10
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-run-record/consolidation-debug",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-run-record/consolidation-debug",
+      "to": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-run-record/consolidation-debug",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-run-record/consolidation-debug",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-run-record/consolidation-debug",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-run-record/consolidation-debug",
+      "to": "task/case-run-record/consolidation-debug",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-run-record/raw-payload",
+      "to": "task/case-run-record/raw-payload",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-run-record/run-carries-its-record",
+      "to": "task/case-run-record/run-carries-its-record",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-run-record/run-totals",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-run-record/run-totals",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-run-record/run-totals",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-run-record/run-totals",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-run-record/run-totals",
+      "to": "task/case-run-record/run-totals",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "to": "task/conformant-record-shapes/assessment-under-its-call",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "to": "task/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/not-grounded-reason",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/not-grounded-reason",
+      "to": "task/conformant-record-shapes/not-grounded-reason",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/evidence-detail/case-evidence-display",
+      "to": "task/evidence-detail/case-evidence-display",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-adapter-fields",
+      "to": "task/evidence-detail/evidence-adapter-fields",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/evidence-wire-fields",
+      "to": "task/evidence-detail/evidence-wire-fields",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/evidence-detail/hypothesis-evidence-display",
+      "to": "task/evidence-detail/hypothesis-evidence-display",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-run-record/consolidation-debug",
+      "to": "implementation/case-run-record/consolidation-debug",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-run-record/raw-payload",
+      "to": "implementation/case-run-record/raw-payload",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-run-record/run-carries-its-record",
+      "to": "implementation/case-run-record/run-carries-its-record",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-run-record/run-totals",
+      "to": "implementation/case-run-record/run-totals",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/assessment-under-its-call",
+      "to": "implementation/conformant-record-shapes/assessment-under-its-call",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/hypothesis-run-cost",
+      "to": "implementation/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/not-grounded-reason",
+      "to": "implementation/conformant-record-shapes/not-grounded-reason",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/case-evidence-display",
+      "to": "implementation/evidence-detail/case-evidence-display",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/evidence-adapter-fields",
+      "to": "implementation/evidence-detail/evidence-adapter-fields",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/evidence-wire-fields",
+      "to": "implementation/evidence-detail/evidence-wire-fields",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-detail/hypothesis-evidence-display",
+      "to": "implementation/evidence-detail/hypothesis-evidence-display",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/case-run-record/run-carries-its-record",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/evidence-detail/evidence-wire-fields",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/evidence-detail/evidence-adapter-fields",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/evidence-detail/hypothesis-evidence-display",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/case-run-record/consolidation-debug",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/case-run-record/run-totals",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/case-run-record/raw-payload",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend",
+      "to": "task/evidence-detail/case-evidence-display",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/not-grounded-reason",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-simulation-debug-expansion-frontend-corrections",
+      "to": "task/conformant-record-shapes/assessment-under-its-call",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    }
+  ]
+}

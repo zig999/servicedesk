@@ -8,7 +8,7 @@ Derived by spec.py from the specification files; never edited.
 |---|---|---|---|---|---|
 | glossary | supporting | 5 | 11 | 2 | 1 |
 | integration | generic | 19 | 133 | 9 | 23 |
-| investigation | supporting | 16 | 43 | 7 | 17 |
+| investigation | supporting | 16 | 50 | 7 | 19 |
 | knowledge | core | 12 | 68 | 5 | 12 |
 
 ## Aggregates
@@ -58,4 +58,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-342 decision(s) disclosed, 8 fact(s) recorded as read in the decision log.
+353 decision(s) disclosed, 8 fact(s) recorded as read in the decision log.

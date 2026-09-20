@@ -2,23 +2,39 @@ import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { CaseSimulationCaseResultPanel } from "./case-simulation-case-result-panel";
-import type { CaseResultRun } from "./case-simulation-case-result-types";
+import type { CaseResultAssessmentCall, CaseResultRun } from "./case-simulation-case-result-types";
 
 function normalized(element: HTMLElement): string {
   return (element.textContent ?? "").replace(/\s+/g, " ").trim();
+}
+
+function calledAssessment(
+  overrides: Partial<Extract<CaseResultAssessmentCall, { called: true }>> = {},
+): CaseResultAssessmentCall {
+  return {
+    called: true,
+    outcome: "resolved",
+    referral: { action: "escalate", recipient: "supervisor" },
+    determiningHypothesis: "H1",
+    text: "Thanks for reaching out; the refund has been issued.",
+    register: "formal",
+    usage: { inputTokens: 100, outputTokens: 50 },
+    elapsedMs: 50,
+    prompt: "prompt",
+    ...overrides,
+  };
 }
 
 function makeRun(overrides: Partial<CaseResultRun> = {}): CaseResultRun {
   return {
     id: "run-1",
     ranAt: "2024-01-01T00:00:00.000Z",
-    outcome: "resolved",
-    referral: { action: "escalate", recipient: "supervisor" },
-    determiningHypothesis: "H1",
-    text: "Thanks for reaching out; the refund has been issued.",
-    register: "formal",
     hypotheses: [],
     stale: false,
+    durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
+    cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
+    consolidationCall: calledAssessment(),
+    rawResponse: {},
     ...overrides,
   };
 }
@@ -33,7 +49,15 @@ describe("CaseSimulationCaseResultPanel -- rendering only once a run has complet
   it("shows the outcome, the referral and the determining hypothesis of the last run once one has completed", () => {
     render(
       createElement(CaseSimulationCaseResultPanel, {
-        runs: [makeRun({ outcome: "resolved", referral: { action: "escalate", recipient: "supervisor" }, determiningHypothesis: "H1" })],
+        runs: [
+          makeRun({
+            consolidationCall: calledAssessment({
+              outcome: "resolved",
+              referral: { action: "escalate", recipient: "supervisor" },
+              determiningHypothesis: "H1",
+            }),
+          }),
+        ],
       }),
     );
 
@@ -46,7 +70,7 @@ describe("CaseSimulationCaseResultPanel -- rendering only once a run has complet
   it('shows the literal word "Fallback" for the determining hypothesis when nothing confirmed and the fallback answered', () => {
     render(
       createElement(CaseSimulationCaseResultPanel, {
-        runs: [makeRun({ determiningHypothesis: undefined })],
+        runs: [makeRun({ consolidationCall: calledAssessment({ determiningHypothesis: undefined }) })],
       }),
     );
 
@@ -58,8 +82,8 @@ describe("CaseSimulationCaseResultPanel -- rendering only once a run has complet
     render(
       createElement(CaseSimulationCaseResultPanel, {
         runs: [
-          makeRun({ id: "run-1", outcome: "resolved-first" }),
-          makeRun({ id: "run-2", outcome: "resolved-second" }),
+          makeRun({ id: "run-1", consolidationCall: calledAssessment({ outcome: "resolved-first" }) }),
+          makeRun({ id: "run-2", consolidationCall: calledAssessment({ outcome: "resolved-second" }) }),
         ],
       }),
     );
@@ -74,7 +98,14 @@ describe("CaseSimulationCaseResultPanel -- the customer-facing text box (criteri
   it("shows exactly the last run's own customer-facing text, labeled by the register actually used", () => {
     render(
       createElement(CaseSimulationCaseResultPanel, {
-        runs: [makeRun({ text: "Your refund has been processed.", register: "plain" })],
+        runs: [
+          makeRun({
+            consolidationCall: calledAssessment({
+              text: "Your refund has been processed.",
+              register: "plain",
+            }),
+          }),
+        ],
       }),
     );
 
@@ -87,9 +118,11 @@ describe("CaseSimulationCaseResultPanel -- the customer-facing text box (criteri
       createElement(CaseSimulationCaseResultPanel, {
         runs: [
           makeRun({
-            outcome: "outcome-marker-should-not-leak",
-            text: "Your refund has been processed.",
-            register: "formal",
+            consolidationCall: calledAssessment({
+              outcome: "outcome-marker-should-not-leak",
+              text: "Your refund has been processed.",
+              register: "formal",
+            }),
           }),
         ],
       }),
@@ -115,5 +148,54 @@ describe('CaseSimulationCaseResultPanel -- the "stale" marker (criterion 5)', ()
     render(createElement(CaseSimulationCaseResultPanel, { runs: [makeRun({ stale: false })] }));
 
     expect(screen.queryByText("Stale")).toBeNull();
+  });
+});
+
+describe('CaseSimulationCaseResultPanel -- a shown run whose consolidation discriminant states no call happened (criterion 6; UNDERDETERMINED: a static message, never a borrowed or invented value)', () => {
+  it("shows an explicit no-call message in place of the outcome line, the customer-facing text box and the Debug > Prompt tab, rather than an empty or dashed placeholder", () => {
+    render(
+      createElement(CaseSimulationCaseResultPanel, {
+        runs: [makeRun({ consolidationCall: { called: false } })],
+      }),
+    );
+
+    expect(
+      screen.getAllByText("No consolidation call was made for this run."),
+    ).toHaveLength(3);
+  });
+
+  it('shows "no consolidation call" in that run\'s own list caption instead of an outcome', () => {
+    render(
+      createElement(CaseSimulationCaseResultPanel, {
+        runs: [makeRun({ consolidationCall: { called: false } })],
+      }),
+    );
+
+    expect(screen.getByRole("checkbox", { name: /no consolidation call/ })).toBeTruthy();
+  });
+});
+
+describe("CaseSimulationCaseResultPanel -- a shown run with no consolidation call borrows nothing from a sibling run (criterion 8)", () => {
+  it("keeps every assessment region on the no-call message for the shown run, even though an earlier run in the same session carries its own consolidation answer", () => {
+    render(
+      createElement(CaseSimulationCaseResultPanel, {
+        runs: [
+          makeRun({
+            id: "run-1",
+            consolidationCall: calledAssessment({
+              outcome: "sibling-outcome",
+              text: "sibling customer text",
+            }),
+          }),
+          makeRun({ id: "run-2", consolidationCall: { called: false } }),
+        ],
+      }),
+    );
+
+    expect(
+      screen.getAllByText("No consolidation call was made for this run."),
+    ).toHaveLength(3);
+    expect(screen.getByRole("checkbox", { name: /sibling-outcome/ })).toBeTruthy();
+    expect(screen.getByRole("checkbox", { name: /no consolidation call/ })).toBeTruthy();
   });
 });

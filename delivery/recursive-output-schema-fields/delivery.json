@@ -1,0 +1,329 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "implementation",
+      "file": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading.md",
+      "title": "Recursive-path reading stated at the Output schema entry",
+      "summary": "Rewrites the Output-schema disclosure paragraph to state the full recursive path through every nested properties object and items schema, in place of the top-level-only reading it stated before.",
+      "task": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading"
+    },
+    {
+      "id": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
+      "title": "Recursive output-schema field-semantics path reading",
+      "summary": "fieldSemanticsOf now walks a capability output schema's properties and single-schema items recursively, naming every node it reaches by its full dotted/bracketed path.",
+      "task": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths"
+    },
+    {
+      "id": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names.md",
+      "title": "Judgment prompt rendering already carries path-shaped field names verbatim",
+      "summary": "Verified that anthropic-hypothesis-evaluator.adapter.ts existing field-rendering code passes FieldSemantics.name, type and description through unmodified and reads nothing beyond the given evidence item, so a path-shaped name such as installations[].state already renders exactly and the file needed no change.",
+      "task": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names"
+    },
+    {
+      "id": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted.md",
+      "title": "Nested-citation acceptance already holds against the evidence snapshot",
+      "summary": "Investigation confirms citation-validation.ts's existing string-equality membership check accepts and refuses path-shaped field names correctly with no source change.",
+      "task": "task/recursive-output-schema-field-paths/nested-citation-is-accepted"
+    },
+    {
+      "id": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "implementation",
+      "file": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level.md",
+      "title": "Observation load stays top-level, verified against a nested output schema",
+      "summary": "Confirms citation-validation.ts's declaredFieldsOf and the adapter's observationOf were unaffected by the recursive field-semantics change; no source change was needed.",
+      "task": "task/recursive-output-schema-field-paths/observation-load-stays-top-level"
+    },
+    {
+      "id": "proof/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "proof",
+      "file": "proof/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading.md",
+      "title": "Recursive-path disclosure guidance, proven against its twelve criteria",
+      "summary": "Twelve tests, one per this task's numbered criteria, pin the rewritten paragraph's six claim sentences, its bounded scope, its absence of a worked example and of forbidden vocabulary, its identical rendering across both screens, and the surface's continued refusal to reject two nested-schema shapes on any of those grounds.",
+      "task": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths.md",
+      "title": "Recursive path-naming proof for fieldSemanticsOf",
+      "summary": "Tests pin the walk's full-path naming (including the emitted array-items node itself), its two exclusions, its reuse of the shared JSON guards, its freedom from framework imports, and the nested field's arrival on a collected evidence item, while leaving the domain-wide dependency shape and the untouched parts of Evidence unproven by any single test.",
+      "task": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names.md",
+      "title": "Judgment prompt renders a path-shaped field name unchanged",
+      "summary": "Proves the five rendering criteria for path-shaped and ordinary field names against the unmodified anthropic-hypothesis-evaluator.adapter.ts, adding the one test the existing suite lacked -- a path-shaped name such as installations[].state rendered verbatim.",
+      "task": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted.md",
+      "title": "Nested-citation acceptance is pinned by a path-shaped-field test",
+      "summary": "Adds the missing path-shaped-field representatives to citation-validation.spec.ts, proving criteria 1-3 hold for a nested field name and demonstrating the nested-citation scenario, while leaving the no-data-citation and cross-file snapshot facts recorded as unproven.",
+      "task": "task/recursive-output-schema-field-paths/nested-citation-is-accepted"
+    },
+    {
+      "id": "proof/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "proof",
+      "file": "proof/recursive-output-schema-field-paths/observation-load-stays-top-level.md",
+      "title": "Observation load stays top-level under a nested output schema",
+      "summary": "Two new tests on the existing HTTP declarative observation-source adapter spec pin the top-level boundary explicitly against a nested output schema (installations declaring state beneath its items), demonstrating both the bounding rule and the response-map-key-names-nothing scenario; the second UNDERDETERMINED note is left unresolved with why.",
+      "task": "task/recursive-output-schema-field-paths/observation-load-stays-top-level"
+    },
+    {
+      "id": "review/recursive-output-schema-fields",
+      "kind": "review",
+      "file": "review/recursive-output-schema-fields.md",
+      "title": "Recursive output-schema field paths, review",
+      "summary": "What four passes found over the four deliveries making field-semantics.ts read a capability output schema recursively and its three consumers stay correct.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Prompt assembly makes no read of the capability registry.",
+        "The prompt carries no output schema text and no other output-schema content beyond the field semantics the evidence item snapshotted."
+      ],
+      "findings": 11
+    },
+    {
+      "id": "review/recursive-output-schema-fields-frontend",
+      "kind": "review",
+      "file": "review/recursive-output-schema-fields-frontend.md",
+      "title": "Output-schema entry disclosure, review",
+      "summary": "What four passes found over the frontend delivery rewriting the Output-schema disclosure paragraph and its pinning test to state the recursive path reading.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "An output schema declaring its properties only beneath a nested items schema is not refused by this surface.",
+        "An output schema whose nested node carries neither type nor description is not refused by this surface.",
+        "The paragraph carries no worked example of its own -- no concrete field name, path, or schema snippet illustrating the path grammar.",
+        "The paragraph contains none of the following, in Portuguese or English -- recusa, rejeição, erro, inválido, obrigatório, verificação, checagem, somente leitura, read-only, natureza -- the vocabulary the surface own existing disclosure test already forbids.",
+        "The paragraph makes no claim about what an entered output schema is read for beyond those already held by domain/investigation/field-semantics, rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema and rules/glossary/a-description-states-meaning-never-policy.",
+        "The paragraph renders with the same text beside the Output schema entry on the capability create screen and on the capability detail screen."
+      ],
+      "findings": 1
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "to": "implementation/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "to": "implementation/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "to": "implementation/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "to": "implementation/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "to": "implementation/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/field-semantics-reads-nested-paths",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/judgment-prompt-carries-path-names",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/nested-citation-is-accepted",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields",
+      "to": "task/recursive-output-schema-field-paths/observation-load-stays-top-level",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/recursive-output-schema-fields-frontend",
+      "to": "task/output-schema-entry-disclosure/the-entry-states-the-recursive-path-reading",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    }
+  ]
+}

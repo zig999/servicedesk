@@ -28,6 +28,9 @@ describe("fromHypothesisEvaluation -- carries the run's own evidence onto the no
         capability_name: "fetch-billing-account",
         capability_version: "1",
         elapsed_ms: 120,
+        capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
     ];
 
@@ -40,11 +43,15 @@ describe("fromHypothesisEvaluation -- carries the run's own evidence onto the no
         resultDetail: undefined,
         elapsedMs: 120,
         observation: "the account shows one authorized charge",
+        inputs: "{}",
+        observedAt: "2026-08-01T00:00:00.000Z",
+        ttl: 3600,
         capabilityName: "fetch-billing-account",
         capabilityVersion: "1",
         connector: "billing-connector",
-        fields: undefined,
-        conceptDescription: undefined,
+        capabilityPayloadNotes: "",
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

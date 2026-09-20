@@ -1,16 +1,40 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import { useCaseSimulationHistory, type NewCaseResultRun } from "./use-case-simulation-history";
+import type { CaseResultAssessmentCall, CaseResultRun } from "../routes/case-simulation-case-result-types";
 
-function newRun(overrides: Partial<NewCaseResultRun> = {}): NewCaseResultRun {
+function calledAssessment(
+  overrides: Partial<Extract<CaseResultAssessmentCall, { called: true }>> = {},
+): CaseResultAssessmentCall {
   return {
+    called: true,
     outcome: "resolved",
     referral: { action: "notify", recipient: "customer" },
     text: "Thanks for reaching out.",
     register: "formal",
-    hypotheses: [],
+    usage: { inputTokens: 100, outputTokens: 50 },
+    elapsedMs: 50,
+    prompt: "prompt",
     ...overrides,
   };
+}
+
+function newRun(overrides: Partial<NewCaseResultRun> = {}): NewCaseResultRun {
+  return {
+    hypotheses: [],
+    durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
+    cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
+    consolidationCall: calledAssessment(),
+    rawResponse: {},
+    ...overrides,
+  };
+}
+
+function outcomeOf(run: CaseResultRun): string {
+  if (!run.consolidationCall.called) {
+    throw new Error("use-case-simulation-history.spec.ts: expected a called consolidation call");
+  }
+  return run.consolidationCall.outcome;
 }
 
 afterEach(() => {
@@ -29,13 +53,13 @@ describe("useCaseSimulationHistory -- appending this session's own run history (
     const { result } = renderHook(() => useCaseSimulationHistory());
 
     act(() => {
-      result.current.recordRun(newRun({ outcome: "resolved" }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "resolved" }) }));
     });
     act(() => {
-      result.current.recordRun(newRun({ outcome: "unresolved" }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "unresolved" }) }));
     });
 
-    expect(result.current.runs.map((run) => run.outcome)).toEqual(["resolved", "unresolved"]);
+    expect(result.current.runs.map(outcomeOf)).toEqual(["resolved", "unresolved"]);
   });
 
   it("assigns each recorded run its own id, timestamp and not-stale flag, distinct from the previous run's, rather than reading them from the caller", () => {
@@ -60,11 +84,61 @@ describe("useCaseSimulationHistory -- appending this session's own run history (
     const { result } = renderHook(() => useCaseSimulationHistory());
 
     act(() => {
-      result.current.recordRun(newRun({ outcome: "A" }));
-      result.current.recordRun(newRun({ outcome: "B" }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "A" }) }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "B" }) }));
     });
 
-    expect(result.current.runs.map((run) => run.outcome)).toEqual(["A", "B"]);
+    expect(result.current.runs.map(outcomeOf)).toEqual(["A", "B"]);
+  });
+
+  it("keeps an earlier run's own durations, cost, consolidation record and payload unchanged once a second, different run completes", () => {
+    const { result } = renderHook(() => useCaseSimulationHistory());
+
+    act(() => {
+      result.current.recordRun(
+        newRun({
+          durations: { collectionMs: 100, judgmentMs: 200, writingMs: 50, totalMs: 350 },
+          cost: { calls: 1, inputTokens: 100, outputTokens: 50 },
+          consolidationCall: calledAssessment({
+            usage: { inputTokens: 100, outputTokens: 50 },
+            elapsedMs: 50,
+            prompt: "first prompt",
+          }),
+          rawResponse: { marker: "first" },
+        }),
+      );
+    });
+    act(() => {
+      result.current.recordRun(
+        newRun({
+          durations: { collectionMs: 999, judgmentMs: 999, writingMs: 999, totalMs: 999 },
+          cost: { calls: 9, inputTokens: 999, outputTokens: 999 },
+          consolidationCall: calledAssessment({
+            usage: { inputTokens: 999, outputTokens: 999 },
+            elapsedMs: 999,
+            prompt: "second prompt",
+          }),
+          rawResponse: { marker: "second" },
+        }),
+      );
+    });
+
+    const [first] = result.current.runs;
+    expect(first?.durations).toEqual({
+      collectionMs: 100,
+      judgmentMs: 200,
+      writingMs: 50,
+      totalMs: 350,
+    });
+    expect(first?.cost).toEqual({ calls: 1, inputTokens: 100, outputTokens: 50 });
+    expect(first?.consolidationCall).toEqual(
+      calledAssessment({
+        usage: { inputTokens: 100, outputTokens: 50 },
+        elapsedMs: 50,
+        prompt: "first prompt",
+      }),
+    );
+    expect(first?.rawResponse).toEqual({ marker: "first" });
   });
 });
 
@@ -97,10 +171,10 @@ describe("useCaseSimulationHistory -- marking the last run stale (criterion 5)",
   it("marks only the last of several runs stale, and leaves that marking untouched once a further run completes", () => {
     const { result } = renderHook(() => useCaseSimulationHistory());
     act(() => {
-      result.current.recordRun(newRun({ outcome: "first" }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "first" }) }));
     });
     act(() => {
-      result.current.recordRun(newRun({ outcome: "second" }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "second" }) }));
     });
 
     act(() => {
@@ -110,7 +184,7 @@ describe("useCaseSimulationHistory -- marking the last run stale (criterion 5)",
     expect(result.current.runs[1]?.stale).toBe(true);
 
     act(() => {
-      result.current.recordRun(newRun({ outcome: "third" }));
+      result.current.recordRun(newRun({ consolidationCall: calledAssessment({ outcome: "third" }) }));
     });
 
     expect(result.current.runs[1]?.stale).toBe(true);

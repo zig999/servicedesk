@@ -1,0 +1,131 @@
+findings:
+  - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+    where: the `expectedInputs` helper, lines 273-275
+    evidence: |-
+      function expectedInputs(context: EvidenceContext): string {
+        return JSON.stringify({ concept: context.concept, subject: context.subject, requester: context.requester });
+      }
+    cost: >-
+      Every ok/non-ok evidence fixture in the file asserts `inputs` against this exact
+      JSON shape, so a reader checking what an evidence item's audit-trail `inputs`
+      actually records will find the answer only here. The specification's own decision
+      log fixes only the attribute's type ("decided: string ... Inputs vary per
+      capability and are pinned for replay as recorded bytes; a serialized form is the
+      only shape common to all"), leaving its content undecided, and the cache-key text
+      even lists "inputs" as something distinct from "concept" and "subject" rather than
+      a re-encoding of them — so this fixture commits the whole file to a specific
+      content the specification never settled.
+    kind: unstated
+    node: domain/investigation/evidence
+    correction: >-
+      State, on the evidence node (or a rule it points to), exactly what the recorded
+      `inputs` value is composed of, so this fixture derives from a decided shape rather
+      than inventing one.
+  - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+    where: "`expectedOkEvidence`/`expectedNonOkEvidence` (line 288 and line 311) and `expectedUnavailableEvidence` (line 330)"
+    evidence: |-
+      origin: context.capability.connector,
+    cost: >-
+      The decision log for `domain/investigation/evidence`'s `origin` attribute fixed
+      only its type ("decided: string ... It names where the observation came from for
+      audit; an opaque name suffices"), leaving what actually populates it unstated.
+      This file's every ok, denied, timeout and unavailable-with-capability fixture
+      asserts `origin` equals the producing capability's own connector name, and the
+      unresolved-capability fixture asserts it as `''` — a specific mapping a reader
+      auditing an evidence item's origin has no node to confirm.
+    kind: unstated
+    node: domain/investigation/evidence
+    correction: >-
+      State on the evidence node what `origin` holds — e.g. that it is the producing
+      capability's own connector, empty where no capability resolved — so the fixture
+      reflects a decided fact.
+read:
+  - node: domain/investigation/field-semantics
+    held_at: >-
+      the `fields` assertions against `collectEvidence`'s result, e.g. the two-field
+      output-schema test
+    evidence: |-
+      expect(result[0]?.fields).toEqual([
+        { name: 'field-one', type: 'string', description: 'the first field' },
+        { name: 'field-two', type: 'number' },
+      ]);
+  - node: domain/investigation/evidence
+    held_at: >-
+      the `expectedOkEvidence`/`expectedNonOkEvidence`/`expectedUnavailableEvidence`
+      fixtures, matched against `collectEvidence`'s result with `toEqual`
+    evidence: |-
+      return {
+        concept: context.concept,
+        inputs: expectedInputs(context),
+        observation,
+        observed_at: context.observedAt,
+        ttl: DEFAULT_EVIDENCE_TTL_SECONDS,
+        origin: context.capability.connector,
+        result: 'ok' as const,
+        ...
+        elapsed_ms: elapsedMs,
+        fields: [],
+        concept_description: '',
+        capability_payload_notes: '',
+      };
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: >-
+      the nested-output-schema test, asserting the walked path name for a field beneath
+      an array's own items
+    evidence: |-
+      expect(result[0]?.fields.find((field) => field.name === 'installations[].state')).toEqual({
+        name: 'installations[].state',
+        type: 'string',
+        description: 'the installation state',
+      });
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    held_at: the same nested-output-schema test, which the test title cites by this scenario's identity
+    evidence: |-
+      const fieldNames = result[0]?.fields.map((field) => field.name) ?? [];
+      expect(fieldNames).toContain('login');
+      expect(fieldNames).toContain('installations');
+      expect(fieldNames).not.toContain('state');
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: the final test, auditing `evidence-collection-stage.ts`'s own import specifiers
+    evidence: |-
+      const nonRelativeSpecifiers = specifiers.filter((specifier) => !specifier.startsWith('.'));
+      expect(nonRelativeSpecifiers).toEqual([]);
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: nowhere
+    evidence: >-
+      The file never assembles or asserts a judgment prompt; it exercises only
+      `collectEvidence`, so nothing here reads or bounds prompt content.
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: nowhere
+    evidence: >-
+      The file tests that a produced evidence item's snapshotted values survive a later
+      capability re-registration, but it never exercises a hypothesis's judgment reading
+      that snapshot — no judgment call appears anywhere in this file.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: "No `Citation` value or citation assertion appears anywhere in this file."
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: nowhere
+    evidence: "The file never validates a citation against an evidence item's field names."
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: nowhere
+    evidence: "The file never constructs a hypothesis-revision's citations or checks their containment."
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: nowhere
+    evidence: "The file's nested-schema test asserts field-semantics naming only, not a citation's acceptance."
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: nowhere
+    evidence: >-
+      Where `HoldingConnectorConfigurationQuery` supplies a `responseMap`, it is only to
+      build a valid configuration so the real HTTP adapter's connector-unreachable
+      branch can be exercised; no assertion in the file checks which fields a
+      responseMap key admits into an observation.
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: nowhere
+    evidence: "The file asserts no observation content keyed by a responseMap at all."
+looked_past: >-
+  domain/investigation/evidence.md models the producing capability as a single
+  `reference` relationship (cardinality "1"), while every fixture here flattens that
+  into two scalar fields, `capability_name` and `capability_version` — a
+  representation choice rather than a stated domain fact, so it is left to a review of
+  the model itself rather than reported here.

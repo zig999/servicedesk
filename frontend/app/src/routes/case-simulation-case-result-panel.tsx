@@ -1,8 +1,14 @@
 import { useState, type JSX } from "react";
 import { Button } from "@tui/ui/button";
 import { Checkbox } from "@tui/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
 import { CaseSimulationStatusDot } from "./case-simulation-status-dot";
 import { CaseSimulationCaseResultCompare } from "./case-simulation-case-result-compare";
+import { CaseSimulationCaseResultDebugTab } from "./case-simulation-case-result-debug-tab";
+import { CaseSimulationCaseResultTotalsTab } from "./case-simulation-case-result-totals-tab";
+import { CaseSimulationCaseResultJsonTab } from "./case-simulation-case-result-json-tab";
+import { CaseSimulationCaseResultEvidenceTab } from "./case-simulation-case-result-evidence-tab";
+import { toDetailEvidenceFromRawResponse } from "./case-simulation-cockpit-adapters";
 import {
   formatRunTime,
   resolveCompareRuns,
@@ -15,18 +21,23 @@ export type CaseSimulationCaseResultPanelProps = {
   readonly runs: readonly CaseResultRun[];
 };
 
+const NOT_CALLED_MESSAGE = "No consolidation call was made for this run.";
+
 export function CaseSimulationCaseResultPanel({
   runs,
 }: CaseSimulationCaseResultPanelProps): JSX.Element | null {
   const [selectedRunIds, setSelectedRunIds] = useState<readonly string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [shownRunId, setShownRunId] = useState<string | null>(null);
 
   if (runs.length === 0) {
     return null;
   }
 
   const lastRun = runs[runs.length - 1];
+  const shownRun = runs.find((run) => run.id === shownRunId) ?? lastRun;
   const compareRuns = resolveCompareRuns(runs, selectedRunIds);
+  const shownRunEvidence = toDetailEvidenceFromRawResponse(shownRun.rawResponse);
 
   function handleToggleSelection(id: string): void {
     setSelectedRunIds((previous) => toggleCompareSelection(previous, id));
@@ -37,25 +48,70 @@ export function CaseSimulationCaseResultPanel({
       <h2 className="text-lg font-semibold text-foreground">Case result</h2>
 
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-sm text-foreground">
-          Outcome {lastRun.outcome} · Referral {lastRun.referral.action} /{" "}
-          {lastRun.referral.recipient} · Determining{" "}
-          {lastRun.determiningHypothesis ?? "Fallback"}
-        </p>
-        {lastRun.stale && <CaseSimulationStatusDot color="bg-warning" label="Stale" />}
+        {shownRun.consolidationCall.called ? (
+          <p className="text-sm text-foreground">
+            Outcome {shownRun.consolidationCall.outcome} · Referral{" "}
+            {shownRun.consolidationCall.referral.action} /{" "}
+            {shownRun.consolidationCall.referral.recipient} · Determining{" "}
+            {shownRun.consolidationCall.determiningHypothesis ?? "Fallback"}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">{NOT_CALLED_MESSAGE}</p>
+        )}
+        {shownRun.stale && <CaseSimulationStatusDot color="bg-warning" label="Stale" />}
       </div>
 
       <div className="rounded-md border border-border bg-muted p-3">
-        <p className="text-sm text-muted-foreground">
-          Customer-facing text ({lastRun.register})
-        </p>
-        <div className="flex flex-col gap-2">
-          {lastRun.text.split(/\n{2,}/).map((paragraph) => (
-            <p key={paragraph} className="whitespace-pre-wrap">
-              {paragraph}
+        {shownRun.consolidationCall.called ? (
+          <>
+            <p className="text-sm text-muted-foreground">
+              Customer-facing text ({shownRun.consolidationCall.register})
             </p>
-          ))}
-        </div>
+            <div className="flex flex-col gap-2">
+              {shownRun.consolidationCall.text.split(/\n{2,}/).map((paragraph) => (
+                <p key={paragraph} className="whitespace-pre-wrap text-sm">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">{NOT_CALLED_MESSAGE}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-3 border-t border-border pt-4">
+        <h2 className="text-lg font-semibold text-foreground">Debug</h2>
+        <Tabs defaultValue="prompt">
+          <TabsList>
+            <TabsTrigger value="evidence">Evidence</TabsTrigger>
+            <TabsTrigger value="prompt">Prompt</TabsTrigger>
+            <TabsTrigger value="totals">Totals</TabsTrigger>
+            <TabsTrigger value="json">JSON</TabsTrigger>
+          </TabsList>
+          <TabsContent value="evidence">
+            <CaseSimulationCaseResultEvidenceTab evidence={shownRunEvidence} />
+          </TabsContent>
+          <TabsContent value="prompt">
+            {shownRun.consolidationCall.called ? (
+              <CaseSimulationCaseResultDebugTab
+                consolidationCall={shownRun.consolidationCall}
+                register={shownRun.consolidationCall.register}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">{NOT_CALLED_MESSAGE}</p>
+            )}
+          </TabsContent>
+          <TabsContent value="totals">
+            <CaseSimulationCaseResultTotalsTab
+              cost={shownRun.cost}
+              durations={shownRun.durations}
+            />
+          </TabsContent>
+          <TabsContent value="json">
+            <CaseSimulationCaseResultJsonTab rawResponse={shownRun.rawResponse} />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -67,9 +123,21 @@ export function CaseSimulationCaseResultPanel({
                 checked={selectedRunIds.includes(run.id)}
                 onChange={() => handleToggleSelection(run.id)}
               >
-                #{index + 1} {formatRunTime(run.ranAt)} · {run.outcome}
+                #{index + 1} {formatRunTime(run.ranAt)} ·{" "}
+                {run.consolidationCall.called
+                  ? run.consolidationCall.outcome
+                  : "no consolidation call"}
                 {run.stale ? " · stale" : ""}
               </Checkbox>
+              <Button
+                type="button"
+                variant="secondary"
+                aria-pressed={run.id === shownRun.id}
+                aria-label={`Show run #${index + 1}`}
+                onClick={() => setShownRunId(run.id)}
+              >
+                {run.id === shownRun.id ? "Shown" : "Show"}
+              </Button>
             </li>
           ))}
         </ul>

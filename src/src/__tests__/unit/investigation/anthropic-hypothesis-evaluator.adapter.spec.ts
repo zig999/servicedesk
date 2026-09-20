@@ -364,6 +364,28 @@ it("renders a field's own type attribute independently of its own description te
   expect(content).toContain('<field name="field-description-only">a description with no type</field>');
 });
 
+it('renders a path-shaped field name exactly as its own evidence item carries it, with no splitting or reinterpretation of the path syntax', async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-with-a-nested-field',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [{ name: 'installations[].state', type: 'string', description: 'the installation state' }],
+      concept_description: '',
+      capability_payload_notes: '',
+      observed_at: '2024-01-01T00:00:00.000Z',
+      ttl: 60,
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  expect(content).toContain('<field name="installations[].state" type="string">the installation state</field>');
+});
+
 it("renders each evidence item's own concept description as its own <concept_description>, and the closed <evidence> block carries it alongside the item's own fields and observation", async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();

@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
+// Criterion 10 mounts the create screen and the detail screen inside one test body to compare
+// their rendered guidance text directly; automatic cleanup only runs between separate it()s, not
+// between renders inside one, so the test unmounts the first render itself before the second.
+// eslint-disable-next-line testing-library/no-manual-cleanup -- reason above (PRH-03).
+import { cleanup } from "@testing-library/react";
 import {
   baseHandlers as createScreenBaseHandlers,
   createFetchStub as createCreateScreenFetchStub,
@@ -20,25 +25,43 @@ function findGuidanceParagraph(container: HTMLElement): HTMLElement | null {
   );
 }
 
-describe("CapabilityFormFields — the output-schema guidance renders wherever the entry stands (criterion 1)", () => {
-  it("renders the guidance paragraph beside the create screen's own Output schema editor", async () => {
+// The six claim statements the rewritten paragraph carries -- the path claim (criterion 1) and
+// the concatenation grammar that builds it (criterion 2) are stated as two separate sentences,
+// alongside the JSON claim (3), the declared-semantics claim (4), the nothing-else-read claim
+// (5) and the description-meaning claim (6). Criterion 7's own test below reuses this same list
+// to check that no further sentence appears beyond these six.
+const CLAIM_PATTERNS: readonly RegExp[] = [
+  /o que é inserido aqui é json/i,
+  /os nomes de campo lidos a partir dele são os caminhos através do objeto properties de nível superior deste schema e de todo objeto properties e todo schema items alcançável a partir dele/i,
+  /esse caminho é construído concatenando a chave própria de cada objeto ao caminho do seu pai com um ponto, e os items próprios de cada array ao caminho do seu pai com colchetes/i,
+  /o type e a description declarados no nó que cada caminho alcança, onde o schema os declara, são lidos como a semântica declarada desse campo/i,
+  /nenhum outro conteúdo deste schema é lido ou validado/i,
+  /uma description aqui declara o que seu valor significa e não nomeia nenhuma decisão/i,
+];
+
+describe("CapabilityFormFields — the guidance states the field names are the full recursive paths through the schema (criterion 1)", () => {
+  it("states that the read field names are the paths through the schema's own top-level properties object and every properties object and items schema reachable beneath it", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
     await screen.findByLabelText("Connector");
 
-    expect(findGuidanceParagraph(document.body)).toBeTruthy();
-  });
-
-  it("renders the same guidance paragraph beside the detail screen's own Output schema editor", async () => {
-    const fetchMock = createFetchStub(baseHandlers());
-    await mountCapabilityDetailScreen(fetchMock);
-    await screen.findByLabelText("Output schema");
-
-    expect(findGuidanceParagraph(document.body)).toBeTruthy();
+    const guidance = findGuidanceParagraph(document.body);
+    expect(guidance?.textContent).toMatch(CLAIM_PATTERNS[1]);
   });
 });
 
-describe("CapabilityFormFields — the guidance states that what is entered is JSON (criterion 2)", () => {
+describe("CapabilityFormFields — the guidance states how such a path is built (criterion 2)", () => {
+  it("states that each object's own key is joined onto its parent's own path with a dot, and an array's own items is joined onto its parent's own path with brackets", async () => {
+    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
+    await mountCapabilityCreateScreen(fetchMock);
+    await screen.findByLabelText("Connector");
+
+    const guidance = findGuidanceParagraph(document.body);
+    expect(guidance?.textContent).toMatch(CLAIM_PATTERNS[2]);
+  });
+});
+
+describe("CapabilityFormFields — the guidance states that what is entered is JSON (criterion 3)", () => {
   it("states that the entered content is JSON", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
@@ -49,40 +72,25 @@ describe("CapabilityFormFields — the guidance states that what is entered is J
   });
 });
 
-describe("CapabilityFormFields — the guidance states the read field names are the schema's own top-level properties keys (criterion 3)", () => {
-  it("states that the read field names are the keys of the schema's own top-level properties object", async () => {
+describe("CapabilityFormFields — the guidance states a reached node's own type and description are read as its declared semantics (criterion 4)", () => {
+  it("states that the type and description declared at the node each path reaches, where the schema states them, are read as that field's declared semantics", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
     await screen.findByLabelText("Connector");
 
     const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.textContent).toMatch(
-      /os nomes de campo lidos a partir dele são as chaves do próprio objeto properties de nível superior deste schema/i,
-    );
-  });
-});
-
-describe("CapabilityFormFields — the guidance states a key's own type and description are read as its declared semantics (criterion 4)", () => {
-  it("states that each such key's own type and description, where the schema states them, are read as that field's declared semantics", async () => {
-    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
-    await mountCapabilityCreateScreen(fetchMock);
-    await screen.findByLabelText("Connector");
-
-    const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.textContent).toMatch(
-      /o type e a description declarados por cada uma dessas chaves, onde o schema os declara, são lidos como a semântica declarada desse campo/i,
-    );
+    expect(guidance?.textContent).toMatch(CLAIM_PATTERNS[3]);
   });
 });
 
 describe("CapabilityFormFields — the guidance states nothing else in the schema is read or validated (criterion 5)", () => {
-  it("states that nothing else in the entered schema is read or validated", async () => {
+  it("states that no other content of the entered schema is read or validated", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
     await screen.findByLabelText("Connector");
 
     const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.textContent).toMatch(/nenhum outro conteúdo deste schema é lido ou validado/i);
+    expect(guidance?.textContent).toMatch(CLAIM_PATTERNS[4]);
   });
 });
 
@@ -93,13 +101,30 @@ describe("CapabilityFormFields — the guidance states a description declares me
     await screen.findByLabelText("Connector");
 
     const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.textContent).toMatch(
-      /uma description aqui declara o que seu valor significa e não nomeia nenhuma decisão/i,
-    );
+    expect(guidance?.textContent).toMatch(CLAIM_PATTERNS[5]);
   });
 });
 
-describe("CapabilityFormFields — the guidance carries no worked example (criterion 7)", () => {
+describe("CapabilityFormFields — the guidance makes no claim beyond the three nodes bounding it (criterion 7)", () => {
+  it("carries no sentence that fails to match one of the six known claim statements", async () => {
+    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
+    await mountCapabilityCreateScreen(fetchMock);
+    await screen.findByLabelText("Connector");
+
+    const guidance = findGuidanceParagraph(document.body);
+    const sentences = (guidance?.textContent ?? "")
+      .split(".")
+      .map((sentence) => sentence.trim())
+      .filter((sentence) => sentence.length > 0);
+
+    expect(sentences.length).toBeGreaterThan(0);
+    for (const sentence of sentences) {
+      expect(CLAIM_PATTERNS.some((pattern) => pattern.test(sentence))).toBe(true);
+    }
+  });
+});
+
+describe("CapabilityFormFields — the guidance carries no worked example of its own (criterion 8)", () => {
   it("carries no digit, which every worked example over this schema has so far instantiated as a concrete code", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
@@ -119,94 +144,62 @@ describe("CapabilityFormFields — the guidance carries no worked example (crite
   });
 });
 
-describe("CapabilityFormFields — the guidance states no further claim about what an entered output schema is read for (criterion 8)", () => {
-  it("states exactly the five claims and no sixth, as five sentences", async () => {
-    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
-    await mountCapabilityCreateScreen(fetchMock);
-    await screen.findByLabelText("Connector");
-
-    const guidance = findGuidanceParagraph(document.body);
-    const sentences = (guidance?.textContent ?? "")
-      .split(".")
-      .map((sentence) => sentence.trim())
-      .filter((sentence) => sentence.length > 0);
-    expect(sentences).toHaveLength(5);
-  });
-});
-
-describe("CapabilityFormFields — the guidance promises no check, only what is read (criterion 9)", () => {
-  it("names no check or refusal vocabulary anywhere in the guidance", async () => {
+describe("CapabilityFormFields — the guidance contains none of the forbidden vocabulary (criterion 9)", () => {
+  it("names no refusal, check or read-only-nature vocabulary anywhere in the guidance", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
     await screen.findByLabelText("Connector");
 
     const guidance = findGuidanceParagraph(document.body);
     expect(guidance?.textContent ?? "").not.toMatch(
-      /recusa|rejeit|erro\b|inválid|obrigatóri|verificaç|checagem/i,
+      /recusa|rejeit|erro\b|inválid|obrigatóri|verificaç|checagem|somente leitura|read-only|natureza/i,
     );
-  });
-
-  it("names no check tied to the capability's own read-only nature (criterion 9, narrowed by the node's own bound over a-capability-is-read-only)", async () => {
-    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
-    await mountCapabilityCreateScreen(fetchMock);
-    await screen.findByLabelText("Connector");
-
-    const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.textContent ?? "").not.toMatch(/somente leitura|read-only|natureza/i);
   });
 });
 
-describe("CapabilityFormFields — the surface refuses no entry on the grounds the guidance states (criterion 10)", () => {
-  it("does not disable Save for a syntactically valid output schema with no top-level properties object", async () => {
-    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
-    await mountCapabilityCreateScreen(fetchMock);
+describe("CapabilityFormFields — the guidance renders the same text on the create screen and on the detail screen (criterion 10)", () => {
+  it("renders identical guidance text beside the Output schema entry on both screens", async () => {
+    const createFetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
+    await mountCapabilityCreateScreen(createFetchMock);
     await screen.findByLabelText("Connector");
-    fillValidForm({ outputSchema: '{"type":"object"}' });
+    const createGuidanceText = findGuidanceParagraph(document.body)?.textContent;
+    expect(createGuidanceText).toBeTruthy();
 
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
+    cleanup();
+    vi.unstubAllGlobals();
+
+    const detailFetchMock = createFetchStub(baseHandlers());
+    await mountCapabilityDetailScreen(detailFetchMock);
+    await screen.findByLabelText("Output schema");
+    const detailGuidanceText = findGuidanceParagraph(document.body)?.textContent;
+
+    expect(detailGuidanceText).toBe(createGuidanceText);
   });
+});
 
-  it("does not disable Save for an output schema whose declared key carries neither type nor description", async () => {
-    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
-    await mountCapabilityCreateScreen(fetchMock);
-    await screen.findByLabelText("Connector");
-    fillValidForm({ outputSchema: '{"properties":{"status":{}}}' });
-
-    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
-  });
-
-  it("does not disable Save for an output schema whose key's description reads as a decision rather than a meaning", async () => {
+describe("CapabilityFormFields — the surface does not refuse an output schema declaring properties only beneath a nested items schema (criterion 11)", () => {
+  it("does not disable Save for an output schema whose properties are declared only beneath a nested items schema", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
     await screen.findByLabelText("Connector");
     fillValidForm({
       outputSchema:
-        '{"properties":{"status":{"type":"string","description":"quando 2, confirme a hipótese"}}}',
+        '{"type":"object","properties":{"installations":{"type":"array","items":{"type":"object","properties":{"state":{"type":"string"}}}}}}',
     });
 
     expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
   });
 });
 
-describe("CapabilityFormFields — disclosed inferences the implementation recorded", () => {
-  it("keeps the guidance in Portuguese, matching the register of the copy it replaced", async () => {
+describe("CapabilityFormFields — the surface does not refuse an output schema whose nested node carries neither type nor description (criterion 12)", () => {
+  it("does not disable Save for an output schema whose nested node carries neither type nor description", async () => {
     const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
     await mountCapabilityCreateScreen(fetchMock);
     await screen.findByLabelText("Connector");
+    fillValidForm({
+      outputSchema: '{"properties":{"container":{"type":"object","properties":{"status":{}}}}}',
+    });
 
-    const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.textContent).toMatch(/não nomeia nenhuma decisão/i);
-  });
-
-  it("keeps the guidance as a muted small paragraph inside the div beside the Output schema editor", async () => {
-    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
-    await mountCapabilityCreateScreen(fetchMock);
-    await screen.findByLabelText("Connector");
-
-    const guidance = findGuidanceParagraph(document.body);
-    expect(guidance?.tagName).toBe("P");
-    expect(guidance?.className).toMatch(/text-sm/);
-    expect(guidance?.className).toMatch(/text-muted-foreground/);
-    expect(guidance?.parentElement?.textContent).toMatch(/Output schema/);
+    expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
   });
 });

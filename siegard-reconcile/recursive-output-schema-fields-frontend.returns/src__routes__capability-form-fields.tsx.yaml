@@ -1,0 +1,108 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the field bindings across the form -- Concept (Controller, lines 104-121), Name/Version/Nature/Timeout
+      (lines 123-171), Connector (172-180), payload_notes (182-205), and the input_schema/output_schema
+      editors (207-240)
+    evidence: |
+      <Input
+            {...register("connector")}
+            disabled={isSubmitting}
+            aria-invalid={errors.connector != null}
+            aria-describedby={errors.connector != null ? "connector-error" : undefined}
+          />
+  - node: domain/integration/capability-nature
+    held_at: the Nature field's Select, bound to NATURE_OPTIONS derived from the imported CAPABILITY_NATURES
+    evidence: |
+      const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
+        value: nature,
+        label: nature,
+      }));
+  - node: domain/investigation/field-semantics
+    held_at: the explanatory paragraph beside the Output schema field, lines 226-238
+    evidence: |
+      O <code>type</code> e a <code>description</code> declarados no
+          nó que cada caminho alcança, onde o schema os declara, são lidos como a
+          semântica declarada desse campo.
+  - node: rules/glossary/a-description-states-meaning-never-policy
+    held_at: the closing sentence of the same paragraph
+    evidence: |
+      Uma <code>description</code> aqui declara o que seu valor significa
+          e não nomeia nenhuma decisão.
+  - node: rules/integration/a-capability-authoring-surface-offers-a-schema-helper
+    held_at: the CapabilitySchemaHelperFields render, placed immediately beneath the Input/Output schema grid
+    evidence: |
+      <CapabilitySchemaHelperFields
+            state={schemaHelper}
+            onApplyInputSchema={inputSchemaApply.onApply}
+            onApplyOutputSchema={outputSchemaApply.onApply}
+          />
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: nowhere
+    evidence: >-
+      isSaveDisabled reads inputSchema.isValid / outputSchema.isValid to gate the Save button; nothing in this
+      file handles a CapabilitySchemaNotWellFormedError or a 422 response -- that refusal is the registry's own.
+  - node: rules/integration/a-capability-is-read-only
+    held_at: nowhere
+    evidence: >-
+      options={NATURE_OPTIONS} -- every nature value is offered with no exclusion of "mutating" and no handling
+      of a CapabilityNotReadOnlyError; the refusal is the registry's own.
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: the field bindings, each rendering the value form itself holds rather than any other source
+    evidence: |
+      <Input
+            {...register("name")}
+            disabled={isEditingIdentity || isSubmitting}
+            aria-invalid={errors.name != null}
+            aria-describedby={errors.name != null ? "name-error" : undefined}
+          />
+  - node: rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+    held_at: the paragraph beside the Output schema field, lines 226-238
+    evidence: |
+      O que é inserido aqui é <code>JSON</code>. Os nomes de campo lidos a partir dele
+          são os caminhos através do objeto <code>properties</code> de nível superior
+          deste schema e de todo objeto <code>properties</code> e todo schema{" "}
+          <code>items</code> alcançável a partir dele.
+  - node: rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim
+    held_at: the same paragraph, which states only the five bounded claims and no worked example of its own
+    evidence: |
+      Nenhum outro conteúdo deste schema é lido ou
+          validado. Uma <code>description</code> aqui declara o que seu valor significa
+          e não nomeia nenhuma decisão.
+  - node: rules/integration/applying-a-drafted-capability-schema-changes-only-the-local-edit
+    held_at: the two independently-wired apply hooks and confirmation dialogs for inputSchema and outputSchema
+    evidence: |
+      const inputSchemaApply = useApplyToJsonSchemaField(
+            inputSchema,
+            isDirty ?? inputSchema.value !== "",
+          );
+          const outputSchemaApply = useApplyToJsonSchemaField(
+            outputSchema,
+            isDirty ?? outputSchema.value !== "",
+          );
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: nowhere
+    evidence: >-
+      const conceptSelectOptions: SelectOption[] = conceptOptions.map((concept) => ({
+            value: concept.name,
+            label: concept.name,
+          })); -- every option is offered unfiltered, with no handling of ConceptAlreadyAnsweredError or
+      DuplicateConceptAnswerError; that refusal is the registry's own.
+  - node: rules/integration/the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival
+    held_at: nowhere
+    evidence: >-
+      the schema editors are bound directly to inputSchema.onChange / outputSchema.onChange, and a write only
+      happens through the separate inputSchemaApply.onApply / onConfirmApply path -- the guarantee that a draft's
+      mere arrival writes nothing is not itself demonstrated in this file, only the separation that permits it.
+  - node: rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+    held_at: the same paragraph beside the Output schema field
+    evidence: |
+      Esse caminho é construído concatenando a chave própria de cada objeto ao caminho do seu pai com um
+          ponto, e os <code>items</code> próprios de cada array ao caminho do seu pai
+          com colchetes.
+looked_past: >-
+  Two UI-only mechanics that state no domain fact to the operator -- disabling Name/Version via
+  isEditingIdentity and gating the Save button on isDirty/schema validity -- plus the reuse of a
+  component literally named ConnectorConfigurationApplyConfirmationDialog for the capability schema
+  apply flow, and the output-schema help paragraph being Portuguese while every other label is English,
+  are interface/form and code-quality matters this pass does not judge.

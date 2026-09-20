@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
+import type { SimulateCost } from "./use-simulate-case";
 
 export type SimulateHypothesisSubjectAttribute = {
   readonly attribute: string;
@@ -35,7 +36,11 @@ export type Citation = {
   readonly field: string;
 };
 
-export type EvaluationReason = "no-data" | "judgment-failure" | "deadline-exceeded";
+export type EvaluationReason =
+  | "no-data"
+  | "judgment-failure"
+  | "deadline-exceeded"
+  | "not-grounded";
 
 export type Verdict = "confirmed" | "refuted" | "inconclusive";
 
@@ -79,20 +84,24 @@ export type Evidence = {
   readonly capability_version: string;
   readonly elapsed_ms: number;
 
-  readonly fields?: readonly FieldSemantics[];
+  readonly fields: readonly FieldSemantics[];
 
-  readonly concept_description?: string;
+  readonly concept_description: string;
+
+  readonly capability_payload_notes: string;
 };
 
 export type Durations = {
   readonly collection: number;
   readonly judgment: number;
+  readonly writing?: number;
   readonly total: number;
 };
 
 export type SimulateHypothesisResult = {
   readonly evidence: readonly Evidence[];
   readonly evaluation: Evaluation;
+  readonly cost: SimulateCost;
   readonly durations: Durations;
 };
 

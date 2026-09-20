@@ -464,8 +464,12 @@
           "digest": "sha256:96add48e39ba5954ff4b38c8e3871aa02b280bc714defaba2182e68105e669e3"
         },
         {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        },
+        {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:57e2623521142ec7a4ac7196b2870f528314c958893fbb3cd2368124fe1384a2"
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -1287,27 +1291,39 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
+          "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
-          "digest": "sha256:ab20622baa2fa8cb37f575588546dcf82bcc2425fcfd6e814334f0180c841cc3"
+          "digest": "sha256:d226327836a0a457c1f56dcc96e962b5d39dad5db187aefc43178057cb6b8966"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
+          "digest": "sha256:c55c78c4384fa2ab18c78a34f02f4bb0353d7b4e60fc89a9ab90da738bb41d2a"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:256064ca45ab6f23b1d9f8619e6eca75ecec957a7cf4279d6e66171e9dc70ee2"
+          "digest": "sha256:da589875aaaeaa32bd1bc3d933b1e0c322b7e003ad2ef84fc0c11c2dd5cc7ea8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
@@ -2351,7 +2367,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -2465,7 +2481,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3b3451fa8488839dd861364a5e8e8bcd7e4d8b698bbf899cacc5d04d2813d235"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -3168,16 +3184,24 @@
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
+          "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
           "digest": "sha256:ab20622baa2fa8cb37f575588546dcf82bcc2425fcfd6e814334f0180c841cc3"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:bf75d1a3012534efe676c76785e02ddeaf05f3ea92eafe7c986a7829857405b7"
+          "digest": "sha256:f2cf8c887c7b5eeef19853ae9e67533d1e872541ea89c24f31028f4253911a55"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -3301,7 +3325,7 @@
         },
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+          "digest": "sha256:b5b39066a68d164afd9d42f5a484b577133c239277fb7bcb82a6290f38d81c23"
         },
         {
           "path": "src/src/investigation/citation.ts",
@@ -3328,6 +3352,26 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:859328a4f146eb298f83357cc8cf91934a5629e2ca0407cb72c2086b6b1eeeff"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
+          "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
+          "digest": "sha256:c55c78c4384fa2ab18c78a34f02f4bb0353d7b4e60fc89a9ab90da738bb41d2a"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -3365,7 +3409,19 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:859328a4f146eb298f83357cc8cf91934a5629e2ca0407cb72c2086b6b1eeeff"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
+          "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-totals-tab.tsx",
+          "digest": "sha256:c55c78c4384fa2ab18c78a34f02f4bb0353d7b4e60fc89a9ab90da738bb41d2a"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -3467,7 +3523,7 @@
         },
         {
           "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
-          "digest": "sha256:1f9d1e8cb024281cc7f3705f79858f8f772311946f8c50edb719a50e199081ef"
+          "digest": "sha256:4fc165058da6155c1d29c2165fd9089d35379ac8658955e5c1c770a1f0bcd2e1"
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
@@ -3525,19 +3581,19 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+          "digest": "sha256:08698e011d3c6a59b909ab6ab8dfec6f85231ee29835cdfeb3af4b05db28a59c"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:6c9fd45381c095d9751630a68c6f0799e13d2f09045eb8052cb4cbf4f2eaf137"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:bf75d1a3012534efe676c76785e02ddeaf05f3ea92eafe7c986a7829857405b7"
+          "digest": "sha256:70bf335cf19f1a326cc2c8868e8bab4aac1ca14fae571f803db5eb6e2bef9b5f"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
-          "digest": "sha256:59f0279c725716efffe545d64b677233198ff1a7031d2b86692d924f1e69de53"
+          "digest": "sha256:ff24bee6462391606c4938822c347e3a3908149906a98728452d6d187768e5e0"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -3571,23 +3627,43 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:6bf0582a4a0c7919a3c40d97f43941014211c30266637e705165d647617e5226"
+          "digest": "sha256:68f375ebdc292c288fd106823f948794872408354b51fcab118c00b878f0337f"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:374a33e97f035c39fe8d33b2636e24d4f8e3a3a01ce045f8b51c0ad82e7c6de9"
+          "digest": "sha256:6df5cf1a29e613cb88ddcc75775ba403109472c1343b49afdafae0cdaea6c004"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters-evidence-snapshot.spec.ts",
+          "digest": "sha256:951724ac23d3cb95cdcfd40e05afcc5860b5a0ca8929a5d9616951df6b3e4dad"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters-hypothesis-evidence-and-prompt.spec.ts",
+          "digest": "sha256:3d77836e680a4f5c9694f8a27450c58d48fe2b2d90d0cd82bb25ca6ec459e3a6"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
           "digest": "sha256:256064ca45ab6f23b1d9f8619e6eca75ecec957a7cf4279d6e66171e9dc70ee2"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab-snapshot.spec.ts",
+          "digest": "sha256:f49c3cc6ba6fca3d7e693bb615f42ac351ddfe1b8fc5ad9abadc98115dd13d64"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
-          "digest": "sha256:b9f3a7cc76e6290f1114b648e2693a1506c9088b7c1e15a98096eb9768198bbb"
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-panel.test-support.ts",
+          "digest": "sha256:568cc9e06da9d1d9856a92bc8fd67086fee29bf17e19cd3076fff7c5e30854f1"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
-          "digest": "sha256:75cb8fc35011144950e92e42991e6efa3680af6c80282ce8ce3720db00227f08"
+          "digest": "sha256:f564ae86525b78e2319b90f2e9d0cac4f70519446b59a964bca5e98cf427d3b3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:92357e476762786901a30c9c92d7afe921992339be222f1dbda7db6030b40e87"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -3626,6 +3702,10 @@
           "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
         },
         {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:8fc102bf4b80496b87dfad6f6d5fae07232e4e99bf666c8f41974b2a6b60b44f"
         },
@@ -3636,6 +3716,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+        },
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
@@ -3727,7 +3811,7 @@
     },
     {
       "node": "domain/investigation/field-semantics",
-      "digest": "sha256:2c31f8d54409ebf444b7fa9b07a19e420c229b2ae62590903bbab921f39b56da",
+      "digest": "sha256:2408529318141418d654e045936ca7e7f06e6ae598deb9ba2863cfb0ca500f9f",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -3739,7 +3823,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -3754,12 +3838,16 @@
           "digest": "sha256:201acb95872f0d5c232f531be93d1f8e5c465a5e05b29304221c0b268ccc1743"
         },
         {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
+        },
+        {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:8fc102bf4b80496b87dfad6f6d5fae07232e4e99bf666c8f41974b2a6b60b44f"
         },
         {
           "path": "src/src/investigation/field-semantics.ts",
-          "digest": "sha256:ec8e302d1b434a27610bf7ce6daf18b552709618557fbbcc6051a0fdc623c9e7"
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -3974,6 +4062,18 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -4576,6 +4676,14 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:b10ab7aa19ef4575e6f6bda3471f70a4018fd08ca95315c3834143d429ebe001"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -5297,7 +5405,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
@@ -5403,7 +5511,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
@@ -6433,7 +6541,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "src/src/http/dto/read-capability-by-identity.dto.ts",
@@ -6868,6 +6976,24 @@
         {
           "path": "frontend/app/src/services/connector-configuration-http-departures.ts",
           "digest": "sha256:ab579cfd39eb9a88bf777cd1f40f7899ed8d65c4f1b106998448b5f4314b20f8"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "digest": "sha256:f6b1e68b88eb1bd2d3eef3f411d6302c0f959a0da691027926bc4663725f719d",
+      "files": [
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
         }
       ]
     },
@@ -6939,11 +7065,21 @@
     },
     {
       "node": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
-      "digest": "sha256:74e9067974e9cc76a61469fca3e03619efbbe579bd2b7112642798ea6ef21968",
+      "digest": "sha256:75471f9af70020cc5d6aa28d92f966d4240148a04f34f14caa42f9e50ef40603",
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "digest": "sha256:218971b5028c5bbb09ce99acfa4c3c2e3044df49a319a54cbd85d1101eee4480",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         }
       ]
     },
@@ -7055,7 +7191,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:857c2daa8afe6db46b7804cd8d7959384096dad43ceeaa24b1878222f8d07555"
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
         },
         {
           "path": "frontend/app/src/routes/capability-schema-helper-fields.tsx",
@@ -7213,7 +7349,7 @@
         },
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+          "digest": "sha256:b5b39066a68d164afd9d42f5a484b577133c239277fb7bcb82a6290f38d81c23"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -7304,6 +7440,20 @@
       ]
     },
     {
+      "node": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "digest": "sha256:c912d2209935e1ecde4163e7bd9c97e0dee53fef257c55ad94acc055187dca3a",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+        },
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-judgment-failure-records-the-last-call-made",
       "digest": "sha256:93111c5b0cfeec7e7cb10e9f98b818920ec4e56f4eec674fd553fe7fdd0cdc51",
       "files": [
@@ -7323,7 +7473,47 @@
         },
         {
           "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
-          "digest": "sha256:6371e5db1b72e3f816e32b81b3ec1dd86a5275ce9a5abfce1d0017fa32821e2c"
+          "digest": "sha256:4fc165058da6155c1d29c2165fd9089d35379ac8658955e5c1c770a1f0bcd2e1"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "digest": "sha256:f5768ebd6e97c3a06b0c272e73cd7083a0b1d807caec53c61147f77bb9872157",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-debug-tab.tsx",
+          "digest": "sha256:2976ab900397618452855a800292c683ce3a2fa4a8b669e95e845b4cbfc055e3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
+          "digest": "sha256:103a7f4fcc8604091f897267c82423a7cf56fce6bbf28e581ecf40e49ca5d9a3"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-prompt-tab.tsx",
+          "digest": "sha256:3c4f3a5ab9febebe454cf4f53a4969f678f45db709a7f48bafbde96b7624a9df"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "digest": "sha256:b9829f11eadedbf7508fe489b507884fda7bf0eabc797e2da1c9acf5abaab433",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
+          "digest": "sha256:151d55548c1fa0cda8319dda09373dd54bcf931ddf1d85637a388e7bb017be04"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         }
       ]
     },
@@ -7342,6 +7532,16 @@
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations",
+      "digest": "sha256:65e9e0bbbd7ad7b8ed1f4781a8b297fd7cb009917dac74e6924e36a68852bf0a",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:859328a4f146eb298f83357cc8cf91934a5629e2ca0407cb72c2086b6b1eeeff"
         }
       ]
     },
@@ -7404,6 +7604,28 @@
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
           "digest": "sha256:c685a28dfe414f8f3bc5e1713f0ce1a85b55456b2418f87253aa429c17b5ca02"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "digest": "sha256:cd1207e038f62351b6d1b8b7feda00ffdfe9739c6c2346dd3075ff963d1e4394",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-compare.tsx",
+          "digest": "sha256:335f4dbc61361f64ba3a8570bc2b35aba40a8bf7c1468bd92f78a7d2ad266eb8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:cbc4a7f01afd1843679bb00d712cd46bf91b3372c98b8664a81a38b2d51f4a6f"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:6d9c9cbcc10ec085006b66cd85eb9bd051d7d59a005d09aa1d56d8d629d6edb8"
         }
       ]
     },
@@ -7536,9 +7758,49 @@
       ]
     },
     {
+      "node": "rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object",
+      "digest": "sha256:3796bcb71d58967239ec2fd0e62944efe351facfdc15173699622720843923a1",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:42fcaf9c1c849b42eaaae2dc4a80ba9534c328c7a1e0286cdf053ecdea85ebf7"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation",
+      "digest": "sha256:4ca92983cb8da789e817bcc1ab2a19809f3f336bc35b80da5002cf60bd4f2fca",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
       "digest": "sha256:4d7d2f1c5656ac5e55ef9031fecf4df4bf8694962c9c74c014fc05d0862147be",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:42fcaf9c1c849b42eaaae2dc4a80ba9534c328c7a1e0286cdf053ecdea85ebf7"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
+        },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
@@ -7553,6 +7815,26 @@
       "node": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
       "digest": "sha256:0218385c9b1ed3516b0562dd0794ec8d7b16910d912c724fa23182f9d8d1861f",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:42fcaf9c1c849b42eaaae2dc4a80ba9534c328c7a1e0286cdf053ecdea85ebf7"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
+        },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:d85cdeb94e6d732df58f21abe085033b3b7f33847415b1b5f3e75f2ffd0fd724"
@@ -7765,11 +8047,19 @@
     },
     {
       "node": "rules/investigation/presentation-reads-the-evidence-snapshot",
-      "digest": "sha256:e2eaa24c46433277c456ec8fe42e3f8c29f8132e17b37fadeae61666107344dc",
+      "digest": "sha256:1fd5a74b798d109b0f3e317840eda48a8a60c1b46bcf24bd00e055931d991bab",
       "files": [
         {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:42fcaf9c1c849b42eaaae2dc4a80ba9534c328c7a1e0286cdf053ecdea85ebf7"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
-          "digest": "sha256:b9f3a7cc76e6290f1114b648e2693a1506c9088b7c1e15a98096eb9768198bbb"
+          "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
+          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
         }
       ]
     },
@@ -7803,6 +8093,14 @@
       "node": "rules/investigation/the-consolidation-answer-states-its-register",
       "digest": "sha256:ceb5b1df0e605c53a9a9011ba70723d1b1ad4fb969f5f060d08365c4b251aaef",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:f2cf8c887c7b5eeef19853ae9e67533d1e872541ea89c24f31028f4253911a55"
+        },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
           "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
@@ -9400,6 +9698,16 @@
       ]
     },
     {
+      "node": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "digest": "sha256:935a030c6abbc62318d3bd2e2b51e8555f13fe7bfe2fd0802795b7525720ba8f",
+      "files": [
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+        }
+      ]
+    },
+    {
       "node": "scenarios/integration/a-response-map-key-the-capability-does-not-read-is-stated-beside-the-field-it-expects",
       "digest": "sha256:9dc9cf871a734316eef58009291bce9b8d48475590b1a4ec754fc46f7e618bb4",
       "files": [
@@ -9564,6 +9872,28 @@
       ]
     },
     {
+      "node": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "digest": "sha256:c901dfacb36b374d8268639017f277da85e4bf56cbdee2fa6b76c91006ecedcd",
+      "files": [
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/investigation/citation-validation.spec.ts",
+          "digest": "sha256:58f02a6e186dcd788c31e210d59776d6f43ed4457e70e5073796978d9e54cb89"
+        }
+      ]
+    },
+    {
       "node": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
       "digest": "sha256:a9f96a8f0aa1e0dac9ee3ed33f603139d2cd532b8da716addf9c97d83faffbe8",
       "files": [
@@ -9694,6 +10024,24 @@
       ]
     },
     {
+      "node": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "digest": "sha256:7d39d6091f89e93570f5b4fd8187bc9091ac03015269af57a2aa02d5152032d6",
+      "files": [
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:f2200ebeae06a6b8402acb7227a5656bd476281bf87099dfb96b8f41504601a8"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/investigation/evidence-collection-stage.spec.ts",
+          "digest": "sha256:8d431e7f4338775d1da4ba90b76c10d506ee70b9e5c911324b6b1a82fa693257"
+        }
+      ]
+    },
+    {
       "node": "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
       "digest": "sha256:5208163b32980420b7f357f720d8edc226374509e54bce1020c5d07d0cb4cb02",
       "files": [
@@ -9785,7 +10133,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
-          "digest": "sha256:16795cd36687217a2310304d0d998872a6de870b3f1cf38b4bf7a1f41d98ba93"
+          "digest": "sha256:2367cd63c025af6d299d9cd97657a75ab1a0c1488929cd41e004096dbeb07326"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",

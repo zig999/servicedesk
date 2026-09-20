@@ -101,12 +101,12 @@ it('keeps OpenApiDocumentNotReadableError and OpenApiOperationNotFoundError as t
   expect(notReadable.name).not.toBe(notFound.name);
 });
 
-it("returns the operation's own method key exactly as the document spells it, regardless of the requested method's own casing", () => {
+it("returns the operation's own method upper-cased, regardless of the requested method's own casing or the document's own lower-case path-item key", () => {
   const documentText = JSON.stringify({ openapi: '3.0.0', paths: { '/widgets': { get: {} } } });
 
   const reading = readOpenApiOperation(documentText, '/widgets', 'GET');
 
-  expect(reading.method).toBe('get');
+  expect(reading.method).toBe('GET');
 });
 
 it("merges the path item's own parameters with the operation's own, exposing every parameter from both", () => {

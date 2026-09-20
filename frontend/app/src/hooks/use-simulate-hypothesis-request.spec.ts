@@ -167,7 +167,7 @@ describe("SimulateHypothesisResult carries exactly evidence, evaluation and dura
     await waitFor(() => expect(result.current.result).not.toBeNull());
 
     const returned = definedResult(result.current.result);
-    expect(Object.keys(returned).sort()).toEqual(["durations", "evaluation", "evidence"]);
+    expect(Object.keys(returned).sort()).toEqual(["cost", "durations", "evaluation", "evidence"]);
     expect(returned).not.toHaveProperty("outcome");
     expect(returned).not.toHaveProperty("assessment");
   });

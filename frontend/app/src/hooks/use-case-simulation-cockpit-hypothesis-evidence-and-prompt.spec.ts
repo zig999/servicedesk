@@ -44,6 +44,9 @@ describe("useCaseSimulationCockpit -- this task's own reproduction: a single-hyp
               capability_name: "fetch-billing-account",
               capability_version: "1",
               elapsed_ms: 120,
+              capability_payload_notes: "",
+              fields: [],
+              concept_description: "",
             },
           ],
           evaluation: {
@@ -114,11 +117,15 @@ describe("useCaseSimulationCockpit -- a full-case run's own evidence still reach
         resultDetail: undefined,
         elapsedMs: 120,
         observation: "the account shows one authorized charge",
+        inputs: "{}",
+        observedAt: "2026-08-01T00:00:00.000Z",
+        ttl: 3600,
         capabilityName: "fetch-billing-account",
         capabilityVersion: "1",
         connector: "billing-connector",
-        fields: undefined,
-        conceptDescription: undefined,
+        capabilityPayloadNotes: "",
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

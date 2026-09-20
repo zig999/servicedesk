@@ -1,0 +1,7 @@
+certified:
+  - node: scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path
+    state: covered
+    tests:
+      - file: src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+        name: >-
+          snapshots installations[].state, installations and login among the collected evidence item's own fields, and no field named state alone, for a capability whose output schema declares state beneath installations' own items (scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path)

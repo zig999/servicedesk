@@ -3,7 +3,8 @@ export type SimulationVerdict = "confirmed" | "refuted" | "inconclusive";
 export type SimulationEvaluationReason =
   | "no-data"
   | "judgment-failure"
-  | "deadline-exceeded";
+  | "deadline-exceeded"
+  | "not-grounded";
 
 export type SimulationUsage = {
   readonly input_tokens: number;
@@ -54,6 +55,7 @@ export const REASON_LABEL: Record<SimulationEvaluationReason, string> = {
   "no-data": "no data",
   "judgment-failure": "judgment failed",
   "deadline-exceeded": "deadline exceeded",
+  "not-grounded": "not grounded",
 };
 
 export function hypothesisLabel(row: SimulationManifestRow): string {

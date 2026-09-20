@@ -1,0 +1,88 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/no-data-citation-field-check-fix",
+      "kind": "epic",
+      "file": "epic/no-data-citation-field-check-fix.md",
+      "title": "No-data citation field-check fix",
+      "summary": "A corrective increment: citesADeclaredField wrongly rejects a citation carrying no field."
+    },
+    {
+      "id": "task/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "kind": "task",
+      "file": "task/no-data-citation-field-check-fix/fieldless-citation-accepted.md",
+      "title": "A fieldless citation is not rejected as an undeclared field",
+      "summary": "citesADeclaredField in citation-validation.ts stops requiring a field match when the citation carries no field at all.",
+      "epic": "no-data-citation-field-check-fix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/no-data-citation-field-check-fix",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "task/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/no-data-citation-field-check-fix/fieldless-citation-accepted",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

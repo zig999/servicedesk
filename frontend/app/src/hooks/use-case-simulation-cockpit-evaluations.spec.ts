@@ -93,11 +93,15 @@ describe("useCaseSimulationCockpit -- the Detail region reflects whichever run l
         resultDetail: undefined,
         elapsedMs: 120,
         observation: "the account shows one authorized charge",
+        inputs: "{}",
+        observedAt: "2026-08-01T00:00:00.000Z",
+        ttl: 3600,
         capabilityName: "fetch-billing-account",
         capabilityVersion: "1",
         connector: "billing-connector",
-        fields: undefined,
-        conceptDescription: undefined,
+        capabilityPayloadNotes: "",
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });
@@ -173,7 +177,13 @@ describe("useCaseSimulationCockpit -- only a full-case run populates the Case re
     });
 
     await waitFor(() => expect(result.current.caseResultRuns).toHaveLength(1));
-    expect(result.current.caseResultRuns[0]?.outcome).toBe("resolved");
+    const run = result.current.caseResultRuns[0];
+    if (!run || !run.consolidationCall.called) {
+      throw new Error(
+        "use-case-simulation-cockpit-evaluations.spec.ts: expected a called consolidation call",
+      );
+    }
+    expect(run.consolidationCall.outcome).toBe("resolved");
   });
 });
 

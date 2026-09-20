@@ -3,7 +3,7 @@ import { act, waitFor } from "@testing-library/react";
 import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { CaseVersionRecord, CaseVersionManifestEntry } from "../services/case-version-record";
-import type { SimulateCaseResult, SimulateEvaluation } from "./use-simulate-case";
+import type { SimulateCaseResult, SimulateCost, SimulateEvaluation } from "./use-simulate-case";
 import type {
   Durations as HypothesisDurations,
   Evidence as HypothesisEvidence,
@@ -183,6 +183,9 @@ export function simulateCaseResult(overrides: Partial<SimulateCaseResult> = {}):
         elapsed_ms: 120,
         capability_name: "fetch-billing-account",
         capability_version: "1",
+        capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
     ],
     evaluations: [confirmedCaseEvaluation("hypothesis-a"), inconclusiveCaseEvaluation("hypothesis-b")],
@@ -232,6 +235,9 @@ function hypothesisEvidence(): readonly HypothesisEvidence[] {
       capability_name: "fetch-billing-account",
       capability_version: "1",
       elapsed_ms: 120,
+      capability_payload_notes: "",
+      fields: [],
+      concept_description: "",
     },
   ];
 }
@@ -240,10 +246,19 @@ function hypothesisDurations(): HypothesisDurations {
   return { collection: 400, judgment: 300, total: 700 };
 }
 
+function hypothesisCost(): SimulateCost {
+  return { calls: 1, input_tokens: 150, output_tokens: 60 };
+}
+
 export function simulateHypothesisResult(
   evaluation: HypothesisEvaluation = confirmedHypothesisEvaluation("hypothesis-a"),
 ): SimulateHypothesisResult {
-  return { evidence: hypothesisEvidence(), evaluation, durations: hypothesisDurations() };
+  return {
+    evidence: hypothesisEvidence(),
+    evaluation,
+    cost: hypothesisCost(),
+    durations: hypothesisDurations(),
+  };
 }
 
 export async function makeSubjectReady(

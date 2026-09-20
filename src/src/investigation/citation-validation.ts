@@ -28,6 +28,9 @@ function citesADeclaredField(context: HypothesisCitationContext, citation: Citat
   if (citedEvidence === undefined) {
     return false;
   }
+  if (citation.field === undefined) {
+    return true;
+  }
   return citedEvidence.fields.some((field) => field.name === citation.field);
 }
 

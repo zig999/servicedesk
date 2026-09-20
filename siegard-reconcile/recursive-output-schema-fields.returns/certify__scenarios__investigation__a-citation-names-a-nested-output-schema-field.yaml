@@ -1,0 +1,13 @@
+certified:
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    state: covered
+    tests:
+      - file: src/__tests__/unit/investigation/citation-validation.spec.ts
+        name: >-
+          accepts a citation naming concept tech-profile and field installations[].state, where that item snapshot carries installations[].state, exactly as the acceptance scenario states it
+      - file: src/__tests__/unit/investigation/citation-validation.spec.ts
+        name: >-
+          refuses a citation naming a path-shaped field, installations[].partition, that its own cited evidence item's snapshot did not carry — a citation is refused for an unmatched name whatever shape that name has
+      - file: src/__tests__/unit/investigation/citation-validation.spec.ts
+        name: >-
+          refuses a citation naming a concept outside the hypothesis's collects even where the field it names, installations[].state, is path-shaped and matches that foreign evidence item's own snapshotted fields

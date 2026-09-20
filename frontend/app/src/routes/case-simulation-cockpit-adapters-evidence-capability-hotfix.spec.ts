@@ -14,6 +14,9 @@ function realEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): Simula
     capability_name: "perfil-mobile-tecnico-reader",
     capability_version: "1.0.0",
     elapsed_ms: 340,
+    capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }

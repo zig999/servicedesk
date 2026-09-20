@@ -17,6 +17,7 @@ const envSchema = z.object({
   DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
   DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
   DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+  MAX_REQUEST_BODY_BYTES: z.coerce.number().int().positive().default(1_048_576),
 });
 
 export type Env = z.infer<typeof envSchema>;
