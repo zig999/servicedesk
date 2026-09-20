@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
+      "title": "Isolate one case's invalid current version from the cases listing",
+      "summary": "The cases-list query now answers a distinct not-valid entry for a case whose current version fails validation instead of rejecting the whole listing, and the screen renders that entry with the case's slug and the specification's own explicit statement, leaving every other case's row unaffected.",
+      "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
+      "title": "Isolate one case's invalid current version from the cases listing",
+      "summary": "Proof that a listing carrying a case whose current version fails validation still renders every other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the data layer (useCasesList) and the rendered screen, including where more than one case fails at the same reading.",
+      "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "to": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "to": "domain/knowledge/case-summary",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "to": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

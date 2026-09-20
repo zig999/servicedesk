@@ -7,7 +7,12 @@ import {
   StatusTable,
   type StatusTableRow,
 } from "../shared/components/status-table";
-import { useCasesList, type CaseListEntry, type CaseVersionState } from "../hooks/use-cases-list";
+import {
+  useCasesList,
+  isCaseListEntryNotValid,
+  type CaseListEntry,
+  type CaseVersionState,
+} from "../hooks/use-cases-list";
 
 const CASE_STATE_CELL: Readonly<Record<CaseVersionState, { color: string; label: string }>> = {
   draft: { color: "bg-warning", label: "Draft" },
@@ -16,6 +21,8 @@ const CASE_STATE_CELL: Readonly<Record<CaseVersionState, { color: string; label:
 
 const NO_VERSION_YET_LABEL = "No version yet";
 const NO_VERSION_YET_DASH = "—";
+const CURRENT_VERSION_NOT_VALID_STATEMENT =
+  "This case's current version does not read back as a case.";
 
 function formatLastUpdated(iso: string | undefined): string {
   if (iso === undefined) {
@@ -28,6 +35,13 @@ function formatLastUpdated(iso: string | undefined): string {
 }
 
 function toRow(entry: CaseListEntry): StatusTableRow {
+  if (isCaseListEntryNotValid(entry)) {
+    return {
+      id: entry.slug,
+      slug: entry.slug,
+      state: CURRENT_VERSION_NOT_VALID_STATEMENT,
+    };
+  }
   const stateCell =
     entry.summary.currentState === undefined
       ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }

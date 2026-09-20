@@ -4116,6 +4116,10 @@
           "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
         },
         {
+          "path": "frontend/app/src/hooks/use-cases-list.ts",
+          "digest": "sha256:31c6fbee35459e29bc88cef03cbdb04439824906b2deab9775060e77542d389a"
+        },
+        {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
         },
@@ -4137,7 +4141,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         },
         {
           "path": "frontend/app/src/services/case-creation-form-schema.ts",
@@ -4275,6 +4279,10 @@
       "node": "domain/knowledge/case-summary",
       "digest": "sha256:406d610f9e181a2b35618a572d962e39c1ef97faac682241524db80199c2ca27",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-cases-list.ts",
+          "digest": "sha256:31c6fbee35459e29bc88cef03cbdb04439824906b2deab9775060e77542d389a"
+        },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
@@ -8024,6 +8032,20 @@
         {
           "path": "frontend/app/src/routes/cases-list-screen-create-case-control.spec.ts",
           "digest": "sha256:527f35c2d55ad2d971944762ba0b26de942f4e05552bd8fc321287237e86218f"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
+      "digest": "sha256:e064ece1cccfc9aaedecc94f77968b01b75311e28dbcb0e0ae1100fbd233e088",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-cases-list.ts",
+          "digest": "sha256:31c6fbee35459e29bc88cef03cbdb04439824906b2deab9775060e77542d389a"
+        },
+        {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         }
       ]
     },

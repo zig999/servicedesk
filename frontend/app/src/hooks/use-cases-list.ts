@@ -1,5 +1,6 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { apiFetch } from "../services/api-client";
+import { errorStateKind } from "./use-edit-draft-version-form";
 
 type PaginatedResponse<T> = {
   readonly data: readonly T[];
@@ -30,45 +31,55 @@ export type CaseSummary = {
   readonly lastUpdated?: string;
 };
 
-export type CaseListEntry = {
-  readonly slug: string;
-  readonly summary: CaseSummary;
-};
+export type CaseListEntry =
+  | { readonly slug: string; readonly summary: CaseSummary }
+  | { readonly slug: string; readonly notValid: true };
+
+export function isCaseListEntryNotValid(
+  entry: CaseListEntry,
+): entry is Extract<CaseListEntry, { notValid: true }> {
+  return "notValid" in entry;
+}
 
 function caseVersionsUrl(slug: string, limit: number, offset: number): string {
   return `/v1/cases/${encodeURIComponent(slug)}/versions?limit=${limit}&offset=${offset}`;
 }
 
-async function fetchCaseSummary(slug: string): Promise<CaseSummary> {
+async function fetchCaseListEntry(slug: string): Promise<CaseListEntry> {
   const highestPage = await apiFetch<PaginatedResponse<CaseVersionListItem>>(
     caseVersionsUrl(slug, 1, 0),
   );
   const versionCount = highestPage.total;
   if (versionCount === 0) {
-    return { versionCount };
+    return { slug, summary: { versionCount } };
   }
   const highest = highestPage.data[0];
 
-  const detail = await apiFetch<CaseVersionDetail>(
-    `/v1/cases/${encodeURIComponent(slug)}/versions/${highest.version}`,
-  );
+  let detail: CaseVersionDetail;
+  try {
+    detail = await apiFetch<CaseVersionDetail>(
+      `/v1/cases/${encodeURIComponent(slug)}/versions/${highest.version}`,
+    );
+  } catch (error) {
+    if (errorStateKind(error) === "case-not-valid") {
+      return { slug, notValid: true };
+    }
+    throw error;
+  }
 
   return {
-    versionCount,
-    currentState: highest.state,
-    lastUpdated: detail.authored_at,
+    slug,
+    summary: {
+      versionCount,
+      currentState: highest.state,
+      lastUpdated: detail.authored_at,
+    },
   };
 }
 
 async function fetchCasesWithSummaries(): Promise<CaseListEntry[]> {
   const casesPage = await apiFetch<PaginatedResponse<CaseIdentity>>("/v1/cases");
-  const summaries = await Promise.all(
-    casesPage.data.map((identity) => fetchCaseSummary(identity.slug)),
-  );
-  return casesPage.data.map((identity, index) => ({
-    slug: identity.slug,
-    summary: summaries[index],
-  }));
+  return Promise.all(casesPage.data.map((identity) => fetchCaseListEntry(identity.slug)));
 }
 
 export function useCasesList(): UseQueryResult<CaseListEntry[]> {
