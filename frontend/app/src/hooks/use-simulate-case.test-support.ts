@@ -48,6 +48,8 @@ export function simulateResult(overrides: Partial<SimulateCaseResult> = {}): Sim
         capability_name: "lookup-account",
         capability_version: "1.0.0",
         capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
       {
         concept: "payment-history",
@@ -61,6 +63,8 @@ export function simulateResult(overrides: Partial<SimulateCaseResult> = {}): Sim
         capability_name: "lookup-payments",
         capability_version: "2.0.0",
         capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
     ],
     evaluations: [

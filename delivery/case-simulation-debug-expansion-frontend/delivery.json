@@ -34,6 +34,14 @@
       "task": "task/case-run-record/run-totals"
     },
     {
+      "id": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "implementation",
+      "file": "implementation/conformant-record-shapes/evidence-semantics-always-present.md",
+      "title": "Evidence fields/concept_description are required, honest-empty snapshots everywhere",
+      "summary": "SimulateEvidenceItem, Evidence and SimulationEvidenceItem now declare fields and concept_description as required members carrying domain/investigation/evidence's honest-empty value, the two evidence-item render functions collapse their absent-vs-empty branches into one, and every fixture and assertion across the frontend that constructed or checked these two attributes -- in scope and out of it -- was repaired in lockstep so the tree still compiles and the suite still passes.",
+      "task": "task/conformant-record-shapes/evidence-semantics-always-present"
+    },
+    {
       "id": "implementation/evidence-detail/case-evidence-display",
       "kind": "implementation",
       "file": "implementation/evidence-detail/case-evidence-display.md",
@@ -96,6 +104,14 @@
       "title": "Run totals presented in the case result Debug block",
       "summary": "Tests the new CaseSimulationCaseResultTotalsTab and its wiring into the panel's Debug tabs, covering the run's cost, its durations (including the no-writing boundary and the total-is-not-a-stage-sum requirement), and that the shown figures follow the shown run.",
       "task": "task/case-run-record/run-totals"
+    },
+    {
+      "id": "proof/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "proof",
+      "file": "proof/conformant-record-shapes/evidence-semantics-always-present.md",
+      "title": "Evidence fields/concept_description required-member and honest-empty-render proof",
+      "summary": "Every criterion of evidence-semantics-always-present is backed by a test that fails if it stopped holding -- three new type-refusal tests pin the requiredness on all three evidence types, and the pre-existing, task-modified snapshot/adapter/render tests are cited as the proof for the passthrough, collapse and test-file criteria; neither implemented node's fact is decided whole by any test here.",
+      "task": "task/conformant-record-shapes/evidence-semantics-always-present"
     },
     {
       "id": "proof/evidence-detail/case-evidence-display",
@@ -328,6 +344,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/evidence-detail/case-evidence-display",
       "to": "contracts/investigation/case-simulation",
       "kind": "encodes",
@@ -510,6 +538,12 @@
     {
       "from": "proof/case-run-record/run-totals",
       "to": "implementation/case-run-record/run-totals",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "implementation/conformant-record-shapes/evidence-semantics-always-present",
       "kind": "proves",
       "at": "the path"
     },

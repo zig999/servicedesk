@@ -25,10 +25,7 @@ function prettyPrintJson(value: string): string {
   }
 }
 
-function renderConceptDescription(conceptDescription: string | undefined): JSX.Element | null {
-  if (conceptDescription === undefined) {
-    return null;
-  }
+function renderConceptDescription(conceptDescription: string): JSX.Element {
   return (
     <p className="text-sm text-muted-foreground">
       {conceptDescription === "" ? "No description recorded for this concept." : conceptDescription}
@@ -44,11 +41,8 @@ function renderCapabilityPayloadNotes(notes: string): JSX.Element | null {
 }
 
 function renderFieldSemantics(
-  fields: readonly SimulationFieldSemantics[] | undefined,
-): JSX.Element | null {
-  if (fields === undefined) {
-    return null;
-  }
+  fields: readonly SimulationFieldSemantics[],
+): JSX.Element {
   if (fields.length === 0) {
     return <p className="text-sm text-muted-foreground">No field semantics recorded for this observation.</p>;
   }

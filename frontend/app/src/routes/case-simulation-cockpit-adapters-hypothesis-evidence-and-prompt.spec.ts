@@ -29,6 +29,8 @@ describe("fromHypothesisEvaluation -- carries the run's own evidence onto the no
         capability_version: "1",
         elapsed_ms: 120,
         capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
     ];
 
@@ -48,8 +50,8 @@ describe("fromHypothesisEvaluation -- carries the run's own evidence onto the no
         capabilityVersion: "1",
         connector: "billing-connector",
         capabilityPayloadNotes: "",
-        fields: undefined,
-        conceptDescription: undefined,
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

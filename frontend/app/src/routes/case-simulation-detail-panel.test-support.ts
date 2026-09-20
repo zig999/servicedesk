@@ -21,6 +21,8 @@ export function testEvidenceItem(
     capabilityVersion: "1.0.0",
     connector: "deepl-connector",
     capabilityPayloadNotes: "",
+    fields: [],
+    conceptDescription: "",
     ...overrides,
   };
 }

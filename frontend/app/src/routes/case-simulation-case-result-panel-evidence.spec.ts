@@ -18,6 +18,8 @@ function evidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): SimulateEv
     capability_version: "1",
     elapsed_ms: 10,
     capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }

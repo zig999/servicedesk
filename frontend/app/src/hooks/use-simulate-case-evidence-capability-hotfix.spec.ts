@@ -32,6 +32,8 @@ describe("useSimulateCase -- exposes a real response's own flat capability_name/
           capability_version: "1.0.0",
           elapsed_ms: 340,
           capability_payload_notes: "",
+          fields: [],
+          concept_description: "",
         },
       ],
     });

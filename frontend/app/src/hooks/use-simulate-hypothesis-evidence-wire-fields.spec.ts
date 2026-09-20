@@ -36,6 +36,8 @@ function baseEvidenceItem(overrides: Partial<Evidence> = {}): Evidence {
     capability_version: "1",
     elapsed_ms: 120,
     capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }
@@ -57,6 +59,26 @@ describe("The hypothesis-run Evidence type declares capability_payload_notes as 
     void wrongType;
 
     expect(complete.capability_payload_notes).toBe("some notes");
+  });
+});
+
+describe("Evidence (use-simulate-hypothesis) -- fields and concept_description are required members (evidence-semantics-always-present criterion 2)", () => {
+  it("refuses an evidence item literal that assigns undefined to fields or concept_description", () => {
+    const complete = baseEvidenceItem({
+      fields: [{ name: "status" }],
+      concept_description: "the account's status",
+    });
+
+    // @ts-expect-error -- fields is required, not optional (evidence-semantics-always-present criterion 2).
+    const missingFields: Evidence = { ...complete, fields: undefined };
+    void missingFields;
+
+    // @ts-expect-error -- concept_description is required, not optional (evidence-semantics-always-present criterion 2).
+    const missingConceptDescription: Evidence = { ...complete, concept_description: undefined };
+    void missingConceptDescription;
+
+    expect(complete.fields).toEqual([{ name: "status" }]);
+    expect(complete.concept_description).toBe("the account's status");
   });
 });
 

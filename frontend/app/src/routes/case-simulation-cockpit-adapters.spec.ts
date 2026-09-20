@@ -247,6 +247,8 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         capability_name: "fetch-billing-account",
         capability_version: "1",
         capability_payload_notes: "",
+        fields: [],
+        concept_description: "",
       },
     ];
 
@@ -264,6 +266,8 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         capabilityVersion: "1",
         connector: "billing-connector",
         capabilityPayloadNotes: "",
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

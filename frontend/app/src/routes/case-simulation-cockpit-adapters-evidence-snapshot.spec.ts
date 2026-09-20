@@ -16,6 +16,8 @@ function baseEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): Simula
     capability_version: "1.0.0",
     elapsed_ms: 340,
     capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }
@@ -25,12 +27,12 @@ const SAMPLE_FIELDS: readonly SimulateFieldSemantics[] = [
   { name: "dias_em_atraso" },
 ];
 
-describe("SimulateEvidenceItem -- fields and concept_description are optional wire fields (criterion 1)", () => {
-  it("constructs without either field, proving neither is required", () => {
+describe("SimulateEvidenceItem -- fields and concept_description are required, honest-empty wire fields (criterion 1)", () => {
+  it("constructs a bare item with the honest-empty value for both, never undefined", () => {
     const item: SimulateEvidenceItem = baseEvidenceItem();
 
-    expect(item.fields).toBeUndefined();
-    expect(item.concept_description).toBeUndefined();
+    expect(item.fields).toEqual([]);
+    expect(item.concept_description).toBe("");
   });
 
   it("constructs with both fields present, proving the declared shape accepts them", () => {
@@ -44,8 +46,8 @@ describe("SimulateEvidenceItem -- fields and concept_description are optional wi
   });
 });
 
-describe("Evidence (use-simulate-hypothesis) -- fields and concept_description are optional wire fields (criterion 2)", () => {
-  it("constructs without either field, proving neither is required", () => {
+describe("Evidence (use-simulate-hypothesis) -- fields and concept_description are required, honest-empty wire fields (criterion 2)", () => {
+  it("constructs a bare item with the honest-empty value for both, never undefined", () => {
     const item: Evidence = {
       concept: "perfil-mobile-tecnico",
       inputs: "{}",
@@ -58,10 +60,12 @@ describe("Evidence (use-simulate-hypothesis) -- fields and concept_description a
       capability_version: "1.0.0",
       elapsed_ms: 340,
       capability_payload_notes: "",
+      fields: [],
+      concept_description: "",
     };
 
-    expect(item.fields).toBeUndefined();
-    expect(item.concept_description).toBeUndefined();
+    expect(item.fields).toEqual([]);
+    expect(item.concept_description).toBe("");
   });
 
   it("constructs with both fields present, using its own independently-declared FieldSemantics", () => {
@@ -112,12 +116,12 @@ describe("toDetailEvidence -- carries fields/concept_description through as fiel
     expect(item?.conceptDescription).toBe("");
   });
 
-  it("leaves fields and conceptDescription absent, rather than coerced to a value, for a record carrying neither", () => {
+  it("carries a bare item's own honest-empty fields and concept_description through unchanged, asserting undefined nowhere", () => {
     const evidence: readonly SimulateEvidenceItem[] = [baseEvidenceItem()];
 
     const [item] = toDetailEvidence(evidence);
 
-    expect(item?.fields).toBeUndefined();
-    expect(item?.conceptDescription).toBeUndefined();
+    expect(item?.fields).toEqual([]);
+    expect(item?.conceptDescription).toBe("");
   });
 });

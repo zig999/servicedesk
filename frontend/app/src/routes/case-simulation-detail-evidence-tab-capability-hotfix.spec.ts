@@ -19,6 +19,8 @@ function realDetailEvidenceItem(overrides: Partial<SimulationEvidenceItem> = {})
     capabilityVersion: "1.0.0",
     connector: "mobile-tecnico-connector",
     capabilityPayloadNotes: "",
+    fields: [],
+    conceptDescription: "",
     ...overrides,
   };
 }

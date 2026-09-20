@@ -32,9 +32,9 @@ export type SimulationEvidenceItem = {
   readonly connector: string;
   readonly capabilityPayloadNotes: string;
 
-  readonly fields?: readonly SimulationFieldSemantics[];
+  readonly fields: readonly SimulationFieldSemantics[];
 
-  readonly conceptDescription?: string;
+  readonly conceptDescription: string;
 };
 
 export type SimulationJudgmentCall =

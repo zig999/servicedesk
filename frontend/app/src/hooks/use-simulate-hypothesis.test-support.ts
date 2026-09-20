@@ -109,6 +109,8 @@ export function evidenceItem(): Evidence {
     capability_version: "1",
     elapsed_ms: 120,
     capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
   };
 }
 

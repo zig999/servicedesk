@@ -17,6 +17,8 @@ function testItem(overrides: Partial<SimulationEvidenceItem> = {}): SimulationEv
     capabilityVersion: "1.0.0",
     connector: "deepl-connector",
     capabilityPayloadNotes: "",
+    fields: [],
+    conceptDescription: "",
     ...overrides,
   };
 }

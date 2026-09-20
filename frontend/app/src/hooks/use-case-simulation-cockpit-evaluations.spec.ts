@@ -100,8 +100,8 @@ describe("useCaseSimulationCockpit -- the Detail region reflects whichever run l
         capabilityVersion: "1",
         connector: "billing-connector",
         capabilityPayloadNotes: "",
-        fields: undefined,
-        conceptDescription: undefined,
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

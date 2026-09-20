@@ -15,6 +15,8 @@ function baseEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): Simula
     capability_version: "1",
     elapsed_ms: 120,
     capability_payload_notes: "Field 3 reflects the account's current dispute flag.",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }

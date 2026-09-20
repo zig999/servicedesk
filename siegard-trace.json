@@ -3623,27 +3623,43 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:a4a0de48c51d7f8734b8ea09bd62009d692174c12476c3e2dd3f0bfef013f456"
+          "digest": "sha256:68f375ebdc292c288fd106823f948794872408354b51fcab118c00b878f0337f"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:40d1726e2d953df44c6347600714e171a40375ec2e34c0e2db4e25e0cc10e512"
+          "digest": "sha256:6df5cf1a29e613cb88ddcc75775ba403109472c1343b49afdafae0cdaea6c004"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters-evidence-snapshot.spec.ts",
+          "digest": "sha256:951724ac23d3cb95cdcfd40e05afcc5860b5a0ca8929a5d9616951df6b3e4dad"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters-hypothesis-evidence-and-prompt.spec.ts",
+          "digest": "sha256:3d77836e680a4f5c9694f8a27450c58d48fe2b2d90d0cd82bb25ca6ec459e3a6"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
           "digest": "sha256:256064ca45ab6f23b1d9f8619e6eca75ecec957a7cf4279d6e66171e9dc70ee2"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab-snapshot.spec.ts",
+          "digest": "sha256:f49c3cc6ba6fca3d7e693bb615f42ac351ddfe1b8fc5ad9abadc98115dd13d64"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:f6337c61078539375ea5e0784cb47a7f9ca4a2fca83eab2cfd64b099a6d8af72"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-detail-panel.test-support.ts",
+          "digest": "sha256:568cc9e06da9d1d9856a92bc8fd67086fee29bf17e19cd3076fff7c5e30854f1"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
-          "digest": "sha256:959bb577b94f22977dda70710d9a68578dc34c448a59588e68fa3e56b641c913"
+          "digest": "sha256:f564ae86525b78e2319b90f2e9d0cac4f70519446b59a964bca5e98cf427d3b3"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-evidence-item.tsx",
-          "digest": "sha256:974359239df9fd09b7be73c584fb7c9d61dbdc76214ffe6257f7859c28a6b65d"
+          "digest": "sha256:92357e476762786901a30c9c92d7afe921992339be222f1dbda7db6030b40e87"
         },
         {
           "path": "src/migrations/0005-investigation.sql",

@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-simulate-case-evidence-wire-fields.spec.ts(65,5): error TS2578: Unused '@ts-expect-error' directive.
+src/hooks/use-simulate-case-evidence-wire-fields.spec.ts(68,7): error TS2322: Type 'undefined' is not assignable to type 'string'.
+src/routes/case-simulation-detail-types.spec.ts(36,5): error TS2578: Unused '@ts-expect-error' directive.
+src/routes/case-simulation-detail-types.spec.ts(39,7): error TS2322: Type 'undefined' is not assignable to type 'string'.

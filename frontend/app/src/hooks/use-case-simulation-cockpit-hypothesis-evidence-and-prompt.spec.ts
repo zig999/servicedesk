@@ -44,6 +44,9 @@ describe("useCaseSimulationCockpit -- this task's own reproduction: a single-hyp
               capability_name: "fetch-billing-account",
               capability_version: "1",
               elapsed_ms: 120,
+              capability_payload_notes: "",
+              fields: [],
+              concept_description: "",
             },
           ],
           evaluation: {
@@ -121,8 +124,8 @@ describe("useCaseSimulationCockpit -- a full-case run's own evidence still reach
         capabilityVersion: "1",
         connector: "billing-connector",
         capabilityPayloadNotes: "",
-        fields: undefined,
-        conceptDescription: undefined,
+        fields: [],
+        conceptDescription: "",
       },
     ]);
   });

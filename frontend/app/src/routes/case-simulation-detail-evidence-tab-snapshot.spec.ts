@@ -114,8 +114,8 @@ describe("CaseSimulationDetailEvidenceTab -- an empty fields snapshot renders a 
   });
 });
 
-describe("CaseSimulationDetailEvidenceTab -- a legacy item carrying no snapshot at all renders exactly as before, without error (criterion 6)", () => {
-  it("renders neither a concept_description line nor a field-semantics line when both are absent", () => {
+describe("CaseSimulationDetailEvidenceTab -- an item carrying no explicit snapshot renders the same honest-empty text as its empty-value siblings, without error (criterion 6)", () => {
+  it("renders the same stated-absence sentences criteria 4 and 5 already render, for an item constructed with no explicit fields/concept_description override", () => {
     render(
       createElement(CaseSimulationDetailEvidenceTab, {
         collects: ["Balance"],
@@ -124,8 +124,8 @@ describe("CaseSimulationDetailEvidenceTab -- a legacy item carrying no snapshot 
       }),
     );
 
-    expect(screen.queryByText("No description recorded for this concept.")).toBeNull();
-    expect(screen.queryByText("No field semantics recorded for this observation.")).toBeNull();
+    expect(screen.getByText("No description recorded for this concept.")).toBeTruthy();
+    expect(screen.getByText("No field semantics recorded for this observation.")).toBeTruthy();
     expect(screen.getByText("Balance")).toBeTruthy();
   });
 });

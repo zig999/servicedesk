@@ -15,6 +15,8 @@ function realEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): Simula
     capability_version: "1.0.0",
     elapsed_ms: 340,
     capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }

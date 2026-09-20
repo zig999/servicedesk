@@ -29,6 +29,8 @@ function baseEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): Simula
     capability_version: "1.0.0",
     elapsed_ms: 120,
     capability_payload_notes: "",
+    fields: [],
+    concept_description: "",
     ...overrides,
   };
 }
@@ -46,6 +48,26 @@ describe("SimulateEvidenceItem declares capability_payload_notes as a required s
     void wrongType;
 
     expect(complete.capability_payload_notes).toBe("some notes");
+  });
+});
+
+describe("SimulateEvidenceItem -- fields and concept_description are required members (evidence-semantics-always-present criterion 1)", () => {
+  it("refuses an evidence item literal that assigns undefined to fields or concept_description", () => {
+    const complete = baseEvidenceItem({
+      fields: [{ name: "status" }],
+      concept_description: "the account's status",
+    });
+
+    // @ts-expect-error -- fields is required, not optional (evidence-semantics-always-present criterion 1).
+    const missingFields: SimulateEvidenceItem = { ...complete, fields: undefined };
+    void missingFields;
+
+    // @ts-expect-error -- concept_description is required, not optional (evidence-semantics-always-present criterion 1).
+    const missingConceptDescription: SimulateEvidenceItem = { ...complete, concept_description: undefined };
+    void missingConceptDescription;
+
+    expect(complete.fields).toEqual([{ name: "status" }]);
+    expect(complete.concept_description).toBe("the account's status");
   });
 });
 

@@ -83,12 +83,19 @@ describe("CaseSimulationDetailEvidenceTab -- empty capability payload notes rend
     render(
       createElement(CaseSimulationDetailEvidenceTab, {
         collects: ["Balance"],
-        evidence: [testEvidenceItem({ concept: "Balance", capabilityPayloadNotes: "" })],
+        evidence: [
+          testEvidenceItem({
+            concept: "Balance",
+            capabilityPayloadNotes: "",
+            conceptDescription: "the account's balance and standing",
+            fields: [{ name: "balance" }],
+          }),
+        ],
         judgmentCall: NOT_CALLED,
       }),
     );
 
     expect(screen.getByText("Balance")).toBeTruthy();
-    expect(screen.queryByText(/^No .+ recorded for this/)).toBeNull();
+    expect(screen.queryByText(/payload/i)).toBeNull();
   });
 });
