@@ -32,7 +32,11 @@ describe("useCasesList -- reads every case's slug together with a summary derive
         return jsonResponse({ data: [{ version: 1, state: "released" }], total: 1, limit: 1, offset: 0, pageCount: 1 });
       }
       if (url === "/v1/cases/case-alpha/versions/1") {
-        return jsonResponse({ authored_at: "2024-01-01T00:00:00.000Z" });
+        return jsonResponse({
+          authored_at: "2024-01-01T00:00:00.000Z",
+          title: "Case Alpha",
+          when_to_use: "When alpha applies",
+        });
       }
       throw new Error(`useCasesList proof: unexpected fetch to ${url}`);
     });
@@ -44,7 +48,14 @@ describe("useCasesList -- reads every case's slug together with a summary derive
     expect(result.current.data).toEqual([
       {
         slug: "case-alpha",
-        summary: { versionCount: 1, currentState: "released", lastUpdated: "2024-01-01T00:00:00.000Z" },
+        summary: {
+          versionCount: 1,
+          currentState: "released",
+          lastUpdated: "2024-01-01T00:00:00.000Z",
+          title: "Case Alpha",
+          whenToUse: "When alpha applies",
+          releasedVersion: 1,
+        },
       },
     ]);
   });

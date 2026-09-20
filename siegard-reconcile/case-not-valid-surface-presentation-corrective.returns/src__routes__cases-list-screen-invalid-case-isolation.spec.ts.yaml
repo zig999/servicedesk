@@ -1,0 +1,40 @@
+read:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the row-count and per-row assertions in the single `it`, lines 116-134 — both cases
+      remain listed and only case-broken's entry substitutes the statement for its summary
+    evidence: |
+      const rows = within(table).getAllByRole("button");
+      expect(rows).toHaveLength(2);
+      ...
+      expect(within(brokenRow).getByText("case-broken")).toBeTruthy();
+      expect(within(brokenRow).getByText(NOT_VALID_STATEMENT)).toBeTruthy();
+      const brokenCells = within(brokenRow).getAllByRole("cell");
+      expect(brokenCells[2].textContent).toBe("");
+      expect(brokenCells[3].textContent).toBe("");
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the assertions on `alphaRow`, lines 122-126, checking current_state, version_count
+      and last_updated for the unaffected case
+    evidence: |
+      expect(within(alphaRow).getByText("Released")).toBeTruthy();
+      expect(within(alphaRow).getByText("1")).toBeTruthy();
+      expect(
+        within(alphaRow).getByText(expectedLastUpdated("2024-01-15T09:30:00.000Z")),
+      ).toBeTruthy();
+  - node: domain/knowledge/case
+    held_at: >-
+      the slug assertions on both rows, lines 121 and 129
+    evidence: |
+      expect(within(alphaRow).getByText("case-alpha")).toBeTruthy();
+      ...
+      expect(within(brokenRow).getByText("case-broken")).toBeTruthy();
+looked_past: >-
+  The exact wording of NOT_VALID_STATEMENT and the table/row/cell markup it is matched
+  against belong to cases-list-screen.tsx's own conformance, not this test file's — the
+  isolation rule itself leaves wording and placement to the interface; likewise the
+  `limit: 20` pagination field in the /v1/cases fixture is inert (never asserted) and
+  matches constraints/listings-are-paged's rule that such defaults are deployment
+  configuration, not a business figure this test states.
+candidates_opened:
+  - contracts/knowledge/case-query

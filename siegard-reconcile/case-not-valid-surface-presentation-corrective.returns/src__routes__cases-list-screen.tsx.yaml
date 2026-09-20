@@ -1,0 +1,67 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the `useCasesList()` call feeding the whole screen's data, line 77
+    evidence: >-
+      const casesQuery = useCasesList();
+  - node: domain/knowledge/case
+    held_at: >-
+      the `slug` field carried on every row and used as both the row key and the search key,
+      lines 40-41, 50-51 and 70
+    evidence: >-
+      slug: entry.slug,
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the `toRow` function's normal branch, lines 45-54, which reads currentState, versionCount
+      and lastUpdated off `entry.summary`
+    evidence: >-
+      const stateCell =
+        entry.summary.currentState === undefined
+          ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }
+          : CASE_STATE_CELL[entry.summary.currentState];
+      return {
+        id: entry.slug,
+        slug: entry.slug,
+        state: stateCell,
+        versionCount: entry.summary.versionCount,
+        lastUpdated: formatLastUpdated(entry.summary.lastUpdated),
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: >-
+      the CASE_STATE_CELL map, lines 17-20, keyed exhaustively over the two enumeration values
+    evidence: >-
+      const CASE_STATE_CELL: Readonly<Record<CaseVersionState, { color: string; label: string }>> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: >-
+      the "Create case" Button in the component's outer return, lines 142-149, placed beside
+      `{renderBody()}` rather than inside it
+    evidence: >-
+      <Button type="button" onClick={() => void navigate({ to: "/cases/new" })}>
+              Create case
+            </Button>
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the `isCaseListEntryNotValid` branch of `toRow`, lines 38-44
+    evidence: >-
+      if (isCaseListEntryNotValid(entry)) {
+          return {
+            id: entry.slug,
+            slug: entry.slug,
+            state: CURRENT_VERSION_NOT_VALID_STATEMENT,
+          };
+        }
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: >-
+      the same `toRow` normal branch, lines 45-54, where an absent currentState/lastUpdated is
+      shown as an explicit absence rather than an invented value
+    evidence: >-
+      entry.summary.currentState === undefined
+          ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }
+          : CASE_STATE_CELL[entry.summary.currentState];
+looked_past: >-
+  The client-side slug search (filterEntriesBySlug, lines 65-71) and the absence of any paging
+  control are interaction/capability details no node in this set or the wider specification
+  addresses either way, so they were not treated as a domain-fact finding for this pass.

@@ -13,7 +13,12 @@ files:
     that reuses errorStateKind(error) to recognize a CaseVersionNotValidError and return the not-valid
     entry instead of the summary; any other error still propagates. fetchCasesWithSummaries runs fetchCaseListEntry
     per case inside Promise.all, so one case''s rejection no longer aborts the others. Exports isCaseListEntryNotValid,
-    a type guard narrowing to the not-valid member.'
+    a type guard narrowing to the not-valid member. CaseSummary now also carries title, whenToUse and releasedVersion:
+    releasedInfo() derives them from the case''s own highest-numbered *released* version -- reusing the
+    already-fetched detail when the current highest version is itself released, otherwise fetching the
+    full version list once (now known-sized from versionCount) to find the highest released version below
+    the current draft and fetching that version''s own detail -- present only where such a released version
+    exists, per domain/knowledge/case-summary.'
 - path: src/routes/cases-list-screen.tsx
   effect: toRow checks isCaseListEntryNotValid first and, for that entry, returns a row carrying only
     id and slug plus a state cell holding the explicit statement "This case's current version does not
@@ -48,8 +53,11 @@ nodes:
 - node: domain/knowledge/case-summary
   encoded_at:
   - src/hooks/use-cases-list.ts
-  how: The CaseSummary shape (versionCount, optional currentState, optional lastUpdated) is unchanged;
-    the not-valid entry carries no CaseSummary at all rather than a partially-filled one.
+  how: CaseSummary now carries versionCount, optional currentState and lastUpdated (derived from the
+    case's own highest-numbered version) alongside optional title, whenToUse and releasedVersion (derived
+    from the case's own highest-numbered *released* version, absent where none exists), per the node's
+    own Responsibility; the not-valid entry carries no CaseSummary at all rather than a partially-filled
+    one.
 - node: domain/knowledge/case
   encoded_at:
   - src/hooks/use-cases-list.ts
@@ -60,7 +68,7 @@ nodes:
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
-run: run/case-not-valid-surface-presentation-isolate-invalid-case-from-listing-build-3
+run: run/case-not-valid-surface-presentation-isolate-invalid-case-from-listing-suite-2
 inferences:
 - inferred: No inventory convention was available (plan-work's corrective route ran no survey or decomposition),
     so conventions were drawn directly from sibling implementations already in the tree.
@@ -80,14 +88,15 @@ inferences:
     versionCount/lastUpdated absent (empty cells) rather than reusing the zero-version dash placeholder.
   from: the implemented node requiring the not-valid outcome to read as distinct from the zero-version
     outcome, which reusing that same dash would have blurred
+- inferred: title and when_to_use are read off the same `/v1/cases/{slug}/versions/{version}` response
+    fetchCaseListEntry already reads for authored_at; no second field-shaped endpoint was needed for them.
+  from: domain/knowledge/case-version declares title and when_to_use as required attributes of every version,
+    so the existing per-version detail read already carries them
 preserved:
-- Every other case's row continues to compute exactly as it did before this change (fetchCaseListEntry's
-  valid branch is behaviorally identical to the prior fetchCaseSummary), and the pre-existing zero-version
-  "No version yet"/"-" presentation is untouched.
+- The not-valid branch and per-case isolation behavior from the first delivery are unchanged; only the
+  valid-entry branch's CaseSummary grew the three fields the first review found missing.
 - The top-level GET /v1/cases failure still rejects useCasesList's whole query and drives the screen's
   existing "Cases could not be loaded." + Retry state.
-- The two pre-existing use-cases-list.spec.ts assertions on the valid-entry shape keep matching verbatim,
-  since that variant's shape was left unchanged.
 - Slug-based search/filtering (filterEntriesBySlug) is untouched and applies identically to both entry
   kinds, since both carry `slug`.
 deferred:
@@ -107,3 +116,4 @@ The cases-list query now answers a distinct not-valid entry for a case whose cur
 ## Notes
 The build run initially failed on typecheck for reasons unrelated to this task's own files: the `frontend/tui` git submodule was not initialized in this worktree, and once initialized, its own package (`ui-kit`) had no installed dependencies either. Both were environment gaps of the worktree, not of this delivery's source; `git submodule update --init --recursive frontend/tui` and `npm ci` inside `frontend/tui/frontend` resolved them, after which the build passed clean on the third attempt (`build-3`; `build` and `build-2` are the two failed environment-setup attempts, kept on disk under `run/`).
 A per-case fetch failing for a reason other than CaseVersionNotValidError (a network error, a 500, an unmapped error) still rejects the whole listing query, reverting to today's whole-listing failure -- the implemented node governs only a validator-rule failure at that reading, and widening isolation to other read failures is a fact no node here states.
+Re-delivered after this task's first review (delivery/case-not-valid-surface-presentation-corrective/review/case-not-valid-surface-presentation-corrective.md) found three conformance findings against domain/knowledge/case-summary: CaseSummary never carried title, when_to_use or released_version for a released case. This revision adds releasedInfo() to use-cases-list.ts, deriving the three from the case's own highest-numbered released version (reusing the already-fetched detail when the current highest version is itself released; otherwise fetching the full, now-known-sized version list once to find the highest released version below a current draft, then that version's own detail). The suite was captured again as run/case-not-valid-surface-presentation-isolate-invalid-case-from-listing-suite-2, replacing the first delivery's `run` pointer.

@@ -1759,7 +1759,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -4117,7 +4117,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-cases-list.ts",
-          "digest": "sha256:31c6fbee35459e29bc88cef03cbdb04439824906b2deab9775060e77542d389a"
+          "digest": "sha256:717d11a76518762766d07dfae8e58498919c0b9adc1a8c35c63e8824d84675e2"
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -4281,7 +4281,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-cases-list.ts",
-          "digest": "sha256:31c6fbee35459e29bc88cef03cbdb04439824906b2deab9775060e77542d389a"
+          "digest": "sha256:717d11a76518762766d07dfae8e58498919c0b9adc1a8c35c63e8824d84675e2"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -4517,7 +4517,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -8023,7 +8023,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         }
       ],
       "decided_by": "test",
@@ -8041,7 +8041,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-cases-list.ts",
-          "digest": "sha256:31c6fbee35459e29bc88cef03cbdb04439824906b2deab9775060e77542d389a"
+          "digest": "sha256:717d11a76518762766d07dfae8e58498919c0b9adc1a8c35c63e8824d84675e2"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -8055,7 +8055,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",

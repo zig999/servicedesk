@@ -23,12 +23,23 @@ type CaseVersionListItem = {
 
 type CaseVersionDetail = {
   readonly authored_at: string;
+  readonly title: string;
+  readonly when_to_use: string;
 };
 
 export type CaseSummary = {
   readonly versionCount: number;
   readonly currentState?: CaseVersionState;
   readonly lastUpdated?: string;
+  readonly title?: string;
+  readonly whenToUse?: string;
+  readonly releasedVersion?: number;
+};
+
+type ReleasedInfo = {
+  readonly title?: string;
+  readonly whenToUse?: string;
+  readonly releasedVersion?: number;
 };
 
 export type CaseListEntry =
@@ -67,14 +78,46 @@ async function fetchCaseListEntry(slug: string): Promise<CaseListEntry> {
     throw error;
   }
 
+  const released = await releasedInfo(slug, highest, detail, versionCount);
+
   return {
     slug,
     summary: {
       versionCount,
       currentState: highest.state,
       lastUpdated: detail.authored_at,
+      ...released,
     },
   };
+}
+
+async function releasedInfo(
+  slug: string,
+  highest: CaseVersionListItem,
+  highestDetail: CaseVersionDetail,
+  versionCount: number,
+): Promise<ReleasedInfo> {
+  if (highest.state === "released") {
+    return {
+      title: highestDetail.title,
+      whenToUse: highestDetail.when_to_use,
+      releasedVersion: highest.version,
+    };
+  }
+  if (versionCount === 1) {
+    return {};
+  }
+  const everyVersion = await apiFetch<PaginatedResponse<CaseVersionListItem>>(
+    caseVersionsUrl(slug, versionCount, 0),
+  );
+  const released = everyVersion.data.find((item) => item.state === "released");
+  if (released === undefined) {
+    return {};
+  }
+  const detail = await apiFetch<CaseVersionDetail>(
+    `/v1/cases/${encodeURIComponent(slug)}/versions/${released.version}`,
+  );
+  return { title: detail.title, whenToUse: detail.when_to_use, releasedVersion: released.version };
 }
 
 async function fetchCasesWithSummaries(): Promise<CaseListEntry[]> {

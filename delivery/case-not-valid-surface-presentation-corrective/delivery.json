@@ -16,6 +16,22 @@
       "title": "Isolate one case's invalid current version from the cases listing",
       "summary": "Proof that a listing carrying a case whose current version fails validation still renders every other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the data layer (useCasesList) and the rendered screen, including where more than one case fails at the same reading.",
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
+    },
+    {
+      "id": "review/case-not-valid-surface-presentation-corrective",
+      "kind": "review",
+      "file": "review/case-not-valid-surface-presentation-corrective.md",
+      "title": "Case-not-valid surface presentation, first review",
+      "summary": "What four passes found over the delivery of task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing, which isolates one case's invalid current version from the rest of the /cases listing.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A listing of every case, read while one case's current version fails a validator rule of validation-runs-at-every-read at that reading, still presents every other case's own summary, exactly as it would be presented were every validator rule to hold for that one case's current version."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -48,6 +64,12 @@
       "to": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective",
+      "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

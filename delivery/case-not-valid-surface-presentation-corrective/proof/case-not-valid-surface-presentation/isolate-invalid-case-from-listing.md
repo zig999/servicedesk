@@ -5,12 +5,24 @@ summary: Proof that a listing carrying a case whose current version fails valida
   other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the
   data layer (useCasesList) and the rendered screen, including where more than one case fails at the same
   reading.
-implementation: sha256:9ed0f2edb399c2429f49a4f1dafa2314aafd1d249cf4b8910849805042c6a107
+implementation: sha256:d948e42ea620c49d8747d9ea9fe5bbdd84dcffb75d08611afa93474b312acbc7
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
-run: run/case-not-valid-surface-presentation-isolate-invalid-case-from-listing-suite
+run: run/case-not-valid-surface-presentation-isolate-invalid-case-from-listing-suite-2
 tests:
+- file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+  name: resolves a case whose highest version is a draft to a summary carrying the current draft's own
+    state alongside title, when_to_use and released_version read from the case's own highest released version
+    below it
+  proves: The review's first finding against domain/knowledge/case-summary -- CaseSummary never carried
+    title, when_to_use or released_version -- and specifically the harder derivation case the certification
+    pass's remainder named untested, where the case's current (highest-numbered) version is a draft and
+    the highest released version sits below it.
+  fails_when: the resolved summary's title, whenToUse or releasedVersion differ from the case's own highest
+    released version (version 2 here) rather than from its current draft (version 3), or currentState/lastUpdated
+    stop reflecting the current draft.
+  demonstrates: domain/knowledge/case-summary
 - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
   name: resolves every other case's own summary unaffected and the failing case's own entry to only its
     slug and the not-valid marker when one case's current version fails validation
@@ -48,6 +60,13 @@ tests:
   fails_when: case-alpha's rendered row stops matching its own state, version-count or last-updated text
     once case-broken's version fails validation, or case-broken's row fails to show its slug and the exact
     not-valid statement text, or its version-count or last-updated cell renders anything other than empty.
+- file: src/hooks/use-cases-list.spec.ts
+  name: resolves to one entry per case, each carrying the highest-numbered version's own state and authored_at
+  proves: The pre-existing valid-entry shape, widened by this revision to also assert title, whenToUse
+    and releasedVersion for a released case -- kept in step with CaseSummary's now-wider shape rather
+    than left asserting the narrower shape the fix no longer produces.
+  fails_when: the resolved entry's summary omits, or misstates, versionCount, currentState, lastUpdated,
+    title, whenToUse or releasedVersion for a released case holding a single version.
 not_applicable:
 - edge_case: A listing carrying zero cases
   why: Unaffected by this task's change (no case can fail validation in an empty listing) and already
@@ -71,13 +90,12 @@ not_applicable:
   why: Already governed by the pre-existing loading state (casesQuery.isPending), which this task's change
     does not alter; no criterion here states a distinct timing behavior for a slow per-case read.
 untested:
-- 'domain/knowledge/case-summary''s fact spans more than this task''s files encode: title, when_to_use
-  and released_version, and the absence rules tied to a case ever holding a released version, are not
-  represented in use-cases-list.ts''s CaseSummary at all (it carries only versionCount, currentState and
-  lastUpdated). No test in this proof can decide that node''s fact whole from files this task touches;
-  the one point the task''s own files reach -- that a not-valid entry carries no CaseSummary at all rather
-  than a partially-filled one -- is exercised incidentally by the two hook-level tests above (the not-valid
-  entry carries no summary key), but that is a fragment of the node''s fact, not the whole of it.'
+- 'A case whose every version is a draft, never released: domain/knowledge/case-summary states title,
+  when_to_use and released_version are absent rather than invented where no released version exists.
+  releasedInfo()''s `released === undefined` branch (no released version found in the full version list)
+  encodes this, but no test drives it -- every fixture above holds at least one released version. Passes:
+  an implementation that, on finding no released version, invents a value from the current draft instead
+  of returning {}.'
 - domain/knowledge/case's fact includes next_version and the create-draft operation, neither of which
   use-cases-list.ts or cases-list-screen.tsx touches -- these files read and render only a case's slug.
   No test in this proof decides the node's fact whole; the tests above exercise only that slug identifies
@@ -89,10 +107,20 @@ untested:
   task implements governing only a validator-rule failure at that reading; no criterion or node reached
   by this task states what a per-case read failure of another kind should do, so no test here decides
   it either way.
+divergences:
+- cites: TST-01
+  file: src/hooks/use-cases-list.spec.ts
+  departure: this proof edited a pre-existing test file (use-cases-list.spec.ts) that this task's own
+    tests never listed before, widening its first test's expected summary to include title, whenToUse
+    and releasedVersion.
+  why: the first review of this task found CaseSummary missing title, when_to_use and released_version;
+    the implementation's fix widens every valid entry's shape, and the pre-existing test's fixture (a
+    released case) would otherwise assert the narrower shape the fix no longer produces -- leaving it
+    unedited would have broken the suite, not preserved a prior guarantee.
 ---
 
 ## What it is
 Proof that a listing carrying a case whose current version fails validation still renders every other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the data layer (useCasesList) and the rendered screen, including where more than one case fails at the same reading.
 
 ## Notes
-None.
+Re-delivered after the first review found three conformance findings against domain/knowledge/case-summary; the two hook-level tests' expected summaries now include title, whenToUse and releasedVersion for their released fixtures (case-alpha, case-good), a new test covers the harder derivation case (current version a draft, released version below it), and the run pin moved to run/case-not-valid-surface-presentation-isolate-invalid-case-from-listing-suite-2.

@@ -1,0 +1,83 @@
+findings:
+  - file: src/hooks/use-cases-list.ts
+    where: the `CaseSummary` type (lines 28-32) and the object `fetchCaseListEntry` returns for a valid entry (lines 70-77)
+    evidence: |-
+      export type CaseSummary = {
+        readonly versionCount: number;
+        readonly currentState?: CaseVersionState;
+        readonly lastUpdated?: string;
+      };
+      ...
+      return {
+        slug,
+        summary: {
+          versionCount,
+          currentState: highest.state,
+          lastUpdated: detail.authored_at,
+        },
+      };
+    cost: >-
+      A consumer of `useCasesList` can never receive a case's title, when_to_use or released_version
+      for a released case: the type has no field for any of the three and fetchCaseListEntry only
+      ever fetches the case's highest-numbered version (via `/versions/${highest.version}`), never
+      its highest released one. The specification's own case-summary was extended precisely so a
+      catalog reader — a curator browsing, or "an automated consumer comparing every when_to_use
+      before choosing" — could read these off the listing without opening each case's versions; here
+      that data is structurally unreachable from the hook the listing screen consumes.
+    kind: contradicts
+    node: domain/knowledge/case-summary
+    correction: >-
+      Add title, when_to_use and released_version to CaseSummary, derived from the case's
+      highest-numbered version whose own state is released (a separate lookup from the
+      current-state-deriving highest version), present only where such a released version exists,
+      per rules/knowledge/a-case-summary-is-derived-from-its-existing-versions.
+
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      the `CaseIdentity` type and its use as the key for every fetched entry
+    evidence: |-
+      type CaseIdentity = {
+        readonly slug: string;
+      };
+      ...
+      casesPage.data.map((identity) => fetchCaseListEntry(identity.slug))
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      partially: the `CaseSummary` type and the summary object `fetchCaseListEntry` returns carry
+      versionCount, currentState and lastUpdated; title, when_to_use and released_version are absent
+      from the type and never derived anywhere in the file
+    evidence: |-
+      export type CaseSummary = {
+        readonly versionCount: number;
+        readonly currentState?: CaseVersionState;
+        readonly lastUpdated?: string;
+      };
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the try/catch around the highest version's detail fetch in `fetchCaseListEntry`, and the
+      `notValid` branch of the `CaseListEntry` union
+    evidence: |-
+      export type CaseListEntry =
+        | { readonly slug: string; readonly summary: CaseSummary }
+        | { readonly slug: string; readonly notValid: true };
+      ...
+      try {
+        detail = await apiFetch<CaseVersionDetail>(
+          `/v1/cases/${encodeURIComponent(slug)}/versions/${highest.version}`,
+        );
+      } catch (error) {
+        if (errorStateKind(error) === "case-not-valid") {
+          return { slug, notValid: true };
+        }
+        throw error;
+      }
+
+looked_past: >-
+  The hook imports `errorStateKind` from `use-edit-draft-version-form` (a form hook) to classify the
+  version-detail fetch's error, and re-declares `CaseVersionState` as a local union type mirroring
+  domain/knowledge/case-version-state's enumeration — both are code-organization choices rather than
+  a stated or contradicted domain fact, so they are left to a different pass.
+candidates_opened:
+  - contracts/knowledge/case-query
+  - rules/knowledge/a-case-summary-is-derived-from-its-existing-versions

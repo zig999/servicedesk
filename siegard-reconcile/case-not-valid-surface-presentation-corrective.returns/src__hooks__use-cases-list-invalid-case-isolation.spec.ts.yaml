@@ -1,0 +1,80 @@
+findings:
+  - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+    where: >-
+      the case-alpha version-detail mock and its expected summary in the first test, lines
+      61-62 and 78-82
+    evidence: |-
+      "/v1/cases/case-alpha/versions/1": () =>
+        jsonResponse({ authored_at: "2024-01-01T00:00:00.000Z" }),
+      ...
+      {
+        slug: "case-alpha",
+        summary: { versionCount: 1, currentState: "released", lastUpdated: "2024-01-01T00:00:00.000Z" },
+      },
+    cost: >-
+      case-alpha's current version is stated as released (`state: "released"` in the versions
+      list), so a reader treating this test as the contract for a released case's summary is
+      told title, when_to_use and released_version are never part of it; an implementation
+      change that stops deriving those three fields for a released case would pass this test
+      undetected.
+    kind: contradicts
+    node: domain/knowledge/case-summary
+    correction: >-
+      mock the version-detail response with title, when_to_use and released_version data and
+      include them in the expected summary for case-alpha, since its current version is released.
+
+  - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+    where: >-
+      the case-good version-detail mock and its expected summary in the second test, lines
+      107-108 and 133-137
+    evidence: |-
+      "/v1/cases/case-good/versions/1": () =>
+        jsonResponse({ authored_at: "2024-02-02T00:00:00.000Z" }),
+      ...
+      {
+        slug: "case-good",
+        summary: { versionCount: 1, currentState: "released", lastUpdated: "2024-02-02T00:00:00.000Z" },
+      },
+    cost: >-
+      same gap as case-alpha, repeated in the second test: case-good's current version is
+      released yet the expected summary carries no title, when_to_use or released_version,
+      so the test again pins a shape the specification does not allow for a released case.
+    kind: contradicts
+    node: domain/knowledge/case-summary
+    correction: >-
+      mock the version-detail response with title, when_to_use and released_version data and
+      include them in the expected summary for case-good, since its current version is released.
+
+read:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the `notValid: true` entries for case-broken (first test) and case-bad-one/case-bad-two
+      (second test), each carrying only their slug, alongside the sibling entries that keep
+      their own summary unaffected
+    evidence: |-
+      { slug: "case-broken", notValid: true },
+      ...
+      { slug: "case-bad-one", notValid: true },
+      { slug: "case-bad-two", notValid: true },
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the `summary` object literal in the expected `data` entries for case-alpha and
+      case-good — only for versionCount, currentState and lastUpdated; title, when_to_use
+      and released_version are never exercised despite both cases' current version being
+      released (see findings)
+    evidence: |-
+      summary: { versionCount: 1, currentState: "released", lastUpdated: "2024-01-01T00:00:00.000Z" },
+  - node: domain/knowledge/case
+    held_at: the `slug` field on every entry of both expected `data` arrays
+    evidence: |-
+      { slug: "case-alpha", summary: { ... } },
+      { slug: "case-broken", notValid: true },
+
+looked_past: >-
+  the pagination fields returned by the mocked /v1/cases and /versions endpoints (limit,
+  offset, pageCount, total) are fixture filler the test never asserts on, and any query-shape
+  question belongs to contracts/knowledge/case-query, which this batch binds to
+  cases-list-screen.tsx rather than to this hook's spec.
+
+candidates_opened:
+  - rules/knowledge/a-case-summary-is-derived-from-its-existing-versions

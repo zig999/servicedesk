@@ -1,0 +1,51 @@
+certified:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    state: partial
+    tests:
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          useCasesList -- isolating one case's current version failing validation from the rest of the
+          listing (criterion 1, criterion 2) > resolves every other case's own summary unaffected and
+          the failing case's own entry to only its slug and the not-valid marker when one case's
+          current version fails validation
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          useCasesList -- more than one case's current version failing validation at the same reading
+          (UNDERDETERMINED note 2) > resolves the listing successfully with an isolated not-valid entry
+          for each of two cases whose current versions fail validation at the same reading, rather than
+          reverting to a whole-listing failure
+    why: >-
+      Much of the fact is exercised strictly. Both tests assert the hook's whole result with
+      `toEqual` over the entry array, so an entry for the failing case is proven present rather
+      than dropped; the failing entry is proven to carry its own slug and nothing else, which
+      holds "it states no fact of c_i's summary" negatively — notably version_count, which the
+      hook has in hand (the versions-list call for case-broken succeeds and reports total 5) and
+      must still withhold; and the unaffected entries are proven to carry their own summary values
+      and to state none of this, since any leaked `notValid` key would break the same deep
+      equality. Two ways the fact can stop holding are unexercised. First, the fact is that the
+      failing entry "carries, in place of the whole summary it would otherwise have carried, the
+      explicit statement that this case's current version does not read back as a case at that
+      reading"; the node places which control carries that statement and how it is worded with the
+      interface, but that a statement is carried at all is the fact, not form. The offered proof
+      reaches only the data hook, which returns `notValid: true`. A listing surface that consumed
+      that flag and rendered the entry as a bare slug with nothing said would leave the curator
+      told nothing about the case that needs correction, and both named tests would still pass.
+      Second, the expression conditions the statement on v_i, "the version, among the versions c_i
+      currently holds, whose version number is highest". Every mocked versions-list response
+      returns exactly one version regardless of the case's total (case-broken reports total 5 and
+      returns only version 5), so the hook's selection of which version to read back is fixed by
+      the fixture rather than asserted. A hook that validated some version other than the
+      highest-numbered one would state "this case's current version does not read back" of a case
+      whose current version does read back — the fact stops holding — and neither test would fail.
+    remainder: testable
+    remainder_why: >-
+      Two assertions would close it. For the statement: render the cases listing against the same
+      stubbed reading, with one case's current version failing a validator rule, and assert the
+      rendered entry for that case carries a statement that its current version does not read back
+      as a case at that reading, while carrying no current_state, version_count, last_updated,
+      title, when_to_use or released_version, and that the sibling entry renders its own summary.
+      For the version selection: stub a case holding several versions whose versions-list response
+      carries more than one entry — say versions 3, 5 and 9 — with the read of version 9 failing a
+      validator rule and the reads of 3 and 5 succeeding, and assert the entry is the not-valid
+      entry; then the converse, with 9 succeeding and a lower-numbered version failing, asserting
+      the entry carries the case's summary and states none of this.
