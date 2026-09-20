@@ -9,6 +9,13 @@
       "summary": "What one whole simulate-case run discloses after it finishes, held per run in the session history and presented in a Debug block under Case result."
     },
     {
+      "id": "epic/conformant-record-shapes",
+      "kind": "epic",
+      "file": "epic/conformant-record-shapes.md",
+      "title": "The cockpit's types state what a record actually carries",
+      "summary": "Four TypeScript declarations in the case-simulation cockpit disagree with the specification about presence — optional where an attribute is required, unconditional where a whole record is conditional, three values where the enumeration declares four, and absent where a rule requires a total — and each is corrected together with the readers and fixtures that lock the wrong reading in."
+    },
+    {
       "id": "epic/evidence-detail",
       "kind": "epic",
       "file": "epic/evidence-detail.md",
@@ -21,6 +28,13 @@
       "file": "inventory/case-simulation-debug-expansion.md",
       "title": "Case simulation Debug surface",
       "summary": "The frontend module rendering the case-simulation screen's Debug tabs, evidence display, and per-run history, where the proposal's additions land."
+    },
+    {
+      "id": "inventory/case-simulation-debug-expansion-frontend-corrections",
+      "kind": "inventory",
+      "file": "inventory/case-simulation-debug-expansion-frontend-corrections.md",
+      "title": "case-simulation debug-expansion frontend — spec-conformance corrections 1-4",
+      "summary": "Four wire/domain-shaped TypeScript unions in the case-simulation cockpit (evidence field-semantics optionality, the case-result run shape, the evaluation-reason union, and the hypothesis-run's cost) are typed narrower or looser than their specification nodes, and each type is read by several independently-written adapters, components and per-file test fixtures rather than one shared reuse point -- the four corrections are type-only, but their fan-out is wide."
     },
     {
       "id": "task/case-run-record/consolidation-debug",
@@ -53,6 +67,38 @@
       "title": "The run's own totals beside its durations",
       "summary": "Calls and tokens in and out for the whole run, shown next to the stage durations already on screen.",
       "epic": "case-run-record"
+    },
+    {
+      "id": "task/conformant-record-shapes/assessment-under-its-call",
+      "kind": "task",
+      "file": "task/conformant-record-shapes/assessment-under-its-call.md",
+      "title": "A run's assessment is present only where a writing call produced one",
+      "summary": "outcome, referral, determiningHypothesis, text and register move inside the discriminant that states a consolidation call happened, together with the one production builder, the two unconditional render sites and the nine fixture builders that construct them flat today.",
+      "epic": "conformant-record-shapes"
+    },
+    {
+      "id": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "kind": "task",
+      "file": "task/conformant-record-shapes/evidence-semantics-always-present.md",
+      "title": "An evidence item's snapshotted semantics are never absent",
+      "summary": "fields and concept_description stop being optional across the three cockpit evidence types, and every reader, render branch and test that treated their absence as a case of its own is corrected with them.",
+      "epic": "conformant-record-shapes"
+    },
+    {
+      "id": "task/conformant-record-shapes/hypothesis-run-cost",
+      "kind": "task",
+      "file": "task/conformant-record-shapes/hypothesis-run-cost.md",
+      "title": "A hypothesis run returns its own cost",
+      "summary": "SimulateHypothesisResult gains a required cost of the shape the case-level result already declares, threaded through useSimulateHypothesis's result and through the one shared fixture every hook-level spec builds that result from.",
+      "epic": "conformant-record-shapes"
+    },
+    {
+      "id": "task/conformant-record-shapes/not-grounded-reason",
+      "kind": "task",
+      "file": "task/conformant-record-shapes/not-grounded-reason.md",
+      "title": "The fourth inconclusive reason reaches the cockpit",
+      "summary": "not-grounded joins the three values every evaluation-reason union in the cockpit admits, including the separately declared union the verdict cell keys its label map on.",
+      "epic": "conformant-record-shapes"
     },
     {
       "id": "task/evidence-detail/case-evidence-display",
@@ -403,6 +449,366 @@
     {
       "from": "epic/case-run-record",
       "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/field-semantics",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "contracts/investigation/assessment-reviewed",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-presented-consolidation-prompt-is-shown-whole",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-simulation-carries-its-requester",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/an-evidence-item-that-sent-no-inputs-records-an-empty-object",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/an-evidence-item-whose-result-is-not-ok-records-an-empty-observation",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/an-evidence-items-observed-at-is-a-utc-instant",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/an-evidence-items-ttl-is-counted-in-seconds-from-its-own-observation",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/an-observation-is-recorded-as-json-object-text",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[36]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[37]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[38]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "covers",
+      "at": "covers[39]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "covers",
+      "at": "covers[40]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "covers",
+      "at": "covers[41]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "covers",
+      "at": "covers[42]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing",
+      "kind": "covers",
+      "at": "covers[43]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "covers",
+      "at": "covers[44]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-citation-names-a-nested-output-schema-field",
+      "kind": "covers",
+      "at": "covers[45]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[46]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "covers",
+      "at": "covers[47]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "covers",
+      "at": "covers[48]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-nested-output-schema-property-is-named-by-its-full-path",
+      "kind": "covers",
+      "at": "covers[49]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "covers",
+      "at": "covers[50]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "covers",
+      "at": "covers[51]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute",
+      "kind": "covers",
+      "at": "covers[52]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-simulated-subject-omitting-a-required-attribute-degrades",
+      "kind": "covers",
+      "at": "covers[53]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "covers",
+      "at": "covers[54]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "covers",
+      "at": "covers[55]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "covers",
+      "at": "covers[56]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/investigation/an-in-place-revision-edit-stales-the-shown-result",
+      "kind": "covers",
+      "at": "covers[57]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "covers",
+      "at": "covers[58]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[59]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/conformant-record-shapes",
+      "to": "domain/investigation/evaluation-reason",
       "kind": "covers",
       "at": "covers[9]"
     },
@@ -927,6 +1333,72 @@
       "to": "domain/investigation/durations",
       "kind": "implements",
       "at": "implements[4]"
+    },
+    {
+      "from": "task/conformant-record-shapes/assessment-under-its-call",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/conformant-record-shapes/assessment-under-its-call",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/conformant-record-shapes/assessment-under-its-call",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/conformant-record-shapes/assessment-under-its-call",
+      "to": "rules/investigation/a-simulation-session-retains-its-runs-and-shows-one",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/conformant-record-shapes/assessment-under-its-call",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/conformant-record-shapes/evidence-semantics-always-present",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/conformant-record-shapes/hypothesis-run-cost",
+      "to": "rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/conformant-record-shapes/hypothesis-run-cost",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/conformant-record-shapes/hypothesis-run-cost",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/conformant-record-shapes/not-grounded-reason",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/evidence-detail/case-evidence-display",
