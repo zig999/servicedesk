@@ -1,0 +1,39 @@
+read:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the assertions in the sole `it` block: both cases still produce a row (`rows`
+      has length 2), the failing case's row carries its slug and the not-valid
+      statement with its version-count and last-updated cells empty, and the
+      unaffected case's row still carries its own summary values.
+    evidence: >-
+      const brokenRow = rows[1];
+      expect(within(brokenRow).getByText("case-broken")).toBeTruthy();
+      expect(within(brokenRow).getByText(NOT_VALID_STATEMENT)).toBeTruthy();
+      const brokenCells = within(brokenRow).getAllByRole("cell");
+      expect(brokenCells[2].textContent).toBe("");
+      expect(brokenCells[3].textContent).toBe("");
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the alphaRow assertions, which check current_state, version_count and
+      last_updated as rendered for the case whose current version reads back cleanly.
+    evidence: >-
+      expect(within(alphaRow).getByText("Released")).toBeTruthy();
+      expect(within(alphaRow).getByText("1")).toBeTruthy();
+      expect(
+        within(alphaRow).getByText(expectedLastUpdated("2024-01-15T09:30:00.000Z")),
+      ).toBeTruthy();
+  - node: domain/knowledge/case
+    held_at: >-
+      the mocked listing response keyed by slug and the row lookups performed by
+      that same slug; only the slug attribute of the aggregate is exercised, not
+      next_version or create-draft.
+    evidence: >-
+      data: [{ slug: "case-alpha" }, { slug: "case-broken" }],
+      ...
+      expect(within(alphaRow).getByText("case-alpha")).toBeTruthy();
+looked_past: >-
+  The exact wording of NOT_VALID_STATEMENT, the state-label capitalisation ("Released"),
+  the last-updated date format, and which table column the not-valid statement
+  occupies are interface form the specification explicitly leaves to the surface,
+  not a fact for this pass to weigh; the actual rendering these assertions bind to
+  lives in cases-list-screen.tsx, outside this file set.

@@ -1,0 +1,76 @@
+findings:
+  - file: src/hooks/use-cases-list.ts
+    where: "line 17, the module-level type declaration `export type CaseVersionState = \"draft\" | \"released\";`"
+    evidence: |-
+      export type CaseVersionState = "draft" | "released";
+    cost: >-
+      The case-version lifecycle's two states are the specification's own enumeration
+      (`domain/knowledge/case-version-state`), and this file re-declares them as a literal
+      union under its own authority rather than importing the one that already exists in the
+      codebase (`frontend/app/src/hooks/use-case-versions.ts` exports the identical
+      `export type CaseVersionState = "draft" | "released";`, consumed by
+      `case-simulation-header.tsx` and `use-case-simulation-version.ts`). A third place now
+      carries the same vocabulary; if the specification's enumeration is ever extended, there
+      is no single site a maintainer is led back to, and the two independent declarations can
+      silently diverge from each other and from the node.
+    kind: contradicts
+    correction: >-
+      Remove the local declaration and import `CaseVersionState` from the one existing
+      canonical declaration (or a shared module deriving it from the specification), so the
+      state-machine's states are enumerated in exactly one place in source.
+    node: domain/knowledge/case-version-state
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      the `CaseIdentity` type and its use in `fetchCasesWithSummaries`, which reads only the
+      slug off each case identity before delegating to `fetchCaseListEntry`
+    evidence: |-
+      type CaseIdentity = {
+        readonly slug: string;
+      };
+      ...
+      return Promise.all(casesPage.data.map((identity) => fetchCaseListEntry(identity.slug)));
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the `CaseSummary` type declaration and its construction in `fetchCaseListEntry` /
+      `releasedInfo`: `current_state`/`last_updated` are populated only once at least one
+      version exists, and `title`/`when_to_use`/`released_version` only once a released
+      version is found, matching the node's presence conditions field for field
+    evidence: |-
+      export type CaseSummary = {
+        readonly versionCount: number;
+        readonly currentState?: CaseVersionState;
+        readonly lastUpdated?: string;
+        readonly title?: string;
+        readonly whenToUse?: string;
+        readonly releasedVersion?: number;
+      };
+      ...
+      return {
+        slug,
+        summary: {
+          versionCount,
+          currentState: highest.state,
+          lastUpdated: detail.authored_at,
+          ...released,
+        },
+      };
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the `CaseListEntry` union together with the catch branch in `fetchCaseListEntry`: when
+      the highest version's detail fetch reports `case-not-valid`, the function returns only
+      the slug and the `notValid` flag, carrying none of the summary fields
+    evidence: |-
+      } catch (error) {
+        if (errorStateKind(error) === "case-not-valid") {
+          return { slug, notValid: true };
+        }
+        throw error;
+      }
+looked_past: >-
+  fetchCasesWithSummaries calls `/v1/cases` with no limit/offset and the highest-version lookup
+  assumes the versions endpoint returns highest-numbered-first -- both are API-ordering/pagination
+  assumptions rather than domain facts this file states on its own authority, and the
+  case-query contract that would settle them is bound to cases-list-screen.tsx, not this file.
+candidates_opened:
+  - domain/knowledge/case-version-state

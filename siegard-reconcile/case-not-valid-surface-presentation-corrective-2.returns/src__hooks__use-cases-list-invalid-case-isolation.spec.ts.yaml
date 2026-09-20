@@ -1,0 +1,33 @@
+read:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the expected entries for the failing cases across all three describe blocks, each carrying only
+      slug and a not-valid marker, beside unaffected full summaries for the other cases in the same array
+    evidence: |
+      { slug: "case-broken", notValid: true }
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the `summary` object literals asserted for case-alpha, case-drafted-past-release and case-good
+    evidence: |
+      summary: {
+        versionCount: 1,
+        currentState: "released",
+        lastUpdated: "2024-01-01T00:00:00.000Z",
+        title: "Case Alpha",
+        whenToUse: "When alpha applies",
+        releasedVersion: 1,
+      },
+  - node: domain/knowledge/case
+    held_at: >-
+      the `slug` field on every entry of result.current.data, used as the case's own identity
+    evidence: |
+      { slug: "case-alpha", summary: { ... } }
+looked_past: >-
+  the mocked CaseVersionNotValidError/409 (governed by
+  rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name) and the "draft"/"released"
+  values (domain/knowledge/case-version-state), both outside this file's node set but matching those nodes
+  exactly, and the wire-format pagination shape of the fetch mocks, which is implementation detail rather
+  than a domain fact.
+candidates_opened:
+  - rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  - domain/knowledge/case-version-state

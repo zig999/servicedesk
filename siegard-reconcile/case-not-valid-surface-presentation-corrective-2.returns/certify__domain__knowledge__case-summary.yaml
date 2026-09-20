@@ -1,0 +1,50 @@
+certified:
+  - node: domain/knowledge/case-summary
+    state: partial
+    tests:
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves every other case's own summary unaffected and the failing case's own entry to
+          only its slug and the not-valid marker when one case's current version fails validation
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves a case whose highest version is a draft to a summary carrying the current
+          draft's own state alongside title, when_to_use and released_version read from the case's
+          own highest released version below it
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves the listing successfully with an isolated not-valid entry for each of two cases
+          whose current versions fail validation at the same reading, rather than reverting to a
+          whole-listing failure
+    why: >-
+      The presence half of the fact is exercised and would fail if it stopped holding: the second
+      test pins title, when_to_use and released_version to the case's own highest released version
+      (v2) while the current version is a higher-numbered draft (v3) whose title and when_to_use
+      are deliberately distinct, and it pins current_state, version_count and last_updated to that
+      most recently authored draft; the first and third tests pin the same derivation where the
+      current version is itself released. Both absence halves are unexercised. No fixture gives a
+      case that currently holds no version at all, so "current_state and last_updated are present
+      only where the case currently holds at least one version ... absent rather than invented" is
+      never put to the test -- an implementation that invented either for a case whose every
+      version was discarded would pass all three tests. No fixture gives a case that currently
+      holds only drafts and no released version, so "title, when_to_use and released_version are
+      present only where the case currently holds at least one released version ... absent rather
+      than read from a draft" is never put to the test either -- the only draft-headed case in the
+      set (case-drafted-past-release) has released versions below it, so an implementation that
+      fell back to the draft's own title and when_to_use when no released version existed would
+      pass unchanged. version_count is asserted in all three, but only for cases holding at least
+      one version, so its required-ness at zero is likewise unexercised. The isolated
+      not-valid entries assert absence of a summary, not absence of an attribute within one, and
+      so bear on the isolation fact rather than on this node's optionality.
+    remainder: testable
+    remainder_why: >-
+      Two assertions close it, each one input against one expected result. First: a case whose
+      versions listing comes back empty (data [], total 0) resolves to an entry whose summary
+      carries version_count 0 and carries neither current_state nor last_updated -- asserted as
+      absence of the keys, via the same whole-object toEqual the file already uses, so an invented
+      value fails. Second: a case whose every version is a draft (for instance a current v2 draft
+      over a v1 draft, the full-listing fetch returning no released version) resolves to a summary
+      carrying current_state "draft", version_count 2 and last_updated from v2, and carrying
+      neither title nor when_to_use nor released_version, with the draft's own title and
+      when_to_use present in the fixture and distinct, so a fallback that read them from the draft
+      fails.

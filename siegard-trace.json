@@ -4285,7 +4285,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:b98b3a4e8bfa6eb625ad14249c7a1d07701bdb34ecbaf1d8aa121a7b7a8ab6e5"
+          "digest": "sha256:3a6c939e558357dfb498081731225bc0c39069c6cc2ff952b46cfe5c1a67e97f"
         },
         {
           "path": "src/src/case/case-store.port.ts",

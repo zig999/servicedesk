@@ -1,0 +1,56 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the `useCasesList()` call, line 77"
+    evidence: |-
+      const casesQuery = useCasesList();
+  - node: domain/knowledge/case
+    held_at: "the row identity and route built from each entry's slug, lines 50-51 and 91"
+    evidence: |-
+      id: entry.slug,
+      slug: entry.slug,
+      ...
+      void navigate({ to: "/cases/$slug", params: { slug } });
+  - node: domain/knowledge/case-summary
+    held_at: "toRow()'s non-null branch, lines 45-55 -- current_state, version_count and last_updated are read; title, when_to_use and released_version are never read anywhere in this file"
+    evidence: |-
+      const stateCell =
+        entry.summary.currentState === undefined
+          ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }
+          : CASE_STATE_CELL[entry.summary.currentState];
+      return {
+        id: entry.slug,
+        slug: entry.slug,
+        state: stateCell,
+        versionCount: entry.summary.versionCount,
+        lastUpdated: formatLastUpdated(entry.summary.lastUpdated),
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: "CASE_STATE_CELL, lines 17-20"
+    evidence: |-
+      const CASE_STATE_CELL: Readonly<Record<CaseVersionState, { color: string; label: string }>> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: "the top-level return's Button, lines 146-148, outside renderBody() so it renders on every branch renderBody() returns"
+    evidence: |-
+      <Button type="button" onClick={() => void navigate({ to: "/cases/new" })}>
+        Create case
+      </Button>
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: "the isCaseListEntryNotValid branch of toRow(), lines 38-44"
+    evidence: |-
+      if (isCaseListEntryNotValid(entry)) {
+        return {
+          id: entry.slug,
+          slug: entry.slug,
+          state: CURRENT_VERSION_NOT_VALID_STATEMENT,
+        };
+      }
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: "the same stateCell/versionCount/lastUpdated derivation, lines 45-55, distinguishing a case with no version (currentState undefined) from one with a current_state"
+    evidence: |-
+      entry.summary.currentState === undefined
+        ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }
+        : CASE_STATE_CELL[entry.summary.currentState];
+looked_past: this screen never renders the title, when_to_use or released_version fields the case-summary node and the hook both provide, which is a completeness/UI-scope question about a different consumer (the decision log frames those three fields around an automated consumer choosing a case), not a stated-fact-versus-node conflict this pass judges.

@@ -1,0 +1,50 @@
+certified:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    state: partial
+    tests:
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          useCasesList -- isolating one case's current version failing validation from the rest of
+          the listing (criterion 1, criterion 2) > resolves every other case's own summary
+          unaffected and the failing case's own entry to only its slug and the not-valid marker
+          when one case's current version fails validation
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          useCasesList -- more than one case's current version failing validation at the same
+          reading (UNDERDETERMINED note 2) > resolves the listing successfully with an isolated
+          not-valid entry for each of two cases whose current versions fail validation at the same
+          reading, rather than reverting to a whole-listing failure
+    why: >-
+      The two tests above bind the fact at the hook's returned data, and they bind it exactly: each
+      asserts the whole array with toEqual, so an entry dropped for the failing case, a listing that
+      failed whole, a sibling entry altered by the other case's failure, or any of current_state,
+      version_count, last_updated, title, when_to_use or released_version surviving into the failing
+      case's entry would make them fail. Three things the node states are still unexercised. First,
+      nothing in the offered proof renders the listing a curator reads: all three tests call
+      renderHook(useCasesList), so the entry carrying "the explicit statement that this case's
+      current version does not read back as a case at that reading" is proved only as the datum
+      notValid: true. The node leaves the control, the wording and the position to the interface, but
+      not whether the entry carries the statement at all -- a screen that dropped notValid entries,
+      rendered them as a blank row, or rendered a summary beside them would leave every named test
+      green. The pack offers no screen test, so no test of mine to cite closes this. Second, the
+      failing version number does vary across the tests (5, 2, 9), but never against a valid sibling
+      inside the same case: every not-valid case is read only at its highest version, so nothing
+      asserts that it is v_i -- the highest-numbered version -- whose validation decides the entry. A
+      case holding versions 1..3 where version 2 fails and version 3 holds must, by the expression's
+      second branch, still carry its summary and state none of this; no test submits that pairing,
+      and an implementation keyed on any version failing would pass the set as it stands. The middle
+      describe (case-drafted-past-release) reads a lower version for title and when_to_use but fails
+      no validator, so it does not reach this. Third, the node distinguishes this entry from the
+      absence a case holding no version shows; no test submits a case with zero versions, so nothing
+      would fail if such a case were given the not-valid statement instead of version_count zero with
+      current_state and last_updated absent.
+    remainder: testable
+    remainder_why: >-
+      Three finite assertions close it. (1) Render the cases-list screen -- not the hook -- over the
+      first test's stubbed fetch set, and assert that the entry for case-broken shows the
+      does-not-read-back statement and none of current_state, version_count, last_updated, title,
+      when_to_use or released_version, while the entry for case-alpha shows its own summary. (2) Add
+      a case holding three versions where version 3 is valid and version 2 returns
+      CaseVersionNotValidError, and assert the entry carries that case's summary with no notValid
+      key. (3) Add a case whose versions listing is empty, and assert its entry carries
+      versionCount 0 with currentState and lastUpdated absent and no not-valid statement.

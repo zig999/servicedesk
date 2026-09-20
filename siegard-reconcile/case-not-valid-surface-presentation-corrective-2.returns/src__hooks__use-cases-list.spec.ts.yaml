@@ -1,0 +1,29 @@
+read:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: nowhere
+    evidence: >-
+      the only two scenarios this file exercises are `it("resolves to one entry per case, each
+      carrying the highest-numbered version's own state and authored_at", ...)` and
+      `it("resolves a case holding no version yet to a summary carrying only versionCount", ...)`;
+      neither mocks a version that fails a validator rule of validation-runs-at-every-read, so no
+      assertion here checks the entry this node requires in that case.
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the two `expect(result.current.data).toEqual(...)` assertions, lines 48-60 and line 79
+    evidence: >-
+      expect(result.current.data).toEqual([{ slug: "case-alpha", summary: { versionCount: 1,
+      currentState: "released", lastUpdated: "2024-01-01T00:00:00.000Z", title: "Case Alpha",
+      whenToUse: "When alpha applies", releasedVersion: 1 } }]); and
+      expect(result.current.data).toEqual([{ slug: "case-empty", summary: { versionCount: 0 } }]);
+  - node: domain/knowledge/case
+    held_at: >-
+      the `slug` field of the expected results only, e.g. line 50 and line 79
+    evidence: >-
+      slug: "case-alpha" ... slug: "case-empty" -- next_version and the create-draft operation are
+      not referenced anywhere in this file.
+looked_past: >-
+  this spec file does not cover the case whose highest-numbered version fails a validator rule
+  (the scenario rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+  governs), which is a test-coverage gap rather than a stated-fact conformance issue for this pass.
+candidates_opened:
+  - contracts/knowledge/case-query

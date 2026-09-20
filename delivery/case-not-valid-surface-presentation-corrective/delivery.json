@@ -32,6 +32,19 @@
         "A listing of every case, read while one case's current version fails a validator rule of validation-runs-at-every-read at that reading, still presents every other case's own summary, exactly as it would be presented were every validator rule to hold for that one case's current version."
       ],
       "findings": 3
+    },
+    {
+      "id": "review/case-not-valid-surface-presentation-corrective-2",
+      "kind": "review",
+      "file": "review/case-not-valid-surface-presentation-corrective-2.md",
+      "title": "Case-not-valid surface presentation, second review",
+      "summary": "What four passes found over the fix for the first review's three conformance findings against domain/knowledge/case-summary, on task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "findings": 1
     }
   ],
   "edges": [
@@ -67,6 +80,12 @@
     },
     {
       "from": "review/case-not-valid-surface-presentation-corrective",
+      "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-2",
       "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "reviews",
       "at": "tasks[0]"
