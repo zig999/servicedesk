@@ -4475,7 +4475,7 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:aeb9809ec2e0ba1db5dc338b514a24b6bf6c3cb6579d7151922b25e8262806f7"
         },
         {
           "path": "frontend/app/src/services/case-creation-form-schema.ts",
@@ -4757,7 +4757,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-row-revisions.ts",
@@ -5123,7 +5123,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:fea664fcb35c62c236ce61cb4ebf7294bb25608b94ba90ecd1d68979eb106d71"
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -8668,6 +8668,10 @@
       "digest": "sha256:f466a880061b2b6979c096b51fc3b801964415a3bc24df145a3c990fb0f787bc",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-manifest-builder.ts",
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
+        },
+        {
           "path": "frontend/app/src/routes/place-existing-hypothesis-control.tsx",
           "digest": "sha256:ea73b2f1ec0771ce5b7f8e6eb631edd9432db2061aa96350dc2b3fda4f214750"
         }
@@ -9083,7 +9087,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:fea664fcb35c62c236ce61cb4ebf7294bb25608b94ba90ecd1d68979eb106d71"
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
         },
         {
           "path": "frontend/app/src/routes/place-existing-hypothesis-control.tsx",
@@ -9091,7 +9095,7 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:aeb9809ec2e0ba1db5dc338b514a24b6bf6c3cb6579d7151922b25e8262806f7"
         }
       ]
     },
@@ -9100,8 +9104,12 @@
       "digest": "sha256:a131508e80e7cfbb33565288bb9fb2a543645b392d7c766bc6d4b545d886e7ae",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-manifest-builder.ts",
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
+        },
+        {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:188a13465f07431d9eb31a64202b7e7fa15d7cb6f8419279730dcf04cffe46fc"
+          "digest": "sha256:aeb9809ec2e0ba1db5dc338b514a24b6bf6c3cb6579d7151922b25e8262806f7"
         }
       ]
     },
@@ -9153,7 +9161,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:fea664fcb35c62c236ce61cb4ebf7294bb25608b94ba90ecd1d68979eb106d71"
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
         },
         {
           "path": "frontend/app/src/routes/place-existing-hypothesis-control.tsx",
@@ -9463,7 +9471,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
+          "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
@@ -9471,7 +9479,7 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:aeb9809ec2e0ba1db5dc338b514a24b6bf6c3cb6579d7151922b25e8262806f7"
         }
       ]
     },

@@ -50,6 +50,14 @@
       "task": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis"
     },
     {
+      "id": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "implementation",
+      "file": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released.md",
+      "title": "The manifest builder's place-existing-hypothesis control offers on every reading but a released version",
+      "summary": "version-manifest-screen.tsx and use-manifest-builder.ts stop gating PlaceExistingHypothesisControl and its candidate list to the \"ready\" phase, so the control and the case's own unplaced hypotheses are offered on the loading, load-error and not-valid readings too, and the not-valid statement now names the version rather than reusing case-keyed wording.",
+      "task": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released"
+    },
+    {
       "id": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "kind": "proof",
       "file": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
@@ -96,6 +104,14 @@
       "title": "Manifest builder places an already-composed hypothesis — proof",
       "summary": "One new spec file proves the 16 stated criteria (14 by new tests, one -- the \"+ Add hypothesis\" non-regression guard -- already proven by the pre-existing not-valid spec, one -- no third way of finding a revision -- proven jointly by every confirm-flow test's strict fetch stub) and the four node facts a finite test can decide whole; three nodes and one inference are left unproven and named, matching the task's own disclosed divergences.",
       "task": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis"
+    },
+    {
+      "id": "proof/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "proof",
+      "file": "proof/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released.md",
+      "title": "The placing control's offer widened to every reading but a released version — proof",
+      "summary": "Five new spec files prove the twelve criteria of widening PlaceExistingHypothesisControl's offer -- and its candidate list, revision/position choice, PUT shape and refusal tellings -- from the ready reading alone to the loading, load-error and not-valid readings too, and prove the not-valid statement's corrected, version-keyed wording and its freedom from any cached content (including a stale released state); one pre-existing sibling file's stale wording constant was corrected so its own two tests assert what this task actually delivers rather than the case-keyed wording a prior /review-change had already flagged as wrong.",
+      "task": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released"
     },
     {
       "id": "review/case-not-valid-surface-presentation-corrective",
@@ -350,6 +366,60 @@
       "at": "the path"
     },
     {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "to": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "kind": "proves",
@@ -382,6 +452,12 @@
     {
       "from": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
       "to": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
       "kind": "proves",
       "at": "the path"
     },

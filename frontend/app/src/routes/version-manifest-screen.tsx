@@ -249,12 +249,24 @@ export function VersionManifestScreen(): JSX.Element {
     from: "/cases/$slug/versions/$version/manifest",
   });
   const state = useManifestBuilder(slug, Number(version));
+  const placingDisabled = state.isBlocked || state.isBusy;
+  const placingControl = (
+    <PlaceExistingHypothesisControl
+      slug={slug}
+      candidates={state.candidateHypotheses}
+      candidatesAnswered={state.candidatesAnswered}
+      placeError={state.placeExistingError}
+      disabled={placingDisabled}
+      onPlace={state.onPlaceExisting}
+    />
+  );
 
   if (state.phase === "loading") {
     return (
       <section>
         <p>Loading manifest…</p>
         <AddHypothesisLink slug={slug} version={version} />
+        {placingControl}
       </section>
     );
   }
@@ -266,14 +278,16 @@ export function VersionManifestScreen(): JSX.Element {
           Retry
         </Button>
         <AddHypothesisLink slug={slug} version={version} />
+        {placingControl}
       </section>
     );
   }
   if (state.phase === "not-valid") {
     return (
       <section>
-        <p>This case&apos;s current version does not read back as a case.</p>
+        <p>Version {version} of this case does not read back as a case.</p>
         <AddHypothesisLink slug={slug} version={version} />
+        {placingControl}
       </section>
     );
   }
@@ -294,16 +308,7 @@ export function VersionManifestScreen(): JSX.Element {
           />
         )}
         <StatusTable columns={MANIFEST_COLUMNS} rows={rows} />
-        {!state.isReleased && (
-          <PlaceExistingHypothesisControl
-            slug={slug}
-            candidates={state.candidateHypotheses}
-            candidatesAnswered={state.candidatesAnswered}
-            placeError={state.placeExistingError}
-            disabled={rowsDisabled}
-            onPlace={state.onPlaceExisting}
-          />
-        )}
+        {!state.isReleased && placingControl}
       </section>
     </TooltipProvider>
   );

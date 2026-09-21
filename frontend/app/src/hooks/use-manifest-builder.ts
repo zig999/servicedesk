@@ -49,10 +49,24 @@ export type PlaceExistingError = {
   readonly message: string;
 };
 
+type PlacingOfferState = {
+  readonly isBusy: boolean;
+
+  readonly isBlocked: boolean;
+
+  readonly candidateHypotheses: readonly ManifestCandidate[];
+
+  readonly candidatesAnswered: boolean;
+
+  readonly placeExistingError: PlaceExistingError | null;
+
+  readonly onPlaceExisting: (hypothesisName: string, revision: number, position: number) => void;
+};
+
 export type ManifestBuilderState =
-  | { readonly phase: "loading" }
-  | { readonly phase: "load-error"; readonly retryLoad: () => void }
-  | { readonly phase: "not-valid" }
+  | ({ readonly phase: "loading" } & PlacingOfferState)
+  | ({ readonly phase: "load-error"; readonly retryLoad: () => void } & PlacingOfferState)
+  | ({ readonly phase: "not-valid" } & PlacingOfferState)
   | {
       readonly phase: "ready";
       readonly rows: readonly ManifestRow[];
@@ -206,19 +220,34 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
     },
   });
 
+  const isBusy = placeMutation.isPending || removeMutation.isPending;
+
+  function placeExisting(hypothesisName: string, revision: number, position: number): void {
+    setPlaceExistingError(null);
+    placeMutation.mutate({ hypothesisName, revision, position, kind: "place-existing" });
+  }
+
+  const offer: PlacingOfferState = {
+    isBusy,
+    isBlocked,
+    candidateHypotheses: candidatesOf(caseHypothesesQuery.data?.data ?? [], []),
+    candidatesAnswered: caseHypothesesQuery.isSuccess,
+    placeExistingError,
+    onPlaceExisting: placeExisting,
+  };
+
   if (versionQuery.isError) {
     if (errorStateKind(versionQuery.error) === "case-not-valid") {
-      return { phase: "not-valid" };
+      return { phase: "not-valid", ...offer };
     }
-    return { phase: "load-error", retryLoad: () => void versionQuery.refetch() };
+    return { phase: "load-error", retryLoad: () => void versionQuery.refetch(), ...offer };
   }
   if (versionQuery.isLoading || !versionQuery.data) {
-    return { phase: "loading" };
+    return { phase: "loading", ...offer };
   }
 
   const sorted = sortByPosition(versionQuery.data.manifest);
   const lastIndex = sorted.length - 1;
-  const isBusy = placeMutation.isPending || removeMutation.isPending;
   const isReleased = versionQuery.data.state === "released";
 
   const rows: ManifestRow[] = sorted.map((entry, index) => {
@@ -270,11 +299,6 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       onRepin: repinTo,
     };
   });
-
-  function placeExisting(hypothesisName: string, revision: number, position: number): void {
-    setPlaceExistingError(null);
-    placeMutation.mutate({ hypothesisName, revision, position, kind: "place-existing" });
-  }
 
   return {
     phase: "ready",

@@ -19,7 +19,7 @@ import {
   VERSION_PATH,
 } from "./version-manifest-screen.test-support";
 
-const NOT_VALID_TEXT = "This case's current version does not read back as a case.";
+const NOT_VALID_TEXT = `Version ${VERSION} of this case does not read back as a case.`;
 const LOAD_ERROR_TEXT = "Unable to load this manifest right now.";
 
 function notValidResponse(): Response {
