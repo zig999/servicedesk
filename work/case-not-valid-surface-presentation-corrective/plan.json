@@ -23,6 +23,13 @@
       "summary": "The frontend holds no control that places an existing hypothesis of a case into a draft version's manifest -- the manifest builder's only placing affordance composes a new hypothesis identity -- so a curator who composes a hypothesis can never get it into the manifest it was composed for, and the version stays refused for declaring no hypothesis."
     },
     {
+      "id": "epic/place-existing-control-on-every-reading",
+      "kind": "epic",
+      "file": "epic/place-existing-control-on-every-reading.md",
+      "title": "The place-existing-hypothesis control offers on every reading but a released version, not only \"ready\"",
+      "summary": "Corrective increment: the manifest builder's place-existing-hypothesis control (delivered in this same initiative) renders only on the manifest builder's \"ready\" phase, so it never appears on exactly the reading a draft's empty manifest reaches immediately -- the refused (case-not-valid) reading -- leaving the curator with no way to place an already-composed hypothesis into the version that most needs it."
+    },
+    {
       "id": "inventory/case-version-editor-and-manifest-builder-and-hypothesis-composition-load-error",
       "kind": "inventory",
       "file": "inventory/case-version-editor-and-manifest-builder-and-hypothesis-composition-load-error.md",
@@ -83,6 +90,14 @@
       "title": "The manifest builder places an already-composed hypothesis of the case into a draft version's manifest",
       "summary": "version-manifest-screen.tsx and use-manifest-builder.ts gain a control that lists the case's already-composed hypotheses this version's manifest does not hold and places a chosen one into it through the existing place-hypothesis call, so a curator who composed a hypothesis can get it into the manifest without composing a second one.",
       "epic": "manifest-builder-places-an-existing-hypothesis"
+    },
+    {
+      "id": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "task",
+      "file": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released.md",
+      "title": "The manifest builder's place-existing-hypothesis control offers on every reading but a released version",
+      "summary": "version-manifest-screen.tsx and use-manifest-builder.ts stop gating PlaceExistingHypothesisControl and its candidate list to the \"ready\" phase alone, so the control -- and the case's hypotheses not yet in this version's manifest -- are offered on the loading, load-error and not-valid readings too, exactly as the pre-existing \"+ Add hypothesis\" link already is.",
+      "epic": "place-existing-control-on-every-reading"
     }
   ],
   "edges": [
@@ -2499,6 +2514,138 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/place-existing-control-on-every-reading",
+      "to": "rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
       "kind": "implements",
@@ -2665,6 +2812,84 @@
       "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
       "kind": "implements",
       "at": "implements[8]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names",
+      "kind": "implements",
+      "at": "implements[9]"
     }
   ]
 }
