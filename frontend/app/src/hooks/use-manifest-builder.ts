@@ -32,6 +32,8 @@ export type ManifestRow = {
   readonly moveErrorMessage: string | null;
 
   readonly revisionErrorMessage: string | null;
+
+  readonly removeErrorMessage: string | null;
   readonly onMoveUp: () => void;
   readonly onMoveDown: () => void;
   readonly onRemove: () => void;
@@ -42,6 +44,7 @@ export type ManifestRow = {
 export type ManifestBuilderState =
   | { readonly phase: "loading" }
   | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | { readonly phase: "not-valid" }
   | {
       readonly phase: "ready";
       readonly rows: readonly ManifestRow[];
@@ -56,6 +59,8 @@ export type ManifestBuilderState =
 const MOVE_BLOCKED_MESSAGE = "Another hypothesis already holds that position. Try again.";
 const GENERIC_FAILURE_MESSAGE = "Something went wrong while saving. Try again.";
 const REVISION_FAILURE_MESSAGE = "Could not switch to that revision. Try again.";
+const REMOVE_BLOCKED_MESSAGE =
+  "This case's manifest must hold at least one hypothesis; this entry is still held.";
 
 function sortByPosition(manifest: readonly ManifestEntryDto[]): readonly ManifestEntryDto[] {
   return [...manifest].sort((a, b) => a.position - b.position);
@@ -70,6 +75,10 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
     message: string;
   } | null>(null);
   const [revisionError, setRevisionError] = useState<{
+    hypothesisName: string;
+    message: string;
+  } | null>(null);
+  const [removeError, setRemoveError] = useState<{
     hypothesisName: string;
     message: string;
   } | null>(null);
@@ -140,10 +149,11 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       ),
     onSuccess: (_data, vars) => {
 
+      setRemoveError(null);
       telemetry.manifestHypothesisRemoved({ slug, version, hypothesis_name: vars.hypothesisName });
       invalidateManifest();
     },
-    onError: (error) => {
+    onError: (error, vars) => {
       const kind = errorStateKind(error);
       if (kind === "case-version-not-draft") {
 
@@ -152,6 +162,7 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       }
       if (kind === "manifest-would-hold-no-hypothesis") {
 
+        setRemoveError({ hypothesisName: vars.hypothesisName, message: REMOVE_BLOCKED_MESSAGE });
         invalidateManifest();
         return;
       }
@@ -160,6 +171,9 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
   });
 
   if (versionQuery.isError) {
+    if (errorStateKind(versionQuery.error) === "case-not-valid") {
+      return { phase: "not-valid" };
+    }
     return { phase: "load-error", retryLoad: () => void versionQuery.refetch() };
   }
   if (versionQuery.isLoading || !versionQuery.data) {
@@ -208,9 +222,14 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
 
       revisionErrorMessage:
         revisionError?.hypothesisName === hypothesisName ? revisionError.message : null,
+      removeErrorMessage:
+        removeError?.hypothesisName === hypothesisName ? removeError.message : null,
       onMoveUp: () => moveTo(previous),
       onMoveDown: () => moveTo(next),
-      onRemove: () => removeMutation.mutate({ hypothesisName }),
+      onRemove: () => {
+        setRemoveError(null);
+        removeMutation.mutate({ hypothesisName });
+      },
 
       onRepin: repinTo,
     };

@@ -10,6 +10,14 @@
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
     },
     {
+      "id": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back.md",
+      "title": "Manifest builder states a version that does not read back as a case, offers the add-hypothesis act on every reading short of a released one, and tells the curator when a remove is refused because it would empty the manifest",
+      "summary": "use-manifest-builder.ts classifies a refused case-version read via errorStateKind, offers the add-hypothesis act on every reading except an answered-released one, and now visibly tells the curator when a remove is refused as ManifestWouldHoldNoHypothesisError, while every other mutation-refusal handler stays unchanged.",
+      "task": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back"
+    },
+    {
       "id": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
       "kind": "implementation",
       "file": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back.md",
@@ -24,6 +32,14 @@
       "title": "Isolate one case's invalid current version from the cases listing",
       "summary": "Proof that a listing carrying a case whose current version fails validation still renders every other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the data layer (useCasesList) and the rendered screen, including where more than one case fails at the same reading.",
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back.md",
+      "title": "Manifest builder states a version that does not read back as a case — proof",
+      "summary": "Tests the manifest builder's not-valid/load-error distinction, the add-hypothesis offer across every reading the node declares (loading, load-error, not-valid, draft — empty or not — and withheld on released), and the manifest surface's own presentation for each composing refusal it names, against the four nodes this task implements and the four UNDERDETERMINED entries this task's notes raised.",
+      "task": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back"
     },
     {
       "id": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
@@ -89,6 +105,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
       "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
       "kind": "encodes",
@@ -115,6 +161,12 @@
     {
       "from": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
       "kind": "proves",
       "at": "the path"
     },

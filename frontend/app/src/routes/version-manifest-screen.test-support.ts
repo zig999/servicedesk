@@ -99,10 +99,10 @@ function buildTestRouter(initialPath: string) {
 export async function mountManifestScreen(
   fetchMock: (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
   initialPath: string = MANIFEST_ROUTE_PATH,
+  queryClient: QueryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
 ): Promise<ReturnType<typeof buildTestRouter>> {
   vi.stubGlobal("fetch", fetchMock);
   const router = buildTestRouter(initialPath);
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   await router.load();
   render(
     createElement(

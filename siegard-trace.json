@@ -8994,6 +8994,30 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "digest": "sha256:f4c5103b0e1a84efe5abac6aa92c697cca7c7841429d36fdb7b07576181a86fb",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-manifest-builder.ts",
+          "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "digest": "sha256:a131508e80e7cfbb33565288bb9fb2a543645b392d7c766bc6d4b545d886e7ae",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
       "digest": "sha256:3b24a3d2083259e99cdbba77feceafe343d23bd22ca628de5f177e3703be54b2",
       "files": [
@@ -9070,12 +9094,20 @@
           "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
         },
         {
+          "path": "frontend/app/src/hooks/use-manifest-builder.ts",
+          "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
           "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -9296,8 +9328,16 @@
           "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
         },
         {
+          "path": "frontend/app/src/hooks/use-manifest-builder.ts",
+          "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
+        },
+        {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
           "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
         }
       ]
     },
