@@ -23,6 +23,10 @@ export function NewCaseDraftScreen(): JSX.Element {
     );
   }
 
+  if (state.phase === "not-valid") {
+    return <p>This case&apos;s current version does not read back as a case.</p>;
+  }
+
   return (
     <section className="flex flex-col gap-4">
       <h1>Case {slug} — New draft</h1>

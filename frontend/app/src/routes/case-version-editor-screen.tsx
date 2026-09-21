@@ -11,7 +11,14 @@ export function CaseVersionEditorScreen(): JSX.Element {
   const state = useEditDraftVersionForm(slug, Number(version));
 
   if (state.phase === "loading") {
-    return <p>Loading version {version}…</p>;
+    return (
+      <section>
+        <p>Loading version {version}…</p>
+        <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+          Manifest
+        </Link>
+      </section>
+    );
   }
 
   if (state.phase === "load-error") {
@@ -21,6 +28,20 @@ export function CaseVersionEditorScreen(): JSX.Element {
         <Button type="button" onClick={state.retryLoad}>
           Retry
         </Button>
+        <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+          Manifest
+        </Link>
+      </section>
+    );
+  }
+
+  if (state.phase === "not-valid") {
+    return (
+      <section>
+        <p>This case&apos;s current version does not read back as a case.</p>
+        <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+          Manifest
+        </Link>
       </section>
     );
   }
@@ -32,6 +53,9 @@ export function CaseVersionEditorScreen(): JSX.Element {
       </h1>
       <Link to="/cases/$slug/versions/$version/simulate" params={{ slug, version }}>
         Simulate
+      </Link>
+      <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+        Manifest
       </Link>
       <CaseVersionEditorReadyView state={state} slug={slug} />
     </section>

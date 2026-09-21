@@ -155,7 +155,7 @@ describe("CaseVersionEditorScreen — the manifest listing's own scope", () => {
     await mountCaseVersionEditor(fetchMock);
 
     await screen.findByDisplayValue(LOADED_RECORD.title);
-    expect(screen.queryByText("Manifest")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Manifest" })).toBeNull();
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByRole("button", { name: "Save changes" })).toBeTruthy();
   });

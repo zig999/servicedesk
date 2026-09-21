@@ -9022,6 +9022,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "digest": "sha256:18586f901ef5939bd765235d97dca6bd1db0e15d9154044fbbef93255b034bdd",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
+          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
       "digest": "sha256:c6963d907b7fb63a2dba42b8ff160d60a602c4a1a029ce69d9204d05b3cc4f97",
       "files": [
@@ -9056,8 +9066,16 @@
           "digest": "sha256:4d29e5d1a79f585c3b3962fad24880b885e4697b86f3fe911d5b885073e13ed7"
         },
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
+          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -9266,6 +9284,20 @@
         {
           "path": "frontend/app/src/services/release-checklist.ts",
           "digest": "sha256:cbefd35e2a05a593ad55b8bc6b1df80c72244a833f7d909d5af22a99dc79208f"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
+          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
         }
       ]
     },

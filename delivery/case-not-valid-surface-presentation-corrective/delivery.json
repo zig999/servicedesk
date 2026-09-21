@@ -10,12 +10,28 @@
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
     },
     {
+      "id": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back.md",
+      "title": "Version editor states a version that does not read back as a case",
+      "summary": "The case version editor's own load path now distinguishes a version refused for validation from a read that did not complete, reusing the existing statement, and carries the route to that version's own manifest on every one of its own readings — pending, failed, refused-for-validation and ready alike — with the shared return type's other consumer narrowed to exclude the new phase before reading ready-only fields.",
+      "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
+    },
+    {
       "id": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "proof",
       "file": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
       "title": "Isolate one case's invalid current version from the cases listing",
       "summary": "Proof that a listing carrying a case whose current version fails validation still renders every other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the data layer (useCasesList) and the rendered screen, including where more than one case fails at the same reading.",
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back.md",
+      "title": "Version editor states a version that does not read back as a case — proof",
+      "summary": "Tests the version editor's not-valid/load-error distinction, the manifest route it offers, and the four UNDERDETERMINED entries the task's own notes raised, against the three nodes this task implements.",
+      "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
     },
     {
       "id": "review/case-not-valid-surface-presentation-corrective",
@@ -73,8 +89,38 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
       "kind": "proves",
       "at": "the path"
     },
