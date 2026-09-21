@@ -44,6 +44,10 @@ class InMemoryGlossaryStore implements IGlossaryStore {
     this.concepts = concepts;
   }
 
+  public async deleteConcept(name: string): Promise<void> {
+    this.concepts = this.concepts.filter((concept) => concept.name !== name);
+  }
+
   public held(vocabulary: TermVocabulary): readonly GlossaryTerm[] {
     return this.records.get(vocabulary) ?? [];
   }

@@ -381,3 +381,54 @@ it(
     expect(referencingEvidence).toEqual([]);
   },
 );
+
+it(
+  "deletes a concept's own concept_accepts rows before its concepts row, both parameterized to the given name alone, inside one BEGIN/COMMIT transaction with no guard query ahead of them",
+  async () => {
+    const recorded: { text: string; params?: readonly unknown[] }[] = [];
+    const { connection, client } = fakeTransactionConnection(async (text, params) => {
+      recorded.push({ text, params });
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    await store.deleteConcept('a-concept');
+
+    const texts = collapsedTexts(recorded);
+    expect(texts).toEqual([
+      'BEGIN',
+      'DELETE FROM concept_accepts WHERE concept_name = $1',
+      'DELETE FROM concepts WHERE name = $1',
+      'COMMIT',
+    ]);
+    expect(recorded[1]?.params).toEqual(['a-concept']);
+    expect(recorded[2]?.params).toEqual(['a-concept']);
+    expect(client.release).toHaveBeenCalledTimes(1);
+  },
+);
+
+it(
+  "raises this store's own typed error, carrying the driver failure as its cause, and rolls back leaving nothing committed, when a concept delete is refused",
+  async () => {
+    const driverFailure = new Error('the driver refused this delete');
+    const { connection, client } = fakeTransactionConnection(async (text) => {
+      if (text.includes('DELETE FROM concepts')) {
+        throw driverFailure;
+      }
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    let caught: unknown;
+    try {
+      await store.deleteConcept('a-concept');
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).toBeInstanceOf(GlossaryStoreError);
+    expect((caught as Error).cause).toBe(driverFailure);
+    expect(client.query).toHaveBeenCalledWith('ROLLBACK');
+    expect(client.release).toHaveBeenCalledTimes(1);
+  },
+);

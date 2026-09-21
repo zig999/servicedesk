@@ -69,6 +69,13 @@ export class RelationalGlossaryStore implements IGlossaryStore {
       }
     });
   }
+
+  public async deleteConcept(name: string): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+      await runStatement(tx, deleteConceptAcceptsStatement(name), raiseWriteFailure);
+      await runStatement(tx, deleteConceptStatement(name), raiseWriteFailure);
+    });
+  }
 }
 
 function insertTermStatement(table: string, term: GlossaryTerm): IStatement {
@@ -88,6 +95,10 @@ function upsertConceptStatement(concept: Concept): IStatement {
 
 function deleteConceptAcceptsStatement(conceptName: string): IStatement {
   return { text: `DELETE FROM ${CONCEPT_ACCEPTS_TABLE} WHERE concept_name = $1`, params: [conceptName] };
+}
+
+function deleteConceptStatement(name: string): IStatement {
+  return { text: `DELETE FROM ${CONCEPTS_TABLE} WHERE name = $1`, params: [name] };
 }
 
 function insertConceptAcceptStatement(conceptName: string, subjectTypeName: string): IStatement {

@@ -2119,7 +2119,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:17da457ff72eccd64705e78200f9289ec26213bf8c34fcaa6ad895aa5707c35e"
+          "digest": "sha256:797a57e5d937b6ee05c8d6a78e3dd401d8adb49ee0ed19e7fa34cac62417eeaa"
         },
         {
           "path": "src/src/seed.ts",
@@ -2329,7 +2329,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:17da457ff72eccd64705e78200f9289ec26213bf8c34fcaa6ad895aa5707c35e"
+          "digest": "sha256:797a57e5d937b6ee05c8d6a78e3dd401d8adb49ee0ed19e7fa34cac62417eeaa"
         }
       ]
     },
@@ -5449,11 +5449,19 @@
     },
     {
       "node": "rules/glossary/a-registered-concept-is-never-removed",
-      "digest": "sha256:cfafcbd48814014cfe088037dcc36262e34789cb97c719e9945c2ddb213cd971",
+      "digest": "sha256:c326f7b29fcb9ba02c65ae69c7746109cb1f213d318b1c2907f8888939430f7f",
       "files": [
+        {
+          "path": "src/src/glossary/glossary-store.port.ts",
+          "digest": "sha256:8a8b60748d74ff66042be4bd6efefb34c4fc58e29fed5429696f78f1f80829c8"
+        },
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:797a57e5d937b6ee05c8d6a78e3dd401d8adb49ee0ed19e7fa34cac62417eeaa"
         }
       ]
     },

@@ -26,6 +26,8 @@ class ConceptOnlyGlossaryStore implements IGlossaryStore {
   }
 
   public async writeConcepts(_concepts: readonly Concept[]): Promise<void> {}
+
+  public async deleteConcept(_name: string): Promise<void> {}
 }
 
 function fiveConcepts(): readonly ConceptRegistration[] {

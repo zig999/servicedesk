@@ -11,4 +11,6 @@ export interface IGlossaryStore {
   readConcepts(): Promise<readonly ConceptRegistration[]>;
 
   writeConcepts(concepts: readonly Concept[]): Promise<void>;
+
+  deleteConcept(name: string): Promise<void>;
 }

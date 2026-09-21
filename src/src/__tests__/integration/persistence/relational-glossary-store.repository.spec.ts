@@ -107,6 +107,14 @@ async function seedConceptReferencedByCapability(
   return capability;
 }
 
+async function seedConceptAccepting(
+  concept: { name: string },
+  fields: { ttl: number; description: string; acceptedSubjectType: { name: string } },
+): Promise<void> {
+  await pool.query('INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)', [concept.name, fields.ttl, fields.description]);
+  await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [concept.name, fields.acceptedSubjectType.name]);
+}
+
 it(
   "answers each of the four vocabularies with the rows written for it, and no other vocabulary's rows",
   async () => {
@@ -321,6 +329,31 @@ it(
 
     const { rows } = await pool.query<{ ttl: number; description: string }>('SELECT ttl, description FROM concepts WHERE name = $1', [concept.name]);
     expect(rows).toEqual([{ ttl: 20, description: 'second entry, in the same call' }]);
+  },
+  15000,
+);
+
+it(
+  'removes the named concept and its own accepts declaration so a subsequent read no longer returns it, leaving a different concept and the subject types either concept accepted exactly as they were',
+  async () => {
+    const subjectA = freshTerm('glossary-store-delete-subject-a', subjectTypesWrittenByThisTest);
+    const subjectB = freshTerm('glossary-store-delete-subject-b', subjectTypesWrittenByThisTest);
+    await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [subjectA.name, subjectB.name]);
+    const toDelete = freshTerm('glossary-store-delete-target', conceptsWrittenByThisTest);
+    const untouched = freshTerm('glossary-store-delete-sibling', conceptsWrittenByThisTest);
+    const untouchedFields = { ttl: 90, description: 'a concept that must survive the removal' };
+    await seedConceptAccepting(toDelete, { ttl: 60, description: 'a concept about to be removed', acceptedSubjectType: subjectA });
+    await seedConceptAccepting(untouched, { ...untouchedFields, acceptedSubjectType: subjectB });
+    const store = new RelationalGlossaryStore(pool);
+
+    await store.deleteConcept(toDelete.name);
+
+    const held = await store.readConcepts();
+    expect(held.map((concept) => concept.name)).not.toContain(toDelete.name);
+    expect(held).toContainEqual({ name: untouched.name, accepts: [subjectB.name], ...untouchedFields });
+    const subjectTypeNames = (await store.readTerms('subject-type')).map((term) => term.name);
+    expect(subjectTypeNames).toContain(subjectA.name);
+    expect(subjectTypeNames).toContain(subjectB.name);
   },
   15000,
 );

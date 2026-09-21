@@ -10,6 +10,14 @@
       "task": "task/capability-removal/capability-store-delete"
     },
     {
+      "id": "implementation/concept-removal/concept-store-delete",
+      "kind": "implementation",
+      "file": "implementation/concept-removal/concept-store-delete.md",
+      "title": "Concept removal in the relational glossary store",
+      "summary": "Adds deleteConcept(name) to IGlossaryStore and its relational implementation, removing a concept's concept_accepts rows and its concepts row in one transaction.",
+      "task": "task/concept-removal/concept-store-delete"
+    },
+    {
       "id": "implementation/connector-configuration-removal/connector-configuration-store-delete",
       "kind": "implementation",
       "file": "implementation/connector-configuration-removal/connector-configuration-store-delete.md",
@@ -24,6 +32,14 @@
       "title": "Store-level capability removal, keyed by name and version together",
       "summary": "Proof that ICapabilityStore.deleteCapability and RelationalCapabilityStore.deleteCapability satisfy this task's five criteria and the one underdetermined entry the task's Notes name, while every node this task implements is left in untested because its fact spans more than a store-only delete decides.",
       "task": "task/capability-removal/capability-store-delete"
+    },
+    {
+      "id": "proof/concept-removal/concept-store-delete",
+      "kind": "proof",
+      "file": "proof/concept-removal/concept-store-delete.md",
+      "title": "Proof for the glossary store's transactional, name-keyed concept delete",
+      "summary": "New tests over IGlossaryStore.deleteConcept and RelationalGlossaryStore cover the declared port shape, the two-statement children-before-parent transaction, its failure/rollback path, and the real-database read-exclusion plus subject-type-vocabulary survival after removal; write's own pre-existing suite is cited unmodified for the untouched-write criterion; four IGlossaryStore test doubles were widened to compile against the new interface member.",
+      "task": "task/concept-removal/concept-store-delete"
     },
     {
       "id": "proof/connector-configuration-removal/connector-configuration-store-delete",
@@ -60,6 +76,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/concept-removal/concept-store-delete",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-store-delete",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-store-delete",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-store-delete",
+      "to": "task/concept-removal/concept-store-delete",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-removal/connector-configuration-store-delete",
       "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
       "kind": "encodes",
@@ -92,6 +132,12 @@
     {
       "from": "proof/capability-removal/capability-store-delete",
       "to": "implementation/capability-removal/capability-store-delete",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-removal/concept-store-delete",
+      "to": "implementation/concept-removal/concept-store-delete",
       "kind": "proves",
       "at": "the path"
     },

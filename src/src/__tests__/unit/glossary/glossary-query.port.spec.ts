@@ -51,6 +51,10 @@ class MutableGlossaryStore implements IGlossaryStore {
   public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
     this.concepts = concepts;
   }
+
+  public async deleteConcept(name: string): Promise<void> {
+    this.concepts = this.concepts.filter((concept) => concept.name !== name);
+  }
 }
 
 function queryOver(store: MutableGlossaryStore): IGlossaryQuery {
