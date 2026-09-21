@@ -17,6 +17,7 @@ import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ConceptNotInGlossaryError } from './concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from './concept-refuses-subject-type.error.js';
+import { ConnectorCallAddressNotAbsoluteUrlError } from './connector-call-address-not-absolute-url.error.js';
 import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
 import { ConnectorPlaceholderOutsideInputSchemaError } from './connector-placeholder-outside-input-schema.error.js';
@@ -73,6 +74,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [SubjectDoesNotCoverCaseInputsError, 422],
   [SubjectCarriesNoAttributeError, 422],
   [ConnectorPlaceholderOutsideInputSchemaError, 422],
+  [ConnectorCallAddressNotAbsoluteUrlError, 422],
   [HypothesisRevisionCollectsNoConceptError, 422],
   [ConceptRefusesSubjectTypeError, 422],
   [ConceptDescriptionRequiredError, 422],
