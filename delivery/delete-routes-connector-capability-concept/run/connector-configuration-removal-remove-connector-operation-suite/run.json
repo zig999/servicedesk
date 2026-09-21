@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-removal-remove-connector-operation-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/delete-routes-analysis/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-21T23:18:14.612+00:00",
+      "ended_at": "2026-09-21T23:18:22.018+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-21T23:18:22.018+00:00",
+      "ended_at": "2026-09-21T23:18:27.706+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-21T23:18:27.706+00:00",
+      "ended_at": "2026-09-21T23:18:32.440+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-21T23:18:32.440+00:00",
+      "ended_at": "2026-09-21T23:18:32.855+00:00"
+    },
+    {
+      "name": "test-unit",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test-unit.log",
+      "started_at": "2026-09-21T23:18:32.855+00:00",
+      "ended_at": "2026-09-21T23:19:09.964+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-21T23:19:09.964+00:00",
+      "ended_at": "2026-09-21T23:23:42.513+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

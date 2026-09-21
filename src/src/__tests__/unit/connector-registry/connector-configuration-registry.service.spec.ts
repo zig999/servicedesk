@@ -740,3 +740,55 @@ it('propagates a failure the capabilities reader itself raises while checking fo
   expect(outcome).not.toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
   expect((outcome as Error).message).toBe('the capability store is unavailable');
 });
+
+it('removes the configuration registered under the name, so a subsequent read of the registry no longer returns it', async () => {
+  const store = new InMemoryConnectorConfigurationStore([heldConfiguration({ connector: 'a-connector' })]);
+  const registry = new ConnectorConfigurationRegistryService(store);
+
+  await registry.removeConnector('a-connector');
+
+  const resolution = await registry.readConnectorConfiguration('a-connector');
+  expect(resolution).toEqual({ held: false, connector: 'a-connector' });
+});
+
+it("does not refuse removing a connector currently named by a registered capability, capability-naming being the only condition about a connector's use this domain declares", async () => {
+  const capability = registeredCapability({ connector: 'erp-http' });
+  const reader: ICapabilitiesReader = { readCapabilities: async () => [capability] };
+  const store = new InMemoryConnectorConfigurationStore([heldConfiguration({ connector: 'erp-http' })]);
+  const registry = new ConnectorConfigurationRegistryService(store, reader);
+
+  await expect(registry.removeConnector('erp-http')).resolves.toBeUndefined();
+});
+
+it('still answers a capability naming the removed connector after the removal, unchanged, since the operation writes to no capability', async () => {
+  const capability = registeredCapability({ connector: 'erp-http' });
+  const reader: ICapabilitiesReader = { readCapabilities: async () => [capability] };
+  const store = new InMemoryConnectorConfigurationStore([heldConfiguration({ connector: 'erp-http' })]);
+  const registry = new ConnectorConfigurationRegistryService(store, reader);
+
+  await registry.removeConnector('erp-http');
+
+  const answered = await registry.readRegisteredCapabilities();
+  expect(answered).toEqual([capability]);
+});
+
+it('consults no capability before removing, succeeding even though the injected capabilities reader would throw if invoked', async () => {
+  const throwingReader: ICapabilitiesReader = {
+    readCapabilities: async () => {
+      throw new Error('the capability store is unavailable');
+    },
+  };
+  const store = new InMemoryConnectorConfigurationStore([heldConfiguration({ connector: 'erp-http' })]);
+  const registry = new ConnectorConfigurationRegistryService(store, throwingReader);
+
+  await expect(registry.removeConnector('erp-http')).resolves.toBeUndefined();
+});
+
+it('succeeds without refusal against a connector nothing is registered under, leaving every registered configuration exactly as it stood', async () => {
+  const unrelated = heldConfiguration({ connector: 'an-unrelated-connector' });
+  const store = new InMemoryConnectorConfigurationStore([unrelated]);
+  const registry = new ConnectorConfigurationRegistryService(store);
+
+  await expect(registry.removeConnector('an-unregistered-connector')).resolves.toBeUndefined();
+  expect(store.held()).toEqual([unrelated]);
+});

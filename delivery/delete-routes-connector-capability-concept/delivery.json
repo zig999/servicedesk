@@ -26,6 +26,14 @@
       "task": "task/connector-configuration-removal/connector-configuration-store-delete"
     },
     {
+      "id": "implementation/connector-configuration-removal/remove-connector-operation",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-removal/remove-connector-operation.md",
+      "title": "remove-connector on the connector-configuration registry service",
+      "summary": "Adds ConnectorConfigurationRegistryService.removeConnector, delegating unconditionally to the store's deleteConnectorConfiguration with no capability read, no placeholder check and no refusal of its own.",
+      "task": "task/connector-configuration-removal/remove-connector-operation"
+    },
+    {
       "id": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
       "kind": "implementation",
       "file": "implementation/cross-context-usage-reads/capability-evidence-usage-reader.md",
@@ -64,6 +72,14 @@
       "title": "Proof for the connector-configuration store's unconditional delete-by-name",
       "summary": "New tests over IConnectorConfigurationStore.deleteConnectorConfiguration and RelationalConnectorConfigurationStore cover the declared port shape, the transactional DELETE and its failure path, the read-exclusion after removal, and the rule's unconditional-on-absence branch; write's own pre-existing suite is cited unmodified for the untouched-write criterion; three IConnectorConfigurationStore test doubles were widened to compile against the new interface member.",
       "task": "task/connector-configuration-removal/connector-configuration-store-delete"
+    },
+    {
+      "id": "proof/connector-configuration-removal/remove-connector-operation",
+      "kind": "proof",
+      "file": "proof/connector-configuration-removal/remove-connector-operation.md",
+      "title": "remove-connector on the connector-configuration registry service — unit proof",
+      "summary": "Five new unit tests over ConnectorConfigurationRegistryService.removeConnector proving it removes a registered configuration, never refuses on any capability-related condition, never consults the capabilities reader, leaves a capability naming the removed connector untouched, and succeeds unconditionally against a name nothing is registered under.",
+      "task": "task/connector-configuration-removal/remove-connector-operation"
     },
     {
       "id": "proof/cross-context-usage-reads/capability-evidence-usage-reader",
@@ -162,6 +178,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-removal/remove-connector-operation",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-operation",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-operation",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-operation",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-operation",
+      "to": "task/connector-configuration-removal/remove-connector-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
       "to": "domain/investigation/evidence",
       "kind": "encodes",
@@ -236,6 +282,12 @@
     {
       "from": "proof/connector-configuration-removal/connector-configuration-store-delete",
       "to": "implementation/connector-configuration-removal/connector-configuration-store-delete",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-removal/remove-connector-operation",
+      "to": "implementation/connector-configuration-removal/remove-connector-operation",
       "kind": "proves",
       "at": "the path"
     },

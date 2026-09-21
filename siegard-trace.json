@@ -409,7 +409,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
+          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -2767,7 +2767,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
+          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration.ts",
@@ -3123,7 +3123,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
+          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -7345,6 +7345,10 @@
       "node": "rules/integration/removing-a-connector-configuration-is-unconditional",
       "digest": "sha256:f06d983ab60c78fc1c0acca181d2489ecb9679fd8a596be287401f01c5dfd7da",
       "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
           "digest": "sha256:30d754d19101be3cca5558abadd0f734c3579bf82072e7825e00384a9d4bb96f"

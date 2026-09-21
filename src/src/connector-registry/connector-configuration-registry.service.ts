@@ -39,6 +39,10 @@ export class ConnectorConfigurationRegistryService {
     return configuration;
   }
 
+  public async removeConnector(connector: string): Promise<void> {
+    await this.store.deleteConnectorConfiguration(connector);
+  }
+
   public async readConnectorConfiguration(connector: string): Promise<ConnectorConfigurationResolution> {
     const held = await this.store.readConnectorConfigurations();
     const configuration = held.find((candidate) => candidate.connector === connector);
