@@ -1,5 +1,6 @@
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { CapabilityRegistryService } from '../capability-registry/capability-registry.service.js';
+import type { IEvidenceUsageReader } from '../capability-registry/evidence-usage-reader.port.js';
 import type { ICaseInputRequirementsQuery } from '../case/case-input-requirements.port.js';
 import type { ICaseQuery } from '../case/case-query.port.js';
 import type { ICaseStore } from '../case/case-store.port.js';
@@ -29,6 +30,7 @@ import {
   createConnectorConfigurationsReader,
 } from './connector-configuration-registry.factory.js';
 import { createGlossary } from './glossary.factory.js';
+import { createEvidenceUsageReader } from './investigation-store.factory.js';
 
 export type BuildAppDependenciesInputs = {
   readonly env: Env;
@@ -58,6 +60,7 @@ type ComposedResources = {
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
   readonly capabilitiesReader: ICapabilitiesReader;
+  readonly evidenceUsageReader: IEvidenceUsageReader;
 };
 
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
@@ -65,6 +68,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
   const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
   const glossary = createGlossary(connection);
   const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
+  const evidenceUsageReader = createEvidenceUsageReader(connection);
   return {
     caseQuery,
     caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),
@@ -82,6 +86,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
     capabilitiesReader,
+    evidenceUsageReader,
   };
 }
 

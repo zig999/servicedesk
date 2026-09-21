@@ -122,6 +122,18 @@ export class RelationalInvestigationStore implements IInvestigationStore {
   public async read(id: string): Promise<StoredInvestigation | undefined> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => readWholeInvestigation(tx, id));
   }
+
+  public async isCapabilityNamedByEvidence(name: string, version: string): Promise<boolean> {
+    const row = await queryOneOrAbsent(
+      this.connection,
+      {
+        text: `SELECT 1 FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE capability_name = $1 AND capability_version = $2 LIMIT 1`,
+        params: [name, version],
+      },
+      raiseReadFailure,
+    );
+    return row !== undefined;
+  }
 }
 
 async function writeWholeInvestigation(tx: IQueryable, investigation: Investigation): Promise<void> {

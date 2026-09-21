@@ -26,6 +26,14 @@
       "task": "task/connector-configuration-removal/connector-configuration-store-delete"
     },
     {
+      "id": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "implementation",
+      "file": "implementation/cross-context-usage-reads/capability-evidence-usage-reader.md",
+      "title": "Cross-module evidence-usage reader for capability identities",
+      "summary": "A new port declared in the capability-registry module, answering whether any collected investigation evidence names a given capability (name, version), backed by a relational adapter built at the same composition point as the registry's existing cross-module reader.",
+      "task": "task/cross-context-usage-reads/capability-evidence-usage-reader"
+    },
+    {
       "id": "proof/capability-removal/capability-store-delete",
       "kind": "proof",
       "file": "proof/capability-removal/capability-store-delete.md",
@@ -48,6 +56,14 @@
       "title": "Proof for the connector-configuration store's unconditional delete-by-name",
       "summary": "New tests over IConnectorConfigurationStore.deleteConnectorConfiguration and RelationalConnectorConfigurationStore cover the declared port shape, the transactional DELETE and its failure path, the read-exclusion after removal, and the rule's unconditional-on-absence branch; write's own pre-existing suite is cited unmodified for the untouched-write criterion; three IConnectorConfigurationStore test doubles were widened to compile against the new interface member.",
       "task": "task/connector-configuration-removal/connector-configuration-store-delete"
+    },
+    {
+      "id": "proof/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "proof",
+      "file": "proof/cross-context-usage-reads/capability-evidence-usage-reader.md",
+      "title": "Evidence-usage reader for capability identities — proof",
+      "summary": "Six criteria and one file-level import boundary are each protected by a dedicated test against the real investigation_evidence table and the exported factory function; the three cited nodes' own whole facts remain unproven by this task's narrow reads and are reported as such.",
+      "task": "task/cross-context-usage-reads/capability-evidence-usage-reader"
     }
   ],
   "edges": [
@@ -130,6 +146,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-removal/capability-store-delete",
       "to": "implementation/capability-removal/capability-store-delete",
       "kind": "proves",
@@ -144,6 +184,12 @@
     {
       "from": "proof/connector-configuration-removal/connector-configuration-store-delete",
       "to": "implementation/connector-configuration-removal/connector-configuration-store-delete",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
       "kind": "proves",
       "at": "the path"
     }

@@ -384,6 +384,10 @@
           "digest": "sha256:c8c2beffdd10f6c61791fcede266359ada776369bbe59df16703819aa4cbac8b"
         },
         {
+          "path": "src/src/capability-registry/evidence-usage-reader.port.ts",
+          "digest": "sha256:14fbff4a52dfa31a57ae16f3b2a4d315326e58ea5bdef7937e5d4df85ba44571"
+        },
+        {
           "path": "src/src/case/hypothesis-revision-overwrite.port.ts",
           "digest": "sha256:9f71d61ad2572558804665ee7434eaa00cd07f598e3ec24e85d505a7a458e9ba"
         },
@@ -414,6 +418,14 @@
         {
           "path": "src/src/errors/investigation-not-buildable.error.ts",
           "digest": "sha256:68113bf7fd274485409757a8fa2c98bbb136cf568bf1a38d239e56f59f85edf4"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:6b9f3a45ae8d19d8c1b5bd59622d325214e24696919c6bc2a4a40cdaaaa51d27"
+        },
+        {
+          "path": "src/src/factories/investigation-store.factory.ts",
+          "digest": "sha256:884c228894f8e95c282255e5b9a88de715eddd2f554ae12b787c2edd0b520f8f"
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
@@ -2426,6 +2438,10 @@
           "digest": "sha256:cd69bfada94561ae835b428867daf10dfde1b5d1093b66a7980a9fee8c2d540f"
         },
         {
+          "path": "src/src/capability-registry/evidence-usage-reader.port.ts",
+          "digest": "sha256:14fbff4a52dfa31a57ae16f3b2a4d315326e58ea5bdef7937e5d4df85ba44571"
+        },
+        {
           "path": "src/src/connector-registry/capabilities-reader.port.ts",
           "digest": "sha256:07b31d7a625c669d9eee99450888ec7b859ebc5d828c4373716ad174e862e368"
         },
@@ -3755,7 +3771,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:d1083e209534287edfc46cc0e3026905709ed4d7ad22bf301dea9923d671a7c7"
+          "digest": "sha256:26d9129ece65837bd5c22b723b38033c0e6723a1aa74b6e88b2e7fde309ac5d1"
         }
       ]
     },

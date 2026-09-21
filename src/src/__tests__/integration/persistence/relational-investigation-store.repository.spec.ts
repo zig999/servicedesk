@@ -537,3 +537,48 @@ it(
   },
   15000,
 );
+
+it(
+  'answers true from isCapabilityNamedByEvidence when a stored evidence item names that exact capability name and version as what produced it',
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-evidence-usage-match-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const investigation = anIntegrationInvestigation({ id, fixtures });
+    const store = new RelationalInvestigationStore(pool);
+    await store.write(investigation);
+
+    const named = await store.isCapabilityNamedByEvidence(fixtures.capabilityName, fixtures.capabilityVersion);
+
+    expect(named).toBe(true);
+  },
+  15000,
+);
+
+it(
+  'answers false from isCapabilityNamedByEvidence when no stored evidence item names the given capability name and version at all',
+  async () => {
+    const store = new RelationalInvestigationStore(pool);
+
+    const named = await store.isCapabilityNamedByEvidence(`investigation-store-evidence-usage-absent-${randomUUID()}`, '1.0.0');
+
+    expect(named).toBe(false);
+  },
+);
+
+it(
+  'answers false from isCapabilityNamedByEvidence when the only stored evidence item names the same capability name at a different version',
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-evidence-usage-version-mismatch-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const investigation = anIntegrationInvestigation({ id, fixtures });
+    const store = new RelationalInvestigationStore(pool);
+    await store.write(investigation);
+
+    const named = await store.isCapabilityNamedByEvidence(fixtures.capabilityName, `${fixtures.capabilityVersion}-a-different-version`);
+
+    expect(named).toBe(false);
+  },
+  15000,
+);
