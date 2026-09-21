@@ -134,6 +134,30 @@ export class RelationalInvestigationStore implements IInvestigationStore {
     );
     return row !== undefined;
   }
+
+  public async isConceptNamedByEvidence(concept: string): Promise<boolean> {
+    const row = await queryOneOrAbsent(
+      this.connection,
+      {
+        text: `SELECT 1 FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE concept = $1 LIMIT 1`,
+        params: [concept],
+      },
+      raiseReadFailure,
+    );
+    return row !== undefined;
+  }
+
+  public async isConceptNamedByCitation(concept: string): Promise<boolean> {
+    const row = await queryOneOrAbsent(
+      this.connection,
+      {
+        text: `SELECT 1 FROM ${INVESTIGATION_EVALUATION_CITATIONS_TABLE} WHERE concept = $1 LIMIT 1`,
+        params: [concept],
+      },
+      raiseReadFailure,
+    );
+    return row !== undefined;
+  }
 }
 
 async function writeWholeInvestigation(tx: IQueryable, investigation: Investigation): Promise<void> {

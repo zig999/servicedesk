@@ -11,6 +11,7 @@ import type {
 } from '../connector-registry/connector-configuration-registry.service.js';
 import type { ICapabilitiesReader } from '../connector-registry/capabilities-reader.port.js';
 import { OpenApiDocumentFetcher } from '../connector-registry/openapi-document-fetcher.adapter.js';
+import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
@@ -25,6 +26,7 @@ import { createCapabilitiesReader, createCapabilityRegistry } from './capability
 import { createCaseInputRequirementsQuery } from './case-input-requirements.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './case-lifecycle.factory.js';
 import { createCaseStore } from './case-store.factory.js';
+import { createConceptUsageReader } from './concept-usage-reader.factory.js';
 import {
   createConnectorConfigurationRegistry,
   createConnectorConfigurationsReader,
@@ -61,6 +63,7 @@ type ComposedResources = {
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
   readonly capabilitiesReader: ICapabilitiesReader;
   readonly evidenceUsageReader: IEvidenceUsageReader;
+  readonly conceptUsageReader: IConceptUsageReader;
 };
 
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
@@ -69,6 +72,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
   const glossary = createGlossary(connection);
   const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
   const evidenceUsageReader = createEvidenceUsageReader(connection);
+  const conceptUsageReader = createConceptUsageReader(connection, capabilityRegistry);
   return {
     caseQuery,
     caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),
@@ -87,6 +91,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
     capabilitiesReader,
     evidenceUsageReader,
+    conceptUsageReader,
   };
 }
 

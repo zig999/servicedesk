@@ -34,6 +34,14 @@
       "task": "task/cross-context-usage-reads/capability-evidence-usage-reader"
     },
     {
+      "id": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "kind": "implementation",
+      "file": "implementation/cross-context-usage-reads/concept-usage-reader.md",
+      "title": "A concept-usage reader spanning capability, investigation and case data",
+      "summary": "A zero-import glossary port and a cross-store adapter answering whether a registered capability, a collected evidence item, an evaluation citation or an unmanifested hypothesis-revision's own collects still names a given concept, reporting which kind it found.",
+      "task": "task/cross-context-usage-reads/concept-usage-reader"
+    },
+    {
       "id": "proof/capability-removal/capability-store-delete",
       "kind": "proof",
       "file": "proof/capability-removal/capability-store-delete.md",
@@ -64,6 +72,14 @@
       "title": "Evidence-usage reader for capability identities — proof",
       "summary": "Six criteria and one file-level import boundary are each protected by a dedicated test against the real investigation_evidence table and the exported factory function; the three cited nodes' own whole facts remain unproven by this task's narrow reads and are reported as such.",
       "task": "task/cross-context-usage-reads/capability-evidence-usage-reader"
+    },
+    {
+      "id": "proof/cross-context-usage-reads/concept-usage-reader",
+      "kind": "proof",
+      "file": "proof/cross-context-usage-reads/concept-usage-reader.md",
+      "title": "Concept-usage reader — capability, evidence, citation and unmanifested-collects resolution",
+      "summary": "Integration tests against the real database prove each of the four reference kinds the reader answers, its negative and manifested-exclusion cases, and its fixed capability-first check order, alongside a unit test proving the glossary port carries zero imports.",
+      "task": "task/cross-context-usage-reads/concept-usage-reader"
     }
   ],
   "edges": [
@@ -170,6 +186,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/cross-context-usage-reads/concept-usage-reader",
+      "to": "task/cross-context-usage-reads/concept-usage-reader",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-removal/capability-store-delete",
       "to": "implementation/capability-removal/capability-store-delete",
       "kind": "proves",
@@ -190,6 +242,12 @@
     {
       "from": "proof/cross-context-usage-reads/capability-evidence-usage-reader",
       "to": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/cross-context-usage-reads/concept-usage-reader",
+      "to": "implementation/cross-context-usage-reads/concept-usage-reader",
       "kind": "proves",
       "at": "the path"
     }

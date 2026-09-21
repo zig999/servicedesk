@@ -424,8 +424,16 @@
           "digest": "sha256:6b9f3a45ae8d19d8c1b5bd59622d325214e24696919c6bc2a4a40cdaaaa51d27"
         },
         {
+          "path": "src/src/factories/concept-usage-reader.factory.ts",
+          "digest": "sha256:691f629459dfde79f683808e71afe84e90badaffb8b3ff6232623434aa5fc5ac"
+        },
+        {
           "path": "src/src/factories/investigation-store.factory.ts",
           "digest": "sha256:884c228894f8e95c282255e5b9a88de715eddd2f554ae12b787c2edd0b520f8f"
+        },
+        {
+          "path": "src/src/glossary/concept-usage-reader.port.ts",
+          "digest": "sha256:6366560de2840922c9a9131fd8e6f8bbdf2a436d601f40847d16fda0c8b6c399"
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
@@ -2450,6 +2458,10 @@
           "digest": "sha256:474e8f7600bee3db1116c796f50e88c349593b060a217d7b46c043f214930e0c"
         },
         {
+          "path": "src/src/factories/concept-usage-reader.factory.ts",
+          "digest": "sha256:691f629459dfde79f683808e71afe84e90badaffb8b3ff6232623434aa5fc5ac"
+        },
+        {
           "path": "src/src/fixtures/capability/capability.json",
           "digest": "sha256:8d725dc05056095f56346920954a5e37be728fa6ebcdf292f095380e8eb47cf7"
         },
@@ -3336,6 +3348,10 @@
           "digest": "sha256:2db248c543e459d0acb66cb54745a3eeaeadaa230d04247e9f1798225b6f42ab"
         },
         {
+          "path": "src/src/factories/concept-usage-reader.factory.ts",
+          "digest": "sha256:691f629459dfde79f683808e71afe84e90badaffb8b3ff6232623434aa5fc5ac"
+        },
+        {
           "path": "src/src/http/dto/simulate-case.dto.ts",
           "digest": "sha256:1936bfb75a026b56f4033ae6b60b6261aa3bfe7891105fcc919b2f632845d2bb"
         },
@@ -3365,7 +3381,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:d1083e209534287edfc46cc0e3026905709ed4d7ad22bf301dea9923d671a7c7"
+          "digest": "sha256:fb987f3f3b9f7afb71a6d6f81702bd302bcd63176b31d35a1e04d34c36af5077"
         }
       ]
     },
@@ -3706,6 +3722,10 @@
           "digest": "sha256:5e77eb9031f522d073ba8cee896529a65c1a83526d6e775498694f1320c8a392"
         },
         {
+          "path": "src/src/factories/concept-usage-reader.factory.ts",
+          "digest": "sha256:691f629459dfde79f683808e71afe84e90badaffb8b3ff6232623434aa5fc5ac"
+        },
+        {
           "path": "src/src/http/dto/evidence.dto.ts",
           "digest": "sha256:7c234e2e4081132804f3dc7fbdb42223d8f417cc499455931951319f96dac152"
         },
@@ -3771,7 +3791,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:26d9129ece65837bd5c22b723b38033c0e6723a1aa74b6e88b2e7fde309ac5d1"
+          "digest": "sha256:fb987f3f3b9f7afb71a6d6f81702bd302bcd63176b31d35a1e04d34c36af5077"
         }
       ]
     },
@@ -5022,6 +5042,10 @@
           "digest": "sha256:1682d4a8884537199aa06ac16e4aecffacf74e1665f9bd80c47dc6c7fa4640c5"
         },
         {
+          "path": "src/src/factories/concept-usage-reader.factory.ts",
+          "digest": "sha256:691f629459dfde79f683808e71afe84e90badaffb8b3ff6232623434aa5fc5ac"
+        },
+        {
           "path": "src/src/http/dto/place-hypothesis.dto.ts",
           "digest": "sha256:1bf5ac6dd52a0fb4293abd61465dbad249a8a4f7cb93b3ca9cecdf474284d004"
         },
@@ -5055,7 +5079,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:574ae934f9abd7b901c5e946145c8b12ecb0033e224b602fdd80adece7013fa5"
         },
         {
           "path": "src/src/seed.ts",
