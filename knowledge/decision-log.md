@@ -5560,3 +5560,82 @@ entries:
     refused for some other validator rule, making "the case currently uses no revision of it" an
   
     assertion about the case''s current content that nobody read and that may be false.'
+- location: rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold.md
+  field: statement
+  unstated: No node states which hypotheses the placing act a manifest surface offers may name, whether
+    a hypothesis that version's manifest already holds an entry for is among them, or what the surface states
+    where the case leaves it nothing to place. a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    decides only that the act is offered and on which readings, and leaves what it may name to the interface;
+    a-hypothesis-is-manifested-at-most-once-in-a-case-version states what a manifest may hold and expressly
+    nothing about a request naming a hypothesis already held; a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    repeats that omission; and contracts/knowledge/case-query publishes list-hypotheses without stating
+    that any surface draws a choice from it.
+  decided: The candidates are exactly the hypotheses of the case that the surface's read of the case's hypotheses
+    answered, less every hypothesis that surface's answer for the version holds a manifest entry for --
+    so a hypothesis already manifested is never among them, and where the surface holds no answer for the
+    version, its read refused or not yet answered, nothing is subtracted and every hypothesis answered is
+    a candidate; where that read has answered and no candidate remains, whether the case composed none or
+    all are already placed, the surface states explicitly that the case holds no hypothesis that is not
+    already in this version's manifest, told apart from a reading whose read of the case's hypotheses has
+    not answered, on which it carries no candidate and states no such absence.
+  why: A candidate the reading's manifest already holds sends the curator to the one place-hypothesis outcome
+    this specification expressly leaves open and whose refusal the manifest surface holds no telling for,
+    while an empty chooser with nothing said reads alike whether the case has nothing left to place, the
+    read failed, or the read is still pending -- so the candidates are what the reading knows is not yet
+    placed, and their absence is stated rather than shown as an empty space.
+- location: rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names.md
+  field: statement
+  unstated: Which revision of a hypothesis a placement into a case version's manifest pins where that manifest
+    holds no entry for that hypothesis, and whether the curator names it or it is the hypothesis's highest
+    existing revision. domain/knowledge/manifest-entry requires exactly one referenced hypothesis-revision
+    per entry and domain/knowledge/hypothesis-revision admits a pin in either state, both stating what an
+    entry holds and neither stating where the revision comes from; a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest
+    compares a pin against the hypothesis's highest existing revision only for an entry already presented;
+    a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions states that
+    the act is offered and expressly leaves what the issued place-hypothesis answers untouched; and scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    names a placing pinning revision 1 of a hypothesis holding only revision 1, where the named revision
+    and the highest existing one cannot be told apart -- so which revision a first placement pins fell to
+    whatever the interface happened to send.
+  decided: A placement of a hypothesis into a case version's manifest that holds no entry for that hypothesis
+    pins exactly the revision of that hypothesis the placement itself names -- whichever of that hypothesis's
+    own revisions the curator chose and whatever state that revision carries -- and never a revision the
+    placement did not name, the hypothesis's highest existing revision included. Recorded as a new policy
+    over domain/knowledge/case-version, domain/knowledge/manifest-entry and domain/knowledge/hypothesis-revision,
+    eventual.
+  why: 'domain/knowledge/case-version already declares a draft''s manifest freely composed "pointing at
+    any of that hypothesis''s own revisions", and a placing plus a copied manifest (a-new-drafts-manifest-is-copied-from-an-existing-version)
+    are the only two ways an entry ever comes to reference a revision, so a placing that always took the
+    highest existing revision would leave that declared freedom exercisable by nobody. Deriving the pin
+    would also write the version''s content from a read nobody completed: a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    stands the offer on a reading whose read of the version was refused and on one that has not answered,
+    which is the substitution a-manifest-entrys-pinned-revision-is-always-shown refuses as a source for
+    a pin. Nothing is lost where the curator wants the newest content, since that revision is the one in
+    front of them when a-revise-offers-the-draft-manifest-only-when-the-pin-must-move sends them to the
+    draft''s manifest on this very condition. Scoped to a manifest holding no entry for the hypothesis so
+    that what place-hypothesis answers a request naming an already-manifested hypothesis stays the reservation
+    a-hypothesis-is-manifested-at-most-once-in-a-case-version expressly keeps.'
+- location: rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares.md
+  field: statement
+  unstated: Which position a hypothesis takes when it is placed into a case version's manifest that holds
+    no entry for it, and whether the curator declares that position or the placing act derives one no entry
+    of that manifest holds. hypotheses-are-ordered-by-precedence states that the declared order is the precedence
+    the experts affirm, declared rather than arranged, and a-hypothesis-position-is-unique-within-its-case
+    refuses a second entry at an occupied position, but both are written over a manifest whose positions
+    already stand; domain/knowledge/manifest-entry declares position required, domain/knowledge/case-version
+    says only that a hypothesis may be placed at a position, and contracts/knowledge/case-lifecycle publishes
+    place-hypothesis without naming who supplies the number -- so the first placement's position held only
+    as a presupposition no node was held to.
+  decided: A place-hypothesis over a case version whose manifest holds no entry for the hypothesis it names
+    writes that entry at exactly the position the request declares, supplied by the curator, and derives
+    no position from the entries the manifest already holds. Stated as an invariant over domain/knowledge/case-version
+    and domain/knowledge/manifest-entry, scoped to the first placement and leaving a hypothesis the manifest
+    already holds an entry for exactly where a-hypothesis-is-manifested-at-most-once-in-a-case-version left
+    it.
+  why: 'hypotheses-are-ordered-by-precedence makes the order a domain fact the experts affirm, "declared
+    rather than arranged" -- a position the act computes from the manifest''s own entries is precisely an
+    arrangement, and would seat a hypothesis at a precedence nobody affirmed. A derived position further
+    makes two standing statements unreachable: a-hypothesis-position-is-unique-within-its-case refuses a
+    placement at an occupied position and a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    owes a named telling for that refusal whose clearing act it states as choosing another position, yet
+    a derived position never collides. case-lifecycle publishes no act that moves a standing entry, so the
+    placement is the only moment a new entry''s precedence is declared at all.'
