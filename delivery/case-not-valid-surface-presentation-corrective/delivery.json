@@ -34,6 +34,14 @@
       "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
     },
     {
+      "id": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure.md",
+      "title": "Current-pin read no longer folds a case-not-valid refusal into a load failure",
+      "summary": "use-case-hypothesis-current-pin.ts distinguishes a CaseVersionNotValidError refusal of the case's current version from a generic load failure, and hypothesis-revision-history.tsx presents the hypothesis's own successfully-read revisions on that reading, stating no fact derived from the refused version's manifest and rendering no status cell for it.",
+      "task": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure"
+    },
+    {
       "id": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "kind": "proof",
       "file": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
@@ -64,6 +72,14 @@
       "title": "Version editor states a version that does not read back as a case — proof",
       "summary": "Tests the version editor's not-valid/load-error distinction, the manifest route it offers, and the four UNDERDETERMINED entries the task's own notes raised, against the three nodes this task implements.",
       "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
+    },
+    {
+      "id": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure.md",
+      "title": "Current-pin refusal no longer folds into a load failure on the hypothesis revision history screen -- proof",
+      "summary": "Proves that use-case-hypothesis-current-pin.ts's not-valid phase lets hypothesis-revision-history.tsx present the hypothesis's own successfully-read revisions with no fact from the refused version's manifest, distinct from both the fixed read-did-not-complete statement and a genuine revisions-read failure.",
+      "task": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure"
     },
     {
       "id": "review/case-not-valid-surface-presentation-corrective",
@@ -228,6 +244,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "to": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "kind": "proves",
@@ -248,6 +294,12 @@
     {
       "from": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
       "to": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
       "kind": "proves",
       "at": "the path"
     },

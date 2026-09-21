@@ -8300,6 +8300,10 @@
           "digest": "sha256:4d29e5d1a79f585c3b3962fad24880b885e4697b86f3fe911d5b885073e13ed7"
         },
         {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:3d3a1aafc2af33dd356ddd29e2f1a4d504a5527ae595057af797f09c12b12fa5"
+        },
+        {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:ad1afeb9f774119251db98354883f769eda95ef1ade1ec00f709389e67e658a7"
         },
@@ -8561,7 +8565,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
-          "digest": "sha256:b6da8ac188a78c74540a784fe7a13f8723092546fa5b7d0ed1af4cab768f1bc6"
+          "digest": "sha256:3d3a1aafc2af33dd356ddd29e2f1a4d504a5527ae595057af797f09c12b12fa5"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
@@ -8864,6 +8868,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case",
+      "digest": "sha256:54e03dd67f1327c5273242bf1b1de1aa7b7c507a3206d73b7a825d518b3a2d28",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:3d3a1aafc2af33dd356ddd29e2f1a4d504a5527ae595057af797f09c12b12fa5"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
+          "digest": "sha256:24fb7f54ddc96d65f31bd920f24842152432e64d446b9daae816811c902ea35a"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
       "digest": "sha256:7fc46c10985aaa48cbc8934576a4620da4c8a6c97bc915598babf4ea76452cc9",
       "files": [
@@ -9136,6 +9154,10 @@
         {
           "path": "frontend/app/src/hooks/use-case-current-version-validity.ts",
           "digest": "sha256:4d29e5d1a79f585c3b3962fad24880b885e4697b86f3fe911d5b885073e13ed7"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-case-hypothesis-current-pin.ts",
+          "digest": "sha256:3d3a1aafc2af33dd356ddd29e2f1a4d504a5527ae595057af797f09c12b12fa5"
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
