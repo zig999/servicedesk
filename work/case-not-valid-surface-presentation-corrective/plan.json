@@ -9,6 +9,13 @@
       "summary": "Corrective increment: case-keyed surfaces treat a CaseVersionNotValidError refusal as an undifferentiated generic load failure instead of the distinct presentation and standing manifest route the specification already decided."
     },
     {
+      "id": "epic/hypothesis-revision-history-current-pin",
+      "kind": "epic",
+      "file": "epic/hypothesis-revision-history-current-pin.md",
+      "title": "Hypothesis revision history current-pin read folds case-not-valid into a generic load failure",
+      "summary": "Corrective increment: use-case-hypothesis-current-pin.ts (and the revision-history screen built on it) presents the same undifferentiated 'unable to load' statement for a version refused because it does not read back as a case as it does for a read that genuinely did not complete, hiding a hypothesis's own successfully-read revision history behind a false failure."
+    },
+    {
       "id": "inventory/case-version-editor-and-manifest-builder-and-hypothesis-composition-load-error",
       "kind": "inventory",
       "file": "inventory/case-version-editor-and-manifest-builder-and-hypothesis-composition-load-error.md",
@@ -46,6 +53,14 @@
       "title": "The version editor states a version that does not read back as a case",
       "summary": "The case version editor's own presentation of a version whose read is refused because validation does not hold for it at that reading, held apart from the statement it makes for a read that did not complete.",
       "epic": "case-not-valid-surface-presentation"
+    },
+    {
+      "id": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "task",
+      "file": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure.md",
+      "title": "The hypothesis revision history screen presents a hypothesis's own successfully-read revisions even when the case's current version does not read back as a case",
+      "summary": "use-case-hypothesis-current-pin.ts and hypothesis-revision-history.tsx stop treating a CaseVersionNotValidError refusal of the case's current version as an undifferentiated load failure, so a hypothesis's own revision history — read independently and successfully — is no longer hidden behind a false \"unable to load\" statement.",
+      "epic": "hypothesis-revision-history-current-pin"
     }
   ],
   "edges": [
@@ -926,6 +941,816 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "covers",
+      "at": "covers[100]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[101]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface",
+      "kind": "covers",
+      "at": "covers[102]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "covers",
+      "at": "covers[103]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[104]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "covers",
+      "at": "covers[105]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/an-abandoned-revision-composition-writes-nothing",
+      "kind": "covers",
+      "at": "covers[106]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[107]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[108]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "covers",
+      "at": "covers[109]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[110]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "covers",
+      "at": "covers[111]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "covers",
+      "at": "covers[112]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "covers",
+      "at": "covers[113]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/remove-hypothesis-for-an-absent-name-succeeds-with-no-effect",
+      "kind": "covers",
+      "at": "covers[114]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses",
+      "kind": "covers",
+      "at": "covers[115]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[116]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[117]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "covers",
+      "at": "covers[118]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/investigation/a-draft-case-version-refuses-diagnosis",
+      "kind": "covers",
+      "at": "covers[119]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "covers",
+      "at": "covers[120]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "covers",
+      "at": "covers[121]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/investigation/an-in-place-revision-edit-stales-the-shown-result",
+      "kind": "covers",
+      "at": "covers[122]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly",
+      "kind": "covers",
+      "at": "covers[123]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-catalog-entry-follows-the-released-version",
+      "kind": "covers",
+      "at": "covers[124]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "covers",
+      "at": "covers[125]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "covers",
+      "at": "covers[126]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[127]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "covers",
+      "at": "covers[128]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "covers",
+      "at": "covers[129]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "covers",
+      "at": "covers[130]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state",
+      "kind": "covers",
+      "at": "covers[131]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so",
+      "kind": "covers",
+      "at": "covers[132]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "covers",
+      "at": "covers[133]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[134]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-concept-read-refuses-an-unanswered-concept",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-pool-bounds-are-positive-integers",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[36]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[37]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[38]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[39]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[40]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[41]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[42]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/glossary/an-outcome-is-contributed-by-a-confirmable-hypothesis",
+      "kind": "covers",
+      "at": "covers[43]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[44]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[45]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "covers",
+      "at": "covers[46]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "covers",
+      "at": "covers[47]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "covers",
+      "at": "covers[48]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "covers",
+      "at": "covers[49]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "covers",
+      "at": "covers[50]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[51]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "covers",
+      "at": "covers[52]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
+      "kind": "covers",
+      "at": "covers[53]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[54]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
+      "kind": "covers",
+      "at": "covers[55]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "covers",
+      "at": "covers[56]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[57]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "covers",
+      "at": "covers[58]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[59]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[60]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[61]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles",
+      "kind": "covers",
+      "at": "covers[62]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "covers",
+      "at": "covers[63]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-case-versions-listing-answers-highest-numbered-first",
+      "kind": "covers",
+      "at": "covers[64]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "kind": "covers",
+      "at": "covers[65]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[66]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[67]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-concept-answered-by-none-or-several-capabilities-contributes-no-input-requirement",
+      "kind": "covers",
+      "at": "covers[68]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug",
+      "kind": "covers",
+      "at": "covers[69]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "covers",
+      "at": "covers[70]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[71]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[72]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "kind": "covers",
+      "at": "covers[73]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "covers",
+      "at": "covers[74]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
+      "kind": "covers",
+      "at": "covers[75]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[76]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[77]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[78]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[79]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/every-screen-discloses-that-authentication-is-unenforced",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[80]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "covers",
+      "at": "covers[81]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "covers",
+      "at": "covers[82]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest",
+      "kind": "covers",
+      "at": "covers[83]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
+      "kind": "covers",
+      "at": "covers[84]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "covers",
+      "at": "covers[85]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "covers",
+      "at": "covers[86]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "covers",
+      "at": "covers[87]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "covers",
+      "at": "covers[88]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "covers",
+      "at": "covers[89]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "covers",
+      "at": "covers[90]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-presented-case-version-states-its-own-declared-attributes",
+      "kind": "covers",
+      "at": "covers[91]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest",
+      "kind": "covers",
+      "at": "covers[92]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "covers",
+      "at": "covers[93]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "covers",
+      "at": "covers[94]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[95]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[96]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect",
+      "kind": "covers",
+      "at": "covers[97]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "covers",
+      "at": "covers[98]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "rules/knowledge/a-revise-hypothesis-requests-own-subject-type-is-never-read",
+      "kind": "covers",
+      "at": "covers[99]"
+    },
+    {
+      "from": "epic/hypothesis-revision-history-current-pin",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
       "kind": "implements",
@@ -1014,6 +1839,30 @@
       "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
       "kind": "implements",
       "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "implements",
+      "at": "implements[3]"
     }
   ]
 }
