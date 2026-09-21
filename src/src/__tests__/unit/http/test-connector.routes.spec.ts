@@ -347,7 +347,80 @@ it('still names the orphaned placeholder in its own response, without itself ref
 
   expect(response.statusCode).toBe(200);
   const body = response.json() as TestConnectorResponseDto & { error?: unknown };
-  expect(body.response.kind).toBe('error');
+  expect(body.response.kind).toBe('unreachable');
   expect(body.orphaned_placeholders).toEqual(['id']);
   expect(body.error).toBeUndefined();
+});
+
+it('refuses a test-connector request whose resolved address is not a valid absolute URL with an HTTP 422 ConnectorCallAddressNotAbsoluteUrlError disclosing only the masked resolved address, issuing no call', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability() });
+  built.readConnectorConfiguration.mockResolvedValueOnce(
+    heldConnectorConfigurationResolution({ address: '${credential:ADDRESS_HOTFIX_TOKEN}/subjects/${subject:id}' }),
+  );
+  process.env.ADDRESS_HOTFIX_TOKEN = 'a-real-secret-value';
+
+  try {
+    const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+    expect(response.statusCode).toBe(422);
+    const body = response.json() as { error: { code: string; details: unknown } };
+    expect(body.error.code).toBe('ConnectorCallAddressNotAbsoluteUrlError');
+    expect(body.error.details).toEqual({ address: '***REDACTED***/subjects/subject-value-1' });
+    expect(built.httpClient).not.toHaveBeenCalled();
+  } finally {
+    delete process.env.ADDRESS_HOTFIX_TOKEN;
+  }
+});
+
+it("ends a test whose issued call fails before any HTTP response, and whose failure is not the capability's own timeout, with an HTTP 200 response naming ConnectorUnreachableError and the connector, carrying no response status, and echoing the request with its credential placeholder masked", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability() });
+  built.readConnectorConfiguration.mockResolvedValueOnce(
+    heldConnectorConfigurationResolution({ headers: { 'x-requester': '${requester}', authorization: 'Bearer ${credential:UNREACHABLE_HOTFIX_TOKEN}' } }),
+  );
+  process.env.UNREACHABLE_HOTFIX_TOKEN = 'another-real-secret';
+  built.httpClient.mockRejectedValueOnce(new Error('socket hang up'));
+  try {
+    const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+    expect(response.statusCode).toBe(200);
+    const body = response.json() as TestConnectorResponseDto;
+    expect(body.response.kind).toBe('unreachable');
+    if (body.response.kind !== 'unreachable') {
+      throw new Error('expected an unreachable outcome');
+    }
+    expect(body.response.error.code).toBe('ConnectorUnreachableError');
+    expect(body.response.error.details).toEqual({ connector: 'a-connector' });
+    expect('status' in body.response).toBe(false);
+    expect(body.request.address).toBe('https://api.example.com/subjects/subject-value-1');
+    expect(body.request.headers.authorization).toBe('Bearer ***REDACTED***');
+  } finally {
+    delete process.env.UNREACHABLE_HOTFIX_TOKEN;
+  }
+});
+
+it("still answers a 'timed-out' outcome, not 'unreachable', when the capability's own timeout aborts the call before any HTTP response", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability({ timeout: 5 }) });
+  built.readConnectorConfiguration.mockResolvedValueOnce(heldConnectorConfigurationResolution());
+  built.httpClient.mockImplementationOnce(
+    (_input, init) =>
+      new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => {
+          const abortError = new Error('This operation was aborted');
+          abortError.name = 'AbortError';
+          reject(abortError);
+        });
+      }),
+  );
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(200);
+  const body = response.json() as TestConnectorResponseDto;
+  expect(body.response.kind).toBe('timed-out');
+  expect('error' in body.response).toBe(false);
 });

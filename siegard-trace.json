@@ -1213,7 +1213,7 @@
         },
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:cf1a0eb31604bf558be04afcdb3a0abb21ff3f1ffe42774c742b54b84d962101"
+          "digest": "sha256:22ebdf1c1dff19ed340509475ead230ff22bfa4dd1b7ed84c357ceb40766167e"
         },
         {
           "path": "src/src/http/test-connector.routes.ts",
@@ -6019,7 +6019,7 @@
     },
     {
       "node": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
-      "digest": "sha256:07157f154daeddc122145935ebe67027b8af6f3535ef9acb17e7834b4bf24902",
+      "digest": "sha256:50f8c362821faf5b192bbcee2bb01a03a39e2703bafef768551c2c150743a978",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
@@ -6050,8 +6050,16 @@
           "digest": "sha256:1f5aae7941c2ec4ac6bf65d036ad5c5a7fbbf48a9960f6f4eea9e30f2f03d73e"
         },
         {
+          "path": "src/src/errors/connector-call-address-not-absolute-url.error.ts",
+          "digest": "sha256:2d939eb8d0922e9d1a805b3a93ab64ae80e8c7a50628d8656b530a3142a13055"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+        },
+        {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:cf1a0eb31604bf558be04afcdb3a0abb21ff3f1ffe42774c742b54b84d962101"
+          "digest": "sha256:22ebdf1c1dff19ed340509475ead230ff22bfa4dd1b7ed84c357ceb40766167e"
         }
       ]
     },
@@ -6317,7 +6325,21 @@
       "files": [
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:cf1a0eb31604bf558be04afcdb3a0abb21ff3f1ffe42774c742b54b84d962101"
+          "digest": "sha256:22ebdf1c1dff19ed340509475ead230ff22bfa4dd1b7ed84c357ceb40766167e"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test",
+      "digest": "sha256:a5e426020d0068237b802efcd7ee7aedfa1309f46d08b9915797c203b31a128c",
+      "files": [
+        {
+          "path": "src/src/http/dto/test-connector.dto.ts",
+          "digest": "sha256:f0e6c16053c7431315075199063365ed9231abe872740678e0903b219aa9add2"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:22ebdf1c1dff19ed340509475ead230ff22bfa4dd1b7ed84c357ceb40766167e"
         }
       ]
     },
