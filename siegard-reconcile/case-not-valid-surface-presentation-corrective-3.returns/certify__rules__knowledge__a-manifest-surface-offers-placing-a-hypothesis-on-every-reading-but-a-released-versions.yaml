@@ -1,0 +1,45 @@
+certified:
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    state: partial
+    tests:
+      - file: src/routes/version-manifest-screen-not-valid.spec.ts
+        name: >-
+          renders the + Add hypothesis link while the read is pending, once it has failed to
+          complete, once it has been refused for validation, once it has answered a draft
+          version with entries and once with none, and withholds it only once it has answered
+          a version released
+      - file: src/routes/version-manifest-screen-not-valid.spec.ts
+        name: >-
+          renders the + Add hypothesis link targeting this version's own new-hypothesis route
+          on the reading refused for validation, with no successful read of the version having
+          occurred first
+    why: >-
+      Five of the readings the node enumerates are exercised and the one withholding is
+      exercised against it: the read not yet answered, the read that failed to complete, the
+      read refused by name for validation, the answer stating draft with entries and the
+      answer stating draft with no entry at all each assert the offer present, and the answer
+      stating released asserts it absent. Two stated parts go unexercised. First, the node
+      carries the offer through "a read of v refused, whatever the refusal named, the refusal
+      a-case-version-failing-validation-at-a-read-is-refused-by-name states included" — only
+      that one named refusal is exercised for the offer. The same file builds a refusal
+      carrying a code the screen holds no presentation of its own for
+      (`unrecognizedResponseCarrying`, `SomeUnrecognizedError` at 500) and asserts only the
+      read-did-not-complete statement there, nothing about the placing; a surface that
+      withheld the offer on every refusal but the validation one would leave every named
+      assertion passing. Second, the node states the offer as "an act whose performance
+      issues a place-hypothesis over v", and only the reading refused for validation asserts
+      the control's target is this version's own new-hypothesis route; on the pending,
+      failed-to-complete, empty-draft and draft-with-entries readings the assertion is the
+      accessible name "+ Add hypothesis" alone, so a control offered there that did not issue
+      a placing over v would not be caught.
+    remainder: testable
+    remainder_why: >-
+      Two assertions close it. One input — the surface mounted for a version whose read is
+      refused with a code the screen holds no presentation of its own for — against one
+      expected result: the placing offered, alongside the read-did-not-complete statement
+      already asserted there. And, on each reading the node carries the offer through that
+      currently asserts the control by name only (read pending, read failed to complete,
+      answer stating draft with no entry, answer stating draft with entries), the same
+      expected result the refused reading already states — the control targeting this
+      version's own new-hypothesis route — so that the offer proven present is the act that
+      issues a place-hypothesis over v.

@@ -1,0 +1,45 @@
+certified:
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    state: partial
+    tests:
+      - file: src/routes/case-version-editor-screen-not-valid.spec.ts
+        name: >-
+          renders a Manifest link targeting this same version's own manifest route on the same
+          reading that refused the version for validation, with no successful read of the version
+          having occurred first
+      - file: src/routes/case-version-editor-screen-not-valid.spec.ts
+        name: >-
+          renders a Manifest link targeting this same version while the read is still pending,
+          once it has failed to complete, once it has answered a validated case, and once it has
+          been refused for validation alike
+    why: >-
+      The presence half of the fact is exercised across all four readings the node names: the
+      second test mounts the version editor with a read that never answers, a read that failed
+      with an unrecognized code, a read that answered a validated case, and a read refused for
+      validation, and each mount fails if no element with role link and accessible name
+      "Manifest" is there. What goes unexercised is the rest of what the node states. First, "the
+      manifest of that same v, and never to the manifest of any other version of c": only the
+      first test asserts the link's target, and only on the reading refused for validation; on
+      the pending, failed and successful readings the second test asserts presence alone despite
+      its name saying "targeting this same version", so a surface that offered a Manifest route
+      pointing at some other version of the case — the plausible failure on the pending and
+      failed readings, where no record has been read back to take a version number from — would
+      pass this set. Second, "not on which of draft or released v's state holds": every reading
+      in the set is of the one version the shared handlers serve, so no reading presents a
+      released version and the state half of the independence claim is never put to a test.
+      Third, "A surface presenting no case version carries no such route": nothing in the set
+      mounts a surface presenting no case version, so the negative half stands unexercised.
+      Beyond that, the fact is written over "a surface presenting one case version a reader
+      named", and the offered proof reaches one such surface, the version editor; where another
+      surface keyed by the same slug and version number presents that version, the fact's hold
+      there is proved by tests outside the offered set, if at all.
+    remainder: testable
+    remainder_why: >-
+      Four assertions close it, each one input against one expected result. On the pending
+      reading, the failed reading and the reading that answered a validated case, assert the
+      Manifest route's target is this same version's manifest — the href
+      /cases/<the slug the reader named>/versions/3/manifest, the assertion the refused reading
+      already carries — so a route pointing at another version of the case fails. Mount a
+      reading of a released version and assert the same route is present with the same target,
+      so presence turning on the version's state fails. Mount the surface presenting no case
+      version and assert no route to any version's manifest is offered.

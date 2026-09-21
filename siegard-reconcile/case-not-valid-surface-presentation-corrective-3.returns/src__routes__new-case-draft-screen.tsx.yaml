@@ -1,0 +1,106 @@
+findings:
+  - file: src/routes/new-case-draft-screen.tsx
+    where: >-
+      line 33, the isFirstVersion disclosure inside the final return block
+    evidence: >-
+      {state.isFirstVersion && <p>This is the case&apos;s first version.</p>}
+    cost: >-
+      The screen tells the curator, as a stated fact, whether the draft being composed
+      is the case's very first version. No node in the specification authorizes a
+      new-draft-authoring surface to disclose this, fixes when it should be shown, or
+      states the wording — unlike the closely neighbouring disclosures this same family
+      of nodes governs in detail (a case's current version not reading back, a read not
+      completing, and so on). A later reader auditing what this screen is entitled to
+      tell a curator will not find this fact in the specification and cannot tell
+      whether it is a deliberate business decision or drift the code introduced on its
+      own.
+    kind: unstated
+    correction: >-
+      Either record, in a specification node over domain/knowledge/case or
+      domain/knowledge/case-version, that a new-draft-authoring surface discloses
+      whether the draft is the case's first version, or remove the disclosure from the
+      screen if it was never meant to be a specification-governed fact.
+read:
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: >-
+      the "loading" branch, lines 11-13
+    evidence: >-
+      if (state.phase === "loading") { return <p>Loading…</p>; }
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: >-
+      the "loading" branch, lines 11-13 — the same branch, which renders no button and
+      issues no act
+    evidence: >-
+      if (state.phase === "loading") { return <p>Loading…</p>; }
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      the file has no hypothesis-composition branch at all; its only content beyond the
+      loading/error/not-valid states is <CaseVersionEditorReadyView state={state}
+      slug={slug} />, which composes a case-version edit, not a hypothesis revision
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      <CaseVersionEditorReadyView state={state} slug={slug} /> is the file's only
+      delegated content; no glossary read or hypothesis-revisions read is made or stated
+      here
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      if (state.phase === "not-valid") { return <p>This case&apos;s current version does
+      not read back as a case.</p>; } — this state is reached only once
+      useNewDraftVersionForm hands off to useEditDraftVersionForm(slug, created.version),
+      a read keyed on the case's slug together with a specific version number, not a
+      case-keyed read of an unnamed current version
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: >-
+      the "load-error" branch, lines 15-24
+    evidence: >-
+      <p>Unable to load this form right now.</p>
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      the file issues no revise-hypothesis call and reads no subject type; its acts are
+      delegated entirely to <CaseVersionEditorReadyView state={state} slug={slug} />
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: nowhere
+    evidence: >-
+      the file presents exactly one case, addressed by the slug URL param, never a
+      listing of cases: <h1>Case {slug} — New draft</h1>
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: >-
+      the file reads and states none of current_state, version_count, last_updated,
+      title, when_to_use or released_version anywhere in its JSX
+  - node: domain/knowledge/case
+    held_at: >-
+      the heading, line 32
+    evidence: >-
+      <h1>Case {slug} — New draft</h1>
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      the "not-valid" branch, lines 26-28
+    evidence: >-
+      if (state.phase === "not-valid") { return <p>This case&apos;s current version does
+      not read back as a case.</p>; }
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: >-
+      the file renders no manifest surface itself; any manifest presentation is inside
+      <CaseVersionEditorReadyView state={state} slug={slug} />, outside this file
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: >-
+      the file issues no place-hypothesis or remove-hypothesis call and states no
+      refusal of either; its only refusal-shaped states are "load-error" and "not-valid"
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      the file carries no manifest route of its own; whatever route exists is inside
+      <CaseVersionEditorReadyView state={state} slug={slug} />, not visible in this file
+looked_past: >-
+  The hooks this screen calls (useNewDraftVersionForm, and the useEditDraftVersionForm
+  it delegates to once creation succeeds) and the CaseVersionEditorReadyView component
+  it renders in the ready phase were read only to trace which state each phase in this
+  file actually corresponds to; any conformance question about their own content is
+  outside this file's set and is not reported here.

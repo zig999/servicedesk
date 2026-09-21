@@ -1,0 +1,102 @@
+findings:
+  - file: src/routes/case-version-editor-screen.tsx
+    where: >-
+      the `state.phase === "not-valid"` branch, the paragraph text at line 41
+    evidence: >-
+      <p>This case&apos;s current version does not read back as a case.</p>
+    cost: >-
+      This screen is reached by naming both the case's slug and a specific version
+      number (`useParams({ from: "/cases/$slug/versions/$version" })`), and the
+      hook backing it queries exactly that (slug, version) pair
+      (`/v1/cases/${slug}/versions/${version}`) — the version the curator named may
+      or may not be the case's current, highest-numbered version. Telling the
+      curator "this case's current version does not read back as a case" states a
+      different domain fact than the one the read actually answered: a curator who
+      opened an older or superseded version and met a validation failure on that
+      specific version is told, instead, that the case's current version is
+      invalid — which may be false, and which points the curator at the wrong
+      version to correct.
+    kind: contradicts
+    correction: >-
+      State that the version named (s, n) does not read back as a case, not that
+      the case's current version does not — the "current version" phrasing belongs
+      to the case-keyed surface reached by slug alone, not to this surface reached
+      by slug and version together.
+    node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: >-
+      the Simulate link in the ready-phase branch, lines 54-56
+    evidence: >-
+      <Link to="/cases/$slug/versions/$version/simulate" params={{ slug, version }}>
+        Simulate
+      </Link>
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: >-
+      the Manifest link, repeated identically in the loading, load-error, not-valid
+      and ready branches (lines 17-19, 31-33, 42-44, 57-59)
+    evidence: >-
+      <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+        Manifest
+      </Link>
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: >-
+      the `state.phase === "load-error"` branch, lines 24-36
+    evidence: >-
+      <p>Unable to load this version right now.</p>
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      the `state.phase === "not-valid"` branch, line 41
+    evidence: >-
+      <p>This case&apos;s current version does not read back as a case.</p>
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      <CaseVersionEditorReadyView state={state} slug={slug} />
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      <CaseVersionEditorReadyView state={state} slug={slug} />
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      const { slug, version } = useParams({
+        from: "/cases/$slug/versions/$version",
+      });
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      import { useEditDraftVersionForm } from "../hooks/use-edit-draft-version-form";
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: nowhere
+    evidence: >-
+      const state = useEditDraftVersionForm(slug, Number(version));
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: >-
+      <h1>
+        Case {slug} — Version {version}
+      </h1>
+  - node: domain/knowledge/case
+    held_at: >-
+      the heading in the ready-phase branch, lines 51-53
+    evidence: >-
+      <h1>
+        Case {slug} — Version {version}
+      </h1>
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: >-
+      <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+        Manifest
+      </Link>
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: >-
+      <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+        Manifest
+      </Link>
+looked_past: >-
+  CaseVersionEditorReadyView, the component the ready-phase branch delegates all
+  form, release and discard rendering to, is a separate file outside this file
+  set and was not opened or judged here.

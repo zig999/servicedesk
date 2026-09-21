@@ -1,0 +1,151 @@
+findings:
+  - file: src/routes/hypothesis-revision-screen.tsx
+    where: the `load-error` branch, lines 24-33
+    evidence: |-
+      if (state.phase === "load-error") {
+        return (
+          <section>
+            <p>Unable to load this form right now.</p>
+            <Button type="button" onClick={state.retryLoad}>
+              Retry
+            </Button>
+          </section>
+        );
+      }
+    cost: >-
+      A curator whose composing surface failed to read the glossary's terms (so a concept,
+      outcome, action or recipient option list came back empty or unusable) and a curator whose
+      read of the hypothesis's own revisions failed (so they cannot see what a submit would
+      overwrite) both see the identical text and the identical Retry control as a curator whose
+      read of the anchoring case version never completed at all. Nothing on the surface names
+      which of the three reads is the one to retry, so the curator cannot tell a failure that
+      leaves the anchor unknown from one that leaves the anchor known and only a side list
+      unfilled, and the one distinction the node exists to make usable is not made.
+    kind: contradicts
+    correction: >-
+      The `load-error` phase (or whatever states the hook exposes for it) would need to carry
+      which read failed, and this branch would need to render a statement naming the glossary's
+      terms or the hypothesis's revisions distinctly from the statement made for the case
+      version's own read not completing, instead of collapsing every incomplete read into one
+      "Unable to load this form right now." message.
+    node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+
+read:
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the `caseVersionNotValid` conditional in the composing branch
+    evidence: |-
+      {state.caseVersionNotValid && (
+        <p>This case&apos;s current version does not read back as a case.</p>
+      )}
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      the same `caseVersionNotValid` conditional, worded as "current version" rather than a
+      named version
+    evidence: |-
+      {state.caseVersionNotValid && (
+        <p>This case&apos;s current version does not read back as a case.</p>
+      )}
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: the `loading` branch, which presents no content while the anchoring read is pending
+    evidence: |-
+      if (state.phase === "loading") {
+        return <p>Loading…</p>;
+      }
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: >-
+      the composing return block, which renders the composition's fields and the submit act
+      unconditionally, `caseVersionNotValid` included
+    evidence: |-
+      <HypothesisRevisionFormFields
+        form={state.form}
+        hypothesisNameEditable={state.hypothesisNameEditable}
+        subjectType={state.subjectType}
+        collectsOptions={state.collectsOptions}
+        outcomeOptions={state.outcomeOptions}
+        actionOptions={state.actionOptions}
+        recipientOptions={state.recipientOptions}
+        isSubmitting={state.isSubmitting}
+        onSubmit={state.onSubmit}
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: |-
+      <p>Unable to load this form right now.</p>
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: the `success` branch's message
+    evidence: |-
+      Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}.
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: the `success` branch's conditional button
+    evidence: |-
+      {state.offerManifestBuilder && (
+        <Button type="button" onClick={state.onOpenManifestBuilder}>
+          Open Manifest Builder
+        </Button>
+      )}
+  - node: rules/knowledge/an-abandoned-revision-composition-writes-nothing
+    held_at: nowhere
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: the `load-error` branch, which discloses no error code and no refusal message
+    evidence: |-
+      <p>Unable to load this form right now.</p>
+      <Button type="button" onClick={state.retryLoad}>
+        Retry
+      </Button>
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      the `subjectType` prop passed to the form fields unconditionally, `caseVersionNotValid`
+      included
+    evidence: |-
+      subjectType={state.subjectType}
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: nowhere
+    evidence: >-
+      the file renders only single-composition `<section>` blocks for one hypothesis's revision;
+      nothing resembling a listing of cases or their entries appears anywhere in it
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: |-
+      export type HypothesisRevisionScreenProps = {
+        readonly slug: string;
+        readonly version: number;
+
+        readonly hypothesisName: string | null;
+      };
+  - node: domain/knowledge/case
+    held_at: nowhere, beyond the slug threaded through as identity
+    evidence: |-
+      readonly slug: string;
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      <p>This case&apos;s current version does not read back as a case.</p>
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: |-
+      <Button type="button" onClick={state.onOpenManifest}>
+        View Manifest
+      </Button>
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: |-
+      <Button type="button" onClick={state.onOpenManifest}>
+        View Manifest
+      </Button>
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      the "View Manifest" button appears only in the composing branch's return block and is
+      absent from both the `loading` and `load-error` branches
+
+looked_past: >-
+  The "View Manifest" button's presence in the composing branch but absence from the `loading`
+  and `load-error` branches sits close to what `a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading`
+  requires, but that node's own text and Description tie it to the surface a curator lands on
+  directly for a case version, a different surface from this hypothesis-composing screen, which
+  carries its own dedicated rule that says nothing about a manifest route — I left the gap
+  unreported rather than attribute it to a node whose own scope points elsewhere.

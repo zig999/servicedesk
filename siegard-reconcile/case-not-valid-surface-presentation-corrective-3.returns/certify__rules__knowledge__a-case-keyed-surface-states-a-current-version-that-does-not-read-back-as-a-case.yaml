@@ -1,0 +1,65 @@
+certified:
+  - node: >-
+      rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    state: partial
+    tests:
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          renders the explicit case-keyed statement and never the subject type a prior successful
+          read of this same case-version query key left cached, once that same key's read is
+          refused for failing validation
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          renders the same read-did-not-complete statement an unrelated failed read renders, and
+          discloses neither the refusal's own error code, its own message, nor any value it carries
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          renders the read-did-not-complete statement, never the composition form or the
+          case-version statement, when GET /v1/glossary/concepts fails while the draft version
+          reads back cleanly
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          renders the read-did-not-complete statement, never the composition form or the
+          case-version statement, when the hypothesis's own revisions read fails while the draft
+          version reads back cleanly
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          renders the hypothesis composition form for New Hypothesis and for Revise Hypothesis when
+          GET .../versions/{version} is refused with CaseVersionNotValidError, rather than the
+          read-did-not-complete statement
+    why: >-
+      Three parts of the fact are unexercised. First, the fact states three mutually distinct
+      presentations, and only two of the three ever appear in this set: no test in the file renders
+      the surface for a case that currently holds no version at all, so nothing here would fail if
+      that state were presented with exactly the same text as "This case's current version does not
+      read back as a case." — the distinctness the fact asserts against the no-version neighbour is
+      unasserted in both directions. Second, "states no attribute of v — its title, when_to_use,
+      subject, fallback, consolidation_register, state or manifest, nor any fact derived from them"
+      is exercised for one attribute only: the cache is seeded with subject and an empty manifest,
+      and only subject is looked for, by queryByDisplayValue alone, so a surface that rendered a
+      cached title, fallback, consolidation_register, state or a non-empty manifest beside the
+      statement, or rendered the subject as text rather than as a field value, would leave every
+      assertion in this set passing. Third, the fact fixes v as the version with the highest number
+      among those c currently holds, for a reader who named c by its slug and named no version of
+      it; every test here stands on a single VERSION constant and a single case-version query key,
+      so nothing exercises a case holding several versions, and the surface judging some version
+      other than the highest-numbered one would not fail any test here. Separately, the fact is
+      stated of any surface presenting one case named by slug alone, and the pack offers proof for
+      the hypothesis-revision screen only; whatever proves it for the other case-keyed surfaces
+      lies outside the offered set and is not mine to cite, so the fact is not certified whole.
+    remainder: testable
+    remainder_why: >-
+      Three assertions close it, each one input against one expected result. (1) Mount the surface
+      for a slug whose case currently holds no version, and assert the text it renders is neither
+      "This case's current version does not read back as a case." nor "Unable to load this form
+      right now." — pairing the no-version state against each of the other two completes the
+      three-way table the fact declares. (2) Seed the case-version query key with a version carrying
+      title, when_to_use, subject, fallback, consolidation_register, state and a non-empty manifest,
+      refuse that key's read with CaseVersionNotValidError, and assert each of those values is
+      absent by both queryByText and queryByDisplayValue. (3) Mount for a case holding at least two
+      versions where the highest-numbered one fails a validator rule and a lower-numbered one reads
+      back cleanly, and assert the statement is rendered; then invert it — highest-numbered clean,
+      lower-numbered failing — and assert the statement is absent and the form renders, which pins
+      the read to the highest-numbered version the case currently holds. Certifying the fact whole
+      additionally needs the same three states asserted on each other case-keyed surface, which is a
+      finite set of surfaces the specification names.

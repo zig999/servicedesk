@@ -1,0 +1,206 @@
+findings:
+  - file: src/hooks/use-manifest-builder.ts
+    where: >-
+      the case-version-not-draft branch of placeMutation.onError (lines 126-130) and of
+      removeMutation.onError (lines 158-162)
+    evidence: |-
+      if (kind === "case-version-not-draft") {
+
+        setIsBlocked(true);
+        return;
+      }
+    cost: >-
+      The node holds a presentation of its own for exactly two refusals of the acts that
+      compose the manifest — ManifestPositionOccupiedError and
+      ManifestWouldHoldNoHypothesisError — and says every other refusal either
+      place-hypothesis or remove-hypothesis carries is presented as the undifferentiated
+      notice a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+      names, disclosing nothing further. CaseVersionNotDraftError, which
+      a-case-version-moves-through-its-declared-lifecycle names for exactly this call, is
+      one of those "every other" refusals, yet this hook gives it a third, distinct,
+      persistent state (`isBlocked`, never reset back to false anywhere in the file) instead
+      of the same generic toast every unrecognised refusal gets. A reader who goes to the
+      specification to learn why a manifest write is "blocked" differently from any other
+      failure finds no node that grants that third distinction, and the next person adding a
+      fourth will point at this branch as precedent rather than at a decided boundary.
+    kind: contradicts
+    correction: >-
+      Fold the case-version-not-draft outcome into the same fallthrough as every other
+      unrecognised refusal (toast.error(GENERIC_FAILURE_MESSAGE) alone), or have the node
+      grant this refusal a presentation of its own before the code gives it one.
+    node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+
+  - file: src/hooks/use-manifest-builder.ts
+    where: the repin fallback in placeMutation.onError, lines 136-140
+    evidence: |-
+      if (vars.kind === "repin") {
+
+        setRevisionError({ hypothesisName: vars.hypothesisName, message: REVISION_FAILURE_MESSAGE });
+      }
+      toast.error(GENERIC_FAILURE_MESSAGE);
+    cost: >-
+      The node's own expression is that a place-hypothesis refused with any error code other
+      than ManifestPositionOccupiedError is told "that the request failed for a reason the
+      surface does not recognise and nothing else — not the error code, not the refusal's
+      message, not any value it carries." Here, whenever the underlying call was a repin, an
+      unrecognised refusal additionally sets a row-scoped message — "Could not switch to that
+      revision. Try again." — naming which act failed, on top of the generic toast. That is a
+      third named presentation the node forecloses; a reader checking the specification for
+      what a repin failure discloses beyond "something went wrong" will not find this
+      distinction there.
+    kind: contradicts
+    correction: >-
+      Drop the repin-specific revisionError message for refusals other than the two the node
+      names, leaving the generic toast as the sole statement — or have a node grant repin
+      failures a presentation of their own before the code adds one.
+    node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the placeMutation and removeMutation definitions, lines 96-171
+    evidence: |-
+      apiFetch<void>(
+        `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/manifest/${encodeURIComponent(vars.hypothesisName)}`,
+        { method: "PUT", ... }
+      )
+      apiFetch<void>(
+        `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/manifest/${encodeURIComponent(vars.hypothesisName)}`,
+        { method: "DELETE" },
+      )
+  - node: contracts/knowledge/case-query
+    held_at: the versionQuery definition, lines 86-90
+    evidence: |-
+      queryFn: () =>
+        apiFetch<ManifestVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`),
+  - node: domain/knowledge/case-version
+    held_at: the sorted rows, isReleased and manifest read off versionQuery.data
+    evidence: |-
+      const sorted = sortByPosition(versionQuery.data.manifest);
+      const isReleased = versionQuery.data.state === "released";
+  - node: domain/knowledge/hypothesis
+    held_at: the hypothesisName extraction and every call keyed by that name
+    evidence: 'const hypothesisName = entry.hypothesis_revision.hypothesis.name;'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the revision field read per entry and repinTo's chosenRevision argument
+    evidence: |-
+      const revision = entry.hypothesis_revision.revision;
+      function repinTo(chosenRevision: number): void { ... }
+  - node: domain/knowledge/manifest-entry
+    held_at: ManifestEntryDto and moveTo, which changes only position, never revision
+    evidence: |-
+      function moveTo(target: ManifestEntryDto | undefined): void {
+        ...
+        placeMutation.mutate({ hypothesisName, revision, position: target.position, kind: "move" });
+      }
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: the manifest-would-hold-no-hypothesis branch of removeMutation.onError, lines 163-168
+    evidence: |-
+      if (kind === "manifest-would-hold-no-hypothesis") {
+
+        setRemoveError({ hypothesisName: vars.hypothesisName, message: REMOVE_BLOCKED_MESSAGE });
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: the isReleased field computed and returned in the ready phase, line 186 and 238
+    evidence: |-
+      const isReleased = versionQuery.data.state === "released";
+      return { phase: "ready", rows, isBlocked, isBusy, isReleased };
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: the case-version-not-draft branches of placeMutation.onError and removeMutation.onError
+    evidence: 'if (kind === "case-version-not-draft") { setIsBlocked(true); return; }'
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: the manifest-position-occupied branch of placeMutation.onError, lines 131-135
+    evidence: |-
+      if (kind === "manifest-position-occupied") {
+
+        setMoveError({ hypothesisName: vars.hypothesisName, message: MOVE_BLOCKED_MESSAGE });
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: placeMutation.onError and removeMutation.onError
+    evidence: >-
+      the manifest-position-occupied branch (`setMoveError({ ..., message: MOVE_BLOCKED_MESSAGE })`)
+      and the manifest-would-hold-no-hypothesis branch (`setRemoveError({ ..., message:
+      REMOVE_BLOCKED_MESSAGE })`) hold the two named refusals; the case-version-not-draft
+      branch (`setIsBlocked(true)`) and the repin fallback branch (`setRevisionError({ ...,
+      message: REVISION_FAILURE_MESSAGE })`) give two further refusals a presentation of
+      their own as well — see findings
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: 'nowhere'
+    evidence: >-
+      this node is written over a surface a reader named by slug alone; this hook's read is
+      keyed by slug together with version — `queryKey: ["case-version", slug, version]` and
+      `/v1/cases/${slug}/versions/${version}` — so the fallback its "load-error" phase
+      supplies belongs to a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+      rather than to this node
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: 'nowhere'
+    evidence: >-
+      moveTo and repinTo call placeMutation.mutate with no check of the referenced
+      hypothesis-revision's own state, consistent with the node's own text that
+      "place-hypothesis is never refused by this rule, whatever state the revision it
+      references is in"
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: the case-not-valid branch, lines 173-176
+    evidence: |-
+      if (errorStateKind(versionQuery.error) === "case-not-valid") {
+        return { phase: "not-valid" };
+      }
+  - node: rules/knowledge/hypotheses-are-ordered-by-precedence
+    held_at: sortByPosition and the index-derived canMoveUp/canMoveDown
+    evidence: |-
+      function sortByPosition(manifest) { return [...manifest].sort((a, b) => a.position - b.position); }
+      canMoveUp: index > 0,
+      canMoveDown: index < lastIndex,
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: moveTo and repinTo, which gate on nothing but the mutation's own outcome
+    evidence: |-
+      function moveTo(target: ManifestEntryDto | undefined): void {
+        if (target === undefined) { return; }
+        setMoveError(null);
+        setRevisionError(null);
+        placeMutation.mutate({ hypothesisName, revision, position: target.position, kind: "move" });
+      }
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: 'nowhere'
+    evidence: >-
+      this file reads and writes only the manifest (versionQuery, placeMutation,
+      removeMutation); it composes no hypothesis-revision and offers no revise act
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: 'nowhere'
+    evidence: >-
+      the same — this file makes no glossary read and no hypothesis-revisions-listing read
+      for a composition surface
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: 'nowhere'
+    evidence: >-
+      the surface this hook serves is addressed by slug together with version
+      (`versions/${version}`), never by slug alone
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: 'nowhere'
+    evidence: this file issues no revise-hypothesis call
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: 'nowhere'
+    evidence: this file reads one named case version, never a listing of cases
+  - node: domain/knowledge/case-summary
+    held_at: 'nowhere'
+    evidence: >-
+      ManifestVersionRecord carries only manifest and state; no current_state, version_count,
+      last_updated, title, when_to_use or released_version field is read here
+  - node: domain/knowledge/case
+    held_at: the slug parameter threaded through the query key and every URL
+    evidence: |-
+      export function useManifestBuilder(slug: string, version: number): ManifestBuilderState {
+        ...
+        queryKey: ["case-version", slug, version],
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: the isReleased field returned for the consuming surface to gate the offer on
+    evidence: 'return { phase: "ready", rows, isBlocked, isBusy, isReleased };'
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: 'nowhere'
+    evidence: >-
+      this hook is reached already at the manifest (slug and version supplied as arguments);
+      it renders no route toward itself
+
+looked_past: >-
+  isBlocked is set to true in two branches and never set back to false anywhere in the file,
+  and invalidateManifest() is called on the manifest-would-hold-no-hypothesis refusal but not
+  on the manifest-position-occupied or case-version-not-draft ones — both look like
+  implementation-shape questions about this hook's own state handling rather than a domain
+  fact stated or denied, so left to the pass that reviews code shape.

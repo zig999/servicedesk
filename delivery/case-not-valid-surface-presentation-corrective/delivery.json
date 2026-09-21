@@ -93,6 +93,23 @@
         "standard"
       ],
       "findings": 1
+    },
+    {
+      "id": "review/case-not-valid-surface-presentation-corrective-3",
+      "kind": "review",
+      "file": "review/case-not-valid-surface-presentation-corrective-3.md",
+      "title": "Case-not-valid surface presentation corrective — full review",
+      "summary": "Coverage, conformance, standard and failures passes over the four delivered tasks that keep the version editor, manifest builder, hypothesis composition and cases listing reachable once a case's current version fails validation.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A hypothesis composed on that screen and submitted lands in that same draft version's manifest, with no read of that draft version having read back as a case first.",
+        "A refusal of a move, a repin or a remove made through that screen still presents the statement that screen already holds for that named refusal, unchanged by this task."
+      ],
+      "findings": 13
     }
   ],
   "edges": [
@@ -245,6 +262,30 @@
       "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "reviews",
       "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }
