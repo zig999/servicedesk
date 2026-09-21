@@ -34,6 +34,14 @@
       "task": "task/connector-configuration-removal/remove-connector-operation"
     },
     {
+      "id": "implementation/connector-configuration-removal/remove-connector-route",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-removal/remove-connector-route.md",
+      "title": "HTTP surface for remove-connector",
+      "summary": "Adds the route/controller/dto trio exposing DELETE /v1/connectors/:connector over the existing ConnectorConfigurationRegistryService.removeConnector, wired into the application build.",
+      "task": "task/connector-configuration-removal/remove-connector-route"
+    },
+    {
       "id": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
       "kind": "implementation",
       "file": "implementation/cross-context-usage-reads/capability-evidence-usage-reader.md",
@@ -80,6 +88,14 @@
       "title": "remove-connector on the connector-configuration registry service — unit proof",
       "summary": "Five new unit tests over ConnectorConfigurationRegistryService.removeConnector proving it removes a registered configuration, never refuses on any capability-related condition, never consults the capabilities reader, leaves a capability naming the removed connector untouched, and succeeds unconditionally against a name nothing is registered under.",
       "task": "task/connector-configuration-removal/remove-connector-operation"
+    },
+    {
+      "id": "proof/connector-configuration-removal/remove-connector-route",
+      "kind": "proof",
+      "file": "proof/connector-configuration-removal/remove-connector-route.md",
+      "title": "Proof for the remove-connector HTTP route",
+      "summary": "A new remove-connector.routes.spec.ts proves the route's own criteria (path/method, malformed-path refusal, unmapped-error propagation, unconditional-answer shape), the build-app.spec.ts fixture is repaired for the now-required removeConnector dependency, and one added build-app.spec.ts test proves the route's path/method share the registration route's own path without colliding, wiring it through the real build.",
+      "task": "task/connector-configuration-removal/remove-connector-route"
     },
     {
       "id": "proof/cross-context-usage-reads/capability-evidence-usage-reader",
@@ -208,6 +224,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/remove-connector-route",
+      "to": "task/connector-configuration-removal/remove-connector-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/cross-context-usage-reads/capability-evidence-usage-reader",
       "to": "domain/investigation/evidence",
       "kind": "encodes",
@@ -288,6 +352,12 @@
     {
       "from": "proof/connector-configuration-removal/remove-connector-operation",
       "to": "implementation/connector-configuration-removal/remove-connector-operation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-removal/remove-connector-route",
+      "to": "implementation/connector-configuration-removal/remove-connector-route",
       "kind": "proves",
       "at": "the path"
     },

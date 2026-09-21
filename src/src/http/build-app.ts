@@ -53,6 +53,8 @@ import type { RegisterConceptControllerDependencies } from './register-concept.c
 import { createRegisterConceptRoutesPlugin } from './register-concept.routes.js';
 import type { RegisterConnectorControllerDependencies } from './register-connector.controller.js';
 import { createRegisterConnectorRoutesPlugin } from './register-connector.routes.js';
+import type { RemoveConnectorControllerDependencies } from './remove-connector.controller.js';
+import { createRemoveConnectorRoutesPlugin } from './remove-connector.routes.js';
 import type { ReleaseControllerDependencies } from './release.controller.js';
 import { createReleaseRoutesPlugin } from './release.routes.js';
 import type { ReleaseHypothesisRevisionControllerDependencies } from './release-hypothesis-revision.controller.js';
@@ -99,6 +101,7 @@ export type BuildAppDependencies = {
   readonly listConcepts: ListConceptsControllerDependencies;
   readonly registerConcept: RegisterConceptControllerDependencies;
   readonly registerConnector: RegisterConnectorControllerDependencies;
+  readonly removeConnector: RemoveConnectorControllerDependencies;
   readonly draftConnectorConfigurationFromOpenApi: DraftConnectorConfigurationFromOpenApiControllerDependencies;
   readonly readOpenApiDocumentOperations: ReadOpenApiDocumentOperationsControllerDependencies;
   readonly draftCapabilitySchemaFromOpenApi: DraftCapabilitySchemaFromOpenApiControllerDependencies;
@@ -137,6 +140,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createListConceptsRoutesPlugin(dependencies.listConcepts),
   (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
   (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+  (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector),
   (dependencies) =>
     createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
   (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),

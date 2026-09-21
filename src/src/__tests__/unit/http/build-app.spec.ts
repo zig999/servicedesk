@@ -290,6 +290,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     removeHypothesis: { removeHypothesis: async () => undefined },
     registerConcept: stubRegisterConcept(),
     registerConnector: stubRegisterConnector(),
+    removeConnector: { removeConnector: async () => undefined },
     readConnectorConfiguration: stubReadConnectorConfiguration(),
     listConnectorConfigurations: stubListConnectorConfigurations(),
     testConnector: stubTestConnector(),
@@ -668,6 +669,25 @@ it(
     });
 
     expect(getResponse.statusCode).toBe(200);
+    expect(putResponse.statusCode).toBe(200);
+  },
+);
+
+it(
+  'answers the DELETE to /v1/connectors/{connector} through remove-connector and the PUT to the identical path ' +
+    'through register-connector, neither one colliding with the other',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const deleteResponse = await app.inject({ method: 'DELETE', url: '/v1/connectors/a-connector' });
+    const putResponse = await app.inject({
+      method: 'PUT',
+      url: '/v1/connectors/a-connector',
+      payload: { configuration: '{}' },
+    });
+
+    expect(deleteResponse.statusCode).toBe(204);
     expect(putResponse.statusCode).toBe(200);
   },
 );

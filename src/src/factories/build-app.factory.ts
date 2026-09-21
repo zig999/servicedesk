@@ -56,6 +56,7 @@ type ComposedResources = {
   readonly glossaryQuery: IGlossaryQuery;
   readonly registerConcept: GlossaryService['registerConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
+  readonly removeConnector: ConnectorConfigurationRegistryService['removeConnector'];
   readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfigurationResolution>;
   readonly readConnectorConfigurationOrThrow: ConnectorConfigurationRegistryService['readConnectorConfigurationOrThrow'];
   readonly listConnectorConfigurations: ConnectorConfigurationRegistryService['listConnectorConfigurations'];
@@ -84,6 +85,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     glossaryQuery: glossary,
     registerConcept: (registration) => glossary.registerConcept(registration),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
+    removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),
     readConnectorConfiguration: (connector) => connectorConfigurationRegistry.readConnectorConfiguration(connector),
     readConnectorConfigurationOrThrow: (connector) => connectorConfigurationRegistry.readConnectorConfigurationOrThrow(connector),
     listConnectorConfigurations: (pagination) => connectorConfigurationRegistry.listConnectorConfigurations(pagination),
@@ -145,6 +147,12 @@ function registrationDependencies(resources: ComposedResources): Pick<BuildAppDe
   };
 }
 
+function removeConnectorDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'removeConnector'> {
+  return {
+    removeConnector: { removeConnector: resources.removeConnector },
+  };
+}
+
 function testConnectorDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'testConnector'> {
   return {
     testConnector: {
@@ -192,6 +200,7 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...listDependencies(resources),
     ...lifecycleDependencies(resources),
     ...registrationDependencies(resources),
+    ...removeConnectorDependencies(resources),
     ...testConnectorDependencies(resources),
     ...draftConnectorConfigurationFromOpenApiDependencies(resources),
     ...readOpenApiDocumentOperationsDependencies(),
