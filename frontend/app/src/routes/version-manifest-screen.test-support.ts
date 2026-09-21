@@ -76,6 +76,22 @@ export const THREE_ENTRY_MANIFEST = {
   manifest: [entry(1, "H1", 2), entry(2, "H2", 5), entry(3, "H3", 9)],
 };
 
+export const CASE_HYPOTHESES_PATH = `/v1/cases/${SLUG}/hypotheses`;
+
+export function caseHypothesesResponse(names: readonly string[]): { data: { name: string }[] } {
+  return { data: names.map((name) => ({ name })) };
+}
+
+export function hypothesisRevisionsPath(hypothesisName: string): string {
+  return `/v1/cases/${SLUG}/hypotheses/${encodeURIComponent(hypothesisName)}/revisions`;
+}
+
+export function hypothesisRevisionsResponse(
+  revisions: readonly number[],
+): { data: { revision: number }[]; total: number } {
+  return { data: revisions.map((revision) => ({ revision })), total: revisions.length };
+}
+
 function buildTestRouter(initialPath: string) {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const manifestRoute = createRoute({
@@ -141,6 +157,15 @@ export function parsedPutBody(
   return JSON.parse(rawBody);
 }
 
+export function putUrl(fetchMock: ReturnType<typeof createFetchStub>, callIndex = 0): string {
+  const call = callsFor(fetchMock, "PUT")[callIndex];
+  if (!call) {
+    throw new Error("expected a PUT call");
+  }
+  const [input] = call;
+  return typeof input === "string" ? input : input.toString();
+}
+
 export function findRow(hypothesisName: string): HTMLElement {
   return screen.getByRole("row", { name: new RegExp(hypothesisName) });
 }
@@ -156,4 +181,10 @@ export function dialogConfirmRemoveButton(): HTMLElement {
 
 export function dialogCancelButton(): HTMLElement {
   return within(screen.getByRole("dialog")).getByRole("button", { name: "Cancel" });
+}
+
+export async function openHypothesisPicker(name: string): Promise<void> {
+  const trigger = await screen.findByLabelText("Hypothesis to place");
+  fireEvent.click(trigger);
+  fireEvent.mouseDown(within(screen.getByRole("listbox")).getByRole("option", { name }));
 }

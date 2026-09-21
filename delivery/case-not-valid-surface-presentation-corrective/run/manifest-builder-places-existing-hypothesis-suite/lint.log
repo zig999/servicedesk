@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/place-existing-hypothesis-control.spec.ts
+  246:13  error  Prefer `findByLabelText` query over using `waitFor` + `queryByLabelText`     testing-library/prefer-find-by
+  246:41  error  Use `getBy*` queries rather than `queryBy*` for checking element is present  testing-library/prefer-presence-queries
+  342:1   error  File has too many lines (328). Maximum allowed is 300                        max-lines
+
+✖ 3 problems (3 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

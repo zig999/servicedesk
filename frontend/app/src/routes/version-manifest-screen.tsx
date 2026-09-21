@@ -23,6 +23,7 @@ import {
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
 import { useManifestRowRevisions } from "../hooks/use-manifest-row-revisions";
+import { PlaceExistingHypothesisControl } from "./place-existing-hypothesis-control";
 import {
   pinnedRevisionStateCell,
   usePinnedRevisionState,
@@ -293,6 +294,16 @@ export function VersionManifestScreen(): JSX.Element {
           />
         )}
         <StatusTable columns={MANIFEST_COLUMNS} rows={rows} />
+        {!state.isReleased && (
+          <PlaceExistingHypothesisControl
+            slug={slug}
+            candidates={state.candidateHypotheses}
+            candidatesAnswered={state.candidatesAnswered}
+            placeError={state.placeExistingError}
+            disabled={rowsDisabled}
+            onPlace={state.onPlaceExisting}
+          />
+        )}
       </section>
     </TooltipProvider>
   );

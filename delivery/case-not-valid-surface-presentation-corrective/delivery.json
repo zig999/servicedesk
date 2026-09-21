@@ -42,6 +42,14 @@
       "task": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure"
     },
     {
+      "id": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "implementation",
+      "file": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis.md",
+      "title": "Manifest builder places an already-composed hypothesis",
+      "summary": "Adds a candidate-hypotheses picker to the version manifest builder that places an existing, already-composed hypothesis through the existing placeMutation, with its own position-occupied telling.",
+      "task": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis"
+    },
+    {
       "id": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "kind": "proof",
       "file": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
@@ -80,6 +88,14 @@
       "title": "Current-pin refusal no longer folds into a load failure on the hypothesis revision history screen -- proof",
       "summary": "Proves that use-case-hypothesis-current-pin.ts's not-valid phase lets hypothesis-revision-history.tsx present the hypothesis's own successfully-read revisions with no fact from the refused version's manifest, distinct from both the fixed read-did-not-complete statement and a genuine revisions-read failure.",
       "task": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure"
+    },
+    {
+      "id": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "proof",
+      "file": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis.md",
+      "title": "Manifest builder places an already-composed hypothesis — proof",
+      "summary": "One new spec file proves the 16 stated criteria (14 by new tests, one -- the \"+ Add hypothesis\" non-regression guard -- already proven by the pre-existing not-valid spec, one -- no third way of finding a revision -- proven jointly by every confirm-flow test's strict fetch stub) and the four node facts a finite test can decide whole; three nodes and one inference are left unproven and named, matching the task's own disclosed divergences.",
+      "task": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis"
     },
     {
       "id": "review/case-not-valid-surface-presentation-corrective",
@@ -274,6 +290,66 @@
       "at": "the path"
     },
     {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "to": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
       "kind": "proves",
@@ -300,6 +376,12 @@
     {
       "from": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
       "to": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
       "kind": "proves",
       "at": "the path"
     },
