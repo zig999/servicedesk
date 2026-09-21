@@ -1,0 +1,100 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/test-connector-request-echo-url-hotfix",
+      "kind": "epic",
+      "file": "epic/test-connector-request-echo-url-hotfix.md",
+      "title": "Test-connector request echo URL hotfix",
+      "summary": "A corrective increment: the test-connector endpoint's request-echo path throws an uncaught TypeError on a non-absolute address instead of reporting a comprehensible error."
+    },
+    {
+      "id": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "task",
+      "file": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported.md",
+      "title": "A connector test reports an invalid address instead of an opaque internal error",
+      "summary": "POST /v1/test-connector's request echo no longer lets an invalid-address exception escape as a generic 500.",
+      "epic": "test-connector-request-echo-url-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/test-connector-request-echo-url-hotfix",
+      "to": "rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}

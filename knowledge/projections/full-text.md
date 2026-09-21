@@ -6218,6 +6218,192 @@ entries:
     CaseVersionNotValidError, so the offer leads to a call that lands rather than to a refusal.
 
 ---
+- location: rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case.md
+  field: statement
+  unstated: 'Whether a surface presenting the revisions of one hypothesis of a case, reached by naming that
+  
+    case''s slug and that hypothesis and naming no version, presents those revisions at all on a
+  
+    reading whose read of the case''s current version was refused because some validator rule of
+  
+    validation-runs-at-every-read does not hold for that version, and whether it states there which
+  
+    of those revisions the case currently uses.
+  
+    a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case reaches this
+  
+    reading but closes by leaving what such a surface presents and offers elsewhere;
+  
+    a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+  
+    answers the composing surface alone; a-cases-current-pins-come-from-its-highest-numbered-version
+  
+    fixes which manifest a case''s current pins are read from and speaks to a reading whose manifest
+  
+    read back; and a-hypothesis-revisions-listing-answers-highest-revision-first and
+  
+    a-hypothesis-revisions-listing-discloses-each-revisions-own-state say what such a listing carries
+  
+    without reaching a surface whose read of the case''s current version was refused.'
+  decided: 'The surface presents the revisions its own read of them answered, on that reading, turning on
+  
+    nothing about which validator rule failed over the version — that version''s manifest holding no
+  
+    entry at all included — and states there no fact derived from that version''s manifest: neither
+  
+    that some revision presented is the one the case currently uses, nor that the case currently uses
+  
+    no revision of that hypothesis. Recorded as a new policy over domain/knowledge/hypothesis-revision,
+  
+    domain/knowledge/case-version and domain/knowledge/case, eventual.'
+  why: 'The revisions are the hypothesis''s own content, answered by a read that succeeded and supplying
+  
+    no field from the version''s, so a history withheld hides content the refused read never spoke to,
+  
+    and withholds it on exactly the reading the curator needs it — a draft whose manifest declares no
+  
+    hypothesis fails validation at every read, which is where every case begins, and the revision read
+  
+    back there is what place-hypothesis has to place. The pin is the one fact on that surface that
+  
+    does come from the refused read: a-case-is-read-whole answers a complete validated version or
+  
+    nothing, so no manifest stands behind a marking of the revision in use, and the opposite statement
+  
+    is no safer, since a manifest that does pin a revision of this hypothesis can sit in a version
+  
+    refused for some other validator rule, making "the case currently uses no revision of it" an
+  
+    assertion about the case''s current content that nobody read and that may be false.'
+- location: rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold.md
+  field: statement
+  unstated: No node states which hypotheses the placing act a manifest surface offers may name, whether
+    a hypothesis that version's manifest already holds an entry for is among them, or what the surface states
+    where the case leaves it nothing to place. a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    decides only that the act is offered and on which readings, and leaves what it may name to the interface;
+    a-hypothesis-is-manifested-at-most-once-in-a-case-version states what a manifest may hold and expressly
+    nothing about a request naming a hypothesis already held; a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    repeats that omission; and contracts/knowledge/case-query publishes list-hypotheses without stating
+    that any surface draws a choice from it.
+  decided: The candidates are exactly the hypotheses of the case that the surface's read of the case's hypotheses
+    answered, less every hypothesis that surface's answer for the version holds a manifest entry for --
+    so a hypothesis already manifested is never among them, and where the surface holds no answer for the
+    version, its read refused or not yet answered, nothing is subtracted and every hypothesis answered is
+    a candidate; where that read has answered and no candidate remains, whether the case composed none or
+    all are already placed, the surface states explicitly that the case holds no hypothesis that is not
+    already in this version's manifest, told apart from a reading whose read of the case's hypotheses has
+    not answered, on which it carries no candidate and states no such absence.
+  why: A candidate the reading's manifest already holds sends the curator to the one place-hypothesis outcome
+    this specification expressly leaves open and whose refusal the manifest surface holds no telling for,
+    while an empty chooser with nothing said reads alike whether the case has nothing left to place, the
+    read failed, or the read is still pending -- so the candidates are what the reading knows is not yet
+    placed, and their absence is stated rather than shown as an empty space.
+- location: rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names.md
+  field: statement
+  unstated: Which revision of a hypothesis a placement into a case version's manifest pins where that manifest
+    holds no entry for that hypothesis, and whether the curator names it or it is the hypothesis's highest
+    existing revision. domain/knowledge/manifest-entry requires exactly one referenced hypothesis-revision
+    per entry and domain/knowledge/hypothesis-revision admits a pin in either state, both stating what an
+    entry holds and neither stating where the revision comes from; a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest
+    compares a pin against the hypothesis's highest existing revision only for an entry already presented;
+    a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions states that
+    the act is offered and expressly leaves what the issued place-hypothesis answers untouched; and scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    names a placing pinning revision 1 of a hypothesis holding only revision 1, where the named revision
+    and the highest existing one cannot be told apart -- so which revision a first placement pins fell to
+    whatever the interface happened to send.
+  decided: A placement of a hypothesis into a case version's manifest that holds no entry for that hypothesis
+    pins exactly the revision of that hypothesis the placement itself names -- whichever of that hypothesis's
+    own revisions the curator chose and whatever state that revision carries -- and never a revision the
+    placement did not name, the hypothesis's highest existing revision included. Recorded as a new policy
+    over domain/knowledge/case-version, domain/knowledge/manifest-entry and domain/knowledge/hypothesis-revision,
+    eventual.
+  why: 'domain/knowledge/case-version already declares a draft''s manifest freely composed "pointing at
+    any of that hypothesis''s own revisions", and a placing plus a copied manifest (a-new-drafts-manifest-is-copied-from-an-existing-version)
+    are the only two ways an entry ever comes to reference a revision, so a placing that always took the
+    highest existing revision would leave that declared freedom exercisable by nobody. Deriving the pin
+    would also write the version''s content from a read nobody completed: a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    stands the offer on a reading whose read of the version was refused and on one that has not answered,
+    which is the substitution a-manifest-entrys-pinned-revision-is-always-shown refuses as a source for
+    a pin. Nothing is lost where the curator wants the newest content, since that revision is the one in
+    front of them when a-revise-offers-the-draft-manifest-only-when-the-pin-must-move sends them to the
+    draft''s manifest on this very condition. Scoped to a manifest holding no entry for the hypothesis so
+    that what place-hypothesis answers a request naming an already-manifested hypothesis stays the reservation
+    a-hypothesis-is-manifested-at-most-once-in-a-case-version expressly keeps.'
+- location: rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares.md
+  field: statement
+  unstated: Which position a hypothesis takes when it is placed into a case version's manifest that holds
+    no entry for it, and whether the curator declares that position or the placing act derives one no entry
+    of that manifest holds. hypotheses-are-ordered-by-precedence states that the declared order is the precedence
+    the experts affirm, declared rather than arranged, and a-hypothesis-position-is-unique-within-its-case
+    refuses a second entry at an occupied position, but both are written over a manifest whose positions
+    already stand; domain/knowledge/manifest-entry declares position required, domain/knowledge/case-version
+    says only that a hypothesis may be placed at a position, and contracts/knowledge/case-lifecycle publishes
+    place-hypothesis without naming who supplies the number -- so the first placement's position held only
+    as a presupposition no node was held to.
+  decided: A place-hypothesis over a case version whose manifest holds no entry for the hypothesis it names
+    writes that entry at exactly the position the request declares, supplied by the curator, and derives
+    no position from the entries the manifest already holds. Stated as an invariant over domain/knowledge/case-version
+    and domain/knowledge/manifest-entry, scoped to the first placement and leaving a hypothesis the manifest
+    already holds an entry for exactly where a-hypothesis-is-manifested-at-most-once-in-a-case-version left
+    it.
+  why: 'hypotheses-are-ordered-by-precedence makes the order a domain fact the experts affirm, "declared
+    rather than arranged" -- a position the act computes from the manifest''s own entries is precisely an
+    arrangement, and would seat a hypothesis at a precedence nobody affirmed. A derived position further
+    makes two standing statements unreachable: a-hypothesis-position-is-unique-within-its-case refuses a
+    placement at an occupied position and a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    owes a named telling for that refusal whose clearing act it states as choosing another position, yet
+    a derived position never collides. case-lifecycle publishes no act that moves a standing entry, so the
+    placement is the only moment a new entry''s precedence is declared at all.'
+- location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+  field: statement
+  unstated: What test-connector answers when the address the registered configuration under test resolves
+    to is not a valid absolute URL -- whether any call is issued, which HTTP status and error value the
+    answer reports, and what of that address reaches the operator. This rule names the test's two refusals
+    (no capability registered, connector mismatch) and says nothing about a configuration no request can
+    be built from; an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable names a missing
+    address and governs an observation's ending rather than this diagnostic's answer; contracts/integration/connector-diagnostics
+    publishes test-connector as an api and can declare no refusal of its own.
+  decided: No call is issued at all; the test is refused with an HTTP 422 response reporting a ConnectorCallAddressNotAbsoluteUrlError
+    that discloses the resolved address and no other part of the call, masked wherever a credential placeholder
+    resolved into it, and answers the same whether the address is read to derive the call or to echo it
+    back.
+  why: An address no request can be built from makes the test unperformable, which is the side of the
+    line this rule's existing 404 and 409 already sit on, while what an issued call meets at the far end
+    is what the diagnostic reports; 422 is this specification's established answer for a well-formed request
+    whose named content the domain refuses, as at a not-well-formed registration and an unreadable drafted
+    document. The error is named on its own account because only a value naming the address sends the
+    operator to the field they must edit, rather than to the registry or the far end, and naming it takes
+    the condition out of the unanticipated class a-domain-error-unmapped-by-status-is-refused-generically
+    answers with a generic 500. The address is disclosed because every part of it came from the caller
+    -- authored configuration text readable through read-connector-configuration, the supplied attribute
+    values, the supplied requester -- the same echo-what-was-sent reading a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    took, which is also why no-route-enforces-authentication makes no leak of it; the credential a placeholder
+    resolves from environment configuration is the one part that is not the caller's, and a-diagnostic-response-masks-a-resolved-credential
+    already masks it. Nothing else of the call travels, following an-unreachable-connector-ends-unavailable's
+    restraint for the sibling failure, and one answer covers both readings of the address so a single
+    cause never reaches the operator as two different answers.
+- location: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test.md
+  field: statement
+  unstated: What a connector configuration's diagnostic test answers when the call it issues fails before
+    any HTTP response is received -- a refused connection, a DNS resolution failure, a socket error or
+    any other rejection short of a response. an-unreachable-connector-ends-unavailable decides this condition
+    only for a call an observation issued, and the diagnostic returns no evidence; a-connector-configuration-is-tested-through-a-registered-capability
+    decides only the two refusals that precede any call; a-diagnostic-response-masks-a-resolved-credential
+    decides what the echoed request withholds and not whether it travels on a run nothing answered. No
+    node states the HTTP status this answer carries, the error value it names, or whether any part of
+    the call's own assembled address, query, headers or body reaches the caller.
+  decided: HTTP 200 as a test that ran and never a refusal status, reporting a ConnectorUnreachableError
+    together with the name of the connector whose registered configuration issued the call and no response
+    status, and carrying back the same echoed request a test answered by a response carries, with every
+    value a credential placeholder resolved to masked.
+  why: 'A connection refused, a name unresolved or a socket broken is a fact about the far end rather
+    than about the request the operator made or about this system''s own working, and the whole purpose
+    of a diagnostic is to hand that fact back: only a completed answer naming the cause -- under the same
+    name the identical condition already carries where an observation meets it -- beside the address,
+    query, headers and body actually assembled, lets an operator tell a connector that is down from a
+    configuration pointing somewhere its author never meant, while a refusal status carrying none of the
+    call''s own text leaves those two indistinguishable and a 500 in particular discloses nothing whatever
+    about the far end.'
 
 === domain/glossary/_context
 ---
@@ -8544,7 +8730,7 @@ A null value and an array are both syntactically valid JSON, but neither is an o
 === rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
 ---
 type: policy
-statement: A connector configuration is tested only through a specific, already-registered capability that names it as its connector; the configuration the test exercises is the one currently registered under that connector name, read at the moment of the test, never configuration text an operator holds unsaved in an authoring surface or supplies alongside the test request; the subject that test assembles carries exactly the Subject attributes named by the ${subject:<attribute-name>} placeholders embedded in that same registered configuration, one attribute-value per distinct attribute those placeholders name, each value supplied by the operator with the test request and each attribute name read from those placeholders rather than stated by the operator — an attribute those placeholders do not name is no part of the subject the test assembles; finding no capability registered at that identity refuses the test with an HTTP 404 response reporting a CapabilityNotRegisteredForTestError — a refusal of its own, never the identity-keyed read's own not-found answer for that same identity reused across the two operations — and naming a connector the found capability's own connector attribute does not match refuses the test with an HTTP 409 response reporting a CapabilityConnectorMismatchError.
+statement: A connector configuration is tested only through a specific, already-registered capability that names it as its connector; the configuration the test exercises is the one currently registered under that connector name, read at the moment of the test, never configuration text an operator holds unsaved in an authoring surface or supplies alongside the test request; the subject that test assembles carries exactly the Subject attributes named by the ${subject:<attribute-name>} placeholders embedded in that same registered configuration, one attribute-value per distinct attribute those placeholders name, each value supplied by the operator with the test request and each attribute name read from those placeholders rather than stated by the operator — an attribute those placeholders do not name is no part of the subject the test assembles; finding no capability registered at that identity refuses the test with an HTTP 404 response reporting a CapabilityNotRegisteredForTestError — a refusal of its own, never the identity-keyed read's own not-found answer for that same identity reused across the two operations — naming a connector the found capability's own connector attribute does not match refuses the test with an HTTP 409 response reporting a CapabilityConnectorMismatchError, and a registered configuration whose address, with its placeholders resolved, is not a valid absolute URL issues no call at all and refuses the test with an HTTP 422 response reporting a ConnectorCallAddressNotAbsoluteUrlError that discloses that resolved address, masked wherever a credential placeholder resolved into it, and no other part of the call, the same refusal whether that address is read to derive the call or to echo it back.
 constrains:
   - domain/integration/connector-configuration
   - domain/integration/capability
@@ -8560,6 +8746,14 @@ The registry's own resolution answers an unregistered identity as ordinary data,
 The configuration under test is the registered one for the same reason the capability under test is a registered one: registration is where every gate a connector configuration passes stands — a-connector-configuration-holds-a-well-formed-object and a-connector-placeholder-is-declared-by-its-capability are both checks the registry performs at the write — so a diagnostic issuing a real call from text no write had ever been held to would exercise exactly what those gates exist to keep out, and would report a seam (a-connector-placeholder-is-declared-by-its-capability's own check for the pairing under test) against a pairing that does not exist. Register-connector is create-or-replace and replaces the whole configuration on every edit, so an operator wanting to test edited text registers it first; what the diagnostic never offers is a call to a real system from a draft nothing has committed to.
 
 Which attributes the operator supplies values for follows from that same registered configuration rather than from any case: a test names no case version, so the case-derived requirement governing an ordinary diagnose (a-diagnosed-subject-covers-its-cases-required-attributes, which this test is already exempt from) has nothing to say about it, and the configuration's own ${subject:<attribute-name>} placeholders (an-http-connector-configuration-declares-its-call) are the only statement anywhere of which Subject attributes this call actually reads. Each such name is already governed once — held inside the paired capability's input schema properties by a-connector-placeholder-is-declared-by-its-capability — so it is a name the operator reads rather than authors; what the operator contributes is the value, the other half of the attribute-value pair domain/investigation/subject-attribute-value declares, which is what identifies the instance the test call reaches. Two placeholders naming the same attribute name one attribute, so the test collects one value for it, not two.
+
+An address that resolves to something no HTTP request can be issued to is a third way the test cannot be performed at all, and it is answered the way the other two are rather than the way a call's own failure is. The 404 and the 409 above refuse a request this system cannot carry out; what an issued call then meets at the far end is reported back as the diagnostic's own answer, since that is the very thing the operator asked to see. A registered address that is not a valid absolute URL falls on the refusal side of that line: no request is ever issued, so there is no far end to have met anything, and nothing about the connector's availability has been learned. The status is 422 because the request the operator sent is well formed and it is the named content the domain refuses — the status this specification already answers a registration whose configuration is not well-formed object text (a-connector-configuration-holds-a-well-formed-object) and a draft whose named document cannot be read (a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document). The error value is the address's own and not one of the two already named here, because an operator told the capability was missing or mismatched looks at the registry, while only a value naming the address sends them to the one field they have to edit; naming it here is also what takes this condition out of the class a-domain-error-unmapped-by-status-is-refused-generically answers, which is the class of conditions this system never anticipated, and this one now is.
+
+The refusal discloses the offending address, because everything that address is made of came from the caller: the configuration text an operator authored and can read back at will through read-connector-configuration, the Subject-attribute values supplied with the test request, and the requester supplied alongside them. That is the same reading a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document already took in echoing the caller's own link back, and it is why no-route-enforces-authentication does not make the disclosure a leak — nothing reaches the caller that the caller did not send. The one part of a resolved address that is not the caller's own is a credential read from environment configuration, and a-diagnostic-response-masks-a-resolved-credential already governs it, so the address travels masked exactly as the diagnostic's echo carries it. Nothing else of the call travels with the refusal: the query, headers and body are not what the operator must fix here, and an-unreachable-connector-ends-unavailable already keeps them out of what a reader is shown for the sibling failure.
+
+The answer is one answer whether the invalid address is met while the call is being derived or while the request the diagnostic echoes back is being built, because the two are readings of one registered address for one test, and an operator meeting a single cause through two different answers would be left working out which of them the system was speaking about — the same reason a-presented-connector-configurations-four-readings-are-mutually-distinguishable refuses one presentation for materially different situations, read in reverse.
+
+Disclosed as this route requires: the material is a report of the delivered endpoint's own behavior, which answers this condition with the generic unmapped refusal and states only that it should not; the status, the error value and the disclosure decided here depart from that delivered behavior rather than confirming it, and the reasoning rests on this specification's own standing rules for the test's other two refusals and for what a diagnostic may disclose, so a reviewer who rejects it rejects that reasoning.
 
 === rules/integration/a-connector-configuration-listing-routes-presence-turns-on-nothing-further
 ---
@@ -8997,6 +9191,37 @@ constrains:
 ## Description
 
 A connector configuration's call may name a credential the executing connector reads from environment configuration rather than from the configuration text itself, so nobody has to author a secret directly into an operator-editable field. The diagnostic operation exists to let an operator see the request a connector configuration would actually issue (contracts/integration/connector-diagnostics), and that same visibility would otherwise hand back the one thing the indirection was meant to keep out of an editable field and a response body alike. Masking is what keeps the diagnostic honest about shape without being honest about the secret.
+
+=== rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+---
+type: invariant
+statement: >-
+  A connector configuration's diagnostic test whose issued call fails before any HTTP
+  response is received — a refused connection, a DNS resolution failure, a socket error or
+  any other rejection short of a response — answers HTTP 200 as a test that ran and never a
+  refusal status, reports a ConnectorUnreachableError together with the name of the
+  connector whose registered configuration issued the call and no response status, and
+  carries back the same echoed request a test answered by a response carries, with every
+  value a credential placeholder resolved to masked.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+A test whose call was rejected at the socket did the whole of what `contracts/integration/connector-diagnostics` asks of it: the configuration resolved, the call assembled, the far end was reached for, and nothing there answered. That is a finding, so the answer that carries it is an answer and not a refusal. A 4xx would state that the operator's request was wrong, which it was not — the two refusals `a-connector-configuration-is-tested-through-a-registered-capability` already fixes, HTTP 404 for no capability registered at the named identity and HTTP 409 for a connector the found capability does not name, are what a wrong request meets, and this request named both correctly. A 5xx would state that this system failed, the one reading `constraints/a-domain-error-unmapped-by-status-is-refused-generically` reserves for what nothing anticipated, and it would reach the operator as `INTERNAL_ERROR` with the fixed text and no context at all — telling them nothing about the far end, which is the only thing they called this operation to learn.
+
+`ConnectorUnreachableError` rather than a name minted for the diagnostic, because this is the same condition `an-unreachable-connector-ends-unavailable` already names, arising from the same registered configuration issuing the same assembled call: the value names the cause, not the operation that met it, and an operator who meets one name here and another in an investigation's result detail is left deciding whether the two found the same thing. The connector's name travels with it for the reason it travels there — which far end did not answer is the whole of what anyone can act on.
+
+No response status accompanies it because none was received. `an-http-connector-configuration-declares-its-method-and-status-vocabulary` holds a `statusMap` mapping an HTTP status to an evidence-result ending, and a call rejected short of a response reached no status to map; a status field filled anyway would be read as the far end's own answer, which is precisely the reading this case must not produce.
+
+The echoed request stays in the answer here, where `an-unreachable-connector-ends-unavailable` keeps the call's own assembled address, query, headers and body out of the result detail it writes. That withholding is a credential measure — a resolved call's text may hold what a credential placeholder resolved to, and an evidence result detail carries no masking of its own — and this read does carry one: `a-diagnostic-response-masks-a-resolved-credential` already puts the diagnostic's echo in front of an operator with every resolved credential value masked, so the exposure that justifies withholding there is already answered here. Withholding it a second time would take from the operator the one artifact that makes an unreachable far end diagnosable — the address, query, headers and body actually assembled — on the one run where nothing else came back to read, leaving a connector that is genuinely down indistinguishable from a configuration pointing somewhere its author never meant.
+
+Not decided here: what the test answers when the configuration's own call descriptor cannot be assembled at all, which is `an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable`'s question and not this one; what a capability timeout's own deliberate abort answers, excepted from this condition exactly as its sibling excepts it; the rest of what the diagnostic's answer carries, which stays `contracts/integration/connector-diagnostics`' own and `a-diagnostic-response-masks-a-resolved-credential`'s own; and how an operator-facing screen presents any of it, which every surface rule of this specification leaves to the interface.
+
+An invariant over `domain/integration/connector-configuration`, immediate and inside that one aggregate — the home `a-diagnostic-response-masks-a-resolved-credential` already takes for the other fact about what this same diagnostic hands back. A new rule rather than the api contract, which cannot declare a refusal or an answer shape of its own, and rather than `a-connector-configuration-is-tested-through-a-registered-capability`, which fixes what a test exercises and which requests it refuses before any call is issued, not what a call that was issued and never answered reports.
+
+Disclosed as this route requires: the scope material under `work/test-connector-request-echo-url-hotfix/intake/` reports a different failure of the same endpoint — an exception raised while building the response's echoed request escaping as a generic 500 — and notes in passing that the outbound call's own failure already returns a structured error outcome, without stating the status that outcome is answered with, the error value it names, or whether the assembled call reaches the caller with it. The reasoning here rests on this specification's own standing rules, and a reviewer who rejects it rejects that reasoning.
 
 === rules/integration/a-draft-fetch-and-readability-refusals-never-read-alike
 ---
@@ -12527,6 +12752,38 @@ what `create-draft` itself answers, refuses no call, and leaves wholeness where
 `constraints/a-case-is-read-whole` already binds it. Which control carries the pending
 statement, its wording and where it sits are form and belong to the interface.
 
+=== rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares
+---
+type: invariant
+statement: >-
+  A place-hypothesis over a case version whose manifest holds no entry for the hypothesis it
+  names writes that entry at exactly the position the request declares, which the curator
+  supplies, and derives no position from the entries that manifest already holds.
+expression: >-
+  For a case version v, a hypothesis h and a place-hypothesis issued over v naming h and
+  declaring position n, where v's manifest holds no entry for h: the entry written declares
+  position n, n is read from the request alone, and nothing about v's manifest enters the value
+  — not how many entries it holds, not the highest or the lowest position among them, not the
+  order in which they were placed — the curator standing on the surface that issues the
+  placement being who chooses n. What the placement answers where n is a position a different
+  hypothesis of v's manifest already holds is a-hypothesis-position-is-unique-within-its-case's,
+  exactly as before; what it answers for a hypothesis v's manifest already holds an entry for
+  stays where a-hypothesis-is-manifested-at-most-once-in-a-case-version left it, undecided here.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+`hypotheses-are-ordered-by-precedence` states that a case version's declared order is the precedence the experts affirm, each entry's own position, declared rather than arranged; `a-hypothesis-position-is-unique-within-its-case` refuses a placement at a position a different hypothesis already holds. Neither says where the number comes from at the moment a hypothesis first enters a manifest holding no entry for it. `domain/knowledge/manifest-entry` declares position required and `domain/knowledge/case-version` says only that a hypothesis may be placed at a position, while `contracts/knowledge/case-lifecycle` publishes place-hypothesis without stating who supplies it — so whether the curator names the position or the act appended one behind them fell to whatever an implementation happened to compute.
+
+The curator names it, because precedence is the one fact the manifest exists to declare. A position the act derived — one past the highest the manifest holds, the count of its entries, the order placements happened to arrive in — is an arrangement, which is what `hypotheses-are-ordered-by-precedence` refuses in as many words: the hypothesis would stand at a precedence no expert affirmed, and the affirmation would have to be recovered afterwards by a correction nobody asked for.
+
+A derived position also leaves this specification stating conditions nothing could reach. `a-hypothesis-position-is-unique-within-its-case` refuses a placement at an occupied position, and `a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for` owes the curator a telling of its own for that refusal, naming the act that clears it as choosing another position; a position the act derives collides with no entry, so both the refusal and the telling it is owed would stand over a call no curator could make. `contracts/knowledge/case-lifecycle` publishes no act that moves a standing entry either, so the placement is the moment at which a new entry's precedence is declared at all — an act that chose for the curator there would leave that precedence never affirmed by anyone.
+
+This bounds the first placement alone, and adds nothing to the calls around it: `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` still decides on which readings the act is offered, `a-case-version-moves-through-its-declared-lifecycle` still answers a version not in draft, and `placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state` still holds the pinned revision's own state out of the check. Which control carries the position, how it is worded, and whether the curator states it as a number or as a place among the entries already shown are form and belong to the interface, as this specification's other surface rules leave them.
+
 === rules/knowledge/a-hypothesis-collects-at-least-one-concept
 ---
 type: invariant
@@ -12709,6 +12966,59 @@ constrains:
 
 Precedence has to be a total order or resolve-outcome has no first confirmed hypothesis to find, only a tie it would settle by whatever it read first.
 Position is declared on the manifest entry, not on the hypothesis-revision it references, precisely so that reordering two hypotheses between one version and the next never forces either one's content to gain a new revision.
+
+=== rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case
+---
+type: policy
+statement: >-
+  A surface presenting the revisions of one hypothesis of a case to a reader who named that
+  case's slug and that hypothesis and named no version presents those revisions on a reading
+  whose read of the case's current version was refused because some validator rule of
+  validation-runs-at-every-read does not hold for that version at that reading, and states on
+  that reading no fact derived from that version's manifest, whether any of the revisions
+  presented is the one the case currently uses included.
+expression: >-
+  For a case c, a hypothesis h of c, and a surface presenting h's revisions to a reader who
+  named c by its slug and h by its name and named no version of c: let v be the version, among
+  the versions c currently holds, whose version number is highest. Where that surface's read of
+  v was refused because some validator rule of validation-runs-at-every-read does not hold for
+  v at that reading, and its own read of h's revisions answered, the surface presents the
+  revisions that read answered. On that reading it states neither that some revision it
+  presents is the revision c currently uses nor that c currently uses no revision of h, and it
+  states nothing else derived from v's manifest. Neither the presenting nor the withholding
+  turns on which validator rule failed over v — v's manifest holding no entry at all included.
+  This settles no other reading of that surface: not one whose read of v answered, not one
+  whose read of v has not answered or did not complete, and not one whose read of h's revisions
+  did not complete. What the surface states about its own refused read of v is untouched here,
+  and nothing is written by the revisions' presence.
+constrains:
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+  - domain/knowledge/case
+consistency: eventual
+---
+
+## Description
+
+`a-cases-current-pins-come-from-its-highest-numbered-version` sends a curator standing on a case's hypotheses to the one version whose manifest says which revision of each hypothesis the case currently uses, and `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` says what a surface reached by a slug alone tells the reader when that version does not read back at all — closing, as its neighbours do, by leaving what such a surface presents and offers to wherever this specification decides that.
+A reader who named a case's slug and one of its hypotheses and named no version stands on both boundaries at once: the revisions they came for are answered by `list-hypothesis-revisions` of `contracts/knowledge/case-query` on a read that succeeded, while the pin that would mark one of them comes from a read that was refused.
+Whether the content of the read that answered survives the read that did not was settled by neither node, so it fell to whatever a surface happened to render.
+
+The refused reading is where the history is worth most. `validation-runs-at-every-read` makes a draft whose manifest declares no hypothesis fail a validator rule at every read, and `a-new-drafts-manifest-is-copied-from-an-existing-version` leaves a case's first-ever draft with no manifest to copy, so this refusal is where every case begins; `a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case` keeps the composition standing there precisely because the revision composed is the content `place-hypothesis` then puts into that manifest.
+This surface is where the curator reads back what they composed, and `a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading` and `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` have already spent their reasoning keeping the correcting route open across this same refusal. A history withheld on it hides a hypothesis's own content behind another read's failure and empties the end of that route.
+
+The revisions take nothing from the version's read, which is why presenting them states nothing that read declined to answer.
+`domain/knowledge/hypothesis-revision` makes the criterion, the collected concepts and the resolution the hypothesis's own content; `a-hypothesis-revisions-listing-answers-highest-revision-first` and `a-hypothesis-revisions-listing-discloses-each-revisions-own-state` are written over that listing alone and hold word for word whatever became of any other read; and `a-hypothesis-composition-states-which-of-its-reads-did-not-complete` already holds the revisions read apart from the version's on a neighbouring surface, on the reasoning that failing one teaches the surface nothing about the other.
+
+The pin is the one thing on this surface that does come from the refused read, and nothing on this reading stands behind it.
+`a-manifest-entrys-pinned-revision-is-always-shown` makes a pinned revision the manifest entry's own reference and refuses any other source for it, `a-cases-current-pins-come-from-its-highest-numbered-version` fixes the highest-numbered version's manifest as where a case-keyed surface reads those pins from, and `a-case-is-read-whole` leaves the refused read answering a complete validated version or nothing — so a revision marked as the one in use would be marked from a manifest nobody read.
+The opposite statement is no safer. The refusal names the surface no rule, and a manifest that does pin a revision of this hypothesis sits inside a version refused for any other validator rule, so telling the reader the case currently uses no revision of it would assert as the case's current content a fact nobody read and that may be false — the substitution `a-manifest-entrys-pinned-revision-is-always-shown` refuses for a pin, made once more from a read that was not answered at all.
+
+Withholding the marking is not the unexplained emptiness this specification has refused before. `a-case-holding-no-versions-is-told-explicitly` and `a-cases-current-pins-come-from-its-highest-numbered-version` both refuse a blank that reads alike whether nothing is pinned, the read failed or the read is still pending, and the reader here is left with no such blank to read: the refused read of the current version is stated on this surface by `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case`, exactly as that rule wrote it, and a pin unstated beside that statement is accounted for rather than silent. Nothing that rule forbids is presented here either: a revision of a hypothesis is not an attribute of the version, and the version's own content stays as unpresented as it was.
+
+This decides the refused reading alone. What the surface presents or states where its read of the current version answered, where it has not answered, or where it did not complete is not settled here, and neither is what it does where its own read of the revisions did not complete. Which control carries the history, how it is worded and where it sits are form and belong to the interface, as this specification's other surface rules leave them.
+
+Consistency is eventual: the fact spans the hypothesis's revisions and the case version whose validation is judged, each read separately.
 
 === rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
 ---
@@ -13069,6 +13379,108 @@ the stored version.
 Which control carries each act, whether an interface renders an act it does not yet offer
 as absent or as present and not yet performable, its wording and where it sits are form and
 belong to the interface, as this specification's other surface rules leave them.
+
+=== rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names
+---
+type: policy
+statement: >-
+  A placement of a hypothesis into a case version's manifest that holds no entry for that
+  hypothesis pins exactly the revision of that hypothesis the placement itself names —
+  whichever of that hypothesis's own revisions the curator chose and whatever state that
+  revision carries — and never a revision the placement did not name, the hypothesis's highest
+  existing revision included.
+expression: >-
+  For a case version v whose manifest holds no entry for hypothesis h, and a place-hypothesis
+  over v naming h: the placement carries one revision r of h, chosen by the curator performing
+  it, and the manifest entry the placement writes references exactly r — r's own state, draft
+  or released, narrowing which revision may be named not at all and being left unmoved by the
+  placing (scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state).
+  No revision is substituted for the one the placement named, and none is supplied where the
+  placement names none: the highest revision h currently holds is pinned exactly where it is
+  the revision named and never for lack of a naming, and no entry ever stands pinning a
+  revision chosen for the curator rather than by the curator. Nothing else is decided here —
+  what answers a placement naming a hypothesis the manifest already holds stays
+  a-hypothesis-is-manifested-at-most-once-in-a-case-version's own reservation, what a
+  presented entry then states about its pin stays with
+  a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest and
+  a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis, and which readings offer the
+  placing at all stays with
+  a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions.
+constrains:
+  - domain/knowledge/case-version
+  - domain/knowledge/manifest-entry
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+`domain/knowledge/manifest-entry` requires every entry to reference exactly one hypothesis-revision, and `domain/knowledge/case-version` already frees a draft's manifest to be composed "pointing at any of that hypothesis's own revisions".
+Which revision arrives at an entry being composed for the first time, and whether it is the curator's own choice or something the placing derives, was addressable nowhere: `a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest` compares a pin against the hypothesis's highest existing revision only for an entry already presented, and `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` states that the act is offered while expressly leaving what a `place-hypothesis` then issued answers untouched.
+
+The freedom `case-version` declares is reachable through no other act.
+An entry comes to reference a revision in exactly two ways — copied whole from an existing version (`a-new-drafts-manifest-is-copied-from-an-existing-version`), or written by a placing — so a placing that always pinned the hypothesis's highest existing revision would leave "any of that hypothesis's own revisions" a freedom no curator could exercise: the earlier revision a rollback draft continues from, and the released revision a curator keeps while a draft revision stands above it, could be named by nobody.
+
+A derived pin would also commit the version to a fact nobody read.
+The highest existing revision is a fact of a second aggregate, read separately, and `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` stands the offer precisely on the readings where the surface has read least — a read of the version refused, a read that has not yet answered.
+Deriving the pin there would write the version's content from a read that may never have completed, which is what `a-manifest-entrys-pinned-revision-is-always-shown` refuses as a source for a pin and the same substitution `a-cases-current-pins-come-from-its-highest-numbered-version` refuses when it declines to answer with "its own highest existing revision" for a hypothesis the current version's manifest holds no entry for.
+`replay-is-pinned` rests on an adopted content being deliberate: what a released version answers forever is chosen once, by the curator, never by whichever revision happened to be highest at the moment the entry was written.
+
+Nothing is lost where the curator's intent is the newest content.
+The revision just written is the one in front of the curator when `a-revise-offers-the-draft-manifest-only-when-the-pin-must-move` sends them to the draft's manifest on exactly this condition — the manifest holding no entry for the hypothesis at all — so naming it costs a choice already made.
+A placing carrying no revision at all is not this rule's business: `manifest-entry` requires the reference, so such a request fails the shape `constraints/a-malformed-request-is-refused-with-a-validation-error` already answers, and no entry stands pinning a revision nobody chose.
+
+Policy with eventual consistency because the revision named is a fact of `hypothesis-revision`, an aggregate root apart from the case version whose manifest holds the entry — the crossing `a-released-case-version-manifests-only-released-hypothesis-revisions` already gives this same reasoning for.
+Which control offers the choice, and how the hypothesis's revisions are listed for it, are form and belong to the interface; that the revision the placement carries is the one the curator chose is not.
+
+=== rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold
+---
+type: policy
+statement: >-
+  The act of placing a hypothesis that a surface presenting a case version's manifest offers
+  carries as its candidates exactly the hypotheses of that case the surface's read of the
+  case's hypotheses answered, less every hypothesis that surface's answer for the version holds
+  a manifest entry for, and where that read has answered and no candidate remains the surface
+  states explicitly that this case holds no hypothesis that is not already in this version's
+  manifest, distinguishably from a reading whose read of the case's hypotheses has not answered,
+  on which reading it carries no candidate and states no such absence.
+expression: >-
+  For a case c, a version v of c and a surface presenting v's manifest to the curator: let H be
+  the hypotheses of c that the read the surface made through list-hypotheses answered, and let M
+  be the hypotheses the answer that surface holds for v states a manifest entry for. The
+  candidates the placing act offered on that surface carries are exactly H less M — every
+  hypothesis in H that M does not hold is a candidate, and no hypothesis M holds is one. Where
+  the surface holds no answer for v at all, its read of v having been refused, whatever the
+  refusal named, or not yet having answered, M is empty and every hypothesis in H is a
+  candidate. Where the read of c's hypotheses has answered and H less M is empty — because H is
+  empty, or because M holds every hypothesis H carries — the surface states that c holds no
+  hypothesis that is not already in v's manifest; a curator tells that statement apart from what
+  the surface states while its read of c's hypotheses has not answered, and while that read has
+  not answered the surface carries no candidate and makes no such statement. Whether the placing
+  act is offered at all is untouched here and stays exactly where
+  a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions put
+  it, and what a place-hypothesis then issued over v answers is untouched too.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis
+  - domain/knowledge/manifest-entry
+consistency: eventual
+---
+
+## Description
+
+`a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` decides that the act is reachable and on which readings, and closes by leaving what it may name to the interface — so which of a case's hypotheses a curator can actually choose from was addressable nowhere. The choice can be drawn from one place only: a hypothesis belongs to the case identity rather than to any one version (`domain/knowledge/hypothesis`), `contracts/knowledge/case-query` publishes `list-hypotheses` as the read that answers a case's hypotheses, and `domain/knowledge/manifest-entry` pins exactly one of them per line. What the surface can offer is therefore what that read answered, and nothing recovered from anywhere else — the same refusal of substituted content `a-manifest-entrys-pinned-revision-is-always-shown` makes for a pin.
+
+A hypothesis the reading's own manifest answer already holds an entry for is not among them. `a-hypothesis-is-manifested-at-most-once-in-a-case-version` reads a manifest as holding one entry for a hypothesis or none, and says in as many words that it decides nothing about what `place-hypothesis` answers for a hypothesis the manifest already holds; `a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for` holds a telling of its own for exactly two refusals and repeats that this one is expressly left open, so every other refusal reaches the curator as the notice for a request that failed for a reason the surface does not recognise. Offering such a hypothesis therefore offers an act whose outcome this specification has not stated and whose refusal, if it is refused, the surface cannot name — the curator learns only that something unknown happened to a manifest that already held what they asked for. Nothing is lost by leaving it out: every hypothesis left out is one the manifest already carries, already presented by the entry the rules over a presented manifest entry govern.
+
+The subtraction is made over what the reading answered, never over the stored manifest, because that is the only manifest the surface has. Where the read of the version was refused or has not answered, no manifest answer stands and nothing is subtracted; withholding every candidate there would withhold the whole choice exactly on the reading where the placing is the curator's only correction — `validation-runs-at-every-read` and `a-case-version-failing-validation-at-a-read-is-refused-by-name` refuse the read of a draft whose manifest declares no hypothesis, and `a-case-has-at-least-one-hypothesis` is what the placing satisfies. That is the same reading the offer rule kept the act on, for the same reason, and the call still answers any collision itself: `a-hypothesis-is-manifested-at-most-once-in-a-case-version`, `a-hypothesis-position-is-unique-within-its-case` and `a-case-version-moves-through-its-declared-lifecycle` each answer exactly as they did before.
+
+Where the read has answered and leaves nothing to choose, the surface says so. An empty chooser with nothing said reads alike whether the case composed no hypothesis at all, whether every hypothesis it holds is already placed, whether the read failed, or whether it is still pending — the silence `a-case-holding-no-versions-is-told-explicitly` already rejects for a case's versions and `a-cases-current-pins-come-from-its-highest-numbered-version` already rejects for a hypothesis with no pin. The two ways a case can leave nothing to choose take one statement because the curator's next act is the same in both: compose a hypothesis, which is what `a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case` keeps reachable, and place it afterwards. The reading whose read of the case's hypotheses has not answered is the one that must be told apart, since it sends the curator to no act at all but waiting, and `a-hypothesis-composition-states-which-of-its-reads-did-not-complete` is the same containment taken across the several reads one screen makes: a statement is held to the read it is a fact about.
+
+This states what the placing act carries and what is said where it carries nothing. It moves no pin, adds no disclosure to any manifest entry, writes no entry and refuses no call, and it leaves the offer's presence exactly as its own rule decided — the act is offered on every reading that rule names, whether or not the reading leaves it a candidate to carry. Which control carries the choice, how the absence is worded and where either sits are form and belong to the interface, as they do wherever else this specification states what a surface tells a reader.
+
+Consistency is eventual: the fact spans the case's own hypotheses and the manifest of one of its versions, each read separately.
 
 === rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
 ---

@@ -5639,3 +5639,53 @@ entries:
     owes a named telling for that refusal whose clearing act it states as choosing another position, yet
     a derived position never collides. case-lifecycle publishes no act that moves a standing entry, so the
     placement is the only moment a new entry''s precedence is declared at all.'
+- location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+  field: statement
+  unstated: What test-connector answers when the address the registered configuration under test resolves
+    to is not a valid absolute URL -- whether any call is issued, which HTTP status and error value the
+    answer reports, and what of that address reaches the operator. This rule names the test's two refusals
+    (no capability registered, connector mismatch) and says nothing about a configuration no request can
+    be built from; an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable names a missing
+    address and governs an observation's ending rather than this diagnostic's answer; contracts/integration/connector-diagnostics
+    publishes test-connector as an api and can declare no refusal of its own.
+  decided: No call is issued at all; the test is refused with an HTTP 422 response reporting a ConnectorCallAddressNotAbsoluteUrlError
+    that discloses the resolved address and no other part of the call, masked wherever a credential placeholder
+    resolved into it, and answers the same whether the address is read to derive the call or to echo it
+    back.
+  why: An address no request can be built from makes the test unperformable, which is the side of the
+    line this rule's existing 404 and 409 already sit on, while what an issued call meets at the far end
+    is what the diagnostic reports; 422 is this specification's established answer for a well-formed request
+    whose named content the domain refuses, as at a not-well-formed registration and an unreadable drafted
+    document. The error is named on its own account because only a value naming the address sends the
+    operator to the field they must edit, rather than to the registry or the far end, and naming it takes
+    the condition out of the unanticipated class a-domain-error-unmapped-by-status-is-refused-generically
+    answers with a generic 500. The address is disclosed because every part of it came from the caller
+    -- authored configuration text readable through read-connector-configuration, the supplied attribute
+    values, the supplied requester -- the same echo-what-was-sent reading a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    took, which is also why no-route-enforces-authentication makes no leak of it; the credential a placeholder
+    resolves from environment configuration is the one part that is not the caller's, and a-diagnostic-response-masks-a-resolved-credential
+    already masks it. Nothing else of the call travels, following an-unreachable-connector-ends-unavailable's
+    restraint for the sibling failure, and one answer covers both readings of the address so a single
+    cause never reaches the operator as two different answers.
+- location: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test.md
+  field: statement
+  unstated: What a connector configuration's diagnostic test answers when the call it issues fails before
+    any HTTP response is received -- a refused connection, a DNS resolution failure, a socket error or
+    any other rejection short of a response. an-unreachable-connector-ends-unavailable decides this condition
+    only for a call an observation issued, and the diagnostic returns no evidence; a-connector-configuration-is-tested-through-a-registered-capability
+    decides only the two refusals that precede any call; a-diagnostic-response-masks-a-resolved-credential
+    decides what the echoed request withholds and not whether it travels on a run nothing answered. No
+    node states the HTTP status this answer carries, the error value it names, or whether any part of
+    the call's own assembled address, query, headers or body reaches the caller.
+  decided: HTTP 200 as a test that ran and never a refusal status, reporting a ConnectorUnreachableError
+    together with the name of the connector whose registered configuration issued the call and no response
+    status, and carrying back the same echoed request a test answered by a response carries, with every
+    value a credential placeholder resolved to masked.
+  why: 'A connection refused, a name unresolved or a socket broken is a fact about the far end rather
+    than about the request the operator made or about this system''s own working, and the whole purpose
+    of a diagnostic is to hand that fact back: only a completed answer naming the cause -- under the same
+    name the identical condition already carries where an observation meets it -- beside the address,
+    query, headers and body actually assembled, lets an operator tell a connector that is down from a
+    configuration pointing somewhere its author never meant, while a refusal status carrying none of the
+    call''s own text leaves those two indistinguishable and a 500 in particular discloses nothing whatever
+    about the far end.'
