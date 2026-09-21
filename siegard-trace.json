@@ -409,7 +409,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
-          "digest": "sha256:0feeb0c19f7e679b944ea213839009f342cb8be01bd74dd536c34635c7541f14"
+          "digest": "sha256:30d754d19101be3cca5558abadd0f734c3579bf82072e7825e00384a9d4bb96f"
         },
         {
           "path": "src/src/errors/investigation-not-buildable.error.ts",
@@ -797,7 +797,7 @@
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
-          "digest": "sha256:ecaca164d5a27e2012a85f97ec921db18a952669c96e286107aa4348acbee6f8"
+          "digest": "sha256:6de390a568da74b1ebae8f452a184e51e6c2dba6b0adb4821dcc78f705a498ff"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -3075,7 +3075,7 @@
     },
     {
       "node": "domain/integration/connector-configuration-registry",
-      "digest": "sha256:132eff4e502ceeeaa7af5e043066b1c5ba1198f100c70637eed447eeebfdaf4c",
+      "digest": "sha256:a9bc779a71c2ed1b42d217d454e15446ad1fd3685955411bafc23b6423d9a527",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
@@ -3094,6 +3094,10 @@
           "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
         },
         {
+          "path": "src/src/connector-registry/connector-configuration-store.port.ts",
+          "digest": "sha256:30d754d19101be3cca5558abadd0f734c3579bf82072e7825e00384a9d4bb96f"
+        },
+        {
           "path": "src/src/factories/build-app.factory.ts",
           "digest": "sha256:1e137acc8ce0ace39ccc17c2a9a9413ad05076ce12524d40e0a9297e56cd93a4"
         },
@@ -3107,7 +3111,7 @@
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
-          "digest": "sha256:ecaca164d5a27e2012a85f97ec921db18a952669c96e286107aa4348acbee6f8"
+          "digest": "sha256:6de390a568da74b1ebae8f452a184e51e6c2dba6b0adb4821dcc78f705a498ff"
         }
       ]
     },
@@ -7282,6 +7286,20 @@
         {
           "path": "src/src/errors/duplicate-concept-answer.error.ts",
           "digest": "sha256:095cb98c8b0196b721019e55f2e4e203058ea5967de857d4e1a5339eb7257b25"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "digest": "sha256:f06d983ab60c78fc1c0acca181d2489ecb9679fd8a596be287401f01c5dfd7da",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-store.port.ts",
+          "digest": "sha256:30d754d19101be3cca5558abadd0f734c3579bf82072e7825e00384a9d4bb96f"
+        },
+        {
+          "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
+          "digest": "sha256:6de390a568da74b1ebae8f452a184e51e6c2dba6b0adb4821dcc78f705a498ff"
         }
       ]
     },

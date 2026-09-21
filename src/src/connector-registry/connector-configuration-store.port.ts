@@ -5,4 +5,6 @@ export interface IConnectorConfigurationStore {
   readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]>;
 
   writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void>;
+
+  deleteConnectorConfiguration(connector: string): Promise<void>;
 }

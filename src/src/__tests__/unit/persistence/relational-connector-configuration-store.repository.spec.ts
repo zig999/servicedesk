@@ -142,6 +142,49 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
+it('issues exactly one parameterized DELETE against connector_configurations inside BEGIN and COMMIT, naming only the connector, with no guard query ahead of it', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const { connection, client } = fakeTransactionConnection(async (text, params) => {
+    recorded.push({ text, params });
+    return { rows: [] };
+  });
+  const store = new RelationalConnectorConfigurationStore(connection);
+
+  await store.deleteConnectorConfiguration('a-connector');
+
+  const texts = collapsedTexts(recorded);
+  expect(texts).toHaveLength(3);
+  expect(texts[0]).toBe('BEGIN');
+  expect(texts[1]).toContain('DELETE FROM connector_configurations');
+  expect(texts[1]).toContain('WHERE connector = $1');
+  expect(texts[2]).toBe('COMMIT');
+  expect(recorded[1]?.params).toEqual(['a-connector']);
+  expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it("raises this store's own typed error, carrying the driver failure as its cause, and rolls back, when the delete is refused", async () => {
+  const driverFailure = new Error('the driver refused this delete');
+  const { connection, client } = fakeTransactionConnection(async (text) => {
+    if (text.includes('DELETE')) {
+      throw driverFailure;
+    }
+    return { rows: [] };
+  });
+  const store = new RelationalConnectorConfigurationStore(connection);
+
+  let caught: unknown;
+  try {
+    await store.deleteConnectorConfiguration('a-connector');
+  } catch (error) {
+    caught = error;
+  }
+
+  expect(caught).toBeInstanceOf(ConnectorConfigurationStoreError);
+  expect((caught as Error).cause).toBe(driverFailure);
+  expect(client.query).toHaveBeenCalledWith('ROLLBACK');
+  expect(client.release).toHaveBeenCalledTimes(1);
+});
+
 it('this store and the connector-registry module it implements open no file on disk', async () => {
   const paths = [
     fileURLToPath(new URL('../../../persistence/relational-connector-configuration-store.repository.ts', import.meta.url)),

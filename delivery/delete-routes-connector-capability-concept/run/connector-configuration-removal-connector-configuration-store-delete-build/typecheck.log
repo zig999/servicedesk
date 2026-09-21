@@ -1,0 +1,117 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts(15,7): error TS2420: Class 'SpyConnectorConfigurationStore' incorrectly implements interface 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'SpyConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts(675,62): error TS2345: Argument of type 'SpyConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'SpyConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts(691,62): error TS2345: Argument of type 'SpyConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'SpyConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(20,7): error TS2420: Class 'InMemoryConnectorConfigurationStore' incorrectly implements interface 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(56,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(66,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(76,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(86,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(96,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(104,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(117,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(128,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(138,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(147,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(155,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(164,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(174,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(185,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(196,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(207,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(220,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(230,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(238,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(248,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(260,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(274,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(286,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(301,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(309,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(323,9): error TS2741: Property 'deleteConnectorConfiguration' is missing in type '{ readConnectorConfigurations: () => Promise<never>; writeConnectorConfigurations: () => Promise<undefined>; }' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(341,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(351,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(361,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(376,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(390,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(399,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(437,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(445,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(458,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(479,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(498,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(515,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(534,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(558,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(574,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(593,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(609,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(621,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(645,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(662,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(674,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(684,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(696,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(711,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(726,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/registered-method-comparison.spec.ts(14,7): error TS2420: Class 'InMemoryConnectorConfigurationStore' incorrectly implements interface 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.
+src/__tests__/unit/connector-registry/registered-method-comparison.spec.ts(110,62): error TS2345: Argument of type 'InMemoryConnectorConfigurationStore' is not assignable to parameter of type 'IConnectorConfigurationStore'.
+  Property 'deleteConnectorConfiguration' is missing in type 'InMemoryConnectorConfigurationStore' but required in type 'IConnectorConfigurationStore'.

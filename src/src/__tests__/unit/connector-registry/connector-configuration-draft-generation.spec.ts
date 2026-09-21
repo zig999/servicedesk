@@ -25,6 +25,10 @@ class SpyConnectorConfigurationStore implements IConnectorConfigurationStore {
     this.writeCallCount += 1;
     this.records = configurations;
   }
+
+  public async deleteConnectorConfiguration(connector: string): Promise<void> {
+    this.records = this.records.filter((record) => record.connector !== connector);
+  }
 }
 
 function fetcherFor(document: unknown): { fetchOpenApiDocument: (link: string) => Promise<string> } {

@@ -152,6 +152,29 @@ it('excludes a write with no configuration payload: the write is refused by the 
   await expect(store.readConnectorConfigurations()).resolves.toEqual([]);
 });
 
+it('removes the named connector configuration so a subsequent read no longer includes it, leaving a different, unrelated connector configuration untouched', async () => {
+  const store = new RelationalConnectorConfigurationStore(pool);
+  const removed = connectorConfigurationRecord({ connector: 'a-removed-connector' });
+  const unrelated = connectorConfigurationRecord({ connector: 'an-unrelated-connector' });
+  await store.writeConnectorConfigurations([removed, unrelated]);
+
+  await store.deleteConnectorConfiguration('a-removed-connector');
+  const answered = await store.readConnectorConfigurations();
+
+  expect(answered).toEqual([unrelated]);
+});
+
+it('resolves without refusal, and leaves every currently registered configuration untouched, when the named connector is one nothing is registered under', async () => {
+  const store = new RelationalConnectorConfigurationStore(pool);
+  const alreadyHeld = connectorConfigurationRecord({ connector: 'an-already-held-connector' });
+  await store.writeConnectorConfigurations([alreadyHeld]);
+
+  const outcome = await store.deleteConnectorConfiguration('a-never-registered-connector');
+
+  expect(outcome).toBeUndefined();
+  await expect(store.readConnectorConfigurations()).resolves.toEqual([alreadyHeld]);
+});
+
 it('holds only the connector and configuration columns — no transport-specific column such as a method or an address', async () => {
   const { rows } = await pool.query<{ column_name: string }>(
     "SELECT column_name FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'connector_configurations' ORDER BY column_name",

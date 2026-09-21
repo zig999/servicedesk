@@ -30,6 +30,12 @@ export class RelationalConnectorConfigurationStore implements IConnectorConfigur
       }
     });
   }
+
+  public async deleteConnectorConfiguration(connector: string): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+      await runStatement(tx, deleteStatementFor(connector), raiseWriteFailure);
+    });
+  }
 }
 
 function toConnectorConfiguration(row: IConnectorConfigurationRow): ConnectorConfiguration {
@@ -42,6 +48,13 @@ function upsertStatementFor(configuration: ConnectorConfiguration): IStatement {
            VALUES ($1, $2)
            ON CONFLICT (connector) DO UPDATE SET configuration = EXCLUDED.configuration`,
     params: [configuration.connector, configuration.configuration],
+  };
+}
+
+function deleteStatementFor(connector: string): IStatement {
+  return {
+    text: `DELETE FROM ${CONNECTOR_CONFIGURATIONS_TABLE} WHERE connector = $1`,
+    params: [connector],
   };
 }
 

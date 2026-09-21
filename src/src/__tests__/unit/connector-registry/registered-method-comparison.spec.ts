@@ -21,6 +21,10 @@ class InMemoryConnectorConfigurationStore implements IConnectorConfigurationStor
   public async writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void> {
     this.records = configurations;
   }
+
+  public async deleteConnectorConfiguration(connector: string): Promise<void> {
+    this.records = this.records.filter((record) => record.connector !== connector);
+  }
 }
 
 function readerAnswering(resolution: ConnectorConfigurationResolution): RegisteredConnectorConfigurationReader {

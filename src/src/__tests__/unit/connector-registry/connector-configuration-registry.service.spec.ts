@@ -28,6 +28,10 @@ class InMemoryConnectorConfigurationStore implements IConnectorConfigurationStor
     this.records = configurations;
   }
 
+  public async deleteConnectorConfiguration(connector: string): Promise<void> {
+    this.records = this.records.filter((record) => record.connector !== connector);
+  }
+
   public held(): readonly ConnectorConfiguration[] {
     return this.records;
   }
@@ -325,6 +329,7 @@ it('propagates a failure the underlying store read itself raises, rather than re
       throw new Error('the store is unavailable');
     },
     writeConnectorConfigurations: async () => undefined,
+    deleteConnectorConfiguration: async () => undefined,
   };
   const registry = new ConnectorConfigurationRegistryService(failingStore);
 
