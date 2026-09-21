@@ -32,6 +32,10 @@ class MutableCapabilityStore implements ICapabilityStore {
   public async writeCapabilities(capabilities: readonly Capability[]): Promise<void> {
     this.records = capabilities;
   }
+
+  public async deleteCapability(name: string, version: string): Promise<void> {
+    this.records = this.records.filter((record) => !(record.name === name && record.version === version));
+  }
 }
 
 function queryOver(store: MutableCapabilityStore): ICapabilityQuery {

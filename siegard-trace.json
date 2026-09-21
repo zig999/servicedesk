@@ -935,7 +935,7 @@
     },
     {
       "node": "contracts/integration/capability-registry",
-      "digest": "sha256:e5f41ebb5573b541533f16db4d43fdee8fb8e1c71d91a11ec27dd254472a1f5a",
+      "digest": "sha256:f14f529a0e579a0a789543ce89165c029ea9e4d06c90270407101f0d156c906f",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
@@ -967,7 +967,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-store.port.ts",
-          "digest": "sha256:1ee8480481cd68b1755b4c57546d6494440dd5f123c1d7b28338a6b66d0de9ba"
+          "digest": "sha256:180a0c3af541cc1811ed941325b09b153bbf5cb4a26e66cc2e0b94efdca660c5"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1023,7 +1023,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:82a4e772c3615577e8a32dc3ce264f44704a8f384973c1dcd7dddb28105918b9"
+          "digest": "sha256:dda674a498ab226886d3f76737ea2c21334ecddab54df04fc5f3c4cd149cbfd8"
         }
       ]
     },
@@ -2467,7 +2467,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:996f45f3622b4875dfb5b3001b4fe2a16dcb0d1b06154baeef2f8b00cb3c2c25"
+          "digest": "sha256:dda674a498ab226886d3f76737ea2c21334ecddab54df04fc5f3c4cd149cbfd8"
         }
       ]
     },
@@ -2507,7 +2507,7 @@
     },
     {
       "node": "domain/integration/capability-registry",
-      "digest": "sha256:11a403dea9ee135a3356ddb93b32216443f04c22700e4bfe415b583c2eb125f2",
+      "digest": "sha256:9e271491cdab99649595c0e931bb66b7d723b82b01ace7e0e6d61477c527f406",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
@@ -2524,6 +2524,10 @@
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a"
+        },
+        {
+          "path": "src/src/capability-registry/capability-store.port.ts",
+          "digest": "sha256:180a0c3af541cc1811ed941325b09b153bbf5cb4a26e66cc2e0b94efdca660c5"
         },
         {
           "path": "src/src/capability-registry/connector-configurations-reader.port.ts",
@@ -2547,7 +2551,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:82a4e772c3615577e8a32dc3ce264f44704a8f384973c1dcd7dddb28105918b9"
+          "digest": "sha256:dda674a498ab226886d3f76737ea2c21334ecddab54df04fc5f3c4cd149cbfd8"
         }
       ]
     },

@@ -156,3 +156,23 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect(client.query).toHaveBeenCalledWith('ROLLBACK');
   expect(client.release).toHaveBeenCalledTimes(1);
 });
+
+it('issues exactly one parameterized DELETE against capabilities inside BEGIN and COMMIT, naming both name and version together, with no guard query ahead of it', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const { connection, client } = fakeTransactionConnection(async (text, params) => {
+    recorded.push({ text, params });
+    return { rows: [] };
+  });
+  const store = new RelationalCapabilityStore(connection);
+
+  await store.deleteCapability('a-capability', '1.0.0');
+
+  const texts = collapsedTexts(recorded);
+  expect(texts).toHaveLength(3);
+  expect(texts[0]).toBe('BEGIN');
+  expect(texts[1]).toContain('DELETE FROM capabilities');
+  expect(texts[1]).toContain('WHERE name = $1 AND version = $2');
+  expect(texts[2]).toBe('COMMIT');
+  expect(recorded[1]?.params).toEqual(['a-capability', '1.0.0']);
+  expect(client.release).toHaveBeenCalledTimes(1);
+});

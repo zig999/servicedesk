@@ -405,3 +405,47 @@ it('resolves a concept to the capability the database currently holds, reflectin
 
   expect(resolution).toEqual({ held: true, capability: registered });
 });
+
+it('removes exactly the capability at the named identity, leaving a capability sharing that name at a different version exactly as it was', async () => {
+  const conceptRemoved = await aFreshConcept();
+  const conceptSurvivor = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  const removed = capabilityRecord({ name: 'a-capability', version: '1.0.0', concept: conceptRemoved });
+  const survivor = capabilityRecord({ name: 'a-capability', version: '2.0.0', concept: conceptSurvivor });
+  await store.writeCapabilities([removed, survivor]);
+
+  await store.deleteCapability('a-capability', '1.0.0');
+  const answered = await store.readCapabilities();
+
+  expect(answered).toEqual([survivor]);
+});
+
+it('resolves without refusal and leaves every currently registered capability untouched, when the name and version named is one nothing is registered under', async () => {
+  const concept = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  const alreadyHeld = capabilityRecord({ concept });
+  await store.writeCapabilities([alreadyHeld]);
+
+  const outcome = await store.deleteCapability('a-never-registered-capability', '9.9.9');
+
+  expect(outcome).toBeUndefined();
+  await expect(store.readCapabilities()).resolves.toEqual([alreadyHeld]);
+});
+
+it(
+  'leaves a capability registered when a removal is attempted against one a collected evidence item currently names',
+  async () => {
+    const concept = await aFreshConcept();
+    const store = new RelationalCapabilityStore(pool);
+    const cited = capabilityRecord({ concept });
+    await store.writeCapabilities([cited]);
+    const fixtures = await freshEvidenceFixtures();
+    const investigationId = await insertInvestigationReferencingCapability({ fixtures, concept, capability: cited });
+    investigationIdsWrittenByThisTest.push(investigationId);
+
+    await store.deleteCapability(cited.name, cited.version).catch(() => undefined);
+
+    await expect(store.readCapabilities()).resolves.toEqual([cited]);
+  },
+  15000,
+);

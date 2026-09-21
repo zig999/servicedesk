@@ -31,6 +31,10 @@ class InMemoryCapabilityStore implements ICapabilityStore {
     this.records = capabilities;
   }
 
+  public async deleteCapability(name: string, version: string): Promise<void> {
+    this.records = this.records.filter((record) => !(record.name === name && record.version === version));
+  }
+
   public held(): readonly Capability[] {
     return this.records;
   }
@@ -544,6 +548,7 @@ it('propagates a failure the underlying store read itself raises, rather than re
       throw new Error('the store is unavailable');
     },
     writeCapabilities: async () => undefined,
+    deleteCapability: async () => undefined,
   };
   const registry = new CapabilityRegistryService(failingStore);
 

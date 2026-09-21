@@ -1,0 +1,166 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 7s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (3 moderate, 2 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/capability-registry/capability-query.port.spec.ts(13,7): error TS2420: Class 'MutableCapabilityStore' incorrectly implements interface 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'MutableCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-query.port.spec.ts(38,40): error TS2345: Argument of type 'MutableCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'MutableCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-query.port.spec.ts(116,50): error TS2345: Argument of type 'MutableCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'MutableCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-query.port.spec.ts(135,50): error TS2345: Argument of type 'MutableCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'MutableCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(23,7): error TS2420: Class 'InMemoryCapabilityStore' incorrectly implements interface 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(65,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(78,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(86,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(96,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(106,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(116,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(126,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(136,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(146,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(162,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(172,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(180,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(188,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(196,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(213,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(232,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(242,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(252,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(261,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(271,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(283,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(296,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(309,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(324,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(334,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(345,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(356,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(371,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(393,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(403,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(413,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(430,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(444,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(455,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(467,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(478,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(489,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(500,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(509,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(523,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(531,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(542,9): error TS2741: Property 'deleteCapability' is missing in type '{ readCapabilities: () => Promise<never>; writeCapabilities: () => Promise<undefined>; }' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(560,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(569,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(584,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(592,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(605,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(628,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(644,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(658,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(679,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(699,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(718,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(732,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(746,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(757,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(772,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(782,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(792,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(807,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(827,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(842,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+src/__tests__/unit/capability-registry/capability-registry.service.spec.ts(857,50): error TS2345: Argument of type 'InMemoryCapabilityStore' is not assignable to parameter of type 'ICapabilityStore'.
+  Property 'deleteCapability' is missing in type 'InMemoryCapabilityStore' but required in type 'ICapabilityStore'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test-unit :: node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit :: not_run =====
+

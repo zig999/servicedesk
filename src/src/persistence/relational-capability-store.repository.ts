@@ -42,6 +42,12 @@ export class RelationalCapabilityStore implements ICapabilityStore {
       }
     });
   }
+
+  public async deleteCapability(name: string, version: string): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) =>
+      runStatement(tx, deleteStatementFor(name, version), raiseWriteFailure),
+    );
+  }
 }
 
 function isCapabilityNature(value: string): value is CapabilityNature {
@@ -91,6 +97,13 @@ function upsertStatementFor(capability: Capability): IStatement {
       capability.concept,
       capability.payload_notes ?? null,
     ],
+  };
+}
+
+function deleteStatementFor(name: string, version: string): IStatement {
+  return {
+    text: `DELETE FROM ${CAPABILITIES_TABLE} WHERE name = $1 AND version = $2`,
+    params: [name, version],
   };
 }
 
