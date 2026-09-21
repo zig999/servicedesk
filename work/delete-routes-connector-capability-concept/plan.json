@@ -1,0 +1,1067 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-removal",
+      "kind": "epic",
+      "file": "epic/capability-removal.md",
+      "title": "Removing a registered capability",
+      "summary": "remove-capability end to end — a real deletion keyed by name and version, the operation that refuses where collected evidence names that identity, and the DELETE route whose refusal is answered by a named status."
+    },
+    {
+      "id": "epic/concept-removal",
+      "kind": "epic",
+      "file": "epic/concept-removal.md",
+      "title": "Removing a registered concept",
+      "summary": "remove-concept end to end — a deletion of the concept row with its accepted subject types, the operation that refuses where a capability answers the concept or evidence, a citation or a hypothesis-revision's collects names it, and the DELETE route on the concept name."
+    },
+    {
+      "id": "epic/connector-configuration-removal",
+      "kind": "epic",
+      "file": "epic/connector-configuration-removal.md",
+      "title": "Removing a connector configuration",
+      "summary": "remove-connector end to end — a real deletion in the store, the registry operation that refuses nothing, and the DELETE route on the connector name."
+    },
+    {
+      "id": "epic/cross-context-usage-reads",
+      "kind": "epic",
+      "file": "epic/cross-context-usage-reads.md",
+      "title": "Reading whether a registry name is still named elsewhere",
+      "summary": "The reader ports the two guarded removals need, so the capability registry and the glossary can learn whether an evidence item, a citation, a hypothesis-revision's collects or a registered capability still names what is about to be removed."
+    },
+    {
+      "id": "inventory/delete-routes-connector-capability-concept",
+      "kind": "inventory",
+      "file": "inventory/delete-routes-connector-capability-concept.md",
+      "title": "Backend surface for remove-connector, remove-capability, remove-concept",
+      "summary": "The discard/remove-hypothesis route-controller-dto-operation split, the read-modify-write registry services, and the upsert-only relational stores the three new DELETE routes must extend."
+    },
+    {
+      "id": "inventory/refusal-guard-rule-evidence",
+      "kind": "inventory",
+      "file": "inventory/refusal-guard-rule-evidence.md",
+      "title": "Refusal-rule dependencies for remove-capability and remove-concept",
+      "summary": "Where the \"cited by evidence\" and \"answered/collected/cited\" guard conditions the scope names would have to read their evidence from, based on what the capability and connector services already read across module boundaries."
+    },
+    {
+      "id": "task/capability-removal/capability-store-delete",
+      "kind": "task",
+      "file": "task/capability-removal/capability-store-delete.md",
+      "title": "A real deletion in the capability store",
+      "summary": "A removal keyed by name and version together on the capability store port, implemented as a deletion of the stored row inside a transaction.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/capability-removal/remove-capability-operation",
+      "kind": "task",
+      "file": "task/capability-removal/remove-capability-operation.md",
+      "title": "remove-capability, refused where evidence names the identity",
+      "summary": "The registry service's own remove-capability, removing a registration by name and version unless a collected evidence item names that identity, in which case it refuses and leaves the registration standing.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/capability-removal/remove-capability-route",
+      "kind": "task",
+      "file": "task/capability-removal/remove-capability-route.md",
+      "title": "DELETE on a capability name and version",
+      "summary": "The HTTP surface for remove-capability — route, controller and request shape as separate files, the refusal named in the status map, wired into the application build.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/concept-removal/concept-store-delete",
+      "kind": "task",
+      "file": "task/concept-removal/concept-store-delete.md",
+      "title": "A real deletion in the glossary store",
+      "summary": "A removal of a concept by name on the glossary store port, deleting the concept row and its accepted-subject-type rows in one transaction.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/concept-removal/remove-concept-operation",
+      "kind": "task",
+      "file": "task/concept-removal/remove-concept-operation.md",
+      "title": "remove-concept, refused where anything still names the concept",
+      "summary": "The glossary's own remove-concept, removing a concept by name unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's collects lists it.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/concept-removal/remove-concept-route",
+      "kind": "task",
+      "file": "task/concept-removal/remove-concept-route.md",
+      "title": "DELETE on a concept name",
+      "summary": "The HTTP surface for remove-concept — route, controller and request shape as separate files, the refusal named in the status map, wired into the application build.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "kind": "task",
+      "file": "task/connector-configuration-removal/connector-configuration-store-delete.md",
+      "title": "A real deletion in the connector-configuration store",
+      "summary": "A removal by connector name on the store port, implemented as a deletion of the stored row inside a transaction rather than as an omission from the upsert-only write.",
+      "epic": "connector-configuration-removal"
+    },
+    {
+      "id": "task/connector-configuration-removal/remove-connector-operation",
+      "kind": "task",
+      "file": "task/connector-configuration-removal/remove-connector-operation.md",
+      "title": "remove-connector on the connector-configuration registry",
+      "summary": "The registry service's own remove-connector, removing the configuration registered under a name and refusing for no reason of its own.",
+      "epic": "connector-configuration-removal"
+    },
+    {
+      "id": "task/connector-configuration-removal/remove-connector-route",
+      "kind": "task",
+      "file": "task/connector-configuration-removal/remove-connector-route.md",
+      "title": "DELETE on a connector name",
+      "summary": "The HTTP surface for remove-connector — route, controller and request shape as separate files, wired into the application build alongside the other connector-registry routes.",
+      "epic": "connector-configuration-removal"
+    },
+    {
+      "id": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "task",
+      "file": "task/cross-context-usage-reads/capability-evidence-usage-reader.md",
+      "title": "A reader answering whether collected evidence names a capability identity",
+      "summary": "A port in the capability registry, with its relational implementation, answering whether any collected evidence item names a given capability name and version.",
+      "epic": "cross-context-usage-reads"
+    },
+    {
+      "id": "task/cross-context-usage-reads/concept-usage-reader",
+      "kind": "task",
+      "file": "task/cross-context-usage-reads/concept-usage-reader.md",
+      "title": "A reader answering whether anything still names a concept",
+      "summary": "A port in the glossary, with its implementation, answering whether a registered capability answers a concept, a collected evidence item or an evaluation citation names it, or any hypothesis-revision's collects lists it.",
+      "epic": "cross-context-usage-reads"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-removal",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-concept-read-refuses-an-unanswered-concept",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/investigation/a-composed-subjects-input-names-every-capability-that-asks-for-it",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-an-empty-requirement-set",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/knowledge/a-concept-answered-by-none-or-several-capabilities-contributes-no-input-requirement",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/a-connector-configuration-names-its-connector",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/an-unreachable-connector-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-pool-bounds-are-positive-integers",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/every-screen-discloses-that-authentication-is-unenforced",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "domain/integration/connector-configuration-draft",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/cross-context-usage-reads",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/capability-removal/capability-store-delete",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-removal/capability-store-delete",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-removal/capability-store-delete",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-removal/capability-store-delete",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-removal/capability-store-delete",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "task/capability-removal/capability-store-delete",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-operation",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "task/capability-removal/remove-capability-operation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/capability-removal/remove-capability-route",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/concept-removal/concept-store-delete",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-removal/concept-store-delete",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-removal/concept-store-delete",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/concept-removal/concept-store-delete",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/concept-removal/concept-store-delete",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "task/concept-removal/concept-store-delete",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "task/cross-context-usage-reads/concept-usage-reader",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-operation",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "task/concept-removal/remove-concept-operation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/concept-removal/remove-concept-route",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-operation",
+      "to": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-operation",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-operation",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-operation",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-operation",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-operation",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "task/connector-configuration-removal/remove-connector-operation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-removal/remove-connector-route",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/concept-usage-reader",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/cross-context-usage-reads/concept-usage-reader",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}

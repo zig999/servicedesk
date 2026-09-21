@@ -5386,5 +5386,125 @@ entries:
   decided: invariant
   why: The claim constrains domain/integration/connector-configuration alone, inside its own aggregate, with
     nothing to cross — the same subtype every other single-aggregate rule in this specification already uses.
+- location: rules/integration/removing-a-connector-configuration-is-unconditional.md
+  field: statement
+  unstated: What remove-connector answers when asked to remove a connector configuration by a name under which
+    nothing is currently registered — the standing statement made removal unconditional only with respect to
+    whether a capability names the connector, leaving whether the name's own emptiness is checked, and what a
+    refusal for it would report, stated by no node.
+  decided: The removal completes with no effect on the registry — never refused for the name's absence, every
+    registered configuration left exactly as it stood, answered exactly as a removal that removed one, and no
+    error value named for the case.
+  why: The registry holds a configuration by name and nothing else resolves that name, so the only thing such a
+    removal could check is whether the name currently holds something, and the state a refusal would report is
+    precisely the state the removal was issued to produce — a refusal would therefore report success as an
+    error, give the caller no act to take in response, and make a name nothing was ever registered under
+    indistinguishable in consequence from one an earlier removal already emptied.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What a succeeding concept removal does to that concept's own accepts declaration, and whether the
+    subject types it named are removed along with it — this rule states only which outside references refuse a
+    removal and is silent on what a removal that succeeds takes with it, and domain/glossary/subject-type states
+    only that the vocabulary grows as cases declare their subjects.
+  decided: A concept's removal takes that concept's own declaration of the subject types it accepts with it and
+    removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that
+    accept them.
+  why: The accepts declaration has no existence and no reader apart from the concept that makes it, whereas the
+    subject-type vocabulary is held for every case version and concept that may name a term, so the only other
+    answers are a concept's own declaration refusing that concept's removal or one concept's removal narrowing
+    the language every other case and concept speaks.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What HTTP status and named domain error report a remove-concept refusal to the caller when a
+    registered capability answers the concept, a collected evidence item or its citation names it, or a
+    hypothesis-revision's own collects lists it — this rule's statement decided that such a removal is refused
+    and contracts/glossary/glossary-authoring defers to it, but neither names the status or the error, unlike
+    every sibling refusal in this specification (rules/integration/one-capability-answers-one-concept's
+    ConceptAlreadyAnsweredError/409, rules/glossary/a-glossary-read-by-an-unheld-name-is-refused's
+    ConceptNotHeldError/404).
+  decided: The removal is refused with an HTTP 409 response reporting a ConceptInUseError.
+  why: 409 rather than 422 follows this specification's own settled split between a request whose content itself
+    violates an invariant (422) and an operation the target's current standing forbids whatever the content is
+    (409) — a remove-concept carries no content beyond the name it addresses, so the whole of the bar is the
+    concept's current standing, the same reading its nearest glossary sibling, ConceptAlreadyAnsweredError at
+    409, already took for a registration refused by an existing relation. The name follows this specification's
+    own EntityConditionError idiom, states the one condition unifying all three branches of the guard, and is
+    distinct from every concept error already named.
+- location: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed.md
+  field: statement
+  unstated: The statement carries the refusal condition for remove-capability but never what the refusal
+    reports — no node states whether this removal raises an error of its own or reuses a registration refusal,
+    what that error is called, or what status and code the published surface answers, leaving the refusal to
+    reach a caller only as the generic HTTP 500 INTERNAL_ERROR constraints/a-domain-error-unmapped-by-status-is-
+    refused-generically gives an error the status map does not name.
+  decided: An HTTP 409 response naming CapabilityCitedByEvidenceError — an error of this removal alone, distinct
+    from every error a capability registration raises — as the specific condition and message of the refusal.
+  why: The removal is refused by records standing outside the request — evidence already collected in another
+    context — and not by any fault in what was submitted, the same line this specification's own 409s keep
+    against its 422s (ConceptAlreadyAnsweredError and CaseVersionNotDraftError refuse on standing, not content);
+    the name pairs the entity with the reason, as CapabilityNotReadOnlyError and CapabilityIdentityNotFoundError
+    already do for this same registry.
+- location: constraints/a-successful-concept-removal-answers-with-no-content.md
+  field: statement
+  unstated: No node states the HTTP status or the response body with which a successful removal of a concept
+    from the glossary is answered — contracts/glossary/glossary-authoring declares remove-concept and the api
+    contract class declares no responses, rules/glossary/a-registered-concept-is-never-removed states the
+    removal's effect and its refusal conditions only, and every HTTP status the specification states for the
+    glossary surface belongs to a refusal.
+  found: 'work/delete-routes-connector-capability-concept/intake/scope.md: "Each follows the same shape the
+    existing discard (case version) and remove-hypothesis routes already establish in this codebase: an HTTP
+    DELETE, 204 on success, a named domain error on refusal mapped through status-map.ts" — restated in
+    work/delete-routes-connector-capability-concept/intake/2026-09-21-delete-routes-connector-capability-
+    concept-proposal.md under "Convenções a seguir" as "Verbo HTTP DELETE, resposta 204 no sucesso"; a 204
+    carries no body, so the status the material names states the body too.'
+- location: constraints/a-successful-connector-configuration-removal-answers-with-no-content.md
+  field: statement
+  unstated: No node states the HTTP status or the response body with which a successful removal of a connector
+    configuration by name is answered — contracts/integration/connector-configuration-registry declares
+    remove-connector and the api contract class declares no responses, domain/integration/connector-
+    configuration-registry names the operation as its responsibility only, and rules/integration/removing-a-
+    connector-configuration-is-unconditional states that both branches of the removal are answered alike
+    without naming what that answer is.
+  found: 'work/delete-routes-connector-capability-concept/intake/scope.md: "Each follows the same shape the
+    existing discard (case version) and remove-hypothesis routes already establish in this codebase: an HTTP
+    DELETE, 204 on success..." — "Each" covering the three removals that section lists, remove-connector
+    among them; restated under "Convenções a seguir" as "Verbo HTTP DELETE, resposta 204 no sucesso". A 204
+    carries no body, so the status the material names states the body too.'
+- location: constraints/a-successful-capability-removal-answers-with-no-content.md
+  field: statement
+  unstated: No node states the HTTP status or the response body with which a successful removal of a
+    capability from the registry, addressed by its name and version, is answered — contracts/integration/
+    capability-registry declares remove-capability and the api contract class declares no responses,
+    domain/integration/capability-registry's Responsibility states the operation's effect and its one refusal
+    only, and every other HTTP status the specification states for this route family belongs to a refusal.
+  found: 'work/delete-routes-connector-capability-concept/intake/scope.md: "Each follows the same shape the
+    existing discard (case version) and remove-hypothesis routes already establish in this codebase: an HTTP
+    DELETE, 204 on success..." — "Each" enumerating remove-connector, remove-capability and remove-concept;
+    restated under "Convenções a seguir" as "Verbo HTTP DELETE, resposta 204 no sucesso". A 204 carries no
+    body, so the status the material names states the body too.'
+- location: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed.md
+  field: statement
+  unstated: What remove-capability answers when the name and version the request carries has no capability
+    currently registered at it — the standing statement states this removal's one refusal (a collected
+    evidence item naming the capability) and nothing about the identity's own emptiness, and
+    constraints/a-successful-capability-removal-answers-with-no-content stated its 204 only for a route that
+    removes the capability registered at the requested identity, so whether the emptiness is checked, and
+    what a refusal for it would report, was stated by no node.
+  decided: The removal completes with no effect on the registry — never refused for that absence, every
+    registered capability left exactly as it stood, answered exactly as a removal that removed one (HTTP
+    204 with no body), and no error value named for the case; the same fact widens
+    constraints/a-successful-capability-removal-answers-with-no-content's statement and fitness to carry
+    that one answer across both branches.
+  why: This specification already answered this identical question for its sibling registry, in
+    rules/integration/removing-a-connector-configuration-is-unconditional's own statement. The read-side
+    precedent (constraints/the-capability-identity-read-refuses-an-unregistered-identity) does not carry,
+    because the connector rule weighed that same pairing and recorded the divergence as deliberate — a read
+    of an identity nothing is registered at has no capability to answer with and so refuses with a value of
+    its own, while a removal of that identity has already arrived at what it was asked for. The one real
+    difference — that capability removal carries a guard of its own — argues the same way rather than
+    against it — that guard reads collected evidence, and evidence names a capability only by an identity the
+    registry holds, so an identity nothing is registered at has no citation to find and the guard cannot
+    fire, leaving the identity's emptiness as the sole condition a refusal could rest on — and the state such
+    a refusal would report is precisely the state the removal was issued to produce.
 
 ---
