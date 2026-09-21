@@ -2,6 +2,7 @@
 type: domain-service
 operations:
   - register-capability
+  - remove-capability
   - resolve-concept
 ---
 
@@ -12,4 +13,4 @@ The most generic piece of the system; nothing in it is for case curation to read
 
 ## Responsibility
 
-Refuse any registration that is not read-only, lacks its declared contract, declares a schema that is not valid JSON, declares an input schema that does not hold a well-formed shape, names a connector whose registered configuration already embeds a placeholder its own input schema does not declare, or answers a concept a capability of another identity already answers; resolve each concept to exactly one capability as currently registered, and refuse to resolve one the holding answers more than once.
+Refuse any registration that is not read-only, lacks its declared contract, declares a schema that is not valid JSON, declares an input schema that does not hold a well-formed shape, names a connector whose registered configuration already embeds a placeholder its own input schema does not declare, or answers a concept a capability of another identity already answers; resolve each concept to exactly one capability as currently registered, and refuse to resolve one the holding answers more than once; remove a capability's own registration by name and version, refusing where rules/integration/a-registered-capability-cited-by-evidence-is-never-removed refuses it.

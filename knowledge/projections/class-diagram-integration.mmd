@@ -21,6 +21,7 @@ classDiagram
     class CapabilityRegistry {
         <<Service>>
         +registerCapability()
+        +removeCapability()
         +resolveConcept()
     }
     class CapabilitySchemaDraft {
@@ -112,6 +113,7 @@ classDiagram
     class ConnectorConfigurationRegistry {
         <<Service>>
         +registerConnector()
+        +removeConnector()
     }
     class OpenapiDocumentOperations {
         <<ValueObject>>

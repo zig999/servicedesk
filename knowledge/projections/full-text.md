@@ -371,11 +371,13 @@ type: api
 direction: published
 operations:
   - register-concept
+  - remove-concept
 ---
 
 ## Description
 
 Now that an operator authors a concept directly rather than only ever reading one: register one — creating it at a new name, or replacing whatever concept already stood at that name — held apart from glossary-query because that surface is a read, and this one is not.
+Remove one by name, refused exactly where rules/glossary/a-registered-concept-is-never-removed refuses it.
 
 === contracts/glossary/glossary-query
 ---
@@ -402,11 +404,13 @@ operations:
   - read-capability-by-identity
   - list-capabilities
   - register-capability
+  - remove-capability
 ---
 
 ## Description
 
 The synchronous surface the registry offers: the capability currently answering a concept, with its declared contract; the capability currently registered at a given identity, name and version together; every capability currently registered, in pages (constraints/listings-are-paged); and, now that an operator authors these directly, register one — creating it at a new name and version, or replacing whatever already stood at that identity.
+Remove one by name and version, refused exactly where rules/integration/a-registered-capability-cited-by-evidence-is-never-removed refuses it.
 
 === contracts/integration/capability-schema-draft
 ---
@@ -454,11 +458,13 @@ operations:
   - read-connector-configuration
   - list-connector-configurations
   - register-connector
+  - remove-connector
 ---
 
 ## Description
 
 The synchronous surface over connector configurations: the one currently registered under a name, or every one currently registered, in pages (constraints/listings-are-paged); and, now that an operator authors these directly, register one — creating it or replacing whatever configuration already answered to that name.
+Remove one by name; rules/integration/removing-a-connector-configuration-is-unconditional is what governs whether that succeeds.
 
 === contracts/integration/connector-diagnostics
 ---
@@ -6046,6 +6052,61 @@ entries:
     so that restraint has nothing here to act on, while masking a prompt against the chance that it might
     would show the curator a text the writing call never received and destroy the one thing a materialized
     prompt is kept for.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: Now that an explicit remove-concept operation exists to test it against, whether an unmanifested
+    hypothesis-revision's own collects also blocks a concept's removal, or only a manifested one does as the
+    standing statement narrowed it — the material asking for the new operation states the guard as "any
+    hypothesis/revision, of any case version," wider than the standing text.
+  decided: Broadened to any hypothesis-revision's own collects, manifested or not.
+  why: Every foreign key this schema declares against concepts(name) — including hypothesis_revision_collects's
+    own concept_name — carries no ON DELETE CASCADE regardless of whether the revision holding that row is
+    manifested anywhere, so narrowing the guard to manifested-only would let this rule call a removal permitted
+    that the database itself still refuses as a raw constraint violation, the exact defect this rule exists to
+    turn into a named refusal instead.
+- location: contracts/glossary/glossary-authoring.md
+  field: operations
+  unstated: The material names the HTTP route (DELETE /v1/glossary/concepts/:name) a concept's removal takes,
+    not the domain operation's own name.
+  decided: remove-concept
+  why: Mirrors this specification's own precedent for a removal operation on a manifest entry, remove-hypothesis,
+    already declared alongside place-hypothesis and register-concept's own naming.
+- location: contracts/integration/capability-registry.md
+  field: operations
+  unstated: The material names the HTTP route (DELETE /v1/capabilities/:name/:version) a capability's removal
+    takes, not the domain operation's own name.
+  decided: remove-capability
+  why: Same naming convention as remove-concept and remove-connector, paired with this registry's own
+    register-capability.
+- location: contracts/integration/connector-configuration-registry.md
+  field: operations
+  unstated: The material names the HTTP route (DELETE /v1/connectors/:connector) a connector configuration's
+    removal takes, not the domain operation's own name.
+  decided: remove-connector
+  why: Same naming convention as remove-concept and remove-capability, paired with this registry's own
+    register-connector.
+- location: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed.md
+  field: type
+  unstated: The material states the refusal condition for removing a capability without naming which rule
+    subtype records it.
+  decided: policy
+  why: The guard reads domain/investigation/evidence to decide whether domain/integration/capability may be
+    removed, crossing from the integration context into the investigation context — an invariant holds only
+    inside one aggregate, so a rule crossing a context boundary is a policy.
+- location: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed.md
+  field: consistency
+  unstated: Same as type above — a policy crossing a context boundary must declare how it holds.
+  decided: eventual
+  why: An immediate demand across the integration/investigation boundary would be the boundary redrawn rather
+    than a rule, per SPEC-003; nothing here needs the check to hold inside one transaction, only that a capability
+    already cited stays registered.
+- location: rules/integration/removing-a-connector-configuration-is-unconditional.md
+  field: type
+  unstated: The material states connector removal is unconditional without naming which rule subtype records
+    an absence of guard.
+  decided: invariant
+  why: The claim constrains domain/integration/connector-configuration alone, inside its own aggregate, with
+    nothing to cross — the same subtype every other single-aggregate rule in this specification already uses.
 
 ---
 
@@ -6248,6 +6309,7 @@ None.
 type: domain-service
 operations:
   - register-capability
+  - remove-capability
   - resolve-concept
 ---
 
@@ -6258,7 +6320,7 @@ The most generic piece of the system; nothing in it is for case curation to read
 
 ## Responsibility
 
-Refuse any registration that is not read-only, lacks its declared contract, declares a schema that is not valid JSON, declares an input schema that does not hold a well-formed shape, names a connector whose registered configuration already embeds a placeholder its own input schema does not declare, or answers a concept a capability of another identity already answers; resolve each concept to exactly one capability as currently registered, and refuse to resolve one the holding answers more than once.
+Refuse any registration that is not read-only, lacks its declared contract, declares a schema that is not valid JSON, declares an input schema that does not hold a well-formed shape, names a connector whose registered configuration already embeds a placeholder its own input schema does not declare, or answers a concept a capability of another identity already answers; resolve each concept to exactly one capability as currently registered, and refuse to resolve one the holding answers more than once; remove a capability's own registration by name and version, refusing where rules/integration/a-registered-capability-cited-by-evidence-is-never-removed refuses it.
 
 === domain/integration/capability-schema-draft
 ---
@@ -6585,6 +6647,7 @@ None.
 type: domain-service
 operations:
   - register-connector
+  - remove-connector
 ---
 
 ## Description
@@ -6593,7 +6656,7 @@ Registers a connector configuration by name, replacing whatever configuration al
 
 ## Responsibility
 
-Refuse any registration whose configuration is not a well-formed JSON object, or whose own text embeds a placeholder naming a Subject attribute a capability already registered against that connector's name does not declare in its input schema; hold the current configuration for each connector name as currently registered.
+Refuse any registration whose configuration is not a well-formed JSON object, or whose own text embeds a placeholder naming a Subject attribute a capability already registered against that connector's name does not declare in its input schema; hold the current configuration for each connector name as currently registered; remove a connector configuration by name, unconditionally (rules/integration/removing-a-connector-configuration-is-unconditional).
 
 === domain/integration/openapi-document-operations
 ---
@@ -7534,7 +7597,7 @@ Recipients are real operational queues; binding a referral to an individual woul
 === rules/glossary/a-registered-concept-is-never-removed
 ---
 type: policy
-statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; a concept a registered capability answers, a collected evidence item or its citation names, or a case version's manifested hypothesis-revision collects is never removed from the glossary.
+statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused and the concept is never removed from the glossary any other way.
 constrains:
   - domain/glossary/concept
   - domain/integration/capability
@@ -7548,6 +7611,7 @@ consistency: eventual
 ## Description
 
 A concept, once registered, is load-bearing the moment anything else names it: a capability answers it, a collected evidence item or its citation identifies an observation by it, or a hypothesis-revision's own collects lists it — and case-terms-exist-in-the-glossary already requires that name to keep existing for as long as the hypothesis-revision or case version that named it does. Removing it would strand every one of those references. Registering a batch of concepts is never a reason to remove one the batch does not mention.
+An explicit removal by name is refused under the same conditions: a concept nothing yet names is removed outright, and glossary-authoring's own remove-concept is the one operation that ever removes a registered concept at all.
 
 === rules/glossary/a-vocabulary-holds-each-name-once
 ---
@@ -9812,6 +9876,21 @@ constrains:
 The same statement a-refused-draft-request-states-its-refusal-to-the-operator already owes the sibling connector configuration draft's own three refusals, read here over this draft's own three.
 The Input schema and Output schema fields' own content stand untouched by this refusal's arrival, the same restraint the-input-schema-and-output-schema-fields-are-untouched-by-a-schema-drafts-arrival already holds.
 
+=== rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+---
+type: policy
+statement: Removing a capability's own registration by name and version succeeds unless some collected evidence item names that capability, in which case the removal is refused and the capability is never removed from the registry.
+constrains:
+  - domain/integration/capability
+  - domain/investigation/evidence
+consistency: eventual
+---
+
+## Description
+
+A capability's registration is load-bearing the moment an investigation's own collected evidence names it: that evidence item's own record of who produced it would strand the moment the capability it names stopped existing. Nothing else persists a reference to a capability by identity — a case version's input requirements and collection plan resolve a capability fresh from its concept on every read, never storing which one answered.
+Re-registering the identity a piece of evidence already names replaces the capability going forward without touching that evidence's own past record (scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment); removing it outright is refused instead, since nothing would then stand at that identity for the record to point at.
+
 === rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
 ---
 type: policy
@@ -10975,6 +11054,18 @@ consistency: eventual
 ## Description
 
 One to one until a second source of the same concept appears; the fallback resolution plan was cut and stays cut until it hurts.
+
+=== rules/integration/removing-a-connector-configuration-is-unconditional
+---
+type: invariant
+statement: Removing a connector configuration by name succeeds whether or not any capability currently names it as its own connector.
+constrains:
+  - domain/integration/connector-configuration
+---
+
+## Description
+
+The same looseness a-connector-configuration-names-its-connector already holds for registration governs removal: a capability's own connector attribute is an opaque name nothing resolves at registration time, so nothing resolves it at removal time either. A capability left naming a connector configuration that no longer exists reads exactly as one registered before its connector was ever configured — its observation ends unavailable (rules/integration/an-unresolvable-observation-ends-unavailable) rather than the removal being refused.
 
 === rules/integration/the-configuration-field-is-untouched-by-a-drafts-arrival
 ---

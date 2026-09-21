@@ -5331,5 +5331,60 @@ entries:
     so that restraint has nothing here to act on, while masking a prompt against the chance that it might
     would show the curator a text the writing call never received and destroy the one thing a materialized
     prompt is kept for.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: Now that an explicit remove-concept operation exists to test it against, whether an unmanifested
+    hypothesis-revision's own collects also blocks a concept's removal, or only a manifested one does as the
+    standing statement narrowed it — the material asking for the new operation states the guard as "any
+    hypothesis/revision, of any case version," wider than the standing text.
+  decided: Broadened to any hypothesis-revision's own collects, manifested or not.
+  why: Every foreign key this schema declares against concepts(name) — including hypothesis_revision_collects's
+    own concept_name — carries no ON DELETE CASCADE regardless of whether the revision holding that row is
+    manifested anywhere, so narrowing the guard to manifested-only would let this rule call a removal permitted
+    that the database itself still refuses as a raw constraint violation, the exact defect this rule exists to
+    turn into a named refusal instead.
+- location: contracts/glossary/glossary-authoring.md
+  field: operations
+  unstated: The material names the HTTP route (DELETE /v1/glossary/concepts/:name) a concept's removal takes,
+    not the domain operation's own name.
+  decided: remove-concept
+  why: Mirrors this specification's own precedent for a removal operation on a manifest entry, remove-hypothesis,
+    already declared alongside place-hypothesis and register-concept's own naming.
+- location: contracts/integration/capability-registry.md
+  field: operations
+  unstated: The material names the HTTP route (DELETE /v1/capabilities/:name/:version) a capability's removal
+    takes, not the domain operation's own name.
+  decided: remove-capability
+  why: Same naming convention as remove-concept and remove-connector, paired with this registry's own
+    register-capability.
+- location: contracts/integration/connector-configuration-registry.md
+  field: operations
+  unstated: The material names the HTTP route (DELETE /v1/connectors/:connector) a connector configuration's
+    removal takes, not the domain operation's own name.
+  decided: remove-connector
+  why: Same naming convention as remove-concept and remove-capability, paired with this registry's own
+    register-connector.
+- location: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed.md
+  field: type
+  unstated: The material states the refusal condition for removing a capability without naming which rule
+    subtype records it.
+  decided: policy
+  why: The guard reads domain/investigation/evidence to decide whether domain/integration/capability may be
+    removed, crossing from the integration context into the investigation context — an invariant holds only
+    inside one aggregate, so a rule crossing a context boundary is a policy.
+- location: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed.md
+  field: consistency
+  unstated: Same as type above — a policy crossing a context boundary must declare how it holds.
+  decided: eventual
+  why: An immediate demand across the integration/investigation boundary would be the boundary redrawn rather
+    than a rule, per SPEC-003; nothing here needs the check to hold inside one transaction, only that a capability
+    already cited stays registered.
+- location: rules/integration/removing-a-connector-configuration-is-unconditional.md
+  field: type
+  unstated: The material states connector removal is unconditional without naming which rule subtype records
+    an absence of guard.
+  decided: invariant
+  why: The claim constrains domain/integration/connector-configuration alone, inside its own aggregate, with
+    nothing to cross — the same subtype every other single-aggregate rule in this specification already uses.
 
 ---
