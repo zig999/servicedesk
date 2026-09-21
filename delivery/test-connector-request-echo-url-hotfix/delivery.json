@@ -16,6 +16,23 @@
       "title": "Proof for test-connector's invalid-address refusal and unreachable-connector answer",
       "summary": "Three new tests in test-connector.routes.spec.ts prove the 422 invalid-absolute-URL refusal (criterion 1, masked and undiluted), the 200 unreachable-connector answer (criterion 2, named and masked), and that a capability timeout's own abort still answers 'timed-out' rather than being folded into 'unreachable' (the task's underdetermined entry); criterion 3's non-regression is left to the two pre-existing response-answered tests that already protect it.",
       "task": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported"
+    },
+    {
+      "id": "review/test-connector-request-echo-url-hotfix",
+      "kind": "review",
+      "file": "review/test-connector-request-echo-url-hotfix.md",
+      "title": "Review of the test-connector request echo URL hotfix",
+      "summary": "What the four passes found over the corrective increment fixing POST /v1/test-connector's invalid-address and unreachable-connector answers.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Testing a connector configuration whose resolved address is a valid absolute URL and whose issued call receives an HTTP response is unaffected by this correction: the request echo and the far end's response reach the caller exactly as they did before this correction.",
+        "Testing a connector configuration whose resolved address is a valid absolute URL, whose issued call fails before any HTTP response is received, and whose failure is not the capability's own timeout aborting the call, ends the request with an HTTP 200 response reporting a ConnectorUnreachableError together with the name of the connector whose registered configuration issued the call and no response status, and carrying the same echoed request a response-answered test carries, with every value a credential placeholder resolved to masked."
+      ],
+      "findings": 5
     }
   ],
   "edges": [
@@ -54,6 +71,12 @@
       "to": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/test-connector-request-echo-url-hotfix",
+      "to": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

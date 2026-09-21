@@ -1,0 +1,43 @@
+certified:
+  - node: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/test-connector.routes.spec.ts
+        name: >-
+          ends a test whose issued call fails before any HTTP response, and whose failure is not the capability's own timeout, with an HTTP 200 response naming ConnectorUnreachableError and the connector, carrying no response status, and echoing the request with its credential placeholder masked
+      - file: src/__tests__/unit/http/test-connector.routes.spec.ts
+        name: >-
+          still names the orphaned placeholder in its own response, without itself refusing the test, when the underlying HTTP call fails
+      - file: src/__tests__/unit/http/test-connector.routes.spec.ts
+        name: >-
+          still answers a 'timed-out' outcome, not 'unreachable', when the capability's own timeout aborts the call before any HTTP response
+    why: >-
+      Three of the fact's four parts are exercised whole and would fail if they stopped holding: the
+      answer status (a rejected call answers 200, asserted directly, so a 4xx or 5xx would fail), the
+      ConnectorUnreachableError together with the connector's name (asserted as an exact equality on
+      the error code and on details being the connector alone), and the absence of a response status
+      (asserted as `'status' in body.response` being false, so a status filled in anyway would fail).
+      The boundary the description reserves — the capability's own deliberate abort — is held apart by
+      the timeout test, which would fail if an AbortError began answering as unreachable. The fourth
+      part is exercised only in part. The fact states that the answer "carries back the same echoed
+      request a test answered by a response carries, with every value a credential placeholder
+      resolved to masked", and on the unreachable path the set asserts only the echoed address and one
+      header whose value came from a credential placeholder. Nothing asserts that the echo an
+      unreachable run carries is the same echo a responding run carries: no test compares the two, and
+      the unreachable run asserts nothing about the method, query or body the echo holds, so an
+      implementation that dropped those from the echo on this one path would leave every named test
+      passing. Nor is the masking totality exercised on this path: the configuration under the
+      unreachable test places its only credential placeholder in a header, its address and body
+      carrying none, so a resolved credential reaching the operator unmasked in the echoed address,
+      query or body of an unreachable run would fail nothing. The 422 test does mask a credential in a
+      resolved address, but it exercises the refusal that issues no call at all, which is a different
+      behavior and not this fact's path.
+    remainder: testable
+    remainder_why: >-
+      One input — an unreachable run (the client rejecting before any response, with no abort) whose
+      registered configuration places credential placeholders in the address, in a query value and in
+      the body as well as in a header, and whose call descriptor carries a method, query and body —
+      against one expected result: an HTTP 200 answer whose echoed request holds the same address,
+      method, query, headers and body a responding run's echo holds for that configuration, with every
+      value a credential placeholder resolved to reading masked in each of those places rather than
+      only in the header.

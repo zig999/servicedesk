@@ -1,0 +1,143 @@
+findings:
+  - file: src/http/test-connector.controller.ts
+    where: "line 22, the REDACTED_CREDENTIAL_MARKER constant, and its use inside redactingEnv() (lines 108-110) to mask every credential placeholder in the diagnostic's echoed request"
+    evidence: |-
+      const REDACTED_CREDENTIAL_MARKER = '***REDACTED***';
+    cost: >-
+      This file is the sole place that fixes what an operator actually sees in place of a masked
+      credential on the diagnostic read — the wording a reader would take as the specification's own
+      decision. The specification's own decision log records, for a sibling masking rule
+      (rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked),
+      that it only reused this same text as precedent and explicitly "claims nothing about" whether
+      the diagnostic's own response carries it, and separately that "rules/integration/a-diagnostic-response-masks-a-resolved-credential
+      fixes that its own read masks and fixes no rendering for it" and that "no node in the
+      specification states any masking rendering at all" for this read. A reviewer who wants to know
+      what an operator actually reads in place of a masked value on this endpoint has nowhere to look
+      but this constant, and changing it would change operator-facing behavior with nothing in the
+      specification to check it against.
+    kind: unstated
+    node: rules/integration/a-diagnostic-response-masks-a-resolved-credential
+    correction: >-
+      State the fixed rendering text a diagnostic response uses for a masked credential value in
+      rules/integration/a-diagnostic-response-masks-a-resolved-credential (or a node it points to),
+      then have REDACTED_CREDENTIAL_MARKER read that decided value rather than being its only source.
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: >-
+      the whole handleTestConnectorRequest handler — no authentication middleware, guard or check is
+      declared or invoked before dispatch, and the requester travels straight from the request body
+      into the resolved call with no further resolution
+    evidence: |-
+      export async function handleTestConnectorRequest(
+        dependencies: TestConnectorControllerDependencies,
+        body: TestConnectorRequestDto,
+      ): Promise<TestConnectorResponseDto> {
+      ...
+      const { issued, echoed } = resolveTestRequests(configuration.parsed, subject, body.requester);
+  - node: contracts/integration/connector-diagnostics
+    held_at: >-
+      the whole handleTestConnectorRequest function body — issues the configured call once through
+      issueOutcome, assembles a subject via buildSubject rather than reading one back, and returns
+      only a request echo, response outcome and orphaned-placeholder list (nothing persisted as
+      evidence)
+    evidence: |-
+      const response = await issueOutcome({
+        httpClient: dependencies.httpClient,
+        method: httpFields.method,
+        request: issued,
+        timeoutMs: capability.timeout,
+        connector: body.connector,
+      });
+      ...
+      return {
+        request: requestEcho(httpFields.method, echoed),
+        response,
+        orphaned_placeholders: orphanedPlaceholderNames,
+      };
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      resolveTestedConnectorConfiguration, which reads the configuration as raw JSON text and as a
+      parsed record, and the separate refusal paths for capability vs. connector configuration that
+      reflect a capability's connector attribute not being enforced to resolve to an existing
+      configuration
+    evidence: |-
+      async function resolveTestedConnectorConfiguration(
+        dependencies: TestConnectorControllerDependencies,
+        connector: string,
+      ): Promise<ResolvedTestConnectorConfiguration> {
+        const resolution = await dependencies.readConnectorConfiguration(connector);
+        if (!resolution.held) {
+          throw new ConnectorConfigurationNotFoundError(connector);
+        }
+        return { raw: resolution.configuration, parsed: parsedConnectorConfiguration(resolution.configuration) };
+      }
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      resolveTestedCapability (the 404/409 refusals) and requireResolvedAddressIsAbsoluteUrl (the 422
+      refusal, run against the masked echoed request and disclosing only its address)
+    evidence: |-
+      if (!resolution.held) {
+        throw new CapabilityNotRegisteredForTestError(resolution.name, resolution.version);
+      }
+      if (resolution.capability.connector !== body.connector) {
+        throw new CapabilityConnectorMismatchError(resolution.capability.connector, body.connector);
+      }
+      ...
+      function requireResolvedAddressIsAbsoluteUrl(request: AssembledConnectorRequest): void {
+        try {
+          connectorRequestUrl(request);
+        } catch (error) {
+          throw new ConnectorCallAddressNotAbsoluteUrlError(request.address, { cause: error });
+        }
+      }
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: "resolveTestedConnectorConfiguration's held check"
+    evidence: |-
+      if (!resolution.held) {
+        throw new ConnectorConfigurationNotFoundError(connector);
+      }
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: >-
+      the orphaned-placeholder computation and its inclusion in the diagnostic response, reporting the
+      seam for the pairing under test
+    evidence: |-
+      const orphanedPlaceholderNames = orphanedPlaceholders(configuration.raw.configuration, capability.input_schema);
+      return {
+        request: requestEcho(httpFields.method, echoed),
+        response,
+        orphaned_placeholders: orphanedPlaceholderNames,
+      };
+  - node: rules/integration/a-diagnostic-response-masks-a-resolved-credential
+    held_at: >-
+      resolveTestRequests building the echoed request through a redacting env proxy, and requestEcho
+      returning that masked request as the response's echo — the masking behavior itself, not the
+      literal text it renders (see finding)
+    evidence: |-
+      const echoed = resolveConnectorRequest({ configuration, subject, requester, env: redactingEnv() });
+      ...
+      function redactingEnv(): NodeJS.ProcessEnv {
+        return new Proxy({} as NodeJS.ProcessEnv, { get: () => REDACTED_CREDENTIAL_MARKER });
+      }
+  - node: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+    held_at: >-
+      issueOutcome's catch branch and unreachableOutcome — returns a completed 'unreachable' result
+      carrying ConnectorUnreachableError and the connector name, no response status, instead of
+      throwing a refusal
+    evidence: |-
+      } catch (error) {
+        return unreachableOutcome(connector, error, Date.now() - startedAt);
+      }
+      ...
+      function unreachableOutcome(connector: string, cause: unknown, elapsedMs: number): TestConnectorResponseDto['response'] {
+        const error = new ConnectorUnreachableError(connector, { cause });
+        return {
+          kind: 'unreachable',
+          error: { code: error.name, message: error.message, details: error.context },
+          elapsedMs,
+        };
+      }
+looked_past: >-
+  The response-outcome shape for a completed HTTP answer (status, headers, body via rawBody's
+  JSON-or-text fallback) and the discriminant literals ('response', 'timed-out', 'unreachable') are
+  governed by the TestConnectorResponseDto type this file only fills, not defines, so any drift there
+  belongs to a review of that DTO file rather than this one.

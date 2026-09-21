@@ -1,0 +1,105 @@
+findings:
+  - file: src/http/dto/test-connector.dto.ts
+    where: the subjectAttributeValueSchema definition (lines 3-6), embedded in subjectSchema (lines 8-11) and required as testConnectorRequestSchema's subject field (line 21)
+    evidence: |-
+      const subjectAttributeValueSchema = z.object({
+        attribute: z.string().min(1),
+        value: z.string().min(1),
+      });
+    cost: >-
+      An integrator reading this request schema learns that the test request must carry an
+      `attribute` name the caller supplies for each value, validated as required content in its
+      own right; a request omitting one fails validation before the server ever reaches the
+      placeholder-matching the specification reserves to it. The next reader has no reason to
+      suspect the attribute name is meant to come from the registered configuration's own
+      placeholders rather than from the caller, because this schema treats it exactly like any
+      other operator-authored field.
+    kind: contradicts
+    correction: >-
+      the subject attribute entries this schema accepts from the operator would carry only a
+      value, with the attribute name read server-side from the registered configuration's
+      ${subject:<attribute-name>} placeholders rather than validated here as caller-supplied
+      content.
+    node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+  - file: src/http/dto/test-connector.dto.ts
+    where: the 'timed-out' branch of testConnectorOutcomeSchema (lines 49-52)
+    evidence: |-
+      z.object({
+          kind: z.literal('timed-out'),
+          elapsedMs: z.number().nonnegative(),
+        }),
+    cost: >-
+      An integrator reading this schema learns that the diagnostic can answer with a distinct
+      "timed-out" outcome carrying nothing but an elapsed duration — no status, no error code, no
+      connector name — as though that shape were settled. The one node in this file's set that
+      describes what a completed diagnostic test answers says explicitly that a capability
+      timeout's own abort is "Not decided here", so this shape is a decision the specification
+      never made, and the next reader who wants to know what a timed-out test reports will find
+      it only in this file rather than in the specification.
+    kind: unstated
+read:
+  - node: contracts/integration/connector-diagnostics
+    held_at: >-
+      the testConnectorRequestSchema (lines 18-24) and testConnectorResponseSchema (lines 60-64),
+      which together shape the one exercise-and-answer this contract publishes
+    evidence: |-
+      export const testConnectorRequestSchema = z.object({
+        capability: capabilityIdentitySchema,
+        connector: z.string().min(1),
+        subject: subjectSchema,
+        requester: z.string().min(1),
+        input: z.unknown().optional(),
+      });
+      ...
+      export const testConnectorResponseSchema = z.object({
+        request: testConnectorRequestEchoSchema,
+        response: testConnectorOutcomeSchema,
+        orphaned_placeholders: z.array(z.string()).readonly(),
+      });
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: the orphaned_placeholders field of testConnectorResponseSchema, line 63
+    evidence: |-
+      orphaned_placeholders: z.array(z.string()).readonly(),
+  - node: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+    held_at: >-
+      the 'unreachable' branch of testConnectorOutcomeSchema (lines 53-57), together with
+      testConnectorUnreachableErrorSchema (lines 35-39) — no status field accompanies this
+      branch, matching "no response status"
+    evidence: |-
+      z.object({
+          kind: z.literal('unreachable'),
+          error: testConnectorUnreachableErrorSchema,
+          elapsedMs: z.number().nonnegative(),
+        }),
+      const testConnectorUnreachableErrorSchema = z.object({
+        code: z.string().min(1),
+        message: z.string().min(1),
+        details: z.object({ connector: z.string().min(1) }),
+      });
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: the testConnectorRequestSchema, lines 18-24 (capability, connector, subject, requester)
+    evidence: |-
+      export const testConnectorRequestSchema = z.object({
+        capability: capabilityIdentitySchema,
+        connector: z.string().min(1),
+        subject: subjectSchema,
+        requester: z.string().min(1),
+        input: z.unknown().optional(),
+      });
+  - node: rules/integration/a-diagnostic-response-masks-a-resolved-credential
+    held_at: nowhere
+    evidence: |-
+      const testConnectorRequestEchoSchema = z.object({
+        method: z.string().min(1),
+        address: z.string().min(1),
+        headers: z.record(z.string(), z.string()),
+        body: z.unknown().optional(),
+      });
+looked_past: >-
+  The 404/409/422 refusal statuses, error names and disclosure rules
+  a-connector-configuration-is-tested-through-a-registered-capability also fixes are not
+  represented anywhere in this DTO (they live in the error classes and status map the candidate
+  index binds to other files), so I did not judge them here; I also did not flag the
+  capabilityIdentitySchema shape (name/version) or the optional `input` field as either fact,
+  since neither a node in this set nor a specification search settled what, if anything, they
+  should hold.

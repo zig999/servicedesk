@@ -1,0 +1,84 @@
+findings:
+  - file: src/__tests__/unit/http/test-connector.routes.spec.ts
+    where: >-
+      line 370, inside "refuses a test-connector request whose resolved address is not a valid
+      absolute URL..."; and line 398, inside "ends a test whose issued call fails before any HTTP
+      response..."
+    evidence: |-
+      expect(body.error.details).toEqual({ address: '***REDACTED***/subjects/subject-value-1' });
+      ...
+      expect(body.request.headers.authorization).toBe('Bearer ***REDACTED***');
+    cost: >-
+      The literal marker a masked credential renders as — the exact string `***REDACTED***` in
+      place of the resolved value — is asserted here as a fixed fact of the connector-diagnostics
+      response, but rules/integration/a-diagnostic-response-masks-a-resolved-credential only says
+      that masking happens, never what the masked value displays as. The one node in the
+      specification that does pin `***REDACTED***` (rules/investigation/a-presented-evidence-items-inputs-are-shown-with-a-resolved-credential-masked)
+      scopes to domain/investigation/evidence, a different aggregate, and its own decision log
+      entry justifies that choice by pointing at this connector's controller code as precedent
+      rather than deciding it independently for connector diagnostics. A reader who wants to know
+      what an operator actually sees in place of a secret on this route has to read this test or
+      the controller, not the specification, and nothing keeps this literal in step with the
+      sibling rendering if either is changed on its own.
+    kind: unstated
+    correction: >-
+      State, in rules/integration/a-diagnostic-response-masks-a-resolved-credential (or a node it
+      points to), the fixed text a masked credential value is replaced with for this diagnostic's
+      echoed request and disclosed address.
+
+read:
+  - node: contracts/integration/connector-diagnostics
+    held_at: >-
+      the dependency-shape test, lines 219-225 — the closest thing this file has to holding
+      "Diagnostic only: nothing this operation returns is evidence, and no investigation ever
+      reads what it returned."
+    evidence: |-
+      const dependencyKeys = Object.keys(built.dependencies).sort();
+      expect(dependencyKeys).toEqual(['httpClient', 'readCapabilityByIdentity', 'readConnectorConfiguration']);
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      the 404 test (lines 165-177), the 409 test (lines 179-195), the address-resolves-to-invalid-absolute-URL
+      422 test (lines 355-375), and the subject-assembly tests (lines 114-131, 197-217)
+    evidence: |-
+      expect(response.statusCode).toBe(404);
+      expect(body.error.code).toBe('CapabilityNotRegisteredForTestError');
+      ...
+      expect(response.statusCode).toBe(409);
+      expect(body.error.code).toBe('CapabilityConnectorMismatchError');
+      ...
+      expect(response.statusCode).toBe(422);
+      expect(body.error.code).toBe('ConnectorCallAddressNotAbsoluteUrlError');
+      ...
+      expect(calledUrl).toBe('https://api.example.com/subjects/subject-value-1');
+  - node: rules/integration/a-diagnostic-response-masks-a-resolved-credential
+    held_at: the masking assertions at line 370 and line 398
+    evidence: |-
+      expect(body.error.details).toEqual({ address: '***REDACTED***/subjects/subject-value-1' });
+      expect(body.request.headers.authorization).toBe('Bearer ***REDACTED***');
+  - node: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+    held_at: the unreachable-connector test, lines 377-402
+    evidence: |-
+      expect(response.statusCode).toBe(200);
+      expect(body.response.kind).toBe('unreachable');
+      expect(body.response.error.code).toBe('ConnectorUnreachableError');
+      expect(body.response.error.details).toEqual({ connector: 'a-connector' });
+      expect('status' in body.response).toBe(false);
+
+looked_past: >-
+  The response-envelope shape the first two tests check (an outer HTTP 200 wrapping an inner
+  `response.kind`/`status`/`headers`/`body`/`elapsedMs`, and `orphaned_placeholders`) and the
+  distinction the last test draws between a `'timed-out'` outcome and an `'unreachable'` one when
+  the capability's own timeout aborts the call are both domain facts this file states, but neither
+  is settled by my four nodes or by the offered candidates (an API contract node is explicitly
+  disclaimed elsewhere in the specification from declaring "an answer shape of its own," and the
+  timeout/unreachable distinction is deferred by my own node-set text to a sibling rule outside
+  it) — judging them would mean widening past the set and candidates I was given, so I leave them
+  for whichever pass holds the DTO-shape and capability-timeout nodes.
+
+candidates_opened:
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically
+  - constraints/no-route-enforces-authentication
+  - rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  - rules/integration/a-connector-configuration-holds-a-well-formed-object
+  - rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+  - domain/integration/connector-configuration
