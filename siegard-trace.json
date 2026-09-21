@@ -8300,8 +8300,20 @@
           "digest": "sha256:4d29e5d1a79f585c3b3962fad24880b885e4697b86f3fe911d5b885073e13ed7"
         },
         {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:ad1afeb9f774119251db98354883f769eda95ef1ade1ec00f709389e67e658a7"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
+          "digest": "sha256:40097838a1e7deeb3a9950d07ff8f920c03fd972eed34b32ef9cfc85e5a85553"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:8c288922a30c7f2a66194ba29e10c32a34165aa162d9dbc00afaae576746f420"
         }
       ]
     },
@@ -8678,6 +8690,34 @@
         {
           "path": "src/src/vitest-global-setup.ts",
           "digest": "sha256:e457a1a666950915acaa06424ffb5dcc587934ef5e79fd01c05ab1934d9757ae"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
+      "digest": "sha256:0e336ee5c1fc7d6cbaa4208a5431ed749fd9d2b032e4579b1f1058be88e411e9",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:ad1afeb9f774119251db98354883f769eda95ef1ade1ec00f709389e67e658a7"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:8c288922a30c7f2a66194ba29e10c32a34165aa162d9dbc00afaae576746f420"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "digest": "sha256:767f243ca89bb9d3ada0061cdee9788f357719cdb85260e1f47e5ed7a0db8b19",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:ad1afeb9f774119251db98354883f769eda95ef1ade1ec00f709389e67e658a7"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:8c288922a30c7f2a66194ba29e10c32a34165aa162d9dbc00afaae576746f420"
         }
       ]
     },
@@ -9094,6 +9134,10 @@
           "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
         },
         {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:ad1afeb9f774119251db98354883f769eda95ef1ade1ec00f709389e67e658a7"
+        },
+        {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
           "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
         },
@@ -9250,6 +9294,16 @@
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
           "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "digest": "sha256:f6b2a8177c1fb08511d6af947bb5bb06d1760da31afedb058d838efed9f5c2c4",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:ad1afeb9f774119251db98354883f769eda95ef1ade1ec00f709389e67e658a7"
         }
       ]
     },

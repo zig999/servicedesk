@@ -16,7 +16,7 @@ export const HYPOTHESIS_REVISION_FORM_ID = "hypothesis-revision-form";
 export type HypothesisRevisionFormFieldsProps = {
   readonly form: UseFormReturn<HypothesisRevisionFormValues>;
   readonly hypothesisNameEditable: boolean;
-  readonly subjectType: string;
+  readonly subjectType: string | null;
   readonly collectsOptions: readonly ConceptOption[];
   readonly outcomeOptions: GlossaryVocabularyOptions;
   readonly actionOptions: GlossaryVocabularyOptions;
@@ -93,7 +93,7 @@ export function HypothesisRevisionFormFields({
         </FormField>
 
         <FormField label="Subject type (from draft, fixed)" errorId="subject-error">
-          <Input value={subjectType} disabled readOnly />
+          <Input value={subjectType ?? ""} disabled readOnly />
         </FormField>
       </div>
 

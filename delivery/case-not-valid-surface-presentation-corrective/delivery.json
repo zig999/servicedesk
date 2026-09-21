@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
+      "title": "Hypothesis composition presents its form on a draft version that does not read back as a case",
+      "summary": "New Hypothesis and Revise Hypothesis keep offering the composition form, and a working submit, when the case's draft version read is refused for failing validation, while glossary and revisions failures and any other version refusal still fall to the generic \"did not complete\" statement, and no stale cached version data leaks through on that refused reading.",
+      "task": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back"
+    },
+    {
       "id": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "implementation",
       "file": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
@@ -24,6 +32,14 @@
       "title": "Version editor states a version that does not read back as a case",
       "summary": "The case version editor's own load path now distinguishes a version refused for validation from a read that did not complete, reusing the existing statement, and carries the route to that version's own manifest on every one of its own readings — pending, failed, refused-for-validation and ready alike — with the shared return type's other consumer narrowed to exclude the new phase before reading ready-only fields.",
       "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
+      "title": "Hypothesis composition presents its form on a draft version that does not read back as a case — test proof",
+      "summary": "Component-level tests over HypothesisRevisionScreen (New Hypothesis and Revise Hypothesis) proving the composition form is presented and a submit lands through the offered manifest route on a draft version refused for failing validation, that glossary/revisions failures and unmapped-code refusals keep the generic statement, that the case-keyed statement discloses no attribute of the version even from a stale shared-key cache (now guarded by the fixed versionData masking), and that the delivered screen does not itself place the composed hypothesis or leak a prior read's stale content — with the node requiring which read failed to be named and the node governing the server's own subject-type check left unproven, as neither is decidable by a frontend test.",
+      "task": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back"
     },
     {
       "id": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
@@ -80,6 +96,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
@@ -156,6 +208,12 @@
       "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
       "to": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "proves",
       "at": "the path"
     },
     {

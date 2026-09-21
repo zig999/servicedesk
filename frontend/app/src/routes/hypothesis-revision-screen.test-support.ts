@@ -152,10 +152,10 @@ function buildIsolatedReviseRouter(initialPath: string) {
 export async function mountHypothesisForm(
   fetchMock: (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
   initialPath: string = NEW_HYPOTHESIS_PATH,
+  queryClient: QueryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
 ): Promise<ReturnType<typeof buildTestRouter>> {
   vi.stubGlobal("fetch", fetchMock);
   const router = buildTestRouter(initialPath);
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   await router.load();
   render(
     createElement(

@@ -54,6 +54,9 @@ export function HypothesisRevisionScreen({
       <Button type="button" onClick={state.onOpenManifest}>
         View Manifest
       </Button>
+      {state.caseVersionNotValid && (
+        <p>This case&apos;s current version does not read back as a case.</p>
+      )}
       <HypothesisRevisionFormFields
         form={state.form}
         hypothesisNameEditable={state.hypothesisNameEditable}
