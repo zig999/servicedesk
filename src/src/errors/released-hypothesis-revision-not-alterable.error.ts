@@ -3,7 +3,7 @@ export class ReleasedHypothesisRevisionNotAlterableError extends Error {
 
   public constructor(slug: string, hypothesisName: string, revision: number) {
     super(
-      `hypothesis "${hypothesisName}" revision ${revision} of case "${slug}" is referenced by a case version in released state, and a released hypothesis revision is never altered`,
+      `a revisão ${revision} da hipótese "${hypothesisName}" do caso "${slug}" está ela mesma em estado liberada, e uma revisão liberada nunca é alterada`,
     );
     this.name = 'ReleasedHypothesisRevisionNotAlterableError';
     this.context = { slug, hypothesis_name: hypothesisName, revision };
