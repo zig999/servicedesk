@@ -887,7 +887,7 @@
     },
     {
       "node": "contracts/glossary/glossary-authoring",
-      "digest": "sha256:0f497ac782b243eeb0f26f95468bc3f1f79afa7661b8c86490d3c38e73d723a9",
+      "digest": "sha256:eb26a4af4c3db69694e81ce766beb6694b189ce2baad92cd68a3527e24b5b376",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-concept-form.ts",
@@ -903,7 +903,7 @@
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
+          "digest": "sha256:afd3cb6e4b686ae5b6f1ee4b28ab2ff5879f7cf026c65d452331bb376cc1ca55"
         },
         {
           "path": "src/src/http/build-app.ts",
@@ -5596,12 +5596,16 @@
       "digest": "sha256:c326f7b29fcb9ba02c65ae69c7746109cb1f213d318b1c2907f8888939430f7f",
       "files": [
         {
+          "path": "src/src/errors/concept-in-use.error.ts",
+          "digest": "sha256:c892aef163e3fc89b120e9a20b2fa153ae8b61a607fc1ca3c02a2243d60221ee"
+        },
+        {
           "path": "src/src/glossary/glossary-store.port.ts",
           "digest": "sha256:8a8b60748d74ff66042be4bd6efefb34c4fc58e29fed5429696f78f1f80829c8"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a"
+          "digest": "sha256:afd3cb6e4b686ae5b6f1ee4b28ab2ff5879f7cf026c65d452331bb376cc1ca55"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",

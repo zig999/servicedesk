@@ -34,6 +34,14 @@
       "task": "task/concept-removal/concept-store-delete"
     },
     {
+      "id": "implementation/concept-removal/remove-concept-operation",
+      "kind": "implementation",
+      "file": "implementation/concept-removal/remove-concept-operation.md",
+      "title": "GlossaryService.removeConcept, refused where anything still names the concept",
+      "summary": "Adds the glossary's remove-concept operation and its own ConceptInUseError, refusing removal wherever a capability, evidence item, citation or hypothesis-revision's collects still names the concept, and reading all four exclusively through the injected concept usage reader port.",
+      "task": "task/concept-removal/remove-concept-operation"
+    },
+    {
       "id": "implementation/connector-configuration-removal/connector-configuration-store-delete",
       "kind": "implementation",
       "file": "implementation/connector-configuration-removal/connector-configuration-store-delete.md",
@@ -104,6 +112,14 @@
       "title": "Proof for the glossary store's transactional, name-keyed concept delete",
       "summary": "New tests over IGlossaryStore.deleteConcept and RelationalGlossaryStore cover the declared port shape, the two-statement children-before-parent transaction, its failure/rollback path, and the real-database read-exclusion plus subject-type-vocabulary survival after removal; write's own pre-existing suite is cited unmodified for the untouched-write criterion; four IGlossaryStore test doubles were widened to compile against the new interface member.",
       "task": "task/concept-removal/concept-store-delete"
+    },
+    {
+      "id": "proof/concept-removal/remove-concept-operation",
+      "kind": "proof",
+      "file": "proof/concept-removal/remove-concept-operation.md",
+      "title": "GlossaryService.removeConcept, refused where anything still names the concept",
+      "summary": "Seven unit tests over GlossaryService.removeConcept prove the no-usage success path with its read-back, each of the four reference-kind refusals as a distinct ConceptInUseError, that a refusal leaves the concept held, and that the refusal precedes any delete statement.",
+      "task": "task/concept-removal/remove-concept-operation"
     },
     {
       "id": "proof/connector-configuration-removal/connector-configuration-store-delete",
@@ -282,6 +298,24 @@
     {
       "from": "implementation/concept-removal/concept-store-delete",
       "to": "task/concept-removal/concept-store-delete",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-removal/remove-concept-operation",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-removal/remove-concept-operation",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-removal/remove-concept-operation",
+      "to": "task/concept-removal/remove-concept-operation",
       "kind": "implements",
       "at": "the path"
     },
@@ -474,6 +508,12 @@
     {
       "from": "proof/concept-removal/concept-store-delete",
       "to": "implementation/concept-removal/concept-store-delete",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-removal/remove-concept-operation",
+      "to": "implementation/concept-removal/remove-concept-operation",
       "kind": "proves",
       "at": "the path"
     },

@@ -1,15 +1,36 @@
 import { expect, it } from 'vitest';
 import { ConceptDescriptionRequiredError } from '../../../errors/concept-description-required.error.js';
+import { ConceptInUseError } from '../../../errors/concept-in-use.error.js';
 import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
+import type { IConceptUsageReader } from '../../../glossary/concept-usage-reader.port.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
 import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
 
 const SIXTY_SECONDS = 60;
 
+const NAMED_BY_NOTHING: IConceptUsageReader = { readConceptUsage: async () => ({ named: false }) };
+
+const NAMED_BY_CAPABILITY: IConceptUsageReader = {
+  readConceptUsage: async () => ({ named: true, reference: 'capability' }),
+};
+
+const NAMED_BY_EVIDENCE: IConceptUsageReader = {
+  readConceptUsage: async () => ({ named: true, reference: 'evidence' }),
+};
+
+const NAMED_BY_CITATION: IConceptUsageReader = {
+  readConceptUsage: async () => ({ named: true, reference: 'citation' }),
+};
+
+const NAMED_BY_HYPOTHESIS_REVISION_COLLECTS: IConceptUsageReader = {
+  readConceptUsage: async () => ({ named: true, reference: 'hypothesis-revision-collects' }),
+};
+
 class InMemoryGlossaryStore implements IGlossaryStore {
   private readonly records = new Map<TermVocabulary, readonly GlossaryTerm[]>();
   private readonly writeTermsBlocked = new Set<TermVocabulary>();
+  private deleteConceptBlocked = false;
   private concepts: readonly ConceptRegistration[];
 
   public constructor(concepts: readonly ConceptRegistration[] = []) {
@@ -45,6 +66,9 @@ class InMemoryGlossaryStore implements IGlossaryStore {
   }
 
   public async deleteConcept(name: string): Promise<void> {
+    if (this.deleteConceptBlocked) {
+      throw new Error(`a delete of concept "${name}" failed: a database constraint violation`);
+    }
     this.concepts = this.concepts.filter((concept) => concept.name !== name);
   }
 
@@ -54,6 +78,10 @@ class InMemoryGlossaryStore implements IGlossaryStore {
 
   public blockWriteTerms(vocabulary: TermVocabulary): void {
     this.writeTermsBlocked.add(vocabulary);
+  }
+
+  public blockDeleteConcept(): void {
+    this.deleteConceptBlocked = true;
   }
 }
 
@@ -522,5 +550,92 @@ it('answers a page count of zero for a non-positive limit, rather than dividing 
   const page = await glossary.listVocabularyTerms('subject-type', { offset: 0, limit: 0 });
 
   expect(page.pageCount).toBe(0);
+});
+
+it('removes the concept, so a subsequent read finds nothing held at that name, when nothing answers, records, cites or collects it (criterion 1)', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'an-unreferenced-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An unreferenced concept fixture.' },
+  ]);
+  const glossary = new GlossaryService(store, NAMED_BY_NOTHING);
+
+  await glossary.removeConcept('an-unreferenced-concept');
+
+  const resolution = await glossary.readConcept('an-unreferenced-concept');
+  expect(resolution).toEqual({ held: false, name: 'an-unreferenced-concept' });
+});
+
+it('refuses removal with a ConceptInUseError naming the capability reference, distinct from every error registerConcept raises, when a registered capability answers the concept (criteria 2, 8)', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'a-capability-answered-concept', accepts: ['a-subject-type'], ttl: 60, description: 'A concept a capability answers.' },
+  ]);
+  const glossary = new GlossaryService(store, NAMED_BY_CAPABILITY);
+
+  const refusal = await rejectionOf(glossary.removeConcept('a-capability-answered-concept'));
+
+  expect(refusal).toBeInstanceOf(ConceptInUseError);
+  expect(refusal).not.toBeInstanceOf(ConceptDescriptionRequiredError);
+  expect(refusal).not.toBeInstanceOf(DuplicateGlossaryNameError);
+  expect(refusal).toMatchObject({ context: { concept: 'a-capability-answered-concept', reference: 'capability' } });
+});
+
+it('refuses removal with a ConceptInUseError naming the evidence reference when a collected evidence item names the concept (criterion 3)', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'an-evidence-named-concept', accepts: ['a-subject-type'], ttl: 60, description: 'A concept an evidence item names.' },
+  ]);
+  const glossary = new GlossaryService(store, NAMED_BY_EVIDENCE);
+
+  const refusal = await rejectionOf(glossary.removeConcept('an-evidence-named-concept'));
+
+  expect(refusal).toBeInstanceOf(ConceptInUseError);
+  expect(refusal).toMatchObject({ context: { concept: 'an-evidence-named-concept', reference: 'evidence' } });
+});
+
+it('refuses removal with a ConceptInUseError naming the citation reference when an evaluation citation names the concept (criterion 4)', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'a-citation-named-concept', accepts: ['a-subject-type'], ttl: 60, description: 'A concept a citation names.' },
+  ]);
+  const glossary = new GlossaryService(store, NAMED_BY_CITATION);
+
+  const refusal = await rejectionOf(glossary.removeConcept('a-citation-named-concept'));
+
+  expect(refusal).toBeInstanceOf(ConceptInUseError);
+  expect(refusal).toMatchObject({ context: { concept: 'a-citation-named-concept', reference: 'citation' } });
+});
+
+it("refuses removal with a ConceptInUseError naming the hypothesis-revision-collects reference when a hypothesis-revision's own collects lists the concept (criterion 5)", async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'a-collects-listed-concept', accepts: ['a-subject-type'], ttl: 60, description: "A concept a hypothesis-revision's collects lists." },
+  ]);
+  const glossary = new GlossaryService(store, NAMED_BY_HYPOTHESIS_REVISION_COLLECTS);
+
+  const refusal = await rejectionOf(glossary.removeConcept('a-collects-listed-concept'));
+
+  expect(refusal).toBeInstanceOf(ConceptInUseError);
+  expect(refusal).toMatchObject({
+    context: { concept: 'a-collects-listed-concept', reference: 'hypothesis-revision-collects' },
+  });
+});
+
+it('leaves the concept held in the glossary after the removal is refused (criterion 6)', async () => {
+  const heldConcept = { name: 'a-held-concept', accepts: ['a-subject-type'], ttl: 60, description: 'A concept the refusal must leave untouched.' };
+  const store = new InMemoryGlossaryStore([heldConcept]);
+  const glossary = new GlossaryService(store, NAMED_BY_CAPABILITY);
+
+  await glossary.removeConcept('a-held-concept').catch(() => undefined);
+
+  const resolution = await glossary.readConcept('a-held-concept');
+  expect(resolution).toEqual({ held: true, concept: heldConcept });
+});
+
+it('refuses before any delete statement is issued, so a database constraint violation the store would raise on delete never reaches the caller in place of the refusal (criterion 7)', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'a-concept-whose-delete-would-explode', accepts: ['a-subject-type'], ttl: 60, description: 'A concept fixture.' },
+  ]);
+  store.blockDeleteConcept();
+  const glossary = new GlossaryService(store, NAMED_BY_EVIDENCE);
+
+  const outcome = await glossary.removeConcept('a-concept-whose-delete-would-explode').catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(ConceptInUseError);
 });
 

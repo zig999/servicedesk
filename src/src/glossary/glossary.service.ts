@@ -1,6 +1,8 @@
 import { ConceptDescriptionRequiredError } from '../errors/concept-description-required.error.js';
+import { ConceptInUseError } from '../errors/concept-in-use.error.js';
 import { DuplicateGlossaryNameError } from '../errors/duplicate-glossary-name.error.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
+import type { IConceptUsageReader } from './concept-usage-reader.port.js';
 import type { ConceptResolution, IGlossaryQuery, TermResolution } from './glossary-query.port.js';
 import type { IGlossaryStore } from './glossary-store.port.js';
 import {
@@ -12,8 +14,15 @@ import {
   type TermVocabulary,
 } from './terms.js';
 
+const NO_CONCEPT_NAMED: IConceptUsageReader = {
+  readConceptUsage: () => Promise.resolve({ named: false }),
+};
+
 export class GlossaryService implements IGlossaryQuery {
-  public constructor(private readonly store: IGlossaryStore) {}
+  public constructor(
+    private readonly store: IGlossaryStore,
+    private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+  ) {}
 
   public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
     const held = await this.store.readTerms(vocabulary);
@@ -49,6 +58,14 @@ export class GlossaryService implements IGlossaryQuery {
     const kept = held.filter((candidate) => candidate.name !== concept.name);
     await this.store.writeConcepts([...kept, concept]);
     return concept;
+  }
+
+  public async removeConcept(name: string): Promise<void> {
+    const usage = await this.conceptUsageReader.readConceptUsage(name);
+    if (usage.named) {
+      throw new ConceptInUseError(name, usage.reference);
+    }
+    await this.store.deleteConcept(name);
   }
 
   public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
