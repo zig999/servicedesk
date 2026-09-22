@@ -3,7 +3,7 @@ export class CaseVersionNotValidError extends Error {
 
   public constructor(slug: string, version: number, violations: readonly string[]) {
     super(
-      `the case "${slug}" at version ${version} violates its validator rules: ${violations.join('; ')}`,
+      `o caso "${slug}" na versão ${version} não passa na validação, violando as seguintes regras: ${violations.join('; ')}`,
     );
     this.name = 'CaseVersionNotValidError';
     this.context = { slug, version, violations };

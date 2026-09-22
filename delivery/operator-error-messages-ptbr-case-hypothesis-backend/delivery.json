@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-refusal-messages/case-content-violation-messages",
+      "kind": "implementation",
+      "file": "implementation/case-refusal-messages/case-content-violation-messages.md",
+      "title": "PT-br messages for CaseVersionNotValidError and CaseVersionNotReleasableError",
+      "summary": "Rewrites the two case-refusal messages and the structural/release-only violation strings they interpolate into Brazilian Portuguese, using the fixed domain vocabulary, and updates every test that pinned the old English literal text.",
+      "task": "task/case-refusal-messages/case-content-violation-messages"
+    },
+    {
+      "id": "proof/case-refusal-messages/case-content-violation-messages",
+      "kind": "proof",
+      "file": "proof/case-refusal-messages/case-content-violation-messages.md",
+      "title": "Proof for PT-br messages of CaseVersionNotValidError and CaseVersionNotReleasableError",
+      "summary": "Independent unit tests, written apart from the implementation, that decide each of the task's criteria for the two translated refusal classes and their two violation-producing files, and that identify which of the task's criteria and implemented nodes no test in this tree can decide.",
+      "task": "task/case-refusal-messages/case-content-violation-messages"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-refusal-messages/case-content-violation-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-content-violation-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-content-violation-messages",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-content-violation-messages",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-content-violation-messages",
+      "to": "task/case-refusal-messages/case-content-violation-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-refusal-messages/case-content-violation-messages",
+      "to": "implementation/case-refusal-messages/case-content-violation-messages",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

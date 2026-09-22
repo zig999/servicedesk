@@ -221,8 +221,8 @@ it(
 
     expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
     expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
-      'manifest entry 1 collects no concept',
-      'manifest entry 2 collects no concept',
+      'entrada 1 do manifesto não coleta nenhum conceito',
+      'entrada 2 do manifesto não coleta nenhum conceito',
     ]);
     const stillStored = await store.assembleVersion(slug, version);
     expect(stillStored?.state).toBe('draft');
@@ -411,7 +411,7 @@ it(
 
     expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
     expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
-      'the hypothesis "h1" is manifested at a revision that is not released',
+      'a hipótese "h1" está manifestada em uma revisão que não está liberada',
     ]);
   },
 );
@@ -437,8 +437,8 @@ it(
 
     expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
     expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
-      'the hypothesis "beta" is manifested at a revision that is not released',
-      'the hypothesis "gamma" is manifested at a revision that is not released',
+      'a hipótese "beta" está manifestada em uma revisão que não está liberada',
+      'a hipótese "gamma" está manifestada em uma revisão que não está liberada',
     ]);
   },
 );
@@ -463,7 +463,7 @@ it(
     expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([
       `the concept "${vocabulary.concept}" does not accept the subject type "${vocabulary.subjectType}" the case declares`,
       `no read-only capability currently answers the concept "${vocabulary.concept}"`,
-      'the hypothesis "h1" is manifested at a revision that is not released',
+      'a hipótese "h1" está manifestada em uma revisão que não está liberada',
     ]);
   },
 );

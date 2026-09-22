@@ -190,7 +190,7 @@ it('refuses a document that leaves state undeclared', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual(['state is undeclared']);
+  expect(problems).toEqual(['o estado está ausente']);
 });
 
 it.each([
@@ -204,7 +204,7 @@ it.each([
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual(['state is not one of draft, released']);
+  expect(problems).toEqual(['o estado não é um dos valores rascunho, liberada']);
 });
 
 it('refuses a released_at that is not a string, instead of coercing it', () => {
@@ -212,7 +212,7 @@ it('refuses a released_at that is not a string, instead of coercing it', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual(['released_at is not a string']);
+  expect(problems).toEqual(['a data de liberação não é um texto']);
 });
 
 it('refuses an empty released_at', () => {
@@ -220,7 +220,7 @@ it('refuses an empty released_at', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual(['released_at is empty']);
+  expect(problems).toEqual(['a data de liberação está em branco']);
 });
 
 it('refuses a released case whose manifest holds no entry, naming that the case declares no hypothesis', () => {
@@ -228,7 +228,7 @@ it('refuses a released case whose manifest holds no entry, naming that the case 
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('declares no hypothesis')]);
+  expect(problems).toEqual([expect.stringContaining('não declara nenhuma hipótese')]);
 });
 
 it('refuses a draft case whose manifest holds no entry, the same way a released one is refused', () => {
@@ -236,7 +236,7 @@ it('refuses a draft case whose manifest holds no entry, the same way a released 
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('declares no hypothesis')]);
+  expect(problems).toEqual([expect.stringContaining('não declara nenhuma hipótese')]);
 });
 
 it('refuses a case that declares no manifest attribute at all', () => {
@@ -244,7 +244,7 @@ it('refuses a case that declares no manifest attribute at all', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('declares no hypothesis')]);
+  expect(problems).toEqual([expect.stringContaining('não declara nenhuma hipótese')]);
 });
 
 it('refuses a manifest that is not an array of manifest entries', () => {
@@ -252,7 +252,7 @@ it('refuses a manifest that is not an array of manifest entries', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('manifest is not an array of manifest entries')]);
+  expect(problems).toEqual([expect.stringContaining('o manifesto não é uma lista de entradas')]);
 });
 
 it('refuses a manifest entry whose adopted hypothesis-revision declares no collects at all', () => {
@@ -260,7 +260,7 @@ it('refuses a manifest entry whose adopted hypothesis-revision declares no colle
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('collects no concept')]);
+  expect(problems).toEqual([expect.stringContaining('não coleta nenhum conceito')]);
 });
 
 it('refuses a manifest entry whose adopted hypothesis-revision collects an empty list', () => {
@@ -268,7 +268,7 @@ it('refuses a manifest entry whose adopted hypothesis-revision collects an empty
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('collects no concept')]);
+  expect(problems).toEqual([expect.stringContaining('não coleta nenhum conceito')]);
 });
 
 it('refuses a manifest entry whose collects is not an array of concept names', () => {
@@ -276,7 +276,7 @@ it('refuses a manifest entry whose collects is not an array of concept names', (
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("collects is not an array of concept names")]);
+  expect(problems).toEqual([expect.stringContaining('não formam uma lista de nomes de conceito')]);
 });
 
 it('refuses a manifest entry whose collects holds an entry naming no concept', () => {
@@ -284,7 +284,7 @@ it('refuses a manifest entry whose collects holds an entry naming no concept', (
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('names no concept')]);
+  expect(problems).toEqual([expect.stringContaining('não nomeia nenhum conceito')]);
 });
 
 it('refuses a manifest entry whose adopted hypothesis-revision carries an empty criterion', () => {
@@ -292,7 +292,7 @@ it('refuses a manifest entry whose adopted hypothesis-revision carries an empty 
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("criterion is empty")]);
+  expect(problems).toEqual([expect.stringContaining('o critério da entrada 1 do manifesto está em branco')]);
 });
 
 it('refuses a manifest entry that declares no criterion at all', () => {
@@ -300,7 +300,7 @@ it('refuses a manifest entry that declares no criterion at all', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("criterion is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining('o critério da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a manifest entry whose resolution misses its outcome', () => {
@@ -310,7 +310,7 @@ it('refuses a manifest entry whose resolution misses its outcome', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('outcome is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('o desfecho da resolução da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a manifest entry whose resolution misses its referral', () => {
@@ -318,7 +318,7 @@ it('refuses a manifest entry whose resolution misses its referral', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('referral is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('o encaminhamento da resolução da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a manifest entry declaring no resolution at all', () => {
@@ -326,7 +326,7 @@ it('refuses a manifest entry declaring no resolution at all', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('resolution is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('a resolução da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a fallback missing its outcome', () => {
@@ -336,7 +336,7 @@ it('refuses a fallback missing its outcome', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("the fallback's outcome is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining('o desfecho da resolução padrão está ausente')]);
 });
 
 it('refuses a fallback missing its referral', () => {
@@ -344,7 +344,7 @@ it('refuses a fallback missing its referral', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("the fallback's referral is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining('o encaminhamento da resolução padrão está ausente')]);
 });
 
 it('refuses a case whose two manifest entries share a hypothesis', () => {
@@ -361,7 +361,7 @@ it('refuses a case whose two manifest entries share a hypothesis', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('share the hypothesis "incidente-regional"')]);
+  expect(problems).toEqual([expect.stringContaining('compartilham a hipótese "incidente-regional"')]);
 });
 
 it('refuses a case whose two manifest entries share a position, naming both', () => {
@@ -378,7 +378,7 @@ it('refuses a case whose two manifest entries share a position, naming both', ()
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('manifest entries 1, 2 share the position 1')]);
+  expect(problems).toEqual([expect.stringContaining('as entradas 1, 2 do manifesto compartilham a posição 1')]);
 });
 
 it(
@@ -396,22 +396,28 @@ it(
 
     expect(problems).toEqual(
       expect.arrayContaining([
-        expect.stringContaining('share the hypothesis "incidente-regional"'),
-        expect.stringContaining('manifest entries 1, 2 share the position 1'),
+        expect.stringContaining('compartilham a hipótese "incidente-regional"'),
+        expect.stringContaining('as entradas 1, 2 do manifesto compartilham a posição 1'),
       ]),
     );
     expect(problems).toHaveLength(2);
   },
 );
 
-it.each(['slug', 'title', 'when_to_use', 'authored_at', 'subject'])(
+it.each([
+  ['slug', 'o slug está ausente'],
+  ['title', 'o título está ausente'],
+  ['when_to_use', 'a orientação de uso está ausente'],
+  ['authored_at', 'a data de autoria está ausente'],
+  ['subject', 'o tipo de sujeito está ausente'],
+])(
   'refuses a document that leaves %s undeclared',
-  (attribute) => {
+  (attribute, expectedMessage) => {
     const document = completeDocument({ [attribute]: undefined });
 
     const problems = problemsOf(document);
 
-    expect(problems).toEqual([expect.stringContaining(`${attribute} is undeclared`)]);
+    expect(problems).toEqual([expectedMessage]);
   },
 );
 
@@ -420,7 +426,7 @@ it('refuses a document that leaves version undeclared', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('version is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('a versão está ausente')]);
 });
 
 it('refuses a version that is not an integer instead of coercing it', () => {
@@ -428,7 +434,7 @@ it('refuses a version that is not an integer instead of coercing it', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('version is not an integer')]);
+  expect(problems).toEqual([expect.stringContaining('a versão não é um número inteiro')]);
 });
 
 it('refuses a document that leaves the fallback undeclared', () => {
@@ -436,7 +442,7 @@ it('refuses a document that leaves the fallback undeclared', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('the fallback is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('a resolução padrão está ausente')]);
 });
 
 it('refuses a manifest entry that is not one JSON object', () => {
@@ -444,7 +450,7 @@ it('refuses a manifest entry that is not one JSON object', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('manifest entry 1 is not one JSON object')]);
+  expect(problems).toEqual([expect.stringContaining('entrada 1 do manifesto não é um objeto JSON')]);
 });
 
 it('refuses a manifest entry that declares no hypothesis at all', () => {
@@ -452,7 +458,7 @@ it('refuses a manifest entry that declares no hypothesis at all', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("manifest entry 1's hypothesis is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining('a hipótese da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a manifest entry whose hypothesis name is empty', () => {
@@ -460,7 +466,7 @@ it('refuses a manifest entry whose hypothesis name is empty', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("manifest entry 1's hypothesis is empty")]);
+  expect(problems).toEqual([expect.stringContaining('a hipótese da entrada 1 do manifesto está em branco')]);
 });
 
 it('refuses a manifest entry that declares no position', () => {
@@ -468,7 +474,7 @@ it('refuses a manifest entry that declares no position', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("manifest entry 1's position is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining('a posição da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a manifest entry whose position is not an integer, instead of coercing it', () => {
@@ -476,7 +482,7 @@ it('refuses a manifest entry whose position is not an integer, instead of coerci
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("manifest entry 1's position is not an integer")]);
+  expect(problems).toEqual([expect.stringContaining('a posição da entrada 1 do manifesto não é um número inteiro')]);
 });
 
 it('refuses a manifest entry that declares no revision', () => {
@@ -484,7 +490,7 @@ it('refuses a manifest entry that declares no revision', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("manifest entry 1's revision is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining('a revisão da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a manifest entry whose revision is not an integer, instead of coercing it', () => {
@@ -492,7 +498,7 @@ it('refuses a manifest entry whose revision is not an integer, instead of coerci
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("manifest entry 1's revision is not an integer")]);
+  expect(problems).toEqual([expect.stringContaining('a revisão da entrada 1 do manifesto não é um número inteiro')]);
 });
 
 it('refuses a referral missing its action', () => {
@@ -502,7 +508,7 @@ it('refuses a referral missing its action', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('action is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('a ação do encaminhamento da resolução da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses a referral missing its recipient', () => {
@@ -512,7 +518,7 @@ it('refuses a referral missing its recipient', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('recipient is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('o destinatário do encaminhamento da resolução da entrada 1 do manifesto está ausente')]);
 });
 
 it('refuses an empty slug with exactly one problem', () => {
@@ -520,19 +526,19 @@ it('refuses an empty slug with exactly one problem', () => {
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('slug is empty')]);
+  expect(problems).toEqual([expect.stringContaining('o slug está em branco')]);
 });
 
 it('refuses a document that is not one JSON object', () => {
   const problems = problemsOf(null);
 
-  expect(problems).toEqual([expect.stringContaining('not one JSON object')]);
+  expect(problems).toEqual([expect.stringContaining('não é um objeto JSON')]);
 });
 
 it('refuses a document that is a JSON array', () => {
   const problems = problemsOf([completeDocument()]);
 
-  expect(problems).toEqual([expect.stringContaining('not one JSON object')]);
+  expect(problems).toEqual([expect.stringContaining('não é um objeto JSON')]);
 });
 
 it('parses a document declaring consolidation_register formal into a case carrying it', () => {
@@ -570,7 +576,7 @@ it.each([
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual(['consolidation_register is not one of formal, plain']);
+  expect(problems).toEqual(['o registro de consolidação não é um dos valores formal, plain']);
 });
 
 it('collects a consolidation_register violation together with another structural violation in one refusal, never throwing on the first found', () => {
@@ -581,8 +587,8 @@ it('collects a consolidation_register violation together with another structural
   expect(problems).toHaveLength(2);
   expect(problems).toEqual(
     expect.arrayContaining([
-      expect.stringContaining('title is undeclared'),
-      'consolidation_register is not one of formal, plain',
+      expect.stringContaining('o título está ausente'),
+      'o registro de consolidação não é um dos valores formal, plain',
     ]),
   );
 });
@@ -603,11 +609,64 @@ it('refuses a document violating several structural rules once, naming every vio
   expect(problems).toHaveLength(5);
   expect(problems).toEqual(
     expect.arrayContaining([
-      expect.stringContaining('title is undeclared'),
-      expect.stringContaining("manifest entry 1's criterion is empty"),
-      expect.stringContaining('manifest entry 2 collects no concept'),
-      expect.stringContaining('share the hypothesis "incidente-regional"'),
-      expect.stringContaining("the fallback's outcome is undeclared"),
+      expect.stringContaining('o título está ausente'),
+      expect.stringContaining('o critério da entrada 1 do manifesto está em branco'),
+      expect.stringContaining('entrada 2 do manifesto não coleta nenhum conceito'),
+      expect.stringContaining('compartilham a hipótese "incidente-regional"'),
+      expect.stringContaining('o desfecho da resolução padrão está ausente'),
     ]),
   );
 });
+
+const ENGLISH_DOMAIN_NOUN = /\b(case|version|hypothesis|revision|manifest|position|released)\b/i;
+
+type TranslationScenario = readonly [string, () => unknown, string | undefined];
+
+const translationScenarios: readonly TranslationScenario[] = [
+  ['a document declaring no manifest entry at all', () => completeDocument({ manifest: [] }), 'hipótese'],
+  ['a document whose manifest is not a list', () => completeDocument({ manifest: 'not-an-array' }), 'manifesto'],
+  ['a document whose version is not an integer', () => completeDocument({ version: '1' }), 'versão'],
+  ['a manifest entry declaring no position', () => documentWithManifestEntry({ position: undefined }), 'posição'],
+  ['a manifest entry declaring no hypothesis', () => documentWithManifestEntry({ hypothesis_name: undefined }), 'hipótese'],
+  ['a manifest entry declaring no revision', () => documentWithManifestEntry({ revision: undefined }), 'revisão'],
+  ['a manifest entry declaring no criterion', () => documentWithManifestEntry({ criterion: undefined }), undefined],
+  ['a manifest entry declaring no collected concept', () => documentWithManifestEntry({ collects: undefined }), undefined],
+  ['a manifest entry declaring no resolution', () => documentWithManifestEntry({ resolution: undefined }), undefined],
+  [
+    'a referral declaring no action',
+    () =>
+      documentWithManifestEntry({
+        resolution: { outcome: 'incidente-regional', referral: { recipient: 'atendimento' } },
+      }),
+    undefined,
+  ],
+  [
+    'two manifest entries sharing one hypothesis',
+    () => completeDocument({ manifest: [completeManifestEntry(), completeManifestEntry({ position: 2 })] }),
+    'hipótese',
+  ],
+  [
+    'two manifest entries sharing one position',
+    () =>
+      completeDocument({
+        manifest: [completeManifestEntry(), completeManifestEntry({ hypothesis_name: 'ordem-em-andamento' })],
+      }),
+    'posição',
+  ],
+  ['a document that is not one JSON object', () => null, undefined],
+  ['a consolidation_register outside its accepted values', () => completeDocument({ consolidation_register: 'strict' }), undefined],
+  ['a state outside its accepted values', () => completeDocument({ state: 'published' }), undefined],
+  ['a released_at that is not a string', () => completeDocument({ released_at: 42 }), undefined],
+];
+
+it.each(translationScenarios)(
+  'names the concerned domain noun in Portuguese, and no English domain noun among the seven this task fixes, for %s',
+  (_label, buildDocument, expectedWord) => {
+    const problems = problemsOf(buildDocument());
+
+    if (expectedWord !== undefined) {
+      expect(problems.some((problem) => problem.includes(expectedWord))).toBe(true);
+    }
+    expect(problems.some((problem) => ENGLISH_DOMAIN_NOUN.test(problem))).toBe(false);
+  },
+);

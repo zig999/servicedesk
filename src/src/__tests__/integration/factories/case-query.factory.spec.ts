@@ -180,7 +180,7 @@ it('refuses through the real wiring a case document declaring no hypothesis, nam
   const refusal = await query.readCase(vocabulary.slug, version).catch((error: unknown) => error);
 
   expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
-  expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
+  expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['o caso não declara nenhuma hipótese']);
 });
 
 it(
@@ -199,7 +199,7 @@ it(
 
     const refusal = await createCaseQuery(pool).readCase(vocabulary.slug, 1).catch((error: unknown) => error);
     expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
-    expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
+    expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['o caso não declara nenhuma hipótese']);
   },
 );
 

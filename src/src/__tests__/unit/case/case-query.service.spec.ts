@@ -28,6 +28,7 @@ import { CaseVersionNotValidError } from '../../../errors/case-version-not-valid
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
+import { statusForError } from '../../../errors/status-map.js';
 import type {
   ConceptResolution,
   IGlossaryQuery,
@@ -487,7 +488,7 @@ it('refuses a case failing one structural rule, naming the violation in a CaseVe
   expect((refusal as CaseVersionNotValidError).context).toEqual({
     slug: SLUG,
     version,
-    violations: ['the case declares no hypothesis'],
+    violations: ['o caso não declara nenhuma hipótese'],
   });
 });
 
@@ -499,8 +500,8 @@ it('joins several structural violations into the one CaseVersionNotValidError', 
   const refusal = await readAsError(service.readCase(SLUG, version));
 
   expect((refusal as CaseVersionNotValidError).context.violations).toEqual([
-    'title is empty',
-    'the case declares no hypothesis',
+    'o título está em branco',
+    'o caso não declara nenhuma hipótese',
   ]);
 });
 
@@ -553,7 +554,7 @@ it(
     const refusal = await readAsError(service.readCase(SLUG, version));
 
     expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
-    expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['title is empty']);
+    expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['o título está em branco']);
   },
 );
 
@@ -818,6 +819,27 @@ it('refuses a structurally invalid case version the same way read-case does, nam
   expect((refusal as CaseVersionNotValidError).context).toEqual({
     slug: SLUG,
     version,
-    violations: ['the case declares no hypothesis'],
+    violations: ['o caso não declara nenhuma hipótese'],
   });
 });
+
+it(
+  'refuses a stored case version failing validation at a read through CaseVersionNotValidError alone, naming ' +
+    'the case slug, the version and the validator rule that fails in Brazilian Portuguese, mapped to the 409 ' +
+    'the read-by-name rule requires, and never through CaseNotFoundError',
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store, { hypotheses: [] });
+    const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+    const refusal = await readAsError(service.readCase(SLUG, version));
+
+    expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+    expect(refusal).not.toBeInstanceOf(CaseNotFoundError);
+    const message = (refusal as CaseVersionNotValidError).message;
+    expect(message).toContain(SLUG);
+    expect(message).toContain(String(version));
+    expect(message).toContain('o caso não declara nenhuma hipótese');
+    expect(statusForError(refusal)).toBe(409);
+  },
+);

@@ -13,7 +13,7 @@ import {
   type Resolution,
 } from './case.js';
 
-const NO_HYPOTHESIS_PROBLEM = 'the case declares no hypothesis';
+const NO_HYPOTHESIS_PROBLEM = 'o caso não declara nenhuma hipótese';
 
 type ManifestEntryDocument = {
   readonly position: number;
@@ -52,19 +52,19 @@ function refuseStructuralViolations(document: unknown, slug: string): asserts do
 
 function documentProblems(document: unknown): string[] {
   if (!isRecord(document)) {
-    return ['the document is not one JSON object'];
+    return ['o documento não é um objeto JSON'];
   }
   return [
-    ...stringProblems(document['slug'], 'slug'),
-    ...stringProblems(document['title'], 'title'),
-    ...stringProblems(document['when_to_use'], 'when_to_use'),
+    ...stringProblems(document['slug'], 'o slug'),
+    ...stringProblems(document['title'], 'o título'),
+    ...stringProblems(document['when_to_use'], 'a orientação de uso'),
     ...versionProblems(document['version']),
-    ...stringProblems(document['authored_at'], 'authored_at'),
-    ...stringProblems(document['subject'], 'subject'),
-    ...resolutionProblems(document['fallback'], 'the fallback'),
+    ...stringProblems(document['authored_at'], 'a data de autoria'),
+    ...stringProblems(document['subject'], 'o tipo de sujeito'),
+    ...resolutionProblems(document['fallback'], 'a resolução padrão', 'da resolução padrão'),
     ...consolidationRegisterProblems(document['consolidation_register']),
     ...stateProblems(document['state']),
-    ...optionalStringProblems(document['released_at'], 'released_at'),
+    ...optionalStringProblems(document['released_at'], 'a data de liberação'),
     ...manifestProblems(document['manifest']),
   ];
 }
@@ -75,7 +75,7 @@ function consolidationRegisterProblems(value: unknown): string[] {
   }
   return isConsolidationRegister(value)
     ? []
-    : ['consolidation_register is not one of formal, plain'];
+    : ['o registro de consolidação não é um dos valores formal, plain'];
 }
 
 function isConsolidationRegister(value: unknown): value is ConsolidationRegister {
@@ -84,9 +84,9 @@ function isConsolidationRegister(value: unknown): value is ConsolidationRegister
 
 function stateProblems(value: unknown): string[] {
   if (value === undefined) {
-    return ['state is undeclared'];
+    return ['o estado está ausente'];
   }
-  return isCaseVersionState(value) ? [] : ['state is not one of draft, released'];
+  return isCaseVersionState(value) ? [] : ['o estado não é um dos valores rascunho, liberada'];
 }
 
 function isCaseVersionState(value: unknown): value is CaseVersionState {
@@ -95,12 +95,12 @@ function isCaseVersionState(value: unknown): value is CaseVersionState {
 
 function stringProblems(value: unknown, subject: string): string[] {
   if (value === undefined) {
-    return [`${subject} is undeclared`];
+    return [`${subject} está ausente`];
   }
   if (typeof value !== 'string') {
-    return [`${subject} is not a string`];
+    return [`${subject} não é um texto`];
   }
-  return value === '' ? [`${subject} is empty`] : [];
+  return value === '' ? [`${subject} está em branco`] : [];
 }
 
 function optionalStringProblems(value: unknown, subject: string): string[] {
@@ -108,9 +108,9 @@ function optionalStringProblems(value: unknown, subject: string): string[] {
     return [];
   }
   if (typeof value !== 'string') {
-    return [`${subject} is not a string`];
+    return [`${subject} não é um texto`];
   }
-  return value === '' ? [`${subject} is empty`] : [];
+  return value === '' ? [`${subject} está em branco`] : [];
 }
 
 function isInteger(value: unknown): value is number {
@@ -119,13 +119,13 @@ function isInteger(value: unknown): value is number {
 
 function integerProblems(value: unknown, subject: string): string[] {
   if (value === undefined) {
-    return [`${subject} is undeclared`];
+    return [`${subject} está ausente`];
   }
-  return isInteger(value) ? [] : [`${subject} is not an integer`];
+  return isInteger(value) ? [] : [`${subject} não é um número inteiro`];
 }
 
 function versionProblems(value: unknown): string[] {
-  return integerProblems(value, 'version');
+  return integerProblems(value, 'a versão');
 }
 
 function manifestProblems(value: unknown): string[] {
@@ -133,7 +133,7 @@ function manifestProblems(value: unknown): string[] {
     return [NO_HYPOTHESIS_PROBLEM];
   }
   if (!Array.isArray(value)) {
-    return ['manifest is not an array of manifest entries'];
+    return ['o manifesto não é uma lista de entradas'];
   }
   const entries: readonly unknown[] = value;
   if (entries.length === 0) {
@@ -148,32 +148,32 @@ function manifestProblems(value: unknown): string[] {
 
 function manifestEntryProblems(value: unknown, locator: string): string[] {
   if (!isRecord(value)) {
-    return [`${locator} is not one JSON object`];
+    return [`${locator} não é um objeto JSON`];
   }
   return [
-    ...integerProblems(value['position'], `${locator}'s position`),
-    ...stringProblems(value['hypothesis_name'], `${locator}'s hypothesis`),
-    ...integerProblems(value['revision'], `${locator}'s revision`),
-    ...stringProblems(value['criterion'], `${locator}'s criterion`),
+    ...integerProblems(value['position'], `a posição da ${locator}`),
+    ...stringProblems(value['hypothesis_name'], `a hipótese da ${locator}`),
+    ...integerProblems(value['revision'], `a revisão da ${locator}`),
+    ...stringProblems(value['criterion'], `o critério da ${locator}`),
     ...collectsProblems(value['collects'], locator),
-    ...resolutionProblems(value['resolution'], `${locator}'s resolution`),
+    ...resolutionProblems(value['resolution'], `a resolução da ${locator}`, `da resolução da ${locator}`),
   ];
 }
 
 function collectsProblems(value: unknown, locator: string): string[] {
   if (value === undefined) {
-    return [`${locator} collects no concept`];
+    return [`${locator} não coleta nenhum conceito`];
   }
   if (!Array.isArray(value)) {
-    return [`${locator}'s collects is not an array of concept names`];
+    return [`os conceitos coletados da ${locator} não formam uma lista de nomes de conceito`];
   }
   const entries: readonly unknown[] = value;
   if (entries.length === 0) {
-    return [`${locator} collects no concept`];
+    return [`${locator} não coleta nenhum conceito`];
   }
   return entries.every((name) => typeof name === 'string' && name !== '')
     ? []
-    : [`${locator}'s collects holds an entry that names no concept`];
+    : [`os conceitos coletados da ${locator} incluem um item que não nomeia nenhum conceito`];
 }
 
 function sharedHypothesisProblems(entries: readonly unknown[]): string[] {
@@ -186,7 +186,7 @@ function sharedHypothesisProblems(entries: readonly unknown[]): string[] {
   }
   return [...locators.entries()]
     .filter(([, at]) => at.length > 1)
-    .map(([name, at]) => `manifest entries ${at.join(', ')} share the hypothesis "${name}"`);
+    .map(([name, at]) => `as entradas ${at.join(', ')} do manifesto compartilham a hipótese "${name}"`);
 }
 
 function declaredHypothesisName(entry: unknown): string | undefined {
@@ -207,7 +207,7 @@ function sharedPositionProblems(entries: readonly unknown[]): string[] {
   }
   return [...locators.entries()]
     .filter(([, at]) => at.length > 1)
-    .map(([position, at]) => `manifest entries ${at.join(', ')} share the position ${position}`);
+    .map(([position, at]) => `as entradas ${at.join(', ')} do manifesto compartilham a posição ${position}`);
 }
 
 function declaredPosition(entry: unknown): number | undefined {
@@ -219,32 +219,32 @@ function declaredPosition(entry: unknown): number | undefined {
 }
 
 function locatorOf(index: number): string {
-  return `manifest entry ${index + 1}`;
+  return `entrada ${index + 1} do manifesto`;
 }
 
-function resolutionProblems(value: unknown, subject: string): string[] {
+function resolutionProblems(value: unknown, nominative: string, genitive: string): string[] {
   if (value === undefined) {
-    return [`${subject} is undeclared`];
+    return [`${nominative} está ausente`];
   }
   if (!isRecord(value)) {
-    return [`${subject} is not one JSON object`];
+    return [`${nominative} não é um objeto JSON`];
   }
   return [
-    ...stringProblems(value['outcome'], `${subject}'s outcome`),
-    ...referralProblems(value['referral'], `${subject}'s referral`),
+    ...stringProblems(value['outcome'], `o desfecho ${genitive}`),
+    ...referralProblems(value['referral'], `o encaminhamento ${genitive}`, `do encaminhamento ${genitive}`),
   ];
 }
 
-function referralProblems(value: unknown, subject: string): string[] {
+function referralProblems(value: unknown, nominative: string, genitive: string): string[] {
   if (value === undefined) {
-    return [`${subject} is undeclared`];
+    return [`${nominative} está ausente`];
   }
   if (!isRecord(value)) {
-    return [`${subject} is not one JSON object`];
+    return [`${nominative} não é um objeto JSON`];
   }
   return [
-    ...stringProblems(value['action'], `${subject}'s action`),
-    ...stringProblems(value['recipient'], `${subject}'s recipient`),
+    ...stringProblems(value['action'], `a ação ${genitive}`),
+    ...stringProblems(value['recipient'], `o destinatário ${genitive}`),
   ];
 }
 

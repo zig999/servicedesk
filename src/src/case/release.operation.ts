@@ -94,7 +94,7 @@ async function manifestOwnStateViolations(
       revision,
     );
     if (ownState !== RELEASED_STATE) {
-      violations.push(`the hypothesis "${hypothesisName}" is manifested at a revision that is not released`);
+      violations.push(`a hipótese "${hypothesisName}" está manifestada em uma revisão que não está liberada`);
     }
   }
   return violations;
