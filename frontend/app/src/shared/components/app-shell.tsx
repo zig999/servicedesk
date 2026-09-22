@@ -2,7 +2,7 @@ import { type JSX, useState } from "react";
 import { Link, Outlet, rootRouteId, useMatches } from "@tanstack/react-router";
 import { Breadcrumb, type BreadcrumbItem } from "@tui/ui/breadcrumb";
 import { StatusBar } from "@tui/ui/status-bar";
-import { Toaster } from "sonner";
+import { Toast } from "@tui/ui/toast";
 import { FooterSlotContext } from "./footer-slot-context";
 
 const SIDEBAR_ENTRIES: ReadonlyArray<{
@@ -110,7 +110,7 @@ export function AppShell(): JSX.Element {
         </div>
         <Footer />
       </div>
-      <Toaster />
+      <Toast />
     </>
   );
 }

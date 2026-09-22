@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from "react";
 import { Link, useParams } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
+import { Alert } from "@tui/ui/alert";
 import { Button } from "@tui/ui/button";
 import {
   StatusTable,
@@ -101,15 +102,17 @@ function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
 
         <p>This case currently holds no version.</p>
       ) : (
-        <>
+        <div className="flex flex-col gap-4">
           {currentVersion.phase === "not-valid" && (
-            <p>This case&apos;s current version does not read back as a case.</p>
+            <Alert variant="destructive" title="Error">
+              This case&apos;s current version does not read back as a case.
+            </Alert>
           )}
           {currentVersion.phase === "read-failed" && (
             <p>Unable to load this case&apos;s version timeline.</p>
           )}
           <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
-        </>
+        </div>
       )}
     </>
   );
