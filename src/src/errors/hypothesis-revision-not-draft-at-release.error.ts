@@ -1,7 +1,7 @@
 export class HypothesisRevisionNotDraftAtReleaseError extends Error {
   public constructor() {
     super(
-      'this hypothesis-revision is not in draft state, and release is the one trigger that only ever moves a hypothesis-revision out of draft',
+      'esta revisão não está em estado de rascunho, e a liberação é o único gatilho que move uma revisão para fora do rascunho',
     );
     this.name = 'HypothesisRevisionNotDraftAtReleaseError';
   }
