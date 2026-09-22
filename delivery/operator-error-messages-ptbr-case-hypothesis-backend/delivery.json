@@ -10,12 +10,44 @@
       "task": "task/case-refusal-messages/case-content-violation-messages"
     },
     {
+      "id": "implementation/case-refusal-messages/case-version-existence-messages",
+      "kind": "implementation",
+      "file": "implementation/case-refusal-messages/case-version-existence-messages.md",
+      "title": "PT-br messages for CaseNotFoundError and CaseVersionAlreadyStoredError",
+      "summary": "The two case-version-existence refusals now carry Brazilian-Portuguese messages naming the case slug and version number, distinguishable from one another and from the validation refusal, with the corrected literal-text assertion in error-handler.middleware.spec.ts updated to match.",
+      "task": "task/case-refusal-messages/case-version-existence-messages"
+    },
+    {
+      "id": "implementation/case-refusal-messages/case-version-state-messages",
+      "kind": "implementation",
+      "file": "implementation/case-refusal-messages/case-version-state-messages.md",
+      "title": "PT-br messages for the five case-version-state refusals",
+      "summary": "The message text of CaseAlreadyHasDraftError, CaseHoldsNoDraftError, CaseVersionNotDraftError, CaseVersionNotReleasedError and CaseVersionNotDraftAtReleaseError is rewritten in Brazilian Portuguese, each still stating the state fact its English original stated, with name, context and status-map untouched.",
+      "task": "task/case-refusal-messages/case-version-state-messages"
+    },
+    {
       "id": "proof/case-refusal-messages/case-content-violation-messages",
       "kind": "proof",
       "file": "proof/case-refusal-messages/case-content-violation-messages.md",
       "title": "Proof for PT-br messages of CaseVersionNotValidError and CaseVersionNotReleasableError",
       "summary": "Independent unit tests, written apart from the implementation, that decide each of the task's criteria for the two translated refusal classes and their two violation-producing files, and that identify which of the task's criteria and implemented nodes no test in this tree can decide.",
       "task": "task/case-refusal-messages/case-content-violation-messages"
+    },
+    {
+      "id": "proof/case-refusal-messages/case-version-existence-messages",
+      "kind": "proof",
+      "file": "proof/case-refusal-messages/case-version-existence-messages.md",
+      "title": "PT-br messages for CaseNotFoundError and CaseVersionAlreadyStoredError",
+      "summary": "Two new spec files prove the translated messages name the case slug and version, use the fixed PT-br vocabulary with no English noun, keep name/context untouched, are distinguishable from one another by text with matching order and wording, and that CaseVersionAlreadyStoredError stays unmapped by status-map.ts.",
+      "task": "task/case-refusal-messages/case-version-existence-messages"
+    },
+    {
+      "id": "proof/case-refusal-messages/case-version-state-messages",
+      "kind": "proof",
+      "file": "proof/case-refusal-messages/case-version-state-messages.md",
+      "title": "PT-br message proof for the five case-version-state refusals",
+      "summary": "New unit tests over the five case-version-state error classes pin each class's PT-br message content, fact-before-state ordering, cross-class distinguishability, unchanged name and unchanged context.",
+      "task": "task/case-refusal-messages/case-version-state-messages"
     }
   ],
   "edges": [
@@ -50,8 +82,104 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-refusal-messages/case-version-existence-messages",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-existence-messages",
+      "to": "rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-existence-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-existence-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-existence-messages",
+      "to": "task/case-refusal-messages/case-version-existence-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-refusal-messages/case-version-state-messages",
+      "to": "task/case-refusal-messages/case-version-state-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-refusal-messages/case-content-violation-messages",
       "to": "implementation/case-refusal-messages/case-content-violation-messages",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-refusal-messages/case-version-existence-messages",
+      "to": "implementation/case-refusal-messages/case-version-existence-messages",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-refusal-messages/case-version-state-messages",
+      "to": "implementation/case-refusal-messages/case-version-state-messages",
       "kind": "proves",
       "at": "the path"
     }

@@ -46,6 +46,106 @@
       ]
     },
     {
+      "node": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "digest": "sha256:ebd00c9d23b08bee16739e4b6766a71bc2b8de9c18ef8431e05fdcb98daf45db",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:60210f1752abed8e1eb9b84c7ba577771c34c049ec7c594794cb63cb5f82ebc5"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+        },
+        {
+          "path": "src/src/errors/case-already-has-draft.error.ts",
+          "digest": "sha256:18c52047fa674763ff69aa926164b1b84533bc7b80395a521db13b43f3d59a08"
+        },
+        {
+          "path": "src/src/errors/case-holds-no-draft.error.ts",
+          "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
+        },
+        {
+          "path": "src/src/errors/case-not-found.error.ts",
+          "digest": "sha256:e7aad6edc919e1e87f076678f476cccbb054a4a8a0be950c35df50c9134097ea"
+        },
+        {
+          "path": "src/src/errors/case-version-already-stored.error.ts",
+          "digest": "sha256:bf607c89f7362a07db1c11a34ddf9be8ace7b0eaddb9909328c1d34637544767"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
+          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
+        },
+        {
+          "path": "src/src/errors/case-version-not-releasable.error.ts",
+          "digest": "sha256:c01cffe5b41e20aa9af56d1f466c0fab70a4bfe36ab6aa68620d1fd3857f5932"
+        },
+        {
+          "path": "src/src/errors/case-version-not-released.error.ts",
+          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
+        },
+        {
+          "path": "src/src/errors/case-version-not-valid.error.ts",
+          "digest": "sha256:5447495f57eaea3fbe3e6b7da84fbdca94cc008f3da8f4637ec335eb06ed782e"
+        }
+      ]
+    },
+    {
+      "node": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "digest": "sha256:ac0edd8fbfb9505a66e6f7be8c319be2e8c82f527daa1e0848603e0f06ff229e",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:60210f1752abed8e1eb9b84c7ba577771c34c049ec7c594794cb63cb5f82ebc5"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+        },
+        {
+          "path": "src/src/errors/case-already-has-draft.error.ts",
+          "digest": "sha256:18c52047fa674763ff69aa926164b1b84533bc7b80395a521db13b43f3d59a08"
+        },
+        {
+          "path": "src/src/errors/case-holds-no-draft.error.ts",
+          "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
+        },
+        {
+          "path": "src/src/errors/case-not-found.error.ts",
+          "digest": "sha256:e7aad6edc919e1e87f076678f476cccbb054a4a8a0be950c35df50c9134097ea"
+        },
+        {
+          "path": "src/src/errors/case-version-already-stored.error.ts",
+          "digest": "sha256:bf607c89f7362a07db1c11a34ddf9be8ace7b0eaddb9909328c1d34637544767"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
+          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
+        },
+        {
+          "path": "src/src/errors/case-version-not-releasable.error.ts",
+          "digest": "sha256:c01cffe5b41e20aa9af56d1f466c0fab70a4bfe36ab6aa68620d1fd3857f5932"
+        },
+        {
+          "path": "src/src/errors/case-version-not-released.error.ts",
+          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
+        },
+        {
+          "path": "src/src/errors/case-version-not-valid.error.ts",
+          "digest": "sha256:5447495f57eaea3fbe3e6b7da84fbdca94cc008f3da8f4637ec335eb06ed782e"
+        }
+      ]
+    },
+    {
       "node": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a",
       "files": [
@@ -4474,6 +4574,26 @@
           "digest": "sha256:1682d4a8884537199aa06ac16e4aecffacf74e1665f9bd80c47dc6c7fa4640c5"
         },
         {
+          "path": "src/src/errors/case-already-has-draft.error.ts",
+          "digest": "sha256:18c52047fa674763ff69aa926164b1b84533bc7b80395a521db13b43f3d59a08"
+        },
+        {
+          "path": "src/src/errors/case-holds-no-draft.error.ts",
+          "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
+          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
+        },
+        {
+          "path": "src/src/errors/case-version-not-released.error.ts",
+          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
+        },
+        {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:d498f772273ed722b9fff9089f6c1f6eb16918e93d6c76637c103e11f69e3514"
         },
@@ -4722,6 +4842,26 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:1682d4a8884537199aa06ac16e4aecffacf74e1665f9bd80c47dc6c7fa4640c5"
+        },
+        {
+          "path": "src/src/errors/case-already-has-draft.error.ts",
+          "digest": "sha256:18c52047fa674763ff69aa926164b1b84533bc7b80395a521db13b43f3d59a08"
+        },
+        {
+          "path": "src/src/errors/case-holds-no-draft.error.ts",
+          "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
+          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
+        },
+        {
+          "path": "src/src/errors/case-version-not-released.error.ts",
+          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
         },
         {
           "path": "src/src/http/discard.controller.ts",
@@ -8321,11 +8461,11 @@
     },
     {
       "node": "rules/investigation/only-a-released-case-version-is-diagnosed",
-      "digest": "sha256:22637d2cf1bb41a39332a76f6bc743df0d7e549e6bd944f893da74523668df73",
+      "digest": "sha256:91e2c54fef542e2827a57593cfbc5ad7d5bd6dd9f5900177cffa75b264a65128",
       "files": [
         {
           "path": "src/src/errors/case-version-not-released.error.ts",
-          "digest": "sha256:6c115a5c12465e4c3c9003745e98dd21a4320e0a8d1446d121ff5f15b08eb36b"
+          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
@@ -8553,7 +8693,7 @@
         },
         {
           "path": "src/src/errors/case-already-has-draft.error.ts",
-          "digest": "sha256:67436c25b8d979e455c538f0bba82d519175d40618e26942919295df6203e137"
+          "digest": "sha256:18c52047fa674763ff69aa926164b1b84533bc7b80395a521db13b43f3d59a08"
         },
         {
           "path": "src/src/http/create-draft.routes.ts",
@@ -8652,6 +8792,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6",
+      "files": [
+        {
+          "path": "src/src/errors/case-not-found.error.ts",
+          "digest": "sha256:e7aad6edc919e1e87f076678f476cccbb054a4a8a0be950c35df50c9134097ea"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
       "digest": "sha256:da72dd33d310eff9f2e2d8e48617f00f063b5a14129ff768ac35d607a1631008",
       "files": [
@@ -8667,7 +8817,7 @@
     },
     {
       "node": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
-      "digest": "sha256:3250bfc5b06bb263626adbbfb21e76fdd28e59ae4b3948e657f412a1af40d986",
+      "digest": "sha256:5f021f1109a9313879c17c86894f2e542b954859a94f16fde358e5a676d89745",
       "files": [
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -8679,7 +8829,7 @@
         },
         {
           "path": "src/src/errors/case-version-not-valid.error.ts",
-          "digest": "sha256:a51cd3fa4f3147c6a3f090ecf3e208b0cf6b49ce4c0b4439f8d523301cecbace"
+          "digest": "sha256:5447495f57eaea3fbe3e6b7da84fbdca94cc008f3da8f4637ec335eb06ed782e"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -8795,11 +8945,11 @@
         },
         {
           "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
-          "digest": "sha256:91e2e1855a2021b94af860a6a5605283cad6f2bf0b0f5df19e4b10d015423df2"
+          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
-          "digest": "sha256:d7b2b127256eb30379192629898af08415864070ceda4379a6f3eb6291d82831"
+          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -8818,6 +8968,16 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused",
+      "digest": "sha256:52b85e29bada51f2cebfb9e00e18684bff823057deb3a17ff198886b97d44afd",
+      "files": [
+        {
+          "path": "src/src/errors/case-version-already-stored.error.ts",
+          "digest": "sha256:bf607c89f7362a07db1c11a34ddf9be8ace7b0eaddb9909328c1d34637544767"
         }
       ]
     },
@@ -9081,7 +9241,7 @@
         },
         {
           "path": "src/src/errors/case-holds-no-draft.error.ts",
-          "digest": "sha256:824535aef9e3670cd44724513d90cca9b4cbd775f1c36e29f58f3e763ad92c16"
+          "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -9521,7 +9681,7 @@
     },
     {
       "node": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
-      "digest": "sha256:e46f78f06d4865b1db442958b80c0a8ff3383cddc27784d20f63c536140c11b7",
+      "digest": "sha256:d284782b6fe16990f2c5dbcb0363ff65755d540bf7e1721066ad9dd44ccb358c",
       "files": [
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
@@ -9530,6 +9690,10 @@
         {
           "path": "src/src/case/release.operation.ts",
           "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
+        },
+        {
+          "path": "src/src/errors/case-version-not-releasable.error.ts",
+          "digest": "sha256:c01cffe5b41e20aa9af56d1f466c0fab70a4bfe36ab6aa68620d1fd3857f5932"
         }
       ]
     },
