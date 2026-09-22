@@ -1,0 +1,11 @@
+certified:
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    state: covered
+    tests:
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves every other case's own summary unaffected and the failing case's own entry to only its slug and the not-valid marker when one case's current version fails validation
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves the listing successfully with an isolated not-valid entry for each of two cases whose current versions fail validation at the same reading, rather than reverting to a whole-listing failure
+

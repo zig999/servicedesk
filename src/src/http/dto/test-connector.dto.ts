@@ -32,6 +32,12 @@ const testConnectorRequestEchoSchema = z.object({
   body: z.unknown().optional(),
 });
 
+const testConnectorUnreachableErrorSchema = z.object({
+  code: z.string().min(1),
+  message: z.string().min(1),
+  details: z.object({ connector: z.string().min(1) }),
+});
+
 const testConnectorOutcomeSchema = z.discriminatedUnion('kind', [
   z.object({
     kind: z.literal('response'),
@@ -45,8 +51,8 @@ const testConnectorOutcomeSchema = z.discriminatedUnion('kind', [
     elapsedMs: z.number().nonnegative(),
   }),
   z.object({
-    kind: z.literal('error'),
-    message: z.string().min(1),
+    kind: z.literal('unreachable'),
+    error: testConnectorUnreachableErrorSchema,
     elapsedMs: z.number().nonnegative(),
   }),
 ]);

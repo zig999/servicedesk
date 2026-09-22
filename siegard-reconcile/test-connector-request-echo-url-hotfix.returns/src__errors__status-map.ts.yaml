@@ -1,0 +1,179 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      export function statusForError(error: unknown): number | undefined {
+        if (!(error instanceof Error)) {
+          return undefined;
+        }
+        for (const [errorClass, status] of STATUS_BY_ERROR_CLASS) {
+          if (error instanceof errorClass) {
+            return status;
+          }
+        }
+        return undefined;
+      }
+      The function only returns `undefined` for an error the map does not name; the HTTP 500
+      status, the `INTERNAL_ERROR` code and the fixed message the node states are not declared
+      anywhere in this file — they are supplied by whatever reads this function's `undefined`
+      result.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the STATUS_BY_ERROR_CLASS entry for CapabilityIdentityNotFoundError
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the STATUS_BY_ERROR_CLASS entries answering this registry's own reads and writes
+    evidence: >-
+      [ConnectorConfigurationNotFoundError, 404],
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: contracts/investigation/diagnosis
+    held_at: the STATUS_BY_ERROR_CLASS entries answering diagnose's own refusals
+    evidence: >-
+      [CaseVersionNotReleasedError, 409],
+      [SubjectDoesNotCoverCaseInputsError, 422],
+      [SubjectCarriesNoAttributeError, 422],
+      [InvestigationWriteDeadlineExceededError, 500],
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the STATUS_BY_ERROR_CLASS entries answering this surface's own lifecycle operations
+    evidence: >-
+      [CaseAlreadyHasDraftError, 409],
+      [ManifestPositionOccupiedError, 409],
+      [CaseVersionNotDraftError, 409],
+      [CaseVersionNotDraftAtReleaseError, 409],
+      [CaseHoldsNoDraftError, 409],
+      [ReleasedHypothesisRevisionNotAlterableError, 409],
+      [HypothesisRevisionNotDraftAtReleaseError, 409],
+      [CaseVersionNotReleasableError, 422],
+      [ManifestWouldHoldNoHypothesisError, 422],
+      [HypothesisRevisionCollectsNoConceptError, 422],
+      [HypothesisNotInManifestError, 404],
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the STATUS_BY_ERROR_CLASS entry for ConceptDescriptionRequiredError
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: the STATUS_BY_ERROR_CLASS entries for ConceptNotHeldError and VocabularyTermNotHeldError
+    evidence: >-
+      [ConceptNotHeldError, 404],
+      [VocabularyTermNotHeldError, 404],
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: the STATUS_BY_ERROR_CLASS entry for DuplicateGlossaryNameError
+    evidence: "[DuplicateGlossaryNameError, 500],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: the STATUS_BY_ERROR_CLASS entry for MalformedCapabilityInputSchemaError
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: >-
+      the STATUS_BY_ERROR_CLASS entries for ConnectorConfigurationNotWellFormedError and
+      IncompleteConnectorConfigurationError
+    evidence: >-
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      the STATUS_BY_ERROR_CLASS entries for CapabilityNotRegisteredForTestError,
+      CapabilityConnectorMismatchError and ConnectorCallAddressNotAbsoluteUrlError
+    evidence: >-
+      [CapabilityNotRegisteredForTestError, 404],
+      [CapabilityConnectorMismatchError, 409],
+      [ConnectorCallAddressNotAbsoluteUrlError, 422],
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: the STATUS_BY_ERROR_CLASS entry for IncompleteConnectorConfigurationError
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the STATUS_BY_ERROR_CLASS entry for ConnectorConfigurationNotFoundError
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: the STATUS_BY_ERROR_CLASS entry for ConnectorPlaceholderOutsideInputSchemaError
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: >-
+      the STATUS_BY_ERROR_CLASS entries for OpenApiDocumentNotFetchedError and
+      OpenApiDocumentNotReadableError
+    evidence: >-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: the STATUS_BY_ERROR_CLASS entry for OpenApiDocumentNotReadableError
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: the STATUS_BY_ERROR_CLASS entry for OpenApiDocumentNotReadableError
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: the STATUS_BY_ERROR_CLASS entry for OpenApiOperationNotFoundError
+    evidence: "[OpenApiOperationNotFoundError, 422],"
+  - node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: >-
+      the STATUS_BY_ERROR_CLASS entries for OpenApiDocumentNotFetchedError and
+      OpenApiDocumentNotReadableError
+    evidence: >-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: the STATUS_BY_ERROR_CLASS entry for OpenApiDocumentNotFetchedError
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the STATUS_BY_ERROR_CLASS entry for SubjectDoesNotCoverCaseInputsError
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: the STATUS_BY_ERROR_CLASS entry for HypothesisNotInManifestError
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the STATUS_BY_ERROR_CLASS entry for SubjectCarriesNoAttributeError
+    evidence: "[SubjectCarriesNoAttributeError, 422],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the STATUS_BY_ERROR_CLASS entry for InvestigationWriteDeadlineExceededError
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the STATUS_BY_ERROR_CLASS entry for CaseVersionNotValidError
+    evidence: "[CaseVersionNotValidError, 409],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: the STATUS_BY_ERROR_CLASS entry for ConceptRefusesSubjectTypeError
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the STATUS_BY_ERROR_CLASS entry for HypothesisRevisionCollectsNoConceptError
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the STATUS_BY_ERROR_CLASS entry for CaseHoldsNoDraftError
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the STATUS_BY_ERROR_CLASS entry for HypothesisRevisionNotDraftAtReleaseError
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: the STATUS_BY_ERROR_CLASS entry for ReleasedHypothesisRevisionNotAlterableError
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: the STATUS_BY_ERROR_CLASS entry for ConceptNotInGlossaryError
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the STATUS_BY_ERROR_CLASS entry for ConceptDescriptionRequiredError
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: the STATUS_BY_ERROR_CLASS entry for SubjectDoesNotCoverCaseInputsError
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: contracts/integration/connector-diagnostics
+    held_at: >-
+      the STATUS_BY_ERROR_CLASS entries answering test-connector's own two request-time
+      refusals
+    evidence: >-
+      [CapabilityNotRegisteredForTestError, 404],
+      [CapabilityConnectorMismatchError, 409],
+      [ConnectorCallAddressNotAbsoluteUrlError, 422],
+  - node: rules/integration/a-diagnostic-response-masks-a-resolved-credential
+    held_at: nowhere
+    evidence: >-
+      This node states a masking rule over a diagnostic response, not an error-to-status
+      mapping; the file holds no construct answering it.
+  - node: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+    held_at: nowhere
+    evidence: >-
+      The node's HTTP 200 answer for an unreachable connector is not a refusal routed through
+      this error-to-status map, and no ConnectorUnreachableError entry appears in
+      STATUS_BY_ERROR_CLASS.
+looked_past: >-
+  Every status/error-class pair in STATUS_BY_ERROR_CLASS was checked against
+  knowledge/projections/full-text.md; every entry matches a node's stated status somewhere in
+  the specification (several entries are governed by nodes outside this file's node set but were
+  confirmed rather than reported, since they match); the first-match instanceof iteration order of
+  the map and its type-safety shape are a code-review concern about the construct rather than a
+  domain fact, and are not reported here.

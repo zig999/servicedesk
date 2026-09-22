@@ -211,6 +211,7 @@ describe("useManifestBuilder — the shown manifest after a blocked repin attemp
   it("leaves every row reading exactly as it did before the attempt, issuing no further GET", async () => {
     const fetchMock = createFetchStub({
       [`GET ${VERSION_PATH}`]: () => jsonResponse(TWO_ENTRY_MANIFEST),
+      [`GET /v1/cases/${SLUG}/hypotheses`]: () => jsonResponse({ data: [] }),
       [`PUT ${manifestPath("H2")}`]: () =>
         apiErrorResponse("CaseVersionNotDraftError", 409, "the version is no longer a draft"),
     });
@@ -220,12 +221,14 @@ describe("useManifestBuilder — the shown manifest after a blocked repin attemp
     });
     await waitFor(() => expect(result.current.phase).toBe("ready"));
 
+    const callCountBeforeAttempt = getCallCount(fetchMock);
+
     act(() => {
       rowFor(result.current, "H2").onRepin(9);
     });
 
     await waitFor(() => expect(readyState(result.current).isBlocked).toBe(true));
-    expect(getCallCount(fetchMock)).toBe(1);
+    expect(getCallCount(fetchMock)).toBe(callCountBeforeAttempt);
     expect(rowFor(result.current, "H2").revision).toBe(5);
     expect(rowFor(result.current, "H2").position).toBe(2);
   });

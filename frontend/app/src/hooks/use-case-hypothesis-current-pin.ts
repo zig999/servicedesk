@@ -1,6 +1,7 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { apiFetch } from "../services/api-client";
 import { useCaseVersions } from "./use-case-versions";
+import { errorStateKind } from "./use-edit-draft-version-form";
 
 type ManifestEntryDto = {
   readonly hypothesis_revision: {
@@ -16,6 +17,7 @@ type CaseVersionManifest = {
 export type CaseHypothesisCurrentPin =
   | { readonly phase: "loading" }
   | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | { readonly phase: "not-valid" }
   | {
       readonly phase: "ready";
       readonly targetVersion: number;
@@ -66,6 +68,9 @@ export function useCaseHypothesisCurrentPin(
   }
 
   if (manifestQuery.isError) {
+    if (errorStateKind(manifestQuery.error) === "case-not-valid") {
+      return { phase: "not-valid" };
+    }
     return { phase: "load-error", retryLoad };
   }
 

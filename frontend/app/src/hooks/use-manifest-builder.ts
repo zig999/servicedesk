@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { apiFetch } from "../services/api-client";
 import { errorStateKind } from "./use-edit-draft-version-form";
 import { useTelemetry } from "./use-telemetry";
+import { useCaseHypotheses, type HypothesisIdentity } from "./use-case-hypotheses";
 
 type ManifestEntryDto = {
   readonly position: number;
@@ -32,6 +33,8 @@ export type ManifestRow = {
   readonly moveErrorMessage: string | null;
 
   readonly revisionErrorMessage: string | null;
+
+  readonly removeErrorMessage: string | null;
   readonly onMoveUp: () => void;
   readonly onMoveDown: () => void;
   readonly onRemove: () => void;
@@ -39,9 +42,31 @@ export type ManifestRow = {
   readonly onRepin: (revision: number) => void;
 };
 
+export type ManifestCandidate = HypothesisIdentity;
+
+export type PlaceExistingError = {
+  readonly hypothesisName: string;
+  readonly message: string;
+};
+
+type PlacingOfferState = {
+  readonly isBusy: boolean;
+
+  readonly isBlocked: boolean;
+
+  readonly candidateHypotheses: readonly ManifestCandidate[];
+
+  readonly candidatesAnswered: boolean;
+
+  readonly placeExistingError: PlaceExistingError | null;
+
+  readonly onPlaceExisting: (hypothesisName: string, revision: number, position: number) => void;
+};
+
 export type ManifestBuilderState =
-  | { readonly phase: "loading" }
-  | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | ({ readonly phase: "loading" } & PlacingOfferState)
+  | ({ readonly phase: "load-error"; readonly retryLoad: () => void } & PlacingOfferState)
+  | ({ readonly phase: "not-valid" } & PlacingOfferState)
   | {
       readonly phase: "ready";
       readonly rows: readonly ManifestRow[];
@@ -51,11 +76,31 @@ export type ManifestBuilderState =
       readonly isBusy: boolean;
 
       readonly isReleased: boolean;
+
+      readonly candidateHypotheses: readonly ManifestCandidate[];
+
+      readonly candidatesAnswered: boolean;
+
+      readonly placeExistingError: PlaceExistingError | null;
+
+      readonly onPlaceExisting: (hypothesisName: string, revision: number, position: number) => void;
     };
 
 const MOVE_BLOCKED_MESSAGE = "Another hypothesis already holds that position. Try again.";
 const GENERIC_FAILURE_MESSAGE = "Something went wrong while saving. Try again.";
 const REVISION_FAILURE_MESSAGE = "Could not switch to that revision. Try again.";
+const REMOVE_BLOCKED_MESSAGE =
+  "This case's manifest must hold at least one hypothesis; this entry is still held.";
+const PLACE_EXISTING_POSITION_BLOCKED_MESSAGE =
+  "This version's manifest already places a different hypothesis at that position; it stands exactly as it did before this placement.";
+
+function candidatesOf(
+  hypotheses: readonly HypothesisIdentity[],
+  rows: readonly ManifestRow[],
+): readonly ManifestCandidate[] {
+  const manifested = new Set(rows.map((row) => row.hypothesisName));
+  return hypotheses.filter((hypothesis) => !manifested.has(hypothesis.name));
+}
 
 function sortByPosition(manifest: readonly ManifestEntryDto[]): readonly ManifestEntryDto[] {
   return [...manifest].sort((a, b) => a.position - b.position);
@@ -73,12 +118,18 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
     hypothesisName: string;
     message: string;
   } | null>(null);
+  const [removeError, setRemoveError] = useState<{
+    hypothesisName: string;
+    message: string;
+  } | null>(null);
+  const [placeExistingError, setPlaceExistingError] = useState<PlaceExistingError | null>(null);
 
   const versionQuery = useQuery({
     queryKey: ["case-version", slug, version],
     queryFn: () =>
       apiFetch<ManifestVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`),
   });
+  const caseHypothesesQuery = useCaseHypotheses(slug);
 
   function invalidateManifest(): void {
     void queryClient.invalidateQueries({ queryKey: ["case-version", slug, version] });
@@ -89,7 +140,7 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       hypothesisName: string;
       revision: number;
       position: number;
-      kind: "move" | "repin";
+      kind: "move" | "repin" | "place-existing";
     }) =>
       apiFetch<void>(
         `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/manifest/${encodeURIComponent(vars.hypothesisName)}`,
@@ -103,6 +154,7 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
 
       setMoveError(null);
       setRevisionError(null);
+      setPlaceExistingError(null);
       telemetry.manifestHypothesisPlaced({
         slug,
         version,
@@ -121,6 +173,13 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       }
       if (kind === "manifest-position-occupied") {
 
+        if (vars.kind === "place-existing") {
+          setPlaceExistingError({
+            hypothesisName: vars.hypothesisName,
+            message: PLACE_EXISTING_POSITION_BLOCKED_MESSAGE,
+          });
+          return;
+        }
         setMoveError({ hypothesisName: vars.hypothesisName, message: MOVE_BLOCKED_MESSAGE });
         return;
       }
@@ -140,10 +199,11 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       ),
     onSuccess: (_data, vars) => {
 
+      setRemoveError(null);
       telemetry.manifestHypothesisRemoved({ slug, version, hypothesis_name: vars.hypothesisName });
       invalidateManifest();
     },
-    onError: (error) => {
+    onError: (error, vars) => {
       const kind = errorStateKind(error);
       if (kind === "case-version-not-draft") {
 
@@ -152,6 +212,7 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       }
       if (kind === "manifest-would-hold-no-hypothesis") {
 
+        setRemoveError({ hypothesisName: vars.hypothesisName, message: REMOVE_BLOCKED_MESSAGE });
         invalidateManifest();
         return;
       }
@@ -159,16 +220,34 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
     },
   });
 
+  const isBusy = placeMutation.isPending || removeMutation.isPending;
+
+  function placeExisting(hypothesisName: string, revision: number, position: number): void {
+    setPlaceExistingError(null);
+    placeMutation.mutate({ hypothesisName, revision, position, kind: "place-existing" });
+  }
+
+  const offer: PlacingOfferState = {
+    isBusy,
+    isBlocked,
+    candidateHypotheses: candidatesOf(caseHypothesesQuery.data?.data ?? [], []),
+    candidatesAnswered: caseHypothesesQuery.isSuccess,
+    placeExistingError,
+    onPlaceExisting: placeExisting,
+  };
+
   if (versionQuery.isError) {
-    return { phase: "load-error", retryLoad: () => void versionQuery.refetch() };
+    if (errorStateKind(versionQuery.error) === "case-not-valid") {
+      return { phase: "not-valid", ...offer };
+    }
+    return { phase: "load-error", retryLoad: () => void versionQuery.refetch(), ...offer };
   }
   if (versionQuery.isLoading || !versionQuery.data) {
-    return { phase: "loading" };
+    return { phase: "loading", ...offer };
   }
 
   const sorted = sortByPosition(versionQuery.data.manifest);
   const lastIndex = sorted.length - 1;
-  const isBusy = placeMutation.isPending || removeMutation.isPending;
   const isReleased = versionQuery.data.state === "released";
 
   const rows: ManifestRow[] = sorted.map((entry, index) => {
@@ -208,13 +287,28 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
 
       revisionErrorMessage:
         revisionError?.hypothesisName === hypothesisName ? revisionError.message : null,
+      removeErrorMessage:
+        removeError?.hypothesisName === hypothesisName ? removeError.message : null,
       onMoveUp: () => moveTo(previous),
       onMoveDown: () => moveTo(next),
-      onRemove: () => removeMutation.mutate({ hypothesisName }),
+      onRemove: () => {
+        setRemoveError(null);
+        removeMutation.mutate({ hypothesisName });
+      },
 
       onRepin: repinTo,
     };
   });
 
-  return { phase: "ready", rows, isBlocked, isBusy, isReleased };
+  return {
+    phase: "ready",
+    rows,
+    isBlocked,
+    isBusy,
+    isReleased,
+    candidateHypotheses: candidatesOf(caseHypothesesQuery.data?.data ?? [], rows),
+    candidatesAnswered: caseHypothesesQuery.isSuccess,
+    placeExistingError,
+    onPlaceExisting: placeExisting,
+  };
 }

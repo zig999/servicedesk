@@ -9,6 +9,7 @@ import {
   hypothesisRevisionFormSchema,
   type HypothesisRevisionFormValues,
 } from "../services/hypothesis-revision-form-schema";
+import { errorStateKind } from "./use-edit-draft-version-form";
 import { useTelemetry } from "./use-telemetry";
 import { useConceptOptions, type ConceptOption } from "./use-concept-options";
 import {
@@ -44,6 +45,8 @@ type RevisedHypothesis = {
   readonly revision: number;
 };
 
+const UNREAD_DRAFT_SUBJECT = "unread-draft-subject";
+
 export type HypothesisRevisionFormState =
   | { readonly phase: "loading" }
   | { readonly phase: "load-error"; readonly retryLoad: () => void }
@@ -53,7 +56,9 @@ export type HypothesisRevisionFormState =
 
       readonly hypothesisNameEditable: boolean;
 
-      readonly subjectType: string;
+      readonly subjectType: string | null;
+
+      readonly caseVersionNotValid: boolean;
 
       readonly pinnedRevision: number | null;
 
@@ -167,18 +172,19 @@ export function useHypothesisRevisionForm(
     });
   }, [hypothesisName, revisionsQuery.data]);
 
+  const versionErrorKind = errorStateKind(versionQuery.error);
+  const isVersionNotValid = versionQuery.isError && versionErrorKind === "case-not-valid";
+  const versionData = isVersionNotValid ? undefined : versionQuery.data;
+
   const reviseMutation = useMutation({
     mutationFn: (values: HypothesisRevisionFormValues) => {
 
-      if (versionQuery.data === undefined) {
-        throw new Error("cannot submit a hypothesis revision before the draft's subject type has loaded");
-      }
       const body = {
         hypothesis_name: values.hypothesis_name,
         criterion: values.criterion,
         collects: values.collects,
         resolution: values.resolution,
-        subject: versionQuery.data.subject,
+        subject: versionData === undefined ? UNREAD_DRAFT_SUBJECT : versionData.subject,
       };
       return apiFetch<RevisedHypothesis>(`/v1/cases/${encodeURIComponent(slug)}/hypotheses`, {
         method: "POST",
@@ -188,9 +194,9 @@ export function useHypothesisRevisionForm(
     },
     onMutate: () => {
       pinnedRevisionBeforeSaveRef.current =
-        versionQuery.data === undefined
+        versionData === undefined
           ? null
-          : pinnedRevisionFor(versionQuery.data.manifest, hypothesisName);
+          : pinnedRevisionFor(versionData.manifest, hypothesisName);
     },
     onSuccess: (data) => {
       isSubmittingRef.current = false;
@@ -233,7 +239,7 @@ export function useHypothesisRevisionForm(
     };
   }
 
-  if (versionQuery.isError || isGlossaryError || isRevisionsError) {
+  if (isGlossaryError || isRevisionsError || (versionQuery.isError && !isVersionNotValid)) {
     return {
       phase: "load-error",
       retryLoad: () => {
@@ -249,14 +255,20 @@ export function useHypothesisRevisionForm(
     };
   }
 
-  if (versionQuery.isLoading || !versionQuery.data || isLoadingGlossary || isRevisionsPending) {
+  if (
+    versionQuery.isLoading ||
+    (!versionQuery.data && !isVersionNotValid) ||
+    isLoadingGlossary ||
+    isRevisionsPending
+  ) {
     return { phase: "loading" };
   }
 
-  const subjectType = versionQuery.data.subject;
-  const availableConcepts = conceptOptions.concepts.filter((concept) =>
-    concept.accepts.includes(subjectType),
-  );
+  const subjectType = versionData === undefined ? null : versionData.subject;
+  const availableConcepts =
+    subjectType === null
+      ? conceptOptions.concepts
+      : conceptOptions.concepts.filter((concept) => concept.accepts.includes(subjectType));
 
   const submit = form.handleSubmit((values) => {
     if (isSubmittingRef.current) {
@@ -271,7 +283,9 @@ export function useHypothesisRevisionForm(
     form,
     hypothesisNameEditable: hypothesisName === null,
     subjectType,
-    pinnedRevision: pinnedRevisionFor(versionQuery.data.manifest, hypothesisName),
+    caseVersionNotValid: isVersionNotValid,
+    pinnedRevision:
+      versionData === undefined ? null : pinnedRevisionFor(versionData.manifest, hypothesisName),
     collectsOptions: availableConcepts,
     outcomeOptions,
     actionOptions,

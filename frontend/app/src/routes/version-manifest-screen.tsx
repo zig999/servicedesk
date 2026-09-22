@@ -23,6 +23,7 @@ import {
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
 import { useManifestRowRevisions } from "../hooks/use-manifest-row-revisions";
+import { PlaceExistingHypothesisControl } from "./place-existing-hypothesis-control";
 import {
   pinnedRevisionStateCell,
   usePinnedRevisionState,
@@ -97,9 +98,13 @@ function RowActions({ row, disabled }: RowActionsProps): JSX.Element {
         </Dialog>
       </div>
       {row.moveErrorMessage !== null && (
-
         <p role="alert" className="text-sm text-destructive">
           {row.moveErrorMessage}
+        </p>
+      )}
+      {row.removeErrorMessage !== null && (
+        <p role="alert" className="text-sm text-destructive">
+          {row.removeErrorMessage}
         </p>
       )}
     </div>
@@ -234,16 +239,37 @@ function toStatusRow(row: ManifestRow, disabled: boolean, slug: string): StatusT
   };
 }
 
+type AddHypothesisLinkProps = { readonly slug: string; readonly version: string };
+function AddHypothesisLink({ slug, version }: AddHypothesisLinkProps): JSX.Element {
+  return <Link to="/cases/$slug/versions/$version/manifest/hypotheses/new" params={{ slug, version }}>+ Add hypothesis</Link>;
+}
+
 export function VersionManifestScreen(): JSX.Element {
   const { slug, version } = useParams({
     from: "/cases/$slug/versions/$version/manifest",
   });
   const state = useManifestBuilder(slug, Number(version));
+  const placingDisabled = state.isBlocked || state.isBusy;
+  const placingControl = (
+    <PlaceExistingHypothesisControl
+      slug={slug}
+      candidates={state.candidateHypotheses}
+      candidatesAnswered={state.candidatesAnswered}
+      placeError={state.placeExistingError}
+      disabled={placingDisabled}
+      onPlace={state.onPlaceExisting}
+    />
+  );
 
   if (state.phase === "loading") {
-    return <p>Loading manifest…</p>;
+    return (
+      <section>
+        <p>Loading manifest…</p>
+        <AddHypothesisLink slug={slug} version={version} />
+        {placingControl}
+      </section>
+    );
   }
-
   if (state.phase === "load-error") {
     return (
       <section>
@@ -251,10 +277,20 @@ export function VersionManifestScreen(): JSX.Element {
         <Button type="button" onClick={state.retryLoad}>
           Retry
         </Button>
+        <AddHypothesisLink slug={slug} version={version} />
+        {placingControl}
       </section>
     );
   }
-
+  if (state.phase === "not-valid") {
+    return (
+      <section>
+        <p>Version {version} of this case does not read back as a case.</p>
+        <AddHypothesisLink slug={slug} version={version} />
+        {placingControl}
+      </section>
+    );
+  }
   const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;
   const rows = state.rows.map((row) => toStatusRow(row, rowsDisabled, slug));
 
@@ -263,12 +299,7 @@ export function VersionManifestScreen(): JSX.Element {
       <section>
         <div className="flex items-center justify-between">
           <h1>Manifest — v{version}</h1>
-          <Link
-            to="/cases/$slug/versions/$version/manifest/hypotheses/new"
-            params={{ slug, version }}
-          >
-            + Add hypothesis
-          </Link>
+          {!state.isReleased && <AddHypothesisLink slug={slug} version={version} />}
         </div>
         {state.isBlocked && (
           <ConflictBanner
@@ -277,6 +308,7 @@ export function VersionManifestScreen(): JSX.Element {
           />
         )}
         <StatusTable columns={MANIFEST_COLUMNS} rows={rows} />
+        {!state.isReleased && placingControl}
       </section>
     </TooltipProvider>
   );

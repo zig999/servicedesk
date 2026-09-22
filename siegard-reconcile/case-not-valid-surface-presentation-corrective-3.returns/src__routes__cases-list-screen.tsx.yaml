@@ -1,0 +1,143 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the call that triggers the list-cases read, line 77
+    evidence: |-
+      const casesQuery = useCasesList();
+  - node: domain/knowledge/case
+    held_at: >-
+      the row's own identity and the navigation target, built from the case's slug alone,
+      lines 40-41 and 86-91
+    evidence: |-
+      function handleRowClick(row: StatusTableRow): void {
+        const slug = row.slug;
+        if (typeof slug !== "string") {
+          return;
+        }
+        void navigate({ to: "/cases/$slug", params: { slug } });
+      }
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      toRow's mapping of entry.summary onto the row's state, versionCount and lastUpdated
+      cells, lines 45-54
+    evidence: |-
+      const stateCell =
+        entry.summary.currentState === undefined
+          ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }
+          : CASE_STATE_CELL[entry.summary.currentState];
+      return {
+        id: entry.slug,
+        slug: entry.slug,
+        state: stateCell,
+        versionCount: entry.summary.versionCount,
+        lastUpdated: formatLastUpdated(entry.summary.lastUpdated),
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: >-
+      CASE_STATE_CELL, lines 17-20
+    evidence: |-
+      const CASE_STATE_CELL: Readonly<Record<CaseVersionState, { color: string; label: string }>> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading
+    held_at: >-
+      the Create case button, placed outside renderBody() so it stands on every one of the
+      pending, error, empty and populated readings, lines 142-150
+    evidence: |-
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold text-foreground">Cases</h1>
+        <Button type="button" onClick={() => void navigate({ to: "/cases/new" })}>
+          Create case
+        </Button>
+      </div>
+      {renderBody()}
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      toRow's isCaseListEntryNotValid branch, lines 38-44
+    evidence: |-
+      if (isCaseListEntryNotValid(entry)) {
+        return {
+          id: entry.slug,
+          slug: entry.slug,
+          state: CURRENT_VERSION_NOT_VALID_STATEMENT,
+        };
+      }
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: >-
+      the undefined-guarded reads of currentState and lastUpdated, which present the
+      case-with-no-version absence rather than inventing a value, lines 27-35 and 45-48
+    evidence: |-
+      function formatLastUpdated(iso: string | undefined): string {
+        if (iso === undefined) {
+          return NO_VERSION_YET_DASH;
+        }
+      entry.summary.currentState === undefined
+          ? { color: "bg-muted", label: NO_VERSION_YET_LABEL }
+          : CASE_STATE_CELL[entry.summary.currentState];
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      import {
+        useCasesList,
+        isCaseListEntryNotValid,
+        type CaseListEntry,
+        type CaseVersionState,
+      } from "../hooks/use-cases-list";
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: |-
+      import {
+        useCasesList,
+        isCaseListEntryNotValid,
+        type CaseListEntry,
+        type CaseVersionState,
+      } from "../hooks/use-cases-list";
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      void navigate({ to: "/cases/$slug", params: { slug } });
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: |-
+      void navigate({ to: "/cases/$slug", params: { slug } });
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      import {
+        useCasesList,
+        isCaseListEntryNotValid,
+        type CaseListEntry,
+        type CaseVersionState,
+      } from "../hooks/use-cases-list";
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      void navigate({ to: "/cases/$slug", params: { slug } });
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: |-
+      import {
+        useCasesList,
+        isCaseListEntryNotValid,
+        type CaseListEntry,
+        type CaseVersionState,
+      } from "../hooks/use-cases-list";
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: |-
+      import {
+        useCasesList,
+        isCaseListEntryNotValid,
+        type CaseListEntry,
+        type CaseVersionState,
+      } from "../hooks/use-cases-list";
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: |-
+      void navigate({ to: "/cases/$slug", params: { slug } });
+looked_past: >-
+  use-cases-list.ts, which the file imports useCasesList and isCaseListEntryNotValid from,
+  is where the case-summary derivation itself and the not-valid classification are actually
+  computed; it is a different file, outside this file set, so its own conformance is not
+  judged here.

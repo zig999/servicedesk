@@ -1,0 +1,78 @@
+certified:
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    state: partial
+    tests:
+      - file: src/routes/case-version-editor-screen-not-valid.spec.ts
+        name: >-
+          renders the explicit statement and no attribute of the version or its manifest when
+          validation refuses the read, renders neither that statement nor any load-error text
+          once the same version reads back as a validated case
+      - file: src/routes/case-version-editor-screen-not-valid.spec.ts
+        name: >-
+          renders only the not-read-back-as-a-case statement, never an attribute of the version
+          left over in the query cache from an earlier successful read, once a later reading of
+          the same version is refused for validation
+      - file: src/routes/case-version-editor-screen-not-valid.spec.ts
+        name: >-
+          renders only the fixed read-did-not-complete statement, never the not-valid statement,
+          the refusal's own error code, its own message, or any attribute the refusal carries,
+          when the version's own read fails with a code the screen holds no presentation of its
+          own for
+      - file: src/routes/case-version-editor-screen-not-valid.spec.ts
+        name: >-
+          renders only the read-did-not-complete statement, never an attribute of the version
+          left over in the query cache from an earlier successful read, once a later reading of
+          the same version fails with a code the screen holds no presentation of its own for
+      - file: src/routes/version-manifest-screen-not-valid.spec.ts
+        name: >-
+          renders the explicit statement and no manifest entry when validation refuses the read,
+          renders neither that statement nor any load-error text once the same version reads back
+          as a validated case
+      - file: src/routes/version-manifest-screen-not-valid.spec.ts
+        name: >-
+          renders only the not-read-back-as-a-case statement, never a manifest entry left over in
+          the query cache from an earlier successful read, once a later reading of the same
+          version is refused for validation
+      - file: src/routes/version-manifest-screen-not-valid.spec.ts
+        name: >-
+          renders only the fixed read-did-not-complete statement, never the not-valid statement,
+          the refusal's own error code, its own message, or any value it carries, when the
+          version's own read fails with a code the screen holds no presentation of its own for
+    why: >-
+      Three of the fact's four conjuncts are exercised on both surfaces and would fail if they
+      stopped holding: the explicit statement on a reading where a validator rule does not hold
+      (the 409 CaseVersionNotValidError), the distinguishability from a read that did not complete
+      in both directions (not-valid present with the load-error text absent, and load-error text
+      present with the not-valid statement absent on an unrecognized code), and the silence where
+      every validator rule holds (the not-valid statement asserted absent once the same version
+      reads back). The withholding conjunct is not exercised whole. Of the attributes the node
+      enumerates, nothing in either file submits authored_at or released_at: the refusal payloads
+      carry title, when_to_use, subject, fallback, consolidation_register and state, so a surface
+      that leaked the version's authored_at or released_at beside the statement would pass every
+      named test. Within the manifest, an entry's position and the hypothesis revision an entry
+      references are not asserted absent by their own values — the editor's payload carries the
+      bare string "SECRET-MANIFEST-ENTRY" rather than an entry at all, and the manifest screen
+      asserts only the hypothesis label's absence and that no table renders, which leaves a
+      position or a pinned revision rendered outside a table unexercised. "No fact derived from
+      any of them" is likewise unexercised: every assertion is the absence of a literal value the
+      refusal carried, so a derived rendering (a formatted date, a count of entries, a state
+      badge) is not reached. Two further facts for a reader to route rather than for this audit to
+      settle. First, both files assert the same fixed string "This case's current version does not
+      read back as a case." — wording the node consigns to the interface, but it names the case's
+      current version where this node's reader named a slug together with a version number, which
+      is the identity the neighbouring case-keyed node is written over; whether that statement
+      states the fact about the version at (s, n) is a question about the wording, and it is not
+      one the tests decide. Second, that the reading under test is one the reader named by slug
+      and version number rests on the mount harnesses and path constants in
+      case-version-editor-screen.test-support and version-manifest-screen.test-support, which the
+      pack did not offer as proof and which I did not open; within the offered proof the named
+      identity is assumed rather than asserted.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result, per surface: a CaseVersionNotValidError refusal for a
+      version the reader named by slug and version number, carrying that version's authored_at and
+      released_at and a manifest entry whose position and pinned hypothesis revision are
+      distinguishable literals, plus a value derived from one of them (a formatted authored_at or
+      an entry count); the expected result is that the surface states the version named does not
+      read back as a case and renders none of those values anywhere on the surface, asserted by
+      their own text rather than by the absence of the table that would hold them.

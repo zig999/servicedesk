@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/version-manifest-screen-remove-refusal-telling.spec.ts
+  41:13  error  Prefer `findByLabelText` query over using `waitFor` + `getByLabelText`  testing-library/prefer-find-by
+
+✖ 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

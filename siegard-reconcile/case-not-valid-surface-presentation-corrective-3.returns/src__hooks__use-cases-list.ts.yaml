@@ -1,0 +1,127 @@
+findings:
+  - file: src/hooks/use-cases-list.ts
+    where: "line 17, the `CaseVersionState` type declaration"
+    evidence: |-
+      export type CaseVersionState = "draft" | "released";
+    cost: >-
+      The two literal values are decided by the specification's own
+      case-version-state enumeration, not by this file. This hook (and, independently,
+      src/hooks/use-case-versions.ts, which declares the identical literal union on its
+      own) each carry a private copy of that enumeration rather than deriving it from one
+      shared declaration; if the specification's set of states ever changes, nothing here
+      reads that change, and a reader who finds three independent copies of "draft" |
+      "released" has no way to tell which one is still authoritative.
+    kind: contradicts
+    node: domain/knowledge/case-version-state
+    correction: >-
+      Replace the locally authored union with a single shared declaration derived from
+      the specification's case-version-state enumeration (or import the one canonical
+      frontend type), so the values are declared once rather than restated per file.
+read:
+  - node: domain/knowledge/case
+    held_at: "the `CaseIdentity` type and its use in `fetchCasesWithSummaries`"
+    evidence: |-
+      type CaseIdentity = {
+        readonly slug: string;
+      };
+  - node: domain/knowledge/case-summary
+    held_at: "the `CaseSummary` type and its construction in `fetchCaseListEntry`/`releasedInfo`"
+    evidence: |-
+      export type CaseSummary = {
+        readonly versionCount: number;
+        readonly currentState?: CaseVersionState;
+        readonly lastUpdated?: string;
+        readonly title?: string;
+        readonly whenToUse?: string;
+        readonly releasedVersion?: number;
+      };
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: "the try/catch around the highest version's detail fetch in `fetchCaseListEntry`"
+    evidence: |-
+      } catch (error) {
+        if (errorStateKind(error) === "case-not-valid") {
+          return { slug, notValid: true };
+        }
+        throw error;
+      }
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      export function useCasesList(): UseQueryResult<CaseListEntry[]> {
+        return useQuery({
+          queryKey: ["cases-list"],
+          queryFn: fetchCasesWithSummaries,
+        });
+      }
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: |-
+      export function useCasesList(): UseQueryResult<CaseListEntry[]> {
+        return useQuery({
+          queryKey: ["cases-list"],
+          queryFn: fetchCasesWithSummaries,
+        });
+      }
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      const casesPage = await apiFetch<PaginatedResponse<CaseIdentity>>("/v1/cases");
+      return Promise.all(casesPage.data.map((identity) => fetchCaseListEntry(identity.slug)));
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: |-
+      const casesPage = await apiFetch<PaginatedResponse<CaseIdentity>>("/v1/cases");
+      return Promise.all(casesPage.data.map((identity) => fetchCaseListEntry(identity.slug)));
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      export function useCasesList(): UseQueryResult<CaseListEntry[]> {
+        return useQuery({
+          queryKey: ["cases-list"],
+          queryFn: fetchCasesWithSummaries,
+        });
+      }
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      type CaseVersionDetail = {
+        readonly authored_at: string;
+        readonly title: string;
+        readonly when_to_use: string;
+      };
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: |-
+      export function useCasesList(): UseQueryResult<CaseListEntry[]> {
+        return useQuery({
+          queryKey: ["cases-list"],
+          queryFn: fetchCasesWithSummaries,
+        });
+      }
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: |-
+      export function useCasesList(): UseQueryResult<CaseListEntry[]> {
+        return useQuery({
+          queryKey: ["cases-list"],
+          queryFn: fetchCasesWithSummaries,
+        });
+      }
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: |-
+      export function useCasesList(): UseQueryResult<CaseListEntry[]> {
+        return useQuery({
+          queryKey: ["cases-list"],
+          queryFn: fetchCasesWithSummaries,
+        });
+      }
+looked_past: >-
+  releasedInfo's fetch of an already-released version's detail (the branch taken when
+  the highest version is still draft and an earlier version was released) has no
+  try/catch of its own, so a failure there would reject the whole entry rather than being
+  handled per-case; no node in this file's set or the candidate index governs that
+  specific fetch, so this is left for whichever judgment reaches that behavior rather than
+  reported here as a finding.
+candidates_opened:
+  - domain/knowledge/case-version-state

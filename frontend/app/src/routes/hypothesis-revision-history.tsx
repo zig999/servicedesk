@@ -87,23 +87,27 @@ function HypothesisRevisionReleaseAction({
 
 function toHistoryRow(
   revision: HypothesisRevisionListItem,
-  currentPin: Extract<CaseHypothesisCurrentPin, { phase: "ready" }>,
+  currentPin: CaseHypothesisCurrentPin,
   slug: string,
   hypothesisName: string,
 ): StatusTableRow {
-  const isCurrent = revision.revision === currentPin.pinnedRevision;
+  const isCurrent =
+    currentPin.phase === "ready" && revision.revision === currentPin.pinnedRevision;
   return {
     id: revision.revision,
     revision: revision.revision,
     state: REVISION_STATE_CELL[revision.state],
-    status: isCurrent
-      ? { color: "bg-success", label: "current" }
-      : { color: "bg-muted-foreground", label: "frozen" },
+    status:
+      currentPin.phase === "ready"
+        ? isCurrent
+          ? { color: "bg-success", label: "current" }
+          : { color: "bg-muted-foreground", label: "frozen" }
+        : null,
     criterion: revision.criterion,
     collects: revision.collects.join(", "),
     actions: (
       <div className="flex items-center gap-2">
-        {isCurrent && (
+        {currentPin.phase === "ready" && isCurrent && (
           <Button type="button" variant="secondary" asChild>
             <Link
               to="/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName"

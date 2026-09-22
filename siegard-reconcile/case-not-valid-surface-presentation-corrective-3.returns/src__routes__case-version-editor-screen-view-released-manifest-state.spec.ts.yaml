@@ -1,0 +1,69 @@
+read:
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: >-
+      nowhere
+    evidence: >-
+      describe("CaseVersionEditorScreen — the released manifest table's own State column (criteria 1 and 4)", () => {
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: >-
+      nowhere
+    evidence: >-
+      describe("CaseVersionEditorScreen — the released manifest table's own State column (criteria 1 and 4)", () => {
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      nowhere
+    evidence: >-
+      [`GET ${VERSION_PATH}`]: () => jsonResponse(RELEASED_RECORD_WITH_MANIFEST),
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: >-
+      nowhere
+    evidence: >-
+      [`GET ${VERSION_PATH}`]: () => jsonResponse(RELEASED_RECORD_WITH_MANIFEST),
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      nowhere
+    evidence: >-
+      import { afterEach, describe, expect, it, vi } from "vitest";
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      nowhere
+    evidence: >-
+      import { apiErrorResponse, baseHandlers, createFetchStub, jsonResponse, LOADED_RECORD, mountCaseVersionEditor, SLUG, VERSION_PATH } from "./case-version-editor-screen.test-support";
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      nowhere
+    evidence: >-
+      const RELEASED_RECORD_WITH_MANIFEST = { ...LOADED_RECORD, state: "released" as const, manifest: RELEASED_MANIFEST, };
+  - node: domain/knowledge/case
+    held_at: >-
+      nowhere
+    evidence: >-
+      const RELEASED_RECORD_WITH_MANIFEST = { ...LOADED_RECORD, state: "released" as const, manifest: RELEASED_MANIFEST, };
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      nowhere
+    evidence: >-
+      [`GET ${VERSION_PATH}`]: () => jsonResponse(RELEASED_RECORD_WITH_MANIFEST),
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: >-
+      nowhere
+    evidence: >-
+      expect(within(firstRow).getByText("1")).toBeTruthy();
+      expect(within(firstRow).getByText("Delayed payment history")).toBeTruthy();
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: >-
+      nowhere
+    evidence: >-
+      expect(within(firstRow).getByText("1")).toBeTruthy();
+      expect(within(firstRow).getByText("Delayed payment history")).toBeTruthy();
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: >-
+      nowhere
+    evidence: >-
+      const table = await screen.findByRole("table");
+      const rows = within(table).getAllByRole("row");
+looked_past: >-
+  The two describe blocks marked "(this task's own inference)" — the pinned-revision-absent-from-page case and the malformed-manifest-entries case — exercise defensive rendering for data the domain model does not admit (a revision never returned by its own listing, a manifest entry with no hypothesis field), and their assertions only check that known state texts are absent rather than asserting a blank state cell, so I did not treat them as a stated domain fact for this pass.
+candidates_opened:
+  - rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+

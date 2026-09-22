@@ -152,6 +152,13 @@ covers:
 - scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
 - scenarios/knowledge/revising-a-released-revision-creates-the-next
 - scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome
+- rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+- rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+- rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+- rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+- rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+- rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+- rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
 uncovered:
 - node: constraints/a-case-is-read-whole
   why: Part of the impact-set closure around the case/case-version/hypothesis/manifest domain the epic's
@@ -438,11 +445,6 @@ uncovered:
     seed files (cases-list-screen.tsx, version-manifest-screen.tsx, use-manifest-builder.ts) touch, but
     outside this corrective increment's narrow scope -- isolating one case's failing-validation read from
     the rest of the cases list -- and untouched by this task.
-- node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
-  why: Part of the impact-set closure around the case/case-version/hypothesis/manifest domain the epic's
-    seed files (cases-list-screen.tsx, version-manifest-screen.tsx, use-manifest-builder.ts) touch, but
-    outside this corrective increment's narrow scope -- isolating one case's failing-validation read from
-    the rest of the cases list -- and untouched by this task.
 - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
   why: Part of the impact-set closure around the case/case-version/hypothesis/manifest domain the epic's
     seed files (cases-list-screen.tsx, version-manifest-screen.tsx, use-manifest-builder.ts) touch, but
@@ -619,11 +621,6 @@ uncovered:
     outside this corrective increment's narrow scope -- isolating one case's failing-validation read from
     the rest of the cases list -- and untouched by this task.
 - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
-  why: Part of the impact-set closure around the case/case-version/hypothesis/manifest domain the epic's
-    seed files (cases-list-screen.tsx, version-manifest-screen.tsx, use-manifest-builder.ts) touch, but
-    outside this corrective increment's narrow scope -- isolating one case's failing-validation read from
-    the rest of the cases list -- and untouched by this task.
-- node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
   why: Part of the impact-set closure around the case/case-version/hypothesis/manifest domain the epic's
     seed files (cases-list-screen.tsx, version-manifest-screen.tsx, use-manifest-builder.ts) touch, but
     outside this corrective increment's narrow scope -- isolating one case's failing-validation read from

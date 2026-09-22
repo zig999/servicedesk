@@ -1,0 +1,39 @@
+read:
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: >-
+      export class ConnectorCallAddressNotAbsoluteUrlError extends Error {
+        public readonly context: Readonly<{ address: string }>;
+
+        public constructor(address: string, options?: ErrorOptions) {
+          super(`the connector configuration's resolved address is not a valid absolute URL: "${address}"`, options);
+          this.name = 'ConnectorCallAddressNotAbsoluteUrlError';
+          this.context = { address };
+        }
+      }
+    evidence: >-
+      this.name = 'ConnectorCallAddressNotAbsoluteUrlError'; this.context = { address };
+      — the error value the node names, carrying exactly the resolved address and no other
+      part of the call (no query, headers or body field exists on this class).
+  - node: contracts/integration/connector-diagnostics
+    held_at: nowhere
+    evidence: >-
+      The file declares only the ConnectorCallAddressNotAbsoluteUrlError type; nothing here
+      states the test-connector operation's shape, its single-call semantics, or its
+      diagnostic-only status — those facts are not present in this file's ten lines.
+  - node: rules/integration/a-diagnostic-response-masks-a-resolved-credential
+    held_at: nowhere
+    evidence: >-
+      public constructor(address: string, options?: ErrorOptions) { ... this.context = { address }; }
+      — the class stores whatever string it is given as `address`; no masking of a credential
+      placeholder's resolved value is performed anywhere in this file.
+  - node: rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test
+    held_at: nowhere
+    evidence: >-
+      The file defines only the not-absolute-url refusal error; it contains no HTTP 200
+      "completed test" handling, no ConnectorUnreachableError, and no status/echo logic for
+      the unreachable-connector case that node governs.
+looked_past: >-
+  Whether the address value passed into this constructor has already had a resolved credential
+  masked before construction is a fact of the calling code (bound elsewhere to
+  src/http/test-connector.controller.ts per the candidate index), not something this file's own
+  ten lines settle either way.

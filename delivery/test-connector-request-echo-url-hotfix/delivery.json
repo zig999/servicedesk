@@ -1,0 +1,82 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "implementation",
+      "file": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported.md",
+      "title": "test-connector's echo path reports the invalid-address refusal and the unreachable-connector answer instead of an opaque failure",
+      "summary": "POST /v1/test-connector now refuses an address that does not resolve to a valid absolute URL with a typed 422 before issuing any call, and reports a call that fails short of any HTTP response as a completed HTTP 200 test naming ConnectorUnreachableError and the connector, leaving the response-answered path untouched.",
+      "task": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported"
+    },
+    {
+      "id": "proof/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "proof",
+      "file": "proof/test-connector-request-echo-url-hotfix/echo-address-error-is-reported.md",
+      "title": "Proof for test-connector's invalid-address refusal and unreachable-connector answer",
+      "summary": "Three new tests in test-connector.routes.spec.ts prove the 422 invalid-absolute-URL refusal (criterion 1, masked and undiluted), the 200 unreachable-connector answer (criterion 2, named and masked), and that a capability timeout's own abort still answers 'timed-out' rather than being folded into 'unreachable' (the task's underdetermined entry); criterion 3's non-regression is left to the two pre-existing response-answered tests that already protect it.",
+      "task": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported"
+    },
+    {
+      "id": "review/test-connector-request-echo-url-hotfix",
+      "kind": "review",
+      "file": "review/test-connector-request-echo-url-hotfix.md",
+      "title": "Review of the test-connector request echo URL hotfix",
+      "summary": "What the four passes found over the corrective increment fixing POST /v1/test-connector's invalid-address and unreachable-connector answers.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Testing a connector configuration whose resolved address is a valid absolute URL and whose issued call receives an HTTP response is unaffected by this correction: the request echo and the far end's response reach the caller exactly as they did before this correction.",
+        "Testing a connector configuration whose resolved address is a valid absolute URL, whose issued call fails before any HTTP response is received, and whose failure is not the capability's own timeout aborting the call, ends the request with an HTTP 200 response reporting a ConnectorUnreachableError together with the name of the connector whose registered configuration issued the call and no response status, and carrying the same echoed request a response-answered test carries, with every value a credential placeholder resolved to masked."
+      ],
+      "findings": 5
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "rules/integration/a-diagnostic-test-of-an-unreachable-connector-answers-as-a-completed-test",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "to": "implementation/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/test-connector-request-echo-url-hotfix",
+      "to": "task/test-connector-request-echo-url-hotfix/echo-address-error-is-reported",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    }
+  ]
+}

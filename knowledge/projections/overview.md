@@ -7,9 +7,9 @@ Derived by spec.py from the specification files; never edited.
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
 | glossary | supporting | 5 | 11 | 2 | 1 |
-| integration | generic | 19 | 135 | 9 | 23 |
+| integration | generic | 19 | 136 | 9 | 23 |
 | investigation | supporting | 16 | 50 | 7 | 19 |
-| knowledge | core | 12 | 68 | 5 | 12 |
+| knowledge | core | 12 | 79 | 5 | 12 |
 
 ## Aggregates
 
@@ -31,6 +31,9 @@ Derived by spec.py from the specification files; never edited.
 - a-case-is-read-whole (knowledge)
 - a-domain-error-unmapped-by-status-is-refused-generically (system)
 - a-malformed-request-is-refused-with-a-validation-error (system)
+- a-successful-capability-removal-answers-with-no-content (integration)
+- a-successful-concept-removal-answers-with-no-content (glossary)
+- a-successful-connector-configuration-removal-answers-with-no-content (integration)
 - consolidation-runs-behind-a-port (investigation)
 - diagnosis-answers-synchronously (system)
 - every-screen-discloses-that-authentication-is-unenforced (system)
@@ -58,4 +61,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-360 decision(s) disclosed, 8 fact(s) recorded as read in the decision log.
+372 decision(s) disclosed, 12 fact(s) recorded as read in the decision log.

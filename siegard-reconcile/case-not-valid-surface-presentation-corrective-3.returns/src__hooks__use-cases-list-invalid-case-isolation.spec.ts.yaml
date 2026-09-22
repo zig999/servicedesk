@@ -1,0 +1,62 @@
+read:
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      describe("useCasesList -- isolating one case's current version failing validation from the rest of the listing (criterion 1, criterion 2)", () => {
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the expected data array of the renderHook result, lines 82-95 and 213-227
+    evidence: >-
+      { slug: "case-broken", notValid: true },
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the summary object asserted for case-drafted-past-release, lines 152-158
+    evidence: |-
+      summary: {
+                versionCount: 3,
+                currentState: "draft",
+                lastUpdated: "2024-03-03T00:00:00.000Z",
+                title: "Case Drafted Past Release",
+                whenToUse: "When the released procedure applies",
+                releasedVersion: 2,
+              },
+  - node: domain/knowledge/case
+    held_at: >-
+      the slug used as each case's own identity throughout the mocked responses and assertions, e.g. line 94
+    evidence: >-
+      { slug: "case-broken", notValid: true },
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      import { useCasesList } from "./use-cases-list";
+looked_past: >-
+  The describe title "more than one case's current version failing validation at the same reading (UNDERDETERMINED note 2)" characterizes the multi-failure scenario as underdetermined by the specification, though the node's own expression already generalizes over any c_i among a listing's cases; that characterization is prose about the specification's completeness rather than a domain fact the hook states, so it is left to whichever pass reviews source prose.
+

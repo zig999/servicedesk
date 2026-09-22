@@ -1,0 +1,138 @@
+findings:
+  - file: src/routes/version-manifest-screen.tsx
+    where: the `state.phase === "not-valid"` branch, the paragraph shown to the curator
+    evidence: |-
+      <p>This case&apos;s current version does not read back as a case.</p>
+    cost: >-
+      This screen is reached by naming a case's slug together with a specific version
+      number (`useParams({ from: "/cases/$slug/versions/$version/manifest" })`), so the
+      version on screen is the one the curator named, not necessarily the case's
+      highest-numbered ("current") version. Telling them "the case's current version"
+      fails to read back states a fact about a version they may not even be looking at —
+      a curator who opened an older version by number, and hit this branch because that
+      older version itself fails validation, is pointed at the wrong version to correct,
+      and cannot tell from this text whether the version in front of them or some other
+      version of the case is the one at fault.
+    kind: contradicts
+    node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    correction: >-
+      State that the version named — (slug, version) — does not read back as a case,
+      not "the case's current version"; that wording belongs to
+      rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case,
+      which governs a surface reached by slug alone, and the two statements are required
+      to stay distinguishable to the reader.
+read:
+  - node: domain/knowledge/case-version
+    held_at: >-
+      state.isReleased driving rowsDisabled and the AddHypothesisLink visibility
+    evidence: |-
+      const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;
+  - node: domain/knowledge/hypothesis
+    held_at: row.hypothesisName used to label and identify each manifest row
+    evidence: |-
+      aria-label={`Move ${row.hypothesisName} up`}
+  - node: domain/knowledge/hypothesis-revision
+    held_at: row.revision and the fetched revisions populating RevisionSelect's options
+    evidence: |-
+      const options = optionsWithPinnedRevision(revisions, row.revision);
+  - node: domain/knowledge/manifest-entry
+    held_at: toStatusRow, mapping each ManifestRow's position and pinned hypothesis to a table row
+    evidence: |-
+      position: row.position,
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: RowActions' removeDisabled computation and its tooltip
+    evidence: |-
+      const removeDisabled = row.isOnlyEntry || disabled;
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: rowsDisabled including state.isReleased, and AddHypothesisLink hidden once released
+    evidence: |-
+      const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: optionsWithPinnedRevision
+    evidence: |-
+      if (options.some((option) => option.value === pinnedValue)) {
+        return options;
+      }
+      return [...options, { value: pinnedValue, label: pinnedValue }];
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: the per-control alert paragraphs beside move, remove and the revision select
+    evidence: |-
+      {row.removeErrorMessage !== null && (
+        <p role="alert" className="text-sm text-destructive">
+          {row.removeErrorMessage}
+        </p>
+      )}
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: AddHypothesisLink rendered in loading, load-error and not-valid phases, hidden only when state.isReleased
+    evidence: |-
+      {!state.isReleased && <AddHypothesisLink slug={slug} version={version} />}
+  - node: rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state
+    held_at: PinnedRevisionStateBadge, rendered both while revisions are loading and once loaded
+    evidence: |-
+      <PinnedRevisionStateBadge cell={pinnedStateCell} />
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: the load-error branch
+    evidence: |-
+      <p>Unable to load this manifest right now.</p>
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: nowhere
+    evidence: >-
+      this screen discloses each pin's own state via PinnedRevisionStateBadge but does
+      not itself attempt or refuse a release; the release act and its refusal are not
+      made here
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: the not-valid branch's paragraph — see the finding above for its wording
+    evidence: |-
+      <p>This case&apos;s current version does not read back as a case.</p>
+  - node: rules/knowledge/hypotheses-are-ordered-by-precedence
+    held_at: the position column and the move up/down controls
+    evidence: |-
+      { key: "position", header: "#" }
+  - node: scenarios/knowledge/placing-a-manifest-entry-is-never-refused-for-a-drafts-revision-state
+    held_at: optionsWithPinnedRevision / RevisionSelect, listing every fetched revision unfiltered by state
+    evidence: |-
+      const options = optionsWithPinnedRevision(revisions, row.revision);
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      AddHypothesisLink only navigates to the composing route; this file carries no
+      composition fields or reads of its own
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      AddHypothesisLink only navigates to the composing route; this file makes no
+      glossary or revisions read of its own
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      this screen is reached by a case's slug together with a version number, never by
+      slug alone — though the wording this node owns appears at the not-valid branch's
+      paragraph, which is the subject of the finding against the version-keyed node above
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: this screen makes no revise-hypothesis call and reads no subject type
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: nowhere
+    evidence: this screen presents one version's manifest, not a listing of cases
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: >-
+      no summary field — current_state, version_count, last_updated, title,
+      when_to_use or released_version — is read or presented here
+  - node: domain/knowledge/case
+    held_at: the useParams destructuring supplying the case's slug
+    evidence: |-
+      const { slug, version } = useParams({
+        from: "/cases/$slug/versions/$version/manifest",
+      });
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: this file is the destination that route reaches, not the surface offering it
+looked_past: >-
+  The exact wording of in-file notices — the REMOVE_DISABLED_TOOLTIP text, the two
+  ConflictBanner strings, and the removal dialog's copy — is interface form; only the
+  version-keyed/case-keyed wording mismatch above rose to a domain-fact mismatch, so the
+  rest of that copy is not reported.
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis

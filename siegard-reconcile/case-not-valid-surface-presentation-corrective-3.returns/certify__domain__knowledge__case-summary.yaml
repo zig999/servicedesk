@@ -1,0 +1,48 @@
+certified:
+  - node: domain/knowledge/case-summary
+    state: partial
+    tests:
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves every other case's own summary unaffected and the failing case's own entry to
+          only its slug and the not-valid marker when one case's current version fails validation
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves a case whose highest version is a draft to a summary carrying the current
+          draft's own state alongside title, when_to_use and released_version read from the case's
+          own highest released version below it
+      - file: src/hooks/use-cases-list-invalid-case-isolation.spec.ts
+        name: >-
+          resolves the listing successfully with an isolated not-valid entry for each of two cases
+          whose current versions fail validation at the same reading, rather than reverting to a
+          whole-listing failure
+    why: >-
+      The presence half of the fact is exercised whole, and the two derivations are genuinely held
+      apart: the second test's case carries a draft at version 3 above released versions 2 and 1,
+      and asserts current_state and last_updated off version 3 while asserting title and
+      when_to_use off version 2 — the draft's own title and when_to_use are seeded with values
+      ("Draft title, never read for the summary") that would surface and fail the assertion if the
+      three released-derived attributes were read from the most recently authored version instead.
+      version_count is exercised at 1 and at 3, and released_version at 1 and at 2, so picking the
+      highest-numbered released version rather than the lowest would fail. What goes unexercised is
+      both absence clauses the node states. Every case in the set that resolves to a summary at all
+      holds at least one version and at least one released version, so nothing exercises a case
+      whose every version was discarded before release, where current_state and last_updated are to
+      be absent rather than invented, and nothing exercises a case still only in draft and never
+      released, where title, when_to_use and released_version are all to be absent rather than read
+      from a draft. The two cases in the set that never reached a released version — case-broken
+      and case-bad-one — resolve to the not-valid marker rather than to a summary, so they do not
+      stand in for the draft-only summary; their entries assert no summary object at all. The
+      assertions are `toEqual` on the whole entry, so they would catch an invented attribute if such
+      a case were in the set, but no such case is.
+    remainder: testable
+    remainder_why: >-
+      Two inputs against two expected results, each one reading of the listing. First: a case whose
+      version listing answers a total of 0 with no versions, expected to resolve to a summary
+      carrying version_count 0 with current_state and last_updated absent from the entry — not null,
+      not a placeholder state — asserted by an equality over the whole entry so an invented value
+      fails. Second: a case whose versions are all drafts and none released, expected to resolve to
+      a summary carrying version_count, current_state "draft" and last_updated from its
+      highest-numbered draft, with title, when_to_use and released_version absent — seeded, as the
+      second existing test already does, with a draft title and when_to_use that would surface and
+      fail the assertion if either were read from the draft.

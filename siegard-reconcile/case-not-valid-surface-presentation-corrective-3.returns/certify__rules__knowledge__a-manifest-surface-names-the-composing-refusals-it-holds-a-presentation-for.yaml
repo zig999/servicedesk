@@ -1,0 +1,55 @@
+certified:
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    state: partial
+    tests:
+      - file: src/routes/version-manifest-screen-remove-refusal-telling.spec.ts
+        name: >-
+          states the position-occupied refusal and the would-hold-no-hypothesis refusal
+          distinctly from each other, and discloses no code, message or value for a place
+          or a remove refused with any other code
+    why: >-
+      What the named test exercises is that each of the two named refusals raises some
+      non-empty alert in the affected row and that the two texts differ from each other,
+      and that for a place or a remove refused with another code no row alert appears and
+      neither the code nor the message is rendered as a whole text node. Five stated parts
+      of the fact go unexercised. First, neither named telling's content is asserted: both
+      statements are checked only by `expect(...textContent).toBeTruthy()`, so a surface
+      that said nothing about a different hypothesis already holding the position the
+      placement named, and nothing about the manifest having to declare at least one
+      hypothesis, passes unchanged — any non-empty string, including the unrecognised-failure
+      wording itself, satisfies both assertions. Second, "each stating that the manifest
+      stands exactly as it stood before the act" is asserted nowhere: after neither refusal
+      does the test read the manifest back, so a surface that dropped that clause, or that
+      re-rendered the manifest as moved or as missing the entry the removal named, still
+      passes. Third, that the entry the removal named is still held is likewise never read
+      back. Fourth, the positive half of the other-code branch is missing: the fact requires
+      every other refusal be "presented instead as the notice that surface shows for a
+      request that failed for a reason it does not recognise", and the test asserts only the
+      absence of a row alert and of the two strings — a surface that swallowed the other-code
+      refusal silently and showed no notice at all passes both other-code readings. Fifth,
+      because that generic notice is never captured, the fact's requirement that the two
+      named statements be distinguishable "from the statement the surface makes for a
+      place-hypothesis or remove-hypothesis refused with any other error code" is unexercised;
+      only the two named statements are compared, to each other. The non-disclosure assertions
+      that are present are also narrower than the fact: `screen.queryByText("SomeOtherRefusalCode")`
+      and `queryByText("SECRET-REFUSAL-MESSAGE")` match a whole normalised text node, so a
+      notice rendering either inside a longer sentence would not be found and the test would
+      pass while the surface disclosed it; and "not any value it carries" is exercised for no
+      carried value beyond the code and the message.
+    remainder: testable
+    remainder_why: >-
+      Four inputs against four expected rendered results, each read off the screen rather
+      than off truthiness. (1) A place-hypothesis over v refused with
+      ManifestPositionOccupiedError: assert the surface's statement names that v's manifest
+      already places a different hypothesis at the position the placement named and that the
+      manifest stands unchanged, and assert the manifest rows and their order read back
+      exactly as before the move. (2) A remove-hypothesis over v refused with
+      ManifestWouldHoldNoHypothesisError: assert the statement names that v's manifest
+      declares at least one entry and that the entry the removal named is still held, and
+      assert that entry is still present in the manifest read back. (3) and (4) A place and a
+      remove refused with any other code: assert the unrecognised-failure notice the surface
+      shows for a request that failed for a reason it does not recognise is present, assert
+      its text is distinguishable from each of the two statements captured in (1) and (2),
+      and assert non-disclosure with a substring matcher over the whole rendered surface —
+      the error code, the refusal message, and any further value the refusal carries appear
+      nowhere in it.

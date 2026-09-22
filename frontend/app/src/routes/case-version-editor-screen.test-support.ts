@@ -97,10 +97,16 @@ function buildTestRouter(initialPath: string) {
     path: "/cases/$slug/versions/$version/simulate",
     component: () => createElement("div", null, "Simulation Cockpit Placeholder"),
   });
+  const caseManifestRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases/$slug/versions/$version/manifest",
+    component: () => createElement("div", null, "Manifest Placeholder"),
+  });
   const routeTree = rootRoute.addChildren([
     caseVersionRoute,
     casesListRoute,
     caseSimulationRoute,
+    caseManifestRoute,
   ]);
   return createRouter({
     routeTree,
@@ -111,10 +117,10 @@ function buildTestRouter(initialPath: string) {
 export async function mountCaseVersionEditor(
   fetchMock: (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
   initialPath = `/cases/${SLUG}/versions/3`,
+  queryClient: QueryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
 ): Promise<ReturnType<typeof buildTestRouter>> {
   vi.stubGlobal("fetch", fetchMock);
   const router = buildTestRouter(initialPath);
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   await router.load();
   render(
     createElement(

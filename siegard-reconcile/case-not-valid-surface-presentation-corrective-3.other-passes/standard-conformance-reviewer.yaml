@@ -1,0 +1,133 @@
+in_scope:
+  - ARC-01
+  - ARC-03
+  - ARC-04
+  - STA-01
+  - STA-03
+  - API-01
+  - API-02
+  - API-04
+  - EDG-01
+  - EDG-02
+  - EDG-03
+  - EDG-04
+  - ACC-04
+  - ACC-11
+  - ACC-06
+  - ACC-07
+  - ACC-08
+  - ENV-02
+  - SEC-05
+  - TYP-04
+  - PRF-02
+  - PRF-04
+  - TST-02
+  - TST-03
+findings:
+  - file: src/hooks/use-cases-list.ts
+    where: "export type CaseSummary (lines 30-37)"
+    cites: TYP-04
+    evidence: >-
+      readonly versionCount: number;
+      readonly currentState?: CaseVersionState;
+      readonly lastUpdated?: string;
+      readonly title?: string;
+      readonly whenToUse?: string;
+      readonly releasedVersion?: number;
+    cost: >-
+      fetchCaseListEntry only ever produces three correlated shapes -- versionCount alone,
+      versionCount with currentState/lastUpdated, or all six fields together -- but CaseSummary
+      types this as six independent optionals. Nothing stops a caller (a new consumer, a test
+      fixture, a future edit to this function) from constructing a summary with title set and
+      currentState absent, or releasedVersion set without lastUpdated, a combination this
+      listing's own logic never produces and cases-list-screen.tsx has no rendering for; the
+      compiler cannot refuse it.
+    correction: >-
+      Model CaseSummary as a discriminated union over the three actual shapes (no version yet /
+      unreleased draft / has a released version) instead of six independent optional fields.
+  - file: src/hooks/use-edit-draft-version-form.ts
+    where: "EditDraftVersionFormState's \"ready\" variant (lines 36-58)"
+    cites: TYP-04
+    evidence: >-
+      readonly release?: ReleaseControlState;
+      readonly discard?: DiscardControlState;
+      readonly isFirstVersion?: boolean;
+      readonly isReadOnly?: boolean;
+      readonly manifest?: readonly CaseVersionManifestEntry[];
+    cost: >-
+      useEditDraftVersionForm's own return statement (lines 295-343) never sets isFirstVersion,
+      and new-case-draft-screen.tsx is the only reader of that field -- while it is the only
+      reader of release, discard, isReadOnly and manifest that never appears there. The single
+      "ready" variant bundles two mutually exclusive screens' fields as optionals on one shape,
+      so nothing stops a future change to either hook from returning isFirstVersion alongside
+      release/discard/manifest -- a combination describing a version that has both already been
+      created and not yet been created -- and the type gives no compiler signal that this
+      cannot happen.
+    correction: >-
+      Split the "ready" variant into two shapes (or two state types) -- one carrying
+      release/discard/manifest/isReadOnly for editing an existing version, one carrying
+      isFirstVersion for a version not yet created -- rather than one variant with both groups
+      optional.
+  - file: src/routes/cases-list-screen.tsx
+    where: "const casesQuery = useCasesList(); and the isPending/isError branches (lines 77, 95-108)"
+    cites: PRF-04
+    evidence: >-
+      const casesQuery = useCasesList();
+      ...
+      if (casesQuery.isPending) {
+        return <p>Loading cases…</p>;
+      }
+
+      if (casesQuery.isError) {
+        return (
+          <section>
+            <p>Cases could not be loaded.</p>
+    cost: >-
+      Each row is an independently browsable case, yet the whole table's render is gated on one
+      query object. use-cases-list.ts's fetchCasesWithSummaries folds every case's own version
+      read into one Promise.all inside a single "cases-list" queryFn, catching only the
+      case-not-valid failure per case; any other failure on one case's read (a network error, a
+      500 on a different code path) rejects the whole query and blanks every row, including ones
+      that already resolved, and a slow read for one case holds back the render of every other
+      row that had nothing to do with it -- unlike RevisionSelect in version-manifest-screen.tsx,
+      which fetches each row's own revisions with its own useQuery.
+    correction: >-
+      Fetch each case's own summary as its own query (e.g. one useQuery per slug, or useQueries
+      keyed per case) so one case's slow or failing read no longer gates the render of the
+      others.
+  - file: src/routes/hypothesis-revision-screen.tsx
+    where: "the \"success\" phase branch (lines 35-48)"
+    cites: ACC-07
+    evidence: >-
+      if (state.phase === "success") {
+
+        return (
+          <section>
+            <p>
+              Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}.
+            </p>
+            {state.offerManifestBuilder && (
+              <Button type="button" onClick={state.onOpenManifestBuilder}>
+                Open Manifest Builder
+              </Button>
+            )}
+          </section>
+        );
+      }
+    cost: >-
+      On a successful submit the whole screen silently swaps from the composition form to this
+      confirmation sentence, with no aria-live region and no focus moved to the new content. A
+      screen-reader user who just pressed "Save hypothesis" gets no signal that the submission
+      succeeded or that the page's content changed at all; they would have to re-explore the page
+      to discover it.
+    correction: >-
+      Wrap the confirmation paragraph in an aria-live region (e.g. role="status" or
+      aria-live="polite"), or move focus to it, when the phase becomes "success".
+looked_past: >-
+  ConflictBanner's own markup, StatusTable's own empty-row and color-cell rendering, and the
+  discard/release confirmation dialogs are composed from components outside this file set (not
+  reviewed here), so EDG-04, ACC-06, ACC-08 and API-04 concerns that depend on their internals
+  were not pursued past what these files show directly; use-manifest-builder.ts and
+  use-hypothesis-revision-form.ts reuse errorStateKind from use-edit-draft-version-form.ts for
+  failure classification rather than reimplementing it, which this pass read as compliant rather
+  than as a finding.

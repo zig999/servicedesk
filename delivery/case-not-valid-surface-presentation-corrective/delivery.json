@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
+      "title": "Hypothesis composition presents its form on a draft version that does not read back as a case",
+      "summary": "New Hypothesis and Revise Hypothesis keep offering the composition form, and a working submit, when the case's draft version read is refused for failing validation, while glossary and revisions failures and any other version refusal still fall to the generic \"did not complete\" statement, and no stale cached version data leaks through on that refused reading.",
+      "task": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back"
+    },
+    {
       "id": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "implementation",
       "file": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
@@ -10,12 +18,100 @@
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
     },
     {
+      "id": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back.md",
+      "title": "Manifest builder states a version that does not read back as a case, offers the add-hypothesis act on every reading short of a released one, and tells the curator when a remove is refused because it would empty the manifest",
+      "summary": "use-manifest-builder.ts classifies a refused case-version read via errorStateKind, offers the add-hypothesis act on every reading except an answered-released one, and now visibly tells the curator when a remove is refused as ManifestWouldHoldNoHypothesisError, while every other mutation-refusal handler stays unchanged.",
+      "task": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back"
+    },
+    {
+      "id": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "implementation",
+      "file": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back.md",
+      "title": "Version editor states a version that does not read back as a case",
+      "summary": "The case version editor's own load path now distinguishes a version refused for validation from a read that did not complete, reusing the existing statement, and carries the route to that version's own manifest on every one of its own readings — pending, failed, refused-for-validation and ready alike — with the shared return type's other consumer narrowed to exclude the new phase before reading ready-only fields.",
+      "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
+    },
+    {
+      "id": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure.md",
+      "title": "Current-pin read no longer folds a case-not-valid refusal into a load failure",
+      "summary": "use-case-hypothesis-current-pin.ts distinguishes a CaseVersionNotValidError refusal of the case's current version from a generic load failure, and hypothesis-revision-history.tsx presents the hypothesis's own successfully-read revisions on that reading, stating no fact derived from the refused version's manifest and rendering no status cell for it.",
+      "task": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure"
+    },
+    {
+      "id": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "implementation",
+      "file": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis.md",
+      "title": "Manifest builder places an already-composed hypothesis",
+      "summary": "Adds a candidate-hypotheses picker to the version manifest builder that places an existing, already-composed hypothesis through the existing placeMutation, with its own position-occupied telling.",
+      "task": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis"
+    },
+    {
+      "id": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "implementation",
+      "file": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released.md",
+      "title": "The manifest builder's place-existing-hypothesis control offers on every reading but a released version",
+      "summary": "version-manifest-screen.tsx and use-manifest-builder.ts stop gating PlaceExistingHypothesisControl and its candidate list to the \"ready\" phase, so the control and the case's own unplaced hypotheses are offered on the loading, load-error and not-valid readings too, and the not-valid statement now names the version rather than reusing case-keyed wording.",
+      "task": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back.md",
+      "title": "Hypothesis composition presents its form on a draft version that does not read back as a case — test proof",
+      "summary": "Component-level tests over HypothesisRevisionScreen (New Hypothesis and Revise Hypothesis) proving the composition form is presented and a submit lands through the offered manifest route on a draft version refused for failing validation, that glossary/revisions failures and unmapped-code refusals keep the generic statement, that the case-keyed statement discloses no attribute of the version even from a stale shared-key cache (now guarded by the fixed versionData masking), and that the delivered screen does not itself place the composed hypothesis or leak a prior read's stale content — with the node requiring which read failed to be named and the node governing the server's own subject-type check left unproven, as neither is decidable by a frontend test.",
+      "task": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back"
+    },
+    {
       "id": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "proof",
       "file": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing.md",
       "title": "Isolate one case's invalid current version from the cases listing",
       "summary": "Proof that a listing carrying a case whose current version fails validation still renders every other case's own summary unaffected and a distinct not-valid entry for the failing case, at both the data layer (useCasesList) and the rendered screen, including where more than one case fails at the same reading.",
       "task": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back.md",
+      "title": "Manifest builder states a version that does not read back as a case — proof",
+      "summary": "Tests the manifest builder's not-valid/load-error distinction, the add-hypothesis offer across every reading the node declares (loading, load-error, not-valid, draft — empty or not — and withheld on released), and the manifest surface's own presentation for each composing refusal it names, against the four nodes this task implements and the four UNDERDETERMINED entries this task's notes raised.",
+      "task": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back"
+    },
+    {
+      "id": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "proof",
+      "file": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back.md",
+      "title": "Version editor states a version that does not read back as a case — proof",
+      "summary": "Tests the version editor's not-valid/load-error distinction, the manifest route it offers, and the four UNDERDETERMINED entries the task's own notes raised, against the three nodes this task implements.",
+      "task": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back"
+    },
+    {
+      "id": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure.md",
+      "title": "Current-pin refusal no longer folds into a load failure on the hypothesis revision history screen -- proof",
+      "summary": "Proves that use-case-hypothesis-current-pin.ts's not-valid phase lets hypothesis-revision-history.tsx present the hypothesis's own successfully-read revisions with no fact from the refused version's manifest, distinct from both the fixed read-did-not-complete statement and a genuine revisions-read failure.",
+      "task": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure"
+    },
+    {
+      "id": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "proof",
+      "file": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis.md",
+      "title": "Manifest builder places an already-composed hypothesis — proof",
+      "summary": "One new spec file proves the 16 stated criteria (14 by new tests, one -- the \"+ Add hypothesis\" non-regression guard -- already proven by the pre-existing not-valid spec, one -- no third way of finding a revision -- proven jointly by every confirm-flow test's strict fetch stub) and the four node facts a finite test can decide whole; three nodes and one inference are left unproven and named, matching the task's own disclosed divergences.",
+      "task": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis"
+    },
+    {
+      "id": "proof/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "proof",
+      "file": "proof/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released.md",
+      "title": "The placing control's offer widened to every reading but a released version — proof",
+      "summary": "Five new spec files prove the twelve criteria of widening PlaceExistingHypothesisControl's offer -- and its candidate list, revision/position choice, PUT shape and refusal tellings -- from the ready reading alone to the loading, load-error and not-valid readings too, and prove the not-valid statement's corrected, version-keyed wording and its freedom from any cached content (including a stale released state); one pre-existing sibling file's stale wording constant was corrected so its own two tests assert what this task actually delivers rather than the case-keyed wording a prior /review-change had already flagged as wrong.",
+      "task": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released"
     },
     {
       "id": "review/case-not-valid-surface-presentation-corrective",
@@ -45,9 +141,62 @@
         "standard"
       ],
       "findings": 1
+    },
+    {
+      "id": "review/case-not-valid-surface-presentation-corrective-3",
+      "kind": "review",
+      "file": "review/case-not-valid-surface-presentation-corrective-3.md",
+      "title": "Case-not-valid surface presentation corrective — full review",
+      "summary": "Coverage, conformance, standard and failures passes over the four delivered tasks that keep the version editor, manifest builder, hypothesis composition and cases listing reachable once a case's current version fails validation.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A hypothesis composed on that screen and submitted lands in that same draft version's manifest, with no read of that draft version having read back as a case first.",
+        "A refusal of a move, a repin or a remove made through that screen still presents the statement that screen already holds for that named refusal, unchanged by this task."
+      ],
+      "findings": 13
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
@@ -73,8 +222,242 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "task/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-placement-into-a-manifest-holding-no-entry-pins-the-revision-the-curator-names",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "task/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-placing-offered-on-a-manifest-surface-carries-the-cases-hypotheses-that-version-does-not-already-hold",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-first-placements-position-is-the-one-the-curator-declares",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "task/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "to": "implementation/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "to": "implementation/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "to": "implementation/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "to": "implementation/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "to": "implementation/hypothesis-revision-history-current-pin/current-pin-read-does-not-fold-case-not-valid-into-a-load-failure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "to": "implementation/manifest-builder-places-an-existing-hypothesis/manifest-builder-places-an-already-composed-hypothesis",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
+      "to": "implementation/place-existing-control-on-every-reading/place-existing-control-offers-on-every-reading-but-released",
       "kind": "proves",
       "at": "the path"
     },
@@ -89,6 +472,30 @@
       "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
       "kind": "reviews",
       "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/version-editor-states-a-version-that-does-not-read-back",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/manifest-builder-composes-a-version-that-does-not-read-back",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/hypothesis-composition-opens-for-a-version-that-does-not-read-back",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-not-valid-surface-presentation-corrective-3",
+      "to": "task/case-not-valid-surface-presentation/isolate-invalid-case-from-listing",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

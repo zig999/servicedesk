@@ -1,0 +1,89 @@
+read:
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      describe("CasesListScreen -- isolating one case's current version failing validation
+      from the rest of the listing (criterion 1, criterion 2)", () => { ... }) — the file's
+      one test exercises only the cases listing, never a hypothesis-composition surface.
+  - node: rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      describe("CasesListScreen -- isolating one case's current version failing validation
+      from the rest of the listing (criterion 1, criterion 2)", () => { ... }) — no glossary
+      read or revisions read is mocked or asserted anywhere in this file.
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      const casesListRoute = createRoute({ ..., path: "/cases", component: CasesListScreen });
+      — the router under test mounts only the listing route; the single-case-by-slug surface
+      is stubbed as an inert placeholder: caseDetailRoute ... component: () =>
+      createElement("div", null, "Case Detail Placeholder").
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      function errorResponse(code: string, status = 409) — the only refused read the file ever
+      stubs carries "CaseVersionNotValidError", a code the specification's own listing/case-keyed
+      rules already name; no read is stubbed with an unrecognised code, so this node's condition
+      is never exercised.
+  - node: rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      describe("CasesListScreen -- isolating one case's current version failing validation
+      from the rest of the listing (criterion 1, criterion 2)", () => { ... }) — no
+      revise-hypothesis call, draft manifest, or concept-acceptance check appears anywhere
+      in the file.
+  - node: rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone
+    held_at: >-
+      the assertions on `alphaRow` and `brokenRow` after `await mountCasesListScreen()`
+    evidence: >-
+      const alphaRow = rows[0]; expect(within(alphaRow).getByText("case-alpha")).toBeTruthy();
+      expect(within(alphaRow).getByText("Released")).toBeTruthy(); ... const brokenRow =
+      rows[1]; expect(within(brokenRow).getByText("case-broken")).toBeTruthy();
+      expect(within(brokenRow).getByText(NOT_VALID_STATEMENT)).toBeTruthy(); const
+      brokenCells = within(brokenRow).getAllByRole("cell");
+      expect(brokenCells[2].textContent).toBe(""); expect(brokenCells[3].textContent).toBe("");
+  - node: domain/knowledge/case-summary
+    held_at: >-
+      the alpha-row summary-field assertions and the broken-row's withheld summary cells
+    evidence: >-
+      expect(within(alphaRow).getByText("Released")).toBeTruthy();
+      expect(within(alphaRow).getByText("1")).toBeTruthy();
+      expect(within(alphaRow).getByText(expectedLastUpdated("2024-01-15T09:30:00.000Z"))).toBeTruthy();
+      ... expect(brokenCells[2].textContent).toBe(""); expect(brokenCells[3].textContent).toBe("");
+  - node: domain/knowledge/case
+    held_at: >-
+      the slug assertions on both rows
+    evidence: >-
+      expect(within(alphaRow).getByText("case-alpha")).toBeTruthy(); ...
+      expect(within(brokenRow).getByText("case-broken")).toBeTruthy();
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      const caseDetailRoute = createRoute({ ..., path: "/cases/$slug", component: () =>
+      createElement("div", null, "Case Detail Placeholder") }); — the file never routes to,
+      nor asserts on, a surface keyed by slug together with a version number.
+  - node: rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+    held_at: nowhere
+    evidence: >-
+      describe("CasesListScreen -- isolating one case's current version failing validation
+      from the rest of the listing (criterion 1, criterion 2)", () => { ... }) — no manifest
+      surface, and no place-hypothesis act, is stubbed, rendered, or asserted.
+  - node: rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for
+    held_at: nowhere
+    evidence: >-
+      describe("CasesListScreen -- isolating one case's current version failing validation
+      from the rest of the listing (criterion 1, criterion 2)", () => { ... }) — no
+      place-hypothesis or remove-hypothesis refusal is stubbed or asserted.
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      describe("CasesListScreen -- isolating one case's current version failing validation
+      from the rest of the listing (criterion 1, criterion 2)", () => { ... }) — the file
+      never presents one named case version, so it asserts no route to that version's manifest.
+looked_past: >-
+  The literal NOT_VALID_STATEMENT string and the "Released" label pin current UI copy that the
+  governing node explicitly leaves to the interface, and the broken row's coverage checks only
+  cells[2] and cells[3] (version_count, last_updated) rather than also current_state, title,
+  when_to_use and released_version — both are test-thoroughness and UI-form matters, not a
+  domain fact stated or contradicted, so I left them unreported.
+

@@ -1,0 +1,47 @@
+certified:
+  - node: rules/knowledge/a-hypothesis-composition-stands-on-a-reading-whose-anchoring-version-does-not-read-back-as-a-case
+    state: partial
+    tests:
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          renders the hypothesis composition form for New Hypothesis and for Revise Hypothesis
+          when GET .../versions/{version} is refused with CaseVersionNotValidError, rather than
+          the read-did-not-complete statement
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          issues POST /v1/cases/{slug}/hypotheses built from the composed form's own content and
+          offers the route to this same draft version's own manifest on success, with no
+          successful read of the draft version having occurred first
+      - file: src/routes/hypothesis-revision-screen-case-not-valid.spec.ts
+        name: >-
+          issues no PUT to this draft version's own manifest-placement endpoint on a successful
+          revise-hypothesis submission; only the route to the manifest builder is offered,
+          leaving where the entry lands to the curator's own choice made there
+    why: >-
+      The two presences are exercised on the refused reading: with the read of v refused by
+      CaseVersionNotValidError, the first test asserts the composition's own fields
+      ("Hypothesis name") and the offered act ("Save hypothesis") stand on both entry points,
+      and the second asserts that performing the act issues the revise-hypothesis built from the
+      composed content, so a screen that withheld either would fail. What goes unexercised is the
+      invariance the fact states over the refusal itself. Every mount in the set uses one refusal
+      fixture — apiErrorResponse("CaseVersionNotValidError", 409, "validation failed") — carrying
+      no indication of which validator rule failed, so nothing submits a refusal whose failing
+      rule is v's manifest holding no entry at all, and nothing submits one whose failing
+      attribute is v's own declared subject type. A screen that presented the composition only
+      for a detail-less refusal and withheld the fields or the act once the refusal named a
+      failing rule would pass every test here; the clause "neither presence turns on which
+      validator rule failed over v", with its two named inclusions, is therefore untested. A
+      narrower second gap: on the revise entry point (revisePath("H1")) only the presence of the
+      Save control is asserted, never that performing it issues the revise — that half is
+      asserted on the new-hypothesis entry only, so a control rendered but inert on the revise
+      entry's refused reading would also survive the set.
+    remainder: testable
+    remainder_why: >-
+      One input per named inclusion against one expected result. Mount the composing surface with
+      GET .../versions/{version} refused by CaseVersionNotValidError whose payload names the
+      empty manifest as the failing validator rule, and again with one naming v's own declared
+      subject type as the failing attribute; in each, assert the composition's fields are present
+      and the "Save hypothesis" act is offered and, on click, issues the POST — identically to the
+      detail-less refusal. Add the revise entry point (revisePath("H1")) on a refused reading as a
+      third input, asserting that clicking the offered act issues the revise-hypothesis for H1
+      rather than only that the control renders.

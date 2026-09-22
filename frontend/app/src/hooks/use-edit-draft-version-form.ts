@@ -32,6 +32,7 @@ export type SaveStatus = "clean" | "dirty" | "saving" | "conflict";
 export type EditDraftVersionFormState =
   | { readonly phase: "loading" }
   | { readonly phase: "load-error"; readonly retryLoad: () => void }
+  | { readonly phase: "not-valid" }
   | {
       readonly phase: "ready";
       readonly form: UseFormReturn<CaseVersionFormValues>;
@@ -242,9 +243,14 @@ export function useEditDraftVersionForm(
   const isGlossaryError =
     outcomeOptions.isError || actionOptions.isError || recipientOptions.isError;
 
-  if (errorStateKind(versionQuery.error) === "case-not-found") {
+  const versionErrorKind = errorStateKind(versionQuery.error);
+
+  if (versionErrorKind === "case-not-found") {
 
     return { phase: "loading" };
+  }
+  if (versionQuery.isError && versionErrorKind === "case-not-valid") {
+    return { phase: "not-valid" };
   }
   if (versionQuery.isError || isGlossaryError) {
     return {
