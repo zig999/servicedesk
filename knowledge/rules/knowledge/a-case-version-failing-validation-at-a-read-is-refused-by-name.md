@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
+statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError, whose message names the case slug, the version number read and the validator rules that do not hold at that reading; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
 constrains:
   - domain/knowledge/case-version
 ---

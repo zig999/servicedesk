@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: A release whose draft fails any structural or coherence rule is refused once, with an HTTP 422 response reporting a CaseVersionNotReleasableError that names every violated rule together; where release finds no rule specifically violated, the refusal says so explicitly rather than leaving the curator with an unexplained, empty refusal.
+statement: A release whose draft fails any structural or coherence rule is refused once, with an HTTP 422 response reporting a CaseVersionNotReleasableError that names the case slug, the version number of the refused draft and every violated rule together; where release finds no rule specifically violated, the refusal says so explicitly rather than leaving the curator with an unexplained, empty refusal.
 constrains:
   - domain/knowledge/case-version
 ---

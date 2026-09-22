@@ -1,0 +1,750 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-refusal-messages",
+      "kind": "epic",
+      "file": "epic/case-refusal-messages.md",
+      "title": "PT-br messages for the case-domain refusals the backend returns",
+      "summary": "The eleven case-domain error classes under src/src/errors whose message text the HTTP error envelope hands the operator, rewritten in PT-br."
+    },
+    {
+      "id": "epic/hypothesis-refusal-messages",
+      "kind": "epic",
+      "file": "epic/hypothesis-refusal-messages.md",
+      "title": "PT-br messages for the hypothesis and manifest refusals the backend returns",
+      "summary": "The eight hypothesis-revision and manifest error classes under src/src/errors whose message text the HTTP error envelope hands the operator, rewritten in PT-br."
+    },
+    {
+      "id": "inventory/backend-case-hypothesis-error-messages",
+      "kind": "inventory",
+      "file": "inventory/backend-case-hypothesis-error-messages.md",
+      "title": "Backend case/hypothesis domain error classes and the HTTP error envelope",
+      "summary": "Domain error classes under src/src/errors/, the message-construction pattern they share, the error-handler middleware/status-map that turns them into the client envelope, and the absence of any i18n mechanism."
+    },
+    {
+      "id": "inventory/backend-error-message-construction-convention",
+      "kind": "inventory",
+      "file": "inventory/backend-error-message-construction-convention.md",
+      "title": "How each domain error's message is built",
+      "summary": "The shared constructor pattern every domain error class in src/src/errors/ follows to build its English message and carry structured context."
+    },
+    {
+      "id": "inventory/backend-error-message-tests-risk",
+      "kind": "inventory",
+      "file": "inventory/backend-error-message-tests-risk.md",
+      "title": "Where tests assert on literal error message text",
+      "summary": "A targeted check of src/src/__tests__ for hard-coded English message assertions that a PT-br translation would break."
+    },
+    {
+      "id": "task/case-refusal-messages/case-content-violation-messages",
+      "kind": "task",
+      "file": "task/case-refusal-messages/case-content-violation-messages.md",
+      "title": "PT-br messages for the two case refusals that report violated rules",
+      "summary": "CaseVersionNotValidError and CaseVersionNotReleasableError rewritten in PT-br, together with the structural and release-only violation strings parse-case-document.ts and release.operation.ts interpolate into them.",
+      "epic": "case-refusal-messages"
+    },
+    {
+      "id": "task/case-refusal-messages/case-version-existence-messages",
+      "kind": "task",
+      "file": "task/case-refusal-messages/case-version-existence-messages.md",
+      "title": "PT-br messages for the two case refusals about whether a named version exists",
+      "summary": "CaseNotFoundError and CaseVersionAlreadyStoredError rewritten in PT-br, each naming the case slug and version number at issue.",
+      "epic": "case-refusal-messages"
+    },
+    {
+      "id": "task/case-refusal-messages/case-version-state-messages",
+      "kind": "task",
+      "file": "task/case-refusal-messages/case-version-state-messages.md",
+      "title": "PT-br messages for the five case refusals an act meets because of a version's state",
+      "summary": "CaseAlreadyHasDraftError, CaseHoldsNoDraftError, CaseVersionNotDraftError, CaseVersionNotReleasedError and CaseVersionNotDraftAtReleaseError rewritten in PT-br, each stating the state that refuses the act.",
+      "epic": "case-refusal-messages"
+    },
+    {
+      "id": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "kind": "task",
+      "file": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages.md",
+      "title": "PT-br messages for the three refusals about the concepts a hypothesis revision collects",
+      "summary": "ConceptNotInGlossaryError, ConceptRefusesSubjectTypeError and HypothesisRevisionCollectsNoConceptError rewritten in PT-br, each naming the hypothesis, the case and the concepts at issue.",
+      "epic": "hypothesis-refusal-messages"
+    },
+    {
+      "id": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "kind": "task",
+      "file": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages.md",
+      "title": "PT-br messages for the two refusals a hypothesis revision's own state raises",
+      "summary": "HypothesisRevisionNotDraftAtReleaseError and ReleasedHypothesisRevisionNotAlterableError rewritten in PT-br, with the test that hard-codes the first one's English text updated in the same change.",
+      "epic": "hypothesis-refusal-messages"
+    },
+    {
+      "id": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "kind": "task",
+      "file": "task/hypothesis-refusal-messages/manifest-composition-messages.md",
+      "title": "PT-br messages for the three refusals a case version's manifest raises",
+      "summary": "HypothesisNotInManifestError, ManifestPositionOccupiedError and ManifestWouldHoldNoHypothesisError rewritten in PT-br, each naming the case version's manifest and what about it refused the act.",
+      "epic": "hypothesis-refusal-messages"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-listing-states-a-current-version-that-does-not-read-back-in-that-cases-entry-alone",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-presented-case-version-states-its-own-declared-attributes",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/every-screen-discloses-that-authentication-is-unenforced",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-diagnosis-and-simulation-routes-are-rate-limited",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-connection-pool-is-bounded-by-configuration",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-pool-bounds-are-positive-integers",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[36]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[37]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[38]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[39]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[40]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-openapi-document-is-fetched-by-the-backend",
+      "kind": "covers",
+      "at": "covers[41]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-register-capability-route-defers-completeness-to-the-registry",
+      "kind": "covers",
+      "at": "covers[42]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry",
+      "kind": "covers",
+      "at": "covers[43]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-refusal-messages",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/the-concept-read-refuses-an-unanswered-concept",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-hypothesis-composition-states-which-of-its-reads-did-not-complete",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-presented-manifest-entry-states-its-pinned-revisions-state",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/hypothesis-refusal-messages",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-content-violation-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-content-violation-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-content-violation-messages",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-content-violation-messages",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-existence-messages",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-existence-messages",
+      "to": "rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-existence-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-existence-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-refusal-messages/case-version-state-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}

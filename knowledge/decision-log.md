@@ -5874,3 +5874,55 @@ entries:
     configuration pointing somewhere its author never meant, while a refusal status carrying none of the
     call''s own text leaves those two indistinguishable and a 500 in particular discloses nothing whatever
     about the far end.'
+- location: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese.md
+  field: statement
+  unstated: Which language the message text of a domain refusal is written in. Every rule and constraint in the
+    specification states a refusal's HTTP status and the error it reports by name and never a word of the message
+    that error carries, so the text the nineteen backend case and hypothesis error classes put in front of an
+    operator, a curator or an API caller stood in English on no node's authority.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md: "Traduzir para PT-br as mensagens
+    de erro/recusa do domínio de case e hypothesis que o backend (target `backend`, `src/`) expõe ao operador via
+    envelope HTTP de erro" — translate into Brazilian Portuguese the case and hypothesis domain error/refusal
+    messages the backend exposes to the operator through the HTTP error envelope; the same section introduces the
+    nineteen error classes as "hoje em inglês" (in English today).'
+- location: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word.md
+  field: statement
+  unstated: No node stated which word a domain refusal's message uses for each domain noun it names — case,
+    case version, hypothesis, hypothesis-revision, concept, manifest, manifest position, the draft state and the
+    released state — nor whether a case version's or hypothesis-revision's state may reach the reader as the raw
+    lifecycle token that names it internally.
+  decided: One fixed Brazilian-Portuguese word per noun — caso, versão, hipótese, revisão, conceito, manifesto,
+    posição, rascunho, liberada — used to the exclusion of the English word, and the state never shown by its raw
+    lifecycle token.
+  why: The material asks for a translation that introduces no information, and a translation choosing its noun
+    per message introduces exactly that -- twenty error classes each naming the same record their own way, so an
+    operator reading two refusals about one case version cannot tell it is one record; the nine words are the
+    ordinary Brazilian-Portuguese terms for these nouns, and the lifecycle token is excluded because it is an
+    internal name no operator is ever taught to read.
+- location: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused.md
+  field: statement
+  unstated: What answers a write that would create a case version under a case slug and version number some stored
+    case version already answers -- whether the stored version is replaced or recreated, whether the attempt is
+    answered as a case version nobody wrote or as a malformed request, and whether the refusal the curator reads
+    names the slug and the version number at issue.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, in the list of refusal messages
+    the backend exposes to the operator through the HTTP error envelope: `case-version-already-stored.error.ts`
+    — "the case \"{slug}\" already has a stored version {version}, and a case version is written once and never
+    altered" — listed as a refusal class of its own beside `case-not-found.error.ts`.'
+- location: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name.md
+  field: statement
+  unstated: Whether the refusal answering a read that names a stored case version for which some validator
+    rule does not hold at that reading names, in its own message, the case's slug, the version number and
+    the validator rules that do not hold.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 13:
+    `case-version-not-valid.error.ts` — "the case \"{slug}\" at version {version} violates its validator
+    rules: {violations}" — the case slug, the version and the violated rules are already named in the
+    message this class raises today.'
+- location: rules/knowledge/a-release-refusal-with-no-named-violation-says-so.md
+  field: statement
+  unstated: Whether the refusal answering a release blocked by violated rules names, in its own message,
+    the case slug and the version number of the draft whose release was refused, beside the violated rules
+    it names.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 20:
+    `case-version-not-releasable.error.ts` — "the case \"{slug}\" version {version} cannot be released:
+    {violations}" — the case slug and the version are already named in the message this class raises today.'
